@@ -1,42 +1,43 @@
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.SaleOrderLineViewSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class SaleOrderLineViewProductionServiceImpl
-    extends SaleOrderLineViewSupplychainServiceImpl {
+public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSupplychainServiceImpl
+    implements SaleOrderLineViewProductionService {
 
   @Inject
   public SaleOrderLineViewProductionServiceImpl(
+      AppBaseService appBaseService,
+      AppSaleService appSaleService,
       AnalyticAttrsService analyticAttrsService,
-      AnalyticAttrsSupplychainService analyticAttrsSupplychainService) {
-    super(analyticAttrsService, analyticAttrsSupplychainService);
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getOnNewAttrs(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
-    Map<String, Map<String, Object>> attrs = super.getOnNewAttrs(saleOrderLine, saleOrder);
-    attrs.putAll(hideBomAndProdProcess(saleOrderLine));
-    return attrs;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getOnLoadAttrs(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
-    Map<String, Map<String, Object>> attrs = super.getOnLoadAttrs(saleOrderLine, saleOrder);
-    attrs.putAll(hideBomAndProdProcess(saleOrderLine));
-    return attrs;
+      AnalyticAttrsSupplychainService analyticAttrsSupplychainService,
+      AppSupplychainService appSupplychainService,
+      AccountConfigRepository accountConfigRepository,
+      AppAccountService appAccountService) {
+    super(
+        appBaseService,
+        appSaleService,
+        analyticAttrsService,
+        analyticAttrsSupplychainService,
+        appSupplychainService,
+        accountConfigRepository,
+        appAccountService);
   }
 
   @Override
@@ -57,7 +58,8 @@ public class SaleOrderLineViewProductionServiceImpl
     return attrs;
   }
 
-  protected Map<String, Map<String, Object>> hideBomAndProdProcess(SaleOrderLine saleOrderLine) {
+  @Override
+  public Map<String, Map<String, Object>> hideBomAndProdProcess(SaleOrderLine saleOrderLine) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     int saleSupplySelect = saleOrderLine.getSaleSupplySelect();
     String productTypeSelect =

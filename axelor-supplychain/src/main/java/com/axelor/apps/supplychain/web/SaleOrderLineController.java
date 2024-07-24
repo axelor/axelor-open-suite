@@ -39,6 +39,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
+import com.axelor.apps.supplychain.service.SaleOrderLineDomainSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineViewSupplychainService;
@@ -476,5 +477,24 @@ public class SaleOrderLineController {
         Beans.get(SaleOrderLineViewSupplychainService.class)
             .getSaleSupplySelectOnChangeAttrs(saleOrderLine, saleOrder));
     response.setValues(saleOrderLineMap);
+  }
+
+  public void getAnalyticDistributionTemplateDomain(
+      ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    response.setAttr(
+        "analyticDistributionTemplate",
+        "domain",
+        Beans.get(SaleOrderLineDomainSupplychainService.class)
+            .getAnalyticDistributionTemplateDomain(saleOrder));
+  }
+
+  public void setDistributionLineReadonly(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    response.setAttrs(
+        Beans.get(SaleOrderLineViewSupplychainService.class)
+            .setDistributionLineReadonly(saleOrder));
   }
 }

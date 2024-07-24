@@ -19,20 +19,13 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.stock.db.StockLocation;
 
 public interface SaleOrderSupplychainService {
 
   public void updateToConfirmedStatus(SaleOrder saleOrder) throws AxelorException;
 
   public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(SaleOrder saleOrder);
-
-  StockLocation getStockLocation(Partner clientPartner, Company company) throws AxelorException;
-
-  StockLocation getToStockLocation(Partner clientPartner, Company company) throws AxelorException;
 
   public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder);
 

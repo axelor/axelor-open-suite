@@ -300,6 +300,15 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
+  public void checkBeforeConfirm(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    String alert = Beans.get(SaleOrderCheckService.class).confirmCheckAlert(saleOrder);
+    if (StringUtils.notEmpty(alert)) {
+      response.setAlert(alert);
+    }
+  }
+
   public void confirmSaleOrder(ActionRequest request, ActionResponse response) {
 
     try {
@@ -811,6 +820,7 @@ public class SaleOrderController {
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     Map<String, Object> saleOrderMap = new HashMap<>();
+    saleOrderMap.putAll(Beans.get(SaleOrderOnChangeService.class).companyOnChange(saleOrder));
     response.setValues(saleOrderMap);
     response.setAttrs(Beans.get(SaleOrderViewService.class).getCompanyAttrs(saleOrder));
   }

@@ -23,6 +23,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProdProcessService;
+import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -86,5 +87,21 @@ public class SaleOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setBomDomain(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    response.setAttr(
+        "billOfMaterial",
+        "domain",
+        Beans.get(SaleOrderLineDomainProductionService.class).getBomDomain(saleOrderLine));
+  }
+
+  public void setProdProcessDomain(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    response.setAttr(
+        "prodProcess",
+        "domain",
+        Beans.get(SaleOrderLineDomainProductionService.class).getProdProcessDomain(saleOrderLine));
   }
 }

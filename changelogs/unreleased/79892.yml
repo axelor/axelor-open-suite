@@ -1,0 +1,3 @@
+---
+title: "Timetable: fixed the scale issue to compute amount on change of percentage."
+module: axelor-supplychain
