@@ -363,7 +363,12 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                     AppBaseService.COMPUTATION_SCALING,
                     RoundingMode.HALF_UP);
       } else {
-        ratio = this.computeRatioPaid(companyCurrency, invoicePaymentCurrency, invoiceTerm.getInvoice().getInvoiceDate(), paymentDate);
+        ratio =
+            this.computeRatioPaid(
+                companyCurrency,
+                invoicePaymentCurrency,
+                invoiceTerm.getInvoice().getInvoiceDate(),
+                paymentDate);
       }
 
       return currencyScaleService.getCompanyScaledValue(
@@ -441,25 +446,24 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     return sum;
   }
 
-  protected BigDecimal computeRatioPaid(Currency companyCurrency, Currency invoicePaymentCurrency, LocalDate invoiceDate, LocalDate paymentDate)
+  protected BigDecimal computeRatioPaid(
+      Currency companyCurrency,
+      Currency invoicePaymentCurrency,
+      LocalDate invoiceDate,
+      LocalDate paymentDate)
       throws AxelorException {
     BigDecimal ratio;
     if (currencyService.isCurrencyRateLower(
-        invoiceDate,
-        paymentDate,
-            invoicePaymentCurrency,
-            companyCurrency)) {
+        invoiceDate, paymentDate, invoicePaymentCurrency, companyCurrency)) {
       ratio =
           currencyService.getCurrencyConversionRate(
-                  companyCurrency,
-                  invoicePaymentCurrency,
-              invoiceDate);
-      return currencyService.getCurrencyConversionRate(
-              invoicePaymentCurrency,
-              companyCurrency,
-          paymentDate).multiply(ratio);
+              companyCurrency, invoicePaymentCurrency, invoiceDate);
+      return currencyService
+          .getCurrencyConversionRate(invoicePaymentCurrency, companyCurrency, paymentDate)
+          .multiply(ratio);
     }
 
-    return currencyService.getCurrencyConversionRate(companyCurrency, invoicePaymentCurrency, paymentDate);
+    return currencyService.getCurrencyConversionRate(
+        companyCurrency, invoicePaymentCurrency, paymentDate);
   }
 }
