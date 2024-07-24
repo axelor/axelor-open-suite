@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -44,6 +45,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -163,7 +165,8 @@ public class ReconcileInvoiceTermComputationServiceImpl
 
         BigDecimal invoicePaymentAmount = amount;
         if (!reconcileCheckService.isCompanyCurrency(reconcile, null, otherMove)) {
-          invoicePaymentAmount = this.getTotal(moveLine, otherMoveLine, amount, false);
+          invoicePaymentAmount = this.getTotal(moveLine, otherMoveLine, amount, true);
+          amount = this.getTotal(moveLine, otherMoveLine, amount, false);
         }
 
         invoicePayment =
@@ -234,7 +237,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
   }
 
   protected BigDecimal getTotal(
-      MoveLine moveLine, MoveLine otherMoveLine, BigDecimal amount, boolean isInvoicePayment) {
+      MoveLine moveLine, MoveLine otherMoveLine, BigDecimal amount, boolean isForInvoicePayment) {
     BigDecimal total;
     BigDecimal moveLineAmount = moveLine.getCredit().add(moveLine.getDebit());
     BigDecimal rate = moveLine.getCurrencyRate();
@@ -249,7 +252,8 @@ public class ReconcileInvoiceTermComputationServiceImpl
     total = amount.divide(rate, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     if (total.stripTrailingZeros().scale() > currencyScaleService.getScale(otherMoveLine)) {
       total =
-          computePaidRatio(moveLineAmount, amount, invoiceAmount, computedAmount, isInvoicePayment)
+          computePaidRatio(
+                  moveLineAmount, amount, invoiceAmount, computedAmount, isForInvoicePayment)
               .multiply(moveLine.getCurrencyAmount().abs());
     }
 
@@ -260,7 +264,11 @@ public class ReconcileInvoiceTermComputationServiceImpl
       total = otherMoveLine.getCurrencyAmount().abs();
     }
 
-    return total;
+    if (isForInvoicePayment) {
+      return total;
+    } else {
+      return currencyScaleService.getScaledValue(moveLine, total.multiply(rate));
+    }
   }
 
   protected BigDecimal computePaidRatio(

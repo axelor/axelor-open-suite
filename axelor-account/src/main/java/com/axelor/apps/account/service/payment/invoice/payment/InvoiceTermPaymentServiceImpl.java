@@ -363,9 +363,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                     AppBaseService.COMPUTATION_SCALING,
                     RoundingMode.HALF_UP);
       } else {
-        ratio =
-            currencyService.getCurrencyConversionRate(
-                companyCurrency, invoicePaymentCurrency, paymentDate);
+        ratio = this.computeRatioPaid(companyCurrency, invoicePaymentCurrency, invoiceTerm.getInvoice().getInvoiceDate(), paymentDate);
       }
 
       return currencyScaleService.getCompanyScaledValue(
@@ -441,5 +439,27 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                 appAccountService.getTodayDate(invoicePayment.getInvoice().getCompany())));
 
     return sum;
+  }
+
+  protected BigDecimal computeRatioPaid(Currency companyCurrency, Currency invoicePaymentCurrency, LocalDate invoiceDate, LocalDate paymentDate)
+      throws AxelorException {
+    BigDecimal ratio;
+    if (currencyService.isCurrencyRateLower(
+        invoiceDate,
+        paymentDate,
+            invoicePaymentCurrency,
+            companyCurrency)) {
+      ratio =
+          currencyService.getCurrencyConversionRate(
+                  companyCurrency,
+                  invoicePaymentCurrency,
+              invoiceDate);
+      return currencyService.getCurrencyConversionRate(
+              invoicePaymentCurrency,
+              companyCurrency,
+          paymentDate).multiply(ratio);
+    }
+
+    return currencyService.getCurrencyConversionRate(companyCurrency, invoicePaymentCurrency, paymentDate);
   }
 }
