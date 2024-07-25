@@ -1,3 +1,0 @@
----
-title: "Fixed asset: fixed the depreciation values panel readonly if 'Is equal to fiscal depreciation' is enabled."
-module: axelor-account
