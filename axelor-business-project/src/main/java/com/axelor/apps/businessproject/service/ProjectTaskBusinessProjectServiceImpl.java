@@ -645,6 +645,15 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             .subtract(projectTask.getSpentTime())
             .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
 
+    BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
+
+    if (percentageOfProgression.compareTo(percentageLimit) > 0) {
+      percentageOfProgression = percentageLimit;
+    }
+    if (percentageOfConsumption.compareTo(percentageLimit) > 0) {
+      percentageOfConsumption = percentageLimit;
+    }
+
     projectTask.setPercentageOfProgress(percentageOfProgression);
     projectTask.setPercentageOfConsumption(percentageOfConsumption);
     projectTask.setRemainingAmountToDo(remainingAmountToDo);
