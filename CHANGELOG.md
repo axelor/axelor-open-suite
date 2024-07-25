@@ -1,3 +1,28 @@
+## [6.5.38] (2024-07-25)
+
+### Fixes
+#### Base
+
+* Translation: fixed an issue where 'Canceled', 'Confirmed', 'Received' french translations were wrong.
+* Product: reset the serial number on product duplication.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed total of selected move lines in multiple reconciles when currency is different from company currency.
+
+#### Human Resource
+
+* Expense line: fixed error when computing kilometric distance without choosing a type.
+
+#### Purchase
+
+* Purchase order: fixed french typo for 'nouvelles version'.
+
+#### Sale
+
+* Configurator creator: fixed issue related to meta json field simple name.
+* Sale order: fixed an issue preventing from invoicing X% of a sale order as an advance payment where X was greater than the sale order total.
+
 ## [6.5.37] (2024-07-11)
 
 ### Fixes
@@ -1469,6 +1494,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.38]: https://github.com/axelor/axelor-open-suite/compare/v6.5.37...v6.5.38
 [6.5.37]: https://github.com/axelor/axelor-open-suite/compare/v6.5.36...v6.5.37
 [6.5.36]: https://github.com/axelor/axelor-open-suite/compare/v6.5.35...v6.5.36
 [6.5.35]: https://github.com/axelor/axelor-open-suite/compare/v6.5.34...v6.5.35
