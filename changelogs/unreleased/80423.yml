@@ -1,3 +1,0 @@
----
-title: "Opportunity type: remove unused reference from data init config, this will remove a warning when loading the application on a new database."
-module: axelor-crm
