@@ -16,16 +16,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service.timesheet;
+package com.axelor.apps.bankpayment.service.bankorder;
 
-import com.axelor.apps.hr.db.Timesheet;
-import com.axelor.apps.project.db.Project;
+import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 
-public interface TimesheetTimeComputationService {
-  void computeTimeSpent(Timesheet timesheet);
+public interface BankOrderComputeService {
 
-  BigDecimal computeSubTimeSpent(Project project);
+  void updateTotalAmounts(BankOrder bankOrder) throws AxelorException;
 
-  BigDecimal computeTimeSpent(Project project);
+  BigDecimal computeBankOrderTotalAmount(BankOrder bankOrder) throws AxelorException;
+
+  BigDecimal computeCompanyCurrencyTotalAmount(BankOrder bankOrder) throws AxelorException;
 }

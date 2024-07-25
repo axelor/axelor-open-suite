@@ -205,8 +205,6 @@ public interface MoveToolService {
 
   void setDescriptionOnMoveLineList(Move move);
 
-  BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit);
-
   boolean isMultiCurrency(Move move);
 
   @CallMethod

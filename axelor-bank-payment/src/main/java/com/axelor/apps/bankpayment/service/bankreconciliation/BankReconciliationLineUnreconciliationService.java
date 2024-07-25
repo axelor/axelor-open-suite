@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.exception;
+package com.axelor.apps.bankpayment.service.bankreconciliation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.axelor.apps.bankpayment.db.BankReconciliationLine;
+import java.util.List;
 
-@Deprecated
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface HandleExceptionResponse {}
+public interface BankReconciliationLineUnreconciliationService {
+
+  void unreconcileLines(List<BankReconciliationLine> bankReconciliationLines);
+
+  void unreconcileLine(BankReconciliationLine bankReconciliationLine);
+}

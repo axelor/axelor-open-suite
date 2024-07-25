@@ -1,3 +1,90 @@
+## [8.1.3] (2024-07-25)
+
+### Fixes
+#### Base
+
+* Webapp: updated Axelor Open Platform dependency to 7.1.4.
+* Update axelor-studio dependency to 3.1.2
+* Address Template: fixed defaut address template so zip code should come before the city.
+* Partner: fixed error popup when opening partner without accounting situations.
+* Partner: in demo data, set 'Is internal' on partner Axelor.
+* Translation: fixed an issue where 'Canceled', 'Confirmed', 'Received' french translations were wrong.
+* Product: reset the serial number on product duplication.
+
+#### Account
+
+* Invoice/Advance Payment: fixed an issue preventing invoice ventilation if multiple advance payments existed.
+* Move: fixed debit/credit scale when we change move line currency amount.
+* Payment voucher: fixed an issue preventing the payment of invoices with financial discount.
+* Move: fixed issue preventing partner selection if the move has a journal with multiple compatible partners.
+* Invoice: fixed an issue where an exonerated tax had a VAT system filled.
+* Move line mass entry: set description required following account configuration.
+* Mass entry: fixed analytic axis empty on partner selection.
+* Fixed asset: fixed the depreciation values panel readonly if 'Is equal to fiscal depreciation' is enabled.
+* Analytic: fixed required analytic distribution template when the analytic distribution type is per Product/Family/Account.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed total of selected move lines in multiple reconciles when currency is different from company currency.
+
+#### Business Project
+
+* Invoicing project: fixed timesheet line invoicing filter.
+
+#### Contract
+
+* Contract: fixed batch contract revaluation process order.
+
+#### CRM
+
+* Opportunity status: fixed data init to use french status name instead of english.
+* Opportunity type: remove unused reference from data init config, this will remove a warning when loading the application on a new database.
+
+#### Human Resource
+
+* Expense line: fixed error when computing kilometric distance without choosing a type.
+* Employee: fixed card view display when using dark theme.
+
+#### Production
+
+* Translations: fixed french translation for prod process and bom, form view title was plural instead of singular.
+* Product: fixed action from production referenced in base.
+
+#### Project
+
+* Project: fixed planning panel display for unsaved record.
+* Project: fixed the typo in french translation for unit help.
+* Project API: fixed an issue where condition in permission were not evaluated correctly to access unit and planning time of a project.
+
+#### Purchase
+
+* Purchase order: fixed french typo for 'nouvelles version'.
+
+#### Quality
+
+* Control entry API: fixed an issue where condition in permission were not evaluated correctly to access a control entry.
+
+#### Sale
+
+* Configurator creator: fixed issue related to meta json field simple name.
+* Partner: added missing french translation for 'generation type' in complementary product tab.
+* Sale order: fixed sale order sequence when creating new version.
+* Sale order: fixed an issue preventing from invoicing X% of a sale order as an advance payment where X was greater than the sale order total.
+
+#### Supply Chain
+
+* Timetable: fixed the scale issue to compute amount on change of percentage.
+* Stock move/Invoice: fixed unique invoice generation from stock move reversion.
+* Sale order: fixed partial invoice generation with title line.
+
+
+### Developer
+
+#### Production
+
+Created a new action group `action-product-group-production-onload` which will be run onLoad of the product form view,
+replacing `action-group-product-onload`: if you override `onLoad` of product form in your module, please check related change.
+
 ## [8.1.2] (2024-07-11)
 
 ### Fixes
@@ -304,6 +391,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.3]: https://github.com/axelor/axelor-open-suite/compare/v8.1.2...v8.1.3
 [8.1.2]: https://github.com/axelor/axelor-open-suite/compare/v8.1.1...v8.1.2
 [8.1.1]: https://github.com/axelor/axelor-open-suite/compare/v8.1.0...v8.1.1
 [8.1.0]: https://github.com/axelor/axelor-open-suite/compare/v8.0.8...v8.1.0

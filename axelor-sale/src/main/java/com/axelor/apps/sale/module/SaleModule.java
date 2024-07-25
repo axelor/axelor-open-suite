@@ -72,15 +72,24 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
+import com.axelor.apps.sale.service.observer.SaleOrderLineFireServiceImpl;
+import com.axelor.apps.sale.service.observer.SaleOrderLineObserver;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.OpportunityServiceSaleImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCheckServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDummyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDummyServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderFinalizeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderFinalizeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineCalculationComboService;
@@ -97,6 +106,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDomainServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineMultipleQtyService;
@@ -117,6 +128,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServic
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineViewService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineViewServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
@@ -217,5 +230,12 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderOnChangeService.class).to(SaleOrderOnChangeServiceImpl.class);
     bind(SaleOrderUserService.class).to(SaleOrderUserServiceImpl.class);
     bind(SaleOrderProductPrintingService.class).to(SaleOrderProductPrintingServiceImpl.class);
+    bind(SaleOrderCheckService.class).to(SaleOrderCheckServiceImpl.class);
+    bind(SaleOrderFinalizeService.class).to(SaleOrderFinalizeServiceImpl.class);
+    bind(SaleOrderLineViewService.class).to(SaleOrderLineViewServiceImpl.class);
+    bind(SaleOrderLineDummyService.class).to(SaleOrderLineDummyServiceImpl.class);
+    bind(SaleOrderBankDetailsService.class).to(SaleOrderBankDetailsServiceImpl.class);
+    bind(SaleOrderLineFireService.class).to(SaleOrderLineFireServiceImpl.class);
+    bind(SaleOrderLineObserver.class);
   }
 }

@@ -8,31 +8,21 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.Objects;
 
-public class PickedProductProcessingServiceImpl
-    implements MassStockMovableProductProcessingService<PickedProduct> {
+public class PickedProductProcessingRealizeServiceImpl
+    implements MassStockMovableProductProcessingRealizeService<PickedProduct> {
 
   protected final PickedProductRepository pickedProductRepository;
   protected final PickedProductService pickedProductService;
   protected final StoredProductRepository storedProductRepository;
-  protected final MassStockMovableProductQuantityService massStockMovableProductQuantityService;
 
   @Inject
-  public PickedProductProcessingServiceImpl(
+  public PickedProductProcessingRealizeServiceImpl(
       PickedProductRepository pickedProductRepository,
       PickedProductService pickedProductService,
-      StoredProductRepository storedProductRepository,
-      MassStockMovableProductQuantityService massStockMovableProductQuantityService) {
+      StoredProductRepository storedProductRepository) {
     this.pickedProductRepository = pickedProductRepository;
     this.pickedProductService = pickedProductService;
     this.storedProductRepository = storedProductRepository;
-    this.massStockMovableProductQuantityService = massStockMovableProductQuantityService;
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public void save(PickedProduct movableProduct) {
-    Objects.requireNonNull(movableProduct);
-    pickedProductRepository.save(movableProduct);
   }
 
   @Override

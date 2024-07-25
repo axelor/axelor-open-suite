@@ -37,7 +37,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
-import com.axelor.apps.base.service.exception.HandleExceptionResponse;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -49,10 +49,12 @@ import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.SaleOrderGroupService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDummyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderFinalizeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionService;
@@ -66,6 +68,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderViewService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -108,6 +111,13 @@ public class SaleOrderController {
     response.setValues(saleOrderMap);
     Map<String, Map<String, Object>> attrsMap =
         Beans.get(SaleOrderViewService.class).getOnNewAttrs(saleOrder);
+    response.setAttrs(attrsMap);
+  }
+
+  public void onLoad(ActionRequest request, ActionResponse response) throws AxelorException {
+    SaleOrder saleOrder = SaleOrderContextHelper.getSaleOrder(request.getContext());
+    Map<String, Map<String, Object>> attrsMap =
+        Beans.get(SaleOrderViewService.class).getOnLoadAttrs(saleOrder);
     response.setAttrs(attrsMap);
   }
 
@@ -252,12 +262,24 @@ public class SaleOrderController {
     }
   }
 
+  @ErrorException
+  public void checkBeforeFinalize(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    SaleOrderCheckService saleOrderValidateService = Beans.get(SaleOrderCheckService.class);
+    String checkAlert = saleOrderValidateService.finalizeCheckAlert(saleOrder);
+    if (StringUtils.notEmpty(checkAlert)) {
+      response.setAlert(checkAlert);
+    }
+  }
+
   public void finalizeQuotation(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
     try {
-      Beans.get(SaleOrderWorkflowService.class).finalizeQuotation(saleOrder);
+      Beans.get(SaleOrderFinalizeService.class).finalizeQuotation(saleOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -276,6 +298,15 @@ public class SaleOrderController {
     }
 
     response.setReload(true);
+  }
+
+  public void checkBeforeConfirm(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    String alert = Beans.get(SaleOrderCheckService.class).confirmCheckAlert(saleOrder);
+    if (StringUtils.notEmpty(alert)) {
+      response.setAlert(alert);
+    }
   }
 
   public void confirmSaleOrder(ActionRequest request, ActionResponse response) {
@@ -616,7 +647,6 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
-  @HandleExceptionResponse
   public void separateInNewQuotation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -783,5 +813,15 @@ public class SaleOrderController {
     Map<String, Object> saleOrderMap = new HashMap<>();
     saleOrderMap.putAll(Beans.get(SaleOrderOnChangeService.class).partnerOnChange(saleOrder));
     response.setValues(saleOrderMap);
+    response.setAttrs(Beans.get(SaleOrderViewService.class).getPartnerOnChangeAttrs(saleOrder));
+  }
+
+  public void companyOnChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Map<String, Object> saleOrderMap = new HashMap<>();
+    saleOrderMap.putAll(Beans.get(SaleOrderOnChangeService.class).companyOnChange(saleOrder));
+    response.setValues(saleOrderMap);
+    response.setAttrs(Beans.get(SaleOrderViewService.class).getCompanyAttrs(saleOrder));
   }
 }
