@@ -1,3 +1,42 @@
+## [7.1.26] (2024-07-25)
+
+### Fixes
+#### Base
+
+* Translation: fixed an issue where 'Canceled', 'Confirmed', 'Received' french translations were wrong.
+* Product: reset the serial number on product duplication.
+
+#### Account
+
+* Move line mass entry: set description required following account configuration.
+* Mass entry: fixed analytic axis empty on partner selection.
+* Analytic: fixed required analytic distribution template when the analytic distribution type is per Product/Family/Account.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed total of selected move lines in multiple reconciles when currency is different from company currency.
+
+#### Contract
+
+* Contract: fixed batch contract revaluation process order.
+
+#### Human Resource
+
+* Expense Line: fixed error when computing kilometric distance without choosing a type.
+
+#### Project
+
+* Project: fixed typo in french translation for unit help.
+
+#### Purchase
+
+* Purchase order: fixed french typo for 'nouvelles version'.
+
+#### Sale
+
+* Configurator creator: fixed issue related to meta json field simple name.
+* Sale order: fixed an issue preventing from invoicing X% of a sale order as an advance payment where X was greater than the sale order total.
+
 ## [7.1.25] (2024-07-11)
 
 ### Fixes
@@ -1283,6 +1322,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.26]: https://github.com/axelor/axelor-open-suite/compare/v7.1.25...v7.1.26
 [7.1.25]: https://github.com/axelor/axelor-open-suite/compare/v7.1.24...v7.1.25
 [7.1.24]: https://github.com/axelor/axelor-open-suite/compare/v7.1.23...v7.1.24
 [7.1.23]: https://github.com/axelor/axelor-open-suite/compare/v7.1.22...v7.1.23
