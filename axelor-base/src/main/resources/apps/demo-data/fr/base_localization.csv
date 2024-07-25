@@ -1,6 +1,6 @@
 "importId";"name";"code";"language.importId";"dateFormat";"numbersFormat";"country.importId"
-1;"Anglais (ROYAUME-UNI)";"en_GB";1;"dd/MM/y";"#,##0.###";148
-2;"Français (FRANCE)";"fr_FR";2;"dd/MM/y";"# ##0,###";67
+1;"Anglais (ROYAUME-UNI)";"en_GB";1;"dd/MM/yyyy";"#,##0.###";148
+2;"Français (FRANCE)";"fr_FR";2;"dd/MM/yyyy";"# ##0,###";67
 3;"Français (CANADA)";"fr_CA";2;"yy-MM-dd";"# ##0,###";35
-4;"Anglais (CANADA)";"en_CA";1;"y-MM-dd";"#,##0.###";35
+4;"Anglais (CANADA)";"en_CA";1;"yyyy-MM-dd";"#,##0.###";35
 5;"Anglais (ETATS-UNIS)";"en_US";1;"M/d/yy";"#,##0.###";62
