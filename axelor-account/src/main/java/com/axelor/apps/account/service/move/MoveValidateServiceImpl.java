@@ -979,7 +979,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
   }
 
-  protected void checkSpecialAccountAmount(Move move) throws AxelorException {
+  @Override
+  public void checkSpecialAccountAmount(Move move) throws AxelorException {
     List<MoveLine> moveLineList = move.getMoveLineList();
 
     if (!moveToolService.isOpenOrClosureMove(move)) {
