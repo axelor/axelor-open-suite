@@ -1,2 +1,0 @@
-title: "Control entry API: fixed an issue where condition in permission were not evaluated correctly to access a control entry."
-module: axelor-quality

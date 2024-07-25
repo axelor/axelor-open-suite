@@ -1,3 +1,64 @@
+## [8.0.11] (2024-07-25)
+
+### Fixes
+#### Base
+
+* Update axelor-studio dependency to 2.0.5
+* Partner: fixed error popup when opening partner without accounting situations.
+* Translation: fixed an issue where 'Canceled', 'Confirmed', 'Received' french translations were wrong.
+* Product: reset the serial number on product duplication.
+
+#### Account
+
+* Move: fixed debit/credit scale when we change move line currency amount.
+* Payment voucher: fixed an issue preventing the payment of invoices with financial discount.
+* Move: fixed issue preventing partner selection if the move has a journal with multiple compatible partners.
+* Move line mass entry: set description required following account configuration.
+* Mass entry: fixed analytic axis empty on partner selection.
+* Fixed asset: fixed the depreciation values panel readonly if 'Is equal to fiscal depreciation' is enabled.
+* Analytic: fixed required analytic distribution template when the analytic distribution type is per Product/Family/Account.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed total of selected move lines in multiple reconciles when currency is different from company currency.
+
+#### Contract
+
+* Contract: fixed batch contract revaluation process order.
+
+#### CRM
+
+* Opportunity type: remove unused reference from data init config, this will remove a warning when loading the application on a new database.
+
+#### Human Resource
+
+* Expense line: fixed error when computing kilometric distance without choosing a type.
+* Employee: fixed card view display when using dark theme.
+
+#### Project
+
+* Project: fixed the typo in french translation for unit help
+
+#### Purchase
+
+* Purchase order: fixed french typo for 'nouvelles version'.
+
+#### Quality
+
+* Control entry API: fixed an issue where condition in permission were not evaluated correctly to access a control entry.
+
+#### Sale
+
+* Configurator creator: fixed issue related to meta json field simple name.
+* Partner: added missing french translation for 'generation type' in complementary product tab.
+* Sale order: fixed sale order sequence when creating new version.
+* Sale order: fixed an issue preventing from invoicing X% of a sale order as an advance payment where X was greater than the sale order total.
+
+#### Supply Chain
+
+* Timetable: fixed the scale issue to compute amount on change of percentage.
+* Stock move/Invoice: fixed unique invoice generation from stock move reversion.
+
 ## [8.0.10] (2024-07-11)
 
 ### Fixes
@@ -899,6 +960,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.11]: https://github.com/axelor/axelor-open-suite/compare/v8.0.10...v8.0.11
 [8.0.10]: https://github.com/axelor/axelor-open-suite/compare/v8.0.9...v8.0.10
 [8.0.9]: https://github.com/axelor/axelor-open-suite/compare/v8.0.8...v8.0.9
 [8.0.8]: https://github.com/axelor/axelor-open-suite/compare/v8.0.7...v8.0.8
