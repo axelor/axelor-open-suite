@@ -1,0 +1,3 @@
+---
+title: "Invoice/Advance Payment: fixed an issue preventing invoice ventilation if multiple advance payments existed."
+module: axelor-account
