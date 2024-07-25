@@ -11,11 +11,11 @@
     <field name="inputAction" selection="iaccount.move.line.mass.entry.input.action.select"
       onChange="action-move-line-mass-entry-method-input-action-onchange" readonly="true"
       required="true" width="50" selection-in="[1,2,3]"/>
-    <field name="date" onChange="action-move-line-mass-entry-group-on-change-date">
+    <field name="date" onChange="action-move-line-mass-entry-group-on-change-date" width="120">
       <hilite if="$contains(fieldsErrorList,'date:'+date.toString())" background="danger"/>
     </field>
     <field name="originDate"
-      onChange="action-move-line-mass-entry-group-on-change-origin-date">
+      onChange="action-move-line-mass-entry-group-on-change-origin-date" width="120">
       <hilite if="$contains(fieldsErrorList,'originDate:'+originDate.toString())"
         background="danger"/>
     </field>
@@ -68,11 +68,11 @@
     <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
       validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
       onChange="action-move-line-method-set-is-cut-off-generated-false"
-      if="__config__.app.getApp('account').manageCutOffPeriod"/>
+      if="__config__.app.getApp('account').manageCutOffPeriod" width="120"/>
     <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
       validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
       onChange="action-move-line-method-set-is-cut-off-generated-false"
-      if="__config__.app.getApp('account').manageCutOffPeriod"/>
+      if="__config__.app.getApp('account').manageCutOffPeriod" width="120"/>
     <field name="movePartnerBankDetails"
       onSelect="action-move-line-mass-entry-attrs-bank-details-from-partner-domain"
       form-view="bank-details-form" grid-view="bank-details-grid"
@@ -83,7 +83,7 @@
       onSelect="action-move-line-mass-entry-method-domain-pfp-validator-user-on-select"
       canEdit="false"
       onChange="action-move-line-mass-entry-attrs-set-required-move-pfp-validator-user"/>
-    <field name="deliveryDate" title="Delivery date"/>
+    <field name="deliveryDate" title="Delivery date" width="120"/>
     <field name="analyticDistributionTemplate"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
