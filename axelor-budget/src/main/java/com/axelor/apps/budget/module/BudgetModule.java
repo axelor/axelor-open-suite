@@ -122,6 +122,7 @@ import com.axelor.apps.budget.service.saleorder.SaleOrderFinalizeBudgetServiceIm
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineComputeBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorder.SaleOrderLineOnChangeBudgetServiceImpl;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
@@ -139,6 +140,7 @@ import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.SaleOrderCheckSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderFinalizeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineComputeSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineOnChangeSupplychainServiceImpl;
 import java.util.concurrent.Callable;
 
 public class BudgetModule extends AxelorModule {
@@ -219,5 +221,7 @@ public class BudgetModule extends AxelorModule {
         .to(SaleOrderFinalizeBudgetServiceImpl.class);
     bind(SaleOrderCheckSupplychainServiceImpl.class)
         .to(com.axelor.apps.budget.service.SaleOrderCheckBudgetServiceImpl.class);
+    bind(SaleOrderLineOnChangeSupplychainServiceImpl.class)
+        .to(SaleOrderLineOnChangeBudgetServiceImpl.class);
   }
 }

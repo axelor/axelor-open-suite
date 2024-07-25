@@ -34,6 +34,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineMultipleQtyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineOnChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePricingService;
@@ -60,8 +61,13 @@ public class SaleOrderLineController {
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
     response.setAttrs(
         Beans.get(SaleOrderLineFireService.class).getOnNewAttrs(saleOrderLine, saleOrder));
-    response.setValues(
+
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class).getOnNewDummies(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineInitValueService.class).onNewInitValues(saleOrder, saleOrderLine));
+    response.setValues(saleOrderLineMap);
   }
 
   public void onLoad(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -70,8 +76,13 @@ public class SaleOrderLineController {
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
     response.setAttrs(
         Beans.get(SaleOrderLineFireService.class).getOnLoadAttrs(saleOrderLine, saleOrder));
-    response.setValues(
+
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class).getOnLoadDummies(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineInitValueService.class).onLoadInitValues(saleOrder, saleOrderLine));
+    response.setValues(saleOrderLineMap);
   }
 
   public void onNewEditable(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -79,9 +90,15 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderContextHelper.getSaleOrder(context);
     response.setAttrs(Beans.get(SaleOrderLineViewService.class).focusProduct());
-    response.setValues(
+
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class)
             .getOnNewEditableDummies(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineInitValueService.class)
+            .onNewEditableInitValues(saleOrder, saleOrderLine));
+    response.setValues(saleOrderLineMap);
   }
 
   public void computeSubMargin(ActionRequest request, ActionResponse response)
@@ -121,6 +138,9 @@ public class SaleOrderLineController {
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineDummyService.class)
                 .getOnProductChangeDummies(saleOrderLine, saleOrder));
+        saleOrderLineMap.putAll(
+            Beans.get(SaleOrderLineOnChangeService.class)
+                .productOnChange(saleOrderLine, saleOrder));
         response.setAttrs(
             Beans.get(SaleOrderLineViewService.class)
                 .getProductOnChangeAttrs(saleOrderLine, saleOrder));

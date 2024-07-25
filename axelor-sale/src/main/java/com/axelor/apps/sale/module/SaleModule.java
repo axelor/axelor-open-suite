@@ -110,6 +110,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineInitValueService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineInitValueServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineMultipleQtyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineMultipleQtyServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineOnChangeService;
@@ -237,5 +239,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderBankDetailsService.class).to(SaleOrderBankDetailsServiceImpl.class);
     bind(SaleOrderLineFireService.class).to(SaleOrderLineFireServiceImpl.class);
     bind(SaleOrderLineObserver.class);
+    bind(SaleOrderLineInitValueService.class).to(SaleOrderLineInitValueServiceImpl.class);
   }
 }
