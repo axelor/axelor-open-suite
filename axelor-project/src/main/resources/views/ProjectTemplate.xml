@@ -61,10 +61,7 @@
         <field name="invoicingComment" colSpan="12"/>
       </panel>
 
-      <panel title="Wiki" name="wikiPanel">
-        <panel-related name="wikiListPanel" field="wikiList" colSpan="12"
-          form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
-      </panel>
+      <panel-include view="incl-wiki-panel-form"/>
 
       <panel title="Configurations" name="configurationsPanel">
         <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"

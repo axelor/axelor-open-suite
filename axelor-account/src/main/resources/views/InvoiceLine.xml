@@ -173,7 +173,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()"
         title="Business Project" if-module="axelor-business-project">
         <field name="project" canEdit="false"
-          onSelect="action-invoice-line-attrs-domain-project" form-view="project-form"
+          onSelect="action-invoice-line-attrs-domain-project" form-view="business-project-form"
           grid-view="project-grid"/>
         <field name="previousProgress" readonly="true"/>
         <field name="newProgress" readonly="true"/>

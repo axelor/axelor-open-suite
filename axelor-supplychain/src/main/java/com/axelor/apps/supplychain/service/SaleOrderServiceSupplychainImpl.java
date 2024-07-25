@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
@@ -42,15 +41,12 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
-import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -72,8 +68,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   protected AppSupplychainService appSupplychainService;
   protected SaleOrderStockService saleOrderStockService;
-  protected PartnerStockSettingsService partnerStockSettingsService;
-  protected StockConfigService stockConfigService;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
   protected TrackingNumberSupplychainService trackingNumberSupplychainService;
 
@@ -93,8 +87,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       SaleOrderLineDiscountService saleOrderLineDiscountService,
       AppSupplychainService appSupplychainService,
       SaleOrderStockService saleOrderStockService,
-      PartnerStockSettingsService partnerStockSettingsService,
-      StockConfigService stockConfigService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       TrackingNumberSupplychainService trackingNumberSupplychainService,
       PartnerLinkSupplychainService partnerLinkSupplychainService) {
@@ -111,8 +103,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         saleOrderLineDiscountService);
     this.appSupplychainService = appSupplychainService;
     this.saleOrderStockService = saleOrderStockService;
-    this.partnerStockSettingsService = partnerStockSettingsService;
-    this.stockConfigService = stockConfigService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.trackingNumberSupplychainService = trackingNumberSupplychainService;
     this.partnerLinkSupplychainService = partnerLinkSupplychainService;
@@ -315,38 +305,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       saleOrder.setDeliveryAddressStr(
           Beans.get(AddressService.class).computeAddressStr(saleOrder.getDeliveryAddress()));
     }
-  }
-
-  @Override
-  public StockLocation getStockLocation(Partner clientPartner, Company company)
-      throws AxelorException {
-    if (company == null) {
-      return null;
-    }
-    StockLocation stockLocation =
-        partnerStockSettingsService.getDefaultStockLocation(
-            clientPartner, company, StockLocation::getUsableOnSaleOrder);
-    if (stockLocation == null) {
-      StockConfig stockConfig = stockConfigService.getStockConfig(company);
-      stockLocation = stockConfigService.getPickupDefaultStockLocation(stockConfig);
-    }
-    return stockLocation;
-  }
-
-  @Override
-  public StockLocation getToStockLocation(Partner clientPartner, Company company)
-      throws AxelorException {
-    if (company == null) {
-      return null;
-    }
-    StockLocation toStockLocation =
-        partnerStockSettingsService.getDefaultExternalStockLocation(
-            clientPartner, company, StockLocation::getUsableOnSaleOrder);
-    if (toStockLocation == null) {
-      StockConfig stockConfig = stockConfigService.getStockConfig(company);
-      toStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
-    }
-    return toStockLocation;
   }
 
   @Override

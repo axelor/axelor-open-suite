@@ -1,5 +1,6 @@
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.studio.db.AppBase;
@@ -19,7 +20,7 @@ public class SaleOrderDummyServiceImpl implements SaleOrderDummyService {
   }
 
   @Override
-  public Map<String, Object> getOnNewDummies(SaleOrder saleOrder) {
+  public Map<String, Object> getOnNewDummies(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> dummies = new HashMap<>();
     dummies.putAll(getTradingManagementConfig());
     dummies.putAll(getSaveActualVersion());

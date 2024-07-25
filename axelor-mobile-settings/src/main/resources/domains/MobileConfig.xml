@@ -29,6 +29,7 @@
 		public static final String APP_SEQUENCE_HR = "app-hr";
 		public static final String APP_SEQUENCE_QUALITY = "app-quality";
 		public static final String APP_SEQUENCE_INTERVENTION = "app-intervention";
+		public static final String APP_SEQUENCE_SALE = "app-sale";
 
 	]]></extra-code>
 

@@ -9,43 +9,50 @@
       required="true" onSelect="action-stored-product-method-stored-product-domain"/>
     <field name="toStockLocation"
       onSelect="action-stored-product-method-set-domain-from-stock-location"
-      onChange="action-stored-product-record-set-tracking-number,action-stored-product-record-set-current-qty"
+      onChange="action-stored-product-record-set-tracking-number,action-stored-product-method-set-current-qty"
       required="true"/>
     <field name="trackingNumber" title="Tracking no."
       onSelect="action-stored-product-method-tracking-number-domain"
-      onChange="action-stored-product-record-set-current-qty"/>
-    <field name="currentQty" readonly="true"/>
+      onChange="action-stored-product-method-set-current-qty"/>
+    <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
+      readonly="true"/>
     <field name="unit" readonly="true"/>
-    <field name="storedQty"/>
+    <field name="storedQty" x-scale="nbDecimalQty"/>
+    <button name="realizeStoringBtn" title="Realize storing"
+      onClick="save,action-stored-product-method-realize-storing" readonlyIf="stockMoveLine != null"
+      icon="fa-play"/>
+    <button name="cancelPickingBtn" icon="fa-undo"
+      onClick="action-stored-product-method-cancel-storing" readonlyIf="stockMoveLine == null"/>
+    <field name="stockMoveLine" hidden="true"/>
+    <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
   </grid>
 
   <form name="stored-product-form" title="Stored products"
     model="com.axelor.apps.stock.db.StoredProduct" onNew="action-stored-product-group-onnew"
-    canDelete="false">
+    onLoad="action-stored-product-method-set-current-qty" canDelete="false">
     <panel name="mainPanel">
       <field name="storedProduct" onChange="action-stored-product-group-product-onchange"
         onSelect="action-stored-product-method-stored-product-domain"/>
       <field name="toStockLocation"
-        onSelect="action-stored-product-method-set-domain-from-stock-location"
-        onChange="action-stored-product-record-set-tracking-number,action-stored-product-record-set-current-qty"
+        onSelect="action-stored-product-method-set-domain-to-stock-location"
+        onChange="action-stored-product-record-set-tracking-number,action-stored-product-method-set-current-qty"
         required="true"/>
       <field name="trackingNumber"
         onSelect="action-stored-product-method-tracking-number-domain"
-        onChange="action-stored-product-record-set-current-qty"/>
-      <field name="currentQty" readonly="true"/>
+        onChange="action-stored-product-method-set-current-qty"/>
+      <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
+        readonly="true"/>
       <field name="unit" readonly="true"/>
-      <field name="storedQty"/>
+      <field name="storedQty" x-scale="nbDecimalQty"/>
+      <field name="stockMoveLine" showIf="stockMoveLine != null"/>
+      <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
     </panel>
   </form>
 
-  <action-record name="action-stored-product-record-set-current-qty"
-    model="com.axelor.apps.stock.db.StoredProduct">
-    <field if="__parent__.cartStockLocation != null" name="currentQty"
-      expr="eval: __repo__(StockLocationLine).all().filter('self.product = ?1 AND self.stockLocation = ?2', storedProduct, __parent__.cartStockLocation)?.fetchOne()?.currentQty"/>
-    <field if="__parent__.cartStockLocation != null &amp;&amp; trackingNumber != null"
-      name="currentQty"
-      expr="eval: __repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2 AND self.trackingNumber = ?3', storedProduct, __parent__.cartStockLocation, trackingNumber)?.fetchOne()?.currentQty"/>
-  </action-record>
+
+  <action-method name="action-stored-product-method-set-current-qty">
+    <call class="com.axelor.apps.stock.web.StoredProductController" method="setCurrentQty"/>
+  </action-method>
 
 
   <action-record name="action-stored-product-record-set-tracking-number"
@@ -53,16 +60,16 @@
     <field name="trackingNumber" expr="eval: null"/>
   </action-record>
 
-  <action-method name="action-stored-product-method-set-domain-from-stock-location">
+  <action-method name="action-stored-product-method-set-domain-to-stock-location">
     <call class="com.axelor.apps.stock.web.StoredProductController"
-      method="setFromStockLocationDomain"/>
+      method="setToStockLocationDomain"/>
   </action-method>
 
   <action-group name="action-stored-product-group-product-onchange">
     <action name="action-stored-product-record-set-unit"/>
     <action name="action-stored-product-attrs-tracking-number-required"/>
     <action name="action-stored-product-record-set-tracking-number"/>
-    <action name="action-stored-product-record-set-current-qty"/>
+    <action name="action-stored-product-method-set-current-qty"/>
   </action-group>
 
   <action-record name="action-stored-product-record-set-unit"
@@ -92,6 +99,14 @@
   <action-method name="action-stored-product-method-tracking-number-domain">
     <call class="com.axelor.apps.stock.web.StoredProductController"
       method="setTrackingNumberDomain"/>
+  </action-method>
+
+  <action-method name="action-stored-product-method-realize-storing">
+    <call class="com.axelor.apps.stock.web.StoredProductController" method="realizeStoring"/>
+  </action-method>
+
+  <action-method name="action-stored-product-method-cancel-storing">
+    <call class="com.axelor.apps.stock.web.StoredProductController" method="cancelStoring"/>
   </action-method>
 
 

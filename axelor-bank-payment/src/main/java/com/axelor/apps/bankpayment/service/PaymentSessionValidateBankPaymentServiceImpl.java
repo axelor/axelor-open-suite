@@ -48,7 +48,7 @@ import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderComputeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
@@ -73,7 +73,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class PaymentSessionValidateBankPaymentServiceImpl
     extends PaymentSessionValidateServiceImpl {
-  protected BankOrderService bankOrderService;
+  protected BankOrderComputeService bankOrderComputeService;
   protected BankOrderRepository bankOrderRepo;
   protected BankOrderValidationService bankOrderValidationService;
   protected PaymentSessionBankOrderService paymentSessionBankOrderService;
@@ -104,7 +104,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       InvoiceTermFilterService invoiceTermFilterService,
       InvoicePaymentRepository invoicePaymentRepo,
       CurrencyScaleService currencyScaleService,
-      BankOrderService bankOrderService,
+      BankOrderComputeService bankOrderComputeService,
       BankOrderRepository bankOrderRepo,
       BankOrderValidationService bankOrderValidationService,
       PaymentSessionBankOrderService paymentSessionBankOrderService) {
@@ -133,7 +133,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         financialDiscountService,
         invoiceTermFilterService,
         currencyScaleService);
-    this.bankOrderService = bankOrderService;
+    this.bankOrderComputeService = bankOrderComputeService;
     this.bankOrderRepo = bankOrderRepo;
     this.bankOrderValidationService = bankOrderValidationService;
     this.paymentSessionBankOrderService = paymentSessionBankOrderService;
@@ -164,7 +164,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       throws AxelorException {
     if (paymentSession.getBankOrder() != null) {
       BankOrder bankOrder = bankOrderRepo.find(paymentSession.getBankOrder().getId());
-      bankOrderService.updateTotalAmounts(bankOrder);
+      bankOrderComputeService.updateTotalAmounts(bankOrder);
       bankOrderRepo.save(bankOrder);
 
       if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
@@ -226,7 +226,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   @Override
   @Transactional
   public InvoicePayment generatePendingPaymentFromInvoiceTerm(
-      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) throws AxelorException {
     InvoicePayment invoicePayment =
         super.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
     if (invoicePayment == null) {

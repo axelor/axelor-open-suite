@@ -140,11 +140,11 @@
           requiredIf="actionSelect == 21"/>
         <field name="moveDescription" colSpan="12"/>
         <panel-related field="closureAccountSet" form-view="account-form"
-          grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false"
+          grid-view="account-grid" canNew="false" canEdit="false"
           domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'charge', 'income', 'asset')"
           showIf="closeYear"/>
         <panel-related field="openingAccountSet" form-view="account-form"
-          grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false"
+          grid-view="account-grid" canNew="false" canEdit="false"
           domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'asset')"
           showIf="openYear"/>
         <field name="generateResultMove" showIf="openYear"/>

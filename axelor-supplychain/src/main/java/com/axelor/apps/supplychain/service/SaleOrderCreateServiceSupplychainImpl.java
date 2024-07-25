@@ -56,7 +56,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
   protected AccountConfigService accountConfigService;
   protected AppBaseService appBaseService;
-  protected SaleOrderSupplychainService saleOrderSupplychainService;
+  protected SaleOrderStockLocationService saleOrderStockLocationService;
   protected AppStockService appStockService;
 
   @Inject
@@ -71,7 +71,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       SaleOrderLinePriceService saleOrderLinePriceService,
       AccountConfigService accountConfigService,
       AppBaseService appBaseService,
-      SaleOrderSupplychainService saleOrderSupplychainService,
+      SaleOrderStockLocationService saleOrderStockLocationService,
       AppStockService appStockService) {
     super(
         partnerService,
@@ -84,7 +84,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         saleOrderLinePriceService);
     this.accountConfigService = accountConfigService;
     this.appBaseService = appBaseService;
-    this.saleOrderSupplychainService = saleOrderSupplychainService;
+    this.saleOrderStockLocationService = saleOrderStockLocationService;
     this.appStockService = appStockService;
   }
 
@@ -264,7 +264,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             tradingName);
 
     if (stockLocation == null) {
-      stockLocation = saleOrderSupplychainService.getStockLocation(clientPartner, company);
+      stockLocation = saleOrderStockLocationService.getStockLocation(clientPartner, company);
     }
 
     saleOrder.setStockLocation(stockLocation);
