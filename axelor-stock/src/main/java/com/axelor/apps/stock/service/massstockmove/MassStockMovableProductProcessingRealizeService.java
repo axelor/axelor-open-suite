@@ -3,9 +3,8 @@ package com.axelor.apps.stock.service.massstockmove;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.interfaces.massstockmove.MassStockMovableProduct;
 
-public interface MassStockMovableProductProcessingService<T extends MassStockMovableProduct> {
-
-  void save(T movableProduct);
+public interface MassStockMovableProductProcessingRealizeService<
+    T extends MassStockMovableProduct> {
 
   void preRealize(T movableProduct) throws AxelorException;
 

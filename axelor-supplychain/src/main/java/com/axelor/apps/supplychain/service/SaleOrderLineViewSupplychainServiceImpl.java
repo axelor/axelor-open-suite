@@ -1,18 +1,25 @@
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineViewServiceImpl;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.studio.db.AppAccount;
+import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,17 +30,29 @@ public class SaleOrderLineViewSupplychainServiceImpl extends SaleOrderLineViewSe
 
   protected AnalyticAttrsService analyticAttrsService;
   protected AnalyticAttrsSupplychainService analyticAttrsSupplychainService;
+  protected AppSupplychainService appSupplychainService;
+  protected AccountConfigRepository accountConfigRepository;
+  protected AppAccountService appAccountService;
 
   @Inject
   public SaleOrderLineViewSupplychainServiceImpl(
+      AppBaseService appBaseService,
+      AppSaleService appSaleService,
       AnalyticAttrsService analyticAttrsService,
-      AnalyticAttrsSupplychainService analyticAttrsSupplychainService) {
+      AnalyticAttrsSupplychainService analyticAttrsSupplychainService,
+      AppSupplychainService appSupplychainService,
+      AccountConfigRepository accountConfigRepository,
+      AppAccountService appAccountService) {
+    super(appBaseService, appSaleService);
     this.analyticAttrsService = analyticAttrsService;
     this.analyticAttrsSupplychainService = analyticAttrsSupplychainService;
+    this.appSupplychainService = appSupplychainService;
+    this.accountConfigRepository = accountConfigRepository;
+    this.appAccountService = appAccountService;
   }
 
   @Override
-  public Map<String, Map<String, Object>> getOnNewAttrs(
+  public Map<String, Map<String, Object>> getSupplychainOnNewAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs = super.getOnNewAttrs(saleOrderLine, saleOrder);
     attrs.putAll(hideSupplychainPanels(saleOrder));
@@ -41,11 +60,12 @@ public class SaleOrderLineViewSupplychainServiceImpl extends SaleOrderLineViewSe
     attrs.putAll(hideAllocatedQtyBtn(saleOrder, saleOrderLine));
     analyticAttrsService.addAnalyticAxisAttrs(saleOrder.getCompany(), null, attrs);
     attrs.putAll(setAnalyticDistributionPanelHidden(saleOrder, saleOrderLine));
+    attrs.putAll(setReservedQtyReadonly(saleOrder));
     return attrs;
   }
 
   @Override
-  public Map<String, Map<String, Object>> getOnLoadAttrs(
+  public Map<String, Map<String, Object>> getSupplychainOnLoadAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs = super.getOnLoadAttrs(saleOrderLine, saleOrder);
     attrs.putAll(hideSupplychainPanels(saleOrder));
@@ -54,6 +74,7 @@ public class SaleOrderLineViewSupplychainServiceImpl extends SaleOrderLineViewSe
     attrs.putAll(hideReservedQty(saleOrder, saleOrderLine));
     analyticAttrsService.addAnalyticAxisAttrs(saleOrder.getCompany(), null, attrs);
     attrs.putAll(setAnalyticDistributionPanelHidden(saleOrder, saleOrderLine));
+    attrs.putAll(setReservedQtyReadonly(saleOrder));
     return attrs;
   }
 
@@ -72,6 +93,23 @@ public class SaleOrderLineViewSupplychainServiceImpl extends SaleOrderLineViewSe
   public Map<String, Map<String, Object>> getSaleSupplySelectOnChangeAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
+    return attrs;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> setDistributionLineReadonly(SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    AppAccount accountApp = appAccountService.getAppAccount();
+    int distributionTypeSelect =
+        accountConfigRepository
+            .findByCompany(saleOrder.getCompany())
+            .getAnalyticDistributionTypeSelect();
+    attrs.put(
+        "analyticMoveLineList",
+        Map.of(
+            READONLY_ATTR,
+            accountApp == null
+                || distributionTypeSelect != AccountConfigRepository.DISTRIBUTION_TYPE_FREE));
     return attrs;
   }
 
@@ -165,6 +203,22 @@ public class SaleOrderLineViewSupplychainServiceImpl extends SaleOrderLineViewSe
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
     analyticAttrsSupplychainService.addAnalyticDistributionPanelHiddenAttrs(
         analyticLineModel, attrs);
+    return attrs;
+  }
+
+  protected Map<String, Map<String, Object>> setReservedQtyReadonly(SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
+    if (!appSupplychainService.isApp("supplychain")
+        || !appSupplychain.getManageStockReservation()) {
+      return attrs;
+    }
+
+    attrs.put(
+        "requestedReservedQty",
+        Map.of(
+            READONLY_ATTR,
+            saleOrder.getStatusSelect() > SaleOrderRepository.STATUS_FINALIZED_QUOTATION));
     return attrs;
   }
 }

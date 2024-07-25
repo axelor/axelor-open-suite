@@ -108,12 +108,14 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.app.AppStockServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancelService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancelServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityServiceImpl;
-import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactory;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactoryImpl;
-import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.PickedProductService;
@@ -177,7 +179,8 @@ public class StockModule extends AxelorModule {
     bind(MassStockMovableProductAttrsService.class)
         .to(MassStockMovableProductAttrsServiceImpl.class);
     bind(MassStockMoveRecordService.class).to(MassStockMoveRecordServiceImpl.class);
-    bind(MassStockMovableProductService.class).to(MassStockMovableProductServiceImpl.class);
+    bind(MassStockMovableProductRealizeService.class)
+        .to(MassStockMovableProductRealizeServiceImpl.class);
     bind(MassStockMovableProductServiceFactory.class)
         .to(MassStockMovableProductServiceFactoryImpl.class);
     bind(StoredProductAttrsService.class).to(StoredProductAttrsServiceImpl.class);
@@ -189,5 +192,7 @@ public class StockModule extends AxelorModule {
     bind(StockLocationUtilsService.class).to(StockLocationUtilsServiceImpl.class);
     bind(StockLocationLineFetchService.class).to(StockLocationLineFetchServiceImpl.class);
     bind(TrackingNumberCreateService.class).to(TrackingNumberCreateServiceImpl.class);
+    bind(MassStockMovableProductCancelService.class)
+        .to(MassStockMovableProductCancelServiceImpl.class);
   }
 }

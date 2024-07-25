@@ -125,4 +125,7 @@ public final class SaleExceptionMessage {
 
   public static final String SALE_ORDER_FINALIZE_PRICE_LIST_NOT_VALID = /*$$(*/
       "The selected price list is no longer valid, do you still want to continue?" /*)*/;
+
+  public static final String SALE_ORDER_CONFIRM_TOTAL_AMOUNT_ZERO = /*$$(*/
+      "The total amount of quotation is zero. Do you want to proceed ?" /*)*/;
 }

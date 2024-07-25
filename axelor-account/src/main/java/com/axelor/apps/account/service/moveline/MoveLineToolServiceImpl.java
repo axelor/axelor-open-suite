@@ -322,7 +322,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
     BigDecimal currencyAmount =
         unratedAmount.divide(moveLine.getCurrencyRate(), returnedScale, RoundingMode.HALF_UP);
-    moveLine.setCurrencyAmount(moveToolService.computeCurrencyAmountSign(currencyAmount, isDebit));
+    moveLine.setCurrencyAmount(this.computeCurrencyAmountSign(currencyAmount, isDebit));
     return moveLine;
   }
 
@@ -461,6 +461,17 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   public void setIsNonDeductibleTax(MoveLine moveLine, Tax tax) {
     if (tax.getIsNonDeductibleTax()) {
       moveLine.setIsNonDeductibleTax(true);
+    }
+  }
+
+  @Override
+  public BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit) {
+    if (isDebit) {
+      return currencyAmount.abs();
+    } else {
+      return currencyAmount.compareTo(BigDecimal.ZERO) < 0
+          ? currencyAmount
+          : currencyAmount.negate();
     }
   }
 

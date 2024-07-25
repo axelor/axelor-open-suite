@@ -22,6 +22,8 @@ public interface MassStockMovableProduct {
 
   BigDecimal getMovedQty();
 
+  void setMovedQty(BigDecimal movedQty);
+
   StockMoveLine getStockMoveLine();
 
   void setStockMoveLine(StockMoveLine stockMoveLine);
