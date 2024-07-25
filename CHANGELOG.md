@@ -1,3 +1,45 @@
+## [7.2.18] (2024-07-25)
+
+### Fixes
+#### Base
+
+* Translation: fixed an issue where 'Canceled', 'Confirmed', 'Received' french translations were wrong.
+* Product: reset the serial number on product duplication.
+
+#### Account
+
+* Move line mass entry: set description required following account configuration.
+* Mass entry: fixed analytic axis empty on partner selection.
+* Fixed asset: fixed the depreciation values panel readonly if 'Is equal to fiscal depreciation' is enabled.
+* Analytics: fixed required analytic distribution template when the analytic distribution type is per Product/Family/Account.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed total of selected move lines in multiple reconciles when currency is different from company currency.
+
+#### Contract
+
+* Contract: fixed batch contract revaluation process order.
+
+#### Human Resource
+
+* Expense line: fixed error when computing kilometric distance without choosing a type.
+
+#### Project
+
+* Project: fixed the typo in french translation for unit help.
+
+#### Purchase
+
+* Purchase order: fixed french typo for 'nouvelles version'.
+
+#### Sale
+
+* Configurator creator: fixed issue related to meta json field simple name.
+* Partner: added missing french translation for 'generation type' in complementary product tab.
+* Sale order: fixed sale order sequence when creating new version.
+* Sale order: fixed an issue preventing from invoicing X% of a sale order as an advance payment where X was greater than the sale order total.
+
 ## [7.2.17] (2024-07-11)
 
 ### Fixes
@@ -1055,6 +1097,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.18]: https://github.com/axelor/axelor-open-suite/compare/v7.2.17...v7.2.18
 [7.2.17]: https://github.com/axelor/axelor-open-suite/compare/v7.2.16...v7.2.17
 [7.2.16]: https://github.com/axelor/axelor-open-suite/compare/v7.2.15...v7.2.16
 [7.2.15]: https://github.com/axelor/axelor-open-suite/compare/v7.2.14...v7.2.15
