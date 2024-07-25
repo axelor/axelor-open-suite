@@ -791,4 +791,17 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       }
     }
   }
+
+  @Override
+  public String checkPercentagesOver1000OnTasks(Project project) {
+    BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
+    return project.getProjectTaskList().stream()
+        .filter(
+            projectTask ->
+                projectTask.getPercentageOfProgress().compareTo(percentageLimit) == 0
+                    || projectTask.getPercentageOfConsumption().compareTo(percentageLimit) == 0)
+        .map(ProjectTask::getName)
+        .collect(Collectors.toList())
+        .toString();
+  }
 }
