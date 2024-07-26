@@ -44,7 +44,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.observer.SaleOrderFireService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -98,7 +98,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected FixedAssetRepository fixedAssetRepository;
   protected PfpService pfpService;
   protected SaleOrderWorkflowService saleOrderWorkflowService;
-  protected SaleOrderFireService saleOrderFireService;
+  protected SaleOrderConfirmService saleOrderConfirmService;
   protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
 
   @Inject
@@ -124,7 +124,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       FixedAssetRepository fixedAssetRepository,
       PfpService pfpService,
       SaleOrderWorkflowService saleOrderWorkflowService,
-      SaleOrderFireService saleOrderFireService,
+      SaleOrderConfirmService saleOrderConfirmService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
     super(
         stockMoveLineService,
@@ -148,7 +148,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     this.fixedAssetRepository = fixedAssetRepository;
     this.pfpService = pfpService;
     this.saleOrderWorkflowService = saleOrderWorkflowService;
-    this.saleOrderFireService = saleOrderFireService;
+    this.saleOrderConfirmService = saleOrderConfirmService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
   }
 
@@ -332,12 +332,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
    * @param saleOrder
    */
   protected void terminateOrConfirmSaleOrderStatus(SaleOrder saleOrder) throws AxelorException {
-    // have to use Beans.get because of circular dependency
     if (saleOrder.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_DELIVERED
         && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
       saleOrderWorkflowService.completeSaleOrder(saleOrder);
     } else if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-      saleOrderFireService.confirmSaleOrder(saleOrder);
+      saleOrderConfirmService.confirmSaleOrder(saleOrder);
     }
   }
 

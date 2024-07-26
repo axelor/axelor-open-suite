@@ -11,6 +11,6 @@ public class SaleOrderObserver {
 
   public void confirmSaleOrder(@Observes SaleOrderConfirm event) throws AxelorException {
     SaleOrder saleOrder = event.getSaleOrder();
-    Beans.get(SaleOrderConfirmService.class).confirmSaleOrder(saleOrder);
+    Beans.get(SaleOrderConfirmService.class).confirmProcess(saleOrder);
   }
 }

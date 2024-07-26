@@ -49,9 +49,9 @@ import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.SaleOrderGroupService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.apps.sale.service.observer.SaleOrderFireService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDummyService;
@@ -317,7 +317,7 @@ public class SaleOrderController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
       String message =
-          Beans.get(SaleOrderFireService.class)
+          Beans.get(SaleOrderConfirmService.class)
               .confirmSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
 
       response.setReload(true);

@@ -4,5 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 
 public interface SaleOrderConfirmService {
-  void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException;
+  String confirmSaleOrder(SaleOrder saleOrder);
+
+  void confirmProcess(SaleOrder saleOrder) throws AxelorException;
 }

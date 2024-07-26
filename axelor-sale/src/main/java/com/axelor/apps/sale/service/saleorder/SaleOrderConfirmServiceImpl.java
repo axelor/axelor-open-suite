@@ -11,6 +11,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.event.SaleOrderConfirm;
+import com.axelor.event.Event;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -18,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SaleOrderConfirmServiceImpl implements SaleOrderConfirmService {
+
+  protected Event<SaleOrderConfirm> saleOrderConfirmEvent;
 
   protected AppSaleService appSaleService;
   protected UserService userService;
@@ -27,11 +31,13 @@ public class SaleOrderConfirmServiceImpl implements SaleOrderConfirmService {
 
   @Inject
   public SaleOrderConfirmServiceImpl(
+      Event<SaleOrderConfirm> saleOrderConfirmEvent,
       AppSaleService appSaleService,
       UserService userService,
       AppCrmService appCrmService,
       SaleOrderRepository saleOrderRepository,
       PartnerRepository partnerRepository) {
+    this.saleOrderConfirmEvent = saleOrderConfirmEvent;
     this.appSaleService = appSaleService;
     this.userService = userService;
     this.appCrmService = appCrmService;
@@ -39,9 +45,16 @@ public class SaleOrderConfirmServiceImpl implements SaleOrderConfirmService {
     this.partnerRepository = partnerRepository;
   }
 
-  @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
+  @Override
+  public String confirmSaleOrder(SaleOrder saleOrder) {
+    SaleOrderConfirm saleOrderConfirm = new SaleOrderConfirm(saleOrder);
+    saleOrderConfirmEvent.fire(saleOrderConfirm);
+    return saleOrderConfirm.getNotifyMessage();
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void confirmProcess(SaleOrder saleOrder) throws AxelorException {
     List<Integer> authorizedStatus = new ArrayList<>();
     authorizedStatus.add(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
     authorizedStatus.add(SaleOrderRepository.STATUS_ORDER_COMPLETED);
