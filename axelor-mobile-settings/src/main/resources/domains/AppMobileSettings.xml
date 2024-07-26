@@ -17,6 +17,7 @@
     <boolean name="isQualityAppEnabled" title="Quality" default="false"/>
     <boolean name="isInterventionAppEnabled" title="Intervention" default="false"/>
     <boolean name="isSaleAppEnabled" title="Sale" default="false"/>
+    <boolean name="isProjectAppEnabled" title="Project" default="false"/>
 
     <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
 
@@ -129,6 +130,7 @@
       <field name="isQualityAppEnabled" on="UPDATE"/>
       <field name="isInterventionAppEnabled" on="UPDATE"/>
       <field name="isSaleAppEnabled" on="UPDATE"/>
+      <field name="isProjectAppEnabled" on="UPDATE"/>
       <field name="isLoginUserQrcodeEnabled" on="UPDATE"/>
       <field name="isTrackerMessageEnabled" on="UPDATE"/>
       <field name="manageCarrierOption" on="UPDATE"/>
