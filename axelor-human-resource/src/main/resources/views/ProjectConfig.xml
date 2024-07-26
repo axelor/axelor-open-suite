@@ -13,8 +13,8 @@
             onChange="action-project-config-method-generate-default-planned-time-value"/>
           <field name="isSelectionOnDisplayPlannedTime" widget="boolean-switch" colSpan="4"
             onChange="action-project-config-method-generate-default-planned-time-value"/>
-          <field name="plannedTimeValueList" showIf="isSelectionOnDisplayPlannedTime"
-            widget="TagSelect" x-order="plannedTime" colSpan="4"/>
+          <panel-related field="plannedTimeValueList"
+            showIf="isSelectionOnDisplayPlannedTime" colSpan="12" canSelect="true"/>
         </panel>
       </insert>
     </extend>
