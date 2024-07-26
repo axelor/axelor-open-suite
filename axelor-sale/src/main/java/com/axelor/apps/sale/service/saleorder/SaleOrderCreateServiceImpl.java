@@ -109,7 +109,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       Team team,
       TaxNumber taxNumber,
       String internalNote,
-      FiscalPosition fiscalPosition)
+      FiscalPosition fiscalPosition,
+      TradingName tradingName)
       throws AxelorException {
     SaleOrder saleOrder =
         createSaleOrder(
@@ -125,8 +126,9 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             team,
             taxNumber,
             fiscalPosition,
-            null);
+            tradingName);
     saleOrder.setInternalNote(internalNote);
+    saleOrder.setTradingName(tradingName);
     return saleOrder;
   }
 

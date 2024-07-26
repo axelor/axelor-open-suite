@@ -71,6 +71,11 @@ public class SaleOrderMergingViewServiceImpl implements SaleOrderMergingViewServ
     if (resultChecks.isExistTeamDiff()) {
       confirmView.context("contextTeamToCheck", Boolean.TRUE.toString());
     }
+    if (resultChecks.isExistTradingNameDiff()) {
+      confirmView.context("contextTradingNameToCheck", Boolean.TRUE.toString());
+      confirmView.context(
+          "company", saleOrderMergingService.getCommonFields(result).getCommonCompany());
+    }
 
     confirmView.context(lineToMerge, saleOrdersToMerge);
     return confirmView;

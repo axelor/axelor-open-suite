@@ -220,6 +220,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             invoicedPartner,
             deliveredPartner);
     saleOrder.setInternalNote(internalNote);
+    saleOrder.setTradingName(tradingName);
     return saleOrder;
   }
 
