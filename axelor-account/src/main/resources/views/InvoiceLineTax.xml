@@ -26,7 +26,6 @@
       <field name="taxLine.value"/>
       <field name="exTaxBase" readonly="true"/>
       <field name="taxTotal" readonlyIf="!taxLine.tax.manageByAmount"
-        validIf="taxTotal &gt;= 0 &amp;&amp; taxTotal &lt;= exTaxBase"
         onChange="action-invoice-line-tax-method-recompute-amounts"/>
       <field name="inTaxTotal" readonly="true"/>
       <field name="percentageTaxTotal" showIf="taxLine.tax.manageByAmount" readonly="true"/>
