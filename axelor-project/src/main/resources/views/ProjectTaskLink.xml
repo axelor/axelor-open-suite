@@ -5,50 +5,25 @@
 
   <grid name="project-task-link-grid" title="Project task relations"
     model="com.axelor.apps.project.db.ProjectTaskLink" editable="true">
-    <field name="projectTask1" form-view="project-task-form" grid-view="project-task-grid"
-      onSelect="action-project-task-link-method-set-task-domain"/>
     <field name="projectTaskLinkType" form-view="project-task-link-type-form"
-      grid-view="project-task-link-type-grid" required="true"
-      onSelect="action-project-task-link-method-set-link-type-domain"/>
-    <field name="projectTask2" form-view="project-task-form" grid-view="project-task-grid"
-      onSelect="action-project-task-link-method-set-task-domain"/>
-  </grid>
-
-  <grid name="project-task-link-from-grid" title="Project task relations"
-    model="com.axelor.apps.project.db.ProjectTaskLink" editable="true">
-    <field name="projectTaskLinkType" form-view="project-task-link-type-form"
-      grid-view="project-task-link-type-grid" target-name="link2Name" required="true"
-      onSelect="action-project-task-link-method-set-link-type-domain"/>
-    <field name="projectTask2" form-view="project-task-form" grid-view="project-task-grid"
-      onSelect="action-project-task-link-method-set-task-domain" required="true"/>
-  </grid>
-
-  <grid name="project-task-link-to-grid" title="Project task relations"
-    model="com.axelor.apps.project.db.ProjectTaskLink" editable="true">
-    <field name="projectTaskLinkType" form-view="project-task-link-type-form"
-      grid-view="project-task-link-type-grid" target-name="link1Name" required="true"
-      onSelect="action-project-task-link-method-set-link-type-domain"/>
-    <field name="projectTask1" form-view="project-task-form" grid-view="project-task-grid"
-      onSelect="action-project-task-link-method-set-task-domain" required="true"/>
+      grid-view="project-task-link-type-grid"/>
+    <field name="relatedTask" form-view="project-task-form" grid-view="project-task-grid"/>
+    <button name="trashBtn" title="Delete" icon="fa-trash"
+      onClick="action-project-task-link-method-remove-link"/>
   </grid>
 
   <form name="project-task-link-form" title="Project task relation"
     model="com.axelor.apps.project.db.ProjectTaskLink">
     <panel name="mainPanel" itemSpan="4" readonly="true">
-      <field name="projectTask1" form-view="project-task-form" grid-view="project-task-grid"/>
+      <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
       <field name="projectTaskLinkType" form-view="project-task-link-type-form"
         grid-view="project-task-link-type-grid"/>
-      <field name="projectTask2" form-view="project-task-form" grid-view="project-task-grid"/>
+      <field name="relatedTask" form-view="project-task-form" grid-view="project-task-grid"/>
     </panel>
   </form>
 
-  <action-method name="action-project-task-link-method-set-task-domain">
-    <call class="com.axelor.apps.project.web.ProjectTaskLinkController" method="setTaskDomain"/>
-  </action-method>
-
-  <action-method name="action-project-task-link-method-set-link-type-domain">
-    <call class="com.axelor.apps.project.web.ProjectTaskLinkController"
-      method="setLinkTypeDomain"/>
+  <action-method name="action-project-task-link-method-remove-link">
+    <call class="com.axelor.apps.project.web.ProjectTaskLinkController" method="removeLink"/>
   </action-method>
 
 </object-views>

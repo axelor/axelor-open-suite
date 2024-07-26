@@ -9,6 +9,9 @@
   <input file="project_project_task_link_type.csv" separator=";"
     type="com.axelor.apps.project.db.ProjectTaskLinkType" search="self.importId = :importId"/>
 
+  <input file="project_project_task_link_type.csv" separator=";" update="true"
+    type="com.axelor.apps.project.db.ProjectTaskLinkType" search="self.importId = :importId"/>
+
   <input file="meta_metaTranslation.csv" separator=";"
     type="com.axelor.meta.db.MetaTranslation" search="self.key = :key AND self.language = :language"/>
 

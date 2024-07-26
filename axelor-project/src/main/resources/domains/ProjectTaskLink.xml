@@ -7,12 +7,13 @@
 
   <entity name="ProjectTaskLink">
 
-    <many-to-one name="projectTask1" ref="com.axelor.apps.project.db.ProjectTask"
-      title="From"/>
-    <many-to-one name="projectTask2" ref="com.axelor.apps.project.db.ProjectTask"
-      title="To"/>
+    <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask"
+      title="Project task"/>
+    <many-to-one name="relatedTask" ref="com.axelor.apps.project.db.ProjectTask"
+      title="Related task"/>
     <many-to-one name="projectTaskLinkType"
       ref="com.axelor.apps.project.db.ProjectTaskLinkType" title="Link type"/>
+    <many-to-one name="projectTaskLink" ref="com.axelor.apps.project.db.ProjectTaskLink"/>
   </entity>
 
 </domain-models>

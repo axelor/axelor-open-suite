@@ -1,4 +1,6 @@
-"importId";"name";"typeSelect";"link1Name";"link2Name"
-1;"Lier";0;"Lié à";"Lié à"
-2;"Suivi";1;"Précède";"Suit"
-3;"Bloquer";2;"Bloque";"Bloqué par"
+"importId";"name";"oppositeLinkType.importId"
+1;"Lié à";
+2;"Suit";3
+3;"Précède";2
+4;"Bloque";5
+5;"Bloqué par";4

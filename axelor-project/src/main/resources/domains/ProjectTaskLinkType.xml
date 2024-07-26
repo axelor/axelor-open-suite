@@ -7,11 +7,9 @@
 
   <entity name="ProjectTaskLinkType">
 
-    <string name="name" translatable="true"/>
-    <integer name="typeSelect" title="Type"
-      selection="project.project.link.type.type.select" default="0"/>
-    <string name="link1Name" title="Relation 1" translatable="true"/>
-    <string name="link2Name" title="Relation 2" translatable="true"/>
+    <string name="name" translatable="true" namecolumn="true" unique="true"/>
+    <many-to-one name="oppositeLinkType" title="Opposite link type"
+      ref="com.axelor.apps.project.db.ProjectTaskLinkType"/>
   </entity>
 
 </domain-models>

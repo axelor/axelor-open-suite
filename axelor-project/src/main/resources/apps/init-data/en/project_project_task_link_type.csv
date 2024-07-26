@@ -1,4 +1,6 @@
-"importId";"name";"typeSelect";"link1Name";"link2Name"
-1;"Relation";0;"Linked to";"Linked to"
-2;"Following";1;"Precedes";"Follows"
-3;"Blocking";2;"Blocks";"Blocked by"
+"importId";"name";"oppositeLinkType.importId"
+1;"Linked to";
+2;"Follows";3
+3;"Precedes";2
+4;"Blocks";5
+5;"Blocked by";4
