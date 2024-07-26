@@ -74,8 +74,7 @@ public class InvoiceTermFilterBankPaymentServiceImpl extends InvoiceTermFilterSe
 
   @Override
   public BankOrderLineOrigin getAwaitingBankOrderLineOrigin(InvoiceTerm invoiceTerm) {
-    return bankOrderLineOriginRepository
-        .all()
+    return bankOrderLineOriginRepository.all()
         .filter(
             "self.relatedToSelect = ?1 AND self.relatedToSelectId = ?2 "
                 + "AND self.bankOrderLine.bankOrder IS NOT NULL "
@@ -89,8 +88,7 @@ public class InvoiceTermFilterBankPaymentServiceImpl extends InvoiceTermFilterSe
             BankOrderRepository.STATUS_VALIDATED,
             BankOrderRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT,
             BankOrderRepository.ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT)
-        .fetch()
-        .stream()
+        .fetch().stream()
         .findAny()
         .orElse(null);
   }

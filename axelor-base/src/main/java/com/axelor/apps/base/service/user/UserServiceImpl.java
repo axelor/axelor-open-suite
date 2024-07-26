@@ -302,12 +302,8 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User changeUserPassword(User user, Map<String, Object> values)
-      throws ClassNotFoundException,
-          InstantiationException,
-          IllegalAccessException,
-          MessagingException,
-          IOException,
-          AxelorException {
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          MessagingException, IOException, AxelorException {
     Preconditions.checkNotNull(user, I18n.get("User cannot be null."));
     Preconditions.checkNotNull(values, I18n.get("User context cannot be null."));
 

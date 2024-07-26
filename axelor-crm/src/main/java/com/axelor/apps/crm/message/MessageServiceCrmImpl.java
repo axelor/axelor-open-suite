@@ -65,11 +65,8 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 
   @Transactional(rollbackOn = {Exception.class})
   public Message createMessage(Event event)
-      throws AxelorException,
-          ClassNotFoundException,
-          InstantiationException,
-          IllegalAccessException,
-          IOException {
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, IOException {
 
     // Get template depending on event type
     Template template = null;

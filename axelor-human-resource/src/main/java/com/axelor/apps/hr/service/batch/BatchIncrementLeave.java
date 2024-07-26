@@ -56,13 +56,11 @@ public class BatchIncrementLeave extends AbstractBatch {
   @Override
   protected void process() {
     List<Long> leaveReasonList =
-        leaveReasonRepository
-            .all()
+        leaveReasonRepository.all()
             .filter(
                 "self.isAutoIncrement = true AND self.leaveReasonTypeSelect = :typeSelect AND self.leaveReasonTypeSelect != :exceptionalSelect")
             .bind("typeSelect", batch.getHrBatch().getLeaveReasonTypeSelect())
-            .bind("exceptionalSelect", LeaveReasonRepository.TYPE_SELECT_EXCEPTIONAL_DAYS)
-            .fetch()
+            .bind("exceptionalSelect", LeaveReasonRepository.TYPE_SELECT_EXCEPTIONAL_DAYS).fetch()
             .stream()
             .map(LeaveReason::getId)
             .collect(Collectors.toList());

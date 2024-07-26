@@ -28,9 +28,7 @@ import java.time.LocalDate;
 
 public interface FixedAssetDerogatoryLineMoveService {
 
-  /**
-   * @param fixedAssetLine
-   */
+  /** @param fixedAssetLine */
   void realize(FixedAssetDerogatoryLine fixedAssetLine, boolean isBatch, boolean generateMove)
       throws AxelorException;
 

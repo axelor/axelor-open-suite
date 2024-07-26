@@ -19,29 +19,35 @@
 package com.axelor.apps.sale.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.rest.dto.SaleOrderPostRequest;
+import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
+import com.axelor.apps.sale.service.SaleOrderGeneratorService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.*;
 import io.swagger.v3.oas.annotations.Operation;
-
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/aos/expense")
+@Path("/aos/saleOrder")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class SaleOrderRestController {
   @Operation(
-          summary = "Create a sale oder",
-          tags = {"SaleOrder"})
+      summary = "Create a sale oder",
+      tags = {"SaleOrder"})
   @Path("/")
   @POST
   @HttpExceptionHandler
-  public Response createExpense(SaleOrderPostRequest requestBody) throws AxelorException {
+  public Response createSaleOrder(SaleOrderPostRequest requestBody) throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().createAccess(SaleOrder.class).check();
 
-    return null;
+    SaleOrder saleOrder =
+        Beans.get(SaleOrderGeneratorService.class)
+            .createSaleOrder(requestBody.fetchClientPartner());
+
+    return ResponseConstructor.buildCreateResponse(saleOrder, new SaleOrderResponse(saleOrder));
   }
 }
-

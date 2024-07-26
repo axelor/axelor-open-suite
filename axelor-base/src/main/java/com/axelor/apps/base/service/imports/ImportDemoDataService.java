@@ -27,9 +27,6 @@ import java.text.ParseException;
 public interface ImportDemoDataService {
 
   public boolean importDemoDataExcel(File excelFile, File logFile)
-      throws FileNotFoundException,
-          IOException,
-          AxelorException,
-          ParseException,
+      throws FileNotFoundException, IOException, AxelorException, ParseException,
           ClassNotFoundException;
 }

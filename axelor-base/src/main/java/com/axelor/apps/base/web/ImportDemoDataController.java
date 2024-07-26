@@ -41,10 +41,7 @@ import java.util.Map;
 public class ImportDemoDataController {
 
   public void importDemoDataExcel(ActionRequest request, ActionResponse response)
-      throws FileNotFoundException,
-          IOException,
-          AxelorException,
-          ParseException,
+      throws FileNotFoundException, IOException, AxelorException, ParseException,
           ClassNotFoundException {
     MetaFile metaFile =
         Beans.get(MetaFileRepository.class)

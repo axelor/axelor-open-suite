@@ -66,12 +66,8 @@ public interface ConfiguratorService {
       JsonContext jsonAttributes,
       JsonContext jsonIndicators,
       Long saleOrderId)
-      throws NoSuchMethodException,
-          InvocationTargetException,
-          IllegalAccessException,
-          JSONException,
-          ClassNotFoundException,
-          AxelorException;
+      throws NoSuchMethodException, InvocationTargetException, IllegalAccessException,
+          JSONException, ClassNotFoundException, AxelorException;
 
   /**
    * Generate a product, then generate a sale order line with the created product, then add this
@@ -87,11 +83,8 @@ public interface ConfiguratorService {
       SaleOrder saleOrder,
       JsonContext jsonAttributes,
       JsonContext jsonIndicators)
-      throws ClassNotFoundException,
-          NoSuchMethodException,
-          IllegalAccessException,
-          InvocationTargetException,
-          AxelorException;
+      throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
+          InvocationTargetException, AxelorException;
 
   /**
    * Check if the calculated value type is the same as the indicator type.

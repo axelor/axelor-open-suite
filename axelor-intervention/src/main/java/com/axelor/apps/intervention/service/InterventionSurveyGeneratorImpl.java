@@ -355,8 +355,7 @@ public class InterventionSurveyGeneratorImpl implements InterventionSurveyGenera
   protected void deleteOrphanInterventionRange(CriteriaQuery<InterventionRange> cr) {
     List<Long> interventionRangeIds =
         Optional.ofNullable(JPA.em().createQuery(cr).getResultList())
-            .orElse(Collections.emptyList())
-            .stream()
+            .orElse(Collections.emptyList()).stream()
             .map(InterventionRange::getId)
             .collect(Collectors.toList());
 

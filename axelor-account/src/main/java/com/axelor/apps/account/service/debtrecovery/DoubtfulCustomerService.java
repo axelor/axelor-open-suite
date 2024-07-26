@@ -461,16 +461,10 @@ public class DoubtfulCustomerService {
       query.append("AND self.move.functionalOriginSelect = :functionalOriginSale");
     }
 
-    return moveLineRepo
-        .all()
-        .filter(query.toString())
-        .bind("company", company)
-        .bind("date", date)
+    return moveLineRepo.all().filter(query.toString()).bind("company", company).bind("date", date)
         .bind("doubtfulCustomerAccount", doubtfulCustomerAccount)
         .bind("functionalOriginSale", MoveRepository.FUNCTIONAL_ORIGIN_SALE)
-        .bind("operationTypeSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-        .fetch()
-        .stream()
+        .bind("operationTypeSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE).fetch().stream()
         .map(MoveLine::getId)
         .collect(Collectors.toList());
   }

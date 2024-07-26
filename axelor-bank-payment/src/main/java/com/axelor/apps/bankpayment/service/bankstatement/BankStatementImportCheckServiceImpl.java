@@ -261,8 +261,7 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
                 bankStatementLineFetchService.findByBankStatementBankDetailsAndLineType(
                     bankStatement, bankDetails, BankStatementLineRepository.LINE_TYPE_MOVEMENT),
                 BankStatementLineRepository.LINE_TYPE_MOVEMENT)
-            .fetch()
-            .stream()
+            .fetch().stream()
             .map(
                 bankStatementLine ->
                     bankStatementLine.getCredit().subtract(bankStatementLine.getDebit()))

@@ -332,8 +332,7 @@ public final class BaseExceptionMessage {
       "Invalid Serial Number '%s' for '%s' barcode type.It must be only number or only alphabets" /*)*/;
   public static final String BARCODE_GENERATOR_9 = /*$$(*/ "Barcode format not supported" /*)*/;
 
-  public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;
-  ;
+  public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;;
   public static final String MAP_GOOGLE_MAPS_API_KEY_MISSING = /*$$(*/
       "Google Maps API key is missing in configuration." /*)*/;
 

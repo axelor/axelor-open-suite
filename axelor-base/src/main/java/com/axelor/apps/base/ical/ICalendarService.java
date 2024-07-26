@@ -663,14 +663,8 @@ public class ICalendarService {
       CalDavCalendarCollection collection,
       LocalDateTime startDate,
       LocalDateTime endDate)
-      throws IOException,
-          URISyntaxException,
-          ParseException,
-          ObjectStoreException,
-          ConstraintViolationException,
-          DavException,
-          ParserConfigurationException,
-          ParserException,
+      throws IOException, URISyntaxException, ParseException, ObjectStoreException,
+          ConstraintViolationException, DavException, ParserConfigurationException, ParserException,
           AxelorException {
 
     final boolean keepRemote = calendar.getKeepRemote() == Boolean.TRUE;

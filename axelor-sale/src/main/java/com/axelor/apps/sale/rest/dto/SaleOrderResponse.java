@@ -16,24 +16,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.service;
+package com.axelor.apps.sale.rest.dto;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.stock.db.StockMove;
-import java.math.BigDecimal;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.utils.api.ResponseStructure;
 
-public interface StockMoveUpdateService {
+public class SaleOrderResponse extends ResponseStructure {
 
-  /** @deprecated To update status of a stock move (API AOS) */
-  @Deprecated
-  void updateStatus(StockMove stockMove, Integer status) throws AxelorException;
+  protected Long saleOrderId;
+  protected Integer status;
 
-  /**
-   * @deprecated To update unit or qty of an internal stock move with one product, mostly for mobile
-   *     app (API AOS)
-   */
-  @Deprecated
-  void updateStockMoveMobility(StockMove stockMove, BigDecimal movedQty, Unit unit)
-      throws AxelorException;
+  public SaleOrderResponse(SaleOrder saleOrder) {
+    super(saleOrder.getVersion());
+    this.saleOrderId = saleOrder.getId();
+    this.status = saleOrder.getStatusSelect();
+  }
+
+  public Long getExpenseId() {
+    return saleOrderId;
+  }
 }

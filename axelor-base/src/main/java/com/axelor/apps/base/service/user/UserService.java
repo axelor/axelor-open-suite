@@ -140,12 +140,8 @@ public interface UserService {
    * @throws AxelorException
    */
   User changeUserPassword(User user, Map<String, Object> values)
-      throws ClassNotFoundException,
-          InstantiationException,
-          IllegalAccessException,
-          MessagingException,
-          IOException,
-          AxelorException;
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          MessagingException, IOException, AxelorException;
 
   /**
    * Processs changed user password.

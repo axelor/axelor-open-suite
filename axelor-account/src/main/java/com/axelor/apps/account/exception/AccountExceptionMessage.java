@@ -1232,8 +1232,7 @@ public final class AccountExceptionMessage {
       "Please set a reported balance date on fiscal year" /*)*/;
 
   public static final String ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY = /*$$(*/
-      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;
-  ;
+      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
 
   public static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
       "Invalid analytic move lines, some axes percentage values are different than 100%." /*)*/;

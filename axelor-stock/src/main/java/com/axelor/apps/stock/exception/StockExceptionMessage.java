@@ -246,8 +246,7 @@ public final class StockExceptionMessage {
   public static final String CANCEL_REASON_BAD_TYPE = /*$$(*/
       "The type of cancel reason doesn't match with stock move" /*)*/;
   public static final String STOCK_LOCATION_UNIT_NULL = /*$$(*/
-      "The unit is missing on a stock location line" /*)*/;
-  ;
+      "The unit is missing on a stock location line" /*)*/;;
   /*
    * Declaration of exchanges
    */
