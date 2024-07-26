@@ -50,7 +50,6 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGenerato
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -396,8 +395,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   public Invoice extendInternalReference(StockMove stockMove, Invoice invoice) {
 
     invoice.setInternalReference(
-        StringHelper.cutTooLongString(
-            stockMove.getStockMoveSeq() + ":" + invoice.getInternalReference()));
+        stockMove.getStockMoveSeq() + ":" + invoice.getInternalReference());
 
     return invoice;
   }
