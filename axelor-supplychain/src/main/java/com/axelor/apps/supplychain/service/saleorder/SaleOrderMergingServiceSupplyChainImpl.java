@@ -137,7 +137,6 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
   }
 
   protected AppSaleService appSaleService;
-  protected AppBaseService appBaseService;
   protected AppStockService appStockService;
   protected SaleOrderCreateSupplychainService saleOrderCreateSupplychainService;
 
@@ -157,9 +156,9 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
         saleOrderRepository,
         saleOrderComputeService,
         saleOrderLineRepository,
-        dmsService);
+        dmsService,
+        appBaseService);
     this.appSaleService = appSaleService;
-    this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.saleOrderCreateSupplychainService = saleOrderCreateSupplychainService;
   }
@@ -288,7 +287,7 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
             getCommonFields(result).getCommonTaxNumber(),
             internalNote,
             getCommonFields(result).getCommonFiscalPosition(),
-            null,
+            getCommonFields(result).getCommonTradingName(),
             getCommonFields(result).getCommonIncoterm(),
             getCommonFields(result).getCommonInvoicedPartner(),
             getCommonFields(result).getCommonDeliveredPartner());
