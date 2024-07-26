@@ -1,7 +1,8 @@
 plugins {
 	id 'com.axelor.app'
+	id "com.github.node-gradle.node"
 }
-
+apply from: "../libs.gradle"
 apply from: "../version.gradle"
 
 apply {
@@ -15,4 +16,10 @@ axelor {
 
 dependencies {
 	api project(":modules:axelor-crm")
+
+	implementation libs.commons_lang3
+	implementation libs.commons_collections4
+	testImplementation libs.mockito
+	implementation libs.swagger_jaxrs
+	implementation libs.jaxb_bind_api
 }
