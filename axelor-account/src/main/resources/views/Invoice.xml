@@ -1079,8 +1079,8 @@
     <panel-stack name="otherDetailsPanel" sidebar="true" hideIf="partner == null">
       <panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6"
         canCollapse="true" collapseIf="true">
-        <field name="internalReference"/>
-        <field name="externalReference"/>
+        <field name="internalReference" widget="string"/>
+        <field name="externalReference" widget="string"/>
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true"
         collapseIf="true">
@@ -1243,8 +1243,8 @@
 
     <panel-stack name="otherDetailsPanel" sidebar="true">
       <panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6">
-        <field name="internalReference"/>
-        <field name="externalReference"/>
+        <field name="internalReference" widget="string"/>
+        <field name="externalReference" widget="string"/>
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
         <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"/>
