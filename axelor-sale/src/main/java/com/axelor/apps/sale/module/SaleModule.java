@@ -54,8 +54,6 @@ import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.SaleOrderDomainServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderGroupService;
 import com.axelor.apps.sale.service.SaleOrderGroupServiceImpl;
-import com.axelor.apps.sale.service.SalePricingGenericServiceImpl;
-import com.axelor.apps.sale.service.SalePricingMetaServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.app.AppSaleServiceImpl;
 import com.axelor.apps.sale.service.config.SaleConfigService;
@@ -72,6 +70,9 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
+import com.axelor.apps.sale.service.observer.SaleOrderLineFireServiceImpl;
+import com.axelor.apps.sale.service.observer.SaleOrderLineObserver;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.OpportunityServiceSaleImpl;
@@ -107,6 +108,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineInitValueService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineInitValueServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineMultipleQtyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineMultipleQtyServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineOnChangeService;
@@ -115,8 +118,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePriceService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePriceServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLinePricingService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLinePricingServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
@@ -149,7 +150,11 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.sale.service.saleorder.attributes.SaleOrderAttrsService;
 import com.axelor.apps.sale.service.saleorder.attributes.SaleOrderAttrsServiceImpl;
-import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingObserver;
+import com.axelor.apps.sale.service.saleorder.pricing.PricingObserverSaleImpl;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingServiceImpl;
+import com.axelor.apps.sale.service.saleorder.pricing.SalePricingGenericServiceImpl;
+import com.axelor.apps.sale.service.saleorder.pricing.SalePricingMetaServiceImpl;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintServiceImpl;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
@@ -201,7 +206,7 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLineCalculationComboService.class)
         .to(SaleOrderLineCalculationComboServiceImpl.class);
     bind(SaleOrderLineCreateTaxLineService.class).to(SaleOrderLineCreateTaxLineServiceImpl.class);
-    bind(PricingObserverImpl.class).to(SaleOrderLinePricingObserver.class);
+    bind(PricingObserverImpl.class).to(PricingObserverSaleImpl.class);
     bind(PricingGenericServiceImpl.class).to(SalePricingGenericServiceImpl.class);
     bind(PricingMetaServiceImpl.class).to(SalePricingMetaServiceImpl.class);
     bind(PricingGroupServiceImpl.class).to(PricingGroupSaleServiceImpl.class);
@@ -232,5 +237,8 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLineViewService.class).to(SaleOrderLineViewServiceImpl.class);
     bind(SaleOrderLineDummyService.class).to(SaleOrderLineDummyServiceImpl.class);
     bind(SaleOrderBankDetailsService.class).to(SaleOrderBankDetailsServiceImpl.class);
+    bind(SaleOrderLineFireService.class).to(SaleOrderLineFireServiceImpl.class);
+    bind(SaleOrderLineObserver.class);
+    bind(SaleOrderLineInitValueService.class).to(SaleOrderLineInitValueServiceImpl.class);
   }
 }

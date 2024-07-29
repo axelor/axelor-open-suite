@@ -1,3 +1,0 @@
----
-title: "Stock move/Invoice: fixed unique invoice generation from stock move reversion."
-module: axelor-supplychain
