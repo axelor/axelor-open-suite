@@ -407,11 +407,6 @@ public abstract class InvoiceGenerator {
       List<InvoiceLineTax> invoiceLineTaxList = getUpdatedInvoiceLineTax(invoice);
       invoice.getInvoiceLineTaxList().clear();
       invoice.getInvoiceLineTaxList().addAll(invoiceLineTaxList);
-      /*if (!ObjectUtils.isEmpty(invoiceLineTaxList)){
-        for (InvoiceLineTax invoiceLineTax : invoiceLineTaxList) {
-          invoice.addInvoiceLineTaxListItem(invoiceLineTax);
-        }
-      }*/
     }
   }
 
