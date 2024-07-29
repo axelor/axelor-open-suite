@@ -72,6 +72,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
@@ -444,18 +445,16 @@ public class PartnerController {
   }
 
   public void setPositiveBalance(ActionRequest request, ActionResponse response) {
-    BigDecimal balance = (BigDecimal) request.getContext().get("balance");
-    User user = AuthUtils.getUser();
+    BigDecimal balance =
+        Optional.ofNullable(request.getContext().get("balance"))
+            .map(b -> new BigDecimal(b.toString()))
+            .orElse(BigDecimal.ZERO);
 
-    if (balance == null) {
-      balance = BigDecimal.ZERO;
-    }
+    Company company =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
 
-    Map<String, Object> map = new HashMap<>();
-    map.put(
+    response.setValue(
         "$positiveBalanceBtn",
-        Beans.get(CurrencyScaleService.class)
-            .getCompanyScaledValue(user.getActiveCompany(), balance.abs()));
-    response.setValues(map);
+        Beans.get(CurrencyScaleService.class).getCompanyScaledValue(company, balance.abs()));
   }
 }

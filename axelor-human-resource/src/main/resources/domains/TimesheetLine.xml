@@ -40,6 +40,9 @@
     <track>
       <field name="duration"/>
     </track>
+
+    <entity-listener class="com.axelor.apps.hr.db.repo.TimesheetLineListener"/>
+
   </entity>
 
 </domain-models>

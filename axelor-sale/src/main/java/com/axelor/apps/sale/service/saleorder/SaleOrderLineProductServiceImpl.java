@@ -17,7 +17,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -91,6 +90,9 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     saleOrderLineMap.putAll(
         saleOrderLineComplementaryProductService.fillComplementaryProductList(saleOrderLine));
     saleOrderLineMap.putAll(translateProductNameAndDescription(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        saleOrderLineComplementaryProductService.setIsComplementaryProductsUnhandledYet(
+            saleOrderLine));
 
     return saleOrderLineMap;
   }
@@ -98,14 +100,12 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
   protected Map<String, Object> translateProductNameAndDescription(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
-    String userLanguage = AuthUtils.getUser().getLanguage();
     Product product = saleOrderLine.getProduct();
     Partner partner = saleOrder.getClientPartner();
 
     if (product != null) {
       Map<String, String> translation =
-          internationalService.getProductDescriptionAndNameTranslation(
-              product, partner, userLanguage);
+          internationalService.getProductDescriptionAndNameTranslation(product, partner);
 
       String description = translation.get("description");
       String productName = translation.get("productName");

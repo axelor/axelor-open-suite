@@ -36,6 +36,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -408,6 +409,7 @@ public class InvoiceToolService {
   }
 
   protected static void setFinancialDiscount(Invoice copy) {
+    CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
     FinancialDiscount financialDiscount =
         Optional.of(copy).map(Invoice::getPartner).map(Partner::getFinancialDiscount).orElse(null);
     BigDecimal discountRate = BigDecimal.ZERO;
@@ -419,8 +421,11 @@ public class InvoiceToolService {
     if (financialDiscount != null) {
       discountRate = financialDiscount.getDiscountRate();
       financialDiscountTotalAmount =
-          discountRate.multiply(inTaxTotal).divide(BigDecimal.valueOf(100));
-      remainingAmountAfterFinDiscount = inTaxTotal.subtract(financialDiscountTotalAmount);
+          currencyScaleService.getCompanyScaledValue(
+              copy, discountRate.multiply(inTaxTotal).divide(BigDecimal.valueOf(100)));
+      remainingAmountAfterFinDiscount =
+          currencyScaleService.getCompanyScaledValue(
+              copy, inTaxTotal.subtract(financialDiscountTotalAmount));
       legalNotice = financialDiscount.getLegalNotice();
     }
     copy.setFinancialDiscount(financialDiscount);

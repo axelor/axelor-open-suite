@@ -131,10 +131,6 @@
 
   <!-- ACTION METHOD -->
 
-  <action-method name="action-supplychain-sale-order-method-get-stock-location">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
-  </action-method>
-
   <action-method name="action-supplychain-saleorder-onsave">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave"/>
   </action-method>

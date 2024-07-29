@@ -317,21 +317,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
     companyPaymentAmount =
         companyPaymentAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount());
     BigDecimal currencyRate =
-        this.computeCurrencyRate(
-            companyPaymentAmount,
-            paymentAmount,
-            invoice.getCurrency(),
-            invoicePayment.getCurrency(),
-            invoice.getCompany().getCurrency(),
-            invoice.getMove());
-    companyPaymentAmount =
-        invoiceTermService.adjustAmountInCompanyCurrency(
-            invoice.getInvoiceTermList(),
-            invoice.getCompanyInTaxTotalRemaining(),
-            companyPaymentAmount,
-            paymentAmount,
-            currencyRate,
-            company);
+        this.computeCurrencyRate(invoice, invoicePayment, companyPaymentAmount, paymentAmount);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
@@ -411,22 +397,25 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
   }
 
   protected BigDecimal computeCurrencyRate(
+      Invoice invoice,
+      InvoicePayment invoicePayment,
       BigDecimal companyPaymentAmount,
-      BigDecimal paymentAmount,
-      Currency invoiceCurrency,
-      Currency paymentCurrency,
-      Currency companyCurrency,
-      Move invoiceMove) {
+      BigDecimal paymentAmount)
+      throws AxelorException {
+    Currency invoiceCurrency = invoice.getCurrency();
+    Currency paymentCurrency = invoicePayment.getCurrency();
+    Currency companyCurrency = invoice.getCompanyCurrency();
+
     BigDecimal currencyRate =
         currencyService.computeScaledExchangeRate(companyPaymentAmount, paymentAmount);
 
     if (!paymentCurrency.equals(companyCurrency) && paymentCurrency.equals(invoiceCurrency)) {
-      return invoiceMove != null
-          ? invoiceMove.getMoveLineList().stream()
-              .map(MoveLine::getCurrencyRate)
-              .findAny()
-              .orElse(currencyRate)
-          : currencyRate;
+      return currencyService.getCurrencyRate(
+          invoice.getInvoiceDate(),
+          invoicePayment.getPaymentDate(),
+          paymentCurrency,
+          companyCurrency,
+          currencyRate);
     }
 
     return currencyRate;
