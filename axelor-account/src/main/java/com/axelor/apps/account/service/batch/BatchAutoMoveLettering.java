@@ -288,10 +288,14 @@ public class BatchAutoMoveLettering extends BatchStrategy {
       BigDecimal creditTotalRemaining)
       throws AxelorException {
 
+    findBatch();
+
     if (accountingBatch.getIsProposal()) {
       List<MoveLine> moveLineListToLetter = new ArrayList<>();
       moveLineListToLetter.add(debitMoveLine);
       moveLineListToLetter.add(creditMoveLine);
+      debitMoveLine.addBatchSetItem(batch);
+      creditMoveLine.addBatchSetItem(batch);
       reconcileGroupProposalService.createProposal(moveLineListToLetter);
       return;
     }
@@ -310,7 +314,6 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     LOG.debug("creditTotalRemaining : {}", creditTotalRemaining);
     BigDecimal nextDebitTotalRemaining = debitTotalRemaining.subtract(amount);
     BigDecimal nextCreditTotalRemaining = creditTotalRemaining.subtract(amount);
-    findBatch();
     accountingBatch = batch.getAccountingBatch();
     accountingBatch.setCompany(companyRepository.find(accountingBatch.getCompany().getId()));
     // Gestion du passage en 580
