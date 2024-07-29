@@ -60,6 +60,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineInitValueServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineOnChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServiceImpl;
@@ -181,11 +182,14 @@ import com.axelor.apps.supplychain.service.SaleOrderIntercoService;
 import com.axelor.apps.supplychain.service.SaleOrderIntercoServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineAnalyticService;
+import com.axelor.apps.supplychain.service.SaleOrderLineAnalyticServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineComputeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineCreateSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineDomainSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderLineDomainSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineDummySupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineInitValueSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineOnChangeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainServiceImpl;
@@ -435,5 +439,8 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderCheckServiceImpl.class).to(SaleOrderCheckSupplychainServiceImpl.class);
     bind(SaleOrderLineSupplychainObserver.class);
     bind(SaleOrderLineDummyServiceImpl.class).to(SaleOrderLineDummySupplychainServiceImpl.class);
+    bind(SaleOrderLineInitValueServiceImpl.class)
+        .to(SaleOrderLineInitValueSupplychainServiceImpl.class);
+    bind(SaleOrderLineAnalyticService.class).to(SaleOrderLineAnalyticServiceImpl.class);
   }
 }

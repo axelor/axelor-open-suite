@@ -154,7 +154,7 @@
 
   <form name="sale-order-line-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload"
-    onNew="action-group-sale-saleorderline-onnew" width="large">
+    onNew="action-sale-order-line-method-onnew" width="large">
     <panel name="productPanel" showIf="typeSelect > 0">
       <field name="productName" colSpan="9" title="Title"/>
       <field name="typeSelect" requiredIf="typeSelect != 0" colSpan="3"
@@ -442,7 +442,7 @@
   <form name="sale-order-line-template-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine"
     onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-template-attrs-hidden-fields-for-client"
-    onNew="action-group-sale-saleorderline-onnew" width="large">
+    onNew="action-sale-order-line-method-onnew" width="large">
     <panel name="product1Panel" showIf="typeSelect == 1">
       <field name="productName" colSpan="9" title="Title"/>
       <panel name="typeSelect1Panel" colSpan="3">
@@ -526,7 +526,7 @@
 
   <form name="sale-order-line-menu-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload"
-    onNew="action-group-sale-saleorderline-onnew" width="large">
+    onNew="action-sale-order-line-method-onnew" width="large">
     <panel name="mainPanel">
       <field name="saleOrder.clientPartner"/>
       <field name="saleOrder" grid-view="sale-order-grid" form-view="sale-order-form"/>
@@ -538,7 +538,7 @@
 
   <form name="sale-order-line-invoice-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload"
-    onNew="action-group-sale-saleorderline-onnew" width="large">
+    onNew="action-sale-order-line-method-onnew" width="large">
     <panel name="mainPanel">
       <field name="saleOrder" grid-view="sale-order-grid" form-view="sale-order-form"/>
     </panel>
@@ -591,15 +591,6 @@
 
   <!-- ACTION GROUPs -->
 
-  <action-group name="action-group-sale-saleorderline-onnew">
-    <action name="action-sale-order-line-method-onnew"/>
-    <action name="action-sale-order-line-record-new"/>
-    <action name="action-sale-order-line-record-project"/>
-    <action name="action-sale-order-line-attrs-fill-estimated-date"/>
-    <action name="action-sale-order-line-record-update-requested-reserved-qty-from-qty"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
-  </action-group>
-
   <action-group name="action-group-sale-saleorderline-onload">
     <action name="action-sale-order-line-method-onload"/>
     <action name="action-sale-order-line-method-check-qty"
@@ -623,8 +614,6 @@
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/> <!-- check -->
     <action name="action-sale-order-line-method-check-qty"
       if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/> <!-- check -->
-    <!-- name="action-sale-order-line-record-update-requested-reserved-qty-from-qty" if="__config__.app.isApp('supplychain')
-      &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/ --> <!-- to be removed -->
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-unit-onchange">
@@ -640,17 +629,6 @@
 
   <!-- ACTION RECORD -->
 
-  <action-record name="action-sale-order-line-record-new"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="qty" expr="eval: 1"/>
-  </action-record>
-
-  <action-record name="action-sale-order-line-record-project"
-    model="com.axelor.apps.sale.db.SaleOrderLine" if-module="axelor-business-project">
-    <field name="project" expr="eval: __parent__?.project"
-      if="__config__.app.isApp('business-project')"/>
-  </action-record>
-
   <action-record name="action-sale-order-line-record-reset-is-hide-unit-amounts"
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="isHideUnitAmounts" expr="eval: false"/>
@@ -661,11 +639,6 @@
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="discountAmount"
       expr="eval: discountTypeSelect == __repo__(PriceListLine).AMOUNT_TYPE_FIXED ? discountDerogation * price / 100 : discountDerogation"/>
-  </action-record>
-
-  <action-record name="action-sale-order-line-record-set-business-project"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="project" expr="eval: __parent__.project"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -755,21 +728,6 @@
   <action-attrs name="action-sale-order-line-template-attrs-hidden-fields-for-client">
     <attribute name="hidden" for="allPanelTab" if="eval: __user__.group?.isClient"
       expr="true"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-order-line-attrs-fill-estimated-date">
-    <attribute name="value" expr="eval: __parent__?.estimatedShippingDate"
-      for="estimatedShippingDate"
-      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; deliveryState &lt; 2"/>
-  </action-attrs>
-
-  <action-group name="action-sale-order-line-group-editable-onnew">
-    <action name="action-sale-order-line-method-onnew-editable"/>
-    <action name="action-sale-order-line-record-set-business-project"/>
-  </action-group>
-
-  <action-attrs name="action-sale-order-line-attrs-onnew-focus">
-    <attribute for="product" name="focus" expr="true"/>
   </action-attrs>
 
   <action-validate name="action-sale-order-line-validate-check-coefficient-config">

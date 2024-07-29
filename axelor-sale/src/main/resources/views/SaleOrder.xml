@@ -495,7 +495,7 @@
           field="saleOrderLineList" form-view="sale-order-line-form"
           grid-view="sale-order-line-editable-grid" orderBy="sequence"
           onChange="action-sale-order-method-on-line-change"
-          onNew="action-sale-order-line-group-editable-onnew"
+          onNew="action-sale-order-line-method-onnew-editable"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canMove="true" if="__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
