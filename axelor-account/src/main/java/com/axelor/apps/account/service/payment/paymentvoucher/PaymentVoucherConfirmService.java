@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
@@ -37,7 +36,6 @@ import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.FinancialDiscountService;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
@@ -47,6 +45,7 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -56,7 +55,6 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -64,7 +62,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -697,11 +694,11 @@ public class PaymentVoucherConfirmService {
     Account financialDiscountAccount =
         financialDiscountService.getFinancialDiscountAccount(company, isPurchase);
     String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
-    Map<Tax, Pair<BigDecimal, BigDecimal>> financialDiscountTaxMap =
+    Map<String, Pair<BigDecimal, BigDecimal>> financialDiscountTaxMap =
         moveLineFinancialDiscountService.getFinancialDiscountTaxMap(moveLineToPay);
-    Map<Tax, Integer> vatSystemTaxMap =
+    Map<String, Integer> vatSystemTaxMap =
         moveLineFinancialDiscountService.getVatSystemTaxMap(moveLineToPay.getMove());
-    Map<Tax, Account> accountTaxMap =
+    Map<String, Account> accountTaxMap =
         moveLineFinancialDiscountService.getAccountTaxMap(moveLineToPay.getMove());
 
     moveLineFinancialDiscountService.createFinancialDiscountMoveLine(
@@ -816,14 +813,15 @@ public class PaymentVoucherConfirmService {
 
     InvoiceTerm invoiceTerm = payVoucherElementToPay.getInvoiceTerm();
     BigDecimal ratio =
-        invoiceTerm
-            .getCompanyAmount()
-            .divide(
-                invoiceTerm.getAmount(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+        currencyService.computeScaledExchangeRate(
+            invoiceTerm.getCompanyAmount(), invoiceTerm.getAmount());
     BigDecimal companyAmountToPay =
         currencyScaleService.getCompanyScaledValue(
             payVoucherElementToPay.getPaymentVoucher(),
-            payVoucherElementToPay.getAmountToPayCurrency().multiply(ratio));
+            (payVoucherElementToPay
+                    .getAmountToPayCurrency()
+                    .add(payVoucherElementToPay.getFinancialDiscountTotalAmount()))
+                .multiply(ratio));
 
     BigDecimal currencyRate = invoiceTerm.getMoveLine().getCurrencyRate();
 

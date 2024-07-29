@@ -1,0 +1,167 @@
+"code";"parent_code";"name";"accountType.importId";"reconcileOk";"isRegulatoryAccount";"commonPosition";"compatibleAccounts";"useForPartnerBalance";"isTaxAuthorizedOnMoveLine";"isTaxRequiredOnMoveLine";"defaultTaxSet";"vatSystemSelect";"isRetrievedOnPaymentSession";"manageCutOffPeriod";"statusSelect"
+0;;"UK-COA";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"BAL";0;"Balance Sheet";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"AST";"BAL";"Assets";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"A000";"AST";"Fixed assets";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+100;"A000";"Impairment of fixed assets";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+"A010";"A000";"Intangible assets";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+10;"A010";"Software";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+11;"A010";"Software Depreciation";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+20;"A010";"Patents & Trademarks";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+21;"A010";"Patents & Trademarks Depreciation";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+"A020";"A000";"Tangible assets";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+30;"A020";"Fixtures and fittings";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+31;"A020";"Fixtures and fittings Depreciation";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+40;"A020";"Land and buildings";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+41;"A020";"Land and buildings Depreciation";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+50;"A020";"Motor vehicles";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+51;"A020";"Motor vehicles Depreciation";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+60;"A020";"Office equipment (inc computer equipment)";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+61;"A020";"Office equipment (inc computer equipment) Depreciation";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+70;"A020";"Plant and machinery";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+71;"A020";"Plant and machinery Depreciation";"GBR_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+"A030";"A000";"Investments";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"B000";"AST";"Current assets";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"B010";"B000";"Stocks & WIP";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+1001;"B010";"Stock";"GBR_COA120";"TRUE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+1002;"B010";"Work in Progress";"GBR_COA120";"FALSE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+1003;"B010";"Finished Goods";"GBR_COA120";"FALSE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+"B020";"B000";"Trade Debtors";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+1100;"B020";"Debtors Control Account";"GBR_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+1101;"B020";"Sundry Debtors";"GBR_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+1102;"B020";"Doubtful Debtors";"GBR_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+1103;"B020";"Debtors Exchange Account";"GBR_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+1104;"B020";"Debtors Unbilled";"GBR_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+1105;"B020";"Debtors Holdback";"GBR_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+1110;"B020";"Debtors factor account";"GBR_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+"B030";"B000";"Investment current assets";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"B040";"B000";"Cash at bank and in hand";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+1200;"B040";"Bank Accounts";"GBR_COA130";"TRUE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+1201;"B040";"Cash in national currency";"GBR_COA130";"FALSE";"FALSE";0;;;;;;0;"FALSE";"FALSE";1
+1240;"B040";"Bank in national currency";"GBR_COA130";"TRUE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+1250;"B040";"Cashier closure differences";"GBR_COA130";"TRUE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+"B050";"B000";"Prepayments";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+1112;"B050";"Company Credit Card";"GBR_COA140";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+1113;"B050";"Prepayments expenses";"GBR_COA140";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+1114;"B050";"Accrued income";"GBR_COA140";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+"C000";"BAL";"Liabilities";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"C010";"C000";"Current Liabilities";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+2100;"C010";"Creditors due within one year";"GBR_COA240";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+2101;"C010";"Creditors Control Account";"GBR_COA240";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+2102;"C010";"Sundry Creditors";"GBR_COA240";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+2105;"C010";"Creditors Holdback";"GBR_COA240";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+2200;"C010";"Other Creditors";"GBR_COA240";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+2201;"C010";"Sales Tax Control Account";"GBR_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+2202;"C010";"Purchase Tax Control Account";"GBR_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+2203;"C010";"Zero rated Sales tax exempted";"GBR_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+2204;"C010";"Zero rated Purchase tax exempted";"GBR_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+2204;"C010";"HMRC - VAT Account";"GBR_COA250";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+2210;"C010";"Manual Adjustments ﾖ VAT";"GBR_COA230";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+2220;"C010";"P.A.Y.E. & NI";"GBR_COA230";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+2230;"C010";"Net Wages";"GBR_COA230";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+"C020";"C000";"Pension Fund";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+2150;"C020";"Provisions for liabilities and charges";"GBR_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+"C030";"C000";"Bad debt provision";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+2109;"C030";"Accruals and deferred income";"GBR_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+2320;"C030";"Advance Payments Creditors";"GBR_COA240";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+"C040";"C000";"Non Current Liabilities";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+2440;"C040";"Corporation Tax";"GBR_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+2300;"C040";"Creditors due after one year";"GBR_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+2310;"C040";"Loans";"GBR_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+2330;"C040";"Hire Purchase";"GBR_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+"C050";"C000";"Accrued expenses and Income";"GBR_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+2550;"C050";"Accrued Taxes";"GBR_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+2560;"C050";"Accrued Income Taxes";"GBR_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+"E000";"BAL";"Stakeholder's Equity";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+3000;"E000";"Capital & Reserves";"GBR_COA210";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+3010;"E000";"Called up share capital";"GBR_COA210";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+3020;"E000";"Share premium account";"GBR_COA210";"FALSE";"FALSE";0;;;;;;0;"FALSE";"FALSE";1
+3030;"E000";"Retained Earnings";"GBR_COA210";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+3200;"E000";"Revaluation reserve";"GBR_COA210";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+"PNL";0;"Profit and loss account";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"F000";"PNL";"Income";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"F010";"F000";"Turnover/Revenue from Sales";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+4001;"F010";"Sales category 1";"GBR_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"UK_SRS_20";1;"FALSE";"TRUE";1
+4002;"F010";"Sales category 2";"GBR_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"UK_SRS_20";1;"FALSE";"TRUE";1
+4003;"F010";"Sales category 3";"GBR_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"UK_SRS_20";1;"FALSE";"TRUE";1
+4004;"F010";"Sales goods for export";"GBR_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"UK_ZRS";1;"FALSE";"TRUE";1
+"G000";"PNL";"Expenses";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"G010";"G000";"Cost of sale";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FLASE";1
+5001;"G010";"Cost of sale 1";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+5002;"G010";"Cost of sale 2";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+5003;"G010";"Cost of sale 3";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+"H000";"G000";"Other Expenses";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"H010";"H000";"Marketing Expenses";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+6000;"H010";"Advertising and promotions";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+6001;"H010";"Marketing";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+6002;"H010";"Exhibitions and events";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+"H020";"H000";"Distribution";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+6010;"H020";"Distribution costs";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+6020;"H020";"Distribution vehicles";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+6030;"H020";"Distribution salaries and wages";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+"I000";"H000";"PR";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"I010";"I000";"Administrative expenses";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+7000;"I010";"Salaries & wages";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7001;"I010";"Directors pension";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7010;"I010";"Directors remuneration";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7011;"I010";"Admin gross salaries";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7012;"I010";"Management gross salaries";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7020;"I010";"Employers NIC";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+"I020";"I000";"Legal and professional costs";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+7610;"I020";"Subcontractors payments";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7620;"I020";"Consultancy";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7601;"I020";"Audit";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7602;"I020";"Accounting";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+"I030";"I000";"Property Costs";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+7100;"I030";"Repairs and Maintenance";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7110;"I030";"Rent and rates";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7120;"I030";"Light";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+"I040";"I000";"Vehicle expenses";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+7300;"I040";"Car maintenance";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7301;"I040";"Car hire";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7302;"I040";"Car fuel";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+"I050";"I000";"Administration and office expenses";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+7502;"I050";"Pantry";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7503;"I050";"Telephone";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7504;"I050";"Internet & hosting";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7505;"I050";"Mobiles";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7506;"I050";"Stationery";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7507;"I050";"Office consumables";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7508;"I050";"Postage and Carriage";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7509;"I050";"Books";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7510;"I050";"Network costs";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7511;"I050";"Software expenses";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7512;"I050";"Other computer costs";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7513;"I050";"Recruitment fees";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+8500;"I050";"Travel and subsistence";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+"I060";"I000";"Other Charges";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+7700;"I060";"Sundry expenses";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7710;"I060";"Exchange gains/losses";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7850;"I060";"Other sundry expenses";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+7910;"I060";"Bad debts";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+8200;"I060";"Bank; credit card and other financial charges";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+8300;"I060";"Donations";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+8400;"I060";"Entertaining";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+8410;"I060";"Insurance";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+8420;"I060";"Asset Transfer value expense";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+"I070";"I000";"Depreciation expense";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"I071";"I070";"Depreciation expense";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+8000;"I071";"Tangible assets depn";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+8001;"I071";"Intangible assets depn";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+8002;"I071";"ExtraOrdinary depreciation- Fixed Assets";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+"I072";"I070";"Impairment expenses";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+8300;"I072";"Impairment of Tangible Assets";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+8310;"I072";"Impairment of Intangible Assets";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRT";1;"FALSE";"TRUE";1
+"J000";"F000";"Other operating income";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+8700;"J000";"Profits/Losses on disposals of assets";"GBR_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"UK_SRS_20";1;"FALSE";"TRUE";1
+8705;"J000";"Reversal Depreciation, Amortization of Tangible Asset";"GBR_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"UK_SRS_20";1;"FALSE";"TRUE";1
+8710;"J000";"Reversal Depreciation, Amortization of Intangible Asset";"GBR_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"UK_SRS_20";1;"FALSE";"TRUE";1
+4900;"J000";"Bank Interest received";"GBR_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"UK_SRS_20";1;"FALSE";"TRUE";1
+4910;"J000";"Other Income received";"GBR_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"UK_SRS_20";1;"FALSE";"TRUE";1
+4920;"J000";"Purchase discount income";"GBR_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"UK_SRS_20";1;"FALSE";"TRUE";1
+"M000";"PNL";"Tax on profit or loss on ordinary activities";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+8800;"M000";"Corporation tax expense";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRS_20";1;"FALSE";"TRUE";1
+8810;"M000";"Interest payable and similar charges";"GBR_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"UK_SRS_20";1;"FALSE";"TRUE";1
+"N000";0;"Special Accounts";"GBR_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+9000;"N000";"Opening Balance";"GBR_COA9000";"FALSE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+9010;"N000";"Closing Balance";"GBR_COA9000";"FALSE";"FALSE";2;;;;;;;;;

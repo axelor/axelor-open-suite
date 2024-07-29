@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Batch" sequential="true">
+
+    <!-- NOT DISPLAY -->
+    <many-to-one name="interventionBatch"
+      ref="com.axelor.apps.intervention.db.InterventionBatch"/>
+
+    <extra-code><![CDATA[
+      // Batch type select
+		public static final int BATCH_TYPE_INTERVENTION_BATCH = 1200;
+
+	 ]]></extra-code>
+
+  </entity>
+
+</domain-models>

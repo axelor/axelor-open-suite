@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -34,23 +34,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="Locale" id="3740">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -490,7 +473,7 @@ WHERE
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -914,11 +897,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
         Product.code AS product_code,
         StockLocationLineHistory.qty,
         Unit.label_to_printing as unit_code,
-        Product.sale_price,
-        Product.purchase_price,
+        StockLocationLineHistory.sale_price,
+        StockLocationLineHistory.purchase_price,
         Currency.code AS currency_code,
         ProductFamily.name as product_family,
-        (CASE WHEN Product.cost_type_select = 3 THEN StockLocationLineHistory.wap ELSE Product.cost_price END) as "cost_price",
+        StockLocationLineHistory.cost_price as "cost_price",
         StockLocationLineHistory.wap as "wap",
         Product.cost_type_select,
         StockConfig.is_display_sale_value_in_printing,
@@ -1295,11 +1278,11 @@ order by Product.code;]]></xml-property>
     Product.code AS product_code,
     SUM(StockLocationLineHistory.qty) as current_qty,
     Unit.label_to_printing as unit_code,
-    Product.sale_price,
-    Product.purchase_price,
+	AVG(StockLocationLineHistory.sale_price),
+	AVG(StockLocationLineHistory.purchase_price),
     Currency.code AS currency_code,
     ProductFamily.name as product_family,
-    (CASE WHEN Product.cost_type_select = 3 THEN AVG(StockLocationLineHistory.wap) ELSE Product.cost_price END) as "cost_price",
+    AVG(StockLocationLineHistory.cost_price) as "cost_price",
     AVG(StockLocationLineHistory.wap) as "wap",
     Product.cost_type_select,
     StockConfig.is_display_sale_value_in_printing,StockConfig.is_display_accounting_value_in_printing,

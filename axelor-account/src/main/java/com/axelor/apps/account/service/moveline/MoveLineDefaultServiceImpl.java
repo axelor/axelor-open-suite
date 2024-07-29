@@ -36,6 +36,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
@@ -97,8 +98,9 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
       }
     }
 
-    TaxLine taxLine = moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
-    moveLine.setTaxLine(taxLine);
+    Set<TaxLine> taxLineSet =
+        moveLoadDefaultConfigService.getTaxLineSet(move, moveLine, accountingAccount);
+    moveLine.setTaxLineSet(taxLineSet);
   }
 
   @Override

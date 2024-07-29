@@ -20,15 +20,21 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.UnitConversionRepository;
+import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
+import com.axelor.apps.hr.service.project.PlannedTimeValueService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
@@ -37,6 +43,8 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -58,7 +66,14 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       ProductRepository productRepo,
       EmployeeRepository employeeRepo,
       TimesheetLineRepository timesheetLineRepository,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppProjectService appProjectService,
+      ProjectConfigService projectConfigService,
+      PlannedTimeValueService plannedTimeValueService,
+      UnitConversionForProjectService unitConversionForProjectService,
+      UnitConversionRepository unitConversionRepository,
+      AppBusinessProjectService appBusinessProjectService,
+      ICalendarService iCalendarService,
+      ICalendarEventRepository iCalendarEventRepository) {
     super(
         planningTimeRepo,
         projectRepo,
@@ -67,7 +82,14 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
         holidayService,
         productRepo,
         employeeRepo,
-        timesheetLineRepository);
+        timesheetLineRepository,
+        appProjectService,
+        projectConfigService,
+        plannedTimeValueService,
+        iCalendarService,
+        iCalendarEventRepository,
+        unitConversionForProjectService,
+        unitConversionRepository);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 
@@ -80,7 +102,8 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       Employee employee,
       Product activity,
       BigDecimal dailyWorkHrs,
-      LocalDateTime taskEndDateTime)
+      LocalDateTime taskEndDateTime,
+      Site site)
       throws AxelorException {
     ProjectPlanningTime planningTime =
         super.createProjectPlanningTime(
@@ -91,7 +114,13 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
             employee,
             activity,
             dailyWorkHrs,
-            taskEndDateTime);
+            taskEndDateTime,
+            site);
+
+    if (!appBusinessProjectService.isApp("business-project")) {
+      return planningTime;
+    }
+
     if (projectTask != null) {
       Unit timeUnit = projectTask.getTimeUnit();
       if (Objects.isNull(timeUnit)) {
@@ -115,6 +144,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       planningTime.setPlannedTime(
           planningTime.getPlannedTime().divide(numberHoursADay, 2, RoundingMode.HALF_UP));
     }
+
     return planningTime;
   }
 }

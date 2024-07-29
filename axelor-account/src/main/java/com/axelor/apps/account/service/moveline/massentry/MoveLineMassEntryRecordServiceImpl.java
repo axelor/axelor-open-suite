@@ -38,6 +38,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -164,7 +165,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
       moveLine.setPartnerFullName(null);
       moveLine.setMovePartnerBankDetails(null);
       moveLine.setVatSystemSelect(null);
-      moveLine.setTaxLine(null);
+      moveLine.setTaxLineSet(Sets.newHashSet());
       moveLine.setAnalyticDistributionTemplate(null);
       moveLine.setCurrencyCode(null);
     } else {
@@ -175,7 +176,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
       moveLine.setPartnerFullName(newPartner.getFullName());
       moveLine.setMovePartnerBankDetails(newMoveLine.getMovePartnerBankDetails());
       moveLine.setVatSystemSelect(newMoveLine.getVatSystemSelect());
-      moveLine.setTaxLine(newMoveLine.getTaxLine());
+      moveLine.setTaxLineSet(newMoveLine.getTaxLineSet());
       moveLine.setAnalyticDistributionTemplate(newMoveLine.getAnalyticDistributionTemplate());
       moveLine.setCurrencyCode(newMoveLine.getCurrencyCode());
     }
@@ -227,7 +228,8 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
     } else {
       moveLine.setAccount(null);
     }
-    moveLine.setTaxLine(moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount));
+    moveLine.setTaxLineSet(
+        moveLoadDefaultConfigService.getTaxLineSet(move, moveLine, accountingAccount));
   }
 
   @Override
@@ -278,7 +280,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   @Override
   public MoveLineMassEntry setInputAction(MoveLineMassEntry moveLine, Move move) {
     if (moveLine.getInputAction() == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_MOVE) {
-      moveLine = moveLineMassEntryService.createMoveLineMassEntry();
+      moveLine = moveLineMassEntryService.createMoveLineMassEntry(move.getCompany());
       moveLineToolService.setDecimals(moveLine, move);
       this.setNextTemporaryMoveNumber(moveLine, move);
 

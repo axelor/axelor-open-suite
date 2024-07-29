@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="registration-number-template-grid" title="Registration number templates"
+    model="com.axelor.apps.base.db.RegistrationNumberTemplate">
+    <field name="name"/>
+    <field name="validationMethodSelect"/>
+  </grid>
+
+  <form name="registration-number-template-form" title="Registration number templates"
+    model="com.axelor.apps.base.db.RegistrationNumberTemplate"
+    onSave="action-registration-number-template-method-check-parameter-legality-on-change">
+    <panel name="mainPanel" title="Main Template">
+      <panel showTitle="false" colSpan="12">
+        <field name="name"/>
+        <field name="isRequiredForCompanies"/>
+        <field name="titleToDisplay"/>
+        <field name="requiredSize"/>
+        <field name="validationMethodSelect"/>
+        <field name="useTaxNbr" title="Use tax number"/>
+      </panel>
+      <panel title="Short registration number" colSpan="12">
+        <field name="useSiren" colSpan="12"
+          onChange="action-registration-number-template-method-check-parameter-legality-on-change"/>
+        <field name="sirenPos" showIf="useSiren"
+          onChange="action-registration-number-template-method-check-parameter-legality-on-change"/>
+        <field name="sirenLength" showIf="useSiren"
+          onChange="action-registration-number-template-method-check-parameter-legality-on-change"/>
+      </panel>
+      <panel title="Internal classification number" colSpan="12">
+        <field name="useNic" colSpan="12"
+          onChange="action-registration-number-template-method-check-parameter-legality-on-change"/>
+        <field name="nicPos" showIf="useNic"
+          onChange="action-registration-number-template-method-check-parameter-legality-on-change"/>
+        <field name="nicLength" showIf="useNic"
+          onChange="action-registration-number-template-method-check-parameter-legality-on-change"/>
+      </panel>
+    </panel>
+  </form>
+
+  <action-method
+    name="action-registration-number-template-method-check-parameter-legality-on-change">
+    <call class="com.axelor.apps.base.web.RegistrationNumberTemplateController"
+      method="checkParameters"/>
+  </action-method>
+
+</object-views>

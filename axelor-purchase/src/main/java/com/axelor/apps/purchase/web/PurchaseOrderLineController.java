@@ -37,7 +37,6 @@ import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -47,7 +46,9 @@ import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class PurchaseOrderLineController {
@@ -113,16 +114,18 @@ public class PurchaseOrderLineController {
 
     response.setValue("taxEquiv", null);
 
+    Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
     if (purchaseOrder == null
         || purchaseOrderLine == null
         || purchaseOrder.getSupplierPartner() == null
-        || purchaseOrderLine.getTaxLine() == null) return;
+        || CollectionUtils.isEmpty(taxLineSet)) return;
 
+    FiscalPositionService fiscalPositionService = Beans.get(FiscalPositionService.class);
+    TaxService taxService = Beans.get(TaxService.class);
     response.setValue(
         "taxEquiv",
-        Beans.get(FiscalPositionService.class)
-            .getTaxEquiv(
-                purchaseOrder.getFiscalPosition(), purchaseOrderLine.getTaxLine().getTax()));
+        fiscalPositionService.getTaxEquiv(
+            purchaseOrder.getFiscalPosition(), taxService.getTaxSet(taxLineSet)));
   }
 
   public void updateProductInformation(ActionRequest request, ActionResponse response) {
@@ -146,9 +149,9 @@ public class PurchaseOrderLineController {
       BigDecimal price =
           purchaseOrderLine.getProduct().getInAti()
               ? purchaseOrderLineService.getInTaxUnitPrice(
-                  purchaseOrder, purchaseOrderLine, purchaseOrderLine.getTaxLine())
+                  purchaseOrder, purchaseOrderLine, purchaseOrderLine.getTaxLineSet())
               : purchaseOrderLineService.getExTaxUnitPrice(
-                  purchaseOrder, purchaseOrderLine, purchaseOrderLine.getTaxLine());
+                  purchaseOrder, purchaseOrderLine, purchaseOrderLine.getTaxLineSet());
 
       Map<String, Object> catalogInfo =
           purchaseOrderLineService.updateInfoFromCatalog(purchaseOrder, purchaseOrderLine);
@@ -191,7 +194,7 @@ public class PurchaseOrderLineController {
               "discountAmount",
               taxService.convertUnitPrice(
                   purchaseOrderLine.getProduct().getInAti(),
-                  purchaseOrderLine.getTaxLine(),
+                  purchaseOrderLine.getTaxLineSet(),
                   (BigDecimal) discounts.get("discountAmount"),
                   appBaseService.getNbDecimalDigitForUnitPrice()));
         } else {
@@ -218,14 +221,14 @@ public class PurchaseOrderLineController {
 
     try {
       BigDecimal inTaxPrice = purchaseOrderLine.getInTaxPrice();
-      TaxLine taxLine = purchaseOrderLine.getTaxLine();
+      Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
 
       response.setValue(
           "price",
           Beans.get(TaxService.class)
               .convertUnitPrice(
                   true,
-                  taxLine,
+                  taxLineSet,
                   inTaxPrice,
                   Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
@@ -246,14 +249,14 @@ public class PurchaseOrderLineController {
 
     try {
       BigDecimal exTaxPrice = purchaseOrderLine.getPrice();
-      TaxLine taxLine = purchaseOrderLine.getTaxLine();
+      Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
 
       response.setValue(
           "inTaxPrice",
           Beans.get(TaxService.class)
               .convertUnitPrice(
                   false,
-                  taxLine,
+                  taxLineSet,
                   exTaxPrice,
                   Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
@@ -273,7 +276,7 @@ public class PurchaseOrderLineController {
         || purchaseOrderLine.getProduct() == null
         || purchaseOrderLine.getPrice() == null
         || purchaseOrderLine.getInTaxPrice() == null
-        || purchaseOrderLine.getTaxLine() == null) {
+        || CollectionUtils.isEmpty(purchaseOrderLine.getTaxLineSet())) {
       return;
     }
 
@@ -282,7 +285,7 @@ public class PurchaseOrderLineController {
       BigDecimal inTaxPrice =
           price.add(
               price.multiply(
-                  purchaseOrderLine.getTaxLine().getValue().divide(new BigDecimal(100))));
+                  Beans.get(TaxService.class).getTotalTaxRate(purchaseOrderLine.getTaxLineSet())));
 
       response.setValue("inTaxPrice", inTaxPrice);
 
@@ -430,7 +433,6 @@ public class PurchaseOrderLineController {
       PurchaseOrder parent = this.getPurchaseOrder(context);
       Partner partner = parent.getSupplierPartner();
       Company company = parent.getCompany();
-      String userLanguage = AuthUtils.getUser().getLanguage();
       Product product = purchaseOrderLine.getProduct();
 
       SupplierCatalog supplierCatalog =
@@ -438,8 +440,7 @@ public class PurchaseOrderLineController {
 
       if (supplierCatalog == null && product != null) {
         Map<String, String> translation =
-            internationalService.getProductDescriptionAndNameTranslation(
-                product, partner, userLanguage);
+            internationalService.getProductDescriptionAndNameTranslation(product, partner);
 
         String description = translation.get("description");
         String productName = translation.get("productName");

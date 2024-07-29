@@ -19,10 +19,10 @@
 package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -292,36 +292,37 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
   }
 
   @Override
-  public BirtTemplate getAnnualReportBirtTemplate(Employee employee) throws AxelorException {
+  public PrintingTemplate getAnnualReportPrintingTemplate(Employee employee)
+      throws AxelorException {
     Company company = getUser(employee).getActiveCompany();
-    BirtTemplate employeeAnnualReportBirtTemplate = null;
+    PrintingTemplate employeeAnnualReportPrintTemplate = null;
     if (ObjectUtils.notEmpty(company)) {
       HRConfig hrConfig = hrConfigService.getHRConfig(company);
-      employeeAnnualReportBirtTemplate = hrConfig.getEmployeeAnnualReportBirtTemplate();
+      employeeAnnualReportPrintTemplate = hrConfig.getEmployeeAnnualReportPrintTemplate();
     }
 
-    if (ObjectUtils.isEmpty(employeeAnnualReportBirtTemplate)) {
+    if (ObjectUtils.isEmpty(employeeAnnualReportPrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
-    return employeeAnnualReportBirtTemplate;
+    return employeeAnnualReportPrintTemplate;
   }
 
   @Override
-  public BirtTemplate getEmpPhoneBookBirtTemplate() throws AxelorException {
+  public PrintingTemplate getEmpPhoneBookPrintingTemplate() throws AxelorException {
     Company company = getUser().getActiveCompany();
-    BirtTemplate employeePhoneBookBirtTemplate = null;
+    PrintingTemplate employeePhoneBookPrintTemplate = null;
     if (ObjectUtils.notEmpty(company)) {
       HRConfig hrConfig = hrConfigService.getHRConfig(company);
-      employeePhoneBookBirtTemplate = hrConfig.getEmployeePhoneBookBirtTemplate();
+      employeePhoneBookPrintTemplate = hrConfig.getEmployeePhoneBookPrintTemplate();
     }
 
-    if (ObjectUtils.isEmpty(employeePhoneBookBirtTemplate)) {
+    if (ObjectUtils.isEmpty(employeePhoneBookPrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
-    return employeePhoneBookBirtTemplate;
+    return employeePhoneBookPrintTemplate;
   }
 }

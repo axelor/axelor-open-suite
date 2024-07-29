@@ -19,12 +19,13 @@
 package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.quality.db.QIDecision;
 import com.axelor.apps.quality.db.QIDecisionDistribution;
 import com.axelor.apps.quality.db.QIResolution;
@@ -61,7 +62,7 @@ public class QIResolutionServiceImpl implements QIResolutionService {
   protected QIDecisionDistributionRepository qiDecisionDistributionRepository;
   protected TemplateMessageService templateMessageService;
   protected MessageService messageService;
-  protected BirtTemplateService birtTemplateService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
   protected SequenceService sequenceService;
   protected MetaFiles metaFiles;
   protected QualityConfigService qualityConfigService;
@@ -71,14 +72,14 @@ public class QIResolutionServiceImpl implements QIResolutionService {
       QIDecisionDistributionRepository qiDecisionDistributionRepository,
       TemplateMessageService templateMessageService,
       MessageService messageService,
-      BirtTemplateService birtTemplateService,
+      PrintingTemplatePrintService printingTemplatePrintService,
       SequenceService sequenceService,
       MetaFiles metaFiles,
       QualityConfigService qualityConfigService) {
     this.qiDecisionDistributionRepository = qiDecisionDistributionRepository;
     this.templateMessageService = templateMessageService;
     this.messageService = messageService;
-    this.birtTemplateService = birtTemplateService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
     this.sequenceService = sequenceService;
     this.metaFiles = metaFiles;
     this.qualityConfigService = qualityConfigService;
@@ -177,16 +178,19 @@ public class QIResolutionServiceImpl implements QIResolutionService {
   protected DMSFile getGeneratedFile(Company company, QIDecisionDistribution qiDecisionDistribution)
       throws AxelorException, FileNotFoundException, IOException {
     QualityConfig qualityConfig = qualityConfigService.getQualityConfig(company);
-    BirtTemplate qiDecisionDistributionBirtTemplate =
-        qualityConfig.getQiDecisionDistributionBirtTemplate();
+    PrintingTemplate qiDecisionDistributionPrintTemplate =
+        qualityConfig.getQiDecisionDistributionPrintTemplate();
 
-    if (qiDecisionDistributionBirtTemplate == null) {
+    if (qiDecisionDistributionPrintTemplate == null) {
       return null;
     }
     String fileName = getFileName(qiDecisionDistribution);
     File file =
-        birtTemplateService.generateBirtTemplateFile(
-            qiDecisionDistributionBirtTemplate, qiDecisionDistribution, fileName);
+        printingTemplatePrintService.getPrintFile(
+            qiDecisionDistributionPrintTemplate,
+            new PrintingGenFactoryContext(qiDecisionDistribution),
+            fileName);
+
     DMSFile generatedFile = null;
     if (file != null) {
       try (InputStream is = new FileInputStream(file)) {

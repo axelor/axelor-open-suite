@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.move.control;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentConditionService;
@@ -59,6 +60,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected InvoiceTermService invoiceTermService;
   protected PaymentConditionService paymentConditionService;
+  protected FixedAssetRepository fixedAssetRepository;
 
   @Inject
   public MoveCheckServiceImpl(
@@ -71,7 +73,8 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       JournalCheckPartnerTypeService journalCheckPartnerTypeService,
       MoveInvoiceTermService moveInvoiceTermService,
       PaymentConditionService paymentConditionService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      FixedAssetRepository fixedAssetRepository) {
     this.moveRepository = moveRepository;
     this.moveToolService = moveToolService;
     this.periodService = periodService;
@@ -82,6 +85,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.paymentConditionService = paymentConditionService;
     this.invoiceTermService = invoiceTermService;
+    this.fixedAssetRepository = fixedAssetRepository;
   }
 
   @Override
@@ -274,5 +278,16 @@ public class MoveCheckServiceImpl implements MoveCheckService {
     }
 
     return null;
+  }
+
+  @Override
+  public boolean isRelatedToFixedAsset(Move move) {
+    return move.getId() != null
+        && fixedAssetRepository
+                .all()
+                .filter("self.purchaseAccountMove.id = :id")
+                .bind("id", move.getId())
+                .count()
+            > 0;
   }
 }

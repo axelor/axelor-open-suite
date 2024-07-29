@@ -32,7 +32,7 @@ public interface MoveLineGroupService {
   Map<String, Map<String, Object>> getOnNewAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException;
 
-  Map<String, Object> getOnLoadValuesMap(MoveLine moveLine, Move move);
+  Map<String, Object> getOnLoadValuesMap(MoveLine moveLine, Move move) throws AxelorException;
 
   Map<String, Map<String, Object>> getOnLoadAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException;
@@ -102,4 +102,7 @@ public interface MoveLineGroupService {
       throws AxelorException;
 
   void computeDateOnChangeValues(MoveLine moveLine, Move move) throws AxelorException;
+
+  Map<String, Object> getTaxLineOnChangesValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException;
 }

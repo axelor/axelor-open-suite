@@ -21,16 +21,14 @@ package com.axelor.apps.account.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.ReconcileGroupService;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupProposalService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -69,7 +67,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
   protected MoveLineControlService moveLineControlService;
   protected PaymentService paymentService;
   protected ReconcileService reconcileService;
-  protected ReconcileGroupService reconcileGroupService;
+  protected ReconcileGroupProposalService reconcileGroupProposalService;
 
   protected AccountingBatch accountingBatch;
   protected Set<MoveLine> moveLineReconciledSet;
@@ -82,7 +80,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
       MoveLineControlService moveLineControlService,
       PaymentService paymentService,
       ReconcileService reconcileService,
-      ReconcileGroupService reconcileGroupService) {
+      ReconcileGroupProposalService reconcileGroupProposalService) {
     super();
     this.accountingBatchRepository = accountingBatchRepository;
     this.moveLineRepository = moveLineRepository;
@@ -90,7 +88,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     this.moveLineControlService = moveLineControlService;
     this.paymentService = paymentService;
     this.reconcileService = reconcileService;
-    this.reconcileGroupService = reconcileGroupService;
+    this.reconcileGroupProposalService = reconcileGroupProposalService;
   }
 
   @Override
@@ -290,8 +288,16 @@ public class BatchAutoMoveLettering extends BatchStrategy {
       BigDecimal creditTotalRemaining)
       throws AxelorException {
 
+    if (accountingBatch.getIsProposal()) {
+      List<MoveLine> moveLineListToLetter = new ArrayList<>();
+      moveLineListToLetter.add(debitMoveLine);
+      moveLineListToLetter.add(creditMoveLine);
+      reconcileGroupProposalService.createProposal(moveLineListToLetter);
+      return;
+    }
+
     BigDecimal amount;
-    Reconcile reconcile = null;
+    Reconcile reconcile;
     if (debitMoveLine.getMaxAmountToReconcile() != null
         && debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0) {
       amount = debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining());
@@ -317,31 +323,13 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     }
     // End gestion du passage en 580
 
-    if (reconcile != null) {
-      ReconcileGroup reconcileGroup =
-          reconcileGroupService.findOrMergeGroup(reconcile).orElse(null);
-      if (accountingBatch.getIsProposal()) {
+    reconcileService.confirmReconcile(reconcile, true, true);
+    debitMoveLine.addBatchSetItem(batch);
+    creditMoveLine.addBatchSetItem(batch);
+    moveLineRepository.save(debitMoveLine);
+    moveLineRepository.save(creditMoveLine);
 
-        if (reconcileGroup == null) {
-          reconcileGroup = reconcileGroupService.createReconcileGroup(accountingBatch.getCompany());
-          reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_PROPOSAL);
-        }
-        reconcileGroup.setIsProposal(true);
-
-        List<Reconcile> reconcileList = reconcileGroupService.getReconcileList(reconcileGroup);
-        reconcileList.add(reconcile);
-        reconcileGroupService.addToReconcileGroup(reconcileGroup, reconcile);
-      } else {
-        reconcileService.confirmReconcile(reconcile, true, true);
-        reconcileGroupService.removeDraftReconciles(reconcileGroup);
-      }
-      debitMoveLine.addBatchSetItem(batch);
-      creditMoveLine.addBatchSetItem(batch);
-      moveLineRepository.save(debitMoveLine);
-      moveLineRepository.save(creditMoveLine);
-
-      LOG.debug("Reconcile : {}", reconcile);
-    }
+    LOG.debug("Reconcile : {}", reconcile);
   }
 
   public Query<MoveLine> getMoveLinesQuery() {

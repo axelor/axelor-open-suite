@@ -26,7 +26,7 @@
 "axelor-base";"PriceList";"sale-price-list-form";"hideDiscount";"Box to be checked in order to automatically hide the discount lines from the printings of documents related to an order to which the price list applies (Quotations/Invoices) "
 "axelor-base";"PriceListLine";"price-list-line-form";"product";"Enables to select a product to which specific pricing applies (non-mandatory if a product category is selected) "
 "axelor-base";"PriceListLine";"price-list-line-form";"productCategory";"Enables to select a product category to which specific pricing applies (non-mandatory if a product is selected). "
-"axelor-base";"PriceListLine";"price-list-line-form";"typeSelect";"Enables to choose a type of specific pricing, whether a discount, a surcharge, or a replacement price. "
+"axelor-base";"PriceListLine";"price-list-line-form";"typeSelect";"The calculation method type allows you to select from the following actions :\nDiscount : to reduce a price fixedly or as a percentage.\nIncrease : to increase a price fixedly or as a percentage.\nReplace : to define another fixed price that would have been agreed with the tier."
 "axelor-base";"PriceListLine";"price-list-line-form";"amountTypeSelect";"In the case of a discount or surcharge, enables to specify whether this price change is fixed or is a percentage of the initial price. A third choice, ""No discount"", is available. "
 "axelor-base";"PriceListLine";"price-list-line-form";"amount";"Fixed amount or percentage of the initial price for modification of the applied price "
 "axelor-base";"PriceListLine";"price-list-line-form";"minQty";"Enables to configure the minimum product quantity necessary in order to activate the price list. "

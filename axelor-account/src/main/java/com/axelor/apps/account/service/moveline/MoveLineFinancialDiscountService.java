@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -54,9 +53,9 @@ public interface MoveLineFinancialDiscountService {
   int createFinancialDiscountMoveLine(
       Move move,
       Partner partner,
-      Map<Tax, Pair<BigDecimal, BigDecimal>> taxMap,
-      Map<Tax, Integer> vatSystemTaxMap,
-      Map<Tax, Account> accountTaxMap,
+      Map<String, Pair<BigDecimal, BigDecimal>> taxMap,
+      Map<String, Integer> vatSystemTaxMap,
+      Map<String, Account> accountTaxMap,
       Account financialDiscountAccount,
       String origin,
       String description,
@@ -68,9 +67,9 @@ public interface MoveLineFinancialDiscountService {
       boolean financialDiscountVat)
       throws AxelorException;
 
-  Map<Tax, Account> getAccountTaxMap(Move move);
+  Map<String, Account> getAccountTaxMap(Move move);
 
-  Map<Tax, Integer> getVatSystemTaxMap(Move move);
+  Map<String, Integer> getVatSystemTaxMap(Move move);
 
-  Map<Tax, Pair<BigDecimal, BigDecimal>> getFinancialDiscountTaxMap(MoveLine moveLine);
+  Map<String, Pair<BigDecimal, BigDecimal>> getFinancialDiscountTaxMap(MoveLine moveLine);
 }

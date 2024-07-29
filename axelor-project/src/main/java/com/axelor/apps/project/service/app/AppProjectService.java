@@ -18,10 +18,16 @@
  */
 package com.axelor.apps.project.service.app;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.studio.db.AppProject;
 
 public interface AppProjectService extends AppBaseService {
 
   public AppProject getAppProject();
+
+  void generateProjectConfigurations();
+
+  ProjectStatus getCompletedProjectStatus() throws AxelorException;
 }

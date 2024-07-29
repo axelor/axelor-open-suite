@@ -18,11 +18,11 @@
  */
 package com.axelor.apps.hr.service;
 
+import com.axelor.apps.base.db.File;
+import com.axelor.apps.base.db.repo.FileRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.EmployeeFile;
 import com.axelor.apps.hr.db.MedicalVisit;
-import com.axelor.apps.hr.db.repo.EmployeeFileRepository;
 import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
@@ -36,19 +36,19 @@ import org.apache.commons.collections.CollectionUtils;
 public class MedicalVisitServiceImpl implements MedicalVisitService {
 
   protected AppBaseService appBaseService;
-  protected EmployeeFileRepository employeeFileRepository;
+  protected FileRepository employeeFileRepository;
 
   @Inject
   public MedicalVisitServiceImpl(
-      AppBaseService appBaseService, EmployeeFileRepository employeeFileRepository) {
+      AppBaseService appBaseService, FileRepository employeeFileRepository) {
     this.appBaseService = appBaseService;
     this.employeeFileRepository = employeeFileRepository;
   }
 
   @Transactional
   @Override
-  public List<EmployeeFile> addToEmployeeFiles(Employee employee) {
-    List<EmployeeFile> employeeFileList = employee.getEmployeeFileList();
+  public List<File> addToEmployeeFiles(Employee employee) {
+    List<File> employeeFileList = employee.getEmployeeFileList();
     List<MedicalVisit> medicalVisitList = employee.getMedicalVisitList();
     if (CollectionUtils.isEmpty(medicalVisitList)) {
       return Collections.emptyList();
@@ -72,11 +72,12 @@ public class MedicalVisitServiceImpl implements MedicalVisitService {
     return I18n.get(ITranslation.MEDICAL_VISIT) + " - " + medicalVisit.getVisitReason().getName();
   }
 
-  protected EmployeeFile createEmployeeFile(MedicalVisit medicalVisit, MetaFile metaFile) {
-    EmployeeFile employeeFile = new EmployeeFile();
+  protected File createEmployeeFile(MedicalVisit medicalVisit, MetaFile metaFile) {
+    File employeeFile = new File();
     employeeFile.setMetaFile(metaFile);
     employeeFile.setFileDescription(getMedicalVisitSubject(medicalVisit));
     employeeFile.setRecordDate(appBaseService.getTodayDate(null));
+    employeeFile.setFileTypeSelect(FileRepository.EMPLOYEE_FILE_TYPE);
     return employeeFile;
   }
 }

@@ -1,7 +1,0 @@
----
-title: "Move Line: fixed impossible to create a move line when partner have financial discount"
-module: axelor-account
-developer: |
-  On MoveLineCurrencyService we update computeFinancialDiscount method signature.
-  From : `void computeFinancialDiscount(MoveLine moveLine)`
-  To : `void computeFinancialDiscount(MoveLine moveLine, Move move)`

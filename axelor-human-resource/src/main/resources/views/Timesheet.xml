@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
     canNew="false" groupBy="employee" orderBy="employee,-fromDate">
@@ -91,9 +91,6 @@
     width="large" onNew="action-group-timesheet-onnew" onLoad="action-timesheet-group-onload"
     canNew="false" onSave="action-timesheet-group-onsave" canCopy="false">
     <menubar>
-      <menu name="timesheetToolsMenu" title="Reports" icon="fa-files-o">
-        <item name="printTimesheetItem" title="Print" action="save,action-method-print-birt"/>
-      </menu>
       <menu title="Tools" icon="fa-wrench">
         <item title="Lines Generation Wizard" showIf="statusSelect == 1"
           action="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generate-lines-panel-hidden-false"/>

@@ -1,6 +1,0 @@
----
-title: "Expense API: improve requests permissions."
-module: axelor-human-resource
-developer: |
-  If you use the AOS API for Expense, please check that they still work with your current permission, as we fixed permission check to be more logic.
-  For example, the check is done on expense line instead of expense for updating expense line. Also the API now correctly checks the permission with the record, meaning that conditional permission will now correctly be applied.

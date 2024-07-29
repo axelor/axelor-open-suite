@@ -34,7 +34,6 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingCutOffServiceImpl;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -47,6 +46,7 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -60,6 +60,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -72,6 +73,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -82,6 +84,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -94,6 +97,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
   protected PurchaseOrderRepository purchaseOrderRepository;
   protected StockMoveLineServiceSupplychain stockMoveLineService;
   protected BankDetailsService bankDetailsService;
+  protected TaxService taxService;
   protected int counter = 0;
 
   @Inject
@@ -124,7 +128,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       TaxAccountToolService taxAccountToolService,
       BankDetailsService bankDetailsService,
       MoveLineRepository moveLineRepository,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      TaxService taxService) {
 
     super(
         moveCreateService,
@@ -154,6 +159,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.stockMoveLineService = stockMoveLineService;
     this.bankDetailsService = bankDetailsService;
+    this.taxService = taxService;
   }
 
   @Override
@@ -314,8 +320,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     Account partnerAccount = null;
 
     Currency currency = null;
-    if (stockMove.getSaleOrder() != null) {
-      SaleOrder saleOrder = stockMove.getSaleOrder();
+    if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
+      SaleOrder saleOrder = stockMove.getSaleOrderSet().iterator().next();
       currency = saleOrder.getCurrency();
       if (partner == null) {
         partner = saleOrder.getClientPartner();
@@ -328,8 +334,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
             I18n.get(SupplychainExceptionMessage.MISSING_FORECASTED_INV_CUST_ACCOUNT));
       }
     }
-    if (stockMove.getPurchaseOrder() != null) {
-      PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
+    if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
+      PurchaseOrder purchaseOrder = stockMove.getPurchaseOrderSet().iterator().next();
       currency = purchaseOrder.getCurrency();
       if (partner == null) {
         partner = purchaseOrder.getSupplierPartner();
@@ -521,16 +527,17 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
 
     move.addMoveLineListItem(moveLine);
     if (recoveredTax) {
-      TaxLine taxLine =
-          accountManagementAccountService.getTaxLine(
+      Set<TaxLine> taxLineSet =
+          accountManagementAccountService.getTaxLineSet(
               originDate, product, company, fiscalPosition, isPurchase);
 
-      if (taxLine != null) {
-        moveLine.setTaxLine(taxLine);
-        moveLine.setTaxRate(taxLine.getValue());
-        moveLine.setTaxCode(taxLine.getTax().getCode());
+      if (CollectionUtils.isNotEmpty(taxLineSet)) {
+        moveLine.setTaxLineSet(taxLineSet);
+        BigDecimal taxRate = taxService.getTotalTaxRateInPercentage(taxLineSet);
+        moveLine.setTaxRate(taxRate);
+        moveLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
 
-        if (taxLine.getValue().signum() != 0) {
+        if (taxRate.signum() != 0) {
           generateTaxMoveLine(move, moveLine, origin, isPurchase, moveDescription);
         }
       }

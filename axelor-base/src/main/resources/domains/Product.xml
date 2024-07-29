@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -63,12 +63,6 @@
     <date name="startDate" title="Product launch Date" initParam="true"/>
     <date name="endDate" title="Product pulled off market Date" initParam="true"/>
 
-    <boolean name="hasWarranty" title="Warranty"/>
-    <boolean name="isPerishable" title="Perishable"/>
-    <integer name="warrantyNbrOfMonths" title="Warranty length (in months)"/>
-    <integer name="perishableNbrOfMonths" title="Time before expiry (in months)"/>
-    <boolean name="checkExpirationDateAtStockMoveRealization"/>
-
     <many-to-one name="productVariantConfig"
       ref="com.axelor.apps.base.db.ProductVariantConfig"/>
     <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
@@ -108,11 +102,11 @@
 
     <many-to-one name="lengthUnit" ref="com.axelor.apps.base.db.Unit"
       title="Unit of length"/>
-    <decimal name="length" title="Length" default="0"/>
-    <decimal name="width" title="Width" default="0"/>
-    <decimal name="height" title="Height" default="0"/>
-    <decimal name="diameter" title="Diameter"/>
-    <decimal name="articleVolume" title="Article volume"/>
+    <decimal name="length" title="Length" default="0" scale="3" precision="20"/>
+    <decimal name="width" title="Width" default="0" scale="3" precision="20"/>
+    <decimal name="height" title="Height" default="0" scale="3" precision="20"/>
+    <decimal name="diameter" title="Diameter" scale="3" precision="20"/>
+    <decimal name="articleVolume" title="Article volume" scale="10" precision="20"/>
     <decimal name="economicManufOrderQty" title="Economic manuf. qty" precision="20"
       scale="10"/>
 
@@ -157,6 +151,7 @@
 				public static final int SALE_SUPPLY_FROM_STOCK = 1;
 				public static final int SALE_SUPPLY_PURCHASE = 2;
 				public static final int SALE_SUPPLY_PRODUCE = 3;
+				public static final int SALE_SUPPLY_FROM_STOCK_AND_PRODUCE = 4;
 
 				public static final String PROCUREMENT_METHOD_BUY = "buy";
 				public static final String PROCUREMENT_METHOD_PRODUCE = "produce";
@@ -194,10 +189,6 @@
       <field name="costPrice"/>
       <field name="managPriceCoef"/>
       <field name="costTypeSelect"/>
-      <field name="hasWarranty"/>
-      <field name="warrantyNbrOfMonths"/>
-      <field name="isPerishable"/>
-      <field name="perishableNbrOfMonths"/>
       <message if="true" on="UPDATE">Product updated</message>
     </track>
   </entity>

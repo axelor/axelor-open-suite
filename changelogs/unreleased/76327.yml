@@ -1,2 +1,0 @@
-title: "Payment session: fixed issue when validating the payment session causing amount being updated and not corresponding to the value of the amount being validated and equal to the bank order generated."
-module: axelor-account

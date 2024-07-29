@@ -1,3 +1,0 @@
----
-title: "Stock location: fixed NPE while printing report from grid view without selecting any location."
-module: axelor-stock

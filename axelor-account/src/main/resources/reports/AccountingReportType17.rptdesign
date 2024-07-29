@@ -80,23 +80,6 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="4050">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">true</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3818">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -165,7 +148,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -783,6 +766,12 @@ where AccountingReport.id = ?
                     <text-property name="heading">analytic_distribution_template</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">transferred_reason_select</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">transferred_reason_select</text-property>
+                    <text-property name="heading">transferred_reason_select</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">account_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">account_name</text-property>
@@ -944,76 +933,81 @@ where AccountingReport.id = ?
                     </structure>
                     <structure>
                         <property name="position">12</property>
+                        <property name="name">transferred_reason_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
                         <property name="name">account_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">account_code</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">date_from</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">16</property>
                         <property name="name">date_to</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">17</property>
                         <property name="name">subtotal_by_analytic_distribution</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">18</property>
                         <property name="name">analytic_distribution_template_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">19</property>
                         <property name="name">number_of_decimals</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">20</property>
                         <property name="name">original_value</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">21</property>
                         <property name="name">acquisition</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">21</property>
+                        <property name="position">22</property>
                         <property name="name">asset_disposal</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">22</property>
+                        <property name="position">23</property>
                         <property name="name">year_end_value</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">23</property>
+                        <property name="position">24</property>
                         <property name="name">year_start_value</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">24</property>
+                        <property name="position">25</property>
                         <property name="name">depreciation_charge</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">25</property>
+                        <property name="position">26</property>
                         <property name="name">year_end_value2</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">26</property>
+                        <property name="position">27</property>
                         <property name="name">accounting_value</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1100,104 +1094,111 @@ where AccountingReport.id = ?
                 </structure>
                 <structure>
                     <property name="position">12</property>
+                    <property name="name">transferred_reason_select</property>
+                    <property name="nativeName">transferred_reason_select</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
                     <property name="name">account_name</property>
                     <property name="nativeName">account_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">14</property>
                     <property name="name">account_code</property>
                     <property name="nativeName">account_code</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">15</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">16</property>
                     <property name="name">date_to</property>
                     <property name="nativeName">date_to</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">17</property>
                     <property name="name">subtotal_by_analytic_distribution</property>
                     <property name="nativeName">subtotal_by_analytic_distribution</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">18</property>
                     <property name="name">analytic_distribution_template_name</property>
                     <property name="nativeName">analytic_distribution_template_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">19</property>
                     <property name="name">number_of_decimals</property>
                     <property name="nativeName">number_of_decimals</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">20</property>
                     <property name="name">original_value</property>
                     <property name="nativeName">original_value</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">20</property>
+                    <property name="position">21</property>
                     <property name="name">acquisition</property>
                     <property name="nativeName">acquisition</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">21</property>
+                    <property name="position">22</property>
                     <property name="name">asset_disposal</property>
                     <property name="nativeName">asset_disposal</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">22</property>
+                    <property name="position">23</property>
                     <property name="name">year_end_value</property>
                     <property name="nativeName">year_end_value</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">23</property>
+                    <property name="position">24</property>
                     <property name="name">year_start_value</property>
                     <property name="nativeName">year_start_value</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">24</property>
+                    <property name="position">25</property>
                     <property name="name">depreciation_charge</property>
                     <property name="nativeName">depreciation_charge</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">25</property>
+                    <property name="position">26</property>
                     <property name="name">year_end_value2</property>
                     <property name="nativeName">year_end_value2</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">26</property>
+                    <property name="position">27</property>
                     <property name="name">accounting_value</property>
                     <property name="nativeName">accounting_value</property>
                     <property name="dataType">decimal</property>
@@ -1216,6 +1217,7 @@ where AccountingReport.id = ?
 	Asset.disposal_value AS disposal_value,
 	Asset.disposal_date AS disposal_date,
 	Asset.analytic_distribution_template AS analytic_distribution_template,
+	Asset.transferred_reason_select,
 	CONCAT(Account.code, ' ', Account.name) AS account_name,
 	Account.code AS account_code,
 	AccountingReport.date_from AS date_from,
@@ -1223,7 +1225,7 @@ where AccountingReport.id = ?
 	AccountingReport.subtotal_by_analytic_distribution AS subtotal_by_analytic_distribution,
 	AnalyticDistributionTemplate.name AS analytic_distribution_template_name,
 	Currency.number_of_decimals,
-	CASE 
+	CASE
 		WHEN acquisition_date <= date_from 
 		THEN Asset.gross_value 
 		ELSE 0
@@ -1235,10 +1237,15 @@ where AccountingReport.id = ?
 	END AS acquisition,
 	CASE 
 		WHEN disposal_date >= date_from AND disposal_date <= date_to
-		THEN disposal_value
+		THEN Asset.gross_value
 		ELSE 0
 	END AS asset_disposal,
-	Asset.gross_value - disposal_value AS year_end_value,
+	Asset.gross_value - 
+	 (CASE 
+		WHEN disposal_date >= date_from AND disposal_date <= date_to
+		THEN Asset.gross_value
+		ELSE 0
+	END) AS year_end_value,
 	COALESCE(SUM(
 		CASE 
 			WHEN 
@@ -1268,8 +1275,7 @@ where AccountingReport.id = ?
    			THEN depreciation 
    		END
    	) AS year_end_value2,
-    MIN(assetLine.accounting_value)
-    as accounting_value
+     COALESCE(MIN(assetLine.accounting_value), Asset.gross_value - disposal_value) as accounting_value
 	
 FROM public.account_accounting_report as AccountingReport
 
@@ -1286,7 +1292,10 @@ LEFT JOIN public.account_accounting_report_account_set AS AccountSet
 ON AccountSet.account_accounting_report = AccountingReport.id
 
 LEFT JOIN public.account_fixed_asset_line AS AssetLine
-ON AssetLine.fixed_asset = Asset.id OR AssetLine.fiscal_fixed_asset = Asset.id OR AssetLine.ifrs_fixed_asset = Asset.id
+ON ((AssetLine.fixed_asset = Asset.id OR AssetLine.fiscal_fixed_asset = Asset.id OR AssetLine.ifrs_fixed_asset = Asset.id)
+	AND AssetLine.type_select = AccountingReport.fixed_asset_line_type_select
+	AND (AccountingReport.date_to IS NULL OR AssetLine.depreciation_date <= AccountingReport.date_to)
+	AND AssetLine.status_select = 2)
 
 LEFT JOIN public.base_company AS Company ON (Company.id = Asset.company)
 
@@ -1305,11 +1314,9 @@ WHERE
    	AND Asset.company = AccountingReport.company
    	AND (AccountingReport.analytic_distribution_template IS NULL OR Asset.analytic_distribution_template = AccountingReport.analytic_distribution_template)
    	AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
-   	AND AssetLine.type_select = AccountingReport.fixed_asset_line_type_select
-   	AND (AccountingReport.date_to IS NULL OR AssetLine.depreciation_date <= AccountingReport.date_to)
    	
 GROUP BY Asset.id, Account.code, Account.name, AccountingReport.date_from, AccountingReport.date_to, 
-		 AccountingReport.subtotal_by_analytic_distribution, AnalyticDistributionTemplate.name, Currency.number_of_decimals 
+		 AccountingReport.subtotal_by_analytic_distribution, AnalyticDistributionTemplate.name, Currency.number_of_decimals
    	
 ORDER BY Account.code
 
@@ -2653,6 +2660,12 @@ this.height=row["logo_height"];]]></method>
                                 <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
+                            <structure>
+                                <property name="name">transferred_reason_select</property>
+                                <text-property name="displayName">transferred_reason_select</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["transferred_reason_select"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="5553"/>
@@ -3030,15 +3043,56 @@ this.height=row["logo_height"];]]></method>
                                         <property name="fontFamily">sans-serif</property>
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
+                                        <property name="color">green</property>
                                         <property name="marginTop">2pt</property>
                                         <property name="marginBottom">2pt</property>
                                         <property name="textAlign">center</property>
+                                        <property name="display">inline</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
                                                     <value type="javascript">'AccountingReportType17.asset_disposal'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                    <label id="5967">
+                                        <property name="display">inline</property>
+                                        <text-property name="text">/</text-property>
+                                    </label>
+                                    <text id="5966">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="color">blue</property>
+                                        <property name="marginTop">2pt</property>
+                                        <property name="marginBottom">2pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="display">inline</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'AccountingReportType17.asset_scrap'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3639,6 +3693,12 @@ else {
                                     <text id="5928">
                                         <property name="fontSize">9pt</property>
                                         <property name="textAlign">right</property>
+                                        <method name="onRender"><![CDATA[if(row["transferred_reason_select"] == 1){
+ this.getStyle().color = "blue";
+}
+else if (row["transferred_reason_select"] != 0){
+ this.getStyle().color = "green";
+}]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["asset_disposal"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                     </text>
@@ -3800,6 +3860,50 @@ else {
                             </row>
                         </footer>
                     </table>
+                </cell>
+            </row>
+        </grid>
+        <grid id="5924">
+            <property name="dataSet">LineDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">row.__rownum != -1</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">reference</property>
+                    <text-property name="displayName">reference</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["reference"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="5925"/>
+            <row id="5926">
+                <cell id="5927">
+                    <text id="5928">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReport.noEntry'
+</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
             </row>
         </grid>

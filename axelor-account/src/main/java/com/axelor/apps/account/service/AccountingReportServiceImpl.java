@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -74,28 +75,22 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AccountingReportRepository accountingReportRepo;
-
   protected AppAccountService appAccountService;
-
   protected AppAccountService appBaseService;
-
   protected AccountConfigService accountConfigService;
-
   protected AccountingReportMoveLineService accountingReportMoveLineService;
-
   protected AccountingReportDas2Service accountingReportDas2Service;
-
   protected AccountingReportPrintService accountingReportPrintService;
-
   protected MoveLineExportService moveLineExportService;
-
   protected InvoicePaymentRepository invoicePaymentRepository;
-
-  protected String query = "";
-
   protected AccountRepository accountRepo;
   protected MoveToolService moveToolService;
+  protected MoveLineRepository moveLineRepo;
+  protected TaxPaymentMoveLineRepository taxPaymentMoveLineRepo;
+  protected FixedAssetRepository fixedAssetRepo;
+  protected AnalyticMoveLineRepository analyticMoveLineRepo;
 
+  protected String query = "";
   protected List<Object> params = new ArrayList<>();
   protected int paramNumber = 1;
 
@@ -113,7 +108,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       MoveLineExportService moveLineExportService,
       AccountRepository accountRepo,
       InvoicePaymentRepository invoicePaymentRepository,
-      MoveToolService moveToolService) {
+      MoveToolService moveToolService,
+      MoveLineRepository moveLineRepo,
+      TaxPaymentMoveLineRepository taxPaymentMoveLineRepo,
+      FixedAssetRepository fixedAssetRepo,
+      AnalyticMoveLineRepository analyticMoveLineRepo) {
     this.accountingReportRepo = accountingReportRepo;
     this.appAccountService = appAccountService;
     this.appBaseService = appBaseService;
@@ -125,6 +124,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.accountRepo = accountRepo;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.moveToolService = moveToolService;
+    this.moveLineRepo = moveLineRepo;
+    this.taxPaymentMoveLineRepo = taxPaymentMoveLineRepo;
+    this.fixedAssetRepo = fixedAssetRepo;
+    this.analyticMoveLineRepo = analyticMoveLineRepo;
   }
 
   @Override
@@ -370,7 +373,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (this.compareReportType(
         accountingReport, AccountingReportRepository.REPORT_VAT_STATEMENT_INVOICE)) {
-      this.addParams("self.taxLine is not null");
+      this.addParams("self.taxLineSet is not empty");
 
       this.addParams("self.vatSystemSelect = ?%d", MoveLineRepository.VAT_CASH_PAYMENTS);
     }
@@ -629,68 +632,77 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
   }
 
-  public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException {
+  protected int getMinLine(AccountingReport accountingReport) throws AxelorException {
+    if (accountingReport.getReportType().getTypeSelect()
+        == AccountingReportRepository.REPORT_CUSTOM_STATE) {
+      AccountConfig accountConfig;
+      int minLine = Integer.MAX_VALUE;
 
-    AccountConfig accountConfig =
-        accountConfigService.getAccountConfig(accountingReport.getCompany());
-    Integer lineMinBeforeLongReportGenerationMessageNumber =
-        accountConfig.getLineMinBeforeLongReportGenerationMessageNumber();
-    if (lineMinBeforeLongReportGenerationMessageNumber != null
-        && lineMinBeforeLongReportGenerationMessageNumber > 0) {
-      if (accountingReport.getReportType() == null) {
-        return false;
+      for (Company company : accountingReport.getCompanySet()) {
+        accountConfig = accountConfigService.getAccountConfig(company);
+
+        minLine =
+            Math.min(minLine, accountConfig.getLineMinBeforeLongReportGenerationMessageNumber());
       }
-      Integer typeSelect = accountingReport.getReportType().getTypeSelect();
-      long count = 0;
-      if (typeSelect > 0 && typeSelect <= AccountingReportRepository.REPORT_GENERAL_LEDGER2) {
-        count =
-            Beans.get(MoveLineRepository.class)
-                .all()
-                .filter(this.getMoveLineList(accountingReport))
-                .count();
-      } else if (typeSelect == AccountingReportRepository.REPORT_VAT_STATEMENT_RECEIVED) {
-        count =
-            Beans.get(TaxPaymentMoveLineRepository.class)
+
+      return minLine;
+    } else {
+      AccountConfig accountConfig =
+          accountConfigService.getAccountConfig(accountingReport.getCompany());
+
+      return accountConfig.getLineMinBeforeLongReportGenerationMessageNumber();
+    }
+  }
+
+  protected long getLineCount(AccountingReport accountingReport) throws AxelorException {
+    int typeSelect = accountingReport.getReportType().getTypeSelect();
+
+    if (typeSelect > 0 && typeSelect <= AccountingReportRepository.REPORT_GENERAL_LEDGER2) {
+      return moveLineRepo.all().filter(this.getMoveLineList(accountingReport)).count();
+    }
+
+    switch (typeSelect) {
+      case AccountingReportRepository.REPORT_VAT_STATEMENT_RECEIVED:
+        return taxPaymentMoveLineRepo
                 .all()
                 .filter(this.getTaxPaymentMoveLineList(accountingReport))
-                .count();
-        count +=
-            invoicePaymentRepository
+                .count()
+            + invoicePaymentRepository
                 .all()
                 .filter(this.getPaymentNotLetteredMoveLineList(accountingReport))
                 .count();
-
-      } else if (typeSelect == AccountingReportRepository.REPORT_ACQUISITIONS) {
-        count =
-            Beans.get(FixedAssetRepository.class)
-                .all()
-                .filter(this.getFixedAssetList(accountingReport))
-                .count();
-        count +=
-            JPA.em()
+      case AccountingReportRepository.REPORT_ACQUISITIONS:
+        return fixedAssetRepo.all().filter(this.getFixedAssetList(accountingReport)).count()
+            + JPA.em()
                 .createQuery(
                     "Select invoiceLine FROM InvoiceLine invoiceLine LEFT JOIN FixedAsset fixedAsset on fixedAsset.invoiceLine = invoiceLine.id WHERE invoiceLine.fixedAssets = true and fixedAsset.invoiceLine is null ")
                 .getResultList()
                 .size();
-      } else if (typeSelect == AccountingReportRepository.REPORT_GROSS_VALUES_AND_DEPRECIATION) {
-        count =
-            Beans.get(FixedAssetRepository.class)
-                .all()
-                .filter(this.getFixedAssetList(accountingReport))
-                .count();
-      } else if (typeSelect == AccountingReportRepository.REPORT_ANALYTIC_BALANCE) {
-        count =
-            Beans.get(AnalyticMoveLineRepository.class)
-                .all()
-                .filter(this.getAnalyticMoveLineList(accountingReport))
-                .count();
-      } else {
-        return false;
-      }
-      return count > lineMinBeforeLongReportGenerationMessageNumber;
-    } else {
+      case AccountingReportRepository.REPORT_GROSS_VALUES_AND_DEPRECIATION:
+        return fixedAssetRepo.all().filter(this.getFixedAssetList(accountingReport)).count();
+      case AccountingReportRepository.REPORT_ANALYTIC_BALANCE:
+        return analyticMoveLineRepo
+            .all()
+            .filter(this.getAnalyticMoveLineList(accountingReport))
+            .count();
+      default:
+        return -1;
+    }
+  }
+
+  @Override
+  public boolean areThereTooManyLines(AccountingReport accountingReport) throws AxelorException {
+    if (accountingReport == null || accountingReport.getReportType() == null) {
       return false;
     }
+
+    int lineMinBeforeLongReportGenerationMessageNumber = this.getMinLine(accountingReport);
+
+    if (lineMinBeforeLongReportGenerationMessageNumber <= 0) {
+      return false;
+    }
+
+    return this.getLineCount(accountingReport) > lineMinBeforeLongReportGenerationMessageNumber;
   }
 
   protected String getAnalyticMoveLineList(AccountingReport accountingReport) {

@@ -1,3 +1,0 @@
----
-title: "Move line: select default account from partner configuration only for first line of the move instead of all lines."
-module: axelor-account

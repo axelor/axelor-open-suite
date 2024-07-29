@@ -26,6 +26,7 @@ import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.db.repo.TrainingRegisterRepository;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;
 import com.axelor.apps.talent.exception.TalentExceptionMessage;
+import com.axelor.apps.talent.service.TrainingRegisterComputeRatingService;
 import com.axelor.apps.talent.service.TrainingRegisterService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -74,7 +75,8 @@ public class TrainingRegisterController {
   public void updateOldRating(ActionRequest request, ActionResponse response) {
 
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
-    TrainingRegisterService trainingRegisterService = Beans.get(TrainingRegisterService.class);
+    TrainingRegisterComputeRatingService trainingRegisterComputeRatingService =
+        Beans.get(TrainingRegisterComputeRatingService.class);
 
     Training trainingSaved = null;
     TrainingSession trainingSessionSaved = null;
@@ -87,13 +89,15 @@ public class TrainingRegisterController {
 
     if (trainingSaved != null
         && trainingSaved.getId().equals(trainingRegister.getTraining().getId())) {
-      trainingRegisterService.updateTrainingRating(trainingSaved, trainingRegister.getId());
+      trainingRegisterComputeRatingService.updateTrainingRating(
+          trainingSaved, trainingRegister.getId());
     }
 
     if (trainingSessionSaved != null) {
       if (trainingRegister.getTrainingSession() == null
           || trainingRegister.getTrainingSession().getId().equals(trainingSessionSaved.getId())) {
-        trainingRegisterService.updateSessionRating(trainingSessionSaved, trainingRegister.getId());
+        trainingRegisterComputeRatingService.updateSessionRating(
+            trainingSessionSaved, trainingRegister.getId());
       }
     }
   }

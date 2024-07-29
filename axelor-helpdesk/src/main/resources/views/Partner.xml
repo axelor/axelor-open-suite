@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+
+  <form name="partner-form" id="helpdesk-partner-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="//panel[@name='supplierPanel']">
+      <insert position="after">
+        <panel-dashlet action="action-ticket-dashlet-all-partner-tickets"
+          title="Tickets" colSpan="12" canSearch="true" if="__config__.app.isApp('helpdesk')"
+          if-module="axelor-helpdesk"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-view name="action-ticket-dashlet-all-partner-tickets"
+    model="com.axelor.apps.helpdesk.db.Ticket" title="Tickets">
+    <view type="grid" name="ticket-grid"/>
+    <view type="form" name="ticket-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.customerPartner = :_partner</domain>
+    <context name="_partner" expr="eval: __self__"/>
+  </action-view>
+
+</object-views>

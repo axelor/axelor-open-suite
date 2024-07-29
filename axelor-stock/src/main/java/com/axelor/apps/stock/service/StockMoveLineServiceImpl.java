@@ -325,16 +325,17 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
 
-      this.splitStockMoveLine(
-          stockMoveLine,
-          minQty,
-          trackingNumberService.getTrackingNumber(
-              product,
-              qtyByTracking,
-              stockMove.getCompany(),
-              stockMove.getEstimatedDate(),
-              stockMove.getOrigin(),
-              supplier));
+      StockMoveLine newStockMoveLine =
+          this.splitStockMoveLine(
+              stockMoveLine,
+              minQty,
+              trackingNumberService.getTrackingNumber(
+                  product,
+                  stockMove.getCompany(),
+                  stockMove.getEstimatedDate(),
+                  stockMove.getOrigin(),
+                  supplier));
+      this.fillOriginTrackingNumber(newStockMoveLine);
 
       generateTrakingNumberCounter++;
 
@@ -348,11 +349,22 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setTrackingNumber(
           trackingNumberService.getTrackingNumber(
               product,
-              qtyByTracking,
               stockMove.getCompany(),
               stockMove.getEstimatedDate(),
               stockMove.getOrigin(),
               supplier));
+      fillOriginTrackingNumber(stockMoveLine);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void fillOriginTrackingNumber(StockMoveLine stockMoveLine) {
+    TrackingNumber trackingNumber = stockMoveLine.getTrackingNumber();
+    if (trackingNumber != null) {
+      trackingNumber.setOriginMoveTypeSelect(0);
+      trackingNumber.setOriginStockMoveLine(stockMoveLine);
+
+      trackingNumberRepo.save(trackingNumber);
     }
   }
 
@@ -631,7 +643,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       StockMoveLine stockMoveLine,
       LocalDate date,
       String origin,
-      int toStatus) {
+      int toStatus)
+      throws AxelorException {
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
             stockLocation, stockMoveLine.getProduct());
@@ -820,22 +833,17 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
       TrackingNumber trackingNumber = stockMoveLine.getTrackingNumber();
-
-      if (trackingNumber == null) {
+      if (trackingNumber == null
+          || !trackingNumber.getCheckExpirationDateAtStockMoveRealization()) {
         continue;
       }
-
       Product product = trackingNumber.getProduct();
 
-      if (product == null || !product.getCheckExpirationDateAtStockMoveRealization()) {
-        continue;
-      }
-
-      if (product.getHasWarranty()
+      if (trackingNumber.getHasWarranty()
               && trackingNumber
                   .getWarrantyExpirationDate()
                   .isBefore(appBaseService.getTodayDate(stockMove.getCompany()))
-          || product.getIsPerishable()
+          || trackingNumber.getIsPerishable()
               && trackingNumber
                   .getPerishableExpirationDate()
                   .isBefore(appBaseService.getTodayDate(stockMove.getCompany()))) {
@@ -1275,8 +1283,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     Address fromAddress = stockMoveToolService.getFromAddress(stockMove, stockMoveLine);
     Address toAddress = stockMoveToolService.getToAddress(stockMove, stockMoveLine);
 
-    Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
-    Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;
+    Country fromCountry = fromAddress != null ? fromAddress.getCountry() : null;
+    Country toCountry = toAddress != null ? toAddress.getCountry() : null;
 
     return fromCountry != null
         && toCountry != null
@@ -1317,11 +1325,22 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       if (trackingNumber == null) {
         trackingNumber = new TrackingNumber();
-        trackingNumber.setCounter(counter);
         trackingNumber.setTrackingNumberSeq(trackingNumberItem.get("trackingNumberSeq").toString());
+        boolean hasWarranty =
+            trackingNumberItem.get("hasWarranty") != null
+                && Boolean.parseBoolean(trackingNumberItem.get("hasWarranty").toString());
+        trackingNumber.setHasWarranty(hasWarranty);
         if (trackingNumberItem.get("warrantyExpirationDate") != null) {
           trackingNumber.setWarrantyExpirationDate(
               LocalDate.parse(trackingNumberItem.get("warrantyExpirationDate").toString()));
+        }
+        boolean isPerishable =
+            trackingNumberItem.get("isPerishable") != null
+                && Boolean.parseBoolean(trackingNumberItem.get("isPerishable").toString());
+        trackingNumber.setIsPerishable(isPerishable);
+        if (trackingNumberItem.get("perishableExpirationDate") != null) {
+          trackingNumber.setPerishableExpirationDate(
+              LocalDate.parse(trackingNumberItem.get("perishableExpirationDate").toString()));
         }
         if (trackingNumberItem.get("origin") != null) {
           trackingNumber.setOrigin(trackingNumberItem.get("origin").toString());

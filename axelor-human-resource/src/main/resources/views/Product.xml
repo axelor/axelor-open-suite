@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="product-expense-grid" title="Expense types"
     model="com.axelor.apps.base.db.Product" orderBy="name">
@@ -24,8 +24,8 @@
     <toolbar>
       <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
         onClick="save,action-send-by-email-with-template"/>
-      <button name="showProductSheetBtn" title="Product sheet" icon="fa-print"
-        onClick="save,action-product-validate-user-active-company,action-method-print-birt"/>
+      <button name="printBtn" title="Product sheet" icon="fa-print"
+        onClick="save,action-product-validate-user-active-company,action-method-print-template"/>
     </toolbar>
     <panel name="mainPanel">
       <field name="name" required="true" showTitle="false" css="label-bold bold"
@@ -47,8 +47,9 @@
         <field name="expense" hidden="true"/>
       </panel>
       <panel name="categorizationPanel" title="Categorization" colSpan="12">
-        <field name="productFamily" colSpan="12" form-view="product-family-form"
+        <field name="productFamily" colSpan="6" form-view="product-family-form"
           grid-view="product-family-grid"/>
+        <field name="exportCode" colSpan="6"/>
       </panel>
     </panel>
     <panel-tabs name="productSpecificAttrsPanelTab" title="Product specific attributes">
@@ -74,12 +75,6 @@
       <panel name="trackingNumberPanel" title="Tracking number"
         showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-stock"
         if="__config__.app.isApp('stock')">
-        <panel colSpan="12" name="warantyDetailsPanel">
-          <field name="hasWarranty"/>
-          <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
-          <field name="isPerishable"/>
-          <field name="perishableNbrOfMonths" showIf="isPerishable"/>
-        </panel>
         <panel name="trackingNumberConfigPanel" colSpan="12">
           <field name="trackingNumberConfiguration" canNew="true"
             grid-view="tracking-number-configuration-grid"
@@ -116,8 +111,8 @@
     <toolbar>
       <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
         onClick="save,action-send-by-email-with-template"/>
-      <button name="showProductSheetBtn" title="Product sheet" icon="fa-print"
-        onClick="save,action-product-validate-user-active-company,action-method-print-birt"/>
+      <button name="printBtn" title="Product sheet" icon="fa-print"
+        onClick="save,action-product-validate-user-active-company,action-method-print-template"/>
     </toolbar>
     <panel name="mainPanel">
       <field name="productTypeSelect" required="true" hidden="true"/>
@@ -265,10 +260,6 @@
 
   <search-filters name="product-expense-filters"
     model="com.axelor.apps.base.db.Product" title="Product expense filters">
-    <field name="hasWarranty" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="warrantyNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="isPerishable" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="perishableNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
     <field name="trackingNumberConfiguration" hidden="true"
       if="!__config__.app.isApp('stock')"/>
     <field name="isAnalyticCapture" hidden="true" if="!__config__.app.isApp('account')"/>

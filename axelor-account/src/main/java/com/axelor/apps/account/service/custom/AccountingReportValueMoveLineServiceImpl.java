@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.auth.db.AuditableModel;
@@ -93,6 +94,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       Account groupAccount,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       String parentTitle,
       LocalDate startDate,
@@ -141,6 +143,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             valuesMapByColumn,
             valuesMapByLine,
             groupAccount,
+            companySet,
             configAnalyticAccount,
             accountIdSet,
             null,
@@ -190,6 +193,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
               valuesMapByColumn,
               valuesMapByLine,
               groupAccount,
+              companySet,
               configAnalyticAccount,
               new HashSet<>(Collections.singleton(accountId)),
               null,
@@ -240,6 +244,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
               valuesMapByColumn,
               valuesMapByLine,
               groupAccount,
+              companySet,
               configAnalyticAccount,
               accountIdSet,
               analyticAccount,
@@ -262,6 +267,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             valuesMapByColumn,
             valuesMapByLine,
             groupAccount,
+            companySet,
             configAnalyticAccount,
             accountIdSet,
             null,
@@ -315,6 +321,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       Account groupAccount,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       Set<Long> accountIdSet,
       AnalyticAccount detailByAnalyticAccount,
@@ -366,6 +373,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         valuesMapByLine,
         accountIdSet,
         analyticAccountSet,
+        companySet,
         configAnalyticAccount,
         startDate,
         endDate,
@@ -496,6 +504,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       Set<Long> accountIdSet,
       Set<AnalyticAccount> analyticAccountSet,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
@@ -519,6 +528,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
                 line,
                 accountIdSet,
                 resultAnalyticAccountSet,
+                companySet,
                 startDate,
                 endDate)
             .fetch();
@@ -551,6 +561,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         result,
         valuesMapByColumn,
         valuesMapByLine,
+        companySet,
         configAnalyticAccount,
         lineCode,
         analyticCounter);
@@ -578,6 +589,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       AccountingReportConfigLine line,
       Set<Long> accountIdSet,
       Set<AnalyticAccount> analyticAccountSet,
+      Set<Company> companySet,
       LocalDate startDate,
       LocalDate endDate) {
     Pair<LocalDate, LocalDate> dates =
@@ -587,6 +599,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         accountingReport,
         accountIdSet,
         analyticAccountSet,
+        companySet,
         groupColumn,
         column,
         line,
@@ -630,6 +643,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       AccountingReport accountingReport,
       Set<Long> accountIdSet,
       Set<AnalyticAccount> analyticAccountSet,
+      Set<Company> companySet,
       AccountingReportConfigLine groupColumn,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
@@ -639,17 +653,22 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         .all()
         .filter(
             this.getMoveLineQuery(
-                accountingReport, accountIdSet, analyticAccountSet, groupColumn, column, line))
+                accountingReport,
+                accountIdSet,
+                analyticAccountSet,
+                companySet,
+                groupColumn,
+                column,
+                line))
         .bind("dateFrom", startDate)
         .bind("dateTo", endDate)
         .bind("journal", accountingReport.getJournal())
         .bind("paymentMode", accountingReport.getPaymentMode())
         .bind("currency", accountingReport.getCurrency())
-        .bind("company", accountingReport.getCompany())
+        .bind("companySet", companySet)
         .bind(
             "statusList",
-            moveToolService.getMoveStatusSelect(
-                accountingReport.getMoveStatusSelect(), accountingReport.getCompany()))
+            moveToolService.getMoveStatusSelect(accountingReport.getMoveStatusSelect(), companySet))
         .bind("accountIdSet", accountIdSet)
         .bind("analyticAccountSet", analyticAccountSet);
   }
@@ -658,6 +677,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       AccountingReport accountingReport,
       Set<Long> accountIdSet,
       Set<AnalyticAccount> analyticAccountSet,
+      Set<Company> companySet,
       AccountingReportConfigLine groupColumn,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line) {
@@ -683,8 +703,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       queryList.add("(self.move.currency IS NULL OR self.move.currency = :currency)");
     }
 
-    if (accountingReport.getCompany() != null) {
-      queryList.add("(self.move.company IS NULL OR self.move.company = :company)");
+    if (CollectionUtils.isNotEmpty(companySet)) {
+      queryList.add("(self.move.company IS NULL OR self.move.company IN :companySet)");
     }
 
     if (!this.areAllAnalyticAccountSetsEmpty(accountingReport, groupColumn, column, line)) {

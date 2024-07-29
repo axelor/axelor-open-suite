@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="invoice-line-grid" title="Invoice lines"
     model="com.axelor.apps.account.db.InvoiceLine">
@@ -12,6 +12,7 @@
     <field name="priceDiscounted" title="Unit price W.T."
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="coefficient"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="typeSelect" hidden="true"/>
@@ -34,13 +35,14 @@
     <field name="invoice.invoiceId" width="120"/>
     <field name="invoice.invoiceDate" title="Date"/>
     <field name="invoice.statusSelect" title="invoiceLineMenu.status"/>
-    <field name="invoice.address.addressL7Country"/>
+    <field name="invoice.address.country"/>
     <field name="product.code" title="product.code" width="120"/>
     <field name="productName" width="170"/>
     <field name="qty" width="50" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="priceDiscounted" title="Unit price W.T."
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="unit" width="60" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="coefficient"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="invoice.currency" width="85"/>
     <field name="companyExTaxTotal" title="WT amount in company currency" aggregate="sum"
@@ -73,7 +75,7 @@
         <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
           showTitle="false">
           <viewer depends="$partnerLanguage">
-			<![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t('The partner\'s language is different from the current language. Description and product name are in :')} {$partnerLanguage}</Badge>}</>]]>
+			<![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t("The partner's language is different from the current language. Description and product name are in :")} {$partnerLanguage}</Badge>}</>]]>
           </viewer>
         </field>
         <panel name="customerInvoicePanel" colSpan="12">
@@ -104,6 +106,7 @@
           onChange="action-group-account-invoice-line-qty-onchange"/>
         <field name="unit" colSpan="3" canEdit="false" requiredIf="typeSelect == 0"
           form-view="unit-form" grid-view="unit-grid"/>
+        <field name="coefficient" onChange="action-invoice-line-method-compute" hidden="true"/>
         <field name="price" colSpan="3" required="true"
           onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
         <field name="inTaxPrice" colSpan="3" required="true"
@@ -117,10 +120,10 @@
             hideIf="discountTypeSelect == 0"/>
           <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
         </panel>
-        <field name="taxLine" canEdit="false"
+        <field name="taxLineSet" canEdit="false"
           onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           grid-view="tax-line-grid" form-view="tax-line-form"
-          domain="self.endDate = null or self.endDate &gt; :__date__"/>
+          domain="self.endDate = null or self.endDate &gt; :__date__" widget="TagSelect"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
         <field name="inTaxTotal" colSpan="3" readonly="true"/>
         <field name="$isReadOnly" hidden="true"/>
@@ -128,6 +131,7 @@
           form-view="tax-equiv-form"/>
         <field name="invoice" hidden="true"/>
         <field name="invoice.company.currency.symbol" hidden="true"/>
+        <field name="invoice.company.accountConfig.isInvoiceCoefficientEnabled" hidden="true"/>
         <field name="companyExTaxTotal" hidden="true"
           x-currency="invoice.company.currency.symbol"/>
         <panel name="descriptionPanel" title="Description" colSpan="12">
@@ -171,8 +175,10 @@
         <field name="project" canEdit="false"
           onSelect="action-invoice-line-attrs-domain-project" form-view="project-form"
           grid-view="project-grid"/>
+        <field name="previousProgress" readonly="true"/>
+        <field name="newProgress" readonly="true"/>
         <panel-dashlet name="projectTaskListPanel" title="Related tasks"
-          action="action-invoice-line-view-project-tasks" colSpan="12"/>
+          action="action-invoice-line-view-project-tasks" colSpan="12" showIf="id"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain"
         onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
@@ -262,10 +268,11 @@
           hidden="true"/>
         <field name="unit" canEdit="false" requiredIf="typeSelect == 0" form-view="unit-form"
           grid-view="unit-grid"/>
+        <field name="coefficient" onChange="action-invoice-line-method-compute" hidden="true"/>
         <field name="priceDiscounted" hidden="true"/>
-        <field name="taxLine" canEdit="false"
+        <field name="taxLineSet" canEdit="false"
           onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
-          grid-view="tax-line-grid" form-view="tax-line-form"/>
+          grid-view="tax-line-grid" form-view="tax-line-form" widget="TagSelect"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
         <field name="invoice" hidden="true"/>
@@ -306,6 +313,7 @@
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-invoice-line-method-set-scale"/>
+    <action name="action-invoice-line-attrs-display-coefficient"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
@@ -318,6 +326,7 @@
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-invoice-line-method-set-scale"/>
+    <action name="action-invoice-line-attrs-display-coefficient"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-product-onchange">
@@ -407,8 +416,9 @@
 
   <action-record name="action-invoice-line-record-set-tax"
     model="com.axelor.apps.account.db.InvoiceLine">
-    <field name="taxLine" expr="eval: account.defaultTax.activeTaxLine"
-      if="!taxLine &amp;&amp; account &amp;&amp; account.defaultTax"/>
+    <field name="taxLineSet"
+      expr="eval: account.defaultTaxSet.collect{it -> it.activeTaxLine}"
+      if="!taxLineSet &amp;&amp; account &amp;&amp; account.defaultTaxSet"/>
   </action-record>
 
   <action-record name="action-invoice-line-record-project"
@@ -574,6 +584,8 @@
 
     <attribute name="scale" for="qty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="coefficient"
+      expr="eval: __config__.app.getNbDecimalDigitForQty() + 2"/>
 
     <!-- Show Price Discounted -->
     <attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price"
@@ -708,13 +720,13 @@
 
   <action-attrs name="action-invoice-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.partner?.localization?.language?.code?.equals(__user__.getLanguage())"
-      if="__parent__"/>
+      expr="eval: __parent__?.partner?.localization?.language == __user__.localization?.language"
+      if="__parent__ &amp;&amp; __parent__.partner &amp;&amp; __parent__.partner.localization &amp;&amp; __user__.localization"/>
     <attribute for="$partnerLanguage" name="value"
       expr="eval: __parent__?.partner?.localization?.language?.code?.toUpperCase()" if="__parent__"/>
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: invoice?.partner?.localization?.language?.code?.equals(__user__.getLanguage())"
-      if="invoice"/>
+      expr="eval: invoice?.partner?.localization?.language == __user__.localization?.language"
+      if="invoice &amp;&amp; invoice.partner &amp;&amp; invoice.partner.localization &amp;&amp; __user__.localization"/>
     <attribute for="$partnerLanguage" name="value"
       expr="eval: invoice?.partner?.localization?.language?.code?.toUpperCase()" if="invoice"/>
   </action-attrs>
@@ -724,11 +736,16 @@
       expr="eval: !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || !account?.analyticDistributionAuthorized"/>
   </action-attrs>
 
+  <action-attrs name="action-invoice-line-attrs-display-coefficient">
+    <attribute for="coefficient" name="hidden"
+      expr="eval: !__repo__(AccountConfig).findByCompany(__parent__.company)?.isInvoiceCoefficientEnabled"/>
+  </action-attrs>
+
   <action-view name="action-invoice-line-view-project-tasks" title="Related tasks"
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
-    <domain>self.invoiceLine = :id</domain>
+    <domain>:id IN self.invoiceLineSet.id</domain>
   </action-view>
 
   <search-filters name="invoice-line-filters"

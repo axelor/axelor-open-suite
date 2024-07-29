@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <dashboard name="project-my-projects" title="My projects">
     <dashlet action="action-project-db-my-tasks-to-do"/>
@@ -55,9 +55,9 @@
 						            ))}
 					            </TableBody>
 					            <TableCaption>
-							    	<Link href="#/ds/all.open.project.tasks">{_t('View all issues')}</Link>
-							    	{$isShowCalendarView && <span> | <Link href="#/ds/action-project-dashboard-view-per-user-calendar">{_t('Calendar')}</Link></span>}
-							    	{$isShowGanttView && <span> | <Link href="#/ds/action-project-dashboard-view-open-gantt">{_t('Gantt')}</Link></span>}
+							    	<Link href="#" onClick={$action("all.open.project.tasks")}>{_t('View all issues')}</Link>
+							    	{$isShowCalendarView && <span> | <Link href="#" onClick={$action("action-project-dashboard-view-per-user-calendar")}>{_t('Calendar')}</Link></span>}
+							    	{$isShowGanttView && <span> | <Link href="#" onClick={$action("action-project-dashboard-view-open-gantt")}>{_t('Gantt')}</Link></span>}
 					            </TableCaption>
 					        </Table>
 						</>
@@ -73,7 +73,7 @@
 				         <>
 				         	{$membersList.map((item, index) => (
 				         		<span key={index}>
-				         			<Link href={`#/ds/action-auth-users/edit/${item.id}`}>{item.name}</Link>
+				         			<Link href={`#/ds/action-auth-users/edit/${item.id}`} target="_self">{item.name}</Link>
 				         		</span>
 				         	)).reduce((prev, curr) => prev ? [prev, ', ', curr] : [curr],'')}
 				         </>
@@ -89,7 +89,7 @@
 						<![CDATA[
 				         <>
 				         	<p>{$spentTime} <span>{_t('hours')}</span></p> <Box/>
-				   	     	<Link href="#/ds/action-timesheet-line-log-time"><span>{_t('Log time')}</span></Link> | <Link href="#/ds/project.spent.time"><span>{_t('Details')}</span></Link>
+				   	     	<Link href="#" onClick={$action("action-timesheet-line-log-time")}><span>{_t('Log time')}</span></Link> | <Link href="#" onClick={$action("project.spent.time")}><span>{_t('Details')}</span></Link>
 				         </>
 				        ]]>
           </viewer>
@@ -104,13 +104,13 @@
 						 <>
 						 	 {$announcementList.map((item,index) => (
 								 <p key={index}>
-							         <Link href={`#/ds/project.announcement/edit/${item.id}`}>{item.title}</Link> <Box/>
+							         <Link href={`#/ds/project.announcement/edit/${item.id}`} target="_self">{item.title}</Link> <Box/>
 							         <span>{_t('Added by')}</span>
-							         <Link href={`#/ds/action-auth-users/edit/${item.createdById}`}> {item.createdBy} </Link>
+							         <Link href={`#/ds/action-auth-users/edit/${item.createdById}`} target="_self"> {item.createdBy} </Link>
 							         <Link href="#" title="{$moment(item.announcementDate).format('MM/DD/YYYY')}" onClick={$action("com.axelor.apps.businesssupport.service.ProjectActivityDashboardBusinessSupportService:getProjectActivityView("+item.id+")")}>{$moment(item.announcementDate).fromNow()}</Link>
 							     </p>
 						     ))}
-							 <Link href="#/ds/project.announcement">View all news</Link>
+							 <Link href="#" onClick={$action("project.announcement")}>View all news</Link>
 					     </>
 				        ]]>
           </viewer>
@@ -125,7 +125,7 @@
 				     <>
 				         {$subprojectList.map((item, index) => (
 				         	<span key={index}>
-				         		<Link href={`#/ds/project.all/edit/${item.id}`}>{item.name}</Link>
+				         		<Link href={`#/ds/project.all/edit/${item.id}`} target="_self">{item.name}</Link>
 				         	</span>
 				         )).reduce((prev, curr) => prev ? [prev, ', ', curr] : [curr],'')}
 				     </>
@@ -179,7 +179,7 @@
 					                                	<Box m={2} d="flex" alignItems="center">
 						                                    <Box as="strong" flex="1">
 						                                        {item.subProjectName && <span>{item.subProjectName} - </span>}
-						                                        <Link href={item.objectLink}>{item.title}</Link>
+						                                        <Link href={item.objectLink} target="_self">{item.title}</Link>
 						                                    </Box>
 						                                    <Badge bg={item.utilityClass}>{item.modelName}</Badge>
 						                                </Box>
@@ -198,7 +198,7 @@
 				                                        ))}
 				                                    </Box>
 				                                    <Box ms={2}>
-				                                        <Link href={`#/ds/action-auth-users/edit/${item.userId}`}>{item.user}</Link>
+				                                        <Link href={`#/ds/action-auth-users/edit/${item.userId}`} target="_self">{item.user}</Link>
 				                                        <span> {_t('updated document')} </span> -
 				                                        <Link href="#" title={$moment(item.time).format('MM/DD/YYYY HH:mm')}>
 				                                            {$moment(item.time).fromNow()}

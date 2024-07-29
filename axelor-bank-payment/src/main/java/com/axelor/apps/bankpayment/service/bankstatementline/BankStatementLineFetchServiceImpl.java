@@ -22,9 +22,12 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.db.Query;
 import com.google.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BankStatementLineFetchServiceImpl implements BankStatementLineFetchService {
@@ -49,5 +52,51 @@ public class BankStatementLineFetchServiceImpl implements BankStatementLineFetch
         .distinct()
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public Query<BankStatementLine> findByBankStatementBankDetailsAndLineType(
+      BankStatement bankStatement, BankDetails bankDetails, int lineType) {
+    return bankStatementLineRepository
+        .all()
+        .filter(
+            "self.bankStatement = :bankStatement"
+                + " AND self.bankDetails = :bankDetails"
+                + " AND self.lineTypeSelect = :lineTypeSelect")
+        .bind("bankStatement", bankStatement)
+        .bind("bankDetails", bankDetails)
+        .bind("lineTypeSelect", lineType);
+  }
+
+  @Override
+  public Query<BankStatementLine> findByBankDetailsLineTypeExcludeBankStatement(
+      BankStatement bankStatement, BankDetails bankDetails, int lineType) {
+    return bankStatementLineRepository
+        .all()
+        .filter(
+            "self.bankStatement != :bankStatement"
+                + " AND self.bankDetails = :bankDetails"
+                + " AND self.lineTypeSelect = :lineTypeSelect")
+        .bind("bankStatement", bankStatement)
+        .bind("bankDetails", bankDetails)
+        .bind("lineTypeSelect", lineType);
+  }
+
+  @Override
+  public BankStatementLine getLastBankStatementLineFromBankDetails(BankDetails bankDetails) {
+    if (bankDetails == null) {
+      return null;
+    }
+    Optional<BankStatementLine> id =
+        bankStatementLineRepository
+            .all()
+            .filter(
+                "self.bankDetails is not null AND self.bankDetails.id = :bankDetailsId"
+                    + " AND self.lineTypeSelect = :lineTypeSelect")
+            .bind("bankDetailsId", bankDetails.getId())
+            .bind("lineTypeSelect", BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE)
+            .fetchStream()
+            .min(Comparator.comparing(BankStatementLine::getOperationDate));
+    return id.map(line -> bankStatementLineRepository.find(line.getId())).orElse(null);
   }
 }

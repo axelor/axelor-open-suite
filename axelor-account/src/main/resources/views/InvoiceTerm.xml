@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="invoice-term-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
@@ -230,8 +230,8 @@
   </grid>
 
   <form name="invoice-term-form" title="Invoice term"
-    model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-group-generic-onnew"
-    onLoad="action-invoice-term-group-generic-onload" canNew="false">
+    model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-method-onnew"
+    onLoad="action-invoice-term-method-onload" canNew="false">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4" readonly="true">
         <field name="sequence"/>
@@ -295,8 +295,8 @@
       <panel name="pfpPanel" colSpan="12"
         readonlyIf="isPaid || paymentSession || pfpValidateStatusSelect > 1">
         <field name="pfpValidatorUser" colSpan="12" canEdit="false"
-          onSelect="action-invoice-term-group-pfp-validator-user-onselect"
-          onChange="action-invoice-term-group-check-pfp-validator-user"/>
+          onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
+          onChange="action-invoice-term-method-check-pfp-validator-user"/>
       </panel>
       <panel name="actionPanel" itemSpan="12" colSpan="12"
         readonlyIf="isPaid || paymentSession"
@@ -329,13 +329,13 @@
         <panel name="pfpButtonPanel" itemSpan="4"
           showIf="$isValidPfpValidatorUser &amp;&amp; !isPaid">
           <button name="passedForPaymentValidationBtn" title="Pass for payment validation"
-            css="btn-success" onClick="save,action-invoice-term-group-validate-pfp"
+            css="btn-success" onClick="action-invoice-term-group-validate-pfp"
             showIf="[1,3].includes(pfpValidateStatusSelect)"/>
           <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
-            css="btn-warning" onClick="save,action-invoice-term-group-partial-pfp"
+            css="btn-warning" onClick="action-invoice-term-group-partial-pfp"
             showIf="pfpValidateStatusSelect == 1"/>
           <button name="refusalToPayBtn" title="Refuse to pay" css="btn-danger"
-            onClick="save,action-invoiceterm-view-refusal-to-pay,save"
+            onClick="save,action-invoiceterm-view-refusal-to-pay"
             showIf="[1,2,4].includes(pfpValidateStatusSelect)"/>
         </panel>
         <panel name="pfpEmailPanel" colSpan="6">
@@ -367,18 +367,19 @@
           readonlyIf="paymentSession == null"
           onClick="save,action-invoice-term-view-show-payment-session,close"/>
         <field name="isSelectedOnPaymentSession" readonly="true"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+          onChange="action-invoice-term-method-compute-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
+          x-scale="currency.numberOfDecimals"
+          onChange="action-invoice-term-method-compute-amount-paid"/>
         <panel name="paymentSessionFinancialDiscountPanel"
           if="__config__.app.getApp('account').getManageFinancialDiscount()">
           <field name="applyFinancialDiscountOnPaymentSession"
             readonlyIf="!_openFromPaymentSession"
             showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
-            onChange="action-invoice-term-record-set-amount-paid"/>
+            onChange="action-invoice-term-method-compute-amount-paid"/>
           <field name="financialDiscountAmount" readonly="true"
             showIf="applyFinancialDiscountOnPaymentSession"
-            onChange="action-invoice-term-record-set-amount-paid"
+            onChange="action-invoice-term-method-compute-amount-paid"
             x-scale="company.currency.numberOfDecimals"/>
         </panel>
         <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
@@ -390,9 +391,9 @@
     </panel-mail>
   </form>
 
-  <form name="invoice-term-invoice-form" title="Invoice term"
-    model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-group-onnew"
-    onLoad="action-invoice-term-group-onload">
+  <form name="invoice-term-related-form" title="Invoice term"
+    model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-method-onnew"
+    onLoad="action-invoice-term-method-onload">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4"
         readonlyIf="isPaid || paymentSession">
@@ -407,27 +408,26 @@
         <field name="partner" readonly="true" form-view="partner-form"
           grid-view="partner-grid"/>
         <field name="thirdPartyPayerPartner" domain="self.isThirdPartyPayer IS TRUE"
-          readonlyIf="amountRemaining != amount" form-view="partner-form" grid-view="partner-grid"
-          if="__config__.app.getApp('base')?.activatePartnerRelations"/>
+          readonlyIf="$number(amountRemaining) != $number(amount)" form-view="partner-form"
+          grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"/>
         <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
-        readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || $number(amountRemaining) != $number(amount) || paymentSession">
+        readonlyIf="(isHoldBack &amp;&amp; invoice &amp;&amp; invoice.statusSelect == 3) || isPaid || $number(amountRemaining) != $number(amount) || paymentSession">
         <field name="dueDate" required="true"
           onChange="action-invoice-term-record-update-customized-true"
           readonlyIf="isPaid || pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"/>
         <field name="isHoldBack"
           readonlyIf="(financialDiscount != null &amp;&amp; $isPaymentConditionFree == false) || (invoice != null &amp;&amp; moveLine != null)"/>
-        <field name="estimatedPaymentDate"
-          onChange="action-invoice-term-record-update-customized-true"
-          if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
+        <field name="estimatedPaymentDate" if-module="axelor-cash-management"
+          if="__config__.app.isApp('cash-management')"/>
         <field name="amount" validIf="amount > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-          onChange="action-invoice-term-group-amount-onchange" x-scale="currency.numberOfDecimals"/>
+          onChange="action-invoice-term-method-amountonchange" x-scale="currency.numberOfDecimals"/>
         <field name="percentage" validIf="percentage > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-          onChange="action-invoice-term-group-invoice-percentage-onchange"/>
+          onChange="action-invoice-term-method-percentageonchange"/>
         <field name="amountRemaining" readonly="true" x-scale="currency.numberOfDecimals"/>
         <panel name="companyCurrencyPanel" colSpan="12" itemSpan="4" readonly="true"
           showIf="$isMultiCurrency">
@@ -436,7 +436,7 @@
           <field name="companyAmountRemaining" x-scale="$companyCurrencyScale"/>
           <field name="$isMultiCurrency" type="boolean" hidden="true"/>
         </panel>
-        <field name="paymentMode" readonlyIf="isPaid" required="true"/>
+        <field name="paymentMode" readonlyIf="isPaid" requiredIf="invoice != null"/>
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           readonlyIf="isPaid"
@@ -467,17 +467,14 @@
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="pfpPanel" colSpan="12"
-        readonlyIf="isPaid || paymentSession || pfpValidateStatusSelect > 1"
-        showIf="pfpValidateStatusSelect > 0 &amp;&amp; [2,3].includes(invoice.statusSelect) &amp;&amp; !(invoice.originDate == null &amp;&amp; $contains([1,2], invoice.operationTypeSelect) &amp;&amp; (invoice.statusSelect &lt;= 2 || invoice.operationSubTypeSelect == 2))">
+        readonlyIf="isPaid || paymentSession || pfpValidateStatusSelect > 1" hidden="true">
         <field name="pfpValidatorUser" colSpan="12" canEdit="false"
-          onSelect="action-invoice-term-group-pfp-validator-user-onselect"
-          onChange="action-invoice-term-group-check-pfp-validator-user"/>
+          onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
+          onChange="action-invoice-term-method-check-pfp-validator-user"/>
       </panel>
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
-        readonlyIf="isPaid || paymentSession"
-        showIf="pfpValidateStatusSelect > 0 &amp;&amp; [2,3].includes(invoice.statusSelect) &amp;&amp; !(invoice.originDate == null &amp;&amp; $contains([1,2], invoice.operationTypeSelect) &amp;&amp; (invoice.statusSelect &lt;= 2 || invoice.operationSubTypeSelect == 2))"
-        colSpan="12" itemSpan="12">
+        readonlyIf="isPaid || paymentSession" hidden="true" colSpan="12" itemSpan="12">
         <panel name="pfpStatus" hidden="true" showIf="pfpValidateStatusSelect == 1">
           <field name="pfpValidateStatusSelect" colSpan="12" widget="navSelect"
             selection-in="[1,2,3,4]"/>
@@ -504,13 +501,13 @@
           showIf="$isValidPfpValidatorUser &amp;&amp; !isPaid">
           <button name="passedForPaymentValidationBtn" title="Pass for payment validation"
             showIf="[1,3].includes(pfpValidateStatusSelect)" css="btn-success"
-            onClick="save,action-invoice-term-group-validate-pfp"/>
+            onClick="action-invoice-term-group-validate-pfp"/>
           <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
             showIf="pfpValidateStatusSelect == 1 &amp;&amp; !pfpfPartialValidationOk"
-            css="btn-warning" onClick="save,action-invoice-term-group-partial-pfp"/>
+            css="btn-warning" onClick="action-invoice-term-group-partial-pfp"/>
           <button name="refusalToPayBtn" title="Refuse to pay"
             showIf="[1,2,4].includes(pfpValidateStatusSelect)" css="btn-danger"
-            onClick="save,action-invoiceterm-view-refusal-to-pay,save"/>
+            onClick="save,action-invoiceterm-view-refusal-to-pay"/>
         </panel>
         <panel name="pfpEmailPanel">
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
@@ -547,14 +544,15 @@
           readonlyIf="paymentSession == null"
           onClick="save,action-invoice-term-view-show-payment-session,close"/>
         <field name="isSelectedOnPaymentSession" readonly="true"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+          onChange="action-invoice-term-method-compute-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
+          onChange="action-invoice-term-method-compute-amount-paid"
+          x-scale="currency.numberOfDecimals"/>
         <field name="applyFinancialDiscountOnPaymentSession" readonly="true"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
         <field name="financialDiscountAmount" readonly="true"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid" x-scale="$companyCurrencyScale"/>
+          onChange="action-invoice-term-method-compute-amount-paid" x-scale="$companyCurrencyScale"/>
         <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
           showIf="isSelectedOnPaymentSession" x-scale="currency.numberOfDecimals"/>
       </panel>
@@ -565,8 +563,8 @@
   </form>
 
   <form name="invoice-term-move-line-form" title="Invoice term"
-    model="com.axelor.apps.account.db.InvoiceTerm" onLoad="action-invoice-term-group-onload"
-    onNew="action-invoice-term-group-onnew">
+    model="com.axelor.apps.account.db.InvoiceTerm" onLoad="action-invoice-term-method-onload"
+    onNew="action-invoice-term-method-onnew">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4"
         readonlyIf="paymentSession || isPaid">
@@ -598,12 +596,11 @@
           if="__config__.app.isApp('cash-management')"/>
         <field name="amount" title="To pay / To use"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-          validIf="amount > 0" onChange="action-invoice-term-group-move-line-amount-onchange"
-          x-scale="currency.numberOfDecimals"/>
+          x-scale="currency.numberOfDecimals" validIf="amount > 0"
+          onChange="action-invoice-term-method-amountonchange"/>
         <field name="percentage"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-          onChange="action-invoice-term-group-move-line-percentage-onchange"
-          validIf="percentage > 0"/>
+          onChange="action-invoice-term-method-percentageonchange" validIf="percentage > 0"/>
         <field name="amountRemaining" title="Left to pay / to use" readonly="true"
           x-scale="currency.numberOfDecimals"/>
         <panel name="companyCurrencyPanel" colSpan="12" itemSpan="4" readonly="true"
@@ -618,6 +615,7 @@
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
+
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
@@ -654,8 +652,8 @@
         readonlyIf="isPaid || paymentSession || pfpValidateStatusSelect > 1"
         showIf="pfpValidateStatusSelect > 0 &amp;&amp; [1,2,3,5].includes(moveLine.move.statusSelect) &amp;&amp; (invoice == null || !(invoice.originDate == null &amp;&amp; $contains([1,2], invoice.operationTypeSelect) &amp;&amp; (invoice.statusSelect &lt;= 2 || invoice.operationSubTypeSelect == 2)))">
         <field name="pfpValidatorUser" colSpan="12" canEdit="false"
-          onSelect="action-invoice-term-group-pfp-validator-user-onselect"
-          onChange="action-invoice-term-group-check-pfp-validator-user"/>
+          onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
+          onChange="action-invoice-term-method-check-pfp-validator-user"/>
       </panel>
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
@@ -689,10 +687,10 @@
           showIf="$isValidPfpValidatorUser &amp;&amp; !isPaid">
           <button name="passedForPaymentValidationBtn" title="Pass for payment validation"
             showIf="[1,3].includes(pfpValidateStatusSelect)" css="btn-success"
-            onClick="save,action-invoice-term-group-validate-pfp"/>
+            onClick="action-invoice-term-group-validate-pfp"/>
           <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
             showIf="pfpValidateStatusSelect == 1" css="btn-warning"
-            onClick="save,action-invoice-term-group-partial-pfp"/>
+            onClick="action-invoice-term-group-partial-pfp"/>
           <button name="refusalToPayBtn" title="Refuse to pay"
             showIf="[1,2,4].includes(pfpValidateStatusSelect)" colSpan="4" css="btn-danger"
             onClick="save,action-invoiceterm-view-refusal-to-pay"/>
@@ -716,14 +714,16 @@
           readonlyIf="paymentSession == null"
           onClick="save,action-invoice-term-view-show-payment-session"/>
         <field name="isSelectedOnPaymentSession" readonly="true"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+          onChange="action-invoice-term-method-compute-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
+          onChange="action-invoice-term-method-compute-amount-paid"
+          x-scale="currency.numberOfDecimals"/>
         <field name="applyFinancialDiscountOnPaymentSession" readonly="true"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
         <field name="financialDiscountAmount" readonly="true"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
+          onChange="action-invoice-term-method-compute-amount-paid"
+          x-scale="currency.numberOfDecimals"/>
         <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
           showIf="isSelectedOnPaymentSession" x-scale="currency.numberOfDecimals"/>
       </panel>
@@ -762,7 +762,7 @@
   </form>
 
   <form name="invoice-term-move-form" title="Invoice term"
-    model="com.axelor.apps.account.db.InvoiceTerm" onLoad="action-invoice-term-move-group-onload"
+    model="com.axelor.apps.account.db.InvoiceTerm" onLoad="action-invoice-term-method-onload"
     canNew="false">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4" readonly="true">
@@ -818,8 +818,8 @@
       <panel name="pfpPanel" colSpan="12"
         readonlyIf="isPaid || paymentSession || pfpValidateStatusSelect > 1">
         <field name="pfpValidatorUser" colSpan="12" canEdit="false"
-          onSelect="action-invoice-term-group-pfp-validator-user-onselect"
-          onChange="action-invoice-term-group-check-pfp-validator-user"/>
+          onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
+          onChange="action-invoice-term-method-check-pfp-validator-user"/>
       </panel>
       <panel name="actionPanel" itemSpan="12" colSpan="12"
         readonlyIf="isPaid || paymentSession"
@@ -852,7 +852,7 @@
         <panel name="pfpButtonPanel" itemSpan="4"
           showIf="$isValidPfpValidatorUser &amp;&amp; !isPaid">
           <button name="passedForPaymentValidationBtn" title="Pass for payment validation"
-            css="btn-success" onClick="save,action-invoice-term-move-group-validate-pfp"
+            css="btn-success" onClick="action-invoice-term-group-validate-pfp"
             showIf="[1,3].includes(pfpValidateStatusSelect)"/>
           <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
             css="btn-warning" onClick="save,action-invoice-term-move-group-partial-pfp"
@@ -892,15 +892,16 @@
           readonlyIf="paymentSession == null"
           onClick="save,action-invoice-term-view-show-payment-session,close"/>
         <field name="isSelectedOnPaymentSession" readonly="true"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+          onChange="action-invoice-term-method-compute-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
+          onChange="action-invoice-term-method-compute-amount-paid"
+          x-scale="currency.numberOfDecimals"/>
         <field name="applyFinancialDiscountOnPaymentSession" readonly="true"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid"
-          x-scale="company.currency.numberOfDecimals"/>
+          onChange="action-invoice-term-method-compute-amount-paid"
+          x-scale="currency.numberOfDecimals"/>
         <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
           showIf="isSelectedOnPaymentSession" x-scale="currency.numberOfDecimals"/>
       </panel>
@@ -916,95 +917,15 @@
     </panel-mail>
   </form>
 
-  <action-group name="action-invoice-term-group-generic-onnew">
-    <action name="action-invoice-term-group-onnew"/>
-    <action name="action-invoice-term-attrs-display-actions"/>
-  </action-group>
-
-  <action-group name="action-invoice-term-group-onnew">
-    <action name="action-method-invoice-init-invoice-term"/>
-    <action name="action-invoice-term-record-update-customized-true"/>
-    <action name="action-invoice-term-method-compute-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <action name="action-invoice-term-method-set-pfp-status"/>
-    <action name="action-invoice-term-attrs-company-currency-scale"/>
-  </action-group>
-
-  <action-group name="action-invoice-term-group-check-pfp-validator-user">
-    <action name="action-invoice-attrs-is-valid-pfp-validator-user"/>
-    <action name="action-invoice-term-method-hide-send-email-pfp-btn"/>
-    <action name="action-invoice-term-record-set-is-payment-condition-free"/>
-  </action-group>
-
-  <action-group name="action-invoice-term-move-group-check-pfp-validator-user">
-    <action name="action-invoice-attrs-is-valid-pfp-validator-user"/>
-    <action name="action-invoice-term-method-hide-send-email-pfp-btn"/>
-    <action name="action-invoice-term-move-record-set-is-payment-condition-free"/>
-  </action-group>
-
   <action-group name="action-invoice-term-group-validate-pfp">
     <action name="action-invoice-term-validate-pfp-stock-move"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
     <action name="action-invoice-term-method-validate-pfp"/>
-  </action-group>
-
-  <action-group name="action-invoice-term-move-group-validate-pfp">
-    <action name="action-invoice-term-method-validate-pfp"/>
     <action name="save"/>
   </action-group>
 
-  <action-group name="action-invoice-term-group-generic-onload">
-    <action name="action-invoice-term-group-onload"/>
-    <action name="action-invoice-term-attrs-display-actions"/>
-  </action-group>
-
-  <action-group name="action-invoice-term-group-onload">
-    <action name="action-invoice-term-group-check-pfp-validator-user"/>
-    <action name="action-invoice-term-method-is-multi-currency"/>
-    <action name="action-invoice-term-attrs-company-currency-scale"/>
-  </action-group>
-
-  <action-group name="action-invoice-term-move-group-onload">
-    <action name="action-invoice-term-move-group-check-pfp-validator-user"/>
-    <action name="action-invoice-term-attrs-is-multi-currency"/>
-    <action name="action-invoice-term-move-record-set-show-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <action name="action-invoice-term-attrs-display-actions"/>
-    <action name="action-invoice-term-move-method-add-linked-files"/>
-  </action-group>
-
-  <action-group name="action-invoice-term-group-amount-onchange">
-    <action name="action-invoice-term-method-compute-customized-percentage"/>
-    <action name="action-invoice-term-record-update-customized-true"/>
-    <action name="action-invoice-term-method-compute-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-  </action-group>
-
-  <action-group name="action-invoice-term-group-move-line-amount-onchange">
-    <action name="action-invoice-term-group-amount-onchange"/>
-    <action name="action-invoice-term-method-compute-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-  </action-group>
-
-  <action-group name="action-invoice-term-group-percentage-onchange">
-    <action name="action-invoice-term-method-compute-customized-amount"/>
-    <action name="action-invoice-term-record-update-customized-true"/>
-  </action-group>
-
-  <action-group name="action-invoice-term-group-move-line-percentage-onchange">
-    <action name="action-invoice-term-group-percentage-onchange"/>
-    <action name="action-invoice-term-method-compute-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-  </action-group>
-
-  <action-group name="action-invoice-term-group-invoice-percentage-onchange">
-    <action name="action-invoice-term-record-update-customized"/>
-    <action name="action-invoice-term-group-percentage-onchange"/>
-    <action name="action-invoice-term-method-compute-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-  </action-group>
-
   <action-group name="action-invoice-term-group-partial-pfp">
+    <action name="save"/>
     <action name="action-invoice-term-view-pfp-partial-reason-wizard"/>
   </action-group>
 
@@ -1018,29 +939,6 @@
     <action name="action-invoice-term-method-refusal-to-pay"/>
   </action-group>
 
-  <action-group name="action-invoice-term-group-pfp-validator-user-onselect">
-    <action name="action-invoice-term-method-hide-send-email-pfp-btn"
-      if="pfpValidateStatusSelect == 1"/>
-    <action name="action-invoice-term-method-domain-pfp-validator-user-on-select"/>
-  </action-group>
-
-  <action-record name="action-invoice-term-record-set-is-payment-condition-free"
-    model="com.axelor.apps.account.db.InvoiceTerm">
-    <field name="$isPaymentConditionFree"
-      if="__parent__ &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.Invoice'"
-      expr="eval: __parent__?.paymentCondition?.isFree"/>
-    <field name="$isPaymentConditionFree"
-      if="__parent__ &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.MoveLine'"
-      expr="eval: __parent__?.move?.paymentCondition?.isFree"/>
-    <field name="$isPaymentConditionFree" if="moveLine != null"
-      expr="eval: moveLine?.move?.paymentCondition?.isFree"/>
-  </action-record>
-
-  <action-record name="action-invoice-term-move-record-set-is-payment-condition-free"
-    model="com.axelor.apps.account.db.InvoiceTerm">
-    <field name="$isPaymentConditionFree" if="moveLine != null"
-      expr="eval: moveLine?.move?.paymentCondition?.isFree"/>
-  </action-record>
 
   <action-record name="action-invoice-term-record-update-customized-true"
     model="com.axelor.apps.account.db.InvoiceTerm">
@@ -1053,55 +951,39 @@
       if="invoice &amp;&amp; __repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',invoice).fetch()?.size &gt;= 1"/>
   </action-validate>
 
-  <action-validate name="action-invoice-term-validate-before-pfp">
-    <alert
-      message="All the invoice's unsaved modifications will be lost, do you wish to continue ? Also you will need to manually refresh the invoice when the process is done."
-      if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
-    <alert
-      message="All the move's unsaved modifications will be lost, do you wish to continue ? Also you will need to manually refresh the move when the process is done."
-      if="__parent__?._model == 'com.axelor.apps.account.db.MoveLine'"/>
-  </action-validate>
-
   <action-validate name="action-invoice-term-move-validate-before-pfp">
     <alert
       message="All the move's unsaved modifications will be lost, do you wish to continue ? Also you will need to manually refresh the move when the process is done."
       if="moveLine"/>
   </action-validate>
 
-  <action-record name="action-invoice-term-record-update-customized"
-    model="com.axelor.apps.account.db.InvoiceTerm">
-    <field name="isCustomized" expr="true"
-      if="paymentConditionLine == null || percentage != paymentConditionLine.paymentPercentage"/>
-    <field name="isCustomized" expr="false"
-      if="paymentConditionLine != null &amp;&amp; percentage == paymentConditionLine.paymentPercentage"/>
-  </action-record>
+  <action-method name="action-invoice-term-method-onnew">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="onNew"/>
+  </action-method>
 
-  <action-record name="action-invoice-term-record-set-amount-paid"
-    model="com.axelor.apps.account.db.InvoiceTerm">
-    <field name="amountPaid" expr="eval: 0"
-      if="!applyFinancialDiscountOnPaymentSession &amp;&amp; !isSelectedOnPaymentSession"/>
-    <field name="amountPaid" expr="eval: paymentAmount"
-      if="!applyFinancialDiscountOnPaymentSession &amp;&amp; isSelectedOnPaymentSession"/>
-    <field name="amountPaid" expr="eval: paymentAmount - financialDiscountAmount"
-      if="applyFinancialDiscountOnPaymentSession &amp;&amp; isSelectedOnPaymentSession"/>
-  </action-record>
+  <action-method name="action-invoice-term-method-onload">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="onLoad"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-check-pfp-validator-user">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="checkPfpValidatorUser"/>
+  </action-method>
 
   <action-method name="action-invoice-term-method-validate-pfp">
     <call class="com.axelor.apps.account.web.InvoiceTermController" method="validatePfp"/>
   </action-method>
 
-  <action-method name="action-invoice-term-method-compute-customized-amount">
-    <call class="com.axelor.apps.account.web.InvoiceTermController"
-      method="computeCustomizedAmount"/>
+  <action-method name="action-invoice-term-method-compute-amount-paid">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="computeAmountPaid"/>
   </action-method>
 
-  <action-method name="action-invoice-term-method-compute-customized-percentage">
-    <call class="com.axelor.apps.account.web.InvoiceTermController"
-      method="computeCustomizedPercentage"/>
+  <action-method name="action-invoice-term-method-amountonchange">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="amountOnChange"/>
   </action-method>
 
-  <action-method name="action-method-invoice-init-invoice-term">
-    <call class="com.axelor.apps.account.web.InvoiceTermController" method="initInvoiceTerm"/>
+  <action-method name="action-invoice-term-method-percentageonchange">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="percentageOnChange"/>
   </action-method>
 
   <action-method name="action-invoice-term-method-refusal-to-pay">
@@ -1111,17 +993,6 @@
   <action-method name="action-invoice-term-method-domain-pfp-validator-user-on-select">
     <call class="com.axelor.apps.account.web.InvoiceTermController"
       method="setPfpValidatorUserDomain"/>
-  </action-method>
-
-  <action-view name="action-invoice-term-view-show-payment-session"
-    title="Payment session" model="com.axelor.apps.account.db.PaymentSession">
-    <view type="form" name="payment-session-form"/>
-    <context name="_showRecord" expr="eval: __this__.paymentSession.id"/>
-  </action-view>
-
-  <action-method name="action-invoice-term-method-hide-send-email-pfp-btn">
-    <call class="com.axelor.apps.account.web.InvoiceTermController"
-      method="hideSendEmailPfpBtn"/>
   </action-method>
 
   <action-method name="action-invoice-term-method-select-terms-btn">
@@ -1150,22 +1021,10 @@
       method="pfpPartialReasonConfirm"/>
   </action-method>
 
-  <action-method name="action-invoice-term-method-compute-financial-discount">
-    <call class="com.axelor.apps.account.web.InvoiceTermController"
-      method="computeFinancialDiscount"/>
-  </action-method>
-
-  <action-method name="action-invoice-term-method-set-pfp-status">
-    <call class="com.axelor.apps.account.web.InvoiceTermController" method="setPfpStatus"/>
-  </action-method>
-
-  <action-method name="action-invoice-term-method-is-multi-currency">
-    <call class="com.axelor.apps.account.web.InvoiceTermController" method="isMultiCurrency"/>
-  </action-method>
-
   <action-method name="action-invoice-term-move-method-add-linked-files">
     <call class="com.axelor.apps.account.web.InvoiceTermController" method="addLinkedFiles"/>
   </action-method>
+
 
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"
     model="com.axelor.apps.account.db.InvoiceTerm">
@@ -1209,13 +1068,19 @@
     <context name="_id" expr="eval: id"/>
   </action-view>
 
+  <action-view name="action-invoice-term-view-show-payment-session"
+    title="Payment session" model="com.axelor.apps.account.db.PaymentSession">
+    <view type="form" name="payment-session-form"/>
+    <context name="_showRecord" expr="eval: __this__.paymentSession.id"/>
+  </action-view>
+
   <action-condition name="action-invoiceterm-refusal-to-pay-cancel-reason-check">
     <check error="A cancel reason must be selected" field="reasonOfRefusalToPay"
       if="reasonOfRefusalToPay == null || reasonOfRefusalToPay == 0"/>
   </action-condition>
 
   <action-attrs name="action-invoice-term-attrs-bank-details-from-partner-domain">
-    <attribute name="domain" for="bankDetails" expr="eval: &quot; self = null&quot;"/>
+    <attribute name="domain" for="bankDetails" expr="eval: &quot; self.id = 0&quot;"/>
     <attribute name="domain" for="bankDetails"
       expr="eval: &quot; self.id IN (${partner?.bankDetailsList?.collect{it.id}?.join(',')}) AND self.active = true &quot;"
       if="!partner?.bankDetailsList?.isEmpty() || !partner?.bankDetailsList?.isEmpty()"/>
@@ -1224,27 +1089,5 @@
   <action-attrs name="action-invoice-term-attrs-set-initial-pfp-amount"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <attribute name="value" for="$grantedAmount" expr="eval: amountRemaining"/>
-  </action-attrs>
-
-  <action-attrs name="action-invoice-term-attrs-display-actions">
-    <attribute name="hidden" for="actionPanel"
-      expr="eval: pfpValidateStatusSelect == 0 || ![2,3,4].contains(invoice.statusSelect) || (invoice.originDate == null &amp;&amp; [1,2].contains(invoice.operationTypeSelect) &amp;&amp; (invoice.statusSelect &lt;= 2 || invoice.operationSubTypeSelect == 2))"
-      if="invoice != null"/>
-    <attribute name="hidden" for="actionPanel"
-      expr="eval: pfpValidateStatusSelect == 0 || ![2,3,4].contains(moveLine?.move?.statusSelect)"
-      if="invoice == null &amp;&amp; moveLine != null"/>
-    <attribute name="hidden" for="pfpPanel"
-      expr="eval: pfpValidateStatusSelect == 0 || ![2,3,4].contains(invoice.statusSelect) || (invoice.originDate == null &amp;&amp; [1,2].contains(invoice.operationTypeSelect) &amp;&amp; (invoice.statusSelect &lt;= 2 || invoice.operationSubTypeSelect == 2))"
-      if="invoice != null"/>
-    <attribute name="hidden" for="pfpPanel"
-      expr="eval: pfpValidateStatusSelect == 0 || ![2,3,4].contains(moveLine?.move?.statusSelect)"
-      if="invoice == null &amp;&amp; moveLine != null"/>
-  </action-attrs>
-
-  <action-attrs name="action-invoice-term-attrs-company-currency-scale">
-    <attribute name="value" for="$companyCurrencyScale"
-      expr="eval: invoice?.company?.currency?.numberOfDecimals" if="invoice != null"/>
-    <attribute name="value" for="$companyCurrencyScale"
-      expr="eval:__parent__?.company?.currency?.numberOfDecimals" if="invoice ==  null"/>
   </action-attrs>
 </object-views>

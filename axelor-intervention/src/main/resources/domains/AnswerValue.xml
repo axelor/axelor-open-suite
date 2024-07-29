@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="AnswerValue">
+    <string name="name" title="Name" required="true"/>
+    <boolean name="isDefault" title="Is default ?"/>
+    <integer name="sequence" title="Order"/>
+    <many-to-one name="answerType" title="Answer type"
+      ref="com.axelor.apps.intervention.db.AnswerType" copy="false"/>
+    <many-to-one name="interventionQuestion" title="Answer type"
+      ref="com.axelor.apps.intervention.db.InterventionQuestion" copy="false"/>
+    <boolean name="nonConforming" title="Non-conforming"/>
+    <boolean name="following" title="Following"/>
+  </entity>
+
+</domain-models>

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="purchase-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
+    <toolbar>
+      <button name="printBtn" title="Print"
+        onClick="action-purchase-order-method-show-purchase-order" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print"
-          action="action-purchase-order-method-show-purchase-order"/>
-      </menu>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-purchase-order-method-convert-selected-lines-to-merge-lines"/>
@@ -36,11 +36,11 @@
 
   <grid name="purchase-order-grid" title="Purchase orders"
     model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
+    <toolbar>
+      <button name="printBtn" title="Print"
+        onClick="action-purchase-order-method-show-purchase-order" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print"
-          action="action-purchase-order-method-show-purchase-order"/>
-      </menu>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seePurchaseOrderLinesItem" title="See purchase order lines"
           action="purchase-order-see-purchase-order-lines"/>
@@ -120,7 +120,7 @@
     onLoad="action-group-purchase-order-on-load-actions"
     onNew="action-group-purchase-order-on-new-actions">
     <toolbar>
-      <button name="reportsBtn" title="Reports" icon="fa-print"
+      <button name="printBtn" title="Reports" icon="fa-print"
         hideIf="supplierPartner == null" readonlyIf="!id"
         onClick="save,action-purchase-order-method-show-purchase-order"/>
     </toolbar>
@@ -251,6 +251,8 @@
       <panel name="projectPanel"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         title="Business project" colSpan="12" if-module="axelor-business-project">
+        <field name="contract" readonly="true" hidden="true" showIf="contract"
+          form-view="contract-form" grid-view="contract-grid"/>
         <field name="project" domain="self.isBusinessProject = true" form-view="project-form"
           grid-view="project-grid" colSpan="6"/>
         <button name="updateLinesBtn" title="Update lines with selected project"
@@ -422,11 +424,11 @@
   <cards name="purchase-quotations-order-cards" title="Supplier RFQ/PO"
     model="com.axelor.apps.purchase.db.PurchaseOrder" width="360px" css="rect-image"
     orderBy="-orderDate">
+    <toolbar>
+      <button name="printBtn" title="Print"
+        onClick="action-purchase-order-method-show-purchase-order" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print"
-          action="action-purchase-order-method-show-purchase-order"/>
-      </menu>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-purchase-order-view-open-merge-form"/>
@@ -847,7 +849,7 @@
     model="com.axelor.apps.stock.db.StockMove" title="Stock move">
     <view name="stock-move-grid" type="grid"/>
     <view name="stock-move-form" type="form"/>
-    <domain>self.purchaseOrder.id = :purchaseOrder</domain>
+    <domain>:purchaseOrder MEMBER OF self.purchaseOrderSet</domain>
     <context name="purchaseOrder" expr="eval: __this__.id"/>
   </action-view>
 

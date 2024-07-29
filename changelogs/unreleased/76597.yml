@@ -1,3 +1,0 @@
----
-title: "Extra hours: fixed an issue where lines were filled with the connected employee instead of the employee filled in the form view."
-module: axelor-human-resource

@@ -22,8 +22,8 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -209,17 +209,18 @@ public class BankPaymentConfigService {
     return bankPaymentConfig.getIcsNumber();
   }
 
-  public BirtTemplate getBankStatementLineBirtTemplate(Company company) throws AxelorException {
-    BirtTemplate bankStatementLinesBirtTemplate = null;
+  public PrintingTemplate getBankStatementLinePrintTemplate(Company company)
+      throws AxelorException {
+    PrintingTemplate bankStatementLinesPrintTemplate = null;
     if (ObjectUtils.notEmpty(company)) {
-      bankStatementLinesBirtTemplate =
-          getBankPaymentConfig(company).getBankStatementLinesBirtTemplate();
+      bankStatementLinesPrintTemplate =
+          getBankPaymentConfig(company).getBankStatementLinesPrintTemplate();
     }
-    if (ObjectUtils.isEmpty(bankStatementLinesBirtTemplate)) {
+    if (ObjectUtils.isEmpty(bankStatementLinesPrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
-    return bankStatementLinesBirtTemplate;
+    return bankStatementLinesPrintTemplate;
   }
 }

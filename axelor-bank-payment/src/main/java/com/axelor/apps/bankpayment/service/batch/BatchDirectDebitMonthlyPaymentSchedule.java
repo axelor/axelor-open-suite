@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.service.batch;
 
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
+import com.axelor.apps.account.service.umr.UmrService;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.google.inject.Inject;
@@ -34,8 +35,9 @@ public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaym
   @Inject
   public BatchDirectDebitMonthlyPaymentSchedule(
       BatchBankPaymentService batchBankPaymentService,
-      PaymentScheduleLineRepository paymentScheduleLineRepo) {
-    super(batchBankPaymentService, paymentScheduleLineRepo);
+      PaymentScheduleLineRepository paymentScheduleLineRepo,
+      UmrService umrService) {
+    super(batchBankPaymentService, paymentScheduleLineRepo, umrService);
   }
 
   @Override
