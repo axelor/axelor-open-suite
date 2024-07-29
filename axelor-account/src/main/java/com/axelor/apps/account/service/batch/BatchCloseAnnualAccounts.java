@@ -34,7 +34,6 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
-import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -553,30 +552,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     }
   }
 
-  public String checkDaybookMovesOnFiscalYear(AccountingBatch accountingBatch)
-      throws AxelorException {
-    String warning = "";
-
-    if (AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS
-            != accountingBatch.getActionSelect()
-        || accountingBatch.getYear() == null) {
-      return warning;
-    }
-
-    Integer daybookMoveCount = getDaybookMoveCount(accountingBatch);
-
-    if (daybookMoveCount != 0) {
-      warning =
-          String.format(
-              I18n.get(ITranslation.CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_ERROR_LABEL),
-              accountingBatch.getYear().getName(),
-              daybookMoveCount);
-    }
-
-    return warning;
-  }
-
-  protected Integer getDaybookMoveCount(AccountingBatch accountingBatch) throws AxelorException {
+  public Integer getDaybookMoveCount(AccountingBatch accountingBatch) throws AxelorException {
     Set<Year> yearSet = new HashSet<>();
     yearSet.add(accountingBatch.getYear());
 

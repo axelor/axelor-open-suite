@@ -37,13 +37,13 @@ import com.axelor.apps.account.service.batch.BatchCloseAnnualAccounts;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -406,11 +406,21 @@ public class AccountingBatchController {
       throws AxelorException {
     AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 
-    String warning =
-        Beans.get(BatchCloseAnnualAccounts.class).checkDaybookMovesOnFiscalYear(accountingBatch);
+    if (AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS
+            != accountingBatch.getActionSelect()
+        || accountingBatch.getYear() == null) {
+      return;
+    }
 
-    if (StringUtils.notEmpty(warning)) {
-      response.setAlert(warning);
+    Integer daybookMoveCount =
+        Beans.get(BatchCloseAnnualAccounts.class).getDaybookMoveCount(accountingBatch);
+
+    if (daybookMoveCount > 0) {
+      response.setAlert(
+          String.format(
+              I18n.get(ITranslation.CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_ERROR_LABEL),
+              accountingBatch.getYear().getName(),
+              daybookMoveCount));
     }
   }
 }
