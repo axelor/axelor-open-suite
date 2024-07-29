@@ -220,11 +220,9 @@ public class BudgetModule extends AxelorModule {
     bind(SaleOrderCheckBudgetService.class).to(SaleOrderCheckBudgetServiceImpl.class);
     bind(SaleOrderFinalizeSupplychainServiceImpl.class)
         .to(SaleOrderFinalizeBudgetServiceImpl.class);
-    bind(SaleOrderCheckSupplychainServiceImpl.class)
-        .to(com.axelor.apps.budget.service.SaleOrderCheckBudgetServiceImpl.class);
+    bind(SaleOrderCheckSupplychainServiceImpl.class).to(SaleOrderCheckBudgetServiceImpl.class);
     bind(SaleOrderLineOnChangeSupplychainServiceImpl.class)
         .to(SaleOrderLineOnChangeBudgetServiceImpl.class);
-    bind(SaleOrderCheckSupplychainServiceImpl.class).to(SaleOrderCheckBudgetServiceImpl.class);
     bind(SaleOrderBudgetObserver.class);
   }
 }
