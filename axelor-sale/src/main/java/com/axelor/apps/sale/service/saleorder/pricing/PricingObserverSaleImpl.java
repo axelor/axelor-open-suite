@@ -16,23 +16,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.sale.service.saleorder.pricing;
 
-import com.axelor.apps.base.service.pricing.PricingMetaServiceImpl;
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.base.service.pricing.PricingObserverImpl;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.db.EntityHelper;
+import com.google.inject.Inject;
 
-public class SalePricingMetaServiceImpl extends PricingMetaServiceImpl {
+public class PricingObserverSaleImpl extends PricingObserverImpl {
+
+  @Inject
+  public PricingObserverSaleImpl() {
+    super();
+  }
 
   @Override
-  public String setButtonCondition(String model) {
-    String condition = super.setButtonCondition(model);
-
-    if (model != null && SaleOrder.class.getName().equals(model)) {
-      condition =
-          condition.concat(
-              " && __config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotation()");
+  public void fillPricingScaleLogs(String pricingScaleLogs) {
+    super.fillPricingScaleLogs(pricingScaleLogs);
+    if (this.model != null && SaleOrderLine.class.equals(EntityHelper.getEntityClass(this.model))) {
+      ((SaleOrderLine) this.model).setPricingScaleLogs(pricingScaleLogs);
     }
-
-    return condition;
   }
 }

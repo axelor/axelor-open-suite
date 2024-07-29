@@ -18,24 +18,21 @@
  */
 package com.axelor.apps.sale.service.saleorder.pricing;
 
-import com.axelor.apps.base.service.pricing.PricingObserverImpl;
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.google.inject.Inject;
+import com.axelor.apps.base.service.pricing.PricingMetaServiceImpl;
+import com.axelor.apps.sale.db.SaleOrder;
 
-public class SaleOrderLinePricingObserver extends PricingObserverImpl {
-
-  private final SaleOrderLine saleOrderLine;
-
-  @Inject
-  public SaleOrderLinePricingObserver(SaleOrderLine saleOrderLine) {
-    this.saleOrderLine = saleOrderLine;
-  }
+public class SalePricingMetaServiceImpl extends PricingMetaServiceImpl {
 
   @Override
-  public void fillPricingScaleLogs(String pricingScaleLogs) {
-    super.fillPricingScaleLogs(pricingScaleLogs);
-    if (this.saleOrderLine != null) {
-      this.saleOrderLine.setPricingScaleLogs(pricingScaleLogs);
+  public String setButtonCondition(String model) {
+    String condition = super.setButtonCondition(model);
+
+    if (model != null && SaleOrder.class.getName().equals(model)) {
+      condition =
+          condition.concat(
+              " && __config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotation()");
     }
+
+    return condition;
   }
 }

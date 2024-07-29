@@ -16,6 +16,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.db.mapper.Mapper;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -131,6 +132,7 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     // Populate fields from pricing scale before starting process of fillPrice
     if (appBaseService.getAppBase().getEnablePricingScale()) {
       saleOrderLinePricingService.computePricingScale(saleOrderLine, saleOrder);
+      saleOrderLineMap.put("pricingScaleLogs", saleOrderLine.getPricingScaleLogs());
     }
 
     saleOrderLineMap.putAll(fillTaxInformation(saleOrderLine, saleOrder));
