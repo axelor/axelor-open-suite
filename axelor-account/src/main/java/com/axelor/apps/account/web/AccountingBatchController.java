@@ -37,9 +37,11 @@ import com.axelor.apps.account.service.batch.BatchCloseAnnualAccounts;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
@@ -56,6 +58,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -406,10 +409,23 @@ public class AccountingBatchController {
       throws AxelorException {
     AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 
-    String warning =
+    Integer daybookMoveCount =
         Beans.get(BatchCloseAnnualAccounts.class).checkDaybookMovesOnFiscalYear(accountingBatch);
+    String title = "";
 
-    response.setAttr("daybookRemainingLabel", "hidden", StringUtils.isEmpty(warning));
-    response.setAttr("daybookRemainingLabel", "title", warning);
+    if (daybookMoveCount > 0
+        && Optional.of(accountingBatch)
+            .map(AccountingBatch::getYear)
+            .map(Year::getName)
+            .isPresent()) {
+      title =
+          String.format(
+              I18n.get(ITranslation.CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_LABEL),
+              accountingBatch.getYear().getName(),
+              daybookMoveCount);
+    }
+
+    response.setAttr("daybookRemainingLabel", "hidden", StringUtils.isEmpty(title));
+    response.setAttr("daybookRemainingLabel", "title", title);
   }
 }

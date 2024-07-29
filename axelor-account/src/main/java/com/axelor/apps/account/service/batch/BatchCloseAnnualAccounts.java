@@ -34,7 +34,6 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
-import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -553,14 +552,13 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     }
   }
 
-  public String checkDaybookMovesOnFiscalYear(AccountingBatch accountingBatch)
+  public Integer checkDaybookMovesOnFiscalYear(AccountingBatch accountingBatch)
       throws AxelorException {
-    String warning = "";
 
     if (AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS
             != accountingBatch.getActionSelect()
         || accountingBatch.getYear() == null) {
-      return warning;
+      return 0;
     }
 
     Set<Year> yearSet = new HashSet<>();
@@ -574,25 +572,14 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       List<Move> moveList =
           moveToolService.findMoveByYear(yearSet, List.of(MoveRepository.STATUS_DAYBOOK));
       if (!ObjectUtils.isEmpty(moveList)) {
-        daybookMoveCount =
-            (int)
-                moveList.stream()
-                    .filter(
-                        m ->
-                            m.getFunctionalOriginSelect()
-                                != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
-                    .count();
+        return (int)
+            moveList.stream()
+                .filter(
+                    m -> m.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
+                .count();
       }
     }
 
-    if (daybookMoveCount != 0) {
-      warning =
-          String.format(
-              I18n.get(ITranslation.CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_LABEL),
-              accountingBatch.getYear().getName(),
-              daybookMoveCount);
-    }
-
-    return warning;
+    return 0;
   }
 }
