@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -406,5 +407,28 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         && Lists.newArrayList(
                 MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE, MoveRepository.FUNCTIONAL_ORIGIN_SALE)
             .contains(functionalOriginSelect);
+  }
+
+  @Override
+  public BigDecimal getAdjustedTotalTaxRateInPercentage(List<InvoiceLineTax> invoiceLineTaxes) {
+    BigDecimal sumOfAllDeductibleRateValue = BigDecimal.ZERO;
+    BigDecimal sumOfAllNonDeductibleRateValue = BigDecimal.ZERO;
+    for (InvoiceLineTax invoiceLineTax : invoiceLineTaxes) {
+      Boolean isNonDeductibleTax = invoiceLineTax.getTaxLine().getTax().getIsNonDeductibleTax();
+      if (isNonDeductibleTax) {
+        BigDecimal nonDeductibleRateValue = invoiceLineTax.getTaxLine().getValue();
+        sumOfAllNonDeductibleRateValue = sumOfAllNonDeductibleRateValue.add(nonDeductibleRateValue);
+      } else {
+        // Deductible rate
+        BigDecimal deductibleRateValue = invoiceLineTax.getTaxLine().getValue();
+        sumOfAllDeductibleRateValue = sumOfAllDeductibleRateValue.add(deductibleRateValue);
+      }
+    }
+    return sumOfAllDeductibleRateValue.multiply(
+        BigDecimal.ONE.subtract(
+            sumOfAllNonDeductibleRateValue.divide(
+                BigDecimal.valueOf(100),
+                AppBaseService.COMPUTATION_SCALING,
+                RoundingMode.HALF_UP)));
   }
 }

@@ -1383,4 +1383,17 @@ public class InvoiceController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void checkTaxesNotOnlyNonDeductibleTaxes(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+    try {
+      for (InvoiceLine invoiceLine : invoiceLineList) {
+        invoiceLineService.checkTaxesNotOnlyNonDeductibleTaxes(invoiceLine);
+      }
+    } catch (Exception e) {
+      response.setError(e.getMessage());
+    }
+  }
 }

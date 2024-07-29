@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -921,13 +922,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
-    Set<TaxLine> taxLineSet =
-        moveLine.getTaxLineSet().stream()
-            .filter(it -> !it.getTax().getIsNonDeductibleTax())
-            .collect(Collectors.toSet());
+
+    List<InvoiceLineTax> invoiceLineTaxList =
+        moveLine.getMove().getInvoice().getInvoiceLineTaxList();
+    BigDecimal adjustedTotalTaxRateInPercentage =
+        moveLineTaxService.getAdjustedTotalTaxRateInPercentage(invoiceLineTaxList);
 
     return lineTotal
-        .multiply(taxService.getTotalTaxRateInPercentage(taxLineSet))
+        .multiply(adjustedTotalTaxRateInPercentage)
         .divide(
             BigDecimal.valueOf(100),
             currencyScaleService.getCompanyScale(moveLine),

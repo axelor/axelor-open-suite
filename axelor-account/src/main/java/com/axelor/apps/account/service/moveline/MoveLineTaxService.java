@@ -19,10 +19,12 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface MoveLineTaxService {
@@ -59,4 +61,6 @@ public interface MoveLineTaxService {
   void checkEmptyTaxLines(List<MoveLine> moveLineList) throws AxelorException;
 
   boolean isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect);
+
+  BigDecimal getAdjustedTotalTaxRateInPercentage(List<InvoiceLineTax> invoiceLineTaxes);
 }

@@ -121,4 +121,6 @@ public interface InvoiceLineService {
   BigDecimal getInTaxPrice(InvoiceLine invoiceLine);
 
   Map<String, Map<String, Object>> setScale(InvoiceLine invoiceLine, Invoice invoice);
+
+  void checkTaxesNotOnlyNonDeductibleTaxes(InvoiceLine invoiceLine) throws AxelorException;
 }

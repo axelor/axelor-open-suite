@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.InternationalService;
@@ -49,6 +50,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppInvoice;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -58,6 +60,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -754,5 +757,29 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     invoiceLineAttrsService.addCoefficientScale(invoice, attrsMap, "");
 
     return attrsMap;
+  }
+
+  @Override
+  public void checkTaxesNotOnlyNonDeductibleTaxes(InvoiceLine invoiceLine) throws AxelorException {
+    Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
+    Iterator<TaxLine> iterator = taxLineSet.iterator();
+    int countDeductibleTaxes = 0;
+    int countNonDeductibleTaxes = 0;
+    while (iterator.hasNext()) {
+      TaxLine taxLine = iterator.next();
+      Boolean isNonDeductibleTax = taxLine.getTax().getIsNonDeductibleTax();
+      if (isNonDeductibleTax) {
+        countNonDeductibleTaxes++;
+      } else {
+        countDeductibleTaxes++;
+      }
+    }
+    if (countDeductibleTaxes == 0 && countNonDeductibleTaxes > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              "Only one non-deductible tax is configured on the product/account %s. A non deductible tax should always be paired with at least one other deductible tax."),
+          invoiceLine.getProduct().getFullName() + "/" + invoiceLine.getAccount().getLabel());
+    }
   }
 }

@@ -426,7 +426,7 @@ import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
-import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.base.service.tax.TaxServiceImpl;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.message.service.TemplateMessageServiceImpl;
 
@@ -941,6 +941,6 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoicePfpValidateService.class).to(InvoicePfpValidateServiceImpl.class);
 
-    bind(TaxService.class).to(TaxAccountService.class);
+    bind(TaxServiceImpl.class).to(TaxAccountServiceImpl.class);
   }
 }
