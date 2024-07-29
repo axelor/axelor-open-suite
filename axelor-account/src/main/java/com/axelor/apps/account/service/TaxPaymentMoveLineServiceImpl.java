@@ -76,6 +76,7 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
     if (invoice == null
         || paymentRatio == null
         || reconcile == null
+        || invoiceMoveLine == null
         || ObjectUtils.isEmpty(invoice.getInvoiceLineTaxList())
         || !Optional.ofNullable(taxLine)
             .map(TaxLine::getTax)
