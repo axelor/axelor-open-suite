@@ -404,8 +404,7 @@
           <field name="isGroupedInvoicing" widget="boolean-switch" colSpan="4"/>
           <spacer/>
           <field name="isConsumptionManagement"
-            if="__config__.app.getApp('contract')?.isConsumptionManagement"
-            onChange="action-contract-record-update-field-in-version" widget="boolean-switch"
+            if="__config__.app.getApp('contract')?.isConsumptionManagement" widget="boolean-switch"
             colSpan="4" hideIf="targetTypeSelect > 2"/>
           <field name="currentContractVersion"
             if="__config__.app.getApp('contract')?.isConsumptionManagement" showTitle="false"
