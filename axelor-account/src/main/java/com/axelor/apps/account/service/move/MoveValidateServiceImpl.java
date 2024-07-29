@@ -868,7 +868,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void checkTaxAmount(Move move) throws AxelorException {
-    if (this.isReverseCharge(move)
+    if (move == null
+        || this.isReverseCharge(move)
         || this.isFinancialDiscount(move)
         || this.isFromModifiedInvoice(move)) {
       return;

@@ -74,8 +74,13 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
       MoveLine customerPaymentMoveLine,
       Reconcile reconcile) {
     if (invoice == null
+        || paymentRatio == null
+        || reconcile == null
         || ObjectUtils.isEmpty(invoice.getInvoiceLineTaxList())
-        || !Optional.of(taxLine).map(TaxLine::getTax).map(Tax::getManageByAmount).orElse(false)) {
+        || !Optional.ofNullable(taxLine)
+            .map(TaxLine::getTax)
+            .map(Tax::getManageByAmount)
+            .orElse(false)) {
       return null;
     }
 

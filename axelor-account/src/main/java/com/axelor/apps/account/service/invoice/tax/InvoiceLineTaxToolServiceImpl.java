@@ -71,7 +71,7 @@ public class InvoiceLineTaxToolServiceImpl implements InvoiceLineTaxToolService 
 
   @Override
   public boolean isManageByAmount(InvoiceLineTax invoiceLineTax) {
-    return Optional.of(invoiceLineTax)
+    return Optional.ofNullable(invoiceLineTax)
         .map(InvoiceLineTax::getTaxLine)
         .map(TaxLine::getTax)
         .map(Tax::getManageByAmount)
