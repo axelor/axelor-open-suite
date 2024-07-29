@@ -86,10 +86,6 @@
     <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setBudgetDomain"/>
   </action-method>
 
-  <action-method name="action-method-budget-sale-orderline-set-product-account">
-    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setProductAccount"/>
-  </action-method>
-
   <action-group name="action-group-budget-sale-order-line-budget-distribution-onchange">
     <action name="action-method-sale-order-line-budget-distribution-validate-amount"/>
     <action name="action-sale-order-method-compute-budget-remaining-amount-to-allocate"/>
