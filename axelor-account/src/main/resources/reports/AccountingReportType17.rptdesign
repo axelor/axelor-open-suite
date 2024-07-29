@@ -1291,6 +1291,11 @@ ON Asset.analytic_distribution_template = AnalyticDistributionTemplate.id
 LEFT JOIN public.account_accounting_report_account_set AS AccountSet 
 ON AccountSet.account_accounting_report = AccountingReport.id
 
+LEFT JOIN public.account_accounting_report_account_tag_set AS ReportAccountTagSet ON (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
+LEFT JOIN public.account_account_account_tag_set AS AccountTagSet ON (ReportAccountTagSet.account_tag_set = AccountTagSet.account_tag_set)
+LEFT JOIN public.account_accounting_report_partner_tag_set AS ReportPartnerTagSet ON (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+LEFT JOIN public.base_partner_partner_tag_set AS PartnerTagSet ON (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.partner_tag_set)
+
 LEFT JOIN public.account_fixed_asset_line AS AssetLine
 ON ((AssetLine.fixed_asset = Asset.id OR AssetLine.fiscal_fixed_asset = Asset.id OR AssetLine.ifrs_fixed_asset = Asset.id)
 	AND AssetLine.type_select = AccountingReport.fixed_asset_line_type_select
@@ -1314,6 +1319,8 @@ WHERE
    	AND Asset.company = AccountingReport.company
    	AND (AccountingReport.analytic_distribution_template IS NULL OR Asset.analytic_distribution_template = AccountingReport.analytic_distribution_template)
    	AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
+   	AND (ReportAccountTagSet.account_tag_set IS NULL OR AccountTagSet.account_account = Account.id)
+	AND (ReportPartnerTagSet.partner_tag_set IS NULL OR PartnerTagSet.base_partner = Asset.partner)
    	
 GROUP BY Asset.id, Account.code, Account.name, AccountingReport.date_from, AccountingReport.date_to, 
 		 AccountingReport.subtotal_by_analytic_distribution, AnalyticDistributionTemplate.name, Currency.number_of_decimals
