@@ -29,6 +29,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderContextHelper;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
@@ -83,6 +84,9 @@ public class SaleOrderLineController {
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineInitValueService.class).onLoadInitValues(saleOrder, saleOrderLine));
     response.setValues(saleOrderLineMap);
+
+    // Check
+    Beans.get(SaleOrderLineMultipleQtyService.class).checkMultipleQty(saleOrderLine, response);
   }
 
   public void onNewEditable(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -144,6 +148,10 @@ public class SaleOrderLineController {
         response.setAttrs(
             Beans.get(SaleOrderLineViewService.class)
                 .getProductOnChangeAttrs(saleOrderLine, saleOrder));
+
+        // Check
+        Beans.get(SaleOrderLineMultipleQtyService.class).checkMultipleQty(saleOrderLine, response);
+        Beans.get(SaleOrderLineCheckService.class).productOnChangeCheck(saleOrderLine, saleOrder);
 
         if (Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale()) {
           Optional<Pricing> defaultPricing =
@@ -267,6 +275,10 @@ public class SaleOrderLineController {
     response.setAttrs(
         Beans.get(SaleOrderLineViewService.class).hidePriceDiscounted(saleOrder, saleOrderLine));
     response.setValues(saleOrderLineMap);
+
+    // Check
+    Beans.get(SaleOrderLineMultipleQtyService.class).checkMultipleQty(saleOrderLine, response);
+    Beans.get(SaleOrderLineCheckService.class).qtyOnChangeCheck(saleOrderLine, saleOrder);
   }
 
   public void taxLineOnChange(ActionRequest request, ActionResponse response)
@@ -319,5 +331,12 @@ public class SaleOrderLineController {
 
   public void setScaleForPriceAndQty(ActionRequest request, ActionResponse response) {
     response.setAttrs(Beans.get(SaleOrderLineViewService.class).getPriceAndQtyScale());
+  }
+
+  public void unitOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    Beans.get(SaleOrderLineCheckService.class).unitOnChangeCheck(saleOrderLine, saleOrder);
   }
 }

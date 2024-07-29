@@ -6,6 +6,7 @@ import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppSale;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,9 +26,10 @@ public class SaleOrderLineMultipleQtyServiceImpl implements SaleOrderLineMultipl
   @Override
   public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response) {
 
+    AppSale appSale = appSaleService.getAppSale();
     Product product = saleOrderLine.getProduct();
 
-    if (product == null) {
+    if (product == null || !appSale.getManageMultipleSaleQuantity()) {
       return;
     }
 

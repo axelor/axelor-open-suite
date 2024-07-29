@@ -24,7 +24,6 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
@@ -33,12 +32,11 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
-import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
+import com.axelor.apps.supplychain.service.SaleOrderLineCheckSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderLineDomainSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
@@ -78,27 +76,6 @@ public class SaleOrderLineController {
       response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void checkStocks(ActionRequest request, ActionResponse response) {
-    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    try {
-      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext());
-      Product product = saleOrderLine.getProduct();
-      StockLocation stockLocation = saleOrder.getStockLocation();
-      Unit unit = saleOrderLine.getUnit();
-      if (product == null
-          || stockLocation == null
-          || unit == null
-          || saleOrderLine.getSaleSupplySelect()
-              != SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK) {
-        return;
-      }
-      Beans.get(StockLocationLineService.class)
-          .checkIfEnoughStock(stockLocation, product, unit, saleOrderLine.getQty());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 
@@ -322,20 +299,6 @@ public class SaleOrderLineController {
     }
   }
 
-  public void checkInvoicedOrDeliveredOrderQty(ActionRequest request, ActionResponse response) {
-    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-
-    SaleOrderLineServiceSupplyChain saleOrderLineService =
-        Beans.get(SaleOrderLineServiceSupplyChain.class);
-
-    BigDecimal qty = saleOrderLineService.checkInvoicedOrDeliveredOrderQty(saleOrderLine);
-
-    saleOrderLineService.updateDeliveryState(saleOrderLine);
-
-    response.setValue("qty", qty);
-    response.setValue("deliveryState", saleOrderLine.getDeliveryState());
-  }
-
   /**
    * Called from sale order line, on desired delivery date change. Call {@link
    * SaleOrderLineServiceSupplyChain#updateStockMoveReservationDateTime(SaleOrderLine)}.
@@ -442,7 +405,8 @@ public class SaleOrderLineController {
     }
   }
 
-  public void saleSupplySelectOnChange(ActionRequest request, ActionResponse response) {
+  public void saleSupplySelectOnChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     SaleOrderLineProductSupplychainService saleOrderLineProductSupplychainService =
         Beans.get(SaleOrderLineProductSupplychainService.class);
@@ -456,6 +420,10 @@ public class SaleOrderLineController {
         Beans.get(SaleOrderLineViewSupplychainService.class)
             .getSaleSupplySelectOnChangeAttrs(saleOrderLine, saleOrder));
     response.setValues(saleOrderLineMap);
+
+    // Check
+    Beans.get(SaleOrderLineCheckSupplychainService.class)
+        .saleSupplySelectOnChangeCheck(saleOrderLine, saleOrder);
   }
 
   public void getAnalyticDistributionTemplateDomain(

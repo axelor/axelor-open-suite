@@ -56,7 +56,7 @@
       <insert position="after">
         <panel name="settingsPanel" title="Configuration">
           <field name="saleSupplySelect"
-            onChange="supplychain-action-sale-order-line-group-sale-supply-select-onchange"/>
+            onChange="action-sale-order-line-method-sale-supply-select-onchange"/>
           <field name="standardDelay" hidden="true"
             showIf="saleSupplySelect == 2 || saleSupplySelect == 3 || saleSupplySelect == 4"/>
           <field name="pricingScaleLogs" colSpan="12"
@@ -92,7 +92,7 @@
       <insert position="after">
         <panel name="settingsPanel" title="Settings">
           <field name="saleSupplySelect"
-            onChange="supplychain-action-sale-order-line-group-sale-supply-select-onchange"/>
+            onChange="action-sale-order-line-method-sale-supply-select-onchange"/>
           <field name="standardDelay" hidden="true"
             showIf="saleSupplySelect == 2 || saleSupplySelect == 3 || saleSupplySelect == 4"/>
           <field name="pricingScaleLogs" colSpan="12"
@@ -251,14 +251,6 @@
     <action name="action-sale-order-line-method-print-analytic-account"/>
   </action-group>
 
-  <action-group
-    name="supplychain-action-sale-order-line-group-sale-supply-select-onchange"
-    if-module="axelor-production">
-    <action name="action-sale-order-line-method-sale-supply-select-onchange"/>
-    <action name="action-sale-order-line-method-check-stock"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/> <!-- check -->
-  </action-group>
-
   <action-group name="action-sale-order-line-group-mass-invoicing">
     <action name="action-sale-order-line-validate-selected-lines"/>
     <action name="action-sale-order-line-method-set-sol-list-to-invoice"/>
@@ -306,12 +298,6 @@
   <action-method name="action-method-sale-order-line-change-requested-reserved-qty">
     <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
       method="changeRequestedReservedQty"/>
-  </action-method>
-
-  <action-method
-    name="action-sale-order-line-method-check-delivered-or-invoiced-order-qty">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
-      method="checkInvoicedOrDeliveredOrderQty"/>
   </action-method>
 
   <action-method name="action-method-sale-order-line-request-qty">
