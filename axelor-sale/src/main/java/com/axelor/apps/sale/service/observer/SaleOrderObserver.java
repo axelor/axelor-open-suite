@@ -9,7 +9,7 @@ import com.axelor.inject.Beans;
 
 public class SaleOrderObserver {
 
-  public void confirmSaleOrder(@Observes SaleOrderConfirm event) throws AxelorException {
+  public void saleConfirmSaleOrder(@Observes SaleOrderConfirm event) throws AxelorException {
     SaleOrder saleOrder = event.getSaleOrder();
     Beans.get(SaleOrderConfirmService.class).confirmProcess(saleOrder);
   }

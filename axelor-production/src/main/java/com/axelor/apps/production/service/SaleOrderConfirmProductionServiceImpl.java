@@ -40,7 +40,7 @@ public class SaleOrderConfirmProductionServiceImpl implements SaleOrderConfirmPr
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
+  public void confirmProcess(SaleOrder saleOrder) throws AxelorException {
 
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getProductionOrderGenerationAuto()) {

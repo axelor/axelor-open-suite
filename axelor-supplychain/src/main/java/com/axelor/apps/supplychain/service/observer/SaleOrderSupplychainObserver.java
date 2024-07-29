@@ -9,9 +9,9 @@ import com.axelor.inject.Beans;
 
 public class SaleOrderSupplychainObserver {
 
-  public void confirmSaleOrder(@Observes SaleOrderConfirm event) throws AxelorException {
+  public void supplychainConfirmSaleOrder(@Observes SaleOrderConfirm event) throws AxelorException {
     SaleOrder saleOrder = event.getSaleOrder();
     event.setNotifyMessage(
-        Beans.get(SaleOrderConfirmSupplychainService.class).confirmSaleOrder(saleOrder));
+        Beans.get(SaleOrderConfirmSupplychainService.class).confirmProcess(saleOrder));
   }
 }

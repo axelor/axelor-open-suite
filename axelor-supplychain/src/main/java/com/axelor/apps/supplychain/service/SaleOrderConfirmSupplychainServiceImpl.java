@@ -45,7 +45,7 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public String confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
+  public String confirmProcess(SaleOrder saleOrder) throws AxelorException {
 
     if (!appSupplychainService.isApp("supplychain")) {
       return "";

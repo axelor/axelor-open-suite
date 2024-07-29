@@ -11,7 +11,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderBudgetObserver {
 
-  public void confirmSaleOrder(@Observes SaleOrderConfirm event) throws AxelorException {
+  public void budgetConfirmSaleOrder(@Observes SaleOrderConfirm event) throws AxelorException {
     SaleOrder saleOrder = event.getSaleOrder();
     SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
 

@@ -18,15 +18,20 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
@@ -46,9 +51,9 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
   public StockMoveServiceProductionImpl(
       StockMoveLineService stockMoveLineService,
       StockMoveToolService stockMoveToolService,
-      com.axelor.apps.stock.db.repo.StockMoveLineRepository stockMoveLineRepository,
+      StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
-      com.axelor.apps.stock.db.repo.StockMoveRepository stockMoveRepository,
+      StockMoveRepository stockMoveRepository,
       PartnerProductQualityRatingService partnerProductQualityRatingService,
       ProductRepository productRepository,
       PartnerStockSettingsService partnerStockSettingsService,
@@ -57,12 +62,12 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       ProductCompanyService productCompanyService,
       AppSupplychainService appSupplyChainService,
       AppAccountService appAccountService,
-      com.axelor.apps.purchase.db.repo.PurchaseOrderRepository purchaseOrderRepo,
-      com.axelor.apps.sale.db.repo.SaleOrderRepository saleOrderRepo,
+      PurchaseOrderRepository purchaseOrderRepo,
+      SaleOrderRepository saleOrderRepo,
       UnitConversionService unitConversionService,
       ReservedQtyService reservedQtyService,
       PartnerSupplychainService partnerSupplychainService,
-      com.axelor.apps.account.db.repo.FixedAssetRepository fixedAssetRepository,
+      FixedAssetRepository fixedAssetRepository,
       PfpService pfpService,
       SaleOrderWorkflowService saleOrderWorkflowService,
       SaleOrderConfirmService saleOrderConfirmService,
