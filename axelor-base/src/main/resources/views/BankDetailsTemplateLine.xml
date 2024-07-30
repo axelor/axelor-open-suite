@@ -13,7 +13,7 @@
     model="com.axelor.apps.base.db.BankDetailsTemplateLine">
     <panel name="mainPanel" colSpan="12">
       <field name="title" title="Title" colSpan="6"/>
-      <field name="metaField" title="Bank details fields" colSpan="6"
+      <field name="metaField" title="Bank details fields" colSpan="6" required="true"
         domain="self.name in ('bankCode','sortCode','accountNbr','bbanKey')"
         onChange="action-base-record-bank-details-template-line-set-title"/>
     </panel>

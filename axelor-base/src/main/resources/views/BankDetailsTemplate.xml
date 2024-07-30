@@ -24,8 +24,6 @@
 
   <action-validate
     name="action-bank-details-template-validate-check-duplicate-or-null-bank-details-fields">
-    <error message="Error: an empty bank details field is selected."
-      if="bankDetailsTemplateLineList?.findAll{it.metaField == null}?.size() &gt; 0"/>
     <error message="Error: duplicate bank details fields are selected."
       if="bankDetailsTemplateLineList?.findAll{it.metaField.name == 'bankCode'}?.size() &gt; 1
       || bankDetailsTemplateLineList?.findAll{it.metaField.name == 'sortCode'}?.size() &gt; 1
