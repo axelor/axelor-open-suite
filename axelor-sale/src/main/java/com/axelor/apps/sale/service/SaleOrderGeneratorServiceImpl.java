@@ -20,30 +20,42 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+import java.util.List;
+
 public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService {
-  SaleOrderRepository saleOrderRepository;
+  protected SaleOrderRepository saleOrderRepository;
   protected AppSaleService appSaleService;
   protected CompanyService companyService;
-
+  protected SaleOrderInitValueService saleOrderInitValueService;
+  protected  SaleOrderOnChangeService saleOrderOnChangeService;
+  protected SaleOrderDomainService saleOrderDomainService;
+  protected PartnerRepository partnerRepository;
   @Inject
   public SaleOrderGeneratorServiceImpl(
       SaleOrderRepository saleOrderRepository,
       AppSaleService appSaleService,
-      CompanyService companyService) {
+      CompanyService companyService, SaleOrderInitValueService saleOrderInitValueService, SaleOrderOnChangeService saleOrderOnChangeService, SaleOrderDomainService saleOrderDomainService,PartnerRepository partnerRepository) {
     this.saleOrderRepository = saleOrderRepository;
     this.appSaleService = appSaleService;
     this.companyService = companyService;
+    this.saleOrderInitValueService=saleOrderInitValueService;
+    this.saleOrderOnChangeService=saleOrderOnChangeService;
+    this.saleOrderDomainService=saleOrderDomainService;
+    this.partnerRepository =partnerRepository;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -52,10 +64,12 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
       throws AxelorException, JsonProcessingException {
     SaleOrder saleOrder = new SaleOrder();
     boolean isTemplate = false;
-    SaleOrderInitValueService saleOrderInitValueService =
-        Beans.get(SaleOrderInitValueService.class);
     saleOrderInitValueService.setIsTemplate(saleOrder, isTemplate);
     saleOrderInitValueService.getOnNewInitValues(saleOrder);
+    String domain=saleOrderDomainService.getPartnerBaseDomain(saleOrder.getCompany());
+    if (!partnerRepository.all().filter(domain).fetch().contains(clientPartner)) {
+      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get("The client provided don't respect the conditions"));}
     saleOrder.setClientPartner(clientPartner);
     Beans.get(SaleOrderOnChangeService.class).partnerOnChange(saleOrder);
     saleOrderRepository.save(saleOrder);

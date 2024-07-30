@@ -43,7 +43,7 @@ import javax.ws.rs.core.Response;
 public class SaleOrderRestController {
   @Operation(
       summary = "Create a sale oder",
-      tags = {"SaleOrder"})
+      tags = {"Sale order"})
   @Path("/")
   @POST
   @HttpExceptionHandler

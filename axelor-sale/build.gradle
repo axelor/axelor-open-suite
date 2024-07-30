@@ -18,8 +18,6 @@ dependencies {
 	api project(":modules:axelor-crm")
 
 	implementation libs.commons_lang3
-	implementation libs.commons_collections4
-	testImplementation libs.mockito
 	implementation libs.swagger_jaxrs
 	implementation libs.jaxb_bind_api
 }
