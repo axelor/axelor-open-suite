@@ -22,19 +22,13 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.service.app.AppCrmService;
-import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
-import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -42,7 +36,6 @@ import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainServi
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -58,15 +51,12 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
-      SequenceService sequenceService,
       PartnerRepository partnerRepo,
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       AppCrmService appCrmService,
       UserService userService,
-      SaleOrderService saleOrderService,
-      SaleConfigService saleConfigService,
-      SaleOrderPrintService saleOrderPrintService,
+      SaleOrderCheckService saleOrderCheckService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
@@ -74,55 +64,18 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       PartnerSupplychainService partnerSupplychainService,
       AnalyticToolSupplychainService analyticToolSupplychainService) {
     super(
-        sequenceService,
         partnerRepo,
         saleOrderRepo,
         appSaleService,
         appCrmService,
         userService,
-        saleOrderService,
-        saleConfigService,
-        saleOrderPrintService);
+        saleOrderCheckService);
     this.saleOrderStockService = saleOrderStockService;
     this.saleOrderPurchaseService = saleOrderPurchaseService;
     this.appSupplychainService = appSupplychainService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
     this.analyticToolSupplychainService = analyticToolSupplychainService;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
-
-    if (!appSupplychainService.isApp("supplychain")) {
-      super.confirmSaleOrder(saleOrder);
-      return;
-    }
-
-    analyticToolSupplychainService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
-
-    if (partnerSupplychainService.isBlockedPartnerOrParent(saleOrder.getClientPartner())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(SupplychainExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
-    }
-
-    super.confirmSaleOrder(saleOrder);
-
-    AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
-
-    if (appSupplychain.getPurchaseOrderGenerationAuto()) {
-      saleOrderPurchaseService.createPurchaseOrders(saleOrder);
-    }
-    if (appSupplychain.getCustomerStockMoveGenerationAuto()) {
-      saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
-    }
-    int intercoSaleCreatingStatus = appSupplychain.getIntercoSaleCreatingStatusSelect();
-    if (saleOrder.getInterco()
-        && intercoSaleCreatingStatus == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
-      Beans.get(IntercoService.class).generateIntercoPurchaseFromSale(saleOrder);
-    }
   }
 
   @Override
@@ -139,47 +92,6 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
     } catch (Exception e) {
       e.printStackTrace();
-    }
-  }
-
-  @Override
-  @Transactional(
-      rollbackOn = {AxelorException.class, RuntimeException.class},
-      ignore = {BlockedSaleOrderException.class})
-  public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
-
-    if (!appSupplychainService.isApp("supplychain")) {
-      super.finalizeQuotation(saleOrder);
-      return;
-    }
-
-    accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
-    super.finalizeQuotation(saleOrder);
-    int intercoSaleCreatingStatus =
-        appSupplychainService.getAppSupplychain().getIntercoSaleCreatingStatusSelect();
-    if (saleOrder.getInterco()
-        && intercoSaleCreatingStatus == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-      Beans.get(IntercoService.class).generateIntercoPurchaseFromSale(saleOrder);
-    }
-    if (saleOrder.getCreatedByInterco()) {
-      fillIntercompanyPurchaseOrderCounterpart(saleOrder);
-    }
-  }
-
-  /**
-   * Fill interco purchase order counterpart is the sale order exist.
-   *
-   * @param saleOrder
-   */
-  protected void fillIntercompanyPurchaseOrderCounterpart(SaleOrder saleOrder) {
-    PurchaseOrder purchaseOrder =
-        Beans.get(PurchaseOrderRepository.class)
-            .all()
-            .filter("self.purchaseOrderSeq = :purchaseOrderSeq")
-            .bind("purchaseOrderSeq", saleOrder.getExternalReference())
-            .fetchOne();
-    if (purchaseOrder != null) {
-      purchaseOrder.setExternalReference(saleOrder.getSaleOrderSeq());
     }
   }
 

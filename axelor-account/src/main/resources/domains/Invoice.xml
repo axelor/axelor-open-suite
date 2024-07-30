@@ -80,7 +80,7 @@
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice"
       title="Invoice Lines"/>
     <one-to-many name="invoiceLineTaxList" ref="InvoiceLineTax" mappedBy="invoice"
-      title="Tax Lines" readonly="true"/>
+      title="Tax Lines"/>
 
     <!-- Configuration -->
     <boolean name="alreadyPrintedOk" title="Already printed" default="true"/>

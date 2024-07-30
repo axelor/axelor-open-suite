@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineComplementaryProductServiceImpl
     implements SaleOrderLineComplementaryProductService {
@@ -104,6 +105,20 @@ public class SaleOrderLineComplementaryProductServiceImpl
       saleOrderLineMap.put(
           "selectedComplementaryProductList", saleOrderLine.getSelectedComplementaryProductList());
     }
+    return saleOrderLineMap;
+  }
+
+  @Override
+  public Map<String, Object> setIsComplementaryProductsUnhandledYet(SaleOrderLine saleOrderLine) {
+    Product product = saleOrderLine.getProduct();
+
+    saleOrderLine.setIsComplementaryProductsUnhandledYet(
+        product != null && CollectionUtils.isNotEmpty(product.getComplementaryProductList()));
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.put(
+        "isComplementaryProductsUnhandledYet",
+        saleOrderLine.getIsComplementaryProductsUnhandledYet());
+
     return saleOrderLineMap;
   }
 }

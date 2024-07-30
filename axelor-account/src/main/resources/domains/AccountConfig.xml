@@ -234,10 +234,11 @@
       help="This configuration will allow you to set up the statement to be displayed according to the product category present in the invoice."
       default="true"/>
     <string name="invoiceClientBox" large="true" multiline="true"
-      title="Client box in invoice"/>
+      title="Client box in invoice" translatable="true"/>
     <string name="saleInvoiceLegalNote" large="true" multiline="true"
-      title="Legal note on sale invoices"/>
-    <string name="termsAndConditions" large="true" title="Terms and Conditions"/>
+      title="Legal note on sale invoices" translatable="true"/>
+    <string name="termsAndConditions" large="true" title="Terms and Conditions"
+      translatable="true"/>
     <many-to-one ref="com.axelor.meta.db.MetaFile" name="invoiceWatermark"
       title="Watermark"/>
     <one-to-many name="statementsForItemsCategoriesList"

@@ -2,10 +2,7 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
-import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
@@ -13,14 +10,11 @@ import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.AppSale;
-import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -30,29 +24,29 @@ import java.util.Optional;
 public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService {
 
   protected AppBaseService appBaseService;
-  protected CompanyRepository companyRepository;
-  protected AppSaleService appSaleService;
   protected UserService userService;
-  protected BankDetailsService bankDetailsService;
+  protected SaleOrderBankDetailsService saleOrderBankDetailsService;
   protected SaleConfigService saleConfigService;
   protected CompanyService companyService;
+  protected SaleOrderUserService saleOrderUserService;
+  protected SaleOrderProductPrintingService saleOrderProductPrintingService;
 
   @Inject
   public SaleOrderInitValueServiceImpl(
       AppBaseService appBaseService,
-      CompanyRepository companyRepository,
-      AppSaleService appSaleService,
       UserService userService,
-      BankDetailsService bankDetailsService,
+      SaleOrderBankDetailsService saleOrderBankDetailsService,
       SaleConfigService saleConfigService,
-      CompanyService companyService) {
+      CompanyService companyService,
+      SaleOrderUserService saleOrderUserService,
+      SaleOrderProductPrintingService saleOrderProductPrintingService) {
     this.appBaseService = appBaseService;
-    this.companyRepository = companyRepository;
-    this.appSaleService = appSaleService;
     this.userService = userService;
-    this.bankDetailsService = bankDetailsService;
+    this.saleOrderBankDetailsService = saleOrderBankDetailsService;
     this.saleConfigService = saleConfigService;
     this.companyService = companyService;
+    this.saleOrderUserService = saleOrderUserService;
+    this.saleOrderProductPrintingService = saleOrderProductPrintingService;
   }
 
   @Override
@@ -60,8 +54,16 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
     Map<String, Object> initValues = new HashMap<>();
     initValues.putAll(saleOrderDefaultValues(saleOrder));
     initValues.putAll(getInAti(saleOrder));
-    initValues.putAll(getBankDetails(saleOrder));
-    initValues.putAll(getGroupProductsOnPrintings(saleOrder));
+    initValues.putAll(saleOrderBankDetailsService.getBankDetails(saleOrder));
+    initValues.putAll(saleOrderProductPrintingService.getGroupProductsOnPrintings(saleOrder));
+    return initValues;
+  }
+
+  @Override
+  public Map<String, Object> setIsTemplate(SaleOrder saleOrder, boolean isTemplate) {
+    Map<String, Object> initValues = new HashMap<>();
+    saleOrder.setTemplate(isTemplate);
+    initValues.put("template", saleOrder.getTemplate());
     return initValues;
   }
 
@@ -77,9 +79,7 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
   protected Map<String, Object> saleOrderDefaultValuesMap(SaleOrder saleOrder)
       throws AxelorException {
     Map<String, Object> saleOrderMap = new HashMap<>();
-    AppSale appSale = appSaleService.getAppSale();
     Company company = companyService.getDefaultCompany(null);
-    int salesPersonSelect = appSale.getSalespersonSelect();
     User user = AuthUtils.getUser();
     PrintingSettings printingSettings =
         Optional.ofNullable(user)
@@ -97,13 +97,13 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
     saleOrderMap.put("statusSelect", SaleOrderRepository.STATUS_DRAFT_QUOTATION);
     saleOrderMap.put("company", company);
 
-    saleOrderMap.put("salespersonUser", getUser(saleOrder, salesPersonSelect));
+    saleOrderMap.put("salespersonUser", saleOrderUserService.getUser(saleOrder));
     saleOrderMap.put("team", userService.getUserActiveTeam());
     saleOrderMap.put("printingSettings", printingSettings);
     if (user != null) {
       saleOrderMap.put("tradingName", user.getTradingName());
     }
-    saleOrderMap.put("template", false);
+    saleOrderMap.put("template", saleOrder.getTemplate());
 
     if (company != null) {
       saleOrderMap.put("duration", saleConfig.getDefaultValidityDuration());
@@ -126,35 +126,5 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
     }
     saleOrderMap.put("inAti", saleOrder.getInAti());
     return saleOrderMap;
-  }
-
-  protected Map<String, Object> getBankDetails(SaleOrder saleOrder) throws AxelorException {
-    Map<String, Object> saleOrderMap = new HashMap<>();
-    saleOrder.setCompanyBankDetails(
-        bankDetailsService.getDefaultCompanyBankDetails(
-            saleOrder.getCompany(), null, saleOrder.getClientPartner(), null));
-    saleOrderMap.put("companyBankDetails", saleOrder.getCompanyBankDetails());
-    return saleOrderMap;
-  }
-
-  protected Map<String, Object> getGroupProductsOnPrintings(SaleOrder saleOrder) {
-    Map<String, Object> saleOrderMap = new HashMap<>();
-    AppBase appBase = appBaseService.getAppBase();
-    saleOrder.setGroupProductsOnPrintings(appBase.getIsRegroupProductsOnPrintings());
-    saleOrderMap.put("companyBankDetails", saleOrder.getGroupProductsOnPrintings());
-    return saleOrderMap;
-  }
-
-  protected User getUser(SaleOrder saleOrder, int salesPersonSelect) {
-    User user = null;
-    Partner clientPartner = saleOrder.getClientPartner();
-    if (salesPersonSelect == AppSaleRepository.APP_SALE_CURRENT_LOGIN_USER) {
-      user = AuthUtils.getUser();
-    }
-    if (salesPersonSelect == AppSaleRepository.APP_SALE_USER_ASSIGNED_TO_CUSTOMER
-        && clientPartner != null) {
-      user = clientPartner.getUser();
-    }
-    return user;
   }
 }

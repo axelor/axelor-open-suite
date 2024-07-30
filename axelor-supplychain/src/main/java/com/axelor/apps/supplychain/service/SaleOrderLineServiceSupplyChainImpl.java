@@ -33,7 +33,7 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -58,18 +58,22 @@ import javax.persistence.TypedQuery;
 public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineServiceSupplyChain {
 
   protected AppSupplychainService appSupplychainService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
-  public SaleOrderLineServiceSupplyChainImpl(AppSupplychainService appSupplychainService) {
+  public SaleOrderLineServiceSupplyChainImpl(
+      AppSupplychainService appSupplychainService,
+      StockLocationLineFetchService stockLocationLineFetchService) {
     this.appSupplychainService = appSupplychainService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   @Override
   public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
 
     StockLocationLine stockLocationLine =
-        Beans.get(StockLocationLineService.class)
-            .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
+        stockLocationLineFetchService.getStockLocationLine(
+            saleOrder.getStockLocation(), saleOrderLine.getProduct());
 
     if (stockLocationLine == null) {
       return BigDecimal.ZERO;
@@ -81,8 +85,8 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
   public BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
 
     StockLocationLine stockLocationLine =
-        Beans.get(StockLocationLineService.class)
-            .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
+        stockLocationLineFetchService.getStockLocationLine(
+            saleOrder.getStockLocation(), saleOrderLine.getProduct());
 
     if (stockLocationLine == null) {
       return BigDecimal.ZERO;

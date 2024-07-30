@@ -50,7 +50,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -518,11 +517,9 @@ public class InvoiceLineController {
       InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
       Invoice parent = this.getInvoice(context);
-      String userLanguage = AuthUtils.getUser().getLanguage();
 
       Map<String, String> translation =
-          invoiceLineService.getProductDescriptionAndNameTranslation(
-              parent, invoiceLine, userLanguage);
+          invoiceLineService.getProductDescriptionAndNameTranslation(parent, invoiceLine);
 
       String description = translation.get("description");
       String productName = translation.get("productName");

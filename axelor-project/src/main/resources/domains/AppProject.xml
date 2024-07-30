@@ -10,7 +10,8 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <string name="projectLabel" title="Project Label"/>
-    <boolean name="resourceManagement" title="Resource management"/>
+    <boolean name="resourceManagement" title="Resource management"
+      help="This option enables resource reservation on projects. You can create resources that can be booked on projects."/>
     <boolean name="checkResourceAvailibility" title="Check availability of resources"/>
     <boolean name="isEnableSignature" title="Enable task signature"/>
     <boolean name="isEnablePerProjectTaskSequence" title="Enable per project task sequence"/>

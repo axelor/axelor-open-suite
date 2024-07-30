@@ -622,8 +622,11 @@
           grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change"
           canMove="true" orderBy="sequence" height="30"/>
       </panel>
-      <panel name="invoiceTaxPanel" title="Tax" showTitle="false">
-        <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
+      <panel name="invoiceTaxPanel" title="Tax" showTitle="false"
+        readonlyIf="statusSelect != 1">
+        <panel-related name="invoiceLineTaxListPanel" readonlyIf="statusSelect != 1"
+          field="invoiceLineTaxList" canRemove="false" canNew="false"
+          onChange="action-invoice-method-compute,action-invoice-method-generate-invoice-terms"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
       <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
@@ -666,7 +669,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         title="Business project" colSpan="12" if-module="axelor-business-project">
         <field name="project" onSelect="action-invoice-attrs-domain-project"
-          form-view="project-form" grid-view="project-grid" colSpan="6"/>
+          form-view="business-project-form" grid-view="project-grid" colSpan="6"/>
         <button name="updateLinesBtn" title="Update lines with selected project"
           onClick="save,action-invoice-business-project-method-update-lines,save" colSpan="6"
           readonlyIf="!project"/>
@@ -1173,7 +1176,7 @@
         onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1"
         form-view="currency-form" grid-view="currency-grid"/>
       <field name="project" if-module="axelor-business-project"
-        onSelect="action-invoice-attrs-domain-project" form-view="project-form"
+        onSelect="action-invoice-attrs-domain-project" form-view="business-project-form"
         grid-view="project-grid" if="__config__.app.isApp('project')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"/>
     </panel>

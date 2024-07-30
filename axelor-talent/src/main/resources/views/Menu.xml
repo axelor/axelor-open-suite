@@ -71,7 +71,7 @@
 
   <!-- Training menus -->
   <menuitem name="training-root" parent="hr-root" if="__config__.app.isApp('training')"
-    title="Training" icon="fa-graduation-cap" icon-background="#84429f" order="300"/>
+    title="Training" icon="mortarboard-fill" icon-background="#84429f" order="300"/>
 
   <menuitem name="training-register-all" parent="training-root" title="All trainings"
     action="training.register.all" order="100"/>
