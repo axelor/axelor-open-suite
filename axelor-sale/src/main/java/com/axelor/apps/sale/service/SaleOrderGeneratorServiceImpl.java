@@ -20,35 +20,39 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 
 public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService {
   SaleOrderRepository saleOrderRepository;
+  protected AppSaleService appSaleService;
+  protected CompanyService companyService;
 
   @Inject
-  public SaleOrderGeneratorServiceImpl(SaleOrderRepository saleOrderRepository) {
+  public SaleOrderGeneratorServiceImpl(
+      SaleOrderRepository saleOrderRepository,
+      AppSaleService appSaleService,
+      CompanyService companyService) {
     this.saleOrderRepository = saleOrderRepository;
+    this.appSaleService = appSaleService;
+    this.companyService = companyService;
   }
-
-  //  public Expense createExpense(Company company)
-  //      throws AxelorException {
-  //    Expense expense = new Expense();
-  //    setExpenseInfo(company,  expense);
-  //    expenseToolService.addExpenseLinesToExpense(expense, expenseLineList);
-  //    expenseComputationService.compute(expense);
-  //
-  //    return expenseRepository.save(expense);
-  //  }
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public SaleOrder createSaleOrder(Partner clientPartner) throws AxelorException {
     SaleOrder saleOrder = new SaleOrder();
+    Company company = companyService.getDefaultCompany(null);
     saleOrder.setClientPartner(clientPartner);
+    saleOrder.setCreationDate(LocalDate.now());
+    saleOrder.setCompany(company);
+    saleOrder.setCreationDate(appSaleService.getTodayDate(company));
     saleOrderRepository.save(saleOrder);
-    return null;
+    return saleOrder;
   }
 }
