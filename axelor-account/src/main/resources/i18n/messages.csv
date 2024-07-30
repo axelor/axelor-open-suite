@@ -3323,6 +3323,7 @@
 "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account.",,,
 "The selected cut off move status is incompatible with this misc. operation journal",,,
 "The selected date is out of the accounting period.",,,
+"The selected fiscal year %s still contains %d entry/ies in Daybook",,,
 "The selected moves have been successfully, if activated set to daybook, or else accounted.",,,
 "The sum of all invoice terms percentages is not equal to 100.",,,
 "The sum of invoice payment term amount must be equal to total amount tax included of the invoice/credit note",,,
