@@ -18,6 +18,9 @@ public interface SaleOrderLineViewService {
   Map<String, Map<String, Object>> getDiscountTypeSelectOnChangeAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder);
 
+  Map<String, Map<String, Object>> getQtyOnChangeAttrs(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder);
+
   Map<String, Map<String, Object>> hidePriceDiscounted(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 

@@ -7,14 +7,20 @@ import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductMultipleQty;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.studio.db.AppBase;
+import com.axelor.studio.db.AppSale;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,12 +28,19 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
 
   protected AppBaseService appBaseService;
   protected SaleOrderLineDiscountService saleOrderLineDiscountService;
+  protected ProductMultipleQtyService productMultipleQtyService;
+  protected AppSaleService appSaleService;
 
   @Inject
   public SaleOrderLineDummyServiceImpl(
-      AppBaseService appBaseService, SaleOrderLineDiscountService saleOrderLineDiscountService) {
+      AppBaseService appBaseService,
+      SaleOrderLineDiscountService saleOrderLineDiscountService,
+      ProductMultipleQtyService productMultipleQtyService,
+      AppSaleService appSaleService) {
     this.appBaseService = appBaseService;
     this.saleOrderLineDiscountService = saleOrderLineDiscountService;
+    this.productMultipleQtyService = productMultipleQtyService;
+    this.appSaleService = appSaleService;
   }
 
   public Map<String, Object> getOnNewDummies(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
@@ -51,6 +64,7 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
     dummyFields.putAll(initCompanyCurrency(saleOrder, saleOrderLine));
     dummyFields.putAll(fillMaxDiscount(saleOrder, saleOrderLine));
     dummyFields.putAll(initReadonlyDummy(saleOrder, saleOrderLine));
+    dummyFields.putAll(checkMultipleQty(saleOrderLine));
     return dummyFields;
   }
 
@@ -60,6 +74,7 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
     Map<String, Object> dummyFields = new HashMap<>();
     dummyFields.putAll(initNonNegotiable(saleOrder));
     dummyFields.putAll(initDecimals(saleOrder));
+    dummyFields.putAll(checkMultipleQty(saleOrderLine));
     return dummyFields;
   }
 
@@ -68,6 +83,7 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> dummyFields = new HashMap<>();
     dummyFields.putAll(fillMaxDiscount(saleOrder, saleOrderLine));
+    dummyFields.putAll(checkMultipleQty(saleOrderLine));
     return dummyFields;
   }
 
@@ -163,6 +179,25 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
         "$isReadOnly",
         statusSelect != SaleOrderRepository.STATUS_DRAFT_QUOTATION
             && !saleOrder.getOrderBeingEdited());
+    return dummyFields;
+  }
+
+  @Override
+  public Map<String, Object> checkMultipleQty(SaleOrderLine saleOrderLine) {
+    Map<String, Object> dummyFields = new HashMap<>();
+    Product product = saleOrderLine.getProduct();
+    AppSale appSale = appSaleService.getAppSale();
+
+    if (product == null || !appSale.getManageMultipleSaleQuantity()) {
+      return dummyFields;
+    }
+
+    List<ProductMultipleQty> productMultipleQtyList =
+        saleOrderLine.getProduct().getSaleProductMultipleQtyList();
+    BigDecimal qty = saleOrderLine.getQty();
+    boolean allowToForce = saleOrderLine.getProduct().getAllowToForceSaleQty();
+    boolean isMultiple = productMultipleQtyService.checkMultipleQty(qty, productMultipleQtyList);
+    dummyFields.put("$qtyValid", isMultiple || allowToForce);
     return dummyFields;
   }
 }

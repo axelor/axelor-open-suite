@@ -77,7 +77,7 @@ public interface SaleOrderLineServiceSupplyChain {
    *
    * @param saleOrderLine
    */
-  BigDecimal checkInvoicedOrDeliveredOrderQty(SaleOrderLine saleOrderLine);
+  BigDecimal checkInvoicedOrDeliveredOrderQty(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
 
   /**
    * Update stock move lines linked to this sale order line by using estimated delivery date as date

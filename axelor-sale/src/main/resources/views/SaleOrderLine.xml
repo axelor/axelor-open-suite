@@ -60,11 +60,11 @@
       width="51"/>
     <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"/>
     <field name="product" canEdit="false"
-      onChange="action-group-sale-saleorderline-product-onchange"
+      onChange="action-sale-order-line-method-get-product-information"
       onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
       grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
     <field name="product" canEdit="false"
-      onChange="action-group-sale-saleorderline-product-onchange"
+      onChange="action-sale-order-line-method-get-product-information"
       onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
       grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
     <field name="product.code" width="120"/>
@@ -142,7 +142,7 @@
   </grid>
 
   <form name="sale-order-line-project-form" title="SO line"
-    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload"
+    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-sale-order-line-method-onload"
     readonlyIf="true" canEdit="false">
     <panel name="mainPanel" title="Sale order">
       <field name="saleOrder.saleOrderSeq" title="Reference" colSpan="4"/>
@@ -153,7 +153,7 @@
   </form>
 
   <form name="sale-order-line-form" title="SO line"
-    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload"
+    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-sale-order-line-method-onload"
     onNew="action-sale-order-line-method-onnew" width="large">
     <panel name="productPanel" showIf="typeSelect > 0">
       <field name="productName" colSpan="9" title="Title"/>
@@ -233,11 +233,11 @@
 
           </panel>
           <field name="product" canEdit="false"
-            onChange="action-group-sale-saleorderline-product-onchange"
+            onChange="action-sale-order-line-method-get-product-information"
             onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
             grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
           <field name="product" canEdit="false"
-            onChange="action-group-sale-saleorderline-product-onchange"
+            onChange="action-sale-order-line-method-get-product-information"
             onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
             grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
           <field name="enableFreezeFields" colSpan="2"/>
@@ -253,7 +253,7 @@
             validIf="$qtyValid != false"/>
           <field name="unit" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
-            onChange="action-group-sale-saleorderline-unit-onchange" requiredIf="typeSelect == 0"
+            onChange="action-sale-order-line-method-unit-onchange" requiredIf="typeSelect == 0"
             canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
           <field name="price" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
@@ -441,7 +441,7 @@
 
   <form name="sale-order-line-template-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine"
-    onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-template-attrs-hidden-fields-for-client"
+    onLoad="action-sale-order-line-method-onload,action-sale-order-line-template-attrs-hidden-fields-for-client"
     onNew="action-sale-order-line-method-onnew" width="large">
     <panel name="product1Panel" showIf="typeSelect == 1">
       <field name="productName" colSpan="9" title="Title"/>
@@ -452,7 +452,7 @@
     </panel>
     <panel name="product2Panel" hideIf="typeSelect == 1">
       <field name="product" canEdit="false"
-        onChange="action-group-sale-saleorderline-product-onchange"
+        onChange="action-sale-order-line-method-get-product-information"
         onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
         grid-view="product-grid"/>
       <panel name="typeSelect2Panel" colSpan="3">
@@ -525,7 +525,7 @@
   </form>
 
   <form name="sale-order-line-menu-form" title="SO line"
-    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload"
+    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-sale-order-line-method-onload"
     onNew="action-sale-order-line-method-onnew" width="large">
     <panel name="mainPanel">
       <field name="saleOrder.clientPartner"/>
@@ -537,7 +537,7 @@
   </form>
 
   <form name="sale-order-line-invoice-form" title="SO line"
-    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload"
+    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-sale-order-line-method-onload"
     onNew="action-sale-order-line-method-onnew" width="large">
     <panel name="mainPanel">
       <field name="saleOrder" grid-view="sale-order-grid" form-view="sale-order-form"/>
@@ -591,34 +591,9 @@
 
   <!-- ACTION GROUPs -->
 
-  <action-group name="action-group-sale-saleorderline-onload">
-    <action name="action-sale-order-line-method-onload"/>
-    <action name="action-sale-order-line-method-check-qty"
-      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
-  </action-group>
-
-  <action-group name="action-group-sale-saleorderline-product-onchange">
-    <action name="action-sale-order-line-method-get-product-information"/>
-    <action name="action-sale-order-line-method-check-stock"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
-    <action name="action-sale-order-line-method-check-qty"
-      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
-  </action-group>
-
   <action-group name="action-group-sale-saleorderline-qty-onchange">
     <action name="action-sale-order-line-method-compute-pricing-scale"/> <!-- Exclude pricing method because we can't include it in a map -->
     <action name="action-sale-order-line-method-qty-onchange"/>
-    <action name="action-sale-order-line-method-check-delivered-or-invoiced-order-qty"
-      if="__config__.app.isApp('supplychain') &amp;&amp; saleOrder?.statusSelect == 3"/> <!-- check -->
-    <action name="action-sale-order-line-method-check-stock"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/> <!-- check -->
-    <action name="action-sale-order-line-method-check-qty"
-      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/> <!-- check -->
-  </action-group>
-
-  <action-group name="action-group-sale-saleorderline-unit-onchange">
-    <action name="action-sale-order-line-method-check-stock"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
   </action-group>
 
   <action-group name="action-sale-order-line-group-deliv-estimated-date-onchange">
@@ -656,10 +631,6 @@
       method="getProductInformation"/>
   </action-method>
 
-  <action-method name="action-sale-order-line-method-check-qty">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="checkQty"/>
-  </action-method>
-
   <action-method name="action-sale-order-line-method-onchange-price">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="updateInTaxPrice"/>
   </action-method>
@@ -675,11 +646,6 @@
 
   <action-method name="action-sale-order-line-method-type-select-onchange">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="typeSelectOnChange"/>
-  </action-method>
-
-  <action-method name="action-sale-order-line-method-check-stock"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="checkStocks"/>
   </action-method>
 
   <action-method name="action-sale-order-line-method-qty-onchange">
@@ -721,6 +687,10 @@
   <action-method name="action-sale-order-line-method-set-scale">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController"
       method="setScaleForPriceAndQty"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-unit-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="unitOnChange"/>
   </action-method>
 
   <!-- ACTION ATTRS -->
