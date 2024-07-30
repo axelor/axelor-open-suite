@@ -29,7 +29,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
@@ -91,7 +90,7 @@ public class SaleOrderLineController {
   public void onNewEditable(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
     response.setAttrs(Beans.get(SaleOrderLineViewService.class).focusProduct());
 
     Map<String, Object> saleOrderLineMap = new HashMap<>();
