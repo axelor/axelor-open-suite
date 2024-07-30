@@ -36,7 +36,6 @@ import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainServi
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -77,40 +76,6 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
     this.analyticToolSupplychainService = analyticToolSupplychainService;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
-
-    if (!appSupplychainService.isApp("supplychain")) {
-      super.confirmSaleOrder(saleOrder);
-      return;
-    }
-
-    analyticToolSupplychainService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
-
-    if (partnerSupplychainService.isBlockedPartnerOrParent(saleOrder.getClientPartner())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(SupplychainExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
-    }
-
-    super.confirmSaleOrder(saleOrder);
-
-    AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
-
-    if (appSupplychain.getPurchaseOrderGenerationAuto()) {
-      saleOrderPurchaseService.createPurchaseOrders(saleOrder);
-    }
-    if (appSupplychain.getCustomerStockMoveGenerationAuto()) {
-      saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
-    }
-    int intercoSaleCreatingStatus = appSupplychain.getIntercoSaleCreatingStatusSelect();
-    if (saleOrder.getInterco()
-        && intercoSaleCreatingStatus == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
-      Beans.get(IntercoService.class).generateIntercoPurchaseFromSale(saleOrder);
-    }
   }
 
   @Override

@@ -51,6 +51,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDummyService;
@@ -300,6 +301,7 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
+  @ErrorException
   public void checkBeforeConfirm(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -314,10 +316,15 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-      Beans.get(SaleOrderWorkflowService.class)
-          .confirmSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
+      String message =
+          Beans.get(SaleOrderConfirmService.class)
+              .confirmSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
 
       response.setReload(true);
+
+      if (StringUtils.notEmpty(message)) {
+        response.setNotify(message);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
