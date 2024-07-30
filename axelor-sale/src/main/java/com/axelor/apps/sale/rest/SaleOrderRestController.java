@@ -25,6 +25,7 @@ import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
 import com.axelor.apps.sale.service.SaleOrderGeneratorService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -40,7 +41,8 @@ public class SaleOrderRestController {
   @Path("/")
   @POST
   @HttpExceptionHandler
-  public Response createSaleOrder(SaleOrderPostRequest requestBody) throws AxelorException {
+  public Response createSaleOrder(SaleOrderPostRequest requestBody)
+      throws AxelorException, JsonProcessingException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().createAccess(SaleOrder.class).check();
 
