@@ -308,7 +308,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       moveLineTaxService.checkDuplicateTaxMoveLines(move);
       moveLineTaxService.checkEmptyTaxLines(move.getMoveLineList());
       this.checkTaxAmount(move);
-      this.checkSpecialAccountAmount(move);
+      this.checkSpecialAccountAmount(move, move.getId());
       this.validateWellBalancedMove(move);
       this.checkMoveLineInvoiceTermBalance(move);
       this.checkMoveLineDescription(move);
@@ -980,7 +980,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   }
 
   @Override
-  public void checkSpecialAccountAmount(Move move) throws AxelorException {
+  public void checkSpecialAccountAmount(Move move, Long moveId) throws AxelorException {
     List<MoveLine> moveLineList = move.getMoveLineList();
 
     if (!moveToolService.isOpenOrClosureMove(move)) {
@@ -1038,7 +1038,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(AccountExceptionMessage.MOVE_SPECIAL_ACCOUNTS_NOT_EQUALS),
-            move.getId());
+            moveId);
       }
     }
   }

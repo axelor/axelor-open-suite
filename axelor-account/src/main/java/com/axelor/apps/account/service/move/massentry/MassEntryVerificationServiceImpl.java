@@ -523,7 +523,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
   protected void checkSpecialAccountAmount(Move move, int temporaryMoveNumber) {
     try {
-      moveValidateService.checkSpecialAccountAmount(move);
+      moveValidateService.checkSpecialAccountAmount(move, Long.valueOf(temporaryMoveNumber));
     } catch (AxelorException e) {
       this.setErrorMassEntryMoveLines(move, temporaryMoveNumber, "balance", e.getMessage());
     }
