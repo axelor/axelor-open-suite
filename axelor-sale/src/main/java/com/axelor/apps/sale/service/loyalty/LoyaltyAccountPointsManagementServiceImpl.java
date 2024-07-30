@@ -31,7 +31,7 @@ public class LoyaltyAccountPointsManagementServiceImpl
     incrementPoints(loyaltyAccount, earnedPoints);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updatePoints(LoyaltyAccount loyaltyAccount, BigDecimal points, boolean isIncrement) {
     BigDecimal updatedBalance =
         isIncrement
