@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.invoice;
+package com.axelor.apps.account.service.invoice.tax;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.InvoiceLineTax;
@@ -27,4 +27,6 @@ import org.apache.commons.lang3.tuple.Pair;
 public interface InvoiceLineTaxToolService {
   List<Pair<InvoiceLineTax, Account>> getInvoiceLineTaxAccountPair(
       List<InvoiceLineTax> invoiceLineTaxList, Company company);
+
+  boolean isManageByAmount(InvoiceLineTax invoiceLineTax);
 }
