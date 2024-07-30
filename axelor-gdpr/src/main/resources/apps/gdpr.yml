@@ -5,7 +5,7 @@ typeSelect: standard
 installOrder: 2330
 description: |
   GDPR configuration
-image: RGPDLogo.png
+image: app-gdpr.png
 modules:
   axelor-gdpr
 dependsOn:

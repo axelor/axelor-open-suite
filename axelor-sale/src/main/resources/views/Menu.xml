@@ -5,7 +5,7 @@
 
 
   <menuitem name="sc-root-sale" title="Sales" order="-1900"
-    if="__config__.app.isApp('sale')" icon="fa-line-chart" icon-background="#e0a83c"/>
+    if="__config__.app.isApp('sale')" icon="graph-up-arrow" icon-background="#e0a83c"/>
 
   <menuitem name="sc-root-sale-customers" parent="sc-root-sale" order="100"
     title="Customers" action="sc.root.sale.customers"/>
