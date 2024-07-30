@@ -24,9 +24,12 @@ import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeService;
+import com.axelor.inject.Beans;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.time.LocalDate;
 
 public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService {
   SaleOrderRepository saleOrderRepository;
@@ -45,13 +48,16 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public SaleOrder createSaleOrder(Partner clientPartner) throws AxelorException {
+  public SaleOrder createSaleOrder(Partner clientPartner)
+      throws AxelorException, JsonProcessingException {
     SaleOrder saleOrder = new SaleOrder();
-    Company company = companyService.getDefaultCompany(null);
+    boolean isTemplate = false;
+    SaleOrderInitValueService saleOrderInitValueService =
+        Beans.get(SaleOrderInitValueService.class);
+    saleOrderInitValueService.setIsTemplate(saleOrder, isTemplate);
+    saleOrderInitValueService.getOnNewInitValues(saleOrder);
     saleOrder.setClientPartner(clientPartner);
-    saleOrder.setCreationDate(LocalDate.now());
-    saleOrder.setCompany(company);
-    saleOrder.setCreationDate(appSaleService.getTodayDate(company));
+    Beans.get(SaleOrderOnChangeService.class).partnerOnChange(saleOrder);
     saleOrderRepository.save(saleOrder);
     return saleOrder;
   }
