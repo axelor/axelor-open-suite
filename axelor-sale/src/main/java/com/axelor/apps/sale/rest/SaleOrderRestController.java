@@ -24,10 +24,16 @@ import com.axelor.apps.sale.rest.dto.SaleOrderPostRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
 import com.axelor.apps.sale.service.SaleOrderGeneratorService;
 import com.axelor.inject.Beans;
-import com.axelor.utils.api.*;
+import com.axelor.utils.api.HttpExceptionHandler;
+import com.axelor.utils.api.RequestValidator;
+import com.axelor.utils.api.ResponseConstructor;
+import com.axelor.utils.api.SecurityCheck;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
