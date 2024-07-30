@@ -7,6 +7,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -38,12 +39,13 @@ public class SaleOrderLineViewSupplychainServiceImpl extends SaleOrderLineViewSe
   public SaleOrderLineViewSupplychainServiceImpl(
       AppBaseService appBaseService,
       AppSaleService appSaleService,
+      ProductMultipleQtyService productMultipleQtyService,
       AnalyticAttrsService analyticAttrsService,
       AnalyticAttrsSupplychainService analyticAttrsSupplychainService,
       AppSupplychainService appSupplychainService,
       AccountConfigRepository accountConfigRepository,
       AppAccountService appAccountService) {
-    super(appBaseService, appSaleService);
+    super(appBaseService, appSaleService, productMultipleQtyService);
     this.analyticAttrsService = analyticAttrsService;
     this.analyticAttrsSupplychainService = analyticAttrsSupplychainService;
     this.appSupplychainService = appSupplychainService;

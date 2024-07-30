@@ -18,4 +18,6 @@ public interface SaleOrderLineDummyService {
 
   Map<String, Object> getOnDiscountTypeChangeDummies(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
+
+  Map<String, Object> checkMultipleQty(SaleOrderLine saleOrderLine);
 }

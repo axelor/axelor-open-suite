@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -42,6 +43,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineViewService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -84,9 +86,6 @@ public class SaleOrderLineController {
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineInitValueService.class).onLoadInitValues(saleOrder, saleOrderLine));
     response.setValues(saleOrderLineMap);
-
-    // Check
-    Beans.get(SaleOrderLineMultipleQtyService.class).checkMultipleQty(saleOrderLine, response);
   }
 
   public void onNewEditable(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -138,7 +137,6 @@ public class SaleOrderLineController {
             saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, saleOrderLine));
-        // Beans.get(SaleOrderLineCheckService.class).check(saleOrderLine); throws exception
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineDummyService.class)
                 .getOnProductChangeDummies(saleOrderLine, saleOrder));
@@ -149,8 +147,6 @@ public class SaleOrderLineController {
             Beans.get(SaleOrderLineViewService.class)
                 .getProductOnChangeAttrs(saleOrderLine, saleOrder));
 
-        // Check
-        Beans.get(SaleOrderLineMultipleQtyService.class).checkMultipleQty(saleOrderLine, response);
         Beans.get(SaleOrderLineCheckService.class).productOnChangeCheck(saleOrderLine, saleOrder);
 
         if (Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale()) {
@@ -221,13 +217,6 @@ public class SaleOrderLineController {
         Beans.get(SaleOrderLineOnChangeService.class).typeSelectOnChange(saleOrderLine));
   }
 
-  public void checkQty(ActionRequest request, ActionResponse response) {
-
-    Context context = request.getContext();
-    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    Beans.get(SaleOrderLineMultipleQtyService.class).checkMultipleQty(saleOrderLine, response);
-  }
-
   /**
    * Called from sale order line form view, on product selection. Call {@link
    * com.axelor.apps.sale.service.saleorder.SaleOrderLineDomainService#computeProductDomain(SaleOrderLine,
@@ -265,20 +254,27 @@ public class SaleOrderLineController {
     }
   }
 
+  @ErrorException
   public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
 
-    Map<String, Object> saleOrderLineMap =
-        Beans.get(SaleOrderLineOnChangeService.class).qtyOnChange(saleOrderLine, saleOrder);
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineOnChangeService.class).qtyOnChange(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineDummyService.class).checkMultipleQty(saleOrderLine));
     response.setAttrs(
-        Beans.get(SaleOrderLineViewService.class).hidePriceDiscounted(saleOrder, saleOrderLine));
-    response.setValues(saleOrderLineMap);
+        Beans.get(SaleOrderLineViewService.class).getQtyOnChangeAttrs(saleOrderLine, saleOrder));
 
-    // Check
-    Beans.get(SaleOrderLineMultipleQtyService.class).checkMultipleQty(saleOrderLine, response);
-    Beans.get(SaleOrderLineCheckService.class).qtyOnChangeCheck(saleOrderLine, saleOrder);
+    String notifyMessage =
+        Beans.get(SaleOrderLineMultipleQtyService.class).getMultipleQtyErrorMessage(saleOrderLine);
+    if (StringUtils.notEmpty(notifyMessage)) {
+      response.setNotify(notifyMessage);
+    }
+
+    response.setValues(saleOrderLineMap);
   }
 
   public void taxLineOnChange(ActionRequest request, ActionResponse response)

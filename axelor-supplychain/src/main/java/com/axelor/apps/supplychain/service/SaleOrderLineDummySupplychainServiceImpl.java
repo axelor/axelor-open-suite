@@ -2,10 +2,12 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
@@ -26,10 +28,12 @@ public class SaleOrderLineDummySupplychainServiceImpl extends SaleOrderLineDummy
   public SaleOrderLineDummySupplychainServiceImpl(
       AppBaseService appBaseService,
       SaleOrderLineDiscountService saleOrderLineDiscountService,
+      ProductMultipleQtyService productMultipleQtyService,
+      AppSaleService appSaleService,
       StockMoveLineRepository stockMoveLineRepository,
       AppSupplychainService appSupplychainService,
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain) {
-    super(appBaseService, saleOrderLineDiscountService);
+    super(appBaseService, saleOrderLineDiscountService, productMultipleQtyService, appSaleService);
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appSupplychainService = appSupplychainService;
     this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;

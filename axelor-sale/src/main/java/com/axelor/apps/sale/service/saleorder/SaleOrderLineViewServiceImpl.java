@@ -4,7 +4,10 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -33,12 +36,16 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
 
   protected AppBaseService appBaseService;
   protected AppSaleService appSaleService;
+  protected ProductMultipleQtyService productMultipleQtyService;
 
   @Inject
   public SaleOrderLineViewServiceImpl(
-      AppBaseService appBaseService, AppSaleService appSaleService) {
+      AppBaseService appBaseService,
+      AppSaleService appSaleService,
+      ProductMultipleQtyService productMultipleQtyService) {
     this.appBaseService = appBaseService;
     this.appSaleService = appSaleService;
+    this.productMultipleQtyService = productMultipleQtyService;
   }
 
   @Override
@@ -63,6 +70,7 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
     attrs.putAll(hidePriceDiscounted(saleOrder, saleOrderLine));
     attrs.putAll(getPriceAndQtyScale());
     attrs.putAll(getTypeSelectSelection());
+    attrs.putAll(getMultipleQtyLabel(saleOrderLine));
     return attrs;
   }
 
@@ -72,6 +80,7 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     attrs.putAll(hideAti(saleOrder));
     attrs.putAll(hidePriceDiscounted(saleOrder, saleOrderLine));
+    attrs.putAll(getMultipleQtyLabel(saleOrderLine));
     return attrs;
   }
 
@@ -81,6 +90,15 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     attrs.putAll(hidePriceDiscounted(saleOrder, saleOrderLine));
     attrs.putAll(getDiscountAmountTitle(saleOrderLine));
+    return attrs;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getQtyOnChangeAttrs(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    attrs.putAll(hidePriceDiscounted(saleOrder, saleOrderLine));
+    attrs.putAll(getMultipleQtyLabel(saleOrderLine));
     return attrs;
   }
 
@@ -187,6 +205,33 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
       selection.add(SaleOrderLineRepository.TYPE_END_OF_PACK);
       attrs.put("typeSelect", Map.of(SELECTION_IN_ATTR, selection));
     }
+
+    return attrs;
+  }
+
+  protected Map<String, Map<String, Object>> getMultipleQtyLabel(SaleOrderLine saleOrderLine) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    AppSale appSale = appSaleService.getAppSale();
+    Product product = saleOrderLine.getProduct();
+
+    if (product == null || !appSale.getManageMultipleSaleQuantity()) {
+      attrs.put("multipleQtyNotRespectedLabel", Map.of(HIDDEN_ATTR, true));
+      return attrs;
+    }
+
+    List<ProductMultipleQty> productMultipleQtyList =
+        saleOrderLine.getProduct().getSaleProductMultipleQtyList();
+    boolean allowToForce = product.getAllowToForceSaleQty();
+    boolean isMultiple =
+        productMultipleQtyService.checkMultipleQty(saleOrderLine.getQty(), productMultipleQtyList);
+
+    Map<String, Object> attrsMap = new HashMap<>();
+    attrsMap.put(
+        TITLE_ATTR,
+        productMultipleQtyService.getMultipleQtyTitle(productMultipleQtyList, allowToForce));
+    attrsMap.put(HIDDEN_ATTR, isMultiple);
+
+    attrs.put("multipleQtyNotRespectedLabel", attrsMap);
 
     return attrs;
   }

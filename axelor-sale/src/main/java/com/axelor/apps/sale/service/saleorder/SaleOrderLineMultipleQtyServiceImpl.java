@@ -5,7 +5,6 @@ import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppSale;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -24,25 +23,22 @@ public class SaleOrderLineMultipleQtyServiceImpl implements SaleOrderLineMultipl
   }
 
   @Override
-  public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response) {
+  public String getMultipleQtyErrorMessage(SaleOrderLine saleOrderLine) {
 
     AppSale appSale = appSaleService.getAppSale();
     Product product = saleOrderLine.getProduct();
 
     if (product == null || !appSale.getManageMultipleSaleQuantity()) {
-      return;
+      return "";
     }
 
     BigDecimal qty = saleOrderLine.getQty();
     List<ProductMultipleQty> productMultipleQtyList = product.getSaleProductMultipleQtyList();
-    boolean allowToForce = product.getAllowToForceSaleQty();
-
-    productMultipleQtyService.checkMultipleQty(qty, productMultipleQtyList, allowToForce, response);
 
     if (appSaleService.getAppSale().getIsEditableGridEnabled()
         && !productMultipleQtyService.checkMultipleQty(qty, productMultipleQtyList)) {
-      response.setNotify(
-          productMultipleQtyService.getMultipleQuantityErrorMessage(productMultipleQtyList));
+      return productMultipleQtyService.getMultipleQuantityErrorMessage(productMultipleQtyList);
     }
+    return "";
   }
 }
