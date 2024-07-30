@@ -13,12 +13,12 @@ public class LoyaltyAccountPointsManagementServiceImpl
     implements LoyaltyAccountPointsManagementService {
 
   protected LoyaltyAccountRepository loyaltyAccountRepository;
-  protected LoyaltyAccountServiceImpl loyaltyAccountService;
+  protected LoyaltyAccountService loyaltyAccountService;
 
   @Inject
   public LoyaltyAccountPointsManagementServiceImpl(
       LoyaltyAccountRepository loyaltyAccountRepository,
-      LoyaltyAccountServiceImpl loyaltyAccountService) {
+      LoyaltyAccountService loyaltyAccountService) {
     this.loyaltyAccountRepository = loyaltyAccountRepository;
     this.loyaltyAccountService = loyaltyAccountService;
   }
