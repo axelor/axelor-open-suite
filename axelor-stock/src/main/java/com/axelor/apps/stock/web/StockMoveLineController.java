@@ -35,10 +35,9 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
-import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -308,10 +307,13 @@ public class StockMoveLineController {
     SortedSet<Map<String, Object>> trackingNumbers =
         new TreeSet<Map<String, Object>>(
             Comparator.comparing(m -> (String) m.get("trackingNumberSeq")));
-    StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
+
+    StockLocationLineFetchService stockLocationLineFetchService =
+        Beans.get(StockLocationLineFetchService.class);
+
     for (TrackingNumber trackingNumber : trackingNumberList) {
       StockLocationLine detailStockLocationLine =
-          stockLocationLineService.getDetailLocationLine(
+          stockLocationLineFetchService.getDetailLocationLine(
               stockMoveLine.getFromStockLocation(), stockMoveLine.getProduct(), trackingNumber);
       BigDecimal availableQty =
           detailStockLocationLine != null
@@ -340,13 +342,11 @@ public class StockMoveLineController {
       if (parentContext != null && parentContext.getContextClass().equals(StockMove.class)) {
         StockMove stockMove = parentContext.asType(StockMove.class);
         Partner partner = stockMove.getPartner();
-        String userLanguage = AuthUtils.getUser().getLanguage();
         Product product = stockMoveLine.getProduct();
 
         if (product != null) {
           Map<String, String> translation =
-              internationalService.getProductDescriptionAndNameTranslation(
-                  product, partner, userLanguage);
+              internationalService.getProductDescriptionAndNameTranslation(product, partner);
 
           String description = translation.get("description");
           String productName = translation.get("productName");

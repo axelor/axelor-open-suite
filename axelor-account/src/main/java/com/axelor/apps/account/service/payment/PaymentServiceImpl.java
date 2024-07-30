@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.invoice.AdvancePaymentMoveLineCreateServi
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -46,10 +47,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.persistence.Query;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,6 +268,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     List<Reconcile> reconcileList = new ArrayList<Reconcile>();
     int i = debitMoveLines.size();
+
+    Map<TaxConfiguration, Pair<BigDecimal, BigDecimal>> taxConfigurationAmountMap = new HashMap<>();
     for (MoveLine debitMoveLine : debitMoveLines) {
       i--;
       BigDecimal amountRemaining = debitMoveLine.getAmountRemaining();
@@ -282,7 +287,7 @@ public class PaymentServiceImpl implements PaymentService {
             amountToPay.divide(
                 amountRemaining, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
         advancePaymentMoveLineCreateService.manageAdvancePaymentInvoiceTaxMoveLines(
-            move, debitMoveLine, prorata, paymentDate);
+            move, debitMoveLine, prorata, paymentDate, taxConfigurationAmountMap);
       }
 
       BigDecimal moveLineAmount = amountToPay;
@@ -345,6 +350,8 @@ public class PaymentServiceImpl implements PaymentService {
         remainingPaidAmount2 = remainingPaidAmount2.subtract(amountRemaining);
       }
     }
+
+    advancePaymentMoveLineCreateService.fillMoveWithTaxMoveLines(move, taxConfigurationAmountMap);
 
     moveInvoiceTermService.generateInvoiceTerms(move);
 
@@ -452,6 +459,9 @@ public class PaymentServiceImpl implements PaymentService {
           move.getMoveLineList().add(debitMoveLine);
           moveLineNo2++;
 
+          Map<TaxConfiguration, Pair<BigDecimal, BigDecimal>> taxConfigurationAmountMap =
+              new HashMap<>();
+
           for (MoveLine creditMoveLine : creditMoveLines) {
             if (creditMoveLine.getAccount().equals(accountMap)) {
               Reconcile reconcile = null;
@@ -469,7 +479,7 @@ public class PaymentServiceImpl implements PaymentService {
                       AppBaseService.COMPUTATION_SCALING,
                       RoundingMode.HALF_UP);
               advancePaymentMoveLineCreateService.manageAdvancePaymentInvoiceTaxMoveLines(
-                  move, creditMoveLine, prorata, date);
+                  move, creditMoveLine, prorata, date, taxConfigurationAmountMap);
 
               // Gestion du passage en 580
               if (i == 0) {
@@ -490,6 +500,9 @@ public class PaymentServiceImpl implements PaymentService {
               }
             }
           }
+
+          advancePaymentMoveLineCreateService.fillMoveWithTaxMoveLines(
+              move, taxConfigurationAmountMap);
         }
       }
       moveInvoiceTermService.generateInvoiceTerms(move);

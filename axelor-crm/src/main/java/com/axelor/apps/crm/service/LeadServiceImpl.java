@@ -257,4 +257,13 @@ public class LeadServiceImpl implements LeadService {
           I18n.get(CrmExceptionMessage.LEAD_LOSE_KANBAN));
     }
   }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void resetLead(Lead lead) throws AxelorException {
+    LeadStatus defaultLeadStatus = appCrmService.getLeadDefaultStatus();
+    lead.setLeadStatus(defaultLeadStatus);
+    lead.setLostReason(null);
+    lead.setLostReasonStr(null);
+  }
 }

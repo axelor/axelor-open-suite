@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <menuitem name="sc-root-sale" title="Sales" order="-1900"
-    if="__config__.app.isApp('sale')" icon="fa-line-chart" icon-background="#e0a83c"/>
+    if="__config__.app.isApp('sale')" icon="graph-up-arrow" icon-background="#e0a83c"/>
 
   <menuitem name="sc-root-sale-customers" parent="sc-root-sale" order="100"
     title="Customers" action="sc.root.sale.customers"/>

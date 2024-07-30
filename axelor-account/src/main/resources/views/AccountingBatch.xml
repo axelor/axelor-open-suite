@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="accounting-batch-grid" title="Accounting batches"
     model="com.axelor.apps.account.db.AccountingBatch">
@@ -142,11 +142,11 @@
         <label name="daybookRemainingLabel" hidden="true" css="label-danger" colSpan="12"/>
         <field name="moveDescription" colSpan="12"/>
         <panel-related field="closureAccountSet" form-view="account-form"
-          grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false"
+          grid-view="account-grid" canNew="false" canEdit="false"
           domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'charge', 'income', 'asset')"
           showIf="closeYear"/>
         <panel-related field="openingAccountSet" form-view="account-form"
-          grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false"
+          grid-view="account-grid" canNew="false" canEdit="false"
           domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'asset')"
           showIf="openYear"/>
         <field name="generateResultMove" showIf="openYear"/>
@@ -310,6 +310,7 @@
   <!-- ACTION GROUP -->
   <action-group name="action-accounting-batch-group-close-annual-accounts">
     <action name="action-accounting-batch-validate-batchlist-not-empty"/>
+    <action name="action-accounting-batch-method-validate-daybook-moves"/>
     <action name="action-accounting-batch-method-action-close-annual-accounts"/>
     <action name="action-accounting-batch-method-print-report"/>
   </action-group>
@@ -556,6 +557,11 @@
   <action-method name="action-accounting-batch-close-open-method-check-daybook">
     <call class="com.axelor.apps.account.web.AccountingBatchController"
       method="checkDaybookMovesOnFiscalYearLabel"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-method-validate-daybook-moves">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="checkDaybookMovesOnFiscalYearWarning"/>
   </action-method>
 
   <!-- ACTION VALIDATE -->

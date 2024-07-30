@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove"
     orderBy="statusSelect,-estimatedDate">
@@ -801,7 +801,7 @@
     onLoad="action-stock-move-attrs-set-scale">
     <panel name="mainPanel" colSpan="12">
       <field name="splitQty" type="decimal" widget="Decimal" title="Split in Qty of"
-        x-scale="2" x-precision="18" colSpan="6"/>
+        x-precision="18" colSpan="6"/>
       <button name="splitBtn" title="Split"
         onClick="action-stock-move-method-split-stock-move-lines-special" colSpan="6"/>
     </panel>

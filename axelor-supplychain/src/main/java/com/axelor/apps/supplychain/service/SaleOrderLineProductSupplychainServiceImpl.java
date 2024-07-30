@@ -17,15 +17,14 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLinePriceService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLineProductServiceImpl
     implements SaleOrderLineProductSupplychainService {
@@ -71,13 +70,17 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
     Map<String, Object> saleOrderLineMap =
         super.computeProductInformation(saleOrderLine, saleOrder);
 
+    Product product = saleOrderLine.getProduct();
+    if (product == null) {
+      return saleOrderLineMap;
+    }
+
     if (appSupplychainService.isApp("supplychain")) {
-      saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
-      saleOrderLineMap.put("saleSupplySelect", saleOrderLine.getProduct().getSaleSupplySelect());
+      saleOrderLine.setSaleSupplySelect(product.getSaleSupplySelect());
+      saleOrderLineMap.put("saleSupplySelect", product.getSaleSupplySelect());
 
       saleOrderLineMap.putAll(setStandardDelay(saleOrderLine));
       saleOrderLineMap.putAll(setSupplierPartnerDefault(saleOrderLine, saleOrder));
-      saleOrderLineMap.putAll(setIsComplementaryProductsUnhandledYet(saleOrderLine));
 
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
       analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
@@ -149,14 +152,9 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
   }
 
   @Override
-  public Map<String, Object> setIsComplementaryProductsUnhandledYet(SaleOrderLine saleOrderLine) {
-    Product product = saleOrderLine.getProduct();
-
-    if (product != null && CollectionUtils.isNotEmpty(product.getComplementaryProductList())) {
-      saleOrderLine.setIsComplementaryProductsUnhandledYet(true);
-    }
-    Map<String, Object> saleOrderLineMap = new HashMap<>();
-    saleOrderLineMap.put("isComplementaryProductsUnhandledYet", true);
+  protected Map<String, Object> resetProductInformationMap(SaleOrderLine line) {
+    Map<String, Object> saleOrderLineMap = super.resetProductInformationMap(line);
+    saleOrderLineMap.put("saleSupplySelect", null);
 
     return saleOrderLineMap;
   }

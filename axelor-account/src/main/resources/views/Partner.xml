@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="incl-invoice-payment-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-specific-tax-note">
@@ -133,7 +133,7 @@
 
     <extend target="panel-tabs[@name='mainPanelTab']/panel[@name='eventPanel']">
       <insert position="before">
-        <panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact"
+        <panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact || isProspect"
           if-module="axelor-account" colSpan="12" if="__config__.app.isApp('invoice')">
           <panel-include view="incl-invoice-payment-partner-form"/>
           <panel-related name="invoicingPaymentSituationListPanel"

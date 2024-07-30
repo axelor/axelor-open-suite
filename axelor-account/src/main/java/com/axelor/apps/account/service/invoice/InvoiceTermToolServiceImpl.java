@@ -21,9 +21,12 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -33,10 +36,14 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceTermToolServiceImpl implements InvoiceTermToolService {
 
   protected InvoiceTermFilterService invoiceTermFilterService;
+  protected InvoiceTermRepository invoiceTermRepository;
 
   @Inject
-  public InvoiceTermToolServiceImpl(InvoiceTermFilterService invoiceTermFilterService) {
+  public InvoiceTermToolServiceImpl(
+      InvoiceTermFilterService invoiceTermFilterService,
+      InvoiceTermRepository invoiceTermRepository) {
     this.invoiceTermFilterService = invoiceTermFilterService;
+    this.invoiceTermRepository = invoiceTermRepository;
   }
 
   @Override
@@ -128,5 +135,33 @@ public class InvoiceTermToolServiceImpl implements InvoiceTermToolService {
         .reduce((first, second) -> second)
         .map(Reconcile::getAmount)
         .orElse(BigDecimal.ZERO);
+  }
+
+  @Override
+  public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal) {
+    return this.computeCustomizedPercentageUnscaled(amount, inTaxTotal)
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal) {
+    BigDecimal percentage = BigDecimal.ZERO;
+    if (inTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
+      percentage =
+          amount
+              .multiply(new BigDecimal(100))
+              .divide(inTaxTotal, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+    }
+    return percentage;
+  }
+
+  @Override
+  public List<InvoiceTerm> getInvoiceTerms(List<Long> invoiceTermIds) {
+    return invoiceTermRepository
+        .all()
+        .filter("self.id IN :invoiceTermIds AND self.pfpValidateStatusSelect = :pfpStatusAwaiting")
+        .bind("invoiceTermIds", invoiceTermIds)
+        .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
+        .fetch();
   }
 }

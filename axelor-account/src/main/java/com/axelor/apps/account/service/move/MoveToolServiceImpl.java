@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -552,17 +553,6 @@ public class MoveToolServiceImpl implements MoveToolService {
     }
   }
 
-  @Override
-  public BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit) {
-    if (isDebit) {
-      return currencyAmount.abs();
-    } else {
-      return currencyAmount.compareTo(BigDecimal.ZERO) < 0
-          ? currencyAmount
-          : currencyAmount.negate();
-    }
-  }
-
   public boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
       throws AxelorException {
     if (period != null) {
@@ -838,5 +828,19 @@ public class MoveToolServiceImpl implements MoveToolService {
             .collect(Collectors.toList());
 
     return advancePaymentMoveLineList;
+  }
+
+  @Override
+  public List<InvoiceTerm> _getInvoiceTermList(Move move) {
+    List<InvoiceTerm> invoiceTermList = new ArrayList<>();
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      invoiceTermList.addAll(
+          move.getMoveLineList().stream()
+              .map(MoveLine::getInvoiceTermList)
+              .filter(Objects::nonNull)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toList()));
+    }
+    return invoiceTermList;
   }
 }

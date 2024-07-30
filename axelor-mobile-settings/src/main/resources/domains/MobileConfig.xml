@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
 
@@ -29,6 +29,7 @@
 		public static final String APP_SEQUENCE_HR = "app-hr";
 		public static final String APP_SEQUENCE_QUALITY = "app-quality";
 		public static final String APP_SEQUENCE_INTERVENTION = "app-intervention";
+		public static final String APP_SEQUENCE_SALE = "app-sale";
 
 	]]></extra-code>
 

@@ -116,7 +116,7 @@ public interface InvoiceLineService {
       InvoiceLine invoiceLine, Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   Map<String, String> getProductDescriptionAndNameTranslation(
-      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException;
+      Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
 
   BigDecimal getInTaxPrice(InvoiceLine invoiceLine);
 

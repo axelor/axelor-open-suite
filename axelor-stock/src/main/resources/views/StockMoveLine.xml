@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="stock-move-line-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
@@ -25,17 +25,17 @@
     <field name="productName" required="true" width="200px"
       readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
     <field name="qty" aggregate="sum" onChange="action-stock-move-line-group-qty-onchange"
-      width="100px" x-scale="2"
+      width="100px" x-scale="$nbDecimalDigitForQty"
       readonlyIf="$get('stockMove.statusSelect') &gt; 1 || lineTypeSelect == 1"/>
-    <field name="realQty" aggregate="sum" width="100px" x-scale="2"
+    <field name="realQty" aggregate="sum" width="100px" x-scale="$nbDecimalDigitForQty"
       onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
       readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3 || lineTypeSelect == 1"/>
     <field name="requestedReservedQty" if-module="axelor-supplychain" readonly="true"
-      x-scale="2" if="__config__.app.getApp('supplychain')?.getManageStockReservation()"
-      aggregate="sum"/>
+      x-scale="$nbDecimalDigitForQty"
+      if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"/>
     <field name="reservedQty" if-module="axelor-supplychain"
       if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
-      readonly="true" x-scale="2"/>
+      readonly="true" x-scale="$nbDecimalDigitForQty"/>
     <button name="allocateAll"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true"
       title="Allocate" icon="fa-plus-square"
@@ -46,17 +46,17 @@
       title="Deallocate" icon="fa-minus-square"
       readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == 0"
       onClick="save,action-supplychain-stock-move-line-deallocate-all"/>
-    <field name="qtyInvoiced" readonly="true" x-scale="2"/>
-    <field name="unitPriceUntaxed" x-scale="2" width="120px"
+    <field name="qtyInvoiced" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice" width="120px"
       onChange="action-stock-move-line-record-price-onchange"
       readonlyIf="lineTypeSelect == 1 || $get('stockMove.pickingIsEdited') || saleOrderLine || purchaseOrderLine"/>
-    <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+    <field name="unitPriceTaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="companyUnitPriceUntaxed" hidden="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" width="70px"
       readonlyIf="lineTypeSelect == 1 || (($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3)"/>
     <field name="netMass" onChange="action-stock-move-line-group-net-mass-onchange"
       width="100px" readonlyIf="lineTypeSelect == 1"/>
-    <field name="wapPrice" x-scale="2" hidden="true"/>
+    <field name="wapPrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="trackingNumber"
       canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('$trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isSaleTrackingManaged'))"
       onSelect="action-stock-move-line-attrs-tracking-number-domain"
@@ -91,6 +91,8 @@
       hideIf=" $get('stockMove.typeSelect') != 3 || $get('stockMove.statusSelect') &gt; 2 "/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
     <field name="$trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <form name="stock-move-line-form" title="Stock move line"
@@ -102,8 +104,10 @@
       <field name="productName" colSpan="9"/>
       <field name="lineTypeSelect" colSpan="3"
         onChange="action-stock-move-line-method-empty-line"/>
-      <field name="qty" hidden="true" hideIf="lineTypeSelect == 1"/>
-      <field name="realQty" hidden="true" hideIf="lineTypeSelect == 1"/>
+      <field name="qty" hidden="true" hideIf="lineTypeSelect == 1"
+        x-scale="$nbDecimalDigitForQty"/>
+      <field name="realQty" hidden="true" hideIf="lineTypeSelect == 1"
+        x-scale="$nbDecimalDigitForQty"/>
     </panel>
 
     <panel name="mainPanel" hideIf="lineTypeSelect == 1">
@@ -113,7 +117,7 @@
       <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
         showTitle="false">
         <viewer depends="$partnerLanguage">
-          <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t('The partner\'s language is different from the current language. Description and product name are in :')} {$partnerLanguage}</Badge>}</>]]>
+          <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t("The partner's language is different from the current language. Description and product name are in :")} {$partnerLanguage}</Badge>}</>]]>
         </viewer>
       </field>
       <field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line"/>
@@ -168,29 +172,33 @@
         readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
       <field name="productName"/>
       <field name="qty" onChange="action-stock-move-line-group-qty-onchange" colSpan="3"
-        readonlyIf="$get('stockMove.statusSelect') > 1"/>
+        readonlyIf="$get('stockMove.statusSelect') > 1" x-scale="$nbDecimalDigitForQty"/>
       <field name="realQty" colSpan="3"
-        onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"/>
+        onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
+        x-scale="$nbDecimalDigitForQty"/>
       <field name="isRealQtyModifiedByUser" hidden="true"/>
-      <field name="qtyInvoiced" colSpan="6" readonly="true"/>
+      <field name="qtyInvoiced" colSpan="6" readonly="true" x-scale="$nbDecimalDigitForQty"/>
       <field name="$availableQty" showIf="product &amp;&amp; productTypeSelect != 'service'"
-        type="decimal" title="Available qty" readonly="true" hidden="true"/>
+        type="decimal" title="Available qty" readonly="true" hidden="true"
+        x-scale="$nbDecimalDigitForQty"/>
       <field name="$availableQtyForProduct" type="decimal" title="Available qty for product"
-        readonly="true" hidden="true"/>
+        readonly="true" hidden="true" x-scale="$nbDecimalDigitForQty"/>
       <field name="$trackingNumberConfiguration" hidden="true"/>
-      <field name="oldQty"/>
+      <field name="oldQty" x-scale="$nbDecimalDigitForQty"/>
       <field name="unitPriceUntaxed" onChange="action-stock-move-line-record-price-onchange"
-        readonly="true"/>
-      <field name="unitPriceTaxed" hidden="true"/>
+        readonly="true" x-scale="$nbDecimalDigitForUnitPrice"/>
+      <field name="unitPriceTaxed" hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
       <field name="companyUnitPriceUntaxed" hidden="true"/>
       <field name="companyPurchasePrice" hidden="true"/>
       <field name="reservedQty"
         showIf="product &amp;&amp; product.productTypeSelect != 'service'" readonly="true"
         if-module="axelor-supplychain"
-        if="__config__.app.getApp('supplychain')?.getManageStockReservation()" colSpan="3"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()" colSpan="3"
+        x-scale="$nbDecimalDigitForQty"/>
       <field name="requestedReservedQty" hidden="true" readonly="true"
         if-module="axelor-supplychain"
-        if="__config__.app.getApp('supplychain')?.getManageStockReservation()" colSpan="3"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()" colSpan="3"
+        x-scale="$nbDecimalDigitForQty"/>
       <panel name="reservedQtyBtnsPanel" colSpan="12" if-module="axelor-supplychain"
         if="__config__.app.getApp('supplychain')?.getManageStockReservation()">
         <button name="updateAllocatedQtyBtn" colSpan="6" hidden="true"
@@ -206,8 +214,8 @@
         <button name="cancelReservation" title="Cancel reservation" showIf="isQtyRequested"
           onClick="save,action-method-stock-move-line-cancel-reservation"/>
       </panel>
-      <field name="unitPriceTaxed" hidden="true"/>
-      <field name="wapPrice" hidden="true"/>
+      <field name="unitPriceTaxed" hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
+      <field name="wapPrice" hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
       <field name="unit" canEdit="false" colSpan="3" form-view="unit-form"
         grid-view="unit-grid"/>
       <field name="netMass" x-scale="5"
@@ -233,6 +241,8 @@
       <field name="regime"/>
       <field name="natureOfTransaction"/>
       <field name="countryOfOrigin" hidden="true"/>
+      <field name="$nbDecimalDigitForQty" hidden="true"/>
+      <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -249,9 +259,12 @@
       readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
     <field name="productName" readonly="true"/>
     <field name="qty" aggregate="sum"
-      onChange="action-stock-move-line-validate-check-split-quantity" x-scale="2"/>
-    <field name="unitPriceUntaxed" x-scale="2" readonlyIf="lineTypeSelect == 1"/>
-    <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+      onChange="action-stock-move-line-validate-check-split-quantity"
+      x-scale="$nbDecimalDigitForQty"/>
+    <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice"
+      readonlyIf="lineTypeSelect == 1"/>
+    <field name="unitPriceTaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+
     <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" readonly="true" form-view="tracking-number-form"
       grid-view="tracking-number-grid" domain="self.product = :product"/>
@@ -262,6 +275,8 @@
       <hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
       <hilite strong="true" color="warning" if="availableStatusSelect == 4"/>
     </field>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="stock-move-line-sale-order-grid" model="com.axelor.apps.stock.db.StockMoveLine"
@@ -276,16 +291,16 @@
       grid-view="product-grid" if="__config__.app.getApp('base')?.getManageProductVariants()"
       readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
     <field name="productName" required="true"/>
-    <field name="qty" x-scale="2" aggregate="sum"
+    <field name="qty" x-scale="$nbDecimalDigitForQty" aggregate="sum"
       onChange="action-stock-move-line-group-qty-onchange"
       readonlyIf="$get('stockMove.statusSelect') > 1"/>
     <field name="realQty" aggregate="sum"
       onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
-      x-scale="2"/>
+      x-scale="$nbDecimalDigitForQty"/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
-    <field name="qtyInvoiced" readonly="true" x-scale="2"/>
-    <field name="unitPriceUntaxed" x-scale="2"/>
-    <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+    <field name="qtyInvoiced" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="unitPriceTaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" form-view="tracking-number-form"
       grid-view="tracking-number-grid" domain="self.product = :product"
@@ -297,6 +312,8 @@
       <hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
       <hilite strong="true" color="warning" if="availableStatusSelect == 4"/>
     </field>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="stock-move-line-all-grid" title="Stock move lines"
@@ -316,11 +333,11 @@
     <field name="stockMove.partner"/>
     <field name="realQty" aggregate="sum"
       onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
-      x-scale="2"/>
+      x-scale="$nbDecimalDigitForQty"/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
-    <field name="qtyInvoiced" readonly="true" x-scale="2"/>
-    <field name="unitPriceUntaxed" x-scale="2"/>
-    <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+    <field name="qtyInvoiced" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="unitPriceTaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" form-view="tracking-number-form"
       grid-view="tracking-number-grid" domain="self.product = :product"
@@ -333,6 +350,8 @@
       <hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
       <hilite strong="true" color="warning" if="availableStatusSelect == 4"/>
     </field>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="stock-move-line-all-grid-planned" title="Planned stock move lines"
@@ -349,14 +368,14 @@
     <field name="stockMove.partner"/>
     <field name="realQty" aggregate="sum"
       onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
-      x-scale="2"/>
+      x-scale="$nbDecimalDigitForQty"/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
     <field name="reservedQty" if-module="axelor-supplychain"
       if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
-      x-scale="2"/>
-    <field name="qtyInvoiced" readonly="true" x-scale="2"/>
-    <field name="unitPriceUntaxed" x-scale="2"/>
-    <field name="unitPriceTaxed" hidden="true"/>
+      x-scale="$nbDecimalDigitForQty"/>
+    <field name="qtyInvoiced" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="unitPriceTaxed" hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" form-view="tracking-number-form"
       grid-view="tracking-number-grid" domain="self.product = :product"/>
@@ -368,6 +387,8 @@
       <hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
       <hilite strong="true" color="warning" if="availableStatusSelect == 4"/>
     </field>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <form name="stock-move-line-all-form" title="Stock move line"
@@ -409,16 +430,18 @@
       <field name="stockMove.partner"/>
       <field name="qty" colSpan="2" min="0"
         onChange="action-stock-move-line-group-qty-onchange"
-        readonlyIf="$get('stockMove.statusSelect') > 1"/>
+        readonlyIf="$get('stockMove.statusSelect') > 1" x-scale="$nbDecimalDigitForQty"/>
       <field name="realQty" colSpan="2" min="0"
         onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
-        readonlyIf="$get('stockMove.statusSelect') > 1"/>
+        readonlyIf="$get('stockMove.statusSelect') > 1" x-scale="$nbDecimalDigitForQty"/>
       <field name="isRealQtyModifiedByUser" hidden="true"/>
-      <field name="qtyInvoiced" colSpan="2" readonly="true"/>
+      <field name="qtyInvoiced" colSpan="2" readonly="true" x-scale="$nbDecimalDigitForQty"/>
       <field name="$availableQty" type="decimal" title="Available qty" readonly="true"
-        showIf="stockMove &amp;&amp; stockMove.statusSelect &lt; 3" colSpan="3"/>
+        showIf="stockMove &amp;&amp; stockMove.statusSelect &lt; 3" colSpan="3"
+        x-scale="$nbDecimalDigitForQty"/>
       <field name="$availableQtyForProduct" type="decimal" title="Available qty for product"
-        readonly="true" showIf="stockMove &amp;&amp; stockMove.statusSelect &lt; 3" colSpan="5"/>
+        readonly="true" showIf="stockMove &amp;&amp; stockMove.statusSelect &lt; 3" colSpan="5"
+        x-scale="$nbDecimalDigitForQty"/>
       <field name="availableStatus" readonly="true"
         showIf="stockMove &amp;&amp; stockMove.statusSelect &lt; 3" colSpan="3">
         <viewer><![CDATA[
@@ -447,8 +470,8 @@
       </field>
       <field name="$trackingNumberConfiguration" hidden="true"/>
       <field name="unitPriceUntaxed" onChange="action-stock-move-line-record-price-onchange"
-        readonly="true"/>
-      <field name="unitPriceTaxed" hidden="true"/>
+        readonly="true" x-scale="$nbDecimalDigitForUnitPrice"/>
+      <field name="unitPriceTaxed" hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
       <field name="companyUnitPriceUntaxed" hidden="true"/>
       <field name="unit" canEdit="false" colSpan="3" form-view="unit-form"
         grid-view="unit-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
@@ -470,6 +493,8 @@
       <field name="regime"/>
       <field name="natureOfTransaction"/>
       <field name="countryOfOrigin"/>
+      <field name="$nbDecimalDigitForQty" hidden="true"/>
+      <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -505,9 +530,10 @@
         <field name="trackingNumberSeq" title="Tracking Nbr." readonly="true"/>
         <field name="serialNbr" title="Serial Nbr" readonly="true"/>
         <field name="$availableQty" title="Available qty" type="decimal" width="120"
-          readonly="true"/>
+          readonly="true" x-scale="$nbDecimalDigitForQty"/>
         <field name="counter" title="Selected quantity"
-          readonlyIf="( $availableQty == null || $availableQty &lt; 1 ) &amp;&amp; $moveTypeSelect == 2"/>
+          readonlyIf="( $availableQty == null || $availableQty &lt; 1 ) &amp;&amp; $moveTypeSelect == 2"
+          x-scale="$nbDecimalDigitForQty"/>
         <field name="hasWarranty"/>
         <field name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
         <field name="isPerishable"/>
@@ -521,6 +547,7 @@
         onClick="action-stock-move-line-method-display-available-tracking-number"/>
       <button name="validateBtn" title="Validate"
         onClick="action-stock-move-line-method-update-lines"/>
+      <field name="$nbDecimalDigitForQty" hidden="true"/>
     </panel>
   </form>
 
@@ -541,6 +568,8 @@
   <action-attrs name="action-track-number-atts-from-stock-move-line">
     <attribute name="hidden" for="$trackingNumbers.serialNbr"
       expr="eval: _isSeqUsedForSerialNumber"/>
+    <attribute for="value" name="$nbDecimalDigitForQty"
+      expr="eval: __config__.app.getApp('base')?.getNbDecimalDigitForQty()"/>
   </action-attrs>
 
   <action-attrs name="action-stock-move-attrs-change-conformity">
@@ -857,15 +886,15 @@
 
   <action-attrs name="action-stock-move-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.partner?.localization?.language?.code?.equals(__user__.getLanguage())"
-      if="__parent__ &amp;&amp; __parent__.partner"/>
+      expr="eval: __parent__?.partner?.localization?.language == __user__.localization?.language"
+      if="__parent__ &amp;&amp; __parent__.partner &amp;&amp; __parent__.partner.localization &amp;&amp; __user__.localization"/>
     <attribute for="$partnerLanguage" name="value"
       expr="eval: __parent__?.partner?.localization?.language?.code?.toUpperCase()"
       if="__parent__ &amp;&amp; __parent__.partner"/>
 
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: stockMove?.partner?.localization?.language?.code?.equals(__user__.getLanguage())"
-      if="stockMove &amp;&amp; stockMove.partner"/>
+      expr="eval: stockMove?.partner?.localization?.language == __user__.localization?.language"
+      if="stockMove &amp;&amp; stockMove.partner &amp;&amp; stockMove.partner.localization &amp;&amp; __user__.localization"/>
     <attribute for="$partnerLanguage" name="value"
       expr="eval: stockMove?.partner?.localization?.language?.code?.toUpperCase()"
       if="stockMove &amp;&amp; stockMove.partner"/>

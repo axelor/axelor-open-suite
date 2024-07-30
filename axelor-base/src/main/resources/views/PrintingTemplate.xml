@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="printing-template-grid" title="Printing templates"
     model="com.axelor.apps.base.db.PrintingTemplate">
@@ -19,10 +19,22 @@
       <field name="metaModel"/>
       <field name="statusSelect"/>
       <field name="toAttach" colSpan="3"/>
-      <field name="$toUseScriptFieldName" type="boolean" title="Use script field name"
+      <field name="$toUseScriptFieldName" type="boolean" widget="boolean-switch"
+        title="Use script field name"
+        help="By default, filename will be the name of the printing template. Activate this option to define the filename using a groovy template."
         colSpan="3" onChange="action-printing-template-attrs-reset-script-field-name"/>
-      <field name="scriptFieldName" widget="CodeEditor" height="200" colSpan="12"
-        x-code-syntax="groovy" showIf="$toUseScriptFieldName"/>
+      <panel colSpan="12" name="scriptFieldNamePanel" showIf="$toUseScriptFieldName">
+        <panel colSpan="12" title="Help for groovy template" name="scriptFieldNameHelpPanel"
+          collapseIf="$readonly()" canCollapse="true">
+          <help colSpan="12">
+            <![CDATA[
+            Following variables are available: <ul> <li>Values from printed model are available with uppercased model name. Example:<b>$Product.code</b> will print the code from the product.</li> <li><b>__i18n__.get("key.to.translate")</b></li><li><b>__i18n__.getValue(field value to translate)</b></li> <li><b>__datetime__.date</b> to get current date format yyyyMMdd</li> <li><b>__datetime__.time</b> to get current time format HHmmss</li> <li><b>__datetime__.dateT</b> to get current date time format yyyyMMddHHmmss</li> <li><b>__datetime__.format(pattern)</b> to get current datetime with your own pattern</li> <li><b>__datetime__.date(Company)</b> to get current date using timezone from company</li> </ul>
+		    ]]>
+          </help>
+        </panel>
+        <field name="scriptFieldName" widget="CodeEditor" height="200" colSpan="12"
+          x-code-syntax="groovy"/>
+      </panel>
       <panel-related name="printingTemplateLineListPanel"
         field="printingTemplateLineList" grid-view="printing-template-line-grid"
         form-view="printing-template-line-form" colSpan="12"/>

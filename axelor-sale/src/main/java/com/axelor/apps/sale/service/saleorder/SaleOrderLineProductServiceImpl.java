@@ -16,7 +16,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.auth.AuthUtils;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
+import com.axelor.db.mapper.Mapper;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -65,14 +66,15 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
   public Map<String, Object> computeProductInformation(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
-    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    Map<String, Object> saleOrderLineMap = resetProductInformation(saleOrderLine);
 
-    // Reset fields which are going to recalculate in this method
-    resetProductInformation(saleOrderLine);
-
+    Product product = saleOrderLine.getProduct();
+    if (product == null) {
+      return saleOrderLineMap;
+    }
     if (!saleOrderLine.getEnableFreezeFields()) {
-      saleOrderLine.setProductName(saleOrderLine.getProduct().getName());
-      saleOrderLineMap.put("productName", saleOrderLine.getProduct().getName());
+      saleOrderLine.setProductName(product.getName());
+      saleOrderLineMap.put("productName", product.getName());
     }
     saleOrderLine.setUnit(this.getSaleUnit(saleOrderLine));
     saleOrderLineMap.put("unit", saleOrderLine.getUnit());
@@ -88,6 +90,9 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     saleOrderLineMap.putAll(
         saleOrderLineComplementaryProductService.fillComplementaryProductList(saleOrderLine));
     saleOrderLineMap.putAll(translateProductNameAndDescription(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        saleOrderLineComplementaryProductService.setIsComplementaryProductsUnhandledYet(
+            saleOrderLine));
 
     return saleOrderLineMap;
   }
@@ -95,14 +100,12 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
   protected Map<String, Object> translateProductNameAndDescription(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
-    String userLanguage = AuthUtils.getUser().getLanguage();
     Product product = saleOrderLine.getProduct();
     Partner partner = saleOrder.getClientPartner();
 
     if (product != null) {
       Map<String, String> translation =
-          internationalService.getProductDescriptionAndNameTranslation(
-              product, partner, userLanguage);
+          internationalService.getProductDescriptionAndNameTranslation(product, partner);
 
       String description = translation.get("description");
       String productName = translation.get("productName");
@@ -129,6 +132,7 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     // Populate fields from pricing scale before starting process of fillPrice
     if (appBaseService.getAppBase().getEnablePricingScale()) {
       saleOrderLinePricingService.computePricingScale(saleOrderLine, saleOrder);
+      saleOrderLineMap.put("pricingScaleLogs", saleOrderLine.getPricingScaleLogs());
     }
 
     saleOrderLineMap.putAll(fillTaxInformation(saleOrderLine, saleOrder));
@@ -207,27 +211,39 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
   }
 
   @Override
-  public SaleOrderLine resetProductInformation(SaleOrderLine line) {
-    if (!line.getEnableFreezeFields()) {
-      line.setProductName(null);
-      line.setPrice(null);
+  public Map<String, Object> resetProductInformation(SaleOrderLine line) {
+    Map<String, Object> saleOrderLineMap = resetProductInformationMap(line);
+
+    for (Map.Entry<String, Object> entry : saleOrderLineMap.entrySet()) {
+      Mapper.of(SaleOrderLine.class).set(line, entry.getKey(), entry.getValue());
     }
-    line.setTaxLineSet(Sets.newHashSet());
-    line.setTaxEquiv(null);
-    line.setUnit(null);
-    line.setCompanyCostPrice(null);
-    line.setDiscountAmount(null);
-    line.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
-    line.setInTaxPrice(null);
-    line.setExTaxTotal(null);
-    line.setInTaxTotal(null);
-    line.setCompanyInTaxTotal(null);
-    line.setCompanyExTaxTotal(null);
-    if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
-      line.setDescription(null);
-    }
+    return saleOrderLineMap;
+  }
+
+  protected Map<String, Object> resetProductInformationMap(SaleOrderLine line) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+
+    saleOrderLineMap.put("productName", null);
+    saleOrderLineMap.put("price", null);
+    saleOrderLineMap.put("priceDiscounted", null);
+    saleOrderLineMap.put("unit", null);
+    saleOrderLineMap.put("companyCostPrice", null);
+    saleOrderLineMap.put("discountAmount", null);
+    saleOrderLineMap.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_NONE);
+    saleOrderLineMap.put("inTaxPrice", null);
+    saleOrderLineMap.put("exTaxTotal", null);
+    saleOrderLineMap.put("inTaxTotal", null);
+    saleOrderLineMap.put("companyInTaxTotal", null);
+    saleOrderLineMap.put("companyExTaxTotal", null);
+    saleOrderLineMap.put("description", null);
+    saleOrderLineMap.put("typeSelect", SaleOrderLineRepository.TYPE_NORMAL);
     line.clearSelectedComplementaryProductList();
-    return line;
+    saleOrderLineMap.put(
+        "selectedComplementaryProductList", line.getSelectedComplementaryProductList());
+    saleOrderLineMap.put("taxLineSet", Sets.newHashSet());
+    saleOrderLineMap.put("taxEquiv", null);
+
+    return saleOrderLineMap;
   }
 
   @Override

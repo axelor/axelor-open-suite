@@ -383,4 +383,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String STOCK_MOVE_INVOICING_ERROR = /*$$(*/
       "This stock move needs to be invoiced manually, manual intervention is needed : %s" /*)*/;
+
+  public static final String SALE_ORDER_CONFIRM_INCOTERM_REQUIRED = /*$$(*/
+      "Incoterm must be filled" /*)*/;
 }

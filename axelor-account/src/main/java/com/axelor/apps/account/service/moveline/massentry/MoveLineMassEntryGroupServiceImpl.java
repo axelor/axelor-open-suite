@@ -162,6 +162,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineMassEntryAttrsService.addInputActionSelectionIn(move, attrsMap);
     moveLineMassEntryAttrsService.addTemporaryMoveNumberFocus(move, attrsMap);
     moveLineMassEntryAttrsService.addOriginRequired(moveLine, move.getJournal(), attrsMap);
+    moveLineMassEntryAttrsService.addDescriptionRequired(move, attrsMap);
 
     if (move.getJournal() != null) {
       moveLineMassEntryAttrsService.addMovePaymentConditionRequired(
@@ -311,9 +312,10 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
   @Override
   public Map<String, Object> getPartnerOnChangeValuesMap(MoveLineMassEntry moveLine, Move move)
       throws AxelorException {
-    Map<String, Object> valuesMap = new HashMap<>();
-
     moveLineMassEntryRecordService.setPartner(moveLine, move);
+
+    Map<String, Object> valuesMap =
+        new HashMap<>(this.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
 
     if (move != null) {
       moveLineMassEntryRecordService.setMovePfpValidatorUser(moveLine, move.getCompany());

@@ -18,16 +18,17 @@
  */
 package com.axelor.apps.base.service.printing.template;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.Templates;
 import com.axelor.utils.service.TranslationBaseService;
 import com.google.inject.Inject;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -51,17 +52,16 @@ public class PrintingTemplateComputeNameServiceImpl implements PrintingTemplateC
 
   @Override
   public String computeFileName(String name, PrintingGenFactoryContext factoryContext) {
+    Map<String, Object> templatesContext = new HashMap<>();
 
-    if (factoryContext == null) {
-      return name;
-    }
+    if (factoryContext != null) {
+      templatesContext.putAll(factoryContext.getContext());
+      Model model = factoryContext.getModel();
 
-    Map<String, Object> templatesContext = new HashMap<>(factoryContext.getContext());
-    Model model = factoryContext.getModel();
-
-    if (model != null) {
-      Class<?> klass = EntityHelper.getEntityClass(model);
-      templatesContext.put(klass.getSimpleName(), Mapper.toMap(model));
+      if (model != null) {
+        model = EntityHelper.getEntity(model);
+        templatesContext.put(model.getClass().getSimpleName(), model);
+      }
     }
     FormatHelper formatHelper = new FormatHelper();
     templatesContext.put("__datetime__", formatHelper);
@@ -90,6 +90,10 @@ public class PrintingTemplateComputeNameServiceImpl implements PrintingTemplateC
 
     public String format(String pattern) {
       return zonedDateT.format(DateTimeFormatter.ofPattern(pattern));
+    }
+
+    public LocalDate date(Company company) {
+      return appBaseService.getTodayDate(company);
     }
   }
 

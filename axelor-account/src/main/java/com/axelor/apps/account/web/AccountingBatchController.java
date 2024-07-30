@@ -410,7 +410,7 @@ public class AccountingBatchController {
     AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 
     Integer daybookMoveCount =
-        Beans.get(BatchCloseAnnualAccounts.class).checkDaybookMovesOnFiscalYear(accountingBatch);
+        Beans.get(BatchCloseAnnualAccounts.class).getDaybookMoveCount(accountingBatch);
     String title = "";
 
     if (daybookMoveCount > 0
@@ -427,5 +427,27 @@ public class AccountingBatchController {
 
     response.setAttr("daybookRemainingLabel", "hidden", StringUtils.isEmpty(title));
     response.setAttr("daybookRemainingLabel", "title", title);
+  }
+
+  public void checkDaybookMovesOnFiscalYearWarning(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+
+    if (AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS
+            != accountingBatch.getActionSelect()
+        || accountingBatch.getYear() == null) {
+      return;
+    }
+
+    Integer daybookMoveCount =
+        Beans.get(BatchCloseAnnualAccounts.class).getDaybookMoveCount(accountingBatch);
+
+    if (daybookMoveCount > 0) {
+      response.setAlert(
+          String.format(
+              I18n.get(ITranslation.CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_ERROR_LABEL),
+              accountingBatch.getYear().getName(),
+              daybookMoveCount));
+    }
   }
 }
