@@ -16,12 +16,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.sale.rest.dto;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.*;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.utils.api.ResponseStructure;
 
-public interface SaleOrderGeneratorService {
-  SaleOrder createSaleOrder(Partner clientPartner) throws AxelorException;
+public class SaleOrderResponse extends ResponseStructure {
+
+  protected Long saleOrderId;
+  protected Integer status;
+
+  public SaleOrderResponse(SaleOrder saleOrder) {
+    super(saleOrder.getVersion());
+    this.saleOrderId = saleOrder.getId();
+    this.status = saleOrder.getStatusSelect();
+  }
+
+  public Long getExpenseId() {
+    return saleOrderId;
+  }
 }
