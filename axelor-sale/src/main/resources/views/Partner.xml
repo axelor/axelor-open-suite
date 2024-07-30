@@ -8,9 +8,10 @@
 
     <extend target="//panel[@name='saleOrderCommentsPanel']">
       <insert position="before">
-        <panel name="loyaltyPanel" if="__config__.app.getApp('sale')?.getEnableLoyalty()" colSpan="12">
-          <field name="loyaltyAccountList" colSpan="12" form-view="loyalty-account-partner-form"
-            grid-view="loyalty-account-partner-grid"/>
+        <panel name="loyaltyPanel" if="__config__.app.getApp('sale')?.getEnableLoyalty()"
+          colSpan="12">
+          <field name="loyaltyAccountList" colSpan="12"
+            form-view="loyalty-account-partner-form" grid-view="loyalty-account-partner-grid"/>
         </panel>
       </insert>
       <insert position="after">

@@ -11,7 +11,7 @@
   </grid>
 
   <grid name="loyalty-account-partner-grid" title="Loyalty account"
-        model="com.axelor.apps.sale.db.LoyaltyAccount">
+    model="com.axelor.apps.sale.db.LoyaltyAccount">
     <field name="company"/>
     <field name="pointsBalance"/>
   </grid>
@@ -26,7 +26,7 @@
   </form>
 
   <form name="loyalty-account-partner-form" title="Loyalty account"
-        model="com.axelor.apps.sale.db.LoyaltyAccount">
+    model="com.axelor.apps.sale.db.LoyaltyAccount">
     <panel name="mainPanel" colSpan="12">
       <field name="company"/>
       <field name="pointsBalance" readonly="true"/>

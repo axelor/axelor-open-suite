@@ -49,6 +49,7 @@ import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.SaleOrderGroupService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.loyalty.LoyaltyAccountPointsManagementService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmService;
@@ -120,6 +121,10 @@ public class SaleOrderController {
     Map<String, Map<String, Object>> attrsMap =
         Beans.get(SaleOrderViewService.class).getOnLoadAttrs(saleOrder);
     response.setAttrs(attrsMap);
+
+    Map<String, Object> saleOrderMap = new HashMap<>();
+    saleOrderMap.putAll(Beans.get(SaleOrderDummyService.class).getOnLoadDummies(saleOrder));
+    response.setValues(saleOrderMap);
   }
 
   public void compute(ActionRequest request, ActionResponse response) {
@@ -830,5 +835,17 @@ public class SaleOrderController {
     saleOrderMap.putAll(Beans.get(SaleOrderOnChangeService.class).companyOnChange(saleOrder));
     response.setValues(saleOrderMap);
     response.setAttrs(Beans.get(SaleOrderViewService.class).getCompanyAttrs(saleOrder));
+  }
+
+  public void updateLoyaltyAccount(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Partner clientPartner = saleOrder.getClientPartner();
+    if (clientPartner == null) {
+      return;
+    }
+
+    Beans.get(LoyaltyAccountPointsManagementService.class)
+        .incrementLoyaltyPointsFromAmount(
+            clientPartner, saleOrder.getCompany(), saleOrder.getExTaxTotal());
   }
 }

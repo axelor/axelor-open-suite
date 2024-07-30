@@ -780,6 +780,11 @@
 	              ]]></viewer>
       </field>
     </panel>
+    <panel name="loyaltyAccountPanel" title="Loyalty account" sidebar="true" hidden="true"
+      showIf="clientPartner &amp;&amp; $loyaltyPoints" canCollapse="true" collapseIf="true"
+      if="__config__.app.getApp('sale')?.getEnableLoyalty()">
+      <field name="$loyaltyPoints" readonly="true" title="Loyalty points"/>
+    </panel>
     <panel name="salesFollowUpPanel" title="Sales follow-up" hideIf="clientPartner == null"
       sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
       <field name="salespersonUser" canNew="false" canView="false" canEdit="false"
@@ -1473,6 +1478,8 @@
     <action name="action-business-project-method-generate-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     <action name="action-sale-order-method-confirm"/>
+    <action name="action-sale-order-method-update-loyalty-account"
+      if="__config__.app.getApp('sale')?.enableLoyalty"/>
   </action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
@@ -2196,5 +2203,8 @@
     <attribute for="saleOrderLineList.discountAmount" name="hidden"
       expr="eval: !__config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid()"/>
   </action-attrs>
+  <action-method name="action-sale-order-method-update-loyalty-account">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="updateLoyaltyAccount"/>
+  </action-method>
 
 </object-views>
