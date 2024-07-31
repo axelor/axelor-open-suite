@@ -25,11 +25,11 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -78,10 +78,10 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
         .contains(clientPartner)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get("The client provided don't respect the conditions"));
+          I18n.get(SaleExceptionMessage.CLIENT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS));
     }
     saleOrder.setClientPartner(clientPartner);
-    Beans.get(SaleOrderOnChangeService.class).partnerOnChange(saleOrder);
+    saleOrderOnChangeService.partnerOnChange(saleOrder);
     saleOrderRepository.save(saleOrder);
     return saleOrder;
   }
