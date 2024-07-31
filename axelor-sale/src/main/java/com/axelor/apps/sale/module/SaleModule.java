@@ -70,6 +70,10 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.loyalty.LoyaltyAccountPointsManagementService;
+import com.axelor.apps.sale.service.loyalty.LoyaltyAccountPointsManagementServiceImpl;
+import com.axelor.apps.sale.service.loyalty.LoyaltyAccountService;
+import com.axelor.apps.sale.service.loyalty.LoyaltyAccountServiceImpl;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireServiceImpl;
 import com.axelor.apps.sale.service.observer.SaleOrderLineObserver;
@@ -248,5 +252,8 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderObserver.class);
     bind(SaleOrderConfirmService.class).to(SaleOrderConfirmServiceImpl.class);
     bind(SaleOrderLineCheckService.class).to(SaleOrderLineCheckServiceImpl.class);
+    bind(LoyaltyAccountService.class).to(LoyaltyAccountServiceImpl.class);
+    bind(LoyaltyAccountPointsManagementService.class)
+        .to(LoyaltyAccountPointsManagementServiceImpl.class);
   }
 }
