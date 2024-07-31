@@ -26,14 +26,14 @@ public class SaleOrderLineViewBudgetServiceImpl implements SaleOrderLineViewBudg
           "budgetDistributionPanel",
           Map.of(
               "readonly",
-              budgetToolsService.checkBudgetKeyAndRole(saleOrder.getCompany(), AuthUtils.getUser())
+              !budgetToolsService.checkBudgetKeyAndRole(saleOrder.getCompany(), AuthUtils.getUser())
                   || saleOrder.getStatusSelect() >= SaleOrderRepository.STATUS_ORDER_CONFIRMED));
 
       attrs.put(
           "budget",
           Map.of(
               "readonly",
-              budgetToolsService.checkBudgetKeyAndRole(saleOrder.getCompany(), AuthUtils.getUser())
+              !budgetToolsService.checkBudgetKeyAndRole(saleOrder.getCompany(), AuthUtils.getUser())
                   || saleOrder.getStatusSelect() >= SaleOrderRepository.STATUS_ORDER_CONFIRMED));
     }
     return attrs;
