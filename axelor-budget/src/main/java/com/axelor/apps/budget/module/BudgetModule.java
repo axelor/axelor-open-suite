@@ -108,6 +108,7 @@ import com.axelor.apps.budget.service.move.MoveRemoveBudgetService;
 import com.axelor.apps.budget.service.move.MoveReverseServiceBudgetImpl;
 import com.axelor.apps.budget.service.move.MoveValidateBudgetServiceImpl;
 import com.axelor.apps.budget.service.observer.SaleOrderBudgetObserver;
+import com.axelor.apps.budget.service.observer.SaleOrderLineBudgetObserver;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetServiceImpl;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderInvoiceBudgetServiceImpl;
@@ -124,6 +125,8 @@ import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineComputeBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineOnChangeBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorder.SaleOrderLineViewBudgetService;
+import com.axelor.apps.budget.service.saleorder.SaleOrderLineViewBudgetServiceImpl;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
@@ -224,5 +227,7 @@ public class BudgetModule extends AxelorModule {
     bind(SaleOrderLineOnChangeSupplychainServiceImpl.class)
         .to(SaleOrderLineOnChangeBudgetServiceImpl.class);
     bind(SaleOrderBudgetObserver.class);
+    bind(SaleOrderLineViewBudgetService.class).to(SaleOrderLineViewBudgetServiceImpl.class);
+    bind(SaleOrderLineBudgetObserver.class);
   }
 }
