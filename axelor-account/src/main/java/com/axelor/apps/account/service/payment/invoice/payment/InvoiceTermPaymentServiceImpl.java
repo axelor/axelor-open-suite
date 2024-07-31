@@ -452,15 +452,10 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       LocalDate invoiceDate,
       LocalDate paymentDate)
       throws AxelorException {
-    BigDecimal ratio;
     if (currencyService.isCurrencyRateLower(
-        invoiceDate, paymentDate, invoicePaymentCurrency, companyCurrency)) {
-      ratio =
-          currencyService.getCurrencyConversionRate(
-              companyCurrency, invoicePaymentCurrency, invoiceDate);
-      return currencyService
-          .getCurrencyConversionRate(invoicePaymentCurrency, companyCurrency, paymentDate)
-          .multiply(ratio);
+        invoiceDate, paymentDate, companyCurrency, invoicePaymentCurrency)) {
+      return currencyService.getCurrencyConversionRate(
+          companyCurrency, invoicePaymentCurrency, paymentDate);
     }
 
     return currencyService.getCurrencyConversionRate(

@@ -265,7 +265,12 @@ public class ReconcileInvoiceTermComputationServiceImpl
     if (isForInvoicePayment) {
       return total;
     } else {
-      return currencyScaleService.getScaledValue(moveLine, total.multiply(rate));
+      if (rate.compareTo(otherMoveLine.getCurrencyRate()) > 0) {
+        return amount;
+      } else {
+        return currencyScaleService.getCompanyScaledValue(
+            moveLine, total.multiply(otherMoveLine.getCurrencyRate()));
+      }
     }
   }
 

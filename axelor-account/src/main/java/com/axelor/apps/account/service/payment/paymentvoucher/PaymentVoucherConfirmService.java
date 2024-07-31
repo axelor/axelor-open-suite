@@ -856,7 +856,12 @@ public class PaymentVoucherConfirmService {
 
     companyAmountToPay =
         this.computeForeignExchangeCompanyAmount(
-            currencyRate, invoiceTermCurrencyRate, companyAmountToPay, currencyAmount, invoiceTerm);
+            currencyRate,
+            invoiceTermCurrencyRate,
+            companyAmountToPay,
+            currencyAmount,
+            paymentDate,
+            invoiceTerm);
 
     Reconcile reconcile =
         reconcileService.createReconcile(moveLineToPay, moveLine, companyAmountToPay, true);
@@ -881,14 +886,12 @@ public class PaymentVoucherConfirmService {
       BigDecimal invoiceTermCurrencyRate,
       BigDecimal companyAmount,
       BigDecimal currencyAmount,
+      LocalDate paymentDate,
       InvoiceTerm invoiceTerm)
       throws AxelorException {
     if (paymentCurrencyRate.compareTo(invoiceTermCurrencyRate) > 0) {
       return currencyService.getAmountCurrencyConvertedAtDate(
-          invoiceTerm.getCurrency(),
-          invoiceTerm.getCompanyCurrency(),
-          currencyAmount,
-          invoiceTerm.getInvoice().getInvoiceDate());
+          invoiceTerm.getCurrency(), invoiceTerm.getCompanyCurrency(), currencyAmount, paymentDate);
     }
 
     return companyAmount;
