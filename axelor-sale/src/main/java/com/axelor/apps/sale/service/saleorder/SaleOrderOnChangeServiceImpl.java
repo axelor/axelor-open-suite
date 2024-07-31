@@ -17,6 +17,7 @@ import com.axelor.apps.sale.service.loyalty.LoyaltyAccountService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -89,7 +90,11 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
           loyaltyAccountService.getLoyaltyAccount(
               saleOrder.getClientPartner(), saleOrder.getCompany());
       values.put(
-          "$loyaltyPoints", loyaltyAccount.map(LoyaltyAccount::getPointsBalance).orElse(null));
+          "$loyaltyPoints",
+          loyaltyAccount
+              .map(LoyaltyAccount::getPointsBalance)
+              .map(points -> points.setScale(0, RoundingMode.HALF_UP))
+              .orElse(null));
     }
     return values;
   }

@@ -8,6 +8,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.loyalty.LoyaltyAccountService;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -79,7 +80,11 @@ public class SaleOrderDummyServiceImpl implements SaleOrderDummyService {
         loyaltyAccountService.getLoyaltyAccount(
             saleOrder.getClientPartner(), saleOrder.getCompany());
     dummies.put(
-        "$loyaltyPoints", loyaltyAccount.map(LoyaltyAccount::getPointsBalance).orElse(null));
+        "$loyaltyPoints",
+        loyaltyAccount
+            .map(LoyaltyAccount::getPointsBalance)
+            .map(points -> points.setScale(0, RoundingMode.HALF_UP))
+            .orElse(null));
     return dummies;
   }
 }

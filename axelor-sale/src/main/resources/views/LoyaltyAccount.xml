@@ -7,13 +7,13 @@
     model="com.axelor.apps.sale.db.LoyaltyAccount">
     <field name="partner"/>
     <field name="company"/>
-    <field name="pointsBalance"/>
+    <field name="pointsBalance" x-scale="0"/>
   </grid>
 
   <grid name="loyalty-account-partner-grid" title="Loyalty account"
     model="com.axelor.apps.sale.db.LoyaltyAccount">
     <field name="company"/>
-    <field name="pointsBalance"/>
+    <field name="pointsBalance" x-scale="0"/>
   </grid>
 
   <form name="loyalty-account-form" title="Loyalty account"
@@ -21,7 +21,7 @@
     <panel name="mainPanel" colSpan="12">
       <field name="partner"/>
       <field name="company"/>
-      <field name="pointsBalance"/>
+      <field name="pointsBalance" x-scale="0"/>
     </panel>
   </form>
 
@@ -29,7 +29,7 @@
     model="com.axelor.apps.sale.db.LoyaltyAccount">
     <panel name="mainPanel" colSpan="12">
       <field name="company"/>
-      <field name="pointsBalance" readonly="true"/>
+      <field name="pointsBalance" readonly="true" x-scale="0"/>
     </panel>
   </form>
 

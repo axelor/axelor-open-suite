@@ -783,7 +783,7 @@
     <panel name="loyaltyAccountPanel" title="Loyalty account" sidebar="true" hidden="true"
       showIf="clientPartner &amp;&amp; $loyaltyPoints" canCollapse="true" collapseIf="true"
       if="__config__.app.getApp('sale')?.getEnableLoyalty()">
-      <field name="$loyaltyPoints" readonly="true" title="Loyalty points"/>
+      <field name="$loyaltyPoints" readonly="true" title="Loyalty points" x-scale="0"/>
     </panel>
     <panel name="salesFollowUpPanel" title="Sales follow-up" hideIf="clientPartner == null"
       sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
