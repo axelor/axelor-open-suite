@@ -15,6 +15,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.loyalty.LoyaltyAccountService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import java.math.RoundingMode;

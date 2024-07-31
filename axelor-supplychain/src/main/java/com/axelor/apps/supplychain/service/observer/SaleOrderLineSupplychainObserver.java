@@ -5,7 +5,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.event.SaleOrderLineViewOnLoad;
 import com.axelor.apps.sale.service.event.SaleOrderLineViewOnNew;
-import com.axelor.apps.supplychain.service.SaleOrderLineViewSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
 import java.util.Map;

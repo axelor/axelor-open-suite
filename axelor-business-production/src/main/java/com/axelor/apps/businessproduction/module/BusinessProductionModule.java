@@ -56,8 +56,8 @@ import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowS
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderLineCreateSupplychainServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderWorkflowServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCreateSupplychainServiceImpl;
 
 public class BusinessProductionModule extends AxelorModule {
 
