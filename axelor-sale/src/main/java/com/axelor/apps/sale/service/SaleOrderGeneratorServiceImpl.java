@@ -69,6 +69,15 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     boolean isTemplate = false;
     saleOrderInitValueService.setIsTemplate(saleOrder, isTemplate);
     saleOrderInitValueService.getOnNewInitValues(saleOrder);
+    checkClientPartner(clientPartner, saleOrder);
+    saleOrder.setClientPartner(clientPartner);
+    saleOrderOnChangeService.partnerOnChange(saleOrder);
+    saleOrderRepository.save(saleOrder);
+    return saleOrder;
+  }
+
+  protected void checkClientPartner(Partner clientPartner, SaleOrder saleOrder)
+      throws AxelorException {
     String domain = saleOrderDomainService.getPartnerBaseDomain(saleOrder.getCompany());
     if (!partnerRepository
         .all()
@@ -80,9 +89,5 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.CLIENT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS));
     }
-    saleOrder.setClientPartner(clientPartner);
-    saleOrderOnChangeService.partnerOnChange(saleOrder);
-    saleOrderRepository.save(saleOrder);
-    return saleOrder;
   }
 }
