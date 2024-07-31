@@ -1,0 +1,5 @@
+"importId";"code";"name";"technicalTypeSelect"
+"IND_COA1";"IND_ON";"Ongoing Asset";1
+"IND_COA2";"IND_TA";"Tangible Asset";2
+"IND_COA3";"IND_INTA";"Intangible Asset";3
+"IND_COA4";"IND_FIN";"Financial Asset";4

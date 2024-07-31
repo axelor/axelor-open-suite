@@ -1,0 +1,146 @@
+"code";"parent_code";"name";"accountType.importId";"reconcileOk";"isRegulatoryAccount";"commonPosition";"compatibleAccounts";"useForPartnerBalance";"isTaxAuthorizedOnMoveLine";"isTaxRequiredOnMoveLine";"defaultTaxSet";"vatSystemSelect";"isRetrievedOnPaymentSession";"manageCutOffPeriod";"statusSelect"
+0;;"IND-COA";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"BAL";0;"Balance sheet";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"A000";"BAL";"Current Assets";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"A050";"A000";"Bank and Cash";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+100101;"A010";"Cash in National currency";"IND_COA130";"FALSE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+100201;"A010";"Bank Suspense Account";"IND_COA130";"TRUE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+100202;"A010";"Outstanding Receipts";"IND_COA130";"TRUE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+100203;"A010";"Outstanding Payments";"IND_COA130";"TRUE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+100204;"A010";"Bank in National currency";"IND_COA130";"FALSE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+100250;"A010";"Cashier closure differences";"IND_COA130";"FALSE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+"A010";"A000";"Stocks & WIP";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+100310;"A010";"Inventories Raw";"IND_COA120";"FALSE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+100311;"A010";"WIP Inventories";"IND_COA120";"FALSE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+100312;"A010";"Finished Goods";"IND_COA120";"FALSE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+"A020";"A000";"Account Receivable";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+100400;"A020";"Debtors";"IND_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+100410;"A020";"Debtors (PoS)";"IND_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+100420;"A020";"Debtors Unbilled";"IND_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+100425;"A020";"Debtors Exchange Account";"IND_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+100430;"A020";"Debtors Holdback";"IND_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+100435;"A020";"Debtors factor account";"IND_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+100510;"A020";"SGST Receivable";"IND_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+100520;"A020";"CGST Receivable";"IND_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+100530;"A020";"IGST Receivable";"IND_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+100550;"A020";"CESS Receivable";"IND_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+100560;"A020";"GST Special rate Tax Receivable";"IND_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+100570;"A020";"Reverse Charge Tax Receivable";"IND_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+100580;"A020";"TDS Receivable";"IND_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+100590;"A020";"GST Zero rated Receivable";"IND_COA250";"FALSE";"FALSE";1;;;"TRUE";;;0;"FALSE";"FALSE";1
+100610;"A020";"Deposit Account";"IND_COA120";"FALSE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+"A030";"A000";"Prepayments and accrued income";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+100710;"A030";"Prepaid expenses";"IND_COA120";"FALSE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+100720;"A030";"Debtors Advance Payment";"IND_COA140";"TRUE";"FALSE";2;;"TRUE";;;;0;"TRUE";"FALSE";1
+"B000";"BAL";"Fixed assets";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+101100;"B000";"Buildings & Lands";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+101110;"B000";"Accumulated depreciation – Building";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+101200;"B000";"Software & Patents";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+101210;"B000";"Accumulated depreciation – Softwares & Patents";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+101300;"B000";"Tools and Machines";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+101310;"B000";"Accumulated depreciation – Machines";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+101400;"B000";"Vehicle";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+101410;"B000";"Accumulated depreciation – Vehicles";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+101500;"B000";"IT and Office Equipment";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+101510;"B000";"Accumulated depreciation – Office equipment";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+101600;"B000";"Furniture";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+101610;"B000";"Accumulated Depreciation – Furniture and Fixtures";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+101700;"B000";"Misc Assets";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+101710;"B000";"Accumulated Depreciation – Other Assets";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+100800;"B000";"Impairment of fixed assets";"IND_COA110";"FALSE";"FALSE";2;;;"TRUE";;;1;"FALSE";"FALSE";1
+"C000";"BAL";"Current Liabilities";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"C010";"C000";"Accounts Payable";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+211200;"C010";"Reserve And Surplus Account";"IND_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+212110;"C010";"Creditors – Purchase of goods and services";"IND_COA240";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+212111;"C010";"Other Creditors ";"IND_COA240";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+212112;"C010";"Creditors Holdback";"IND_COA240";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+212113;"C010";"Long term creditors";"IND_COA240";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+212114;"C010";"Supplier Advance payment";"IND_COA240";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+212115;"C010";"Creditors Forecasted";"IND_COA240";"TRUE";"FALSE";1;;"TRUE";;;;0;"TRUE";"FALSE";1
+212120;"C010";"Deferred Income";"IND_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+212210;"C010";"Bank OD Account";"IND_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+212220;"C010";"Secured Loan Account";"IND_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+212230;"C010";"Unsecured Loan Account";"IND_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+212310;"C010";"TDS Payable";"IND_COA250";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+212320;"C010";"SGST Payable";"IND_COA250";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+212330;"C010";"CGST Payable";"IND_COA250";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+212340;"C010";"IGST Payable";"IND_COA250";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+212350;"C010";"CESS Payable";"IND_COA250";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+212360;"C010";"GST Special Payable ";"IND_COA250";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+212370;"C010";"GST Zero rated Payable";"IND_COA250";"FALSE";"FALSE";2;;;"TRUE";;;0;"FALSE";"FALSE";1
+212410;"C010";"Wages Payable";"IND_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+212420;"C010";"Interest Payable";"IND_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+212430;"C010";"Notes Payable";"IND_COA230";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+"D000";"BAL";"Shareholder’s Equity";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+321100;"D000";"Called up share capital";"IND_COA210";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+321200;"D000";"Share premium";"IND_COA210";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+321300;"D000";"Revaluation reserve";"IND_COA210";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+321400;"D000";"Other reserves";"IND_COA210";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+321500;"D000";"Capital";"IND_COA210";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+321600;"D000";"Dividends";"IND_COA210";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+321700;"D000";"Drawings";"IND_COA210";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+321800;"D000";"Undistributed Profits/Losses";"IND_COA210";"FALSE";"FALSE";1;;;;;;0;"FALSE";"FALSE";1
+"PNL";0;"Profit and Loss";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"E000";"PNL";"Revenue";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"E010";"E000";"Sales Revenue";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+400110;"E010";"Local Sales";"IND_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+400120;"E010";"Retail Sales";"IND_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+400130;"E010";"Export Sales";"IND_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+400210;"E010";"Local Services";"IND_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+400220;"E010";"Export Services";"IND_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+"E020";"E000";"Other Revenue";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+401000;"E020";"Interest Revenues";"IND_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+401100;"E020";"Gain on Sale of Assets";"IND_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+401200;"E020";"Write off Income";"IND_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+401300;"E020";"Foreign Exchange Profit";"IND_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+401400;"E020";"Other Income Received(Profit)";"IND_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+999002;"E020";"Cash Difference Gain";"IND_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+"E040";"E000";"Asset Reversal Income";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+407100;"E040";"Reversal Depreciation, Amortization of Tangible Asset";"IND_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+407110;"E040";"Reversal Depreciation, Amortization of Intangible Asset";"IND_COA1000";"FALSE";"FALSE";1;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+"F000";"PNL";"Expenses";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+"F010";"F000";"Cost of Sales";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+510010;"F010";"Cost of Sales – Product";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+510020;"F010";"Cost of Sales – Product Export";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+510110;"F010";"Cost of Sales – Services";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+510120;"F010";"Cost of Sales – Services Export";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+"F020";"F000";"Administrative Expenses";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+510200;"F020";"Electricity Expense";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+510300;"F020";"Salary Expense";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+510400;"F020";"Office Rent";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+510500;"F020";"House Keeping Expense";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+510600;"F020";"Postage And Courier Expense";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+510700;"F020";"Internet Expense";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+510800;"F020";"Telephone Expense";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+510900;"F020";"Purchase Expense";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+"F030";"F000";"Other Expenses";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+511000;"F030";"Computer/Laptop Accessories";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+511100;"F030";"News Paper And Magazine";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+511200;"F030";"Business Promotion";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+511300;"F030";"Entertainment Expense";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+511400;"F030";"Professional Services";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+511500;"F030";"Bank Charges";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+511600;"F030";"Diwali Bonus/Gift";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+511700;"F030";"Bad debt expenses";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+511810;"F030";"Repairing Expense";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+511820;"F030";"Foreign Exchange Loss";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+511830;"F030";"Sales Commission Expense";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+511840;"F030";"Stationary Expense";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+511850;"F030";"Travelling Expense";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+999001;"F030";"Cash Difference Loss";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+"F040";"F000";"Stocks Expenses";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+512100;"F040";"Opening Stock";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+512200;"F040";"Purchase Stock";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+512300;"F040";"Closing Stock";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+"F050";"F000";"Asset Expenses";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+513100;"F050";"Loss on Sale of Assets";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+513200;"F050";"Write Off/Transfer Expense";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+810001;"F050";"Tangible assets depn";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+810002;"F050";"Intangible assets depn";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+820001;"F050";"ExtraOrdinary depreciation Expense- Fixed Assets";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+"F055";"F050";"Impairment expenses";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+830000;"F055";"Impairment of Tangible Assets";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+830010;"F055";"Impairment of Intangible Assets";"IND_COA2000";"FALSE";"FALSE";2;;;"TRUE";"TRUE";"IND_CGST_2.5|IND_SGST_2.5";1;"FALSE";"FALSE";1
+"N000";0;"Special Accounts";"IND_COA0";"FALSE";"TRUE";0;;;;;;0;"FALSE";"FALSE";1
+900000;"N000";"Opening Balance";"IND_COA9000";"FALSE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1
+900010;"N000";"Closing Balance";"IND_COA9000";"FALSE";"FALSE";2;;;;;;0;"FALSE";"FALSE";1

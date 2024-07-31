@@ -1,0 +1,6 @@
+"importId";"code";"name";"isDisplayBalances";"accountTypeSet";"technicalTypeSelect"
+"IND_COA1";"PCH";"Purchase";;;1
+"IND_COA2";"SAL";"Sale";;;2
+"IND_COA3";"REF";"Refund";;;3
+"IND_COA4";"TRS";"Treasury";"true";"cash";4
+"IND_COA5";"OTH";"Other";;;5

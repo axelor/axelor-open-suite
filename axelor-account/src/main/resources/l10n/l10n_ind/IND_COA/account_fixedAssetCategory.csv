@@ -1,0 +1,10 @@
+"importId";"name";"fixedAssetType.code";"journal.code";"depreciationPlanSelect";"numberOfDepreciation";"periodicityTypeSelect";"periodicityInMonth";"durationInMonth";"isProrataTemporis";"computationMethodSelect";"degressiveCoef";"chargeAccount_code";"depreciationAccount_code";"provisionFixedAssetAccount_code";"approExtraordDepreciationExpenseAccount_code";"appProvisionFixedAssetAccount_code";"wbProvisionFixedAssetAccount_code";"capitalDepreciationDerogatoryAccount_code";"expenseDepreciationDerogatoryAccount_code";"incomeDepreciationDerogatoryAccount_code";"ifrsDepreciationAccount_code";"ifrsChargeAccount_code";"debtReceivableAccount_code";"realisedAssetsValueAccount_code";"realisedAssetsIncomeAccount_code"
+"IND_COA1";"Patents & Trademarks";"IND_INTA";"MAT";"1;2";5;12;12;60;"true";"linear";;810002;"101210";100800;820001;830010;407110;;;;;;100400;513200;401100
+"IND_COA2";"Softwares";"IND_INTA";"MAT";"1;2";3;12;12;36;"true";"linear";;810002;"101210";100800;820001;830010;407110;;;;;;100400;513200;401100
+"IND_COA3";"Fixtures and Fittings Derogatory";"IND_TA";"MAT";"1;2;3";7;12;12;84;"true";"linear";;810001;"101310";100800;820001;830000;407100;;;;;;100400;513200;401100
+"IND_COA4";"Fixtures and Fittings Linear";"IND_TA";"MAT";"1;2";7;12;12;84;"true";"linear";;810001;"101310";100800;820001;830000;407100;;;;;;100400;513200;401100
+"IND_COA5";"Building and Facilities";"IND_TA";"MAT";"1;2;3";7;12;12;84;"true";"linear";;810001;"101310";100800;820001;830000;407100;;;;;;100400;513200;401100
+"IND_COA6";"Office Equipment(Furniture)";"IND_TA";"MAT";"1;2";10;12;12;120;"true";"linear";;810001;"101610";100800;820001;830000;407100;;;;;;100400;513200;401100
+"IND_COA7";"Office Equipment(IT)";"IND_TA";"MAT";"1;2;3";3;12;12;36;"true";"linear";;810001;"101510";100800;820001;830000;407100;;;;;;100400;513200;401100
+"IND_COA8";"Plant and Machinery";"IND_TA";"MAT";"1;2";6;12;12;72;"true";"linear";;810001;"101310";100800;820001;830000;407100;;;;;;100400;513200;401100
+"IND_COA9";"Vehicles and Logistics";"IND_TA";"MAT";"1;2;3";5;12;12;60;"true";"linear";;810001;"101410";100800;820001;830000;407100;;;;;;100400;513200;401100
