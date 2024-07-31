@@ -32,7 +32,7 @@ public class SaleOrderResponse extends ResponseStructure {
     this.status = saleOrder.getStatusSelect();
   }
 
-  public Long getExpenseId() {
+  public Long getSaleOrderId() {
     return saleOrderId;
   }
 }

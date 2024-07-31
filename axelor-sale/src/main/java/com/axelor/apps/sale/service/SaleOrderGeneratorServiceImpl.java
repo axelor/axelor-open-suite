@@ -70,7 +70,12 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     saleOrderInitValueService.setIsTemplate(saleOrder, isTemplate);
     saleOrderInitValueService.getOnNewInitValues(saleOrder);
     String domain = saleOrderDomainService.getPartnerBaseDomain(saleOrder.getCompany());
-    if (!partnerRepository.all().filter(domain).fetch().contains(clientPartner)) {
+    if (!partnerRepository
+        .all()
+        .filter(domain)
+        .bind("company", saleOrder.getCompany())
+        .fetch()
+        .contains(clientPartner)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get("The client provided don't respect the conditions"));
