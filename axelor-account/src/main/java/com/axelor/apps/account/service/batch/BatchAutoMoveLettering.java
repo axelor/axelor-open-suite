@@ -156,7 +156,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
         if (moveLine.getDebit().signum() > 0) {
           progressiveAmount = progressiveAmount.subtract(moveLine.getAmountRemaining());
         } else {
-          progressiveAmount = progressiveAmount.add(moveLine.getAmountRemaining());
+          progressiveAmount = progressiveAmount.add(moveLine.getAmountRemaining().abs());
         }
         if (progressiveAmount.signum() == 0) {
           debitMoveLines =
