@@ -1087,7 +1087,6 @@
     <action name="action-partner-method-set-social-network-url"
       if="!__config__.app.isApp('crm')"/>
     <action name="action-partner-record-employee"/>
-    <action name="action-method-partner-siren-nic-onload"/>
   </action-group>
 
   <action-group name="action-partner-group-check-can-change-factor"
