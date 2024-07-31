@@ -603,6 +603,7 @@
 "Templates",,,
 "Test this creator",,,
 "The client Partner is required and must be the same for all sale orders",,,
+"The client provided is not a customer of the given company: %s.",,,
 "The company %s doesn't have any configured sequence for sale orders",,,
 "The company is required and must be the same for all sale orders",,,
 "The currency is required and must be the same for all sale orders",,,

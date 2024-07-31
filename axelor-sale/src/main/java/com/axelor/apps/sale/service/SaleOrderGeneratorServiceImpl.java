@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -78,16 +79,18 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
 
   protected void checkClientPartner(Partner clientPartner, SaleOrder saleOrder)
       throws AxelorException {
+    Company company = saleOrder.getCompany();
     String domain = saleOrderDomainService.getPartnerBaseDomain(saleOrder.getCompany());
     if (!partnerRepository
         .all()
         .filter(domain)
-        .bind("company", saleOrder.getCompany())
+        .bind("company", company)
         .fetch()
         .contains(clientPartner)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(SaleExceptionMessage.CLIENT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS));
+          I18n.get(SaleExceptionMessage.CLIENT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS),
+          company.getName());
     }
   }
 }
