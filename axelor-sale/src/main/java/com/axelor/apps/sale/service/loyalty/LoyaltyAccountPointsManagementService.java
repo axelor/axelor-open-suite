@@ -9,9 +9,7 @@ public interface LoyaltyAccountPointsManagementService {
 
   void incrementLoyaltyPointsFromAmount(Partner partner, Company company, BigDecimal amount);
 
-  void incrementPoints(LoyaltyAccount loyaltyAccount, BigDecimal points);
-
-  void decrementPoints(LoyaltyAccount loyaltyAccount, BigDecimal points);
+  void updatePoints(LoyaltyAccount loyaltyAccount, BigDecimal points);
 
   BigDecimal pointsEarningComputation(BigDecimal amount);
 }

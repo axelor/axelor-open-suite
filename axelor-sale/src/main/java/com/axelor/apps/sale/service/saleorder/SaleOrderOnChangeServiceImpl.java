@@ -85,12 +85,11 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     values.putAll(getComputeSaleOrderMap(saleOrder));
     values.putAll(getEndOfValidityDate(saleOrder));
     if (appSaleService.getAppSale().getEnableLoyalty()) {
-      LoyaltyAccount loyaltyAccount =
+      Optional<LoyaltyAccount> loyaltyAccount =
           loyaltyAccountService.getLoyaltyAccount(
               saleOrder.getClientPartner(), saleOrder.getCompany());
       values.put(
-          "$loyaltyPoints",
-          Optional.ofNullable(loyaltyAccount).map(LoyaltyAccount::getPointsBalance).orElse(null));
+          "$loyaltyPoints", loyaltyAccount.map(LoyaltyAccount::getPointsBalance).orElse(null));
     }
     return values;
   }

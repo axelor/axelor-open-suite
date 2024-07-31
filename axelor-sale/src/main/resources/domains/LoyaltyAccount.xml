@@ -9,7 +9,7 @@
 
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
-    <decimal name="pointsBalance" title="Points balance" scale="0" precision="8" default="0"/>
+    <decimal name="pointsBalance" title="Points balance" default="0"/>
 
     <unique-constraint columns="partner,company"/>
   </entity>

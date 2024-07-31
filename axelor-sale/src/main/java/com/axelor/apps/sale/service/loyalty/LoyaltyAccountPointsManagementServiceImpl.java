@@ -8,6 +8,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
+import java.util.Optional;
 
 public class LoyaltyAccountPointsManagementServiceImpl
     implements LoyaltyAccountPointsManagementService {
@@ -26,29 +28,26 @@ public class LoyaltyAccountPointsManagementServiceImpl
   @Override
   public void incrementLoyaltyPointsFromAmount(
       Partner partner, Company company, BigDecimal amount) {
-    LoyaltyAccount loyaltyAccount = loyaltyAccountService.getLoyaltyAccount(partner, company);
+    Optional<LoyaltyAccount> loyaltyAccount =
+        loyaltyAccountService.getLoyaltyAccount(partner, company);
     BigDecimal earnedPoints = pointsEarningComputation(amount);
-    incrementPoints(loyaltyAccount, earnedPoints);
+    loyaltyAccount.ifPresent(account -> updatePoints(account, earnedPoints));
   }
 
+  /**
+   * Update points balance use negative points to subtract
+   *
+   * @param loyaltyAccount
+   * @param points
+   */
+  @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void updatePoints(LoyaltyAccount loyaltyAccount, BigDecimal points, boolean isIncrement) {
-    BigDecimal updatedBalance =
-        isIncrement
-            ? loyaltyAccount.getPointsBalance().add(points)
-            : loyaltyAccount.getPointsBalance().subtract(points);
+  public void updatePoints(LoyaltyAccount loyaltyAccount, BigDecimal points) {
+    Objects.requireNonNull(loyaltyAccount);
+
+    BigDecimal updatedBalance = loyaltyAccount.getPointsBalance().add(points);
     loyaltyAccount.setPointsBalance(updatedBalance.setScale(0, RoundingMode.FLOOR));
     loyaltyAccountRepository.save(loyaltyAccount);
-  }
-
-  @Override
-  public void incrementPoints(LoyaltyAccount loyaltyAccount, BigDecimal points) {
-    updatePoints(loyaltyAccount, points, true);
-  }
-
-  @Override
-  public void decrementPoints(LoyaltyAccount loyaltyAccount, BigDecimal points) {
-    updatePoints(loyaltyAccount, points, false);
   }
 
   /**

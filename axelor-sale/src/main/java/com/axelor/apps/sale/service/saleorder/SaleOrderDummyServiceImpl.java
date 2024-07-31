@@ -75,12 +75,11 @@ public class SaleOrderDummyServiceImpl implements SaleOrderDummyService {
 
   protected Map<String, Object> getLoyaltyAccountDummies(SaleOrder saleOrder) {
     Map<String, Object> dummies = new HashMap<>();
-    LoyaltyAccount loyaltyAccount =
+    Optional<LoyaltyAccount> loyaltyAccount =
         loyaltyAccountService.getLoyaltyAccount(
             saleOrder.getClientPartner(), saleOrder.getCompany());
     dummies.put(
-        "$loyaltyPoints",
-        Optional.ofNullable(loyaltyAccount).map(LoyaltyAccount::getPointsBalance).orElse(null));
+        "$loyaltyPoints", loyaltyAccount.map(LoyaltyAccount::getPointsBalance).orElse(null));
     return dummies;
   }
 }
