@@ -18,9 +18,8 @@
  */
 package com.axelor.apps.businessproject.service.batch;
 
-import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
@@ -35,7 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BatchInvoicingProjectService extends AbstractBatch {
+public class BatchInvoicingProjectService extends BatchStrategy {
 
   protected ProjectRepository projectRepo;
 
@@ -89,10 +88,12 @@ public class BatchInvoicingProjectService extends AbstractBatch {
       } catch (Exception e) {
         incrementAnomaly();
         TraceBackService.trace(
-            e,
-            String.format(
-                I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
-                project.getId()),
+            new Exception(
+                String.format(
+                    I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
+                    project.getId()),
+                e),
+            ExceptionOriginRepository.INVOICE_ORIGIN,
             batch.getId());
       }
     }
@@ -113,9 +114,5 @@ public class BatchInvoicingProjectService extends AbstractBatch {
 
     addComment(comment);
     super.stop();
-  }
-
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BUSINESS_PROJECT_BATCH);
   }
 }

@@ -130,7 +130,7 @@ public class BatchDebtRecovery extends BatchStrategy {
     int offset = 0;
     List<Partner> partnerList;
 
-    while (!(partnerList = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(partnerList = query.fetch(getFetchLimit(), offset)).isEmpty()) {
       findBatch();
 
       for (Partner partner : partnerList) {

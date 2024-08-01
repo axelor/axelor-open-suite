@@ -28,7 +28,6 @@ import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -82,7 +81,7 @@ public class BatchAccountingCutOff extends PreviewBatch {
     Query<Move> moveQuery =
         cutOffService.getMoves(company, journalSet, moveDate, accountingCutOffTypeSelect);
 
-    while (!(moveList = moveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(moveList = moveQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
 
       findBatch();
       accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
