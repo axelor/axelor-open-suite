@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.AccountingReportTypeService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.exception.HandleExceptionResponse;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -50,7 +49,6 @@ public class AccountingReportTypeController {
     }
   }
 
-  @HandleExceptionResponse
   public void printReportAndRules(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

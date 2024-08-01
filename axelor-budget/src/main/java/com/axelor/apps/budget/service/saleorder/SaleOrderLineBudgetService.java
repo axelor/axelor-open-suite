@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service.saleorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import java.util.Map;
 
 public interface SaleOrderLineBudgetService {
 
@@ -34,4 +35,9 @@ public interface SaleOrderLineBudgetService {
   String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
   void checkAmountForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  Map<String, Object> setProductAccount(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
+
+  Map<String, Object> resetBudget(SaleOrderLine saleOrderLine);
 }

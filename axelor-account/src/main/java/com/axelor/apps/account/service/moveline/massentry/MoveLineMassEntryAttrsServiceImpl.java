@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -45,15 +46,18 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
   protected AppAccountService appAccountService;
   protected InvoiceTermService invoiceTermService;
   protected PfpService pfpService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public MoveLineMassEntryAttrsServiceImpl(
       AppAccountService appAccountService,
       InvoiceTermService invoiceTermService,
-      PfpService pfpService) {
+      PfpService pfpService,
+      AccountConfigService accountConfigService) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
     this.pfpService = pfpService;
+    this.accountConfigService = accountConfigService;
   }
 
   protected void addAttr(
@@ -262,5 +266,15 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
   @Override
   public void addTemporaryMoveNumberFocus(Map<String, Map<String, Object>> attrsMap) {
     this.addAttr("temporaryMoveNumber", "focus", true, attrsMap);
+  }
+
+  @Override
+  public void addDescriptionRequired(Move move, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException {
+    this.addAttr(
+        "$isDescriptionRequired",
+        "value",
+        accountConfigService.getAccountConfig(move.getCompany()).getIsDescriptionRequired(),
+        attrsMap);
   }
 }

@@ -6,4 +6,6 @@ import java.util.Map;
 
 public interface SaleOrderInitValueService {
   Map<String, Object> getOnNewInitValues(SaleOrder saleOrder) throws AxelorException;
+
+  Map<String, Object> setIsTemplate(SaleOrder saleOrder, boolean isTemplate);
 }

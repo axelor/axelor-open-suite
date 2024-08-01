@@ -130,7 +130,7 @@
         <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
           showTitle="false">
           <viewer depends="$partnerLanguage">
-            <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t('The partner\'s language is different from the current language. Description and product name are in :')} {$partnerLanguage}</Badge>}</>]]>
+            <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t("The partner's language is different from the current language. Description and product name are in :")} {$partnerLanguage}</Badge>}</>]]>
           </viewer>
         </field>
         <label name="differentSupplierLabel" hidden="true" colSpan="12"/>
@@ -239,7 +239,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()"
         title="Business Project" if-module="axelor-business-project">
         <field name="project" domain="self.isBusinessProject = true" title="Business Project"
-          requiredIf="toInvoice &amp;&amp; !isTitleLine" form-view="project-form"
+          requiredIf="toInvoice &amp;&amp; !isTitleLine" form-view="business-project-form"
           grid-view="project-grid" canEdit="false"/>
         <field name="toInvoice"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()"
@@ -489,14 +489,14 @@
   <action-attrs
     name="action-purchase-order-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.supplierPartner?.localization?.language?.code?.equals(__user__.getLanguage())"
-      if="__parent__"/>
+      expr="eval: __parent__?.supplierPartner?.localization?.language == __user__.localization?.language"
+      if="__parent__ &amp;&amp; __parent__.supplierPartner &amp;&amp; __parent__.supplierPartner.localization &amp;&amp; __user__.localization"/>
     <attribute for="$partnerLanguage" name="value"
       expr="eval: __parent__?.supplierPartner?.localization?.language?.code?.toUpperCase()"
       if="__parent__"/>
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: purchaseOrder?.supplierPartner?.localization?.language?.code?.equals(__user__.getLanguage())"
-      if="purchaseOrder"/>
+      expr="eval: purchaseOrder?.supplierPartner?.localization?.language == __user__.localization?.language"
+      if="purchaseOrder &amp;&amp; purchaseOrder.supplierPartner &amp;&amp; purchaseOrder.supplierPartner.localization &amp;&amp; __user__.localization"/>
     <attribute for="$partnerLanguage" name="value"
       expr="eval: purchaseOrder?.supplierPartner?.localization?.language?.code?.toUpperCase()"
       if="purchaseOrder"/>
@@ -505,7 +505,8 @@
   <action-attrs
     name="action-purchase-order-line-attrs-display-different-language-message-edit-window-blank">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: purchaseOrder?.supplierPartner?.localization?.language?.code?.equals(__user__.getLanguage())"/>
+      expr="eval: purchaseOrder?.supplierPartner?.localization?.language == __user__.localization?.language"
+      if="purchaseOrder &amp;&amp; purchaseOrder.supplierPartner &amp;&amp; purchaseOrder.supplierPartner.localization &amp;&amp; __user__.localization"/>
     <attribute for="$partnerLanguage" name="value"
       expr="eval: purchaseOrder?.supplierPartner?.localization?.language?.code?.toUpperCase()"/>
   </action-attrs>

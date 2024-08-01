@@ -6,13 +6,13 @@
   <action-record name="action-product-set-stock"
     model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
     <field name="$realQtyBtn"
-      expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQtyOfProductInStockLocations(id, null,null)"
+      expr="call:com.axelor.apps.stock.utils.StockLocationUtilsService:getRealQtyOfProductInStockLocations(id, null,null)"
       if="__config__.app.isApp('stock')"/>
     <field name="$futureQtyBtn"
-      expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQtyOfProductInStockLocations(id, null,null)"
+      expr="call:com.axelor.apps.stock.utils.StockLocationUtilsService:getFutureQtyOfProductInStockLocations(id, null,null)"
       if="__config__.app.isApp('stock')"/>
     <field name="$reservedQtyBtn"
-      expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQtyOfProductInStockLocations(id, null,null)"
+      expr="call:com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychain:getReservedQtyOfProductInStockLocations(id, null,null)"
       if="__config__.app.isApp('supplychain')"/>
   </action-record>
 
@@ -134,12 +134,12 @@
     <extend target="//panel[@name='productionInformationsPanel']">
       <insert position="after">
         <panel name="trackingNumberPanel" title="Tracking number" showTitle="false"
-          showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('stock')">
+          showIf="productTypeSelect == 'storable'"
+          if="__config__.app.isApp('stock') &amp;&amp; !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'trackingNumberConfiguration'})">
           <panel colSpan="12" name="trackingConfigPanel">
             <field name="trackingNumberConfiguration" canNew="true"
               form-view="tracking-number-configuration-form"
-              grid-view="tracking-number-configuration-grid"
-              if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'trackingNumberConfiguration'})"/>
+              grid-view="tracking-number-configuration-grid"/>
           </panel>
         </panel>
       </insert>
