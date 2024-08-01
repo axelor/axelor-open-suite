@@ -18,15 +18,11 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
-
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 
-
 public interface SaleOrderLineGeneratorService {
- SaleOrderLine createSaleOrderLine(
-         SaleOrder saleOrder, Product product);
+  SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product) throws AxelorException;
 }
-
-

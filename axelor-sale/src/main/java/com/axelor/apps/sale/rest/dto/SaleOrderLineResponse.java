@@ -23,14 +23,14 @@ import com.axelor.utils.api.ResponseStructure;
 
 public class SaleOrderLineResponse extends ResponseStructure {
 
-    private final Long saleOrderLineId;
+  private final Long saleOrderLineId;
 
-    public SaleOrderLineResponse(SaleOrderLine saleOrderLine) {
-        super(saleOrderLine.getVersion());
-        this.saleOrderLineId = saleOrderLine.getId();
-    }
+  public SaleOrderLineResponse(SaleOrderLine saleOrderLine) {
+    super(saleOrderLine.getVersion());
+    this.saleOrderLineId = saleOrderLine.getId();
+  }
 
-    public Long getSaleOrderLineId() {
-        return saleOrderLineId;
-    }
+  public Long getSaleOrderLineId() {
+    return saleOrderLineId;
+  }
 }

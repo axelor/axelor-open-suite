@@ -18,26 +18,46 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineInitValueService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGeneratorService {
-
+  protected SaleOrderLineInitValueService saleOrderLineInitValueService;
+  protected SaleOrderLineProductService saleOrderLineProductService;
+  protected SaleOrderLineRepository saleOrderLineRepository;
+  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public SaleOrderLineGeneratorServiceImpl(
-     ) {
-
+      SaleOrderLineInitValueService saleOrderLineInitValueService,
+      SaleOrderLineProductService saleOrderLineProductService,
+      SaleOrderRepository saleOrderRepository,
+      SaleOrderLineRepository saleOrderLineRepository) {
+    this.saleOrderLineInitValueService = saleOrderLineInitValueService;
+    this.saleOrderLineProductService = saleOrderLineProductService;
+    this.saleOrderLineRepository = saleOrderLineRepository;
+    this.saleOrderRepository = saleOrderRepository;
   }
+
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product) {
-    return null;
+  public SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product)
+      throws AxelorException {
+    SaleOrderLine saleOrderLine = new SaleOrderLine();
+    saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine);
+    saleOrderLine.setProduct(product);
+    saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
+    saleOrderLineRepository.save(saleOrderLine);
+    saleOrder.addSaleOrderLineListItem(saleOrderLine);
+    saleOrderRepository.save(saleOrder);
+    return saleOrderLine;
   }
-
 }

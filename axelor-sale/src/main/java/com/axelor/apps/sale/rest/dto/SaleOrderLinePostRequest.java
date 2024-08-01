@@ -18,55 +18,49 @@
  */
 package com.axelor.apps.sale.rest.dto;
 
-
 import com.axelor.apps.base.db.Product;
-
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-
 public class SaleOrderLinePostRequest extends RequestPostStructure {
-    @NotNull
-    @Min(0)
-    private Long productId;
+  @NotNull
+  @Min(0)
+  private Long productId;
 
+  @NotNull
+  @Min(0)
+  private Long saleOrderId;
 
-    @NotNull
-    @Min(0)
-    private Long saleOrderId;
-    public Long getSaleOrderId() {
-        return saleOrderId;
+  public Long getSaleOrderId() {
+    return saleOrderId;
+  }
+
+  public void setSaleOrderId(Long saleOrderId) {
+    this.saleOrderId = saleOrderId;
+  }
+
+  public Long getProductId() {
+    return productId;
+  }
+
+  public void setProductId(Long productId) {
+    this.productId = productId;
+  }
+
+  public Product fetchProduct() {
+    if (productId == null || productId == 0L) {
+      return null;
     }
+    return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
+  }
 
-    public void setSaleOrderId(Long saleOrderId) {
-        this.saleOrderId = saleOrderId;
+  public SaleOrder fetchsaleOrder() {
+    if (saleOrderId == null || saleOrderId == 0L) {
+      return null;
     }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-    public Product fetchProduct() {
-        if (productId == null || productId == 0L) {
-            return null;
-        }
-        return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
-    }
-
-
-    public SaleOrder fetchsaleOrder() {
-        if (saleOrderId == null || saleOrderId == 0L) {
-            return null;
-        }
-        return ObjectFinder.find(SaleOrder.class, saleOrderId, ObjectFinder.NO_VERSION);
-    }
-
-
+    return ObjectFinder.find(SaleOrder.class, saleOrderId, ObjectFinder.NO_VERSION);
+  }
 }

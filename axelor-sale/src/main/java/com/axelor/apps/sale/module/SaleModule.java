@@ -103,6 +103,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderGroupService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGroupServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineGeneratorService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineGeneratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeService;
@@ -261,6 +263,7 @@ public class SaleModule extends AxelorModule {
     bind(LoyaltyAccountService.class).to(LoyaltyAccountServiceImpl.class);
     bind(LoyaltyAccountPointsManagementService.class)
         .to(LoyaltyAccountPointsManagementServiceImpl.class);
+    bind(SaleOrderLineGeneratorService.class).to(SaleOrderLineGeneratorServiceImpl.class);
     bind(SaleOrderGeneratorService.class).to(SaleOrderGeneratorServiceImpl.class);
     bind(CartInitValueService.class).to(CartInitValueServiceImpl.class);
     bind(CartService.class).to(CartServiceImpl.class);
