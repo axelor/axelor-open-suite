@@ -261,7 +261,7 @@
       <field name="activatePartnerRelations" on="UPDATE"/>
       <field name="enablePricingScale" on="UPDATE"/>
       <field name="isPricingComputingOrder" on="UPDATE"/>
-      <field name="batchFetchLimit" on="UPDATE"/>
+      <field name="defaultBatchFetchLimit" on="UPDATE"/>
       <!-- 32 fields -->
     </track>
 
