@@ -16,8 +16,6 @@ axelor {
 
 dependencies {
 	api project(":modules:axelor-crm")
-
-	implementation libs.commons_lang3
 	implementation libs.swagger_jaxrs
-	implementation libs.jaxb_bind_api
+
 }
