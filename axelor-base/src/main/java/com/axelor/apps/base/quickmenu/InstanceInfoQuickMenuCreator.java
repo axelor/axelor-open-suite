@@ -82,7 +82,7 @@ public class InstanceInfoQuickMenuCreator implements QuickMenuCreator {
   protected QuickMenuItem getInstanceInfoMenuItem() {
     final boolean isDevMode = "dev".equals(AppSettings.get().get("application.mode", "prod"));
     return new QuickMenuItem(
-        isDevMode ? I18n.get("Prod instance") : I18n.get("Test instance"), null);
+        isDevMode ? I18n.get("Test instance") : I18n.get("Prod instance"), null);
   }
 
   protected QuickMenuItem getTodayDateMenuItem() {
