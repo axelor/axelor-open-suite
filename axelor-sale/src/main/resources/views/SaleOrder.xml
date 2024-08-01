@@ -1480,6 +1480,7 @@
     <action name="action-sale-order-method-confirm"/>
     <action name="action-sale-order-method-update-loyalty-account"
       if="__config__.app.getApp('sale')?.enableLoyalty"/>
+    <action name="action-sale-order-method-reload"/>
   </action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
@@ -1630,6 +1631,10 @@
 
   <action-method name="action-sale-order-method-version-recovery-btn">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="recoverVersion"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-reload">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="reloadMethod"/>
   </action-method>
 
   <action-view name="action-open-sale-order-merge-form" title="Merge sale orders"
