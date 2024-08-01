@@ -1,16 +1,27 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.sale.db.LoyaltyAccount;
+import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.loyalty.LoyaltyAccountService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
+import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -24,6 +35,11 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
   protected SaleOrderProductPrintingService saleOrderProductPrintingService;
   protected SaleOrderLineFiscalPositionService saleOrderLineFiscalPositionService;
   protected SaleOrderComputeService saleOrderComputeService;
+  protected SaleConfigService saleConfigService;
+  protected SaleOrderBankDetailsService saleOrderBankDetailsService;
+  protected AppBaseService appBaseService;
+  protected AppSaleService appSaleService;
+  protected LoyaltyAccountService loyaltyAccountService;
 
   @Inject
   public SaleOrderOnChangeServiceImpl(
@@ -34,7 +50,12 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
       SaleOrderCreateService saleOrderCreateService,
       SaleOrderProductPrintingService saleOrderProductPrintingService,
       SaleOrderLineFiscalPositionService saleOrderLineFiscalPositionService,
-      SaleOrderComputeService saleOrderComputeService) {
+      SaleOrderComputeService saleOrderComputeService,
+      SaleConfigService saleConfigService,
+      SaleOrderBankDetailsService saleOrderBankDetailsService,
+      AppBaseService appBaseService,
+      AppSaleService appSaleService,
+      LoyaltyAccountService loyaltyAccountService) {
     this.partnerService = partnerService;
     this.saleOrderUserService = saleOrderUserService;
     this.saleOrderService = saleOrderService;
@@ -43,6 +64,11 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     this.saleOrderProductPrintingService = saleOrderProductPrintingService;
     this.saleOrderLineFiscalPositionService = saleOrderLineFiscalPositionService;
     this.saleOrderComputeService = saleOrderComputeService;
+    this.saleConfigService = saleConfigService;
+    this.saleOrderBankDetailsService = saleOrderBankDetailsService;
+    this.appBaseService = appBaseService;
+    this.appSaleService = appSaleService;
+    this.loyaltyAccountService = loyaltyAccountService;
   }
 
   @Override
@@ -60,6 +86,27 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     values.putAll(updateLinesAfterFiscalPositionChange(saleOrder));
     values.putAll(getComputeSaleOrderMap(saleOrder));
     values.putAll(getEndOfValidityDate(saleOrder));
+    if (appSaleService.getAppSale().getEnableLoyalty()) {
+      Optional<LoyaltyAccount> loyaltyAccount =
+          loyaltyAccountService.getLoyaltyAccount(
+              saleOrder.getClientPartner(), saleOrder.getCompany());
+      values.put(
+          "$loyaltyPoints",
+          loyaltyAccount
+              .map(LoyaltyAccount::getPointsBalance)
+              .map(points -> points.setScale(0, RoundingMode.HALF_UP))
+              .orElse(null));
+    }
+    return values;
+  }
+
+  @Override
+  public Map<String, Object> companyOnChange(SaleOrder saleOrder) throws AxelorException {
+    Map<String, Object> values = new HashMap<>();
+    values.putAll(getCompanyConfig(saleOrder));
+    values.putAll(saleOrderBankDetailsService.getBankDetails(saleOrder));
+    values.putAll(getEndOfValidityDate(saleOrder));
+    resetTradingName(saleOrder);
     return values;
   }
 
@@ -140,9 +187,8 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
 
   protected Map<String, Object> getContactPartner(SaleOrder saleOrder) {
     Map<String, Object> values = new HashMap<>();
-
     Partner clientPartner = saleOrder.getClientPartner();
-
+    saleOrder.setContactPartner(null);
     if (clientPartner != null) {
       Set<Partner> contactPartnerSet = clientPartner.getContactPartnerSet();
       if (CollectionUtils.isNotEmpty(contactPartnerSet) && contactPartnerSet.size() == 1) {
@@ -190,6 +236,34 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     saleOrderService.computeEndOfValidityDate(saleOrder);
     values.put("duration", saleOrder.getDuration());
     values.put("endOfValidityDate", saleOrder.getEndOfValidityDate());
+    return values;
+  }
+
+  protected Map<String, Object> getCompanyConfig(SaleOrder saleOrder) throws AxelorException {
+    Map<String, Object> values = new HashMap<>();
+    Company company = saleOrder.getCompany();
+    if (company != null) {
+      SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
+      saleOrder.setDuration(saleConfig.getDefaultValidityDuration());
+      values.put("duration", saleOrder.getDuration());
+
+      saleOrder.setPrintingSettings(company.getPrintingSettings());
+      values.put("printingSettings", saleOrder.getPrintingSettings());
+
+      saleOrder.setCreationDate(appBaseService.getTodayDate(company));
+      values.put("creationDate", saleOrder.getCreationDate());
+    }
+
+    return values;
+  }
+
+  protected Map<String, Object> resetTradingName(SaleOrder saleOrder) {
+    Map<String, Object> values = new HashMap<>();
+    AppBase appBase = appBaseService.getAppBase();
+    if (!appBase.getEnableTradingNamesManagement()) {
+      saleOrder.setTradingName(null);
+      values.put("tradingName", saleOrder.getTradingName());
+    }
 
     return values;
   }

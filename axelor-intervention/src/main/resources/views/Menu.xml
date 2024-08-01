@@ -5,7 +5,7 @@
 
   <!-- ASSETS MANAGEMENT -->
   <menuitem name="assets-management-root" title="Assets management" order="-1300"
-    if="__config__.app.isApp('intervention')" icon-background="grey" icon="fa-wrench" left="true"/>
+    if="__config__.app.isApp('intervention')" icon-background="#4caf50" icon="wrench" left="true"/>
 
   <menuitem name="assets-management-root-equipment-tree" title="Equipments tree"
     parent="assets-management-root" icon-background="grey" icon="fa-sitemap" left="true"
@@ -64,11 +64,11 @@
   </action-view>
 
   <!-- INTERVENTIONS -->
-  <menuitem title="Intervention" name="intervention-root" icon="fa-tools"
+  <menuitem title="Intervention" name="intervention-root" icon="tools"
     icon-background="#e59331" order="-1200" if="__config__.app.isApp('intervention')"/>
 
   <menuitem name="intervention-root-interventions" title="Interventions"
-    parent="intervention-root" icon="fa-tools" icon-background="#e59331"
+    parent="intervention-root" icon="tools" icon-background="#e59331"
     action="intervention.root.interventions" tag-count="true" order="0"/>
 
   <action-view name="intervention.root.interventions" title="Interventions"

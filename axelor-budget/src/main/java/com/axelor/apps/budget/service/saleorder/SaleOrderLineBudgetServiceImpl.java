@@ -18,9 +18,12 @@
  */
 package com.axelor.apps.budget.service.saleorder;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -40,8 +43,10 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -53,6 +58,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected AppBudgetService appBudgetService;
   protected BudgetToolsService budgetToolsService;
+  protected AccountManagementAccountService accountManagementAccountService;
 
   @Inject
   public SaleOrderLineBudgetServiceImpl(
@@ -60,12 +66,14 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineRepository saleOrderLineRepo,
       AppBudgetService appBudgetService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      AccountManagementAccountService accountManagementAccountService) {
     this.budgetService = budgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.appBudgetService = appBudgetService;
     this.budgetToolsService = budgetToolsService;
+    this.accountManagementAccountService = accountManagementAccountService;
   }
 
   @Override
@@ -166,5 +174,45 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
             saleOrderLine.getProductName());
       }
     }
+  }
+
+  @Override
+  public Map<String, Object> setProductAccount(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    Map<String, Object> values = new HashMap<>();
+    Product product = saleOrderLine.getProduct();
+
+    if (product == null) {
+      values.put("account", null);
+      saleOrderLine.setAccount(null);
+    } else if (saleOrder != null) {
+      Account account =
+          accountManagementAccountService.getProductAccount(
+              saleOrderLine.getProduct(),
+              saleOrder.getCompany(),
+              saleOrder.getFiscalPosition(),
+              false,
+              false);
+      if (account.getCode().startsWith("2")
+          || account.getCode().startsWith("4")
+          || account.getCode().startsWith("7")) {
+        values.put("account", account);
+        saleOrderLine.setAccount(account);
+      }
+    }
+    return values;
+  }
+
+  @Override
+  public Map<String, Object> resetBudget(SaleOrderLine saleOrderLine) {
+    Map<String, Object> values = new HashMap<>();
+    BigDecimal budgetRemainingAmountToAllocate = saleOrderLine.getCompanyExTaxTotal();
+    saleOrderLine.setBudgetRemainingAmountToAllocate(budgetRemainingAmountToAllocate);
+    saleOrderLine.setBudgetDistributionList(new ArrayList<>());
+    saleOrderLine.setBudget(null);
+    values.put("budgetRemainingAmountToAllocate", budgetRemainingAmountToAllocate);
+    values.put("budgetDistributionList", new ArrayList<>());
+    values.put("budget", null);
+    return values;
   }
 }

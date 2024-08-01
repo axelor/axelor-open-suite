@@ -92,7 +92,7 @@
     <boolean name="isKeyAccount" title="Key account"/>
     <many-to-one ref="com.axelor.apps.base.db.PartnerCategory" name="type"
       title="Category"/>
-    <many-to-many ref="com.axelor.apps.crm.db.LeadTag" name="leadTagSet" title="Tags"/>
+    <many-to-many ref="com.axelor.apps.base.db.Tag" name="leadTagSet" title="Tags"/>
     <integer name="sequence" title="Sequence"/>
     <extra-code>
     <![CDATA[

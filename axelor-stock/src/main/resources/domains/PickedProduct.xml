@@ -8,18 +8,20 @@
   <entity name="PickedProduct"
     implements="com.axelor.apps.stock.interfaces.massstockmove.MassStockMovableProduct">
     <many-to-one name="massStockMove" title="Mass move"
-      ref="com.axelor.apps.stock.db.MassStockMove" required="true"/>
+      ref="com.axelor.apps.stock.db.MassStockMove"/>
     <many-to-one name="pickedProduct" title="Product"
       ref="com.axelor.apps.base.db.Product" required="true"/>
     <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
       title="Tracking number"/>
     <many-to-one name="fromStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Source location" required="true"/>
-    <decimal name="currentQty" title="Current qty" precision="20" scale="10"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-    <decimal name="pickedQty" title="Picked qty" required="true" precision="20" scale="10"/>
+    <decimal name="pickedQty" title="Picked qty" required="true" precision="20" scale="10"
+      min="0"/>
     <many-to-one name="stockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine"
       title="Stock move line"/>
+    <one-to-many ref="com.axelor.apps.stock.db.StoredProduct" name="storedProductList"
+      mappedBy="pickedProduct"/>
 
 
     <!-- Interface fields -->

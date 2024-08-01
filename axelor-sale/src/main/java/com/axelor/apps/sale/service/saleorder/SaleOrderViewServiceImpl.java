@@ -2,6 +2,8 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -53,6 +55,29 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     attrs.putAll(getTypeSelectSelection());
     attrs.putAll(hideDiscount());
     attrs.putAll(refreshVersionPanel());
+    attrs.putAll(hideContactPartner(saleOrder));
+    return attrs;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getOnLoadAttrs(SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    attrs.putAll(hideContactPartner(saleOrder));
+    return attrs;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getPartnerOnChangeAttrs(SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    attrs.putAll(hideContactPartner(saleOrder));
+    return attrs;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    attrs.putAll(hideContactPartner(saleOrder));
     return attrs;
   }
 
@@ -159,6 +184,21 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
   protected Map<String, Map<String, Object>> refreshVersionPanel() {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     attrs.put("pastVersionsPanel", Map.of(REFRESH_ATTRS, true));
+    return attrs;
+  }
+
+  protected Map<String, Map<String, Object>> hideContactPartner(SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    Partner clientPartner = saleOrder.getClientPartner();
+    Company company = saleOrder.getCompany();
+    attrs.put(
+        "contactPartner",
+        Map.of(
+            HIDDEN_ATTRS,
+            company == null
+                || (clientPartner != null
+                    && clientPartner.getPartnerTypeSelect()
+                        == PartnerRepository.PARTNER_TYPE_INDIVIDUAL)));
     return attrs;
   }
 }

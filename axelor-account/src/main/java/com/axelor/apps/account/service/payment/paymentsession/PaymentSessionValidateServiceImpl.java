@@ -356,7 +356,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   @Override
   @Transactional
   public InvoicePayment generatePendingPaymentFromInvoiceTerm(
-      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) throws AxelorException {
     if (invoiceTerm.getInvoice() == null) {
       return null;
     }

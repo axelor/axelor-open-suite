@@ -23,7 +23,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import java.time.LocalDateTime;
 
 public interface SaleOrderVersionService {
-  public void createNewVersion(SaleOrder saleOrder);
+  public void createNewVersion(SaleOrder saleOrder) throws AxelorException;
 
   public LocalDateTime getVersionDateTime(SaleOrder saleOrder, Integer versionNumber);
 

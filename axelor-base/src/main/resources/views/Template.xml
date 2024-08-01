@@ -99,8 +99,8 @@
 					<span>{_t('We can access direct/o2o/m2o fields of template model by specifying field path surrounded by')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$$</Box><Box/>
 					<span>{_t('Examples')}</span>:
 					<ul>
-						<li> <span>{_t('To access product\'s full name')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.fullName$</Box> </li>
-						<li> <span>{_t('To access product\'s ProductCategory')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.productCategory.name$</Box> </li>
+						<li> <span>{_t("To access product's full name")}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.fullName$</Box> </li>
+						<li> <span>{_t("To access product's ProductCategory")}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.productCategory.name$</Box> </li>
 					</ul>
 				</p>
 				<p>

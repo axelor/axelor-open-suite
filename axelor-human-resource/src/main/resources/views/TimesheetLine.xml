@@ -65,7 +65,7 @@
       width="90"/>
     <field name="project" width="200" onChange="action-timesheet-line-group-project-onchange"
       requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project"
-      form-view="project-form" grid-view="project-grid"/>
+      form-view="business-project-form" grid-view="project-grid"/>
     <field name="projectTask" width="200" form-view="project-task-form"
       grid-view="project-task-grid" onSelect="action-timesheet-line-attrs-domain-project-task"
       onChange="action-timesheet-line-group-project-task-on-change"/>
@@ -123,7 +123,7 @@
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="project" onChange="action-timesheet-line-group-project-onchange"
       requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project"
-      form-view="project-form" grid-view="project-grid"/>
+      form-view="business-project-form" grid-view="project-grid"/>
     <field name="date"
       onChange="action-timesheet-line-validate-date,action-timesheet-line-method-check-daily-limit"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
@@ -155,7 +155,7 @@
       width="90"/>
     <field name="project" onChange="action-timesheet-line-group-project-onchange"
       requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project"
-      form-view="project-form" grid-view="project-grid"/>
+      form-view="business-project-form" grid-view="project-grid"/>
     <field name="projectTask" width="200" form-view="project-task-form"
       grid-view="project-task-grid" onSelect="action-timesheet-line-attrs-domain-project-task"
       onChange="action-timesheet-line-method-set-default-to-invoice,action-timesheet-line-method-set-product"/>

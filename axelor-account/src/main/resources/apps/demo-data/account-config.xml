@@ -368,6 +368,9 @@
       search="self.importId = :accountConfig_importId"/>
   </input>
 
+  <input file="meta_metaTranslation.csv" separator=";"
+    type="com.axelor.meta.db.MetaTranslation" search="self.key = :key AND self.language = :language"/>
+
   <input file="account_bankDetails.csv" separator=";" search="self.importId = :importId"
     update="true" type="com.axelor.apps.base.db.BankDetails">
     <bind to="currency" column="currency_code" search="self.code=: currency_code"/>
