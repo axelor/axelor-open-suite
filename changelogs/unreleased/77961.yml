@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed an issue where an exonerated tax had a VAT system filled."
-module: axelor-account
