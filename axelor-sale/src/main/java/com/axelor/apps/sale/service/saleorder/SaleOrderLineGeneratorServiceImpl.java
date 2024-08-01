@@ -28,9 +28,11 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.i18n.I18n;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDomainService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineInitValueService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -85,7 +87,12 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
   protected void checkProduct(SaleOrder saleOrder, SaleOrderLine saleOrderLine, Product product)
       throws AxelorException {
     String domain = saleOrderLineDomainService.computeProductDomain(saleOrderLine, saleOrder);
-    if (!productRepository.all().filter(domain).bind("__date__", Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany())).fetch().contains(product)) {
+    if (!productRepository
+        .all()
+        .filter(domain)
+        .bind("__date__", Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()))
+        .fetch()
+        .contains(product)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.PRODUCT_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS),
