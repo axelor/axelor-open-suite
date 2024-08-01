@@ -33,9 +33,8 @@
     <string name="fullNameGroovyFormula" title="Full name groovy formula"
       help="This formula allows you to define the composition of the fullName through a groovy formula"/>
 
-    <boolean name="selectAutoProgressOnProjectTask"
-      title="Select auto progress on project tasks"
-      help="This option is used to activate the automatic allocation of progress to project tasks. If it is enabled, the progress field will be available in the task statuses and will generate the progress when these change."/>
+    <boolean name="selectAutoProgressOnProjectTask" title="Enable task progress by status"
+      help="This option is used to activate the automatic allocation of progress to project tasks. If it is enabled, the progress field will be available in the task statuses and will generate the progress when these change. The percentage defined by default in the statuses will apply to all tasks."/>
 
     <track>
       <field name="projectLabel" on="UPDATE"/>
