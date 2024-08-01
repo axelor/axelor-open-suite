@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.project.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -157,7 +158,8 @@ public class ProjectTaskController {
   }
 
   @ErrorException
-  public void generateNewLink(ActionRequest request, ActionResponse response) {
+  public void generateNewLink(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
     Map<String, Object> relatedTaskMap =

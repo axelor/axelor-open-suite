@@ -8,6 +8,7 @@
     <field name="projectTaskLinkType" form-view="project-task-link-type-form"
       grid-view="project-task-link-type-grid"/>
     <field name="relatedTask" form-view="project-task-form" grid-view="project-task-grid"/>
+    <field name="relatedTask.project" form-view="project-form" grid-view="project-grid"/>
     <button name="trashBtn" title="Delete" icon="fa-trash"
       onClick="action-project-task-link-method-remove-link"/>
   </grid>

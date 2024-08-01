@@ -1,13 +1,17 @@
 package com.axelor.apps.project.service.taskLink;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskLink;
 import com.axelor.apps.project.db.ProjectTaskLinkType;
 import com.axelor.apps.project.db.repo.ProjectTaskLinkRepository;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -39,22 +43,24 @@ public class ProjectTaskLinkServiceImpl implements ProjectTaskLinkService {
 
   @Override
   public String getProjectTaskDomain(ProjectTask projectTask) {
-    List<ProjectTask> unselectableTaskList = new ArrayList<>();
-    unselectableTaskList.add(projectTask);
+    List<Long> unselectableTaskIdList = new ArrayList<>();
+    if (projectTask.getId() != null) {
+      unselectableTaskIdList.add(projectTask.getId());
+    } else {
+      unselectableTaskIdList.add(0L);
+    }
 
     if (!ObjectUtils.isEmpty(projectTask.getProjectTaskLinkList())) {
-      unselectableTaskList.addAll(
+      unselectableTaskIdList.addAll(
           projectTask.getProjectTaskLinkList().stream()
               .map(ProjectTaskLink::getRelatedTask)
+              .map(ProjectTask::getId)
               .collect(Collectors.toList()));
     }
 
     return String.format(
         "self.id NOT IN (%s)",
-        unselectableTaskList.stream()
-            .map(ProjectTask::getId)
-            .map(String::valueOf)
-            .collect(Collectors.joining(",")));
+        unselectableTaskIdList.stream().map(String::valueOf).collect(Collectors.joining(",")));
   }
 
   @Override
@@ -84,7 +90,8 @@ public class ProjectTaskLinkServiceImpl implements ProjectTaskLinkService {
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void generateTaskLink(
-      ProjectTask projectTask, ProjectTask relatedTask, ProjectTaskLinkType projectTaskLinkType) {
+      ProjectTask projectTask, ProjectTask relatedTask, ProjectTaskLinkType projectTaskLinkType)
+      throws AxelorException {
     if (projectTask == null || relatedTask == null || projectTaskLinkType == null) {
       return;
     }
@@ -98,6 +105,10 @@ public class ProjectTaskLinkServiceImpl implements ProjectTaskLinkService {
             projectTaskLinkType.getOppositeLinkType() != null
                 ? projectTaskLinkType.getOppositeLinkType()
                 : projectTaskLinkType);
+
+    checkTypeAvailableInProjectConfig(
+        oppositeProjectTaskLink.getProjectTaskLinkType(), relatedTask.getProject());
+
     projectTaskLink.setProjectTaskLink(oppositeProjectTaskLink);
     projectTask.addProjectTaskLinkListItem(projectTaskLink);
     oppositeProjectTaskLink.setProjectTaskLink(projectTaskLink);
@@ -115,5 +126,21 @@ public class ProjectTaskLinkServiceImpl implements ProjectTaskLinkService {
     projectTaskLink.setProjectTaskLinkType(projectTaskLinkType);
 
     return projectTaskLink;
+  }
+
+  protected void checkTypeAvailableInProjectConfig(
+      ProjectTaskLinkType projectTaskLinkType, Project project) throws AxelorException {
+    if (project != null
+        && projectTaskLinkType != null
+        && !ObjectUtils.isEmpty(project.getProjectTaskLinkTypeSet())
+        && !project.getProjectTaskLinkTypeSet().contains(projectTaskLinkType)) {
+      throw new AxelorException(
+          project,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(ProjectExceptionMessage.LINK_TYPE_UNAVAILABLE_IN_PROJECT_CONFIG),
+              project.getFullName(),
+              projectTaskLinkType.getName()));
+    }
   }
 }

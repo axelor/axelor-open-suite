@@ -248,16 +248,18 @@
             title="Total duration (Hours)" colSpan="12"/>
         </panel>
       </panel>
-      <panel name="linkTaskPanel" title="Manage relations" showIf="id">
+      <panel name="linkTaskPanel" title="Manage relations">
         <field name="$projectTaskLinkType" title="Project task link type" type="Many-to-one"
-          target="com.axelor.apps.project.db.ProjectTaskLinkType" colSpan="4"
+          target="com.axelor.apps.project.db.ProjectTaskLinkType" colSpan="3"
           onSelect="action-project-task-method-set-link-type-domain"/>
         <field name="$projectTask" title="Project task to link" type="Many-to-one"
-          target="com.axelor.apps.project.db.ProjectTask" colSpan="4"
+          target="com.axelor.apps.project.db.ProjectTask" colSpan="3"
           onSelect="action-project-task-method-set-task-domain"/>
+        <field name="$projectTask.project" colSpan="3" readonly="true" type="Many-to-one"
+          target="com.axelor.apps.project.db.Project"/>
         <button name="generateNewLink" readonlyIf="!$projectTaskLinkType || !$projectTask"
           title="Generate a new link" onClick="save, action-project-task-method-generate-new-link"
-          colSpan="4"/>
+          colSpan="3"/>
         <panel-related field="projectTaskLinkList" colSpan="12" readonly="true"
           grid-view="project-task-link-grid" form-view="project-task-link-form"/>
       </panel>

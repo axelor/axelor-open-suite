@@ -63,4 +63,7 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_CONFIG_COMPLETED_PAID_PROJECT_STATUS_MISSING = /*$$(*/
       "Please set the completed paid project status in the project configuration." /*)*/;
+
+  public static final String LINK_TYPE_UNAVAILABLE_IN_PROJECT_CONFIG = /*$$(*/
+      "Please configure the project %s with project task link type %s if you want to create this link." /*)*/;
 }
