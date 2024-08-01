@@ -26,25 +26,32 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineInitValueService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.Map;
 
 public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGeneratorService {
   protected SaleOrderLineInitValueService saleOrderLineInitValueService;
   protected SaleOrderLineProductService saleOrderLineProductService;
   protected SaleOrderLineRepository saleOrderLineRepository;
   protected SaleOrderRepository saleOrderRepository;
-
+  protected  SaleOrderLineComputeService saleOrderLineComputeService;
+  protected SaleOrderComputeService saleOrderComputeService;
   @Inject
   public SaleOrderLineGeneratorServiceImpl(
       SaleOrderLineInitValueService saleOrderLineInitValueService,
       SaleOrderLineProductService saleOrderLineProductService,
       SaleOrderRepository saleOrderRepository,
-      SaleOrderLineRepository saleOrderLineRepository) {
+      SaleOrderLineRepository saleOrderLineRepository, SaleOrderLineComputeService saleOrderLineComputeService,
+ SaleOrderComputeService saleOrderComputeService) {
     this.saleOrderLineInitValueService = saleOrderLineInitValueService;
     this.saleOrderLineProductService = saleOrderLineProductService;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderRepository = saleOrderRepository;
+    this.saleOrderLineComputeService =saleOrderLineComputeService;
+    this.saleOrderComputeService =saleOrderComputeService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -55,9 +62,17 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine);
     saleOrderLine.setProduct(product);
     saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
+    saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
     saleOrderLineRepository.save(saleOrderLine);
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
+     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderRepository.save(saleOrder);
     return saleOrderLine;
+  }
+
+  private void setSaleOrdervalues(
+      Map<String, Object> saleOrderLineMap, SaleOrderLine saleOrderLine) {
+    saleOrderLine.setPrice((BigDecimal) saleOrderLineMap.get("price"));
+    saleOrderLine.setExTaxTotal((BigDecimal) saleOrderLineMap.get("exTotal"));
   }
 }
