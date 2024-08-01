@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -36,6 +37,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -43,14 +45,16 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 public class WorkflowVentilationProjectServiceImpl
     extends WorkflowVentilationServiceSupplychainImpl {
@@ -138,11 +142,28 @@ public class WorkflowVentilationProjectServiceImpl
         expenseLine.setInvoiced(true);
       }
       for (ProjectTask projectTask : invoicingProject.getProjectTaskSet()) {
-        projectTask.setInvoiced(true);
+        updateInvoicingStatus(projectTask);
       }
 
       invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_VENTILATED);
       invoicingProjectRepo.save(invoicingProject);
+    }
+  }
+
+  protected void updateInvoicingStatus(ProjectTask projectTask) {
+    BigDecimal newProgress =
+        projectTask.getInvoiceLineSet().stream()
+            .map(InvoiceLine::getNewProgress)
+            .filter(Objects::nonNull)
+            .max(BigDecimal::compareTo)
+            .orElse(BigDecimal.ZERO);
+    if (ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS.equals(projectTask.getInvoicingType())) {
+      projectTask.setInvoicingProgress(newProgress);
+      if (newProgress.compareTo(BigDecimal.valueOf(100)) == 0) {
+        projectTask.setInvoiced(true);
+      }
+    } else {
+      projectTask.setInvoiced(true);
     }
   }
 

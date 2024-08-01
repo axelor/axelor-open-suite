@@ -29,12 +29,14 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 import java.util.Optional;
 
 public class InventoryLineServiceImpl implements InventoryLineService {
@@ -43,17 +45,23 @@ public class InventoryLineServiceImpl implements InventoryLineService {
   protected InventoryLineRepository inventoryLineRepository;
   protected StockLocationLineService stockLocationLineService;
   protected ProductCompanyService productCompanyService;
+  protected StockLocationRepository stockLocationRepository;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
   public InventoryLineServiceImpl(
       StockConfigService stockConfigService,
       InventoryLineRepository inventoryLineRepository,
       StockLocationLineService stockLocationLineService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      StockLocationRepository stockLocationRepository,
+      StockLocationLineFetchService stockLocationLineFetchService) {
     this.stockConfigService = stockConfigService;
     this.inventoryLineRepository = inventoryLineRepository;
     this.stockLocationLineService = stockLocationLineService;
     this.productCompanyService = productCompanyService;
+    this.stockLocationRepository = stockLocationRepository;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   @Override
@@ -141,7 +149,7 @@ public class InventoryLineServiceImpl implements InventoryLineService {
     StockLocation stockLocation = inventory.getStockLocation();
     Product product = inventoryLine.getProduct();
     StockLocationLine stockLocationLine =
-        stockLocationLineService.getStockLocationLine(stockLocation, product);
+        stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
 
     if (product != null) {
       inventoryLine.setUnit(product.getUnit());
@@ -207,7 +215,7 @@ public class InventoryLineServiceImpl implements InventoryLineService {
 
     if (stockLocation != null && product != null) {
       StockLocationLine stockLocationLine =
-          stockLocationLineService.getStockLocationLine(stockLocation, product);
+          stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
       if (stockLocationLine != null) {
         currentQty = stockLocationLine.getCurrentQty();
       }
@@ -249,5 +257,23 @@ public class InventoryLineServiceImpl implements InventoryLineService {
             null);
     updateInventoryLine(inventoryLine, realQty, null);
     return inventoryLine;
+  }
+
+  @Override
+  public boolean isPresentInStockLocation(InventoryLine inventoryLine) {
+
+    Objects.requireNonNull(inventoryLine);
+
+    if (inventoryLine.getProduct() == null
+        || inventoryLine.getStockLocation() == null
+        || inventoryLine.getStockLocation().getStockLocationLineList() == null) {
+      return false;
+    }
+
+    StockLocation stockLocation =
+        stockLocationRepository.find(inventoryLine.getStockLocation().getId());
+    return stockLocation.getStockLocationLineList().stream()
+        .map(StockLocationLine::getProduct)
+        .anyMatch(product -> inventoryLine.getProduct().equals(product));
   }
 }

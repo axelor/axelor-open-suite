@@ -20,24 +20,33 @@ package com.axelor.apps.crm.db.repo;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
-import com.axelor.apps.crm.service.LeadService;
-import com.axelor.inject.Beans;
+import com.axelor.apps.crm.service.LeadComputeNameService;
+import com.axelor.apps.crm.service.app.AppCrmService;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class LeadManagementRepository extends LeadRepository {
 
+  protected AppCrmService appCrmService;
+  protected LeadComputeNameService leadComputeNameService;
+
+  @Inject
+  public LeadManagementRepository(
+      AppCrmService appCrmService, LeadComputeNameService leadComputeNameService) {
+    this.appCrmService = appCrmService;
+    this.leadComputeNameService = leadComputeNameService;
+  }
+
   @Override
   public Lead save(Lead entity) {
     try {
-      LeadService leadService = Beans.get(LeadService.class);
-
       String fullName =
-          leadService.processFullName(
+          leadComputeNameService.processFullName(
               entity.getEnterpriseName(), entity.getName(), entity.getFirstName());
       entity.setFullName(fullName);
 
       if (entity.getLeadStatus() == null) {
-        entity.setLeadStatus(leadService.getDefaultLeadStatus());
+        entity.setLeadStatus(appCrmService.getLeadDefaultStatus());
       }
 
       return super.save(entity);

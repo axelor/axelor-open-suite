@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
@@ -34,6 +33,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.PriceListService;
@@ -70,7 +70,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       TaxService taxService,
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     super(
         currencyService,
         priceListService,
@@ -84,7 +84,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         taxService,
         internationalService,
         invoiceLineAttrsService,
-        currencyScaleServiceAccount);
+        currencyScaleService);
     this.supplierCatalogService = supplierCatalogService;
   }
 
@@ -102,7 +102,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       }
     } else {
       if (product.getSalesUnit() != null) {
-        return product.getPurchasesUnit();
+        return product.getSalesUnit();
       } else {
         return product.getUnit();
       }
@@ -216,7 +216,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
             company,
             invoice.getCurrency(),
             invoice.getInvoiceDate(),
-            invoiceLine.getTaxLine(),
+            invoiceLine.getTaxLineSet(),
             false));
     productInformation.put(
         "inTaxPrice",
@@ -226,16 +226,16 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
             company,
             invoice.getCurrency(),
             invoice.getInvoiceDate(),
-            invoiceLine.getTaxLine(),
+            invoiceLine.getTaxLineSet(),
             true));
   }
 
   @Override
   public Map<String, String> getProductDescriptionAndNameTranslation(
-      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException {
+      Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine, userLanguage);
+      return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine);
     }
 
     Product product = invoiceLine.getProduct();
@@ -247,7 +247,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       return Collections.emptyMap();
     }
 
-    return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine, userLanguage);
+    return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine);
   }
 
   public void checkMinQty(

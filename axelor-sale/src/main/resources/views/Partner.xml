@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form id="sale-partner-form" model="com.axelor.apps.base.db.Partner" title="Partner"
     name="partner-form" extension="true">
 
     <extend target="//panel[@name='saleOrderCommentsPanel']">
+      <insert position="before">
+        <panel name="loyaltyPanel" if="__config__.app.getApp('sale')?.getEnableLoyalty()"
+          colSpan="12">
+          <field name="loyaltyAccountList" colSpan="12"
+            form-view="loyalty-account-partner-form" grid-view="loyalty-account-partner-grid"/>
+        </panel>
+      </insert>
       <insert position="after">
         <panel-related field="$saleDetailsByProduct" type="one-to-many"
           target="com.axelor.utils.db.Wizard" title="Sale details by product"

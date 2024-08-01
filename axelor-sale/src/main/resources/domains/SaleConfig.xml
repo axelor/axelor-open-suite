@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -30,8 +30,18 @@
     <boolean name="isAnalyticDistributionRequired"
       title="Analytic distribution required on sale order line"/>
     <decimal name="defaultHoldBackPercentage" title="Default holdback percentage"/>
-    <many-to-one name="saleOrderBirtTemplate" title="Sale order template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="saleOrderPrintTemplate" title="Sale order template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
+
+    <extra-code>
+      <![CDATA[
+        // TYPE SELECT
+		public static final int SALE_WT_ALWAYS = 1;
+		public static final int SALE_ATI_ALWAYS = 2;
+		public static final int SALE_WT_DEFAULT = 3;
+		public static final int SALE_ATI_DEFAULT = 4;
+      ]]>
+    </extra-code>
 
     <track>
       <field name="company" on="UPDATE"/>
@@ -48,7 +58,7 @@
       <field name="saleOrderClientBox" on="UPDATE"/>
       <field name="saleOrderLegalNote" on="UPDATE"/>
       <field name="isAnalyticDistributionRequired" on="UPDATE"/>
-      <field name="saleOrderBirtTemplate" on="UPDATE"/>
+      <field name="saleOrderPrintTemplate" on="UPDATE"/>
     </track>
   </entity>
 

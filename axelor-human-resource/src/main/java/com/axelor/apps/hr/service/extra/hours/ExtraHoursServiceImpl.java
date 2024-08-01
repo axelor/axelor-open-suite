@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.extra.hours;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.ExtraHoursLine;
 import com.axelor.apps.hr.db.HRConfig;
@@ -33,6 +34,7 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 public class ExtraHoursServiceImpl implements ExtraHoursService {
@@ -158,5 +160,14 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
     }
 
     extraHours.setTotalQty(totalQty);
+  }
+
+  @Override
+  public void updateLineEmployee(ExtraHours extraHours) {
+    Employee employee = extraHours.getEmployee();
+    List<ExtraHoursLine> extraHoursLineList = extraHours.getExtraHoursLineList();
+    if (CollectionUtils.isNotEmpty(extraHoursLineList) && employee != null) {
+      extraHoursLineList.forEach(line -> line.setEmployee(employee));
+    }
   }
 }

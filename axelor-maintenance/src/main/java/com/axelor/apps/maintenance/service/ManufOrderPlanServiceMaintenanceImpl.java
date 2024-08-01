@@ -26,8 +26,11 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCreateBarcodeService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderResidualProductService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
@@ -55,7 +58,10 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
       ProductionConfigService productionConfigService,
       AppBaseService appBaseService,
       AppProductionService appProductionService,
-      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService) {
+      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
+      ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
+      ManufOrderResidualProductService manufOrderResidualProductService,
+      ManufOrderCreateBarcodeService manufOrderCreateBarcodeService) {
     super(
         manufOrderRepo,
         manufOrderService,
@@ -69,7 +75,10 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
         productionConfigService,
         appBaseService,
         appProductionService,
-        manufOrderCreatePurchaseOrderService);
+        manufOrderCreatePurchaseOrderService,
+        manufOrderPlanStockMoveService,
+        manufOrderResidualProductService,
+        manufOrderCreateBarcodeService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

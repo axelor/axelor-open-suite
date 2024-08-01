@@ -20,12 +20,12 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.repo.BirtTemplateRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -35,6 +35,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionExport;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +46,10 @@ import java.nio.file.StandardCopyOption;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.collections.CollectionUtils;
@@ -55,12 +59,16 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
 
   protected BirtTemplateService birtTemplateService;
   protected AppBaseService appBaseService;
+  protected BirtTemplateRepository birtTemplateRepository;
 
   @Inject
   public PrintFromBirtTemplateServiceImpl(
-      BirtTemplateService birtTemplateService, AppBaseService appBaseService) {
+      BirtTemplateService birtTemplateService,
+      AppBaseService appBaseService,
+      BirtTemplateRepository birtTemplateRepository) {
     this.birtTemplateService = birtTemplateService;
     this.appBaseService = appBaseService;
+    this.birtTemplateRepository = birtTemplateRepository;
   }
 
   @Override
@@ -85,7 +93,7 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
               @Override
               public void accept(T item) throws Exception {
                 try {
-                  printedRecords.add(generateBirtTemplate(birtTemplate, item));
+                  printedRecords.add(generateBirtTemplate(birtTemplate, item, null));
                 } catch (Exception e) {
                   TraceBackService.trace(e);
                   throw e;
@@ -110,17 +118,18 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
   }
 
   @Override
-  public <T extends Model> File generateBirtTemplate(BirtTemplate birtTemplate, T model)
+  public <T extends Model> File generateBirtTemplate(
+      BirtTemplate birtTemplate, T model, Map<String, Object> context)
       throws AxelorException, IOException {
     String name = birtTemplate.getName();
     String format = birtTemplate.getFormat();
     Path src =
         birtTemplateService
-            .generateBirtTemplateFile(birtTemplate, model, name, false, format)
+            .generateBirtTemplateFile(birtTemplate, model, context, name, false, format)
             .toPath();
-    String outFileName = String.format("%s-%s.%s", name, model.getId(), format);
     Path dest =
-        Files.move(src, src.resolveSibling(outFileName), StandardCopyOption.REPLACE_EXISTING);
+        Files.move(
+            src, src.resolveSibling(name + "." + format), StandardCopyOption.REPLACE_EXISTING);
     return dest.toFile();
   }
 
@@ -158,5 +167,25 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
   protected void moveToExportDir(String fileName, Path filePath) throws IOException {
     Path exportDirPath = Paths.get(ActionExport.getExportPath().getAbsolutePath(), fileName);
     Files.move(filePath, exportDirPath, StandardCopyOption.REPLACE_EXISTING);
+  }
+
+  @Override
+  public Set<BirtTemplate> getBirtTemplates(String modelName) throws AxelorException {
+    Set<BirtTemplate> birtTemplatSet =
+        birtTemplateRepository
+            .all()
+            .filter("self.metaModel.fullName = :metaModel")
+            .bind("metaModel", modelName)
+            .fetch()
+            .stream()
+            .collect(Collectors.toSet());
+
+    if (CollectionUtils.isEmpty(birtTemplatSet)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
+
+    return birtTemplatSet;
   }
 }

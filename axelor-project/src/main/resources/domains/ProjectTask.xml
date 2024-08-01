@@ -1,14 +1,15 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="ProjectTask">
 
     <string name="name" title="Name" required="true"/>
-    <many-to-one name="assignedTo" title="Assigned to" ref="com.axelor.auth.db.User"/>
+    <many-to-one name="assignedTo" title="Assigned to" ref="com.axelor.auth.db.User"
+      help="Assign the task to a user.The user has to be created beforehand and recorded as a member of the selected project (in the membersPanelTab of the project)."/>
     <date name="taskDate" title="Start date"/>
     <many-to-one name="status" title="Status"
       ref="com.axelor.apps.project.db.TaskStatus"/>
@@ -33,7 +34,7 @@
 
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 
-    <string name="fullName" namecolumn="true" title="Name" search="id,name"/>
+    <string name="fullName" namecolumn="true" title="Name" search="name"/>
 
     <many-to-one name="statusBeforeComplete" title="Last status"
       ref="com.axelor.apps.project.db.TaskStatus"/>
@@ -41,8 +42,6 @@
       title="Parent task"/>
     <many-to-one name="projectTaskCategory"
       ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Category"/>
-    <!-- progressSelect is now only used for React views -->
-    <integer name="progressSelect" title="Progress"/>
     <decimal name="progress" title="Progress"/>
     <one-to-many name="projectTaskList" ref="com.axelor.apps.project.db.ProjectTask"
       mappedBy="parentTask"/>
@@ -56,6 +55,8 @@
     <decimal name="unitPrice" title="Unit price"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
       index="false"/>
+
+    <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
 
     <!-- Gantt view fields -->
 
@@ -98,7 +99,6 @@
       <field name="taskDeadline"/>
       <field name="projectTaskCategory"/>
       <field name="progress"/>
-      <field name="progressSelect"/>
       <field name="assignedTo"/>
     </track>
 

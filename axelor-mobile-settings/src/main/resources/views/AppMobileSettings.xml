@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-mobile-settings-config-form" title="App mobile"
     model="com.axelor.studio.db.AppMobileSettings" width="large"
     onLoad="action-app-mobile-settings-config-group-on-load" canNew="false" canDelete="false">
     <panel name="mainPanel">
-      <panel name="applicationsPanel" title="Mobile apps" colSpan="10" itemSpan="2">
+      <panel name="applicationsPanel" title="Mobile apps" colSpan="10" itemSpan="3">
         <field name="isStockAppEnabled" widget="boolean-switch"
           readonlyIf="isProductionAppEnabled"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
@@ -20,6 +20,10 @@
         <field name="isHRAppEnabled" widget="boolean-switch"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
         <field name="isQualityAppEnabled" widget="boolean-switch"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
+        <field name="isInterventionAppEnabled" widget="boolean-switch"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
+        <field name="isSaleAppEnabled" widget="boolean-switch"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
       </panel>
       <panel name="qrCodePanel" colSpan="2">
@@ -44,6 +48,8 @@
           onClick="action.mobile.settings.tracebacks.view"/>
         <button name="viewDashboardBtn" title="View dashboards"
           onClick="action.hr.config.mobile.dashboards.view"/>
+        <button name="seeWebViewBtn" title="See web views"
+          onClick="action.mobile.settings.web.view"/>
       </panel>
       <panel name="configAppPanel" title="App configuration">
         <button name="stockAppBtn" title="Config Stock" hidden="true"
@@ -58,9 +64,20 @@
           onClick="action.hr.config.view"/>
         <button name="qualityAppBtn" title="Config Quality" hidden="true"
           showIf="isQualityAppEnabled" onClick="action.quality.config.view"/>
+        <button name="interventionAppBtn" title="Config Intervention" hidden="true"
+          showIf="isInterventionAppEnabled" onClick="action.intervention.config.view"/>
+        <button name="saleAppBtn" title="Config Sale" hidden="true" showIf="isSaleAppEnabled"
+          onClick="action.sale.config.view"/>
       </panel>
     </panel>
     <panel-tabs name="appConfigPanelTab">
+      <panel name="generalUserPanel" title="General" colSpan="12">
+        <field name="isOneLineShortcut" widget="boolean-radio" x-true-text="Line"
+          x-false-text="isOneLineShortcut.Grid"/>
+        <field name="mobileShortcutList" title="Shortcut management" colSpan="12"/>
+        <field name="mobileDashboardList" title="Dashboard management" colSpan="12"
+          canSelect="true"/>
+      </panel>
       <panel name="stockValidationPanel" title="Stock" hideIf="!isStockAppEnabled">
         <field name="isStockLocationManagementEnabled" widget="boolean-switch" colSpan="12"/>
         <panel name="generalStockConfigPanel" title="Enable validation" colSpan="6"
@@ -206,10 +223,36 @@
       expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-quality').fetchOne()?.id"/>
   </action-view>
 
+  <action-view name="action.intervention.config.view" title="Intervention config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-intervention').fetchOne()?.id"/>
+  </action-view>
+
+  <action-view name="action.sale.config.view" title="Sale config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-sale').fetchOne()?.id"/>
+  </action-view>
+
   <action-view name="action.hr.config.mobile.dashboards.view" title="Mobile dashboards"
     model="com.axelor.apps.mobilesettings.db.MobileDashboard">
     <view type="grid" name="mobile-dashboard-grid"/>
     <view type="form" name="mobile-dashboard-form"/>
+  </action-view>
+
+  <action-view name="action.mobile.settings.web.view" title="Mobile web views"
+    model="com.axelor.apps.mobilesettings.db.MobileWebView">
+    <view type="grid" name="mobile-web-view-grid"/>
+    <view type="form" name="mobile-web-view-form"/>
   </action-view>
 
   <action-attrs name="action-app-mobile-settings-config-attrs-boolean-readonly">
@@ -224,6 +267,9 @@
       expr="!__config__.app.isApp('expense')"/>
     <attribute for="isQualityAppEnabled" name="readonly"
       expr="!__config__.app.isApp('quality')"/>
+    <attribute for="isInterventionAppEnabled" name="readonly"
+      expr="!__config__.app.isApp('intervention')"/>
+    <attribute for="isSaleAppEnabled" name="readonly" expr="!__config__.app.isApp('sale')"/>
   </action-attrs>
 
   <action-group name="action-app-mobile-settings-config-group-on-load">

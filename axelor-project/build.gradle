@@ -52,8 +52,8 @@ task installFrontDeps(type: YarnTask) {
 
 
 task copyReactWebapp(type: Copy) {
-	destinationDir = file(rootProject.buildDir)
-	into("webapp/project/task-editor") {
+	destinationDir = file("$rootProject.buildDir/webapp")
+	into("project/task-editor") {
 		from "src/main/task-editor/build"
 	}
 	

@@ -23,10 +23,13 @@ import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.base.service.ProductVariantServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.InventoryLineManagementRepository;
+import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
+import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionStockRepository;
@@ -40,8 +43,11 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberManagementRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
+import com.axelor.apps.stock.db.repo.massstockmove.PickedProductManagementRepository;
+import com.axelor.apps.stock.db.repo.massstockmove.StoredProductManagementRepository;
 import com.axelor.apps.stock.rest.StockProductRestService;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
 import com.axelor.apps.stock.service.AddressServiceStockImpl;
@@ -64,6 +70,8 @@ import com.axelor.apps.stock.service.StockCorrectionService;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryService;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
+import com.axelor.apps.stock.service.StockLocationLineFetchServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineService;
@@ -86,16 +94,40 @@ import com.axelor.apps.stock.service.StockMoveUpdateService;
 import com.axelor.apps.stock.service.StockMoveUpdateServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
+import com.axelor.apps.stock.service.TrackingNumberConfigurationProfileService;
+import com.axelor.apps.stock.service.TrackingNumberConfigurationProfileServiceImpl;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationServiceImpl;
+import com.axelor.apps.stock.service.TrackingNumberCreateService;
+import com.axelor.apps.stock.service.TrackingNumberCreateServiceImpl;
+import com.axelor.apps.stock.service.TrackingNumberService;
+import com.axelor.apps.stock.service.TrackingNumberServiceImpl;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.WeightedAveragePriceServiceImpl;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.app.AppStockServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancelService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancelServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactory;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactoryImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.PickedProductService;
+import com.axelor.apps.stock.service.massstockmove.PickedProductServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsService;
+import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintServiceimpl;
+import com.axelor.apps.stock.utils.StockLocationUtilsService;
+import com.axelor.apps.stock.utils.StockLocationUtilsServiceImpl;
 
 public class StockModule extends AxelorModule {
 
@@ -140,5 +172,27 @@ public class StockModule extends AxelorModule {
     bind(StockMoveMergingService.class).to(StockMoveMergingServiceImpl.class);
     bind(InventoryLineService.class).to(InventoryLineServiceImpl.class);
     bind(StockLocationPrintService.class).to(StockLocationPrintServiceImpl.class);
+    bind(InventoryLineRepository.class).to(InventoryLineManagementRepository.class);
+    bind(TrackingNumberService.class).to(TrackingNumberServiceImpl.class);
+    bind(TrackingNumberConfigurationProfileService.class)
+        .to(TrackingNumberConfigurationProfileServiceImpl.class);
+    bind(MassStockMovableProductAttrsService.class)
+        .to(MassStockMovableProductAttrsServiceImpl.class);
+    bind(MassStockMoveRecordService.class).to(MassStockMoveRecordServiceImpl.class);
+    bind(MassStockMovableProductRealizeService.class)
+        .to(MassStockMovableProductRealizeServiceImpl.class);
+    bind(MassStockMovableProductServiceFactory.class)
+        .to(MassStockMovableProductServiceFactoryImpl.class);
+    bind(StoredProductAttrsService.class).to(StoredProductAttrsServiceImpl.class);
+    bind(PickedProductService.class).to(PickedProductServiceImpl.class);
+    bind(MassStockMovableProductQuantityService.class)
+        .to(MassStockMovableProductQuantityServiceImpl.class);
+    bind(StoredProductRepository.class).to(StoredProductManagementRepository.class);
+    bind(PickedProductRepository.class).to(PickedProductManagementRepository.class);
+    bind(StockLocationUtilsService.class).to(StockLocationUtilsServiceImpl.class);
+    bind(StockLocationLineFetchService.class).to(StockLocationLineFetchServiceImpl.class);
+    bind(TrackingNumberCreateService.class).to(TrackingNumberCreateServiceImpl.class);
+    bind(MassStockMovableProductCancelService.class)
+        .to(MassStockMovableProductCancelServiceImpl.class);
   }
 }

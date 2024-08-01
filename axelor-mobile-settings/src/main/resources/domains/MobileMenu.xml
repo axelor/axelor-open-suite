@@ -1,22 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
 
   <entity name="MobileMenu">
     <string name="technicalName" unique="true" required="true" title="Technical name"
-      help="Technical name should be the menu key used in module export on mobile application."/>
+      help="Technical name should be the menu key used in module export on mobile application."
+      readonly="true"/>
     <string name="name" title="Menu name"/>
+    <integer name="menuOrder" title="mobileMenu.Order"/>
+    <string name="parentApplication" title="Parent application"
+      selection="mobilesettings.mobile.config.sequence.select"/>
+    <string name="menuType" title="Menu type"
+      selection="mobilesettings.mobile.menu.type.select"/>
+    <string name="parentMenuName" title="Parent menu name"/>
     <many-to-many name="authorizedRoles" ref="com.axelor.auth.db.Role"
       title="Authorized roles"
-      help="List of roles that have access to this application menu. If the field is empty then nobody has access to this menu. If it contains at least one role then only users with one of the roles present have access to the menu. However, if the application itself has restrictions on roles then the user must have a role included in the roles allowed for the application concerned as well as a role filled in this field."/>
+      help="List of roles with access to this menu. If the field is empty, then everyone has access to the menu. If it contains at least one role, then only users with one of the roles present have access to the menu. However, if the application itself has restrictions on roles, then the user must have a role included in the authorized roles for the application concerned, as well as a role entered in this field."/>
+
+    <finder-method name="findByTechnicalName" using="technicalName"/>
+    <finder-method name="findByParentApplication" using="parentApplication" all="true"/>
+
+    <extra-code>
+      <![CDATA[
+        public static final String MOBILE_MENU_TYPE_MENU = "menu";
+        public static final String MOBILE_MENU_TYPE_SEPARATOR = "separator";
+        public static final String MOBILE_MENU_TYPE_SUBMENU = "submenu";
+      ]]>
+    </extra-code>
 
     <track>
       <field name="technicalName"/>
       <field name="name"/>
+      <field name="menuOrder"/>
+      <field name="parentApplication"/>
     </track>
+
+
   </entity>
 
 </domain-models>

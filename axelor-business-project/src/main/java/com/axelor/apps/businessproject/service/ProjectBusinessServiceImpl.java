@@ -20,7 +20,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -28,27 +28,30 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHistoryLine;
+import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
+import com.axelor.apps.project.service.ProjectCreateTaskService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
-import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -64,6 +67,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -95,8 +99,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService,
       AppBaseService appBaseService,
-      InvoiceRepository invoiceRepository) {
-    super(projectRepository, projectStatusRepository, appProjectService, projTemplateRepo);
+      InvoiceRepository invoiceRepository,
+      ProjectCreateTaskService projectCreateTaskService) {
+    super(
+        projectRepository,
+        projectStatusRepository,
+        appProjectService,
+        projTemplateRepo,
+        projectCreateTaskService);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;
@@ -752,6 +762,33 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         return FA_LEVEL_UP;
       default:
         return "";
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void transitionBetweenPaidStatus(Project project) throws AxelorException {
+    ProjectStatus completedStatus = appProjectService.getCompletedProjectStatus();
+    ProjectStatus completedPaidStatus =
+        appProjectService.getAppProject().getCompletedPaidProjectStatus();
+    if (completedPaidStatus == null) {
+      throw new AxelorException(
+          appProjectService.getAppProject(),
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProjectExceptionMessage.PROJECT_CONFIG_COMPLETED_PAID_PROJECT_STATUS_MISSING));
+    }
+
+    List<Invoice> invoiceList =
+        invoiceRepository.all().filter("self.project = :project").bind("project", project).fetch();
+
+    if (Objects.equals(project.getProjectStatus(), completedStatus)) {
+      if (invoiceList.stream().noneMatch(invoice -> invoice.getAmountRemaining().signum() != 0)) {
+        project.setProjectStatus(completedPaidStatus);
+      }
+    } else if (Objects.equals(project.getProjectStatus(), completedPaidStatus)) {
+      if (invoiceList.stream().anyMatch(invoice -> invoice.getAmountRemaining().signum() != 0)) {
+        project.setProjectStatus(completedStatus);
+      }
     }
   }
 }

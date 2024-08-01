@@ -110,9 +110,9 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
     logger.debug("Validate project task:{}", json);
 
     logger.debug(
-        "Planned progress:{}, ProgressSelect: {}, DurationHours: {}, TaskDuration: {}",
+        "Planned progress:{}, Progress: {}, DurationHours: {}, TaskDuration: {}",
         json.get("plannedProgress"),
-        json.get("progressSelect"),
+        json.get("progress"),
         json.get("durationHours"),
         json.get("taskDuration"));
 
@@ -121,16 +121,14 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
       ProjectTask savedTask = find(Long.parseLong(json.get("id").toString()));
       if (json.get("plannedProgress") != null) {
         BigDecimal plannedProgress = new BigDecimal(json.get("plannedProgress").toString());
-        if (plannedProgress != null
-            && savedTask.getPlannedProgress().intValue() != plannedProgress.intValue()) {
-          logger.debug(
-              "Updating progressSelect: {}", ((int) (plannedProgress.intValue() * 0.10)) * 10);
-          json.put("progressSelect", ((int) (plannedProgress.intValue() * 0.10)) * 10);
+        if (savedTask.getPlannedProgress().equals(plannedProgress)) {
+          logger.debug("Updating progress: {}", plannedProgress);
+          json.put("progress", plannedProgress);
         }
-      } else if (json.get("progressSelect") != null) {
-        Integer progressSelect = new Integer(json.get("progressSelect").toString());
-        logger.debug("Updating plannedProgress: {}", progressSelect);
-        json.put("plannedProgress", new BigDecimal(progressSelect));
+      } else if (json.get("progress") != null) {
+        BigDecimal progress = new BigDecimal(json.get("progress").toString());
+        logger.debug("Updating plannedProgress: {}", progress);
+        json.put("plannedProgress", progress);
       }
       if (json.get("durationHours") != null) {
         BigDecimal durationHours = new BigDecimal(json.get("durationHours").toString());
@@ -149,9 +147,9 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
 
     } else {
 
-      if (json.get("progressSelect") != null) {
-        Integer progressSelect = new Integer(json.get("progressSelect").toString());
-        json.put("plannedProgress", new BigDecimal(progressSelect));
+      if (json.get("progress") != null) {
+        BigDecimal progress = new BigDecimal(json.get("progress").toString());
+        json.put("plannedProgress", progress);
       }
       if (json.get("taskDuration") != null) {
         Integer taskDuration = new Integer(json.get("taskDuration").toString());
@@ -168,7 +166,6 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
     task.setAssignedTo(null);
     task.setTaskDate(null);
     task.setPriority(null);
-    task.setProgressSelect(0);
     task.setProgress(null);
     task.setTaskEndDate(null);
     task.setMetaFile(null);

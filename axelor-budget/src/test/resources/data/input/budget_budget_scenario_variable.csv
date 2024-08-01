@@ -1,0 +1,13 @@
+"importId";"name";"code";"entryMethod";"formula";"category"
+1;"Forecast turnover";"FCT";0;;1
+2;"Miscellaneous non-current expenses";"MNCE";1;"10*(FCT/TURN)";5
+3;"HR expenses";"HRE";1;"MNCE*1.12";2
+4;"Shareholder investment";"SHI";0;;1
+5;"Production Forecast";"PRODFOR";1;"INS*(FCT/TURN)";3
+6;"Insurance";"INS";0;;5
+7;"Electricity";"ELEC";1;"PRODFOR*0.03";5
+8;"Gas";"GAS";1;"PRODFOR*0.05";5
+9;"Heating";"HEAT";1;"HRE*0.01";5
+10;"Water";"WAT";1;"PRODFOR*0.03";5
+11;"Interim result";"INTRES";1;"FCT-MNCE";4
+12;"Turnover";"TURN";0;;3

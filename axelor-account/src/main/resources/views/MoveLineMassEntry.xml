@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="move-line-mass-entry-move-grid"
     model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines" canArchive="false"
@@ -24,7 +24,7 @@
     </field>
     <field name="moveDescription"
       onChange="action-account-move-line-mass-entry-attrs-set-description,action-move-line-mass-entry-record-set-is-edited"
-      readonly="false" required="true"/>
+      readonly="false" requiredIf="$isDescriptionRequired"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-move-line-method-partner-onselect"
       onChange="action-move-line-mass-entry-group-on-change-partner" width="120" canEdit="false"
@@ -41,10 +41,10 @@
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-method-account-onselect" width="200" canEdit="false"
       onChange="action-move-line-mass-entry-method-account-onchange"/>
-    <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
+    <field name="taxLineSet" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
-      onChange="account-move-line-update-tax-equiv"/>
+      onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
     <field name="currencyRate"
       onChange="action-move-line-method-currency-amount-rate-onchange,action-move-line-mass-entry-record-set-is-edited"
       readonlyIf="!isOtherCurrency">
@@ -151,6 +151,7 @@
     <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
     <field name="account.analyticDistributionAuthorized" hidden="true"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
+    <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
   </grid>
 
   <!-- Action group -->

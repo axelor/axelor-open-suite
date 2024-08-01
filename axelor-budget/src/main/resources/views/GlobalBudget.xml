@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="global-budget-grid" title="Global Budget"
     model="com.axelor.apps.budget.db.GlobalBudget" orderBy="code">
@@ -25,10 +25,16 @@
 
     <menubar>
       <menu title="See detail" name="seeDetailBtn">
-        <item action="action-global-budget-view-see-budget-levels" title="Sections" showIf="id"/>
-        <item action="action-global-budget-method-view-budget-lines" title="Lines" showIf="id"/>
-        <item action="action-budget-global-view-show-version" title="Versions"
+        <item action="save,action-global-budget-view-see-budget-levels" title="Sections"
+          showIf="id"/>
+        <item action="save,action-global-budget-method-view-budget-lines" title="Lines"
+          showIf="id"/>
+        <item action="save,action-budget-global-view-show-version" title="Versions"
           showIf="statusSelect != 0"/>
+      </menu>
+      <menu title="Export global budget" name="exportBtn">
+        <item title="Export global budget" action="save,action-view-global-budget-export"
+          showIf="id"/>
       </menu>
     </menubar>
     <panel name="overViewPanel">
@@ -110,8 +116,9 @@
         <panel name="projectPanel" title="Project" colSpan="12" sidebar="true"
           showIf="statusSelect == 2" if="__config__.app.getApp('budget')?.getEnableProject()"
           canCollapse="true">
-          <field name="projectSet" widget="TagSelect" colSpan="12" form-view="project-form"
-            grid-view="project-grid" canNew="false" canEdit="false" domain="self.company = :company"/>
+          <field name="projectSet" widget="TagSelect" colSpan="12"
+            form-view="business-project-form" grid-view="project-grid" canNew="false"
+            canEdit="false" domain="self.company = :company"/>
         </panel>
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
@@ -374,6 +381,16 @@
     <view-param name="showArchived" value="true"/>
     <domain>self.globalBudget.id = :_globalId</domain>
     <context name="_globalId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-view-global-budget-export" title="Global budget export"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="budget-global-budget-export-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_globalBudget" expr="eval: __this__"/>
   </action-view>
 
 

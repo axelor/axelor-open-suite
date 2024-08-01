@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -73,9 +73,9 @@
     <boolean name="includeSpecialAccounts" title="Include special accounts"/>
 
     <string name="resultMoveDescription" title="Result move description"/>
-    <boolean name="simulateGeneratedMoves" title="Generate simulated moves"
-      help="Please make sure that the journal configured for annual closure and openning, does support simulated moves."/>
     <boolean name="generateGeneralLedger" title="Generate general ledger"/>
+    <boolean name="isDeleteSimulatedMove" title="Delete simulated moves"
+      help="All Simulated move attached to the fiscal year about to be closed will be deleted"/>
 
     <!-- <many-to-many name="journalSet" ref="Journal" title="Journals"/> -->
     <boolean name="allocatePerPartner" title="Allocate per partner"/>
@@ -111,8 +111,8 @@
       ref="com.axelor.apps.account.db.Journal"/>
     <many-to-many name="journalSet" ref="com.axelor.apps.account.db.Journal"
       title="Research journals"/>
-    <integer name="cutOffMoveStatusSelect" title="Cut off moves status"
-      selection="iaccount.move.status.select" default="1"/>
+    <integer name="generatedMoveStatusSelect" title="Generated moves status"
+      selection="iaccount.move.status.select" default="3"/>
     <boolean name="previewRecordsToProcess" title="Preview records to process"/>
 
     <string name="prefixOrigin" title="Prefix for accounting voucher"/>
@@ -190,7 +190,6 @@
 		public static final int AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_MOVE = 2;
 		public static final int AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_ACCOUNT = 3;
 		public static final int AUTO_MOVE_LETTERING_RECONCILE_BY_EXTERNAL_IDENTIFIER = 4;
-
 	]]></extra-code>
 
     <track>

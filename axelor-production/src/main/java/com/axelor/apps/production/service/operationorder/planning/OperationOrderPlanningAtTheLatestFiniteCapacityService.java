@@ -29,6 +29,7 @@ import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.model.machine.MachineTimeSlot;
 import com.axelor.apps.production.service.machine.MachineService;
+import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.utils.helpers.date.DurationHelper;
@@ -53,17 +54,28 @@ public class OperationOrderPlanningAtTheLatestFiniteCapacityService
       OperationOrderStockMoveService operationOrderStockMoveService,
       OperationOrderRepository operationOrderRepository,
       AppBaseService appBaseService,
+      OperationOrderOutsourceService operationOrderOutsourceService,
       MachineService machineService) {
     super(
         operationOrderService,
         operationOrderStockMoveService,
         operationOrderRepository,
-        appBaseService);
+        appBaseService,
+        operationOrderOutsourceService);
     this.machineService = machineService;
   }
 
   @Override
   protected void planWithStrategy(OperationOrder operationOrder) throws AxelorException {
+    if (operationOrder.getOutsourcing()) {
+      planWithStrategyAtTheLatestOutSourced(operationOrder);
+    } else {
+      planWithStrategyNotOutSourced(operationOrder);
+    }
+  }
+
+  protected void planWithStrategyNotOutSourced(OperationOrder operationOrder)
+      throws AxelorException {
 
     ManufOrder manufOrder = operationOrder.getManufOrder();
     LocalDateTime todayDateT =
@@ -138,7 +150,8 @@ public class OperationOrderPlanningAtTheLatestFiniteCapacityService
     if (prodProcessLine != null) {
       machines.addAll(
           Optional.ofNullable(prodProcessLine.getWorkCenterGroup())
-              .map(WorkCenterGroup::getWorkCenterSet).stream()
+              .map(WorkCenterGroup::getWorkCenterSet)
+              .stream()
               .flatMap(Collection::stream)
               .map(WorkCenter::getMachine)
               .filter(m -> !machine.getId().equals(m.getId()))

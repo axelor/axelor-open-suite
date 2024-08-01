@@ -20,7 +20,10 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.service.BillOfMaterialService;
+import com.axelor.apps.production.service.ProdProcessService;
+import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -57,5 +60,48 @@ public class SaleOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void createCustomizedProdProcess(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+      ProdProcess copyProdProcess =
+          Beans.get(ProdProcessService.class).createCustomizedProdProcess(saleOrderLine);
+
+      if (copyProdProcess != null) {
+        response.setValue("prodProcess", copyProdProcess);
+        response.setView(
+            ActionView.define(I18n.get("Personalized production processes"))
+                .model(ProdProcess.class.getName())
+                .add("form", "prod-process-form")
+                .add("grid", "prod-process-grid")
+                .param("popup", "true")
+                .param("forceEdit", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("popup-save", "true")
+                .context("_showRecord", copyProdProcess.getId())
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setBomDomain(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    response.setAttr(
+        "billOfMaterial",
+        "domain",
+        Beans.get(SaleOrderLineDomainProductionService.class).getBomDomain(saleOrderLine));
+  }
+
+  public void setProdProcessDomain(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    response.setAttr(
+        "prodProcess",
+        "domain",
+        Beans.get(SaleOrderLineDomainProductionService.class).getProdProcessDomain(saleOrderLine));
   }
 }

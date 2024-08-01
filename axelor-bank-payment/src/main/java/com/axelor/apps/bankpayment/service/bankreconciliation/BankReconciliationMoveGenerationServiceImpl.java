@@ -26,18 +26,17 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
@@ -46,13 +45,14 @@ import com.axelor.apps.bankpayment.db.BankStatementRule;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -60,12 +60,15 @@ import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class BankReconciliationMoveGenerationServiceImpl
     implements BankReconciliationMoveGenerationService {
@@ -84,8 +87,8 @@ public class BankReconciliationMoveGenerationServiceImpl
   protected TaxService taxService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineService moveLineService;
-  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public BankReconciliationMoveGenerationServiceImpl(
@@ -103,8 +106,8 @@ public class BankReconciliationMoveGenerationServiceImpl
       TaxService taxService,
       MoveLineCreateService moveLineCreateService,
       MoveLineService moveLineService,
-      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService,
+      MoveLineToolService moveLineToolService) {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankStatementRuleRepository = bankStatementRuleRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
@@ -119,8 +122,8 @@ public class BankReconciliationMoveGenerationServiceImpl
     this.taxService = taxService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineService = moveLineService;
-    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -311,16 +314,21 @@ public class BankReconciliationMoveGenerationServiceImpl
       vatSystemSelect = counterPartAccount.getVatSystemSelect();
     }
 
-    TaxLine taxLine = counterPartMoveLine.getTaxLine();
-    Account account =
-        taxAccountService.getAccount(
-            taxLine != null ? taxLine.getTax() : null,
-            company,
-            journal,
-            vatSystemSelect,
-            false,
-            move.getFunctionalOriginSelect());
-    moveLineTaxService.autoTaxLineGenerate(move, account, false);
+    Set<TaxLine> taxLineSet = counterPartMoveLine.getTaxLineSet();
+    if (ObjectUtils.notEmpty(taxLineSet)) {
+      for (TaxLine taxLine : taxLineSet) {
+        Account account =
+            taxAccountService.getAccount(
+                taxLine != null ? taxLine.getTax() : null,
+                company,
+                journal,
+                moveLine.getAccount(),
+                vatSystemSelect,
+                false,
+                move.getFunctionalOriginSelect());
+        moveLineTaxService.autoTaxLineGenerate(move, account, false);
+      }
+    }
 
     fixTaxAmountRounding(move, counterPartMoveLine, moveLine);
   }
@@ -328,12 +336,7 @@ public class BankReconciliationMoveGenerationServiceImpl
   protected void fixTaxAmountRounding(Move move, MoveLine counterPartMoveLine, MoveLine moveLine) {
     MoveLine taxMoveLine =
         move.getMoveLineList().stream()
-            .filter(
-                ml ->
-                    ml.getAccount()
-                        .getAccountType()
-                        .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX))
+            .filter(moveLineToolService::isMoveLineTaxAccount)
             .findFirst()
             .orElse(null);
     if (taxMoveLine == null) {
@@ -346,9 +349,9 @@ public class BankReconciliationMoveGenerationServiceImpl
             .subtract(counterPartMoveLine.getDebit().max(counterPartMoveLine.getCredit()))
             .abs();
     if (taxMoveLine.getDebit().signum() > 0) {
-      taxMoveLine.setDebit(currencyScaleServiceAccount.getScaledValue(move, taxAmount));
+      taxMoveLine.setDebit(currencyScaleService.getScaledValue(move, taxAmount));
     } else {
-      taxMoveLine.setCredit(currencyScaleServiceAccount.getScaledValue(move, taxAmount));
+      taxMoveLine.setCredit(currencyScaleService.getScaledValue(move, taxAmount));
     }
   }
 
@@ -365,13 +368,13 @@ public class BankReconciliationMoveGenerationServiceImpl
     Account account;
     String description = move.getDescription();
     String origin = move.getOrigin();
-    TaxLine taxLine = null;
+    Set<TaxLine> taxLineSet = new HashSet<>();
     if (isCounterpartLine) {
       debit =
-          currencyScaleServiceBankPayment.getScaledValue(
+          currencyScaleService.getScaledValue(
               bankReconciliationLine, bankReconciliationLine.getDebit());
       credit =
-          currencyScaleServiceBankPayment.getScaledValue(
+          currencyScaleService.getScaledValue(
               bankReconciliationLine, bankReconciliationLine.getCredit());
       account = bankStatementRule.getCounterpartAccount();
       if (account == null) {
@@ -382,17 +385,17 @@ public class BankReconciliationMoveGenerationServiceImpl
       }
       if (account.getIsTaxRequiredOnMoveLine()) {
         if (bankStatementRule.getSpecificTax() == null) {
-          taxLine = taxService.getTaxLine(account.getDefaultTax(), date);
+          taxLineSet = taxService.getTaxLineSet(account.getDefaultTaxSet(), date);
         } else {
-          taxLine = taxService.getTaxLine(bankStatementRule.getSpecificTax(), date);
+          Sets.newHashSet(taxService.getTaxLine(bankStatementRule.getSpecificTax(), date));
         }
       }
     } else {
       debit =
-          currencyScaleServiceBankPayment.getScaledValue(
+          currencyScaleService.getScaledValue(
               bankReconciliationLine, bankReconciliationLine.getCredit());
       credit =
-          currencyScaleServiceBankPayment.getScaledValue(
+          currencyScaleService.getScaledValue(
               bankReconciliationLine, bankReconciliationLine.getDebit());
       account = bankStatementRule.getAccountManagement().getCashAccount();
       if (account == null) {
@@ -406,13 +409,13 @@ public class BankReconciliationMoveGenerationServiceImpl
     boolean isDebit = debit.compareTo(credit) > 0;
 
     BigDecimal amount =
-        currencyScaleServiceBankPayment.getScaledValue(bankReconciliationLine, debit.add(credit));
-    if (taxLine != null) {
-      BigDecimal taxRate = taxLine.getValue().divide(BigDecimal.valueOf(100));
+        currencyScaleService.getScaledValue(bankReconciliationLine, debit.add(credit));
+    if (ObjectUtils.notEmpty(taxLineSet)) {
+      BigDecimal taxRate = taxService.getTotalTaxRate(taxLineSet);
       amount =
           amount.divide(
               BigDecimal.ONE.add(taxRate),
-              currencyScaleServiceBankPayment.getScale(bankReconciliationLine),
+              currencyScaleService.getScale(bankReconciliationLine),
               RoundingMode.HALF_UP);
     }
 
@@ -423,7 +426,7 @@ public class BankReconciliationMoveGenerationServiceImpl
             account,
             amount,
             isDebit,
-            taxLine,
+            taxLineSet,
             date,
             move.getMoveLineList().size() + 1,
             origin,

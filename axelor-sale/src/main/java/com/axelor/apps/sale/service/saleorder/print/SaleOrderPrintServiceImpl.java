@@ -19,13 +19,13 @@
 package com.axelor.apps.sale.service.saleorder.print;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.utils.PdfHelper;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -33,6 +33,7 @@ import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
@@ -49,7 +50,7 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
   protected SaleOrderService saleOrderService;
   protected AppSaleService appSaleService;
-  protected BirtTemplateService birtTemplateService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
   protected SaleOrderRepository saleOrderRepository;
   protected SaleConfigService saleConfigService;
 
@@ -57,22 +58,21 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
   public SaleOrderPrintServiceImpl(
       SaleOrderService saleOrderService,
       AppSaleService appSaleService,
-      BirtTemplateService birtTemplateService,
+      PrintingTemplatePrintService printingTemplatePrintService,
       SaleOrderRepository saleOrderRepository,
       SaleConfigService saleConfigService) {
     this.saleOrderService = saleOrderService;
     this.appSaleService = appSaleService;
-    this.birtTemplateService = birtTemplateService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
     this.saleOrderRepository = saleOrderRepository;
     this.saleConfigService = saleConfigService;
   }
 
   @Override
-  public String printSaleOrder(SaleOrder saleOrder, boolean proforma, String format)
+  public String printSaleOrder(
+      SaleOrder saleOrder, boolean proforma, PrintingTemplate saleOrderPrintTemplate)
       throws AxelorException, IOException {
-    String fileName = saleOrderService.getFileName(saleOrder) + "." + format;
-
-    return PdfHelper.getFileLinkFromPdfFile(print(saleOrder, proforma, format), fileName);
+    return PrintingTemplateHelper.getFileLink(print(saleOrder, proforma, saleOrderPrintTemplate));
   }
 
   @Override
@@ -86,7 +86,11 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
               @Override
               public void accept(SaleOrder saleOrder) throws Exception {
                 try {
-                  printedSaleOrders.add(print(saleOrder, false, ReportSettings.FORMAT_PDF));
+                  printedSaleOrders.add(
+                      print(
+                          saleOrder,
+                          false,
+                          saleConfigService.getSaleOrderPrintTemplate(saleOrder.getCompany())));
                 } catch (Exception e) {
                   TraceBackService.trace(e);
                   throw e;
@@ -100,30 +104,30 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
     }
     Integer status = saleOrderRepository.find(ids.get(0)).getStatusSelect();
     String fileName = getSaleOrderFilesName(status);
-    return PdfHelper.mergePdfToFileLink(printedSaleOrders, fileName);
-  }
-
-  public File print(SaleOrder saleOrder, boolean proforma, String format) throws AxelorException {
-    ReportSettings reportSettings = prepareReportSettings(saleOrder, proforma, format);
-    return reportSettings.generate().getFile();
+    return PrintingTemplateHelper.mergeToFileLink(printedSaleOrders, fileName);
   }
 
   @Override
-  public ReportSettings prepareReportSettings(SaleOrder saleOrder, boolean proforma, String format)
+  public File print(SaleOrder saleOrder, boolean proforma, PrintingTemplate saleOrderPrintTemplate)
       throws AxelorException {
+    return print(saleOrder, proforma, saleOrderPrintTemplate, saleOrderPrintTemplate.getToAttach());
+  }
 
+  @Override
+  public File print(
+      SaleOrder saleOrder,
+      boolean proforma,
+      PrintingTemplate saleOrderPrintTemplate,
+      boolean toAttach)
+      throws AxelorException {
     saleOrderService.checkPrintingSettings(saleOrder);
-    BirtTemplate saleOrderBirtTemplate =
-        saleConfigService.getSaleOrderBirtTemplate(saleOrder.getCompany());
-    String title = saleOrderService.getFileName(saleOrder);
 
-    return birtTemplateService.generate(
-        saleOrderBirtTemplate,
-        saleOrder,
-        Map.of("ProformaInvoice", proforma),
-        title + " - ${date}",
-        saleOrderBirtTemplate.getAttach(),
-        format);
+    PrintingGenFactoryContext factoryContext =
+        new PrintingGenFactoryContext(EntityHelper.getEntity(saleOrder));
+    factoryContext.setContext(Map.of("ProformaInvoice", proforma));
+
+    return printingTemplatePrintService.getPrintFile(
+        saleOrderPrintTemplate, factoryContext, toAttach);
   }
 
   /** Return the name for the printed sale orders. */
@@ -139,8 +143,6 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
         + appSaleService
             .getTodayDate(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
-            .format(DateTimeFormatter.BASIC_ISO_DATE)
-        + "."
-        + ReportSettings.FORMAT_PDF;
+            .format(DateTimeFormatter.BASIC_ISO_DATE);
   }
 }

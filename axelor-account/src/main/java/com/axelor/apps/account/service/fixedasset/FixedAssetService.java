@@ -24,6 +24,8 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 public interface FixedAssetService {
 
@@ -32,7 +34,7 @@ public interface FixedAssetService {
   void updateDepreciation(FixedAsset fixedAsset) throws AxelorException;
 
   /**
-   * Call splitFixedAsset and save both fixed asset. (Original and created)
+   * Call splitFixedAsset and save both fixed asset. (Original and all created)
    *
    * @param fixedAsset
    * @param splitType
@@ -42,7 +44,7 @@ public interface FixedAssetService {
    * @return
    * @throws AxelorException
    */
-  FixedAsset splitAndSaveFixedAsset(
+  List<FixedAsset> splitAndSaveFixedAsset(
       FixedAsset fixedAsset,
       int splitType,
       BigDecimal amount,
@@ -59,7 +61,7 @@ public interface FixedAssetService {
       int disposalQtySelect,
       BigDecimal disposalQty,
       Boolean generateSaleMove,
-      TaxLine saleTaxLine)
+      Set<TaxLine> saleTaxLineSet)
       throws AxelorException;
 
   int computeTransferredReason(
@@ -92,7 +94,7 @@ public interface FixedAssetService {
       int disposalQtySelect,
       BigDecimal disposalQty,
       Boolean generateSaleMove,
-      TaxLine saleTaxLine,
+      Set<TaxLine> saleTaxLineSet,
       Integer disposalTypeSelect,
       BigDecimal disposalAmount,
       AssetDisposalReason assetDisposalReason,

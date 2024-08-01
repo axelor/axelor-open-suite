@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <enum name="InterventionQuestionState">
+    <item name="ANSWERED"/>
+    <item name="NOT_ANSWERED"/>
+    <item name="INDICATION"/>
+    <item name="PRIVATE"/>
+    <item name="CONDITIONAL"/>
+  </enum>
+
+  <entity name="InterventionQuestion">
+    <string name="rangeQuestionSequence" title="Range question sequence"/>
+    <long name="orderSeq" title="Order" default="0"/>
+    <string name="title" title="Title" large="true" namecolumn="true" readonly="true"/>
+    <string name="indication" title="Indication" large="true" readonly="true"/>
+    <string name="answerTypeSelect" title="Answer type" selection="answer.type.select"
+      readonly="true"/>
+    <one-to-many name="answerValueList" title="Answer values"
+      ref="com.axelor.apps.intervention.db.AnswerValue" mappedBy="interventionQuestion"
+      readonly="true"/>
+    <string name="defaultTextValue" title="Default text value" readonly="true"/>
+    <many-to-one name="desiredUnit" title="Desired unit"
+      ref="com.axelor.apps.base.db.Unit" readonly="true"/>
+    <string name="checkboxName" title="Checkbox name" readonly="true"/>
+    <boolean name="isRequired" title="Is required ?" readonly="true"/>
+    <boolean name="isPrivate" title="Is private ?" readonly="true"/>
+    <boolean name="isConditional" title="Is conditional ?" readonly="true"/>
+    <boolean name="summary" title="Recap" readonly="true"/>
+    <many-to-one name="conditionalInterventionQuestion"
+      title="Conditional intervention question"
+      ref="com.axelor.apps.intervention.db.InterventionQuestion" readonly="true"/>
+    <many-to-many name="conditionalAnswerValueSet" title="Conditional answer values"
+      ref="com.axelor.apps.intervention.db.AnswerValue" readonly="true"/>
+    <many-to-one name="listAnswer" title="Answer"
+      ref="com.axelor.apps.intervention.db.AnswerValue"/>
+    <string name="textAnswer" title="Answer" large="true" multiline="true"/>
+    <date name="dateAnswer" title="Answer"/>
+    <many-to-one name="pictureAnswer" title="Answer" ref="com.axelor.meta.db.MetaFile"/>
+    <decimal name="measureAnswer" title="Answer" nullable="true"/>
+    <boolean name="checkboxAnswer" title="Answer" nullable="true"/>
+    <string name="indicationText" title="Answer" large="true" readonly="true"/>
+    <many-to-one name="signatureAnswer" title="Answer" ref="com.axelor.meta.db.MetaFile"/>
+    <string name="advancedMonitoringAnswer" title="Answer"
+      selection="intervention.advanced.monitoring.answer.select"/>
+
+    <boolean name="isAnswered" title="Is answered ?" default="false" readonly="true"/>
+    <enum name="state" title="State"
+      ref="com.axelor.apps.intervention.db.InterventionQuestionState" readonly="true"/>
+
+    <string name="advancedMonitoringAddress" title="Advanced monitoring address"
+      readonly="true" large="true" multiline="true"/>
+    <many-to-one name="interventionRange" title="Intervention range"
+      ref="com.axelor.apps.intervention.db.InterventionRange" readonly="true"/>
+
+    <unique-constraint columns="interventionRange,rangeQuestionSequence"/>
+
+    <finder-method name="find" using="interventionRange,rangeQuestionSequence"/>
+
+    <extra-imports>
+      <![CDATA[
+        import com.axelor.apps.intervention.db.Equipment;
+        import com.axelor.apps.intervention.db.Intervention;
+      ]]>
+    </extra-imports>
+
+    <extra-code>
+      <![CDATA[
+        public static final String HOME = "home";
+        public static final String OFFICE = "office";
+        public static final String PREVIOUS_INTERVENTION = "previous";
+        public static final String NEXT_INTERVENTION = "next";
+      ]]>
+    </extra-code>
+
+    <track>
+      <field name="title"/>
+      <field name="indication"/>
+      <field name="answerTypeSelect"/>
+      <field name="answerValueList"/>
+      <field name="defaultTextValue"/>
+      <field name="desiredUnit"/>
+      <field name="checkboxName"/>
+      <field name="isRequired"/>
+      <field name="isPrivate"/>
+      <field name="isConditional"/>
+      <field name="conditionalInterventionQuestion"/>
+      <field name="conditionalAnswerValueSet"/>
+      <field name="listAnswer"/>
+      <field name="textAnswer"/>
+      <field name="dateAnswer"/>
+      <field name="pictureAnswer"/>
+      <field name="measureAnswer"/>
+      <field name="checkboxAnswer"/>
+      <field name="indicationText"/>
+      <field name="signatureAnswer"/>
+      <field name="advancedMonitoringAnswer"/>
+      <field name="advancedMonitoringAddress"/>
+      <field name="interventionRange"/>
+    </track>
+  </entity>
+</domain-models>

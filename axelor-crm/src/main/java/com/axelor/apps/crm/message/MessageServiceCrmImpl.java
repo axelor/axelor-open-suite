@@ -23,8 +23,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
@@ -52,7 +52,7 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
       AppSettingsMessageService appSettingsMessageService,
       UserService userService,
       AppBaseService appBaseService,
-      BirtTemplateService birtTemplateService) {
+      PrintingTemplatePrintService printingTemplatePrintService) {
     super(
         metaAttachmentRepository,
         messageRepository,
@@ -60,13 +60,16 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
         appSettingsMessageService,
         userService,
         appBaseService,
-        birtTemplateService);
+        printingTemplatePrintService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
   public Message createMessage(Event event)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, IOException {
+      throws AxelorException,
+          ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          IOException {
 
     // Get template depending on event type
     Template template = null;

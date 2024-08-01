@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 
@@ -28,4 +29,8 @@ public interface PfpService {
   boolean isManagePFPInRefund(Company company) throws AxelorException;
 
   boolean isManageDaybookInPFP(Company company) throws AxelorException;
+
+  boolean getPfpCondition(Invoice invoice) throws AxelorException;
+
+  boolean getOperationTypePurchaseCondition(Invoice invoice) throws AxelorException;
 }

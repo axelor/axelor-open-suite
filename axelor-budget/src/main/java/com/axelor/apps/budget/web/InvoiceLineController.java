@@ -21,7 +21,9 @@ package com.axelor.apps.budget.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
@@ -65,18 +67,20 @@ public class InvoiceLineController {
     }
   }
 
-  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+  public void computeBudgetRemainingAmountToAllocate(
+      ActionRequest request, ActionResponse response) {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-    Invoice invoice = request.getContext().getParent().asType(Invoice.class);
 
-    Beans.get(BudgetInvoiceLineService.class)
-        .computeBudgetDistributionSumAmount(invoiceLine, invoice);
-
-    response.setValue("budgetDistributionSumAmount", invoiceLine.getBudgetDistributionSumAmount());
-    response.setValue("budgetDistributionList", invoiceLine.getBudgetDistributionList());
+    response.setValue(
+        "budgetRemainingAmountToAllocate",
+        Beans.get(BudgetToolsService.class)
+            .getBudgetRemainingAmountToAllocate(
+                invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
   }
 
-  public void setBudgetDomain(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void setBudgetDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
     Invoice invoice = request.getContext().getParent().asType(Invoice.class);
     if (invoice == null && request.getContext().getParent() != null) {

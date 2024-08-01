@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -10,7 +10,8 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <string name="projectLabel" title="Project Label"/>
-    <boolean name="resourceManagement" title="Resource management"/>
+    <boolean name="resourceManagement" title="Resource management"
+      help="This option enables resource reservation on projects. You can create resources that can be booked on projects."/>
     <boolean name="checkResourceAvailibility" title="Check availability of resources"/>
     <boolean name="isEnableSignature" title="Enable task signature"/>
     <boolean name="isEnablePerProjectTaskSequence" title="Enable per project task sequence"/>
@@ -23,6 +24,14 @@
     <many-to-many name="defaultPrioritySet" title="Default priorities"
       ref="com.axelor.apps.project.db.ProjectPriority"/>
     <boolean name="generateProjectSequence" title="Generate sequence for project"/>
+    <many-to-one name="completedProjectStatus" title="Completed project status"
+      ref="com.axelor.apps.project.db.ProjectStatus"/>
+    <many-to-one name="canceledProjectStatus" title="Canceled project status"
+      ref="com.axelor.apps.project.db.ProjectStatus"/>
+    <many-to-one name="completedTaskStatus" title="Completed task status"
+      ref="com.axelor.apps.project.db.TaskStatus"/>
+    <string name="fullNameGroovyFormula" title="Full name groovy formula"
+      help="This formula allows you to define the composition of the fullName through a groovy formula"/>
 
     <track>
       <field name="projectLabel" on="UPDATE"/>

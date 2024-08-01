@@ -25,17 +25,24 @@ import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -47,46 +54,51 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService {
 
   protected CurrencyService currencyService;
-  protected InvoiceTermService invoiceTermService;
   protected AppAccountService appAccountService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
+  protected InvoiceTermToolService invoiceTermToolService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
+  protected InvoicePaymentToolService invoicePaymentToolService;
 
   @Inject
   public InvoiceTermPaymentServiceImpl(
       CurrencyService currencyService,
-      InvoiceTermService invoiceTermService,
       AppAccountService appAccountService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
-      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService) {
+      CurrencyScaleService currencyScaleService,
+      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
+      InvoiceTermToolService invoiceTermToolService,
+      InvoiceTermFilterService invoiceTermFilterService,
+      InvoicePaymentToolService invoicePaymentToolService) {
     this.currencyService = currencyService;
-    this.invoiceTermService = invoiceTermService;
     this.appAccountService = appAccountService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
     this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
+    this.invoiceTermToolService = invoiceTermToolService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
+    this.invoicePaymentToolService = invoicePaymentToolService;
   }
 
   @Override
   public InvoicePayment initInvoiceTermPayments(
-      InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermsToPay) {
+      InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermsToPay, LocalDate paymentDate)
+      throws AxelorException {
     invoicePayment.clearInvoiceTermPaymentList();
 
     if (CollectionUtils.isEmpty(invoiceTermsToPay)) {
       return invoicePayment;
     }
 
-    boolean isCompanyCurrency =
-        invoicePayment.getCurrency().equals(invoiceTermsToPay.get(0).getCompany().getCurrency());
     for (InvoiceTerm invoiceTerm : invoiceTermsToPay) {
+      BigDecimal companyAmount =
+          invoicePaymentToolService.computeCompanyAmount(
+              invoiceTerm.getAmountRemaining(),
+              invoiceTerm.getCurrency(),
+              invoiceTerm.getCompanyCurrency(),
+              invoicePayment.getPaymentDate());
+
       invoicePayment.addInvoiceTermPaymentListItem(
-          createInvoiceTermPayment(
-              invoicePayment,
-              invoiceTerm,
-              isCompanyCurrency
-                  ? currencyScaleServiceAccount.getCompanyScaledValue(
-                      invoiceTerm, invoiceTerm.getCompanyAmountRemaining())
-                  : currencyScaleServiceAccount.getScaledValue(
-                      invoiceTerm, invoiceTerm.getCompanyAmountRemaining())));
+          createInvoiceTermPayment(invoicePayment, invoiceTerm, companyAmount, paymentDate));
     }
 
     return invoicePayment;
@@ -116,7 +128,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
               .map(PayVoucherElementToPay::getInvoiceTerm)
               .collect(Collectors.toList());
     } else {
-      invoiceTerms = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+      invoiceTerms = invoiceTermFilterService.getUnpaidInvoiceTermsFiltered(invoice);
     }
 
     if (CollectionUtils.isNotEmpty(invoiceTerms)) {
@@ -137,7 +149,6 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     BigDecimal baseAvailableAmount = availableAmount;
     BigDecimal availableAmountUnchanged = availableAmount;
     int invoiceTermCount = invoiceTermsToPay.size();
-    boolean isCompanyCurrency;
 
     if (invoicePayment != null) {
       invoicePayment.clearInvoiceTermPaymentList();
@@ -149,63 +160,64 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
           this.getInvoiceTermToPay(
               invoicePayment, invoiceTermsToPay, availableAmount, i++, invoiceTermCount);
 
-      isCompanyCurrency =
-          invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
-
-      BigDecimal invoiceTermAmount =
-          isCompanyCurrency
-              ? currencyScaleServiceAccount.getCompanyScaledValue(
-                  invoiceTermToPay, invoiceTermToPay.getAmountRemaining())
-              : currencyScaleServiceAccount.getScaledValue(
-                  invoiceTermToPay, invoiceTermToPay.getCompanyAmountRemaining());
-
-      if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
-        invoiceTermPayment =
-            createInvoiceTermPayment(invoicePayment, invoiceTermToPay, availableAmount);
-        availableAmount = BigDecimal.ZERO;
-      } else {
-        invoiceTermPayment =
-            createInvoiceTermPayment(invoicePayment, invoiceTermToPay, invoiceTermAmount);
-        availableAmount = availableAmount.subtract(invoiceTermAmount);
-      }
-
-      invoiceTermPaymentList.add(invoiceTermPayment);
-
-      if (invoicePayment != null) {
-        invoicePayment.addInvoiceTermPaymentListItem(invoiceTermPayment);
-
-        if (invoicePayment.getApplyFinancialDiscount() && !invoicePayment.getManualChange()) {
-          BigDecimal previousAmount =
-              invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount());
-          invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
-          availableAmount =
-              baseAvailableAmount.subtract(this.getCurrentInvoicePaymentAmount(invoicePayment));
-          invoicePayment.setAmount(
-              currencyScaleServiceAccount.getCompanyScaledValue(
-                  invoiceTermToPay,
-                  previousAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount())));
-          invoicePayment.setTotalAmountWithFinancialDiscount(
-              currencyScaleServiceAccount.getCompanyScaledValue(
-                  invoiceTermToPay,
-                  invoicePayment
-                      .getAmount()
-                      .add(invoicePayment.getFinancialDiscountTotalAmount())));
+      if (invoiceTermToPay.getPfpValidateStatusSelect()
+          != InvoiceTermRepository.PFP_STATUS_LITIGATION) {
+        BigDecimal invoiceTermCompanyAmount =
+            currencyScaleService.getCompanyScaledValue(
+                invoiceTermToPay, invoiceTermToPay.getCompanyAmountRemaining());
+        LocalDate date =
+            invoicePayment != null
+                ? invoicePayment.getPaymentDate()
+                : invoiceTermToPay.getDueDate();
+        if (invoiceTermCompanyAmount.compareTo(availableAmount) >= 0) {
+          invoiceTermPayment =
+              createInvoiceTermPayment(invoicePayment, invoiceTermToPay, availableAmount, date);
+          availableAmount = BigDecimal.ZERO;
+        } else {
+          invoiceTermPayment =
+              createInvoiceTermPayment(
+                  invoicePayment, invoiceTermToPay, invoiceTermCompanyAmount, date);
+          availableAmount = availableAmount.subtract(invoiceTermCompanyAmount);
         }
-      }
 
-      if (availableAmountUnchanged.compareTo(reconcileAmount) != 0
-          && availableAmount.signum() <= 0) {
-        BigDecimal totalInCompanyCurrency =
-            invoiceTermPaymentList.stream()
-                .map(InvoiceTermPayment::getCompanyPaidAmount)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
-        BigDecimal diff = reconcileAmount.subtract(totalInCompanyCurrency);
-        BigDecimal companyPaidAmount =
-            currencyScaleServiceAccount.getCompanyScaledValue(
-                invoiceTermToPay, invoiceTermPayment.getCompanyPaidAmount().add(diff));
+        invoiceTermPaymentList.add(invoiceTermPayment);
 
-        invoiceTermPayment.setCompanyPaidAmount(companyPaidAmount);
+        if (invoicePayment != null) {
+          invoicePayment.addInvoiceTermPaymentListItem(invoiceTermPayment);
+
+          if (invoicePayment.getApplyFinancialDiscount() && !invoicePayment.getManualChange()) {
+            BigDecimal previousAmount =
+                invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount());
+            invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
+            availableAmount =
+                baseAvailableAmount.subtract(this.getCurrentInvoicePaymentAmount(invoicePayment));
+            invoicePayment.setAmount(
+                currencyScaleService.getCompanyScaledValue(
+                    invoiceTermToPay,
+                    previousAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount())));
+            invoicePayment.setTotalAmountWithFinancialDiscount(
+                currencyScaleService.getCompanyScaledValue(
+                    invoiceTermToPay,
+                    invoicePayment
+                        .getAmount()
+                        .add(invoicePayment.getFinancialDiscountTotalAmount())));
+          }
+        }
+
+        if (availableAmountUnchanged.compareTo(reconcileAmount) != 0
+            && availableAmount.signum() <= 0) {
+          BigDecimal totalInCompanyCurrency =
+              invoiceTermPaymentList.stream()
+                  .map(InvoiceTermPayment::getCompanyPaidAmount)
+                  .reduce(BigDecimal::add)
+                  .orElse(BigDecimal.ZERO);
+          BigDecimal diff = reconcileAmount.subtract(totalInCompanyCurrency);
+          BigDecimal companyPaidAmount =
+              currencyScaleService.getCompanyScaledValue(
+                  invoiceTermToPay, invoiceTermPayment.getCompanyPaidAmount().add(diff));
+
+          invoiceTermPayment.setCompanyPaidAmount(companyPaidAmount);
+        }
       }
     }
 
@@ -231,8 +243,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       return invoiceTermsToPay.subList(counter, size).stream()
           .filter(
               it ->
-                  it.getAmount().compareTo(amount) == 0
-                      || it.getAmountRemaining().compareTo(amount) == 0)
+                  it.getCompanyAmount().compareTo(amount) == 0
+                      || it.getCompanyAmountRemaining().compareTo(amount) == 0)
           .findAny()
           .orElse(invoiceTermsToPay.get(counter));
     }
@@ -240,13 +252,20 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
   @Override
   public InvoiceTermPayment createInvoiceTermPayment(
-      InvoicePayment invoicePayment, InvoiceTerm invoiceTermToPay, BigDecimal paidAmount) {
+      InvoicePayment invoicePayment,
+      InvoiceTerm invoiceTermToPay,
+      BigDecimal paidAmount,
+      LocalDate paymentDate) {
     if (invoicePayment == null) {
-      return this.initInvoiceTermPayment(invoiceTermToPay, paidAmount);
+      return this.initInvoiceTermPayment(invoiceTermToPay, paidAmount, paymentDate);
     } else {
       this.toggleFinancialDiscount(invoicePayment, invoiceTermToPay);
       return this.initInvoiceTermPayment(
-          invoicePayment, invoiceTermToPay, paidAmount, invoicePayment.getApplyFinancialDiscount());
+          invoicePayment,
+          invoiceTermToPay,
+          paidAmount,
+          invoicePayment.getApplyFinancialDiscount(),
+          paymentDate);
     }
   }
 
@@ -268,10 +287,11 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
             .isEmpty()
         && (!invoiceTerm.getIsSelectedOnPaymentSession()
             || invoiceTerm.getApplyFinancialDiscountOnPaymentSession())
-        && !invoiceTermService.isPartiallyPaid(invoiceTerm)) {
+        && !invoiceTermToolService.isPartiallyPaid(invoiceTerm)) {
       invoicePayment.setApplyFinancialDiscount(
           invoiceTerm.getFinancialDiscountDeadlineDate() != null
               && invoiceTerm.getApplyFinancialDiscount()
+              && invoicePayment.getPaymentDate() != null
               && !invoicePayment
                   .getPaymentDate()
                   .isAfter(invoiceTerm.getFinancialDiscountDeadlineDate())
@@ -280,60 +300,79 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   protected InvoiceTermPayment initInvoiceTermPayment(
-      InvoiceTerm invoiceTermToPay, BigDecimal amount) {
+      InvoiceTerm invoiceTermToPay, BigDecimal amount, LocalDate paymentDate) {
     return initInvoiceTermPayment(
-        null, invoiceTermToPay, amount, invoiceTermToPay.getApplyFinancialDiscount());
+        null, invoiceTermToPay, amount, invoiceTermToPay.getApplyFinancialDiscount(), paymentDate);
   }
 
   protected InvoiceTermPayment initInvoiceTermPayment(
       InvoicePayment invoicePayment,
       InvoiceTerm invoiceTermToPay,
-      BigDecimal paidAmount,
-      boolean applyFinancialDiscount) {
+      BigDecimal companyPaidAmount,
+      boolean applyFinancialDiscount,
+      LocalDate paymentDate) {
     InvoiceTermPayment invoiceTermPayment = new InvoiceTermPayment();
 
-    invoiceTermPayment.setInvoicePayment(invoicePayment);
-    invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
+    try {
+      invoiceTermPayment.setInvoicePayment(invoicePayment);
+      invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
+      invoiceTermPayment.setPaidAmount(
+          this.computePaidAmount(companyPaidAmount, invoicePayment, invoiceTermToPay, paymentDate));
 
-    boolean isCompanyCurrency =
-        invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
-    invoiceTermPayment.setPaidAmount(
-        isCompanyCurrency ? paidAmount : this.computePaidAmount(invoiceTermToPay, paidAmount));
+      if (companyPaidAmount.compareTo(invoiceTermToPay.getAmount()) == 0) {
+        manageInvoiceTermFinancialDiscount(
+            invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
+      }
 
-    if (paidAmount.compareTo(invoiceTermToPay.getAmount()) == 0) {
-      manageInvoiceTermFinancialDiscount(
-          invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
+      invoiceTermPayment.setCompanyPaidAmount(companyPaidAmount);
+    } catch (AxelorException e) {
+      TraceBackService.trace(
+          new AxelorException(
+              e,
+              e.getCategory(),
+              I18n.get("Invoice") + " %s",
+              invoicePayment.getInvoice().getInvoiceId()),
+          ExceptionOriginRepository.INVOICE_ORIGIN);
     }
-    invoiceTermPayment.setCompanyPaidAmount(
-        isCompanyCurrency
-            ? this.computeCompanyPaidAmount(invoiceTermToPay, invoiceTermPayment.getPaidAmount())
-            : invoiceTermPayment.getPaidAmount());
-
     return invoiceTermPayment;
   }
 
-  protected BigDecimal computeCompanyPaidAmount(InvoiceTerm invoiceTerm, BigDecimal paidAmount) {
-    BigDecimal ratio =
-        invoiceTerm
-            .getCompanyAmount()
-            .divide(
-                invoiceTerm.getAmount(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+  protected BigDecimal computePaidAmount(
+      BigDecimal companyPaidAmount,
+      InvoicePayment invoicePayment,
+      InvoiceTerm invoiceTerm,
+      LocalDate paymentDate)
+      throws AxelorException {
+    Currency invoicePaymentCurrency = invoicePayment != null ? invoicePayment.getCurrency() : null;
+    Currency companyCurrency = invoiceTerm.getCompanyCurrency();
 
-    return currencyScaleServiceAccount.getCompanyScaledValue(
-        invoiceTerm, paidAmount.multiply(ratio));
-  }
+    if (companyCurrency.equals(invoicePaymentCurrency)) {
+      return companyPaidAmount;
+    } else if (invoicePayment != null) {
+      BigDecimal ratio;
+      if (currencyService.isSameCurrencyRate(
+          invoiceTerm.getInvoice().getInvoiceDate(),
+          paymentDate,
+          companyCurrency,
+          invoicePaymentCurrency)) {
+        ratio =
+            invoiceTerm
+                .getAmount()
+                .divide(
+                    invoiceTerm.getCompanyAmount(),
+                    AppBaseService.COMPUTATION_SCALING,
+                    RoundingMode.HALF_UP);
+      } else {
+        ratio =
+            currencyService.getCurrencyConversionRate(
+                companyCurrency, invoicePaymentCurrency, paymentDate);
+      }
 
-  protected BigDecimal computePaidAmount(InvoiceTerm invoiceTerm, BigDecimal companyPaidAmount) {
-    BigDecimal ratio =
-        invoiceTerm
-            .getAmount()
-            .divide(
-                invoiceTerm.getCompanyAmount(),
-                AppBaseService.COMPUTATION_SCALING,
-                RoundingMode.HALF_UP);
+      return currencyScaleService.getCompanyScaledValue(
+          invoiceTerm, companyPaidAmount.multiply(ratio));
+    }
 
-    return currencyScaleServiceAccount.getScaledValue(
-        invoiceTerm, companyPaidAmount.multiply(ratio));
+    return BigDecimal.ZERO;
   }
 
   @Override
@@ -343,7 +382,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       boolean applyFinancialDiscount) {
     if (applyFinancialDiscount && invoiceTerm.getAmountRemainingAfterFinDiscount().signum() > 0) {
       invoiceTermPayment.setPaidAmount(
-          currencyScaleServiceAccount.getScaledValue(
+          currencyScaleService.getScaledValue(
               invoiceTerm,
               invoiceTermPayment
                   .getPaidAmount()
@@ -358,11 +397,11 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                   RoundingMode.HALF_UP);
 
       invoiceTermPayment.setFinancialDiscountAmount(
-          currencyScaleServiceAccount.getScaledValue(
+          currencyScaleService.getScaledValue(
               invoiceTerm, invoiceTerm.getFinancialDiscountAmount().multiply(ratioPaid)));
 
       invoiceTermPayment.setPaidAmount(
-          currencyScaleServiceAccount.getScaledValue(
+          currencyScaleService.getScaledValue(
               invoiceTerm,
               invoiceTermPayment
                   .getPaidAmount()
@@ -371,18 +410,19 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   @Override
-  public InvoicePayment updateInvoicePaymentAmount(InvoicePayment invoicePayment)
+  public InvoicePayment updateInvoicePaymentAmount(InvoicePayment invoicePayment, Invoice invoice)
       throws AxelorException {
 
     invoicePayment.setAmount(
-        computeInvoicePaymentAmount(invoicePayment, invoicePayment.getInvoiceTermPaymentList()));
+        computeInvoicePaymentAmount(
+            invoicePayment, invoicePayment.getInvoiceTermPaymentList(), invoice));
 
     return invoicePayment;
   }
 
   @Override
   public BigDecimal computeInvoicePaymentAmount(
-      InvoicePayment invoicePayment, List<InvoiceTermPayment> invoiceTermPayments)
+      InvoicePayment invoicePayment, List<InvoiceTermPayment> invoiceTermPayments, Invoice invoice)
       throws AxelorException {
 
     BigDecimal sum =
@@ -392,7 +432,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
             .orElse(BigDecimal.ZERO);
 
     sum =
-        currencyScaleServiceAccount.getScaledValue(
+        currencyScaleService.getScaledValue(
             invoicePayment,
             currencyService.getAmountCurrencyConvertedAtDate(
                 invoicePayment.getInvoice().getCurrency(),

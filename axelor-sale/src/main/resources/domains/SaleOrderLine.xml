@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrderLine" implements="com.axelor.apps.base.interfaces.PricedOrderLine">
+  <entity name="SaleOrderLine"
+    implements="com.axelor.apps.base.interfaces.PricedOrderLine,com.axelor.apps.base.interfaces.Currenciable">
 
     <string name="fullName" namecolumn="true">
 	  	<![CDATA[
@@ -38,7 +39,8 @@
     <string name="pricingScaleLogs" title="Price calculation details" large="true"
       readonly="true"/>
 
-    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+    <many-to-many name="taxLineSet" ref="com.axelor.apps.account.db.TaxLine"
+      title="Taxes"/>
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="3" readonly="true"/>
@@ -108,6 +110,18 @@
 
     <one-to-many name="saleOrderLineTreeList" title="Sale order line trees"
       ref="com.axelor.apps.sale.db.SaleOrderLineTree" mappedBy="saleOrderLine"/>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return saleOrder != null ? saleOrder.getCurrency() : null;
+	    ]]>
+    </many-to-one>
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return saleOrder != null ? saleOrder.getCompanyCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 

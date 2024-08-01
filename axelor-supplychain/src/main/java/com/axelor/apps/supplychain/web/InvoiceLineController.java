@@ -20,94 +20,14 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
-import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
 
 public class InvoiceLineController {
-
-  public List<InvoiceLine> updateQty(
-      List<InvoiceLine> invoiceLines, BigDecimal oldKitQty, BigDecimal newKitQty, Invoice invoice)
-      throws AxelorException {
-
-    BigDecimal qty = BigDecimal.ZERO;
-    BigDecimal exTaxTotal = BigDecimal.ZERO;
-    BigDecimal companyExTaxTotal = BigDecimal.ZERO;
-    BigDecimal inTaxTotal = BigDecimal.ZERO;
-    BigDecimal companyInTaxTotal = BigDecimal.ZERO;
-    BigDecimal priceDiscounted = BigDecimal.ZERO;
-    BigDecimal taxRate = BigDecimal.ZERO;
-    int currencyScale = Beans.get(CurrencyScaleServiceAccount.class).getScale(invoice);
-
-    AppBaseService appBaseService = Beans.get(AppBaseService.class);
-    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
-
-    int scale = appBaseService.getNbDecimalDigitForQty();
-
-    if (invoiceLines != null) {
-      if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
-        for (InvoiceLine line : invoiceLines) {
-          BigDecimal coefficient = line.getCoefficient();
-          qty =
-              (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_UP))
-                  .multiply(newKitQty)
-                  .setScale(scale, RoundingMode.HALF_UP);
-          priceDiscounted = invoiceLineService.computeDiscount(line, invoice.getInAti());
-
-          if (line.getTaxLine() != null) {
-            taxRate = line.getTaxLine().getValue();
-          }
-
-          if (!invoice.getInAti()) {
-            exTaxTotal =
-                InvoiceLineManagement.computeAmount(
-                    qty, priceDiscounted, currencyScale, coefficient);
-            inTaxTotal =
-                exTaxTotal
-                    .add(exTaxTotal.multiply(taxRate.divide(new BigDecimal(100))))
-                    .setScale(currencyScale, RoundingMode.HALF_UP);
-          } else {
-            inTaxTotal =
-                InvoiceLineManagement.computeAmount(
-                    qty, priceDiscounted, currencyScale, coefficient);
-            exTaxTotal =
-                inTaxTotal.divide(
-                    taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),
-                    currencyScale,
-                    RoundingMode.HALF_UP);
-          }
-
-          companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
-          companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
-
-          line.setQty(qty);
-          line.setExTaxTotal(exTaxTotal);
-          line.setCompanyExTaxTotal(companyExTaxTotal);
-          line.setInTaxTotal(inTaxTotal);
-          line.setCompanyInTaxTotal(companyInTaxTotal);
-          line.setPriceDiscounted(priceDiscounted);
-          line.setTaxRate(taxRate);
-        }
-      } else {
-        for (InvoiceLine line : invoiceLines) {
-          line.setQty(qty);
-        }
-      }
-    }
-
-    return invoiceLines;
-  }
 
   public Invoice getInvoice(Context context) {
 

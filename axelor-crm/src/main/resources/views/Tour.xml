@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="tour-grid" model="com.axelor.apps.crm.db.Tour" title="Tours">
     <field name="name"/>
@@ -10,12 +10,22 @@
     <button name="viewItineraryBtn" title="View itinerary" icon="fa-map"
       showIf="tourLineList.length &gt; 0" onClick="action-tour-view-tour-on-map"/>
     <button name="validateBtn" title="Validate" icon="fa-check"
-      showIf="tourLineList.length &gt; 0" onClick="action-tour-method-set-validated"/>
+      showIf="tourLineList.length &gt; 0 &amp;&amp; !$isValidated"
+      onClick="action-tour-method-set-validated"/>
     <field name="tourLineList" hidden="true"/>
   </grid>
 
   <form name="tour-form" title="Tour" model="com.axelor.apps.crm.db.Tour">
     <panel name="mainPanel">
+      <panel name="isValidatedPanel" showIf="$isValidated" colSpan="12">
+        <spacer colSpan="10"/>
+        <field name="$isValidated" readonly="true" x-dirty="false" showTitle="false"
+          colSpan="2">
+          <viewer>
+				<![CDATA[<><Badge bg="success">{_t('Validated')}</Badge></>]]>
+          </viewer>
+        </field>
+      </panel>
       <field name="name" colSpan="4"/>
       <field name="date" colSpan="4"/>
       <field name="salespersonUser" colSpan="4"/>
@@ -27,6 +37,7 @@
       <button name="viewItineraryBtn" title="View itinerary" icon="fa-map"
         onClick="save,action-tour-view-tour-on-map"/>
       <button name="validateBtn" title="Validate" css="btn-success" icon="fa-check"
+        showIf="tourLineList.length &gt; 0 &amp;&amp; !$isValidated"
         onClick="save,action-tour-method-set-validated"/>
     </panel>
   </form>

@@ -20,23 +20,31 @@ package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameServiceImpl;
-import com.axelor.apps.production.service.app.AppProductionService;
-import com.google.inject.Inject;
+import com.axelor.common.StringUtils;
 
 public class BillOfMaterialComputeNameServiceMaintenanceImpl
     extends BillOfMaterialComputeNameServiceImpl {
 
-  @Inject
-  public BillOfMaterialComputeNameServiceMaintenanceImpl(
-      AppProductionService appProductionService) {
-    super(appProductionService);
-  }
-
   @Override
-  public String computeName(BillOfMaterial bom) {
-
-    return bom.getProduct() != null
-        ? super.computeName(bom)
-        : bom.getMachineType().getName() + "-" + bom.getId();
+  public String computeFullName(BillOfMaterial bom) {
+    StringBuilder fullName = new StringBuilder();
+    if (bom.getProduct() != null) {
+      fullName.append(super.computeFullName(bom));
+    } else {
+      if (bom.getMachineType() != null && StringUtils.notEmpty(bom.getMachineType().getCode())) {
+        fullName.append(bom.getMachineType().getCode());
+      }
+      if (StringUtils.notEmpty(bom.getName())) {
+        if (StringUtils.notEmpty(fullName.toString())) {
+          fullName.append(" | ");
+        }
+        fullName.append(bom.getName());
+      }
+      if ((bom.getVersionNumber() > 1)) {
+        fullName.append(" - v");
+        fullName.append(bom.getVersionNumber());
+      }
+    }
+    return fullName.toString().trim();
   }
 }

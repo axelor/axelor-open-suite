@@ -19,10 +19,8 @@
 package com.axelor.apps.production.service.operationorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
@@ -35,15 +33,17 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaFile;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -60,28 +60,34 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OperationOrderServiceImpl implements OperationOrderService {
-  protected BarcodeGeneratorService barcodeGeneratorService;
 
   protected AppProductionService appProductionService;
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ProdProcessLineService prodProcessLineService;
   protected OperationOrderRepository operationOrderRepository;
   protected OperationOrderOutsourceService operationOrderOutsourceService;
+  protected ManufOrderCheckStockMoveLineService manufOrderCheckStockMoveLineService;
+  protected ManufOrderPlanStockMoveService manufOrderPlanStockMoveService;
+  protected ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService;
 
   @Inject
   public OperationOrderServiceImpl(
-      BarcodeGeneratorService barcodeGeneratorService,
       AppProductionService appProductionService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ProdProcessLineService prodProcessLineService,
       OperationOrderRepository operationOrderRepository,
-      OperationOrderOutsourceService operationOrderOutsourceService) {
-    this.barcodeGeneratorService = barcodeGeneratorService;
+      OperationOrderOutsourceService operationOrderOutsourceService,
+      ManufOrderCheckStockMoveLineService manufOrderCheckStockMoveLineService,
+      ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
+      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService) {
     this.appProductionService = appProductionService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.prodProcessLineService = prodProcessLineService;
     this.operationOrderRepository = operationOrderRepository;
     this.operationOrderOutsourceService = operationOrderOutsourceService;
+    this.manufOrderCheckStockMoveLineService = manufOrderCheckStockMoveLineService;
+    this.manufOrderPlanStockMoveService = manufOrderPlanStockMoveService;
+    this.manufOrderUpdateStockMoveService = manufOrderUpdateStockMoveService;
   }
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -224,10 +230,9 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   @Override
   public void checkConsumedStockMoveLineList(
       OperationOrder operationOrder, OperationOrder oldOperationOrder) throws AxelorException {
-    Beans.get(ManufOrderService.class)
-        .checkRealizedStockMoveLineList(
-            operationOrder.getConsumedStockMoveLineList(),
-            oldOperationOrder.getConsumedStockMoveLineList());
+    manufOrderCheckStockMoveLineService.checkRealizedStockMoveLineList(
+        operationOrder.getConsumedStockMoveLineList(),
+        oldOperationOrder.getConsumedStockMoveLineList());
   }
 
   @Override
@@ -254,7 +259,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       stockMove = stockMoveOpt.get();
     } else {
       stockMove =
-          manufOrderStockMoveService
+          manufOrderPlanStockMoveService
               .createAndPlanToConsumeStockMove(manufOrder)
               .map(
                   sm -> {
@@ -264,28 +269,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
               .orElse(null);
     }
 
-    Beans.get(ManufOrderService.class)
+    Beans.get(ManufOrderUpdateStockMoveService.class)
         .updateStockMoveFromManufOrder(consumedStockMoveLineList, stockMove);
-  }
-
-  @Override
-  public void createBarcode(OperationOrder operationOrder) {
-    if (operationOrder != null && operationOrder.getId() != null) {
-      String serialNbr = operationOrder.getId().toString();
-      BarcodeTypeConfig barcodeTypeConfig =
-          appProductionService.getAppProduction().getBarcodeTypeConfig();
-      boolean addPadding = true;
-      MetaFile barcodeFile =
-          barcodeGeneratorService.createBarCode(
-              operationOrder.getId(),
-              "OppOrderBarcode%d.png",
-              serialNbr,
-              barcodeTypeConfig,
-              addPadding);
-      if (barcodeFile != null) {
-        operationOrder.setBarCode(barcodeFile);
-      }
-    }
   }
 
   @Override
@@ -346,11 +331,17 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       return manufOrderPlannedEndDateT;
     }
 
-    LocalDateTime plannedStartDateT = nextOperationOrder.getPlannedStartDateT();
+    LocalDateTime plannedStartDateT =
+        computePlannedStartTimeForNextOperationDate(operationOrder, nextOperationOrder);
 
     if (Objects.equals(nextOperationOrder.getPriority(), operationOrder.getPriority())) {
-      LocalDateTime plannedEndDateT = nextOperationOrder.getPlannedEndDateT();
+      LocalDateTime plannedEndDateT =
+          computePlannedEndTimeForNextOperationDate(operationOrder, nextOperationOrder);
+
       if (plannedEndDateT != null && plannedEndDateT.isBefore(manufOrderPlannedEndDateT)) {
+        if (operationOrder.getOutsourcing()) {
+          return plannedEndDateT;
+        }
         boolean isOnSameMachine =
             Objects.equals(nextOperationOrder.getMachine(), operationOrder.getMachine());
         return isOnSameMachine ? plannedStartDateT : plannedEndDateT;
@@ -378,7 +369,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             .bind("machine", operationOrder.getMachine())
             .bind("operationOrderId", operationOrder.getId())
             .order("-priority")
-            .order("-plannedEndDateT")
+            .order("-plannedEndWithWaitingDateT")
             .fetchOne();
 
     LocalDateTime manufOrderPlannedStartDateT = manufOrder.getPlannedStartDateT();
@@ -386,11 +377,14 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       return manufOrderPlannedStartDateT;
     }
 
-    LocalDateTime plannedEndDateT = lastOperationOrder.getPlannedEndDateT();
+    LocalDateTime plannedEndDateT = lastOperationOrder.getPlannedEndWithWaitingDateT();
 
     if (Objects.equals(lastOperationOrder.getPriority(), operationOrder.getPriority())) {
       LocalDateTime plannedStartDateT = lastOperationOrder.getPlannedStartDateT();
       if (plannedStartDateT != null && plannedStartDateT.isAfter(manufOrderPlannedStartDateT)) {
+        if (operationOrder.getOutsourcing()) {
+          return plannedStartDateT;
+        }
         boolean isOnSameMachine =
             Objects.equals(lastOperationOrder.getMachine(), operationOrder.getMachine());
         return isOnSameMachine ? plannedEndDateT : plannedStartDateT;
@@ -401,6 +395,28 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     }
 
     return manufOrderPlannedStartDateT;
+  }
+
+  protected LocalDateTime computePlannedStartTimeForNextOperationDate(
+      OperationOrder operationOrder, OperationOrder nextOperationOrder) {
+    if (operationOrder.getProdProcessLine() == null) {
+      return nextOperationOrder.getPlannedStartDateT();
+    }
+    return nextOperationOrder
+        .getPlannedStartDateT()
+        .minusSeconds(operationOrder.getProdProcessLine().getTimeBeforeNextOperation());
+  }
+
+  protected LocalDateTime computePlannedEndTimeForNextOperationDate(
+      OperationOrder operationOrder, OperationOrder nextOperationOrder) {
+    if (operationOrder.getProdProcessLine() == null) {
+      return nextOperationOrder.getPlannedEndDateT();
+    }
+    return nextOperationOrder
+        .getPlannedEndDateT()
+        .minusSeconds(
+            operationOrder.getProdProcessLine().getTimeBeforeNextOperation()
+                - nextOperationOrder.getProdProcessLine().getTimeBeforeNextOperation());
   }
 
   @Override

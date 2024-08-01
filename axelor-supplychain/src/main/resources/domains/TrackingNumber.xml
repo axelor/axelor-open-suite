@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="TrackingNumber">
+
+    <many-to-one name="originPurchaseOrderLine"
+      ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Origin purchase order line"/>
+    <many-to-one name="originSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      title="Origin sale order line"/>
+
+
+    <extra-code>
+      <![CDATA[
+
+		// OPERATION TYPE SELECT
+		public static final int ORIGIN_MOVE_TYPE_SALE = 3;
+		public static final int ORIGIN_MOVE_TYPE_PURCHASE = 4;
+
+	]]>
+    </extra-code>
+
+  </entity>
+
+</domain-models>

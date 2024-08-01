@@ -19,14 +19,14 @@
 package com.axelor.apps.stock.db.repo.product;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
-import com.axelor.apps.stock.service.StockLocationLineService;
-import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.StockLocationUtilsService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,31 +35,22 @@ import java.util.Map;
 
 public class ProductStockRepositoryPopulate {
 
-  protected ProductRepository productRepo;
-  protected StockLocationRepository stockLocationRepo;
-  protected StockLocationLineService stockLocationLineService;
-  protected StockLocationService stockLocationService;
-  protected StockMoveService stockMoveService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
+  protected StockLocationUtilsService stockLocationUtilsService;
 
   @Inject
   public ProductStockRepositoryPopulate(
-      ProductRepository productRepo,
-      StockLocationRepository stockLocationRepo,
-      StockLocationLineService stockLocationLineService,
-      StockLocationService stockLocationService,
-      StockMoveService stockMoveService) {
-    this.productRepo = productRepo;
-    this.stockLocationRepo = stockLocationRepo;
-    this.stockLocationLineService = stockLocationLineService;
-    this.stockLocationService = stockLocationService;
-    this.stockMoveService = stockMoveService;
+      StockLocationLineFetchService stockLocationLineFetchService,
+      StockLocationUtilsService stockLocationUtilsService) {
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
+    this.stockLocationUtilsService = stockLocationUtilsService;
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   public void setAvailableQty(Map<String, Object> json, Map<String, Object> context) {
     try {
       Long productId = (Long) json.get("id");
-      Product product = productRepo.find(productId);
+      Product product = JPA.find(Product.class, productId);
 
       if (context.get("_parent") != null) {
         Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
@@ -68,27 +59,29 @@ public class ProductStockRepositoryPopulate {
         if (context.get("_model").toString().equals("com.axelor.apps.stock.db.StockMoveLine")) {
           if (_parent.get("fromStockLocation") != null) {
             stockLocation =
-                stockLocationRepo.find(
+                JPA.find(
+                    StockLocation.class,
                     Long.parseLong(((Map) _parent.get("fromStockLocation")).get("id").toString()));
           }
         } else {
           if (_parent.get("stockLocation") != null) {
             stockLocation =
-                stockLocationRepo.find(
+                JPA.find(
+                    StockLocation.class,
                     Long.parseLong(((Map) _parent.get("stockLocation")).get("id").toString()));
           }
         }
 
         if (stockLocation != null) {
           BigDecimal availableQty =
-              stockLocationLineService.getAvailableQty(stockLocation, product);
+              stockLocationLineFetchService.getAvailableQty(stockLocation, product);
 
           json.put("$availableQty", availableQty);
         }
       } else if (product.getParentProduct() != null) {
         json.put(
             "$availableQty",
-            stockLocationService.getRealQtyOfProductInStockLocations(productId, null, null));
+            stockLocationUtilsService.getRealQtyOfProductInStockLocations(productId, null, null));
       }
 
     } catch (Exception e) {
@@ -103,7 +96,8 @@ public class ProductStockRepositoryPopulate {
       LocalDate fromDate = LocalDate.parse(context.get("stockFromDate").toString());
       LocalDate toDate = LocalDate.parse(context.get("stockToDate").toString());
       List<Map<String, Object>> stock =
-          stockMoveService.getStockPerDate(locationId, productId, fromDate, toDate);
+          Beans.get(StockMoveService.class)
+              .getStockPerDate(locationId, productId, fromDate, toDate);
 
       if (ObjectUtils.isEmpty(stock)) {
         return;

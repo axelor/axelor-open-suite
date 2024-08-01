@@ -28,8 +28,8 @@ import com.axelor.apps.sale.db.SaleOrderLineTree;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineTreeRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineCalculationComboService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCalculationComboService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -95,7 +95,6 @@ public class SaleOrderLineTreeController {
     SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(id);
     saleOrder = Beans.get(SaleOrderLineTreeService.class).saveHasSubElement(saleOrder);
     response.setValues(saleOrder);
-    response.setReload(true);
   }
 
   public void removeSubElement(ActionRequest request, ActionResponse response)

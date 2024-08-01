@@ -25,10 +25,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Incoterm;
+import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.message.db.Template;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -103,6 +105,18 @@ public interface StockMoveService {
       int typeSelect)
       throws AxelorException;
 
+  StockMove createStockMove(
+      Address fromAddress,
+      Address toAddress,
+      Company company,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      LocalDate realDate,
+      LocalDate estimatedDate,
+      int typeSelect,
+      MassStockMove massStockMove)
+      throws AxelorException;
+
   /** To create an internal stock move with one product, mostly for mobile app (API AOS) * */
   StockMove createStockMoveMobility(
       StockLocation fromStockLocation,
@@ -138,6 +152,8 @@ public interface StockMoveService {
   void cancel(StockMove stockMove) throws AxelorException;
 
   void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
+
+  void sendSupplierCancellationMail(StockMove stockMove, Template template) throws AxelorException;
 
   public boolean splitStockMoveLines(
       StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty)

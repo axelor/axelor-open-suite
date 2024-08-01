@@ -19,18 +19,18 @@
 package com.axelor.apps.account.service.invoice.attributes;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 public class InvoiceLineTaxAttrsServiceImpl implements InvoiceLineTaxAttrsService {
 
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
-  public InvoiceLineTaxAttrsServiceImpl(CurrencyScaleServiceAccount currencyScaleServiceAccount) {
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+  public InvoiceLineTaxAttrsServiceImpl(CurrencyScaleService currencyScaleService) {
+    this.currencyScaleService = currencyScaleService;
   }
 
   protected void addAttr(
@@ -52,7 +52,7 @@ public class InvoiceLineTaxAttrsServiceImpl implements InvoiceLineTaxAttrsServic
     this.addAttr(
         this.computeField("exTaxBase", prefix),
         "scale",
-        currencyScaleServiceAccount.getScale(invoice),
+        currencyScaleService.getScale(invoice),
         attrsMap);
   }
 
@@ -62,7 +62,17 @@ public class InvoiceLineTaxAttrsServiceImpl implements InvoiceLineTaxAttrsServic
     this.addAttr(
         this.computeField("taxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getScale(invoice),
+        currencyScaleService.getScale(invoice),
+        attrsMap);
+  }
+
+  @Override
+  public void addPercentageTaxTotalScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
+    this.addAttr(
+        this.computeField("percentageTaxTotal", prefix),
+        "scale",
+        currencyScaleService.getScale(invoice),
         attrsMap);
   }
 
@@ -72,7 +82,7 @@ public class InvoiceLineTaxAttrsServiceImpl implements InvoiceLineTaxAttrsServic
     this.addAttr(
         this.computeField("inTaxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getScale(invoice),
+        currencyScaleService.getScale(invoice),
         attrsMap);
   }
 }

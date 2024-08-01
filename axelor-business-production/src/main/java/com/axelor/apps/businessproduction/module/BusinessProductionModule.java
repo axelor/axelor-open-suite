@@ -46,11 +46,9 @@ import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessSer
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessService;
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
-import com.axelor.apps.businessproject.service.SaleOrderLineProjectServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
-import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
@@ -58,6 +56,8 @@ import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowS
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderWorkflowServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCreateSupplychainServiceImpl;
 
 public class BusinessProductionModule extends AxelorModule {
 
@@ -80,9 +80,9 @@ public class BusinessProductionModule extends AxelorModule {
     bind(OperationOrderTimesheetService.class).to(OperationOrderTimesheetServiceImpl.class);
     bind(ManufOrderManagementRepository.class)
         .to(ManufOrderBusinessProductionManagementRepository.class);
-    bind(SaleOrderWorkflowServiceProductionImpl.class)
+    bind(SaleOrderWorkflowServiceSupplychainImpl.class)
         .to(SaleOrderWorkflowServiceBusinessProductionImpl.class);
-    bind(SaleOrderLineProjectServiceImpl.class)
+    bind(SaleOrderLineCreateSupplychainServiceImpl.class)
         .to(SaleOrderLineBusinessProductionServiceImpl.class);
     bind(OperationOrderWorkflowServiceImpl.class)
         .to(OperationOrderWorkflowBusinessServiceImpl.class);

@@ -217,24 +217,16 @@ export function getHeaders(file, offset) {
   return headers;
 }
 
-export function getCompletedStatus(project = {}) {
-  const { projectTaskStatusSet = [] } = project || {};
-  if (projectTaskStatusSet && projectTaskStatusSet.length <= 0) return {};
-  const status = projectTaskStatusSet && projectTaskStatusSet.filter(status => status.isDefaultCompleted === true);
-  if (!status) return {};
-  return status[0] || {};
-}
-
-export const getStatus = (task = {}, project) => {
+export const getStatus = (task = {}, project = {}) => {
   const { status } = task;
   if (!status) return false;
-  let completedStatus = getCompletedStatus(project);
-  if (!completedStatus) return false;
-  return completedStatus.id === status.id;
+  const { completedTaskStatus } = project;
+  if (!completedTaskStatus) return false;
+  return completedTaskStatus.id === status.id;
 };
 
 export function translate(str) {
-  if (window.top && window.top._t && typeof str === "string") {
+  if (window.top && window.top._t && typeof str === 'string') {
     return window.top._t(str);
   }
   return str;
@@ -251,7 +243,7 @@ export function getSortOptions(project) {
     options = options.filter(option => option.code !== 'status');
   }
   if (!isShowProgress) {
-    options = options.filter(option => option.code !== 'progressSelect');
+    options = options.filter(option => option.code !== 'progress');
   }
   if (!isShowTaskCategory) {
     options = options.filter(option => option.code !== 'projectTaskCategory');

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -234,10 +234,11 @@
       help="This configuration will allow you to set up the statement to be displayed according to the product category present in the invoice."
       default="true"/>
     <string name="invoiceClientBox" large="true" multiline="true"
-      title="Client box in invoice"/>
+      title="Client box in invoice" translatable="true"/>
     <string name="saleInvoiceLegalNote" large="true" multiline="true"
-      title="Legal note on sale invoices"/>
-    <string name="termsAndConditions" large="true" title="Terms and Conditions"/>
+      title="Legal note on sale invoices" translatable="true"/>
+    <string name="termsAndConditions" large="true" title="Terms and Conditions"
+      translatable="true"/>
     <many-to-one ref="com.axelor.meta.db.MetaFile" name="invoiceWatermark"
       title="Watermark"/>
     <one-to-many name="statementsForItemsCategoriesList"
@@ -337,12 +338,14 @@
     <decimal name="allowedTaxGap" title="Allowed tax gap" default="0.00" initParam="true"
       help="Field allowing a tax gap during the accounting of a move. Its value specifies the tolerance applied during the tax values control and the move balance control."/>
 
-    <many-to-one name="invoiceBirtTemplate" title="Invoice template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="purchaseInvoicesDetailsBirtTemplate"
-      title="Purchase invoices details template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="chequeDepositSlipBirtTemplate"
-      title="Cheque deposit slip template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="invoicePrintTemplate" title="Invoice template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="purchaseInvoicesDetailsPrintTemplate"
+      title="Purchase invoices details template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="chequeDepositSlipPrintTemplate"
+      title="Cheque deposit slip template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="saleInvoicesDetailsPrintTemplate"
+      title="Sale invoices details template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
     <finder-method name="findByCompany" using="company"/>
 
@@ -538,9 +541,10 @@
 
       <field name="retrieveDaybookMovesInPaymentSession" on="UPDATE"/>
 
-      <field name="invoiceBirtTemplate" on="UPDATE"/>
-      <field name="purchaseInvoicesDetailsBirtTemplate" on="UPDATE"/>
-      <field name="chequeDepositSlipBirtTemplate" on="UPDATE"/>
+      <field name="invoicePrintTemplate" on="UPDATE"/>
+      <field name="purchaseInvoicesDetailsPrintTemplate" on="UPDATE"/>
+      <field name="chequeDepositSlipPrintTemplate" on="UPDATE"/>
+      <field name="saleInvoicesDetailsPrintTemplate" on="UPDATE"/>
     </track>
 
   </entity>

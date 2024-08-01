@@ -84,8 +84,13 @@ public class BatchUpdateTaskService extends BatchStrategy {
 
   protected void updateTasks() {
     List<Long> projectTaskIdList =
-        projectTaskBusinessProjectService.getTaskInvoicingFilter().build().order("id").select("id")
-            .fetch(0, 0).stream()
+        projectTaskBusinessProjectService
+            .getTaskInvoicingFilter()
+            .build()
+            .order("id")
+            .select("id")
+            .fetch(0, 0)
+            .stream()
             .map(m -> (Long) m.get("id"))
             .collect(Collectors.toList());
 
@@ -166,8 +171,13 @@ public class BatchUpdateTaskService extends BatchStrategy {
   protected void updateTimesheetLines(Map<String, Object> contextValues) {
     List<Object> updatedTimesheetLineList = new ArrayList<>();
     List<Long> timesheetLineIdList =
-        timesheetLineBusinessService.getTimesheetLineInvoicingFilter().build().order("id")
-            .select("id").fetch(0, 0).stream()
+        timesheetLineBusinessService
+            .getTimesheetLineInvoicingFilter()
+            .build()
+            .order("id")
+            .select("id")
+            .fetch(0, 0)
+            .stream()
             .map(m -> (Long) m.get("id"))
             .collect(Collectors.toList());
 

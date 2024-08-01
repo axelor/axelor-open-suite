@@ -100,6 +100,7 @@ public abstract class Importer {
 
     File bind = MetaFiles.getPath(configuration.getBindMetaFile()).toFile();
     File data = MetaFiles.getPath(configuration.getDataMetaFile()).toFile();
+    checkEntryFilesType(bind, data);
 
     if (!bind.exists()) {
       throw new AxelorException(
@@ -125,9 +126,11 @@ public abstract class Importer {
   }
 
   protected abstract ImportHistory process(
-      String bind, String data, Map<String, Object> importContext) throws IOException;
+      String bind, String data, Map<String, Object> importContext)
+      throws IOException, AxelorException;
 
-  protected abstract ImportHistory process(String bind, String data) throws IOException;
+  protected abstract ImportHistory process(String bind, String data)
+      throws IOException, AxelorException;
 
   protected void deleteFinalWorkspace(File workspace) throws IOException {
 
@@ -253,6 +256,14 @@ public abstract class Importer {
 
     } catch (Exception e) {
       e.printStackTrace();
+    }
+  }
+
+  public void checkEntryFilesType(File bind, File data) throws AxelorException {
+    if (!Files.getFileExtension(bind.getAbsolutePath()).equals("xml")) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.IMPORT_CONFIGURATION_WRONG_BINDING_FILE_TYPE_MESSAGE));
     }
   }
 }

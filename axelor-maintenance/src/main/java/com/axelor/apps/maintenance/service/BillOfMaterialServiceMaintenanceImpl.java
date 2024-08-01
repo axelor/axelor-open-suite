@@ -19,13 +19,14 @@
 package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ProductCompanyService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
@@ -41,7 +42,7 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
     implements BillOfMaterialMaintenanceService {
 
   protected ProductionConfigService productionConfigService;
-  protected BirtTemplateService birtTemplateService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
 
   @Inject
   public BillOfMaterialServiceMaintenanceImpl(
@@ -52,7 +53,7 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
       BillOfMaterialLineService billOfMaterialLineService,
       BillOfMaterialService billOfMaterialService,
       ProductionConfigService productionConfigService,
-      BirtTemplateService birtTemplateService) {
+      PrintingTemplatePrintService printingTemplatePrintService) {
     super(
         billOfMaterialRepo,
         tempBomTreeRepo,
@@ -61,27 +62,27 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
         billOfMaterialLineService,
         billOfMaterialService);
     this.productionConfigService = productionConfigService;
-    this.birtTemplateService = birtTemplateService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
   }
 
   @Override
   public String getReportLink(BillOfMaterial billOfMaterial, String name) throws AxelorException {
     billOfMaterial = billOfMaterialRepo.find(billOfMaterial.getId());
     Company company = billOfMaterial.getCompany();
-    BirtTemplate maintenanceBOMBirtTemplate = null;
+    PrintingTemplate maintenanceBOMPrintTemplate = null;
     if (ObjectUtils.notEmpty(company)) {
-      maintenanceBOMBirtTemplate =
+      maintenanceBOMPrintTemplate =
           productionConfigService
               .getProductionConfig(company)
-              .getMaintenanceBillOfMaterialBirtTemplate();
+              .getMaintenanceBillOfMaterialPrintTemplate();
     }
-    if (maintenanceBOMBirtTemplate == null) {
+    if (maintenanceBOMPrintTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
-    return birtTemplateService.generateBirtTemplateLink(
-        maintenanceBOMBirtTemplate, billOfMaterial, getFileName(billOfMaterial) + "-${date}");
+    return printingTemplatePrintService.getPrintLink(
+        maintenanceBOMPrintTemplate, new PrintingGenFactoryContext(billOfMaterial));
   }
 
   @Override

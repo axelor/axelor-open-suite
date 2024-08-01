@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
     orderBy="-sentDateTime">
@@ -52,7 +52,6 @@
     onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
-        <item name="printExpenseItem" title="Print" action="save,action-method-print-birt"/>
         <item name="printAll" title="Print report and files"
           action="save,action-expense-method-print-report-and-proof-file"/>
       </menu>
@@ -78,6 +77,8 @@
           </viewer>
         </field>
         <panel name="generalInfoPanel" colSpan="12">
+          <field name="typeSelect" readonlyIf="_isExpenseDeclaration || statusSelect > 1"/>
+          <spacer/>
           <field name="company" canEdit="false" form-view="company-form"
             grid-view="company-grid"
             onChange="action-expense-record-company-onchange,action-expense-attrs-kilometric-panel-visibility"
@@ -198,7 +199,8 @@
         canNew="false" canSelect="false" canEdit="true" editable="true"
         form-view="employee-advance-usage-expense-form"
         grid-view="employee-advance-usage-expense-grid"/>
-      <panel name="accountInfoPanel" title="Account information">
+      <panel name="accountInfoPanel" title="Account information" hidden="true"
+        showIf="typeSelect==1">
         <panel name="moveInfoPanel" title="Account information">
           <field name="moveDate" readonly="true" colSpan="4"/>
         </panel>
@@ -304,12 +306,16 @@
       expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
     <field name="currency"
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany.currency ?: __user__.activeCompany.currency"/>
+    <field name="typeSelect"
+      expr="eval: _isExpenseDeclaration ? com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE_DECLARATION : com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE"/>
   </action-record>
 
   <action-record name="action-expense-record-employee-onchange"
     model="com.axelor.apps.hr.db.Expense">
     <field name="bankDetails"
       expr="eval: employee?.mainEmploymentContract?.payCompany ? employee?.mainEmploymentContract?.payCompany?.defaultBankDetails : employee?.user?.activeCompany?.defaultBankDetails"/>
+    <field name="currency"
+      expr="eval: employee?.mainEmploymentContract?.payCompany.currency ?: employee?.user?.activeCompany?.currency"/>
   </action-record>
 
   <action-record name="action-expense-record-company-onchange"
@@ -366,7 +372,7 @@
 
   <action-attrs name="action-expense-attrs-hide-button-readonly-field">
     <attribute name="hidden" for="ventilateBtn"
-      expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated"/>
+      expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated || _isExpenseDeclaration"/>
     <attribute name="hidden" for="validateBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="refuseBtn"
@@ -385,10 +391,8 @@
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2"
       if="__user__.employee?.hrManager"/>
-    <attribute name="readonly" for="employee" expr="eval: true"
-      if="!__user__.employee?.hrManager"/>
-    <attribute name="readonly" for="employee" expr="eval: statusSelect &gt; 2"
-      if="__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="employee"
+      expr="eval: statusSelect &gt; 2 || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
   </action-attrs>
 
   <action-attrs name="action-expense-attrs-expense-company-cb">

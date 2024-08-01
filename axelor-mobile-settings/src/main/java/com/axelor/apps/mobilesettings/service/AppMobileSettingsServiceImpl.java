@@ -65,5 +65,10 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
         appMobileSettings.getIsHRAppEnabled(), MobileConfigRepository.APP_SEQUENCE_HR);
     updateMobileConfig(
         appMobileSettings.getIsQualityAppEnabled(), MobileConfigRepository.APP_SEQUENCE_QUALITY);
+    updateMobileConfig(
+        appMobileSettings.getIsInterventionAppEnabled(),
+        MobileConfigRepository.APP_SEQUENCE_INTERVENTION);
+    updateMobileConfig(
+        appMobileSettings.getIsSaleAppEnabled(), MobileConfigRepository.APP_SEQUENCE_SALE);
   }
 }

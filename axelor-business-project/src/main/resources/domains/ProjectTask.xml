@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -25,9 +25,13 @@
       ref="com.axelor.apps.purchase.db.PurchaseOrder" mappedBy="projectTask"/>
     <one-to-many name="purchaseOrderLineList" title="Related purchase order lines"
       ref="com.axelor.apps.purchase.db.PurchaseOrderLine" mappedBy="projectTask"/>
-    <many-to-one name="invoiceLine" title="Related Invoice line"
-      ref="com.axelor.apps.account.db.InvoiceLine"/>
+    <many-to-many name="invoiceLineSet" title="Related Invoice lines"
+      ref="com.axelor.apps.account.db.InvoiceLine" mappedBy="projectTaskSet"/>
     <boolean name="isTaskRefused" title="Refused"/>
+    <many-to-one name="frameworkCustomerContract" title="Framework customer contract"
+      ref="com.axelor.apps.contract.db.Contract"/>
+    <many-to-one name="frameworkSupplierContract" title="Framework supplier contract"
+      ref="com.axelor.apps.contract.db.Contract"/>
 
     <!-- planification fields -->
     <many-to-one name="timeUnit" ref="com.axelor.apps.base.db.Unit" title="Time unit"/>
@@ -62,12 +66,14 @@
 
     <decimal name="unitCost" title="Unit cost"/>
     <decimal name="totalCosts" title="Total cost" readonly="true"/>
+    <decimal name="invoicingProgress" title="Invoicing progress"/>
 
     <extra-code>
 			<![CDATA[
 				public static final Integer INVOICING_TYPE_TIME_SPENT= 1;
 				public static final Integer INVOICING_TYPE_PACKAGE = 2;
 				public static final Integer INVOICING_TYPE_NO_INVOICING = 3;
+                public static final Integer INVOICING_TYPE_ON_PROGRESS = 4;
 	        ]]>
     </extra-code>
 

@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
@@ -63,16 +64,8 @@ public interface InvoicePaymentCreateService {
       PaymentMode paymentMode,
       BankDetails companyBankDetails,
       LocalDate paymentDate,
-      LocalDate bankDepositDate,
-      String chequeNumber);
-
-  InvoicePayment createInvoicePayment(
-      Invoice invoice,
-      InvoiceTerm invoiceTerm,
-      PaymentMode paymentMode,
-      BankDetails companyBankDetails,
-      LocalDate paymentDate,
-      PaymentSession paymentSession);
+      PaymentSession paymentSession)
+      throws AxelorException;
 
   /**
    * Create an invoice payment for each invoice
@@ -95,5 +88,14 @@ public interface InvoicePaymentCreateService {
 
   InvoicePayment createInvoicePayment(
       Invoice invoice, BankDetails companyBankDetails, LocalDate paymentDate)
+      throws AxelorException;
+
+  InvoiceTerm updateInvoiceTermsAmounts(
+      InvoiceTerm invoiceTerm,
+      BigDecimal amount,
+      Reconcile reconcile,
+      Move move,
+      PaymentSession paymentSession,
+      boolean isRefund)
       throws AxelorException;
 }

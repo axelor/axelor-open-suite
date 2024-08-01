@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -108,12 +108,12 @@
     <many-to-one name="healthServiceAddress" title="Health service address"
       ref="com.axelor.apps.base.db.Address"/>
 
-    <many-to-one name="employeeAnnualReportBirtTemplate"
-      title="Employee annual report template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="employeePhoneBookBirtTemplate"
-      title="Employee phone book template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="expenseReportBirtTemplate" title="Expense report template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="employeeAnnualReportPrintTemplate"
+      title="Employee annual report template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="employeePhoneBookPrintTemplate"
+      title="Employee phone book template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="expenseReportPrintTemplate" title="Expense report template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
     <track>
       <field name="company" on="UPDATE"/>
@@ -172,9 +172,9 @@
       <field name="healthService" on="UPDATE"/>
       <field name="healthServiceAddress" on="UPDATE"/>
       <field name="exportCodeForDuration" on="UPDATE"/>
-      <field name="employeeAnnualReportBirtTemplate" on="UPDATE"/>
-      <field name="employeePhoneBookBirtTemplate" on="UPDATE"/>
-      <field name="expenseReportBirtTemplate" on="UPDATE"/>
+      <field name="employeeAnnualReportPrintTemplate" on="UPDATE"/>
+      <field name="employeePhoneBookPrintTemplate" on="UPDATE"/>
+      <field name="expenseReportPrintTemplate" on="UPDATE"/>
     </track>
   </entity>
 

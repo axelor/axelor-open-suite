@@ -30,9 +30,10 @@ import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.supplychain.service.PurchaseOrderCreateSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
-import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderPurchaseServiceImpl;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -43,6 +44,7 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
   @Inject
   public ProjectPurchaseServiceImpl(
       PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService,
       PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain,
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderRepository purchaseOrderRepository,
@@ -52,6 +54,7 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
       SupplierCatalogService supplierCatalogService) {
     super(
         purchaseOrderSupplychainService,
+        purchaseOrderCreateSupplychainService,
         purchaseOrderLineServiceSupplychain,
         purchaseOrderService,
         purchaseOrderRepository,

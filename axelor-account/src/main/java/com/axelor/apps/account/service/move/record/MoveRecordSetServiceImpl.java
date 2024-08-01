@@ -31,8 +31,8 @@ import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.PfpService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -43,10 +43,8 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -59,12 +57,12 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   protected BankDetailsService bankDetailsService;
   protected PeriodService periodService;
   protected PaymentConditionService paymentConditionService;
-  protected InvoiceTermService invoiceTermService;
   protected AppBaseService appBaseService;
   protected PartnerAccountService partnerAccountService;
   protected JournalService journalService;
-  protected MoveLineService moveLineService;
   protected PfpService pfpService;
+  protected MoveToolService moveToolService;
+  protected InvoiceTermPfpToolService invoiceTermPfpToolService;
 
   @Inject
   public MoveRecordSetServiceImpl(
@@ -72,22 +70,22 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
       BankDetailsService bankDetailsService,
       PeriodService periodService,
       PaymentConditionService paymentConditionService,
-      InvoiceTermService invoiceTermService,
-      MoveLineService moveLineService,
       AppBaseService appBaseService,
       PartnerAccountService partnerAccountService,
       JournalService journalService,
-      PfpService pfpService) {
+      PfpService pfpService,
+      MoveToolService moveToolService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
     this.periodService = periodService;
     this.paymentConditionService = paymentConditionService;
-    this.invoiceTermService = invoiceTermService;
-    this.moveLineService = moveLineService;
     this.appBaseService = appBaseService;
     this.partnerAccountService = partnerAccountService;
     this.journalService = journalService;
     this.pfpService = pfpService;
+    this.moveToolService = moveToolService;
+    this.invoiceTermPfpToolService = invoiceTermPfpToolService;
   }
 
   @Override
@@ -199,38 +197,9 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
   @Override
   public void setFunctionalOriginSelect(Move move) {
-    move.setFunctionalOriginSelect(computeFunctionalOriginSelect(move));
-  }
-
-  /**
-   * Compute the default functional origin select of the move.
-   *
-   * @param move any move, cannot be null
-   * @return the default functional origin select if there is one, else return null
-   */
-  protected Integer computeFunctionalOriginSelect(Move move) {
-    if (move.getJournal() == null) {
-      return null;
-    }
-    String authorizedFunctionalOriginSelect =
-        move.getJournal().getAuthorizedFunctionalOriginSelect();
-
-    if (ObjectUtils.isEmpty(authorizedFunctionalOriginSelect)) {
-      return null;
-    }
-
-    if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      // standard behavior: fill an origin if there is only one authorized
-      return authorizedFunctionalOriginSelect.split(",").length == 1
-          ? Integer.valueOf(authorizedFunctionalOriginSelect)
-          : null;
-    } else {
-      // behavior for mass entry: take the first authorized functional origin select
-      return Arrays.stream(authorizedFunctionalOriginSelect.split(","))
-          .findFirst()
-          .map(Integer::valueOf)
-          .orElse(null);
-    }
+    move.setFunctionalOriginSelect(
+        moveToolService.computeFunctionalOriginSelect(
+            move.getJournal(), move.getMassEntryStatusSelect()));
   }
 
   @Override
@@ -290,7 +259,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     Objects.requireNonNull(move);
 
     move.setPfpValidatorUser(
-        invoiceTermService.getPfpValidatorUser(move.getPartner(), move.getCompany()));
+        invoiceTermPfpToolService.getPfpValidatorUser(move.getPartner(), move.getCompany()));
   }
 
   @Override

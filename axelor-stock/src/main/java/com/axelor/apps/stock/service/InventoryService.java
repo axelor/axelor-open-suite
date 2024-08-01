@@ -112,7 +112,7 @@ public class InventoryService {
   protected ProductRepository productRepo;
   protected InventoryRepository inventoryRepo;
   protected StockMoveRepository stockMoveRepo;
-  protected StockLocationLineService stockLocationLineService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
   protected StockMoveService stockMoveService;
   protected StockMoveLineService stockMoveLineService;
   protected StockLocationLineRepository stockLocationLineRepository;
@@ -128,7 +128,7 @@ public class InventoryService {
       ProductRepository productRepo,
       InventoryRepository inventoryRepo,
       StockMoveRepository stockMoveRepo,
-      StockLocationLineService stockLocationLineService,
+      StockLocationLineFetchService stockLocationLineFetchService,
       StockMoveService stockMoveService,
       StockMoveLineService stockMoveLineService,
       StockLocationLineRepository stockLocationLineRepository,
@@ -142,7 +142,7 @@ public class InventoryService {
     this.productRepo = productRepo;
     this.inventoryRepo = inventoryRepo;
     this.stockMoveRepo = stockMoveRepo;
-    this.stockLocationLineService = stockLocationLineService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockLocationLineRepository = stockLocationLineRepository;
@@ -283,9 +283,6 @@ public class InventoryService {
     InventoryLine inventoryLineResult = inventoryLineRepository.copy(inventoryLine, true);
     inventoryLineResult.setRealQty(realQty);
     inventoryLineResult.setDescription(description);
-    if (inventoryLineResult.getTrackingNumber() != null) {
-      inventoryLineResult.getTrackingNumber().setCounter(realQty);
-    }
     inventoryLineService.compute(inventoryLineResult, inventoryLineResult.getInventory());
     return inventoryLineResult;
   }
@@ -426,7 +423,6 @@ public class InventoryService {
         trackingNumber = new TrackingNumber();
         trackingNumber.setTrackingNumberSeq(sequence);
         trackingNumber.setProduct(product);
-        trackingNumber.setCounter(realQty);
       }
     }
 
@@ -733,13 +729,12 @@ public class InventoryService {
       diff = diff.negate();
     }
     if (diff.signum() > 0) {
-      BigDecimal avgPrice;
+
       StockLocationLine stockLocationLine =
-          stockLocationLineService.getStockLocationLine(toStockLocation, product);
-      if (stockLocationLine != null) {
-        avgPrice = stockLocationLine.getAvgPrice();
-      } else {
-        avgPrice = BigDecimal.ZERO;
+          stockLocationLineFetchService.getStockLocationLine(toStockLocation, product);
+      BigDecimal unitPrice = getAvgPrice(stockLocationLine);
+      if (!inventoryLineService.isPresentInStockLocation(inventoryLine)) {
+        unitPrice = inventoryLine.getPrice();
       }
 
       StockMoveLine stockMoveLine =
@@ -748,8 +743,8 @@ public class InventoryService {
               product.getName(),
               product.getDescription(),
               diff,
-              avgPrice,
-              avgPrice,
+              unitPrice,
+              unitPrice,
               product.getUnit(),
               stockMove,
               StockMoveLineService.TYPE_NULL,
@@ -769,6 +764,16 @@ public class InventoryService {
         stockMoveLine.setTrackingNumber(trackingNumber);
       }
     }
+  }
+
+  protected BigDecimal getAvgPrice(StockLocationLine stockLocationLine) {
+    BigDecimal avgPrice;
+    if (stockLocationLine != null) {
+      avgPrice = stockLocationLine.getAvgPrice();
+    } else {
+      avgPrice = BigDecimal.ZERO;
+    }
+    return avgPrice;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -958,7 +963,7 @@ public class InventoryService {
 
       String lastInventoryDateTString = "";
       StockLocationLine stockLocationLine =
-          stockLocationLineService.getStockLocationLine(
+          stockLocationLineFetchService.getStockLocationLine(
               inventory.getStockLocation(), inventoryLine.getProduct());
       if (stockLocationLine != null) {
         ZonedDateTime lastInventoryDateT = stockLocationLine.getLastInventoryDateT();

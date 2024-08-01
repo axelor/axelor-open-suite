@@ -32,15 +32,13 @@ public interface ConformityCertificatePrintService {
    * @param ids ids of the stock move.
    * @return the link to the generated file.
    * @throws IOException
+   * @throws AxelorException
    */
-  String printConformityCertificates(List<Long> ids) throws IOException;
+  String printConformityCertificates(List<Long> ids) throws IOException, AxelorException;
 
-  File prepareReportSettings(StockMove stockMove, String format) throws AxelorException;
+  File print(StockMove stockMove) throws AxelorException;
 
-  File print(StockMove stockMove, String format) throws AxelorException;
-
-  String printConformityCertificate(StockMove stockMove, String format)
-      throws AxelorException, IOException;
+  String printConformityCertificate(StockMove stockMove) throws AxelorException, IOException;
 
   String getFileName(StockMove stockMove);
 }

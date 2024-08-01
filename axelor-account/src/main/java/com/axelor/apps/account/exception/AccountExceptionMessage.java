@@ -72,6 +72,7 @@ public final class AccountExceptionMessage {
   public static final String FIXED_ASSET_CAN_NOT_BE_REMOVE =
       /*$$(*/ "Only fixed assets at draft status can be deleted." /*)*/;
   public static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
+
   /** Bank statement service */
   public static final String BANK_STATEMENT_1 = /*$$(*/
       "%s : Computed balance and Ending Balance must be equal" /*)*/;
@@ -207,6 +208,7 @@ public final class AccountExceptionMessage {
   /** AnalyticJournal service */
   public static final String NOT_UNIQUE_NAME_ANALYTIC_JOURNAL =
       /*$$(*/ "The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly." /*)*/;
+
   /** Move line export service */
   public static final String MOVE_LINE_EXPORT_1 = /*$$(*/
       "%s : Error : You must configure a sale interface sequence for the company %s" /*)*/;
@@ -370,6 +372,7 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
       "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed." /*)*/;
+
   /** Move service */
   public static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
@@ -593,6 +596,9 @@ public final class AccountExceptionMessage {
       "%d account treated successfully," /*)*/;
   public static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_PLURAL = /*$$(*/
       "%d accounts treated successfully," /*)*/;
+
+  public static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_RESULT_MOVE = /*$$(*/
+      "One result move generated %s." /*)*/;
 
   /** Batch auto move lettering */
   public static final String BATCH_AUTO_MOVE_LETTERING_REPORT_TITLE = /*$$(*/
@@ -882,6 +888,7 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_PFP_VALIDATOR_USER_MISSING = /*$$(*/
       "At least one pfp validator is missing, do you wish to continue ?" /*)*/;
+
   /** Invoice line generator */
   public static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/
       "You must select a currency for partner %s (%s)" /*)*/;
@@ -1051,7 +1058,12 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_2 = /*$$(*/ "Credit note created" /*)*/;
   public static final String INVOICE_3 = /*$$(*/ "Please select the invoice(s) to print." /*)*/;
-  public static final String INVOICE_4 = /*$$(*/ "Credit notes from invoice %s" /*)*/;
+  public static final String INVOICE_GENERATED_REFUND = /*$$(*/
+      "Credit notes from invoice %s" /*)*/;
+  public static final String INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT = /*$$(*/
+      "Credit notes from advance payment %s" /*)*/;
+  public static final String INVOICE_GENERATED_INVOICE_REFUND = /*$$(*/
+      "Invoice from credit notes %s" /*)*/;
 
   public static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
 
@@ -1090,6 +1102,9 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI = /*$$(*/
       "Payment condition used for invoice term generation contains multiple lines but corresponding multi invoice term config is not enabled." /*)*/;
+
+  public static final String INVOICE_TERM_PFP_REFUSED = /*$$(*/
+      "A payment on invoice term %s is being attempted but its PFP has been refused." /*)*/;
 
   public static final String RECONCILE_NO_AVAILABLE_INVOICE_TERM = /*$$(*/
       "Payment can't be processed at the moment on invoice as there is no invoice term available to pay. Please check current unpaid invoice term record(s) if they are already awaiting a payment or maybe, if activated, they didn't pass the PFP process." /*)*/;
@@ -1217,7 +1232,8 @@ public final class AccountExceptionMessage {
       "Please set a reported balance date on fiscal year" /*)*/;
 
   public static final String ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY = /*$$(*/
-      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
+      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;
+  ;
 
   public static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
       "Invalid analytic move lines, some axes percentage values are different than 100%." /*)*/;
@@ -1233,7 +1249,10 @@ public final class AccountExceptionMessage {
       "%s : Error : You must configure a reported balance journal in the account configuration for the batch configurator %s" /*)*/;
 
   public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_4 = /*$$(*/
-      "In order to generate moves in simulated status, the configured reported balance journal must support simulated moves. To proceed, please disable option \"Simulate generated moves\" in the closure batch or update the configuration of journal %s." /*)*/;
+      "In order to generate moves in simulated status, the configured reported balance journal must support simulated moves. To proceed, please change the \"Generated moves status\" in the closure batch or update the configuration of journal %s." /*)*/;
+
+  public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_DAYBOOK = /*$$(*/
+      "In order to generate moves in daybook status, the configured reported balance journal must support daybook moves. To proceed, please change the \"Generated moves status\" in the closure batch or update the configuration of journal %s." /*)*/;
 
   public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_5 = /*$$(*/
       "%s : Error : You must configure a result profit account and a year opening account in the account configuration" /*)*/;
@@ -1461,6 +1480,9 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_TAX = /*$$(*/
       "Please select a sale financial discount tax in account config for company %s." /*)*/;
 
+  public static final String ACCOUNT_CONFIG_MISSING_BILL_OF_EXCHANGE_RECEIV_ACCOUNT = /*$$(*/
+      "Please select a bill of exchange receivable account in account config for company %s." /*)*/;
+
   public static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
       "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
 
@@ -1504,6 +1526,8 @@ public final class AccountExceptionMessage {
   public static final String
       ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
           "Please select a purchase account on payments for Tax: %s (company: %s)" /*)*/;
+  public static final String ACCOUNT_MANAGEMENT_PURCHASE_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a purchase account for non deductible Tax: %s (company: %s)" /*)*/;
 
   public static final String
       ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
@@ -1692,4 +1716,46 @@ public final class AccountExceptionMessage {
       "Fiscal year and periods have been generated successfully." /*)*/;
   public static final String ACCOUNTING_CONFIGURATION_TEMPLATE_IMPORT_SUCCESS = /*$$(*/
       "The accounting configurations have been imported successfully for the company %s." /*)*/;
+
+  public static final String MOVE_USER_NOT_AUTHORIZED_ON_JOURNAL_ROLE_SET = /*$$(*/
+      "You are not authorized to save the move %s (check the %s journal's role config)." /*)*/;
+
+  public static final String RECONCILE_PFP_AMOUNT_MISSING = /*$$(*/
+      "The move %s can't be reconciled because the moveline %s doesn't have enough remaining amount validated by pfp" /*)*/;
+
+  public static final String PARTNER_MULTIPLE_ACCOUNTING_SITUATION_ON_COMPANIES = /*$$(*/
+      "Warning, you have more than one configuration for company %s, so make sure you only have one." /*)*/;
+
+  public static final String BATCH_BLOCK_CUSTOMER_RESULT_EMPTY = /*$$(*/
+      "No partner involved, please look for your blocking configuration if necessary." /*)*/;
+
+  public static final String FINANCIAL_DISCOUNT_NOT_COMPATIBLE_WITH_ADVANCE_PAYMENT_INVOICE =
+      /*$$(*/ "Financial discount is not compatible with the advance payment invoice. Please unselect financial discount in order to continue." /*)*/;
+
+  public static final String CANNOT_BE_RECONCILED_WAITING_PAYMENT =
+      /*$$(*/ "The move line %s cannot be reconciled because of a pending payment." /*)*/;
+
+  public static final String CREATE_REFUND_BTN_CLASSIC_REFUND = /*$$(*/
+      "Generate credit note" /*)*/;
+  public static final String CREATE_REFUND_BTN_ADVANCE_PAYMENT_REFUND = /*$$(*/
+      "Generate advance payment invoice" /*)*/;
+  public static final String CREATE_REFUND_BTN_INVOICE = /*$$(*/ "Generate invoice" /*)*/;
+
+  public static final String REFUND_INVOICE_LIST_CLASSIC_REFUND = /*$$(*/ "Credit notes" /*)*/;
+  public static final String REFUND_INVOICE_LIST_ADVANCE_PAYMENT_REFUND = /*$$(*/
+      "Advance payments" /*)*/;
+  public static final String REFUND_INVOICE_LIST_INVOICE = /*$$(*/ "Invoices" /*)*/;
+
+  public static final String ORIGINAL_INVOICE_CLASSIC_REFUND = /*$$(*/ "Original credit note" /*)*/;
+  public static final String ORIGINAL_INVOICE_ADVANCE_PAYMENT_REFUND = /*$$(*/
+      "Original advance payment" /*)*/;
+  public static final String ORIGINAL_INVOICE_INVOICE = /*$$(*/ "Invoice of origin" /*)*/;
+  public static final String FISCAL_POSITION_DUPLICATE_FROM_TAX_SET = /*$$(*/
+      "Duplicate from tax found for this fiscal position." /*)*/;
+
+  public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_NOT_ACTIVATED = /*$$(*/
+      "Blocking customer with late payment issues is not activated for this company" /*)*/;
+
+  public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT = /*$$(*/
+      "Block customer with late payment issues batch's reporting :" /*)*/;
 }

@@ -48,17 +48,20 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   protected ProjectRepository projectRepository;
   protected TimesheetLineService timesheetLineService;
   protected TimesheetRepository timesheetRepository;
+  protected TimesheetLineCreateService timesheetLineCreateService;
 
   @Inject
   public TimesheetCreateServiceImpl(
       UserHrService userHrService,
       ProjectRepository projectRepository,
       TimesheetLineService timesheetLineService,
-      TimesheetRepository timesheetRepository) {
+      TimesheetRepository timesheetRepository,
+      TimesheetLineCreateService timesheetLineCreateService) {
     this.userHrService = userHrService;
     this.projectRepository = projectRepository;
     this.timesheetLineService = timesheetLineService;
     this.timesheetRepository = timesheetRepository;
+    this.timesheetLineCreateService = timesheetLineCreateService;
   }
 
   @Transactional
@@ -95,6 +98,11 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE));
     }
+    if (fromDate != null && toDate != null && toDate.isBefore(fromDate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_INVALID_DATES));
+    }
     return createTimesheet(employee, fromDate, toDate);
   }
 
@@ -126,7 +134,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
 
     for (Project project : projects) {
       TimesheetLine line =
-          timesheetLineService.createTimesheetLine(
+          timesheetLineCreateService.createTimesheetLine(
               project,
               product,
               timesheet.getEmployee(),

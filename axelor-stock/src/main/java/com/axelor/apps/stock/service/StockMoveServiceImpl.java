@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.InventoryLine;
+import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -235,6 +236,34 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (typeSelect == StockMoveRepository.TYPE_INCOMING) {
       stockMove.setIsWithReturnSurplus(company.getStockConfig().getIsWithReturnSurplus());
     }
+    return stockMove;
+  }
+
+  @Override
+  public StockMove createStockMove(
+      Address fromAddress,
+      Address toAddress,
+      Company company,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      LocalDate realDate,
+      LocalDate estimatedDate,
+      int typeSelect,
+      MassStockMove massStockMove)
+      throws AxelorException {
+    StockMove stockMove =
+        createStockMove(
+            fromAddress,
+            toAddress,
+            company,
+            fromStockLocation,
+            toStockLocation,
+            realDate,
+            estimatedDate,
+            null,
+            StockMoveRepository.TYPE_INTERNAL);
+    stockMove.setMassStockMove(massStockMove);
+
     return stockMove;
   }
 
@@ -560,6 +589,11 @@ public class StockMoveServiceImpl implements StockMoveService {
    */
   protected void setRealizedStatus(StockMove stockMove) {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
+  }
+
+  public void sendSupplierCancellationMail(StockMove stockMove, Template template)
+      throws AxelorException {
+    sendMailForStockMove(stockMove, template);
   }
 
   /**
@@ -1103,9 +1137,10 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockMoveLine originalStockMoveLine,
       StockMoveLine modifiedStockMoveLine) {
 
-    StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(modifiedStockMoveLine, false);
+    StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(originalStockMoveLine, false);
     newStockMoveLine.setQty(modifiedStockMoveLine.getQty());
     newStockMoveLine.setRealQty(modifiedStockMoveLine.getQty());
+    newStockMoveLine.setUnitPriceUntaxed(modifiedStockMoveLine.getUnitPriceUntaxed());
 
     // Update quantity in original stock move.
     // If the remaining quantity is 0, remove the stock move line

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="accounting-batch-grid" title="Accounting batches"
     model="com.axelor.apps.account.db.AccountingBatch">
@@ -18,7 +18,7 @@
     onLoad="action-accounting-batch-group-on-load">
     <panel name="mainPanel">
       <field name="actionSelect"
-        onChange="action-accounting-batch-record-default-currency,action-attrs-accounting-batch-hide-trading-name-set"/>
+        onChange="action-accounting-batch-group-action-select-on-change"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
@@ -135,23 +135,28 @@
         <field name="year.reportedBalanceDate" showIf="openYear" hidden="true" colSpan="3"/>
         <field name="year"
           domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)"
-          canEdit="false" requiredIf="actionSelect == 21"/>
+          canEdit="false" requiredIf="actionSelect == 21"
+          onChange="action-accounting-batch-close-open-method-check-daybook"/>
         <field name="allocatePerPartner" colSpan="3"/>
-        <field name="simulateGeneratedMoves"
-          showIf="company.accountConfig.isActivateSimulatedMove" colSpan="3"/>
+        <field name="generatedMoveStatusSelect" colSpan="3" selection-in="[2,3,5]"
+          requiredIf="actionSelect == 21"/>
+        <label name="daybookRemainingLabel" hidden="true" css="label-danger" colSpan="12"/>
         <field name="moveDescription" colSpan="12"/>
         <panel-related field="closureAccountSet" form-view="account-form"
-          grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false"
+          grid-view="account-grid" canNew="false" canEdit="false"
           domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'charge', 'income', 'asset')"
           showIf="closeYear"/>
         <panel-related field="openingAccountSet" form-view="account-form"
-          grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false"
+          grid-view="account-grid" canNew="false" canEdit="false"
           domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'asset')"
           showIf="openYear"/>
         <field name="generateResultMove" showIf="openYear"/>
-        <field name="includeSpecialAccounts" showIf="openYear &amp;&amp; generateResultMove"/>
         <field name="resultMoveDescription" showIf="generateResultMove"/>
         <field name="generateGeneralLedger" showIf="openYear"/>
+        <field name="includeSpecialAccounts"
+          showIf="openYear &amp;&amp; generateResultMove &amp;&amp; generateGeneralLedger"/>
+        <field name="isDeleteSimulatedMove" readonlyIf="isDeleteSimulatedMove"
+          showIf="company.accountConfig.isActivateSimulatedMove"/>
         <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
         <!-- <field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid"
           widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
@@ -182,7 +187,7 @@
           showIf="actionSelect == 26">
           <field name="automaticReverse"/>
           <field name="automaticReconcile"
-            showIf="automaticReverse &amp;&amp; cutOffMoveStatusSelect != 5"/>
+            showIf="automaticReverse &amp;&amp; generatedMoveStatusSelect != 5"/>
           <panel name="reversePanel" colSpan="6"
             showIf="actionSelect == 26 &amp;&amp; automaticReverse">
             <field name="reverseMoveDate"
@@ -191,14 +196,14 @@
               requiredIf="actionSelect == 26 &amp;&amp; automaticReverse"/>
           </panel>
           <field name="miscOpeJournal" colSpan="6"
-            onChange="action-record-accounting-batch-journal-onchange,action-attrs-accounting-batch-cutoff-move-status-domain"
+            onChange="action-record-accounting-batch-journal-onchange,action-method-accounting-batch-generated-move-status-domain"
             requiredIf="actionSelect == 26"
             domain="self.company = :company AND self.statusSelect = 1"/>
           <field name="journalSet" colSpan="6" form-view="journal-form"
             grid-view="journal-grid" hideIf="accountingCutOffTypeSelect &lt;= 2"
             onSelect="action-attrs-accounting-batch-set-journal-domain" canNew="false"
             canEdit="false" widget="TagSelect"/>
-          <field name="cutOffMoveStatusSelect" colSpan="6" selection-in="[2,3,5]"/>
+          <field name="generatedMoveStatusSelect" colSpan="6" selection-in="[2,3,5]"/>
           <spacer colSpan="6"/>
           <field name="recoveredTax" showIf="accountingCutOffTypeSelect &lt;= 2"/>
           <field name="ati"
@@ -265,8 +270,14 @@
         onClick="save,action-accounting-batch-group-close-annual-accounts" colSpan="12"/>
       <button name="blockCustomerWithLatePayments" title="Block customers with late payments"
         showIf="actionSelect == 23"
+        readonlyIf="!company?.accountConfig?.hasLatePaymentAccountBlocking"
         onClick="save,action-accounting-batch-method-block-customers-with-late-payments"
         colSpan="12"/>
+      <label
+        title="Blocking customer with late payment issues is not activated for this company"
+        css="label-danger"
+        showIf="actionSelect == 23 &amp;&amp; !company.accountConfig.hasLatePaymentAccountBlocking"/>
+      <field name="company.accountConfig.hasLatePaymentAccountBlocking" hidden="true"/>
       <button name="billOfExchangeBatchBtn" title="Bill of exchange batch"
         showIf="actionSelect == 24" onClick="save,action-accounting-batch-method-bill-of-exchange"
         colSpan="12"/>
@@ -300,6 +311,7 @@
   <!-- ACTION GROUP -->
   <action-group name="action-accounting-batch-group-close-annual-accounts">
     <action name="action-accounting-batch-validate-batchlist-not-empty"/>
+    <action name="action-accounting-batch-method-validate-daybook-moves"/>
     <action name="action-accounting-batch-method-action-close-annual-accounts"/>
     <action name="action-accounting-batch-method-print-report"/>
   </action-group>
@@ -317,7 +329,10 @@
   <action-group name="action-accounting-batch-group-on-load">
     <action name="action-attrs-accounting-batch-hide-trading-name-set"/>
     <action name="action-accounting-batch-attrs-show-label"/>
-    <action name="action-attrs-accounting-batch-cutoff-move-status-domain"/>
+    <action name="action-method-accounting-batch-generated-move-status-domain"
+      if="[21,26].contains(actionSelect)"/>
+    <action name="action-accounting-batch-close-open-method-check-daybook"
+      if="actionSelect == 21"/>
   </action-group>
 
   <action-group name="action-accounting-batch-group-accounting-cut-off">
@@ -336,7 +351,7 @@
   <action-group name="action-group-accounting-batch-onchange-accounting-type">
     <action name="action-accounting-batch-attrs-show-label"/>
     <action name="action-record-accounting-batch-set-expenses-incomes"/>
-    <action name="action-attrs-accounting-batch-cutoff-move-status-domain"/>
+    <action name="action-method-accounting-batch-generated-move-status-domain"/>
   </action-group>
 
   <action-group name="action-accounting-batch-group-move-date-onchange">
@@ -363,6 +378,14 @@
       if="!previewRecordsToProcess"/>
   </action-group>
 
+  <action-group name="action-accounting-batch-group-action-select-on-change">
+    <action name="action-accounting-batch-record-default-currency"/>
+    <action name="action-attrs-accounting-batch-hide-trading-name-set"/>
+    <action name="action-accounting-batch-record-set-is-delete-simulated-move"/>
+    <action name="action-method-accounting-batch-generated-move-status-domain"
+      if="[21,26].contains(actionSelect)"/>
+  </action-group>
+
   <!-- ACTION RECORD -->
   <action-record name="action-accounting-batch-record-on-new"
     model="com.axelor.apps.account.db.AccountingBatch">
@@ -378,6 +401,12 @@
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="billOfExchangeStepBatchSelect" expr="eval: 1"/>
     <field name="actionSelect" expr="eval: _actionSelect" if="_actionSelect"/>
+  </action-record>
+
+  <action-record name="action-accounting-batch-record-set-is-delete-simulated-move"
+    model="com.axelor.apps.account.db.AccountingBatch">
+    <field name="isDeleteSimulatedMove"
+      expr="eval: company?.accountConfig?.isActivateSimulatedMove"/>
   </action-record>
 
   <action-record name="action-accounting-batch-record-default-currency"
@@ -401,7 +430,7 @@
     <field name="reverseMoveDate"
       expr="eval: __config__.date.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth()).plusDays(1)"
       if="__user__.activeCompany != null"/>
-    <field name="cutOffMoveStatusSelect" expr="eval: __repo__(Move).STATUS_ACCOUNTED"/>
+    <field name="generatedMoveStatusSelect" expr="eval: __repo__(Move).STATUS_ACCOUNTED"/>
     <field name="journalSet" expr="eval: null"/>
   </action-record>
 
@@ -413,10 +442,10 @@
 
   <action-record name="action-record-accounting-batch-journal-onchange"
     model="com.axelor.apps.account.db.AccountingBatch">
-    <field name="cutOffMoveStatusSelect" expr="eval: null"/>
-    <field name="cutOffMoveStatusSelect" expr="eval: __repo__(Move).STATUS_SIMULATED"
+    <field name="generatedMoveStatusSelect" expr="eval: null"/>
+    <field name="generatedMoveStatusSelect" expr="eval: __repo__(Move).STATUS_SIMULATED"
       if="miscOpeJournal?.authorizeSimulatedMove"/>
-    <field name="cutOffMoveStatusSelect" expr="eval: __repo__(Move).STATUS_DAYBOOK"
+    <field name="generatedMoveStatusSelect" expr="eval: __repo__(Move).STATUS_DAYBOOK"
       if="!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook"/>
   </action-record>
 
@@ -521,6 +550,21 @@
       method="showMoveLinesInProposal"/>
   </action-method>
 
+  <action-method name="action-method-accounting-batch-generated-move-status-domain">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="setGeneratedStatusDomain"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-close-open-method-check-daybook">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="checkDaybookMovesOnFiscalYearLabel"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-method-validate-daybook-moves">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="checkDaybookMovesOnFiscalYearWarning"/>
+  </action-method>
+
   <!-- ACTION VALIDATE -->
   <action-validate name="action-accounting-batch-validate-batchlist-not-empty">
     <alert
@@ -536,7 +580,7 @@
   <action-validate name="action-accounting-batch-validate-cut-off-move-status">
     <error
       message="The selected cut off move status is incompatible with this misc. operation journal"
-      if="(!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; cutOffMoveStatusSelect == 5) || (!miscOpeJournal?.allowAccountingDaybook &amp;&amp; cutOffMoveStatusSelect == 2)"/>
+      if="(!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; generatedMoveStatusSelect == 5) || (!miscOpeJournal?.allowAccountingDaybook &amp;&amp; generatedMoveStatusSelect == 2)"/>
   </action-validate>
 
   <action-validate name="action-accounting-batch-validate-reconcile-dates">
@@ -579,17 +623,6 @@
     <attribute name="hidden"
       expr="eval: !(moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.moveDate.equals(moveDate) &amp;&amp; it.accountingCutOffTypeSelect == accountingCutOffTypeSelect} != null)"
       for="adviseUser"/>
-  </action-attrs>
-
-  <action-attrs name="action-attrs-accounting-batch-cutoff-move-status-domain">
-    <attribute name="selection-in" expr="[3]" for="cutOffMoveStatusSelect"
-      if="actionSelect == 26"/>
-    <attribute name="selection-in" expr="[3,5]" for="cutOffMoveStatusSelect"
-      if="miscOpeJournal?.authorizeSimulatedMove &amp;&amp; !miscOpeJournal?.allowAccountingDaybook &amp;&amp; actionSelect == 26"/>
-    <attribute name="selection-in" expr="[2,3]" for="cutOffMoveStatusSelect"
-      if="!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook &amp;&amp; actionSelect == 26"/>
-    <attribute name="selection-in" expr="[5,2,3]" for="cutOffMoveStatusSelect"
-      if="miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook &amp;&amp; actionSelect == 26"/>
   </action-attrs>
 
   <action-attrs name="action-attrs-accounting-batch-set-journal-domain">

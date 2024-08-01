@@ -19,14 +19,14 @@
 package com.axelor.apps.stock.service.stockmove.print;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.utils.PdfHelper;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -49,16 +49,16 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
 
   protected StockMoveService stockMoveService;
   protected StockConfigService stockConfigService;
-  protected BirtTemplateService birtTemplateService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
 
   @Inject
   public PickingStockMovePrintServiceimpl(
       StockMoveService stockMoveService,
       StockConfigService stockConfigService,
-      BirtTemplateService birtTemplateService) {
+      PrintingTemplatePrintService printingTemplatePrintService) {
     this.stockMoveService = stockMoveService;
     this.stockConfigService = stockConfigService;
-    this.birtTemplateService = birtTemplateService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
   }
 
   @Override
@@ -73,7 +73,7 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
               @Override
               public void accept(StockMove stockMove) throws Exception {
                 try {
-                  printedStockMoves.add(print(stockMove, ReportSettings.FORMAT_PDF));
+                  printedStockMoves.add(print(stockMove));
                 } catch (Exception e) {
                   TraceBackService.trace(e);
                   throw e;
@@ -86,38 +86,32 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
           I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
     }
     stockMoveService.setPickingStockMovesEditDate(ids, userType);
-    String fileName = getStockMoveFilesName(true, ReportSettings.FORMAT_PDF);
-    return PdfHelper.mergePdfToFileLink(printedStockMoves, fileName);
+    String fileName = getStockMoveFilesName(true);
+    return PrintingTemplateHelper.mergeToFileLink(printedStockMoves, fileName);
   }
 
   @Override
-  public File prepareReportSettings(StockMove stockMove, String format) throws AxelorException {
+  public File print(StockMove stockMove) throws AxelorException {
     stockMoveService.checkPrintingSettings(stockMove);
-    BirtTemplate pickingStockMoveBirtTemplate =
-        stockConfigService.getStockConfig(stockMove.getCompany()).getPickingStockMoveBirtTemplate();
-    if (ObjectUtils.isEmpty(pickingStockMoveBirtTemplate)) {
+    PrintingTemplate pickingStockMovePrintTemplate =
+        stockConfigService
+            .getStockConfig(stockMove.getCompany())
+            .getPickingStockMovePrintTemplate();
+    if (ObjectUtils.isEmpty(pickingStockMovePrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
-    String title = getFileName(stockMove);
-
-    return birtTemplateService.generateBirtTemplateFile(
-        pickingStockMoveBirtTemplate, stockMove, title + " - ${date}");
+    return printingTemplatePrintService.getPrintFile(
+        pickingStockMovePrintTemplate, new PrintingGenFactoryContext(stockMove));
   }
 
   @Override
-  public File print(StockMove stockMove, String format) throws AxelorException {
-    return prepareReportSettings(stockMove, format);
-  }
-
-  @Override
-  public String printStockMove(StockMove stockMove, String format, String userType)
+  public String printStockMove(StockMove stockMove, String userType)
       throws AxelorException, IOException {
     stockMoveService.setPickingStockMoveEditDate(stockMove, userType);
-    String fileName = getStockMoveFilesName(false, ReportSettings.FORMAT_PDF);
-    return PdfHelper.getFileLinkFromPdfFile(print(stockMove, format), fileName);
+    return PrintingTemplateHelper.getFileLink(print(stockMove));
   }
 
   /**
@@ -125,16 +119,14 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
    *
    * @param plural if there is one or multiple stock moves.
    */
-  public String getStockMoveFilesName(boolean plural, String format) {
+  public String getStockMoveFilesName(boolean plural) {
 
     return I18n.get(plural ? "Stock moves" : "Stock move")
         + " - "
         + Beans.get(AppBaseService.class)
             .getTodayDate(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
-            .format(DateTimeFormatter.BASIC_ISO_DATE)
-        + "."
-        + format;
+            .format(DateTimeFormatter.BASIC_ISO_DATE);
   }
 
   @Override

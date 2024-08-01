@@ -21,5 +21,5 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.production.db.BillOfMaterial;
 
 public interface BillOfMaterialComputeNameService {
-  String computeName(BillOfMaterial bom);
+  String computeFullName(BillOfMaterial bom);
 }

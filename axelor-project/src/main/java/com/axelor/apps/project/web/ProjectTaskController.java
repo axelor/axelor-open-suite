@@ -125,10 +125,4 @@ public class ProjectTaskController {
       TraceBackService.trace(response, e);
     }
   }
-
-  public void fillProgressSelect(ActionRequest request, ActionResponse response) {
-    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
-    response.setValue(
-        "progressSelect", Beans.get(ProjectTaskService.class).computeProgressSelect(projectTask));
-  }
 }

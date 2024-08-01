@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -37,12 +36,15 @@ import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
-import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -54,8 +56,6 @@ import org.slf4j.LoggerFactory;
 public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  protected OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl;
 
   @Inject
   public ManufOrderServiceBusinessImpl(
@@ -69,14 +69,15 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       ManufOrderRepository manufOrderRepo,
       ProdProductRepository prodProductRepo,
       ProductCompanyService productCompanyService,
-      BarcodeGeneratorService barcodeGeneratorService,
       ProductStockLocationService productStockLocationService,
       UnitConversionService unitConversionService,
-      MetaFiles metaFiles,
       PartnerRepository partnerRepository,
       BillOfMaterialService billOfMaterialService,
       StockMoveService stockMoveService,
-      OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl) {
+      ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
+      ManufOrderStockMoveService manufOrderStockMoveService,
+      ManufOrderGetStockMoveService manufOrderGetStockMoveService,
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
     super(
         sequenceService,
         operationOrderService,
@@ -88,14 +89,15 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         manufOrderRepo,
         prodProductRepo,
         productCompanyService,
-        barcodeGeneratorService,
         productStockLocationService,
         unitConversionService,
-        metaFiles,
         partnerRepository,
         billOfMaterialService,
-        stockMoveService);
-    this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
+        stockMoveService,
+        manufOrderOutgoingStockMoveService,
+        manufOrderStockMoveService,
+        manufOrderGetStockMoveService,
+        manufOrderCreateStockMoveLineService);
   }
 
   @Transactional

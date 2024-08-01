@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.SequenceVersionRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -49,6 +50,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -470,13 +472,17 @@ public class SequenceService {
       Sequence sequence, LocalDate todayDate, LocalDate endOfDate) {
 
     List<SequenceVersion> sequenceVersionList = sequence.getSequenceVersionList();
-    SequenceVersion lastSequenceVersion;
-    lastSequenceVersion = sequenceVersionRepository.findByDate(sequence, todayDate);
-
-    SequenceVersion finalLastSequenceVersion = lastSequenceVersion;
+    if (ObjectUtils.isEmpty(sequenceVersionList)) {
+      return sequenceVersionList;
+    }
     sequenceVersionList.stream()
-        .filter(sequenceVersion -> sequenceVersion.equals(finalLastSequenceVersion))
-        .forEach(sequenceVersion -> sequenceVersion.setEndDate(endOfDate));
+        .filter(
+            version ->
+                version.getStartDate().compareTo(todayDate) <= 0
+                    && (version.getEndDate() == null
+                        || version.getEndDate().compareTo(todayDate) >= 0))
+        .max(Comparator.comparing(SequenceVersion::getStartDate))
+        .ifPresent(sequenceVersion -> sequenceVersion.setEndDate(endOfDate));
 
     return sequenceVersionList;
   }

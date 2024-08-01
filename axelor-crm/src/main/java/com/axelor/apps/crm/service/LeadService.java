@@ -21,7 +21,6 @@ package com.axelor.apps.crm.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
-import com.axelor.apps.crm.db.LeadStatus;
 import com.axelor.apps.crm.db.LostReason;
 import java.util.List;
 import java.util.Map;
@@ -82,11 +81,9 @@ public interface LeadService {
   public void loseLead(Lead lead, LostReason lostReason, String lostReasonStr)
       throws AxelorException;
 
-  public String processFullName(String enterpriseName, String name, String firstName);
-
-  public LeadStatus getDefaultLeadStatus() throws AxelorException;
-
   public boolean computeIsLost(Lead lead) throws AxelorException;
 
   public void kanbanLeadOnMove(Lead lead) throws AxelorException;
+
+  public void resetLead(Lead lead) throws AxelorException;
 }

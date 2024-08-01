@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -31,9 +32,9 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.PeriodServiceAccount;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -43,12 +44,14 @@ import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.helpers.ListHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -57,6 +60,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -64,6 +68,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +80,6 @@ public class MoveToolServiceImpl implements MoveToolService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
   protected AccountConfigService accountConfigService;
-  protected PeriodServiceAccount periodServiceAccount;
   protected MoveRepository moveRepository;
 
   @Inject
@@ -83,12 +87,10 @@ public class MoveToolServiceImpl implements MoveToolService {
       MoveLineToolService moveLineToolService,
       MoveLineRepository moveLineRepository,
       AccountConfigService accountConfigService,
-      PeriodServiceAccount periodServiceAccount,
       MoveRepository moveRepository) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountConfigService = accountConfigService;
-    this.periodServiceAccount = periodServiceAccount;
     this.moveRepository = moveRepository;
   }
 
@@ -551,17 +553,6 @@ public class MoveToolServiceImpl implements MoveToolService {
     }
   }
 
-  @Override
-  public BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit) {
-    if (isDebit) {
-      return currencyAmount.abs();
-    } else {
-      return currencyAmount.compareTo(BigDecimal.ZERO) < 0
-          ? currencyAmount
-          : currencyAmount.negate();
-    }
-  }
-
   public boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
       throws AxelorException {
     if (period != null) {
@@ -582,16 +573,9 @@ public class MoveToolServiceImpl implements MoveToolService {
         if (period.getYear().getCompany() != null && user.getGroup() != null) {
           AccountConfig accountConfig =
               accountConfigService.getAccountConfig(period.getYear().getCompany());
+
           Set<Role> roleSet = accountConfig.getClosureAuthorizedRoleList();
-          if (CollectionUtils.isEmpty(roleSet)) {
-            return false;
-          }
-          for (Role role : roleSet) {
-            if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
-              return false;
-            }
-          }
-          return true;
+          return !UserRoleToolService.checkUserRolesPermissionIncludingEmpty(user, roleSet);
         }
       }
     }
@@ -619,19 +603,17 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public List<Move> findDaybookAndAccountingByYear(Set<Year> yearList) {
+  public List<Move> findMoveByYear(Set<Year> yearList, List<Integer> statusList) {
     List<Long> idList = new ArrayList<>();
     yearList.forEach(y -> idList.add(y.getId()));
-    if (!CollectionUtils.isEmpty(idList)) {
-      List<Integer> status =
-          Arrays.asList(MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
+    if (!CollectionUtils.isEmpty(idList) && !CollectionUtils.isEmpty(statusList)) {
       return Query.of(Move.class)
           .filter("self.period.year.id in :years AND self.statusSelect IN :statusSelect")
           .bind("years", idList)
-          .bind("statusSelect", status)
+          .bind("statusSelect", statusList)
           .fetch();
     }
-    return new ArrayList<Move>();
+    return new ArrayList<>();
   }
 
   @Override
@@ -711,6 +693,39 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
+  public List<Integer> getMoveStatusSelectWithoutAccounted(
+      String moveStatusSelect, Set<Company> companySet) {
+    List<Integer> statusList = this.getMoveStatusSelect(moveStatusSelect, companySet);
+    statusList.remove(Integer.valueOf(MoveRepository.STATUS_ACCOUNTED));
+    return statusList;
+  }
+
+  @Override
+  public List<Integer> getMoveStatusSelect(String moveStatusSelect, Set<Company> companySet) {
+    List<Integer> statusList = null;
+
+    for (Company company : companySet) {
+      List<Integer> companyStatusList = this.getMoveStatusSelect(moveStatusSelect, company);
+
+      if (statusList == null) {
+        statusList = companyStatusList;
+      } else {
+        statusList = ListHelper.intersection(statusList, companyStatusList);
+      }
+    }
+
+    return statusList;
+  }
+
+  @Override
+  public List<Integer> getMoveStatusSelectWithoutAccounted(
+      String moveStatusSelect, Company company) {
+    List<Integer> statusList = this.getMoveStatusSelect(moveStatusSelect, company);
+    statusList.remove(Integer.valueOf(MoveRepository.STATUS_ACCOUNTED));
+    return statusList;
+  }
+
+  @Override
   public List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company) {
     List<Integer> statusList = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
 
@@ -733,5 +748,99 @@ public class MoveToolServiceImpl implements MoveToolService {
     }
 
     return statusList;
+  }
+
+  @Override
+  public List<Integer> getMoveStatusSelection(Company company, Journal journal)
+      throws AxelorException {
+    List<Integer> statusSelectionList = new ArrayList<>();
+    statusSelectionList.add(MoveRepository.STATUS_ACCOUNTED);
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+    if (journal == null) {
+      if (accountConfig != null) {
+        journal = accountConfigService.getReportedBalanceJournal(accountConfig);
+      }
+    }
+
+    if (journal != null && accountConfig != null) {
+      if (journal.getAllowAccountingDaybook() && accountConfig.getAccountingDaybook()) {
+        statusSelectionList.add(MoveRepository.STATUS_DAYBOOK);
+      }
+      if (journal.getAuthorizeSimulatedMove() && accountConfig.getIsActivateSimulatedMove()) {
+        statusSelectionList.add(MoveRepository.STATUS_SIMULATED);
+      }
+    }
+    return statusSelectionList;
+  }
+
+  public Integer computeFunctionalOriginSelect(Journal journal, Integer massEntryStatus) {
+    if (journal == null) {
+      return null;
+    }
+    String authorizedFunctionalOriginSelect = journal.getAuthorizedFunctionalOriginSelect();
+
+    if (ObjectUtils.isEmpty(authorizedFunctionalOriginSelect)) {
+      return null;
+    }
+
+    if (massEntryStatus == MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      // standard behavior: fill an origin if there is only one authorized
+      return authorizedFunctionalOriginSelect.split(",").length == 1
+          ? Integer.valueOf(authorizedFunctionalOriginSelect)
+          : null;
+    } else {
+      // behavior for mass entry: take the first authorized functional origin select
+      return Arrays.stream(authorizedFunctionalOriginSelect.split(","))
+          .findFirst()
+          .map(Integer::valueOf)
+          .orElse(null);
+    }
+  }
+
+  @Override
+  public List<MoveLine> getRefundAdvancePaymentMoveLines(InvoicePayment invoicePayment)
+      throws AxelorException {
+    Invoice invoice = invoicePayment.getInvoice();
+    List<MoveLine> advancePaymentMoveLineList = new ArrayList<>();
+    if (invoice == null || invoicePayment.getAmount().compareTo(BigDecimal.ZERO) == 0) {
+      return advancePaymentMoveLineList;
+    }
+
+    Invoice advancePayment = invoice.getOriginalInvoice();
+    if (advancePayment == null
+        || advancePayment.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED
+        || ObjectUtils.isEmpty(advancePayment.getInvoicePaymentList())) {
+      return advancePaymentMoveLineList;
+    }
+    boolean isDebit = InvoiceToolService.isPurchase(advancePayment);
+    advancePaymentMoveLineList =
+        advancePayment.getInvoicePaymentList().stream()
+            .map(InvoicePayment::getMove)
+            .filter(Objects::nonNull)
+            .map(Move::getMoveLineList)
+            .flatMap(Collection::stream)
+            .filter(
+                ml ->
+                    isDebit
+                        ? ml.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+                        : ml.getAmountRemaining().compareTo(BigDecimal.ZERO) < 0)
+            .collect(Collectors.toList());
+
+    return advancePaymentMoveLineList;
+  }
+
+  @Override
+  public List<InvoiceTerm> _getInvoiceTermList(Move move) {
+    List<InvoiceTerm> invoiceTermList = new ArrayList<>();
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      invoiceTermList.addAll(
+          move.getMoveLineList().stream()
+              .map(MoveLine::getInvoiceTermList)
+              .filter(Objects::nonNull)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toList()));
+    }
+    return invoiceTermList;
   }
 }

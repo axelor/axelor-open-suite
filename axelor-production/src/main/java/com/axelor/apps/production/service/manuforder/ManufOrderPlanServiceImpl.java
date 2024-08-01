@@ -61,6 +61,9 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   protected AppBaseService appBaseService;
   protected AppProductionService appProductionService;
   protected ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService;
+  protected ManufOrderPlanStockMoveService manufOrderPlanStockMoveService;
+  protected ManufOrderResidualProductService manufOrderResidualProductService;
+  protected ManufOrderCreateBarcodeService manufOrderCreateBarcodeService;
 
   @Inject
   public ManufOrderPlanServiceImpl(
@@ -76,7 +79,10 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       ProductionConfigService productionConfigService,
       AppBaseService appBaseService,
       AppProductionService appProductionService,
-      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService) {
+      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
+      ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
+      ManufOrderResidualProductService manufOrderResidualProductService,
+      ManufOrderCreateBarcodeService manufOrderCreateBarcodeService) {
     this.manufOrderRepo = manufOrderRepo;
     this.manufOrderService = manufOrderService;
     this.sequenceService = sequenceService;
@@ -90,6 +96,9 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
     this.manufOrderCreatePurchaseOrderService = manufOrderCreatePurchaseOrderService;
+    this.manufOrderPlanStockMoveService = manufOrderPlanStockMoveService;
+    this.manufOrderResidualProductService = manufOrderResidualProductService;
+    this.manufOrderCreateBarcodeService = manufOrderCreateBarcodeService;
   }
 
   @Override
@@ -131,7 +140,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     if (sequenceService.isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
       manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq(manufOrder));
     }
-    manufOrderService.createBarcode(manufOrder);
+    manufOrderCreateBarcodeService.createBarcode(manufOrder);
     if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
       manufOrderService.preFillOperations(manufOrder);
     } else {
@@ -172,7 +181,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
   protected void planStockMoves(ManufOrder manufOrder) throws AxelorException {
     if (!manufOrder.getIsConsProOnOperation()) {
-      manufOrderStockMoveService
+      manufOrderPlanStockMoveService
           .createAndPlanToConsumeStockMoveWithLines(manufOrder)
           .ifPresent(
               stockMove -> {
@@ -183,19 +192,37 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
               });
     }
 
-    manufOrderStockMoveService
+    manufOrderPlanStockMoveService
         .createAndPlanToProduceStockMoveWithLines(manufOrder)
         .ifPresent(
             sm -> {
               manufOrder.addOutStockMoveListItem(sm);
               addToProducedStockMoveLineList(manufOrder, sm);
             });
+
+    if (manufOrderResidualProductService.hasResidualProduct(manufOrder)) {
+      manufOrderPlanStockMoveService
+          .createAndPlanResidualStockMoveWithLines(manufOrder)
+          .ifPresent(
+              sm -> {
+                manufOrder.addOutStockMoveListItem(sm);
+                addToResidualStockMoveLineList(manufOrder, sm);
+              });
+    }
   }
 
   protected void addToProducedStockMoveLineList(ManufOrder manufOrder, StockMove stockMove) {
     if (stockMove.getStockMoveLineList() != null) {
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
         manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
+      }
+    }
+  }
+
+  protected void addToResidualStockMoveLineList(ManufOrder manufOrder, StockMove stockMove) {
+    if (stockMove.getStockMoveLineList() != null) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        manufOrder.addResidualStockMoveLineListItem(stockMoveLine);
       }
     }
   }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoiceTerm">
+  <entity name="InvoiceTerm" implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
     <integer name="sequence" title="Sequence"/>
@@ -50,6 +50,8 @@
     <decimal name="percentage" title="Percentage"/>
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Move line" readonly="true"/>
+    <many-to-one name="placementMoveLine" ref="com.axelor.apps.account.db.MoveLine"
+      title="Placement move line" readonly="true"/>
     <many-to-one name="paymentConditionLine"
       ref="com.axelor.apps.account.db.PaymentConditionLine" title="Payment condition line"/>
     <boolean name="isCustomized" title="Is customized" default="false"/>
@@ -73,8 +75,7 @@
       title="Apply Fin. Discount (session) ?"/>
     <decimal name="amountPaid" title="Amount paid" readonly="true" scale="3" precision="20"/>
     <boolean name="debtRecoveryBlockingOk" title="Debt recovery blocking"/>
-    <string name="name" namecolumn="true" search="invoice,dueDate,amount,moveLine"
-      title="Name">
+    <string name="name" namecolumn="true" search="invoice,moveLine" title="Name">
             <![CDATA[
             if( invoice != null ){
                if (dueDate != null) {
@@ -106,6 +107,13 @@
 
     <boolean name="pfpfPartialValidationOk"/>
     <decimal name="pfpPartialValidationAmount" scale="3" precision="20"/>
+
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <finder-method name="findByPaymentSession" using="paymentSession" all="true"/>
 

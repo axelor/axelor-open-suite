@@ -1,0 +1,6 @@
+"importId";"name";"modelName";"statusSelect";"toAttach"
+"51";"Mrp Weekly breakdown";"com.axelor.apps.supplychain.db.Mrp";"2";false
+"52";"Mrp List";"com.axelor.apps.supplychain.db.Mrp";"2";false
+"53";"PackingList";"com.axelor.apps.stock.db.LogisticalForm";"2";false
+"54";"DeclarationOfExchangesOfGoods";"com.axelor.apps.supplychain.db.DeclarationOfExchanges";"1";true
+"55";"DeclarationOfServices";"com.axelor.apps.supplychain.db.DeclarationOfExchanges";"1";true

@@ -124,7 +124,7 @@ public class BatchAccountingCutOff extends PreviewBatch {
       String moveDescription = accountingBatch.getMoveDescription();
       String reverseMoveDescription = accountingBatch.getReverseMoveDescription();
       int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
-      int cutOffMoveStatusSelect = accountingBatch.getCutOffMoveStatusSelect();
+      int cutOffMoveStatusSelect = accountingBatch.getGeneratedMoveStatusSelect();
       boolean automaticReverse = accountingBatch.getAutomaticReverse();
       boolean automaticReconcile = accountingBatch.getAutomaticReconcile();
       String prefixOrigin =

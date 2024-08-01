@@ -27,17 +27,18 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
+import com.axelor.dms.db.DMSFile;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface InvoiceTermService {
@@ -80,32 +81,6 @@ public interface InvoiceTermService {
   public Invoice setDueDates(Invoice invoice, LocalDate invoiceDate);
 
   /**
-   * Method that returns unpaid invoiceTerms (isPaid != true) of an invoice
-   *
-   * @param invoice
-   * @return
-   */
-  public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) throws AxelorException;
-
-  /**
-   * Method that filters invoiceTerm List and returns only invoice terms with holdback status same
-   * as first invoice term of the list.
-   *
-   * @param invoiceTerms
-   * @return
-   */
-  public List<InvoiceTerm> filterInvoiceTermsByHoldBack(List<InvoiceTerm> invoiceTerms);
-
-  /**
-   * Method that returns only unpaid invoice terms of an invoice having holdback status same as
-   * first returned invoice term
-   *
-   * @param invoice
-   * @return
-   */
-  public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice) throws AxelorException;
-
-  /**
    * Return the latest invoice terms due date by ignoring holdback invoice terms Return invoice due
    * date if no invoice terms found
    *
@@ -124,7 +99,8 @@ public interface InvoiceTermService {
   public void updateInvoiceTermsPaidAmount(
       InvoicePayment invoicePayment,
       InvoiceTerm invoiceTermToPay,
-      InvoiceTermPayment invoiceTermPayment)
+      InvoiceTermPayment invoiceTermPayment,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException;
 
   /**
@@ -248,27 +224,16 @@ public interface InvoiceTermService {
 
   public void computeAmountPaid(InvoiceTerm invoiceTerm);
 
-  public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
-
-  BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date, boolean isCompanyCurrency);
-
-  boolean setCustomizedAmounts(
-      InvoiceTerm invoiceTerm, List<InvoiceTerm> invoiceTermList, BigDecimal total);
+  void setCustomizedAmounts(InvoiceTerm invoiceTerm);
 
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
       List<InvoiceTerm> invoiceTermList,
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund)
       throws AxelorException;
 
-  List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList);
-
-  boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm);
-
-  boolean isEnoughAmountToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date);
+  InvoiceTerm updateInvoiceTermsAmountsSessionPart(InvoiceTerm invoiceTerm, boolean isRefund);
 
   void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total);
-
-  public User getPfpValidatorUser(Partner partner, Company company);
 
   public String getPfpValidatorUserDomain(Partner partner, Company company);
 
@@ -278,10 +243,6 @@ public interface InvoiceTermService {
       MoveLine moveLine, Account holdbackAccount, boolean holdback);
 
   void updateFromMoveHeader(Move move, InvoiceTerm invoiceTerm);
-
-  boolean isNotReadonly(InvoiceTerm invoiceTerm);
-
-  boolean isNotReadonlyExceptPfp(InvoiceTerm invoiceTerm);
 
   LocalDate getDueDate(List<InvoiceTerm> invoiceTermList, LocalDate defaultDate);
 
@@ -294,20 +255,28 @@ public interface InvoiceTermService {
   @CallMethod
   boolean isMultiCurrency(InvoiceTerm invoiceTerm);
 
-  InvoiceTerm updateInvoiceTermsAmounts(
-      InvoiceTerm invoiceTerm,
+  List<InvoiceTermPayment> updateInvoiceTerms(
+      List<InvoiceTerm> invoiceTermList,
+      InvoicePayment invoicePayment,
       BigDecimal amount,
       Reconcile reconcile,
-      Move move,
-      PaymentSession paymentSession,
-      boolean isRefund)
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException;
 
   List<InvoiceTerm> recomputeInvoiceTermsPercentage(
       List<InvoiceTerm> invoiceTermList, BigDecimal total);
 
-  boolean isThresholdNotOnLastUnpaidInvoiceTerm(
-      MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
+  InvoiceTerm initInvoiceTermWithParents(InvoiceTerm invoiceTerm) throws AxelorException;
+
+  boolean setShowFinancialDiscount(InvoiceTerm invoiceTerm);
+
+  boolean isPaymentConditionFree(InvoiceTerm invoiceTerm);
+
+  void payInvoiceTerms(List<InvoiceTerm> invoiceTermList);
+
+  List<DMSFile> getLinkedDmsFile(InvoiceTerm invoiceTerm);
+
+  void computeCustomizedPercentage(InvoiceTerm invoiceTerm);
 
   BigDecimal adjustAmountInCompanyCurrency(
       List<InvoiceTerm> invoiceTermList,
@@ -317,5 +286,12 @@ public interface InvoiceTermService {
       BigDecimal currencyRate,
       Company company);
 
-  boolean isPartiallyPaid(InvoiceTerm invoiceTerm);
+  void computeInvoiceTermsDueDates(Invoice invoice) throws AxelorException;
+
+  void checkAndComputeInvoiceTerms(Invoice invoice) throws AxelorException;
+
+  List<InvoiceTerm> getInvoiceTermsFromMoveLine(List<InvoiceTerm> invoiceTermList);
+
+  void updateInvoiceTermsAmountRemainingWithoutPayment(Reconcile reconcile, MoveLine moveLine)
+      throws AxelorException;
 }

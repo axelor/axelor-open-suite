@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="printing-template-line-grid" title="Printing template lines"
+    model="com.axelor.apps.base.db.PrintingTemplateLine" orderBy="sequence" canMove="true"
+    editable="true">
+    <field name="typeSelect"
+      onChange="action-record-printing-template-line-typeselect-onchange"/>
+    <field name="metaFile" readonlyIf="typeSelect != 1" widget="binary-link"/>
+    <field name="birtTemplate" readonlyIf="typeSelect != 2"
+      onSelect="action-attrs-printing-template-line-birt-template-onselect"
+      grid-view="birt-template-grid" form-view="birt-template-form"/>
+  </grid>
+
+  <form name="printing-template-line-form" title="Printing template line"
+    model="com.axelor.apps.base.db.PrintingTemplateLine">
+    <panel name="mainPanel">
+      <field name="typeSelect" colSpan="6"
+        onChange="action-record-printing-template-line-typeselect-onchange"/>
+      <panel name="templatePanel" colSpan="6" itemSpan="12">
+        <field name="metaFile" showIf="typeSelect == 1" widget="binary-link"/>
+        <field name="birtTemplate" form-view="birt-template-form"
+          grid-view="birt-template-grid" showIf="typeSelect == 2"
+          onSelect="action-attrs-printing-template-line-birt-template-onselect"/>
+      </panel>
+    </panel>
+  </form>
+
+  <action-record name="action-record-printing-template-line-typeselect-onchange"
+    model="com.axelor.apps.base.db.PrintingTemplateLine">
+    <field name="metaFile,birtTemplate" expr="eval:null"/>
+  </action-record>
+
+  <action-attrs name="action-attrs-printing-template-line-birt-template-onselect">
+    <attribute name="domain" for="birtTemplate"
+      expr="eval: 'self.metaModel.id = ' + __parent__?.metaModel?.id?:0"/>
+  </action-attrs>
+
+</object-views>
