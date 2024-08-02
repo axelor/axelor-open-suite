@@ -44,7 +44,7 @@ import javax.ws.rs.core.Response;
 public class SaleOrderLineRestController {
 
   @Operation(
-      summary = "Create an Sale order",
+      summary = "Create an Sale order line",
       tags = {"Sale order line"})
   @Path("/")
   @POST
@@ -52,6 +52,7 @@ public class SaleOrderLineRestController {
   public Response createSaleOrderLine(SaleOrderLinePostRequest requestBody) throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().createAccess(SaleOrderLine.class).check();
+    new SecurityCheck().writeAccess(SaleOrder.class).check();
 
     SaleOrderLineGeneratorService saleorderLineCreateService =
         Beans.get(SaleOrderLineGeneratorService.class);

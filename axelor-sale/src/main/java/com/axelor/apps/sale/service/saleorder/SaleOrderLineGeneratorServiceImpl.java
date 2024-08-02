@@ -33,7 +33,6 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDomainService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineInitValueService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -46,6 +45,9 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
   protected SaleOrderLineComputeService saleOrderLineComputeService;
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrderLineDomainService saleOrderLineDomainService;
+  protected SaleOrderService saleOrderService;
+  protected SaleOrderOnLineChangeService saleOrderOnLineChangeService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public SaleOrderLineGeneratorServiceImpl(
@@ -56,7 +58,10 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderLineDomainService saleOrderLineDomainService,
-      ProductRepository productRepository) {
+      ProductRepository productRepository,
+      SaleOrderService saleOrderService,
+      AppBaseService appBaseService,
+      SaleOrderOnLineChangeService saleOrderOnLineChangeService) {
     this.saleOrderLineInitValueService = saleOrderLineInitValueService;
     this.saleOrderLineProductService = saleOrderLineProductService;
     this.saleOrderLineRepository = saleOrderLineRepository;
@@ -65,12 +70,20 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderLineDomainService = saleOrderLineDomainService;
     this.productRepository = productRepository;
+    this.saleOrderService = saleOrderService;
+    this.saleOrderOnLineChangeService = saleOrderOnLineChangeService;
+    this.appBaseService = appBaseService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product)
       throws AxelorException {
+    if (saleOrder == null || product == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(SaleExceptionMessage.EITHER_PRODUCT_OR_SALE_ORDER_ARE_NULL));
+    }
     SaleOrderLine saleOrderLine = new SaleOrderLine();
     saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine);
     checkProduct(saleOrder, saleOrderLine, product);
@@ -80,7 +93,9 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     saleOrderLineRepository.save(saleOrderLine);
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
     saleOrderComputeService.computeSaleOrder(saleOrder);
+    saleOrderOnLineChangeService.handleComplementaryProducts(saleOrder);
     saleOrderRepository.save(saleOrder);
+
     return saleOrderLine;
   }
 
@@ -90,7 +105,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     if (!productRepository
         .all()
         .filter(domain)
-        .bind("__date__", Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()))
+        .bind("__date__", appBaseService.getTodayDate(saleOrder.getCompany()))
         .fetch()
         .contains(product)) {
       throw new AxelorException(
