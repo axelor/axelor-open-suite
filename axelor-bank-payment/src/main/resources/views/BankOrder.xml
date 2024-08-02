@@ -734,6 +734,8 @@
     <field name="bankOrderCurrency"
       if="bankOrderFileFormat?.currency == null &amp;&amp; senderBankDetails?.currency == null"
       expr="eval: senderCompany?.currency"/>
+    <field name="bankOrderCurrency" if="senderBankDetails?.currency != null"
+      expr="eval: senderBankDetails?.currency"/>
   </action-record>
 
   <action-record name="action-bank-order-record-update-bank-order-parameter"
