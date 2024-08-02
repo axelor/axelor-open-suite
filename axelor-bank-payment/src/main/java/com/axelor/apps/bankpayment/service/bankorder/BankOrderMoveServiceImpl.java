@@ -153,7 +153,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
         paymentModeService.getPaymentModeAccount(paymentMode, senderCompany, senderBankDetails);
 
     isMultiDate = bankOrder.getIsMultiDate();
-    isMultiCurrency = BankOrderToolService.isMultiCurrency(bankOrder);
+    isMultiCurrency = bankOrder.getIsMultiCurrency();
 
     isDebit =
         orderTypeSelect == BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER
