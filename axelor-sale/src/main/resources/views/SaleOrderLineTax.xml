@@ -19,13 +19,17 @@
     onNew="action-base-attrs-set-tax-line-scale">
     <panel name="mainPanel">
       <field name="taxLine" canEdit="false" grid-view="tax-line-grid"
-        form-view="tax-line-form"/>
-      <field name="taxType" grid-view="tax-type-grid" form-view="tax-type-form"/>
+        form-view="tax-line-form" readonly="true"/>
+      <field name="taxType" grid-view="tax-type-grid" form-view="tax-type-form"
+        readonly="true"/>
       <field name="taxLine.tax.name"/>
       <field name="taxLine.value"/>
-      <field name="exTaxBase" x-scale="saleOrder.currency.numberOfDecimals"/>
-      <field name="taxTotal" x-scale="saleOrder.currency.numberOfDecimals"/>
-      <field name="inTaxTotal" x-scale="saleOrder.currency.numberOfDecimals"/>
+      <field name="exTaxBase" x-scale="saleOrder.currency.numberOfDecimals" readonly="true"/>
+      <field name="taxTotal" x-scale="saleOrder.currency.numberOfDecimals"
+        readonlyIf="!taxLine.tax.manageByAmount"/>
+      <field name="inTaxTotal" x-scale="saleOrder.currency.numberOfDecimals" readonly="true"/>
+      <field name="percentageTaxTotal" showIf="taxLine.tax.manageByAmount"
+        x-scale="saleOrder.currency.numberOfDecimals" readonly="true"/>
       <field name="saleOrder" hidden="true"/>
       <field name="saleOrder.currency" hidden="true"/>
       <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>

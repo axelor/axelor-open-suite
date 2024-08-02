@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -33,8 +34,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +69,7 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
       SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) {
 
     List<SaleOrderLineTax> saleOrderLineTaxList = new ArrayList<>();
+    saleOrderLineTaxList.addAll(getUpdatedSaleOrderLineTax(saleOrder));
     Map<TaxLine, SaleOrderLineTax> map = new HashMap<>();
     Set<String> specificNotes = new HashSet<>();
     boolean customerSpecificNote = orderLineTaxService.isCustomerSpecificNote(saleOrder);
@@ -140,11 +144,51 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
     for (SaleOrderLineTax saleOrderLineTax : map.values()) {
       // Dans la devise de la facture
       orderLineTaxService.computeTax(saleOrderLineTax, currency);
-      saleOrderLineTaxList.add(saleOrderLineTax);
-      LOG.debug(
-          "VAT line : VAT total => {}, W.T. total => {}",
-          saleOrderLineTax.getTaxTotal(),
-          saleOrderLineTax.getInTaxTotal());
+      if (!isMapValueAlreadyInSaleOrderLineTaxList(saleOrderLineTax, saleOrderLineTaxList)) {
+        saleOrderLineTaxList.add(saleOrderLineTax);
+        LOG.debug(
+            "VAT line : VAT total => {}, W.T. total => {}",
+            saleOrderLineTax.getTaxTotal(),
+            saleOrderLineTax.getInTaxTotal());
+      }
     }
+  }
+
+  protected List<SaleOrderLineTax> getUpdatedSaleOrderLineTax(SaleOrder saleOrder) {
+    List<SaleOrderLineTax> saleOrderLineTaxList = new ArrayList<>();
+
+    if (ObjectUtils.isEmpty(saleOrder.getSaleOrderLineTaxList())) {
+      return saleOrderLineTaxList;
+    }
+
+    saleOrderLineTaxList.addAll(
+        saleOrder.getSaleOrderLineTaxList().stream()
+            .filter(
+                saleOrderLineTax ->
+                    orderLineTaxService.isManageByAmount(saleOrderLineTax)
+                        && saleOrderLineTax
+                                .getTaxTotal()
+                                .compareTo(saleOrderLineTax.getPercentageTaxTotal())
+                            != 0)
+            .collect(Collectors.toList()));
+    return saleOrderLineTaxList;
+  }
+
+  protected boolean isMapValueAlreadyInSaleOrderLineTaxList(
+      SaleOrderLineTax saleOrderLineTax, List<SaleOrderLineTax> saleOrderLineTaxList) {
+    if (ObjectUtils.isEmpty(saleOrderLineTaxList) || saleOrderLineTax == null) {
+      return false;
+    }
+
+    for (SaleOrderLineTax saleOrderLineTaxItem : saleOrderLineTaxList) {
+      if (Objects.equals(saleOrderLineTaxItem.getTaxLine(), saleOrderLineTax.getTaxLine())
+          && saleOrderLineTaxItem.getPercentageTaxTotal().compareTo(saleOrderLineTax.getTaxTotal())
+              == 0
+          && saleOrderLineTaxItem.getExTaxBase().compareTo(saleOrderLineTax.getExTaxBase()) == 0) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

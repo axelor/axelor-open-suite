@@ -503,10 +503,10 @@
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
       </panel>
-      <panel name="taxPanel" title="Tax">
+      <panel name="taxPanel" title="Tax" readonlyIf="statusSelect != 1">
         <panel-related name="saleOrderLineTaxListPanel" colSpan="12"
           field="saleOrderLineTaxList" form-view="sale-order-line-tax-form"
-          grid-view="sale-order-line-tax-grid"/>
+          grid-view="sale-order-line-tax-grid" canRemove="false" canNew="false"/>
       </panel>
       <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain"
         name="deliveryInformationPanel" title="Delivery" colSpan="12">
