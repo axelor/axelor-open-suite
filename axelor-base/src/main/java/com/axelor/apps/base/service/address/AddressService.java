@@ -94,4 +94,13 @@ public interface AddressService {
    * @param address
    */
   public void autocompleteAddress(Address address);
+
+  Address getAddress(
+      String room,
+      String floor,
+      String streetName,
+      String postBox,
+      String zip,
+      City city,
+      Country country);
 }

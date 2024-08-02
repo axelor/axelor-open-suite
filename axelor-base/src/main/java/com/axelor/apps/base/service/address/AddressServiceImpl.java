@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
 import com.axelor.apps.base.db.Street;
+import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -61,6 +62,7 @@ public class AddressServiceImpl implements AddressService {
   protected StreetRepository streetRepository;
   protected AppBaseService appBaseService;
   protected AddressAttrsService addressAttrsService;
+  protected AddressRepository addressRepository;
 
   protected MapService mapService;
   protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
@@ -76,13 +78,15 @@ public class AddressServiceImpl implements AddressService {
       CityRepository cityRepository,
       StreetRepository streetRepository,
       AppBaseService appBaseService,
-      AddressAttrsService addressAttrsService) {
+      AddressAttrsService addressAttrsService,
+      AddressRepository addressRepository) {
     this.ads = ads;
     this.mapService = mapService;
     this.cityRepository = cityRepository;
     this.streetRepository = streetRepository;
     this.appBaseService = appBaseService;
     this.addressAttrsService = addressAttrsService;
+    this.addressRepository = addressRepository;
   }
 
   @Override
@@ -249,5 +253,30 @@ public class AddressServiceImpl implements AddressService {
         address.setAddressL4(null);
       }
     }
+  }
+
+  @Override
+  public Address getAddress(
+      String room,
+      String floor,
+      String streetName,
+      String postBox,
+      String zip,
+      City city,
+      Country country) {
+
+    return addressRepository
+        .all()
+        .filter(
+            "self.room = :room AND self.floor = :floor AND self.streetName = :streetName "
+                + "AND self.postBox = :postBox AND self.zip = :zip AND self.city = :city AND self.country = :country")
+        .bind("room", room)
+        .bind("floor", floor)
+        .bind("streetName", streetName)
+        .bind("postBox", postBox)
+        .bind("zip", zip)
+        .bind("city", city)
+        .bind("country", country)
+        .fetchOne();
   }
 }

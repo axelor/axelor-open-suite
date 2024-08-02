@@ -159,8 +159,6 @@ import com.axelor.apps.base.service.YearService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.address.AddressAttrsService;
 import com.axelor.apps.base.service.address.AddressAttrsServiceImpl;
-import com.axelor.apps.base.service.address.AddressExportService;
-import com.axelor.apps.base.service.address.AddressExportServiceImpl;
 import com.axelor.apps.base.service.address.AddressMetaService;
 import com.axelor.apps.base.service.address.AddressMetaServiceImpl;
 import com.axelor.apps.base.service.address.AddressService;
@@ -450,7 +448,6 @@ public class BaseModule extends AxelorModule {
     bind(AddressTemplateLineViewService.class).to(AddressTemplateLineViewServiceImpl.class);
     bind(AddressMetaService.class).to(AddressMetaServiceImpl.class);
     bind(AddressTemplateService.class).to(AddressTemplateServiceImpl.class);
-    bind(AddressExportService.class).to(AddressExportServiceImpl.class);
     bind(ImportExportTranslationService.class).to(ImportExportTranslationServiceImpl.class);
     bind(ImportConfigurationService.class).to(ImportConfigurationServiceImpl.class);
     bind(LocalizationService.class).to(LocalizationServiceImpl.class);
