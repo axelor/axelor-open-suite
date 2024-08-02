@@ -1,0 +1,6 @@
+"importId";"code";"name";"isDisplayBalances";"accountTypeSet";"technicalTypeSelect"
+"MAR_PCG1";"VTE";"Vente";;;2
+"MAR_PCG2";"AVR";"Avoir";;;3
+"MAR_PCG3";"TRS";"Trésorerie";"true";"cash";4
+"MAR_PCG4";"ACH";"Achat";;;1
+"MAR_PCG5";"OTH";"Autres";;;5

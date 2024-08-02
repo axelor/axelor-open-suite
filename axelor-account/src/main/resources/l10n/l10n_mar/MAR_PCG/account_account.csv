@@ -1,0 +1,873 @@
+"code";"parent_code";"name";"accountType.importId";"isRegulatoryAccount";"commonPosition";"reconcileOk";"compatibleAccounts";"useForPartnerBalance";"isTaxAuthorizedOnMoveLine";"isTaxRequiredOnMoveLine";"defaultTax.code";"vatSystemSelect";"isRetrievedOnPaymentSession";"serviceType.code";"manageCutOffPeriod";"hasAutomaticApplicationAccountingDate";"analyticDistributionAuthorized";"analyticDistributionRequiredOnInvoiceLines";"analyticDistributionRequiredOnMoveLines";"analyticDistributionTemplate.importId";"statusSelect"
+0;;"Racine PCG";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+1;0;"COMPTES DE FINANCEMENT PERMANENT";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+11;1;"CAPITAUX PROPRES";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+111;11;"Capital social ou personnel";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+11110000;111;"Capital social";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+11120000;111;"Fonds de dotation";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+1117;111;"Capital personnel";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+11171000;1117;"Capital individuel";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+11175000;1117;"Compte de l'exploitant";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+11190000;111;"Actionnaires, Capital souscrit non appelé";"MAR_PCG1";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+112;11;"Primes d'émission, de fusion et d'apport";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+11210000;112;"Prime d'émission";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+11220000;112;"Prime de fusion";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+11230000;112;"Prime d'pport";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+113;11;"Ecarts de réévaluation";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+11300000;11;"Ecarts de réévaluation";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+114;11;"Réserve légale";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+11400000;11;"Réserve légale";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+115;11;"Autres réserves";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+11510000;115;"Réserves statutaires ou contractuelles";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+11520000;115;"Réserves facultatives";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+11550000;115;"Réserves réglementées";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+116;11;"Report à nouveau";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+11610000;116;"Report à nouveau (solde créditeur)";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+11690000;116;"Report à nouveau (solde débiteur)";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+118;11;"Résultats nets en instance d'affectation";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+11810000;118;"Résultats nets en instance d'affectation (solde créditeur)";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+11890000;118;"Résultats nets en instance d'affectation (solde débiteur)";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+119;11;"Résultat net de l'exercice";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+11910000;119;"Résultat net de l'exercice (solde créditeur)";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+11990000;119;"Résultat net de l'exercice (solde débiteur)";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+13;1;"CAPITAUX PROPRES ASSIMILES";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+131;13;"Subventions d'investissement";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+13110000;131;"Subventions d'investissement reçues";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+13190000;131;"Subventions d'investissement inscrit au compte de produit et charges";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+135;13;"Provisions réglementées";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+13510000;135;"Provisions pour amortissements dérogatoires";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+13520000;135;"Provisions pour plus-values en instance d'imposition";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+13540000;135;"Provisions pour investissements";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+13550000;135;"Provisions pour reconstitution des gisements";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+13560000;135;"Provisions pour acquisition et construction de logements";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+13580000;135;"Autres provisions réglementées";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+14;1;"DETTES DE FINANCEMENT";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+141;14;"Emprunts obligataires";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+14100000;14;"Emprunts Obligataires";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+148;14;"Autres dettes de financement";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+14810000;148;"Emprunts auprès des établissements de crédits";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+14820000;148;"Avance de l'Etat";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+14830000;148;"Dettes rattachées à des participations";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+14840000;148;"Billets de Fonds";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+14850000;148;"Avances reçus et comptes courants bloqués";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+14860000;148;"Fournisseurs d'immobilisations";"MAR_PCG10";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+14870000;148;"Dépôts et cautionnements reçus";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+14880000;148;"Dettes de Financement diverses";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+15;1;"provisions durables pour risques et charges";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+151;15;"Provisions pour risques";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+15110000;151;"Provisions pour litiges";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+15120000;151;"Provisions pour garanties données aux clients";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+15130000;151;"Provisions pour propre assureur";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+15140000;151;"Provisions pour pertes sur marché à terme";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+15150000;151;"Provisions pour amendes, doubles droits, pénalités";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+15160000;151;"Provisions pour pertes de change";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+15180000;151;"Autres provisions pour risque";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+155;15;"Provisions pour charges";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+15510000;155;"Provisions Pour impôts";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+15520000;155;"Provisions, pensions de retraite et obligations similaires";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+15550000;155;"Provisions pour charges à répartir sur plusieurs exercices";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+15580000;155;"Autres provisions pour charges";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+16;1;"COMPTES DE LIAISON DES ETABLISSEMENTS ET SUCCURSALES";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+160;16;"Comptes de liaison des établissements et succursales";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+16010000;1;"Comptes de liaison de sièges";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+16050000;1;"Comptes de liaison des établissements";"MAR_PCG6";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+17;1;"Ecarts de conversion - Passif";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+171;17;"Augmentation des créances immobilisées";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+17100000;17;"Augmentation des créances immobilisées";"MAR_PCG12";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+172;17;"Diminution des dettes de financement";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+17200000;17;"Diminution des dettes de Financement";"MAR_PCG5";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+2;0;"COMPTES D'ACTIF IMMOBILISE";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+21;2;"IMMOBILISATIONS EN NON-VALEURS";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+211;21;"Frais préliminaires";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+21110000;211;"Frais de Constitution";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+21120000;211;"Frais préalables au démarrage";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+21130000;211;"Frais d'augmentation du capital";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+21140000;211;"Frais sur opérations de Fusion, scissions et transformations";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+21160000;211;"Frais de prospection";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+21170000;211;"Frais de publicité";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+21180000;211;"Autres frais préliminaires";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+212;21;"Charges à répartir sur plusieurs exercices";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+21210000;212;"Frais d'acquisition des immobilisations";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+21250000;212;"Frais d'émission des emprunts";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+21280000;212;"Autres charges à répartir";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+213;21;"Primes de remboursement des obligations";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+21300000;21;"Primes de remboursement des obligations";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+22;2;"IMMOBILISATIONS INCORPORELLES";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+221;22;"Immobilisation en recherche et développement";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+22100000;22;"Immobilisations en recherche et Développement";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+222;22;"Brevets, marques, droits et valeurs similaires";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+22200000;22;"Brevets, marques, droits et valeurs similaires";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+223;22;"Fonds commercial";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+22300000;22;"Fonds Commercial";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+228;22;"Autres immobilisations incorporelles";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+22850000;228;"immobilisations incorporelles en cours";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23;2;"IMMOBILISATIONS CORPORELLES";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+231;23;"Terrains";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+23110000;231;"Terrains nus";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23120000;231;"Terrains aménagés";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23130000;231;"Terrains bâtis";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23140000;231;"Terrains de gisement";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23160000;231;"Agencement et aménagements de terrains";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23180000;231;"Autres terrains";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+232;23;"Constructions";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+2321;232;"Bâtiments";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+23211000;2321;"Bâtiments industriels (A, B...)";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23214000;2321;"Bâtiments administratifs et commerciaux (A, B…)";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23218000;2321;"Autres bâtiments";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23230000;232;"Construction sur terrains d'autrui";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23250000;232;"Ouvrages d'infrastructures";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23270000;232;"Agencement et aménagements des constructions";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23280000;232;"Autres constructions";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+233;23;"Installations techniques, matériel et outillage";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+23310000;233;"Installations Techniques";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+2332;233;"Matériel et outillage";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+23321000;2332;"Matériel";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23324000;2332;"Outillage";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23330000;233;"Emballages récupérables identifiables";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23380000;233;"Autres Installations techniques, matériel et outillage";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+234;23;"Matériel de transport";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+23400000;23;"Matériel de transport";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+235;23;"Mobilier, matériel de bureau et aménagements divers";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+23510000;235;"Mobilier de bureau";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23520000;235;"Matériel de bureau";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23550000;235;"Matériel Informatique";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23560000;235;"Agencement, installations et aménagements divers (de biens n'appartenant pas à l'entreprise)";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23580000;235;"Autres mobiliers, matériel de bureau et aménagements divers";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+238;23;"Autres immobilisations corporelles";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+23800000;23;"Autres immobilisations corporelles";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+239;23;"Immobilisations corporelles en cours";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+23920000;239;"immobilisations Corporelles en cours et terrains de constructions";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23930000;239;"immobilisations Corporelles en cours et terrains des installations techniques, matériel et outillage";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23940000;239;"Immobilisations corporelles en cours de matériel de transports";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23950000;239;"Immobilisations corporelles en cours de mobilier, matériel de bureau et aménagement divers";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23970000;239;"Avances et acomptes versés sur commandes d'immobilisations corporelles";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+23980000;239;"Autres immobilisations corporelles en cours ";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+24;2;"IMMOBILSATIONS FINANCIERES";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+241;24;"Prêts immobilsés";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+24110000;241;"Prêts au personnel";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+24150000;241;"Prêts aux associés";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+24160000;241;"Billets de Fonds";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+24180000;241;"Autres prêts";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+248;24;"Autres créances financières";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+2481;248;"Titres immobilisés (droits de créance)";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+24811000;2481;"Obligations";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+24813000;2481;"Bons d'équipements ";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+24818000;2481;"Bons divers";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+24830000;248;"Créances rattachées à des participations";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+2486;248;"Dépôts et cautionnements versés";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+24861000;2486;"Dépôts";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+24864000;2486;"Cautionnements";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+24870000;248;"Créances Immobilisées";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+24880000;248;"Créances financières diverses";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+25;2;"IMMOBILSATIONS FINANCIERES";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+251;25;"Titres de participation";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+25100000;25;"Titres de participation";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+258;25;"Autres titres immobilisés";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+25810000;258;"Actions";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+25880000;258;"Titres divers";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+27;2;"ECARTS DE CONVERSION - ACTIF";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+271;27;"Diminution des créances immobilisées";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+27100000;27;"Diminution des créances Immobilisées";"MAR_PCG12";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+272;27;"Augmentation des dettes de financement";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+27200000;27;"Augmentation des dettes de financement";"MAR_PCG5";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28;2;"AMORTISSEMENTS DES IMMOBILISATIONS";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+281;28;"Amortissements des non-valeurs";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+2811;281;"Amortissements des frais préliminaires";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+28111000;2811;"Amortissements des Faris de constitution ";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28112000;2811;"Amortissement des frais préliminaires au démarrage";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28113000;2811;"Amortissements des frais d'augmentation de capital";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28114000;2811;"Amortissements des frais sur opérations des fusions scissions et transformations";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28116000;2811;"Amortissements des frais d prospection";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28117000;2811;"Amortissements des frais de publicité";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28118000;2811;"Amortissements des autres frais préliminaires";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+2812;281;"Amortissements des charges à répartir";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+28121000;2812;"Amortissements des frais d'acquisition des immobilisations ";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28125000;2812;"Amortissements des frais d'émission des emprunts";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28128000;2812;"Amortissements des autres charges à répartir";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28130000;281;"Amortissements, primes de remboursement des obligations";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+282;28;"Amortissements des immobilisations incorporelles";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+28210000;282;"Amortissement de l'immobilisation en recherche et développement";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28220000;282;"Amortissement des brevets, marques, droits et valeurs similaires";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28230000;282;"Amortissement du fond commercial";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28280000;282;"Amortissement des autres immobilisations incorporelles";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+283;28;"Amortissements des immobilisations corporelles";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+2831;283;"Amortissements des terrains";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+28311000;2831;"Amortissement des terrains nus";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28312000;2831;"Amortissement des terrains aménagés";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28313000;2831;"Amortissement des terrains bâtis";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28314000;2831;"Amortissement des  terrains de gisement";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28316000;2831;"Amortissement des agencements et aménagements des terrains";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28318000;2831;"Amortissement des autres terrains";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+2832;283;"Amortissements des constructions";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+28321000;2832;"Amortissement des bâtiments";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28323000;2832;"Amortissement des construction sur terrains d'autrui";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28325000;2832;"Amortissement des ouvrages d'infrastructure";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28327000;2832;"Amortissement des installations, agencements et aménagements des constructions";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28328000;2832;"Amortissement des autres constructions";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+2833;283;"Amortissements des installations techniques, matériel et outillage";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+28331000;2833;"Amortissement des installations techniques";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28332000;2833;"Amortissement du matériel et outillage";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28333000;2833;"Amortissement des emballages récupérables identifiables";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28338000;2833;"Amortissement des autres installations techniques";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28340000;283;"Amortissement du matériel de transport";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+2835;283;"Amortissements du mobilier, matériel de bureau et aménagements divers";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+28351000;2835;"Amortissement du mobilier de bureau";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28352000;2835;"Amortissement du matériel de bureau";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28355000;2835;"Amortissement du matériel informatique";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28356000;2835;"Amortissement des agencements, installations et aménagements divers";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28358000;2835;"Amortissement des autres mobilier, matériel de bureau et aménagements divers";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+28380000;283;"Amortissement des autres immobilisations corporelles";"MAR_PCG8";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+29;2;"PROVISIONS POUR DEPRECIATION DES IMMOBILISATIONS";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+292;29;"Provisions pour dépréciation des immobilisations incorporelles";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+29200000;29;"Provisions pour dépréciation des immobilisations incorporelles";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+293;29;"Provisions pour dépréciation des immobilisations corporelles";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+29300000;29;"Provisions pour dépréciation des immobilisations corporelles";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+294;29;"Provisions pour dépréciation des immobilisations financières";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+29410000;294;"Provisions pour dépréciation des prêts immobilisés";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+29480000;294;"Provisions pour dépréciation des autres créances financières";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+295;29;"Provisions pour dépréciation des immobilisations financières";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+29510000;295;"Provisions pour dépréciation des titres de participations";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+29580000;295;"Provisions pour dépréciation des autres immobilisés";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+3;0;"COMPTES D'ACTIF CIRCULANT (HORS TRESORERIE)";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+31;3;"STOCKS";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+311;31;"Marchandises";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+31110000;311;"Marchandises (Groupe A)";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31120000;311;"Marchandises (Groupe B)";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31160000;311;"Marchandises en cours de route";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31180000;311;"Autres marchandises";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+312;31;"Matières et fournitures consommables";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+3121;312;"Matières premières";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+31211000;3121;"Matières premières (Groupe A)";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31212000;3121;"Matières premières (Groupe B)";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+3122;312;"Matières et fournitures consommables";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+31221000;3122;"Matières consommables (Groupe A)";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31222000;3122;"Matières consommables (Groupe B)";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31223000;3122;"Combustibles";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31224000;3122;"Produits d'entretien";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31225000;3122;"Fournitures d'atelier et d'usine";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31226000;3122;"Fournitures de magasin";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31227000;3122;"Fournitures de Bureau";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+3123;312;"Emballages";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+31231000;3123;"Emballages Perdus";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31232000;3123;"Emballages récupérables non identifiables";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31233000;3123;"Emballages à usage mixte";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31260000;312;"Matières et fournitures consommables en cours de route";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31280000;312;"Autres matières et fournitures consommables";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+313;31;"Produits en cours";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+3131;313;"Biens en cours";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+31311000;3131;"Biens produits en cours";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31312000;3131;"Biens Intermédiaires en cours";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31317000;3131;"Biens résiduels en cours";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+3134;313;"Services en cours";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+31341000;3134;"Travaux en cours";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31342000;3134;"Etudes en cours";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31343000;3134;"Prestations en cours";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31380000;313;"Autres produits en cours";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+314;31;"Produits intermédiaires et produits résiduels";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+3141;314;"Produits intermédiaires";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+31411000;3141;"Produits intermédiaires (Groupe A)";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31412000;3141;"Produits intermédiaires (Groupe B)";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+3145;314;"Produits résiduels (ou matières de récupération)";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+31451000;3145;"Déchets";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31452000;3145;"Rebuts";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31453000;3145;"Matières de récupération";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31480000;314;"Autres produits intermédiaires et produits résiduels";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+315;31;"Produits finis";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+31510000;315;"Produits Finis (groupe A)";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31520000;315;"Produits Finis (groupe B)";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31560000;315;"Produits finis en cours de route";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+31580000;315;"Autres produits finis";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34;3;"CREANCES DE L'ACTIF CIRCULANT";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+341;34;"Fournisseurs débiteurs, avances et acomptes";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+34110000;341;"Fournisseurs - avances et acomptes versés sur commandes d'exploitation";"MAR_PCG10";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34130000;341;"Fournisseurs - créances pour emballages et matériels à rendre";"MAR_PCG10";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34170000;341;"Rabais, remises et ristournes à obtenir - avoirs non encoure reçus";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34180000;341;"Autres fournisseurs débiteurs";"MAR_PCG10";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+342;34;"Clients et comptes rattachés";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+34210000;342;"Clients";"MAR_PCG12";0;0;1;;1;0;0;;0;1;;0;;;;;;1
+34230000;342;"Clients - retenues de garanties";"MAR_PCG12";0;0;1;;1;0;0;;0;1;;0;;;;;;1
+34240000;342;"Clients douteux ou litigieux";"MAR_PCG12";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34250000;342;"Clients - effets à recevoir";"MAR_PCG12";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+3427;342;"Clients - factures à établir et créances sur travaux non encore facturés";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+34271000;3427;"Clients - factures à établir";"MAR_PCG12";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34272000;3427;"Créances sur travaux non encore facturables";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34280000;342;"Autres clients et comptes rattachés";"MAR_PCG12";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+343;34;"Personnel - débiteur";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+34310000;343;"Avances et acomptes au personnel";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34380000;343;"Personnel - autres débiteurs";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+345;34;"Etat - débiteur";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+3451;345;"Subventions à recevoir";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+34511000;3451;"Subventions d'investissements à recevoir";"MAR_PCG12";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34512000;3451;"subventions d'exploitation à recevoir";"MAR_PCG12";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34513000;3451;"Subventions d'équilibre à recevoir";"MAR_PCG12";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34530000;345;"Acomptes sur impôts sur les résultats";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+3455;345;"Etat - TVA récupérable";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+34551000;3455;"Etat - TVA récupérable sur Immobilisations";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34552000;3455;"Etat - TVA récupérable sur charges";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34552010;3455;"Etat - TVA Récupérable 10%";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34552020;3455;"Etat - TVA Récupérable 20%";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34560000;345;"Etat - crédit de TVA (suivant déclarations)";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34580000;345;"Etat - autres comptes débiteurs";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+346;34;"Comptes d'associés - débiteurs";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+34610000;346;"Associés - comptes d'apport en société";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34620000;346;"Actionnaires - capital souscrit et appelé non versé";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34630000;346;"Comptes courants des associés - débiteurs";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34640000;346;"Associés - opérations faites en commun";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34670000;346;"Créances rattachées aux comptes d'associés";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34680000;346;"Autres comptes d'associés - débiteurs";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+348;34;"Autres débiteurs";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+34810000;348;"Créances sur cession d'immobilisations";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34820000;348;"Créances sur cession d'éléments d'actif circulant";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34870000;348;"Créances rattachées aux autres débiteurs";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34880000;348;"Divers débiteurs";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+349;34;"Comptes de régularisation - actif";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+34910000;349;"Charges constatées d'avance";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34930000;349;"Intérêts courus et non échus à percevoir";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34950000;349;"Comptes de participations périodique des charges";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+34970000;349;"Comptes transitoires ou d'attente - débiteurs";"MAR_PCG4";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+35;3;"TITRES ET VALEURS DE PLACEMENT";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+350;35;"Titres et valeurs de placement";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+35010000;3;"Actions, partie libérée";"MAR_PCG2";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+35020000;3;"Actions, partie non libérée";"MAR_PCG2";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+35040000;3;"Obligations";"MAR_PCG2";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+3506;350;"Bons de caisse et bons de trésor";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+35061000;3;"Bons de caisse";"MAR_PCG2";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+35062000;3;"Bons de trésor";"MAR_PCG2";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+35080000;3;"Autres titres et valeurs de placement similaires";"MAR_PCG2";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+37;3;"ECART DE CONVERSION - ACTIF (Eléments circulants)";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+370;37;"Ecart de conversion - Actif (éléments circulants)";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+37010000;3;"Diminution des créances circulantes";"MAR_PCG12";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+37020000;3;"Diminution des dettes circulantes";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+39;3;"PROVISIONS POUR DEPRECIATION DES COMPTES DE L'ACTIF CIRCULANT";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+391;39;"Provisions pour dépréciation des stocks";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+39110000;391;"Provisions pour dépréciation des Marchandises";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+39120000;391;"Provisions pour dépréciation des matières et fournitures";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+39130000;391;"Provisions pour dépréciation des produits en cours";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+39140000;391;"Provisions pour dépréciation des produits intermédiaires";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+39150000;391;"Provisions pour dépréciation des produits finis";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+394;39;"Provisions pour dépréciation des créances de l'actif circulant";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+39410000;394;"Provisions pour dépréciation - fournisseurs débiteurs, avances et acomptes";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+39420000;394;"Provisions pour dépréciation des clients et comptes rattachés";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+39430000;394;"Provisions pour dépréciation du personnel - débiteur";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+39460000;394;"Provisions pour dépréciation des comptes d'associés débiteurs";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+39480000;394;"Provisions pour dépréciation des autres débiteurs";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+395;39;"Provisions pour dépréciation des titres et valeurs de placement";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+39500000;39;"Provisions pour dépréciation des titres et valeur de placement";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+4;0;"COMPTES DU PASSIF CIRCULANT (HORS TRESORERIE)";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+44;4;"DETTES DU PASSIF CIRCULANT";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+441;44;"Fournisseurs et comptes rattachés";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+44110000;441;"Fournisseurs";"MAR_PCG10";0;0;1;;1;0;0;;0;1;;0;;;;;;1
+44130000;441;"Fournisseurs - retenues de garantie";"MAR_PCG10";0;0;1;;1;0;0;;0;1;;0;;;;;;1
+44150000;441;"Fournisseurs - effets à payer";"MAR_PCG10";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44170000;441;"Fournisseurs - factures non parvenues";"MAR_PCG10";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44180000;441;"Autres fournisseurs et comptes rattachés";"MAR_PCG10";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+442;44;"Clients créditeurs, avances et acomptes";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+44210000;442;"Clients - avances et acomptes reçus sur commandes en cours";"MAR_PCG12";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44250000;442;"Clients - dettes pour emballages et matériel consignés";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44270000;442;"Rabais, remises et ristournes à accorder - avoirs à établir";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44280000;442;"Autres clients créditeurs";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+443;44;"Personnel - créditeur";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+44320000;443;"Rémunérations dues au personnel";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44330000;443;"Dépôts du personnel créditeurs";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44340000;443;"Oppositions sur salaires";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44370000;443;"Charges de personnel à payer";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44380000;443;"Personnel - autres créditeurs";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+444;44;"Organismes sociaux";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+44410000;444;"Caisse nationale de la sécurité sociale";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44430000;444;"Caisses de retraite";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44450000;444;"Mutuelles ";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44470000;444;"charges sociales à payer";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44480000;444;"Autres organismes sociaux";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+445;44;"Etat - créditeur";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+4452;445;"Etat Impôts, taxes et assimilés";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+44521000;4452;"Etat, taxe urbaine et taxe d'édilité";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44522000;4452;"Etat, patente";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44525000;4452;"Etat, PTS et PSN";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44530000;445;"Etat, impôts sur les résultats";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44550000;445;"Etat, TVA facturée";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44560000;445;"Etat, TVA due (suivant déclarations)";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44570000;445;"Etat, impôts et taxes à payer";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44580000;445;"Etat, autres comptes créditeurs";"MAR_PCG14";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+446;44;"Comptes d'associés - créditeurs";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+44610000;446;"Associés - capital à rembourser";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44620000;446;"Associés - versements reçus sur augmentation de capital";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44630000;446;"Comptes courants des associés - créditeurs";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44640000;446;"Associés - opérations faites en commun";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44650000;446;"Associés - dividendes à payer";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44680000;446;"Autres comptes d'associés créditeurs";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+448;44;"Autres créanciers";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+44810000;448;"Dettes sur acquisition des immobilisations";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44830000;448;"Dettes sur acquisition des titres et valeurs de placement";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44840000;448;"Obligations échus à rembourser";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44850000;448;"Obligations, coupons à payer";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44870000;448;"Dettes rattachées aux autres créanciers";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44880000;448;"Divers créanciers";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+449;44;"Comptes de régularisation - passif";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+44910000;449;"Produits constatés d'avance";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44930000;449;"Intérêts courus et non échus à payer";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44950000;449;"Comptes de répartition périodique des produits";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+44970000;449;"Comptes transitoires ou d'attente - créditeurs";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+45;4;"AUTRES PROVISIONS POUR RISQUES ET CHARGES";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+450;45;"Autres provisions pour risques et charges";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+45010000;4;"Provisions pour litiges";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+45020000;4;"Provisions pour garanties données aux clients";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+45050000;4;"Provisions pour amendes, doubles droits et pénalités";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+45060000;4;"Provisions pour pertes de change";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+45070000;4;"Provisions pour impôts";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+45080000;4;"Autres provisions pour risque et charges";"MAR_PCG11";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+47;4;"ECARTS DE CONVERSION - PASSIF (Eléments circulants)";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+470;47;"Ecarts de conversion - passif (Eléments circulants)";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+47010000;4;"Augmentation des créances circulantes";"MAR_PCG12";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+47020000;4;"Diminution des dettes circulantes";"MAR_PCG5";0;0;1;;1;0;0;;0;0;;0;;;;;;1
+5;0;"COMPTES DE TRESORERIE";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+51;5;"TRESORERIE - ACTIF";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+511;51;"Chèques et valeurs à encaisser";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+5111;511;"Chèques à encaisser ou à l'encaissement";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+51111000;5111;"Chèques en portefeuille";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+51112000;5111;"Chèques à l'encaissement";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+5113;511;"Effets à encaisser ou à l'encaissement";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+51131000;5113;"Effets échus à encaisser";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+51132000;5113;"Effets à l'encaissement";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+51150000;511;"Virements de fonds";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+51180000;511;"Autres valeurs à encaisser";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+514;51;"Banques, Trésorerie Générale et chèques postaux débiteurs";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+5141;514;"Banques (solde débiteur)";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+51410000;514;"Banques (soldes débiteurs)";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+51410001;514;"Banque Populaire";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+51430000;514;"Trésorerie Générale";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+51460000;514;"Chèques postaux";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+51480000;514;"Autres établissements financiers et assimilés (soldes débiteurs)";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+516;51;"Caisses, régies d'avances et accréditifs";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+5161;516;"Caisses";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+51611000;5161;"Caisse Centrale";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+51613000;5161;"Caisse (Succursale ou agence A)";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+51614000;5161;"Caisse (Succursale ou agence B)";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+51650000;516;"Régies d'avances et accréditifs";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+55;5;"TRESORERIE - PASSIF";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+552;55;"Crédits d'escompte";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+55200000;55;"Crédits d'escompte";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+553;55;"Crédits de trésorerie";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+55300000;55;"Crédits de trésorerie";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+554;55;"Banques (solde créditeur)";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+55410000;554;"Banques (soldes créditeurs)";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+55480000;554;"Autres établissements financiers et assimilés (soldes créditeurs)";"MAR_PCG2";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+59;5;"PROVISIONS POUR DEPRECIATION DES COMPTES DE TRESORERIE";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+590;59;"Provisions pour dépréciation des comptes de trésorerie";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+59000000;5;"Provisions pour dépréciation des comptes de trésorerie";"MAR_PCG11";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6;0;"COMPTES DE CHARGES";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61;6;"CHARGES D'EXPLOITATION";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+611;61;"Achats revendus de marchandises";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61110000;611;"Achats de marchandises (Groupe A)";"MAR_PCG7";0;0;0;;0;1;0;"N_D";1;0;;0;;;;;;1
+61120000;611;"Achats de marchandises (Groupe B)";"MAR_PCG7";0;0;0;;0;1;0;"R1_D";1;0;;0;;;;;;1
+61140000;611;"Variation des stocks de marchandises";"MAR_PCG7";0;0;0;;0;1;0;"N_D";1;0;;0;;;;;;1
+61180000;611;"Achats revendus de marchandises des exercices antérieurs";"MAR_PCG7";0;0;0;;0;1;0;"N_D";1;0;;0;;;;;;1
+61190000;611;"Rabais, remises, et ristournes obtenus sur achats de marchandises";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+612;61;"Achats consommés de matières et fournitures";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+6121;612;"Achats de matières premières";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61211000;6121;"Achats de matières premières A";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61212000;6121;"Achats de matières premières B";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6122;612;"Achats de matières et fournitures consommables";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61221000;6122;"Achats de matières et fournitures A";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61222000;6122;"Achats de matières et fournitures B";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61223000;6122;"Achats de combustibles";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61224000;6122;"Achats de produits d'entretien";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61225000;6122;"Achats de fournitures d'atelier d'usine";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61226000;6122;"Achats de fournitures de magasin";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61227000;6122;"Achats de fournitures de bureau";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6123;612;"Achats d'emballages";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61231000;6123;"Achats d'emballages perdus";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61232000;6123;"Achats d'emballages récupérables non identifiables";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61233000;6123;"Achats d'emballages à usage mixte";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6124;612;"Variation des stocks de matières et fournitures";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61241000;6124;"Variation des stocks de matières premières";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61242000;6124;"Variation des stocks de matières et fournitures consommables";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61243000;6124;"Variation des stocks d'emballages";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6125;612;"Achats non stockés de matières et fournitures";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61251000;6125;"Achats de fournitures non stockables";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61252000;6125;"Achats de fournitures d'entretien";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61253000;6125;"Achats de petit outillage et de petit équipement";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61254000;6125;"Achats de fournitures de bureau";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6126;612;"Achats de travaux, études et prestations de service";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61261000;6126;"Achats de travaux";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61262000;6126;"Achats d'études";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61263000;6126;"Achats des prestations de service";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61280000;612;"Achats des matières et des fournitures des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6129;612;"Rabais, remises et ristournes obtenus sur achats consommés de matières et fournitures";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61291000;6129;"RRR obtenus sur achats de matières premières";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61292000;6129;"Rabais, remises, et ristournes obtenus sur achats de matières et fournitures consommables";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61293000;6129;"Rabais, remises, et ristournes obtenus sur achats d'emballages";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61295000;6129;"Rabais, remises, et ristournes obtenus sur achats non stockés";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61296000;6129;"Rabais, remises, et ristournes obtenus sur achats de travaux, études et prestations de services";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61298000;6129;"Rabais, remises, et ristournes obtenus sur achats de matières et fournitures des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+613;61;"Autres charges externes";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+6131;613;"Locations et charges locatives";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61310000;613;"Locations et charges locatives";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61311000;6131;"Location de terrains";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61312000;6131;"Location de constructions";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61313000;6131;"Location de matériel et d'outillage";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61314000;6131;"Location de matériel et matériel de bureau";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61315000;6131;"Location de matériel informatique";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61316000;6131;"Location de matériel de transport";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61317000;6131;"Malis sur emballages rendus";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61318000;6131;"Location et charges locatives diverses";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6132;613;"Redevances de crédit-bail";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61320000;613;"Redevances de crédit bail";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61321000;6132;"Redevances de crédit bail, mobilier et matériel";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6133;613;"Entretien et réparations";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61330000;613;"Entretien et réparations";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61331000;6133;"Entretien et réparations des biens immobiliers";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61332000;6133;"Entretien et réparations des biens mobiliers";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61335000;6133;"Maintenance";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6134;613;"Primes d'assurances";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61340000;613;"Primes d'assurance";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61341000;6134;"Assurances multirisques (vol, incendie, responsabilité civile, etc.)";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61343000;6134;"Assurances - Risques d'exploitation";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61345000;6134;"Assurances - Matériel de transport";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61348000;6134;"Autres assurances";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6135;613;"Rémunérations du personnel extérieur à l'entreprise";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61350000;613;"Rémunérations du personnel extérieurs à l'entreprise";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61351000;6135;"Rémunérations du personnel occasionnel";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61352000;6135;"Rémunérations du personnel intérimaire";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61353000;6135;"Rémunérations du personnel détaché ou prêté à l'entreprise";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6136;613;"Rémunérations d'intermédiaires et honoraires";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61360000;613;"Rémunérations d'intermédiaires et honoraires";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61361000;6136;"Commissions et courtages";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61365000;6136;"honoraires";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61367000;6136;"Frais d'actes et de contentieux";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6137;613;"Redevances pour brevets, marques, droits et valeurs similaires";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61370000;613;"Redevances pour brevets, marques, droits et valeurs similaires";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61371000;6137;"Redevances pour brevets";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61378000;6137;"Autres redevances";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+614;61;"Autres charges externes";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+6141;614;"Etudes, recherches et documentation";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61410000;614;"Etudes, recherches et documentation";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61411000;6141;"Etudes générales";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61413000;6141;"Recherches";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61415000;6141;"Documentation générale";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61416000;6141;"Documentation technique";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6142;614;"Transports";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61420000;614;"Transport";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61421000;6142;"Transport du personnel";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61425000;6142;"Transport sur achats";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61426000;6142;"Transport sur ventes";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61428000;6142;"Autres transports";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6143;614;"Déplacements, missions et réceptions";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61430000;614;"Déplacements, missions et réceptions";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61431000;6143;"Voyages et déplacements";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61433000;6143;"Frais de déménagement";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61435000;6143;"Missions";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61436000;6143;"Réceptions";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6144;614;"Publicité, publications et relations publiques";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61440000;614;"Publicité, publications et relations publiques";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61441000;6144;"Annonces et insertions";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61442000;6144;"Echantillons, catalogues et imprimés publicitaires";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61443000;6144;"Foires et expositions";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61444000;6144;"Primes de publicité";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61446000;6144;"Publications";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61447000;6144;"Cadeaux à la clientèle";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61448000;6144;"Autres charges de publicité et relations publiques";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6145;614;"Frais postaus et frais de télécommunications";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61450000;614;"Frais postaux et frais de télécommunications";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61451000;6145;"Frais postaux";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61455000;6145;"Frais de téléphone";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61456000;6145;"Frais de télex et de télégrammes";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6146;614;"Cotisations et dons";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61461000;6146;"Cotisations";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61462000;6146;"Dons";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6147;614;"Services bancaires";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61470000;614;"Services bancaires";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61471000;6147;"Frais d'achat et de vente des titres";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61472000;6147;"Frais sur effet de commerce";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61473000;6147;"Frais et commissions sur services bancaires";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61480000;614;"Autres charges externes des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61490000;614;"RRR obtenus sur autres charges externes";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+616;61;"Impôts et taxes";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+6161;616;"Impôts et taxes directs";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61611000;6161;"Taxe urbaine et taxe d'édilité";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61612000;6161;"Patente";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61615000;6161;"Taxes locales";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61650000;616;"Impôts et taxes indirects";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6167;616;"Impôts, taxes et droits assimilés";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61671000;6167;"Droits d'enregistrement et timbre";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61673000;6167;"Taxes sur les véhicules";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61678000;6167;"Autres impôts, taxes et droits assimilés";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61680000;616;"Impôts et taxes des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+617;61;"Charges de personnel";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+6171;617;"Rémunérations du personnel";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61710000;617;"Rémunération du personnel";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61711000;6171;"Appointements et salaires";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61712000;6171;"Primes et gratifications";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61713000;6171;"Indemnités et avantages divers";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61714000;6171;"Commissions au personnel";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61715000;6171;"Rémunération des administrateurs, gérants et associés";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6174;617;"Charges sociales";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61740000;617;"charges sociales";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61741000;6174;"Cotisations de sécurité sociale";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61742000;6174;"Cotisations aux caisses de retraite";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61743000;6174;"Cotisations aux mutuelles";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61744000;6174;"Prestations familiales";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61745000;6174;"Assurances accidents de travail";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6176;617;"Charges sociales diverses";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61761000;6176;"Assurances groupe";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61762000;6176;"Prestations de retraites";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61763000;6176;"Allocations aux œuvres sociales";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61764000;6176;"Habillement et vêtements de travail";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61765000;6176;"Indemnités de préavis et de licenciement";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61766000;6176;"Médecine du travail, pharmacie";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61768000;6176;"Autres charges sociales diverses";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6177;617;"Rémunération de l'exploitant";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61771000;6177;"Appointements et salaires";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61774000;6177;"Charges sociales sur appointements et salaires de l'exploitant";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61780000;617;"Charges de personnel des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+618;61;"Autres charges d'exploitation";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61810000;618;"Jetons de présence";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61820000;618;"Pertes sur créances irrécouvrables";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61850000;618;"Pertes sur opérations faites en commun";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61860000;618;"Transferts de profits sur opérations faites en commun";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61880000;618;"Autres charges d'exploitation des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+619;61;"Dotations d’exploitation";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+6191;619;"Dotations d’exploitation aux amortissements de l’immobilisation en non valeur";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61911000;6191;"Dotations d'exploitation aux amortissements des frais préliminaires";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61912000;6191;"Dotations d'exploitation aux amortissements des charges à répartir";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6192;619;"Dotations d’exploitation aux amortissements des immobilisations incorporelles";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61921000;6192;"Dotations d'exploitation aux amortissements de l'immobilisation en recherche et développement";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61922000;6192;"Dotations d'exploitation aux amortissements des brevets, marques, droits et valeurs similaires";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61923000;6192;"Dotations d'exploitation aux amortissements du fonds commercial";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61928000;6192;"Dotations d'exploitation aux amortissements des autres immobilisations incorporelles";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6193;619;"Dotations d’exploitation aux amortissements des immobilisations corporelles";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61931000;6193;"Dotations d'exploitation aux amortissements des terrains";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61932000;6193;"Dotations d'exploitation aux amortissements des constructions";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61933000;6193;"Dotations d'exploitation aux amortissements des installations techniques, matériel et outillage";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61934000;6193;"Dotations d'exploitation aux amortissements du matériel de transport";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61935000;6193;"Dotations d'exploitation aux amortissements des mobilier, matériel de bureau et aménagement divers";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61938000;6193;"Dotations d'exploitation aux amortissements des autres immobilisations corporelles";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6195;619;"Dotations d’exploitation aux provisions pour risques et charges";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61955000;6195;"Dotations d'exploitation aux provisions pour risques et charges durables";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61957000;6195;"Dotations d'exploitation aux provisions pour risques et charges momentanés";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6196;619;"Dotations d’exploitation aux provisions pour dépréciations de l’actif circulant";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61961000;6196;"Dotations d'exploitation aux provisions pour dépréciation des stocks";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61964000;6196;"Dotations d'exploitation aux provisions pour dépréciation des créances de l'actif circulant";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6198;619;"Dotations d’exploitation des exercices antérieurs";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+61981000;6198;"Dotations d'exploitation aux amortissements des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+61984000;6198;"Dotations d'exploitation aux provisions des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63;6;"CHARGES FINANCIERES";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+631;63;"Charges d’intérêts";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+6311;631;"Intérêts des emprunts et dettes";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+63111000;6311;"Intérêts des emprunts";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63113000;6311;"Intérêts des dettes rattachées à des participations";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63114000;6311;"Intérêts des comptes courants et dépôts créditeurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63115000;6311;"Intérêts bancaires et sur opérations de financement";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63118000;6311;"Autres intérêts des emprunts et dettes";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63180000;631;"Charges d'intérêt des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+633;63;"Pertes de change";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+63310000;633;"Pertes de change propres à l'exercice";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63380000;633;"Pertes de change des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+638;63;"Autres charges financières";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+63820000;638;"Pertes sur créances liées à des participations";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63850000;638;"Charges nettes sur cessions de titres et valeurs de placement";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63860000;638;"Escomptes accordés";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63880000;638;"Autres charges financières des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+639;63;"Dotations financières";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+63910000;639;"Dotations aux amortissements des primes de remboursement des obligations";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63920000;639;"Dotations aux provisions pour dépréciation des immobilisations financières";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63930000;639;"Dotations aux provisions pour risques et charges financières";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63940000;639;"Dotations aux provisions pour dépréciation des titres et valeurs de placement";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63960000;639;"Dotations aux provisions pour dépréciation des comptes de trésorerie";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+63980000;639;"Dotations financières des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65;6;"CHARGES NON COURANTES";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+651;65;"Valeurs nettes d’amortissements des immobilisations cédées ( V.N.A )";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+65120000;651;"Valeurs nettes d'amortissement des immobilisations incorporelles cédées";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65130000;651;"Valeurs nettes d'amortissement des immobilisations corporelles cédées";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65140000;651;"Valeurs nettes d'amortissement des immobilisations financières cédées";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65180000;651;"Valeurs nettes d'amortissement des immobilisations cédées des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+656;65;"Subventions accordées";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+65610000;656;"Subventions accordées de l'exercice";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65680000;656;"Subventions accordées des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+658;65;"Autres charges non courantes";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+6581;658;"Pénalités sur marchés et dédits";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+65811000;6581;"Pénalités sur marchés";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65812000;6581;"Dédits";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65820000;658;"Rappels d'impôts (autres qu'impôts sur les résultats)";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6583;658;"Pénalités et amendes fiscales ou pénales";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+65831000;6583;"Pénalités et amendes fiscales ou pénales";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65833000;6583;"Pénalités et amendes pénales";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65850000;658;"Créances devenues irrécouvrables";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6586;658;"Dons, libéralités et lots";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+65861000;6586;"Dons";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65862000;6586;"Libéralités";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65863000;6586;"Lots";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65880000;658;"Autres charges non courantes des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+659;65;"Dotations non courantes";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+6591;659;"Dotations aux amortissements exceptionnels des immobilisations";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+65911000;6591;"Dotations aux amortissements exceptionnels de l'immobilisation en non valeurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65912000;6591;"Dotations aux amortissements exceptionnels des immobilisations incorporelles";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65913000;6591;"Dotations aux amortissements exceptionnels des immobilisations corporelles";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6594;659;"Dotations non courantes aux provisions réglementées";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+65941000;6594;"Dotations non courantes aux amortissements dérogatoires";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65942000;6594;"Dotations non courantes pour plus-values en instance d'imposition";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65944000;6594;"Dotations non courantes pour investissements";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65945000;6594;"Dotations non courantes pour reconstitution de gisements";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65946000;6594;"Dotations non courantes pour acquisition et construction de logement";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6595;659;"Dotations non courantes aux provisions pour risques et charges";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+65955000;6595;"Dotations non courantes aux provisions pour risques et charges durables";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65957000;6595;"Dotations non courantes aux provisions pour risques et charges momentanés";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+6596;659;"Dotations non courantes aux provisions pour dépréciation";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+65962000;6596;"Dotations non courantes aux provisions pour dépréciation de l'actif immobilisé";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65963000;6596;"Dotations non courantes aux provisions pour dépréciation de l'actif circulant";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+65980000;659;"Dotations non courantes des exercices antérieurs";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+67;6;"IMPOTS SUR LES RESULTATS";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+670;67;"Impôts sur les résulatats";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+67010000;6;"Impôts sur les bénéfices";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+67050000;6;"Imposition minimale annuelle des sociétés";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+67080000;6;"Rappels et dégrèvements des impôts sur les résultats";"MAR_PCG7";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7;0;"COMPTES DE PRODUITS";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71;7;"PRODUITS D’EXPLOITATION";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+711;71;"Ventes de marchandises";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71110000;711;"Ventes de marchandises au Maroc";"MAR_PCG9";0;0;0;;0;1;0;"N_C";1;0;;0;;;;;;1
+71130000;711;"Ventes de marchandises à l'étranger";"MAR_PCG9";0;0;0;;0;1;0;"N_C";1;0;;0;;;;;;1
+71180000;711;"Ventes de marchandises des exercices antérieurs";"MAR_PCG9";0;0;0;;0;1;0;"N_C";1;0;;0;;;;;;1
+71190000;711;"Rabais, remises et ristournes accordés par l'entreprise";"MAR_PCG9";0;0;0;;0;1;0;"N_C";1;0;;0;;;;;;1
+712;71;"Ventes de biens et services produits";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+7121;712;"Ventes de biens produits au Maroc";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71211000;7121;"Ventes de produits finis";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71212000;7121;"Ventes de produits intermédiaires";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71217000;7121;"Ventes de produits résiduels";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7122;712;"Ventes de biens produits à l’étranger";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71221000;7122;"Ventes de produits finis";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71222000;7122;"Ventes de produits intermédiaires";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7124;712;"Ventes de services produits au Maroc";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71241000;7124;"Travaux";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71242000;7124;"Etudes";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71243000;7124;"Prestations de services";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7125;712;"Ventes de services produits à l'étranger";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71251000;7125;"Travaux";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71252000;7125;"Etudes";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71253000;7125;"Prestations de services";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71260000;712;"Redevances pour brevets, marques, droits et valeurs similaires";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7127;712;"Ventes de produits accessoires";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71271000;7127;"Locations diverses reçues";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71272000;7127;"Commissions et courtages reçus";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71273000;7127;"Produits de services exploités dans l'intérêt du personnel";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71275000;7127;"Bonis sur reprises d'emballages consignés";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71276000;7127;"Ports et frais accessoires";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71278000;7127;"Autres ventes de produits accessoires";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71280000;712;"Ventes de biens set services produits des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7129;712;"Rabais, remises et ristournes accordés par l’entreprise";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71291000;7129;"Rabais, remises et ristournes accordés sur ventes au Maroc des biens produits";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71292000;7129;"Rabais, remises et ristournes accordés sur ventes à l'étranger des biens produits";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71294000;7129;"Rabais, remises et ristournes accordés sur ventes au Maroc des services produits";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71295000;7129;"Rabais, remises et ristournes accordés sur ventes à l'étranger des services produits";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71298000;7129;"Rabais, remises et ristournes accordés sur ventes des biens et services produits des exercices antérieurs ";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+713;71;"Variation des stocks de produits";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+7131;713;"Variation des stocks de produits en cours";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71311000;7131;"Variations des stocks de biens produits en cours";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71312000;7131;"Variations des stocks de produits intermédiaires en cours ";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71317000;7131;"Variations des stocks de produits résiduels en cours";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7132;713;"Variation des stocks de biens produits";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71321000;7132;"Variations des stocks de produits finis";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71322000;7132;"Variations des stocks de produits intermédiaires ";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71327000;7132;"Variations des stocks de produits résiduels";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7134;713;"Variation des stocks de services en cours";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71341000;7134;"Variations des stocks de travaux";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71342000;7134;"Variations des stocks d'études en cours";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71343000;7134;"Variations des stocks de prestations en cours";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+714;71;"Immobilisations produites par l’entreprise pour elle même";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71410000;714;"Immobilisations en non-valeurs produites";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71420000;714;"Immobilisations incorporelles produites";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71430000;714;"Immobilisations corporelles produites";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71480000;714;"Immobilisations produites des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+716;71;"Subventions d’exploitation";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71610000;716;"Subventions d'exploitation reçues de l'exercice";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71680000;716;"Subventions d'exploitation reçues des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+718;71;"Autres produits d’exploitation";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71810000;718;"Jetons de présence reçus";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71820000;718;"Revenus des immeubles non affectées à l'exploitation";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71850000;718;"Profits sur opérations faites en commun";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71860000;718;"Transferts de profits sur opérations faites en commun";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71880000;718;"Autres produits d'exploitation des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+719;71;"Reprise d’exploitation, transferts de charges";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71910000;719;"Reprises sur amortissements de l'immobilisation en non-valeur";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71920000;719;"Reprises sur amortissements des immobilisations incorporelles";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71930000;719;"Reprises sur amortissements des immobilisations corporelles";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71940000;719;"Reprises sur provisions pour dépréciation des immobilisations";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71950000;719;"Reprises sur provisions pour risques et charges";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71960000;719;"Reprises sur provisions pour dépréciation de l'actif circulant";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7197;719;"Transferts des charges d’exploitation";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71971000;7197;"Transfert de charges d'exploitation - achats de marchandises";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71972000;7197;"Transfert de charges d'exploitation - achats consommés de matières et fournitures";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71973000;7197;"Transfert de charges d'exploitation - autres charges externes";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71975000;7197;"Transfert de charges d'exploitation - impôts et taxes";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71976000;7197;"Transfert de charges d'exploitation - charges de personnel";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71978000;7197;"Transfert de charges d'exploitation - autres charges d'exploitation";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7198;719;"Reprises sur amortissements et provisions des exercices antérieurs";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+71981000;7198;"Reprises sur amortissements des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+71984000;7198;"Reprises sur Provisions des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73;7;"PRODUITS FINANCIERS";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+732;73;"Produits des titres de participation et des autres titres immobilisés";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+73210000;732;"Revenus des titres de participation";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73250000;732;"Revenus des titres immobilisés";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73280000;732;"Produits des titres de participation et des autres titres immobilisés des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+733;73;"Gains de change";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+73310000;733;"Gains de change propres à l'exercice";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73380000;733;"Gains de change des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+738;73;"Intérêts et autres produits financiers";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+7381;738;"Intérêts et produits assimilés";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+73811000;7381;"Intérêts des prêts";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73813000;7381;"Revenus des autres créances financières";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73830000;738;"Revenus des créances rattachées à des participations";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73840000;738;"Revenus des titres et valeurs de placement";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73850000;738;"Produits nets sur cessions de titres et valeurs de placement";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73860000;738;"Escomptes obtenus";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73880000;738;"Intérêts et autres produits financiers des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+739;73;"Reprises financières, transferts de charges";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+73910000;739;"Reprises sur amortissement des primes de remboursement des obligations";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73920000;739;"Reprises sur provisions pour dépréciation des immobilisations financières";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73930000;739;"Reprises sur provisions pour risques et charges financières";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73940000;739;"Reprises sur provisions pour dépréciation des titres et valeurs de placement";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73960000;739;"Reprises sur provisions pour dépréciation des comptes de trésorerie";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7397;739;"Transfert de charges financières";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+73971000;7397;"Transferts - charges d'intérêts";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73973000;7397;"Transferts - pertes de change";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73978000;7397;"Transferts - autres charges financières";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+73980000;739;"Reprises sur dotations financières des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75;7;"PRODUITS NON COURANTS";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+751;75;"Produits des cessions d’immobilisations";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+75120000;751;"Produits des cessions des immobilisations incorporelles";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75130000;751;"Produits des cessions des immobilisations corporelles";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75140000;751;"Produits des cessions des immobilisations financières (droits de propriété)";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75180000;751;"Produits des cessions des immobilisations des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+756;75;"Subventions d’équilibre";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+75610000;756;"Subventions d'équilibre reçues de l'exercice";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75680000;756;"Subventions d'équilibre reçues des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+757;75;"Reprise sur subventions d’investissements";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+75770000;757;"Reprises sur subventions d'investissement de l'exercice";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75780000;757;"Reprises sur subventions d'investissement des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+758;75;"Autres produits non courants";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+7581;758;"Pénalités et dédits reçus";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+75811000;7581;"Pénalités reçus sur marché";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75812000;7581;"Dédits reçus";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75820000;758;"Dégrèvements d'impôts (autres qu'impôts sur résultat)";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75850000;758;"Rentrées sur créances soldées";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7586;758;"Dons, libéralités et lots reçus";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+75861000;7586;"Dons";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75862000;7586;"Libéralités";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75863000;7586;"Lots";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75880000;758;"Autres produits non courants des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7591;759;"Reprises non courantes sur amortissements exceptionnels des immobilisations";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+75911000;7591;"Reprises non courantes sur amortissements exceptionnelles des immobilisations en non-valeurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75912000;7591;"Reprises non courantes sur amortissements exceptionnelles des immobilisations incorporelles";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75913000;7591;"Reprises non courantes sur amortissements exceptionnelles des immobilisations corporelles";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7594;759;"Reprises non courantes sur provisions réglementées";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+75941000;7594;"Reprises sur amortissements dérogatoires";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75942000;7594;"Reprises sur plus values en instance d'imposition";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75944000;7594;"Reprises sur provisions pour investissements";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75945000;7594;"Reprises sur provisions pour reconstitution de gisements";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75946000;7594;"Reprises sur provisions pour acquisition et construction de logements";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7595;759;"Reprises non courantes sur provisions pour risques et charges";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+75955000;7595;"Reprises non courantes sur provisions pour risques et charges durables";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75957000;7595;"Reprises non courantes sur provisions pour risques et charges momentanés";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+7596;759;"Reprises non courantes sur provisions pour dépréciation";"MAR_PCG0";1;0;0;;0;0;0;;0;0;;0;;;;;;1
+75962000;7596;"Reprises non courantes sur provisions pour dépréciation de l'actif immobilisé";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75963000;7596;"Reprises non courantes sur provisions pour dépréciation de l'actif circulant";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75970000;759;"Transfert de charges non courantes";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
+75980000;759;"Reprises non courantes des exercices antérieurs";"MAR_PCG9";0;0;0;;0;0;0;;0;0;;0;;;;;;1
