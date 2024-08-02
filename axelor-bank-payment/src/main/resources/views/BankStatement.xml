@@ -53,7 +53,7 @@
       <panel-dashlet name="bankStatementLinesPanel"
         action="action-bank-statement-view-bank-statement-lines" colSpan="12" height="500"
         canSearch="true"
-        hideIf="bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0 || bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.053.001.02&quot;) == 0"/>
+        showIf="['camt.xxx.cfonb120.stm','camt.xxx.cfonb120.rep','camt.053.001.02.stm'].indexOf(bankStatementFileFormat.statementFileFormatSelect) == -1"/>
       <panel-dashlet name="bankStatementLinesAfb120Panel"
         action="action-bank-statement-view-bank-statement-lines-afb-120" colSpan="12" height="500"
         canSearch="true"

@@ -7,6 +7,7 @@ import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineCAMT53;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineCAMT53Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineCreateAbstractService;
 import com.axelor.apps.bankpayment.service.bankstatementline.afb120.StructuredContentLine;
@@ -111,19 +112,24 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
       Document document = (Document) jaxbUnmarshaller.unmarshal(file);
       if (document == null) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("Error: Cannot read the input file."));
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_XML_FILE_READ_ERROR));
       }
       BankToCustomerStatementV02 bkToCstmrStmt = document.getBkToCstmrStmt();
       if (bkToCstmrStmt == null) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("Error: No bank statement found."));
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(
+                BankPaymentExceptionMessage.BANK_STATEMENT_XML_FILE_NO_BANK_STATEMENT_FOUND_ERROR));
       }
 
       // May be multiple bank statements.
       List<AccountStatement2> stmtList = bkToCstmrStmt.getStmt();
       if (stmtList == null || stmtList.isEmpty()) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("Error: No bank statement found."));
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(
+                BankPaymentExceptionMessage.BANK_STATEMENT_XML_FILE_NO_BANK_STATEMENT_FOUND_ERROR));
       }
 
       // initial the counter
@@ -152,7 +158,7 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
     } catch (jakarta.xml.bind.JAXBException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get("Error: File format unmarshalling process failed."));
+          I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_XML_FILE_UNMARSHAL_ERROR));
     }
   }
 
@@ -176,7 +182,7 @@ public class BankStatementLineCreateCAMT53Service extends BankStatementLineCreat
       if (bankDetails == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get("Error: The bank details doesn't exist."));
+            I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_BANK_DETAILS_NOT_EXIST_ERROR));
       }
 
       currencyCodeFromStmt = acct.getCcy();
