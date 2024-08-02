@@ -22,11 +22,13 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -50,6 +52,7 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -346,5 +349,20 @@ public class AccountController {
     actionViewBuilder.context("moveTemplateIds", moveTemplateIdList);
 
     response.setView(actionViewBuilder.map());
+  }
+
+  public void checkTaxesNotOnlyNonDeductibleTaxes(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Account account = request.getContext().asType(Account.class);
+    Set<Tax> defaultTaxSet = account.getDefaultTaxSet();
+    TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
+    boolean checkResult = taxAccountService.checkTaxesNotOnlyNonDeductibleTaxes(defaultTaxSet);
+    if (!checkResult) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              "Only one non-deductible tax is configured on the product/account %s. A non deductible tax should always be paired with at least one other deductible tax."),
+          Optional.of(account).map(Account::getLabel).orElse(null));
+    }
   }
 }

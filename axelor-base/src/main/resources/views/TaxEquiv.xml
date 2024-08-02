@@ -14,13 +14,17 @@
     model="com.axelor.apps.account.db.TaxEquiv" onLoad="action-tax-equiv-group-onload">
     <panel name="mainPanel">
       <field name="fromTaxSet" form-view="tax-form" grid-view="tax-grid" required="true"
-        onSelect="action-tax-equiv-attrs-from-tax-domain" widget="TagSelect"/>
+        onSelect="action-tax-equiv-attrs-from-tax-domain"
+        onChange="action-tax-equiv-method-check-taxes-not-only-non-deductible-taxes"
+        widget="TagSelect"/>
       <field name="toTaxSet" form-view="tax-form" grid-view="tax-grid" required="true"
-        onSelect="action-tax-equiv-attrs-to-tax-domain" widget="TagSelect"/>
+        onSelect="action-tax-equiv-attrs-to-tax-domain" widget="TagSelect"
+        onChange="action-tax-equiv-method-check-taxes-not-only-non-deductible-taxes"/>
       <field name="reverseCharge" onChange="action-tax-equiv-record-empty-taxes"/>
       <field name="reverseChargeTaxSet" form-view="tax-form" grid-view="tax-grid"
         showIf="reverseCharge" requiredIf="reverseCharge"
-        onSelect="action-tax-equiv-attrs-reverse-charge-tax-domain" widget="TagSelect"/>
+        onSelect="action-tax-equiv-attrs-reverse-charge-tax-domain" widget="TagSelect"
+        onChange="action-tax-equiv-method-check-taxes-not-only-non-deductible-taxes"/>
       <field name="specificNote" colSpan="12" hidden="true"/>
     </panel>
   </form>
@@ -60,4 +64,9 @@
       if="!reverseCharge"/>
   </action-attrs>
 
+  <action-method
+    name="action-tax-equiv-method-check-taxes-not-only-non-deductible-taxes">
+    <call class="com.axelor.apps.account.web.TaxEquivController"
+      method="checkTaxesNotOnlyNonDeductibleTaxes"/>
+  </action-method>
 </object-views>

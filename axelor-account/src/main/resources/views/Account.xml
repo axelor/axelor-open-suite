@@ -121,6 +121,7 @@
           <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
             widget="boolean-switch" onChange="action-account-validate-check-move-tax-required"/>
           <field name="defaultTaxSet" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
+            onChange="action-account-method-check-default-taxes-not-only-non-deductible-taxes"
             widget="TagSelect"/>
           <field name="vatSystemSelect" colSpan="4"
             showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"/>
@@ -558,5 +559,11 @@
     <view-param name="popup" value="true"/>
     <context name="_accountId" expr="eval: __id__"/>
   </action-view>
+
+  <action-method
+    name="action-account-method-check-default-taxes-not-only-non-deductible-taxes">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="checkTaxesNotOnlyNonDeductibleTaxes"/>
+  </action-method>
 
 </object-views>

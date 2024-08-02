@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
@@ -45,6 +46,7 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -606,6 +608,29 @@ public class InvoiceLineController {
       response.setAttrs(Beans.get(InvoiceLineService.class).setScale(invoiceLine, invoice));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkTaxLinesNotOnlyNonDeductibleTaxes(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+    TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
+    boolean checkResult =
+        taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(invoiceLine.getTaxLineSet());
+    if (!checkResult) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              "Only one non-deductible tax is configured on the product/account %s. A non deductible tax should always be paired with at least one other deductible tax."),
+          Optional.of(invoiceLine)
+                  .map(InvoiceLine::getProduct)
+                  .map(Product::getFullName)
+                  .orElse(null)
+              + "/"
+              + Optional.of(invoiceLine)
+                  .map(InvoiceLine::getAccount)
+                  .map(Account::getLabel)
+                  .orElse(null));
     }
   }
 }

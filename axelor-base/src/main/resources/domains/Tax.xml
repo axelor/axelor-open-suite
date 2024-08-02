@@ -16,6 +16,7 @@
       mappedBy="tax" title="Tax versions history"/>
     <many-to-one name="taxType" ref="com.axelor.apps.account.db.TaxType"
       title="Tax type" required="true"/>
+    <boolean name="isNonDeductibleTax" title="Non deductible tax"/>
 
     <unique-constraint columns="code,name"/>
 

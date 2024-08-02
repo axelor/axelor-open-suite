@@ -260,8 +260,6 @@ import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.OrderLineTaxServiceImpl;
 import com.axelor.apps.base.service.tax.TaxEquivService;
 import com.axelor.apps.base.service.tax.TaxEquivServiceImpl;
-import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.base.service.tax.TaxServiceImpl;
 import com.axelor.apps.base.service.user.UserPermissionResponseComputeService;
 import com.axelor.apps.base.service.user.UserPermissionResponseComputeServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
@@ -472,6 +470,5 @@ public class BaseModule extends AxelorModule {
     bind(UserPermissionResponseComputeService.class)
         .to(UserPermissionResponseComputeServiceImpl.class);
     bind(PrintingTemplateComputeNameService.class).to(PrintingTemplateComputeNameServiceImpl.class);
-    bind(TaxService.class).to(TaxServiceImpl.class);
   }
 }

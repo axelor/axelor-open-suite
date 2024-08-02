@@ -1735,7 +1735,6 @@
   </action-group>
 
   <action-group name="action-invoice-group-before-validate">
-    <action name="action-invoice-method-check-invoice-lines-not-only-non-deductible-taxes"/>
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action
       name="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice"/>
@@ -2885,11 +2884,5 @@
     <action name="action-invoice-group-report-print"/>
     <action name="close"/>
   </action-group>
-
-  <action-method
-    name="action-invoice-method-check-invoice-lines-not-only-non-deductible-taxes">
-    <call class="com.axelor.apps.account.web.InvoiceController"
-      method="checkTaxesNotOnlyNonDeductibleTaxes"/>
-  </action-method>
 
 </object-views>
