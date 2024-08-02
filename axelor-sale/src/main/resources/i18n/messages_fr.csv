@@ -603,6 +603,7 @@
 "Templates","Modèles",,
 "Test this creator","Tester le modèle",,
 "The client Partner is required and must be the same for all sale orders","Le client est requis et doit être le même pour toutes les cmdes clients",,
+"The client provided is not a customer of the given company: %s.","Le client fourni n'est pas un client de l'entreprise donnée: %s ",,
 "The company %s doesn't have any configured sequence for sale orders","La société %s n'a pas de séquence configurée pour les devis clients",,
 "The company is required and must be the same for all sale orders","La société est requise et doit être la même pour toutes les commandes clients",,
 "The currency is required and must be the same for all sale orders","La devise est requise et doit être la même pour toutes les commandes clients",,
