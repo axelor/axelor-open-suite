@@ -75,3 +75,62 @@ task xjc () {
 
 compileJava.dependsOn xjc
 generateCode.finalizedBy xjc
+
+task xjc_bankstatement() {
+	def source = "${projectDir}/src/main/resources/xsd/bankstatement"
+	def target = "${buildDir}/src-gen/xjc"
+
+	inputs.dir(source)
+	outputs.dir(target)
+
+	def xsdToGenerate = [
+			['package': 'com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02', 'destdir': "$target", 'schema': "$source/camt.053.001.02.xsd"]
+	]
+
+	doLast {
+		ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.jaxb.asPath)
+
+		xsdToGenerate.each { argsin ->
+			ant.xjc(argsin)
+		}
+
+		// Post-processing task to add imports and @XmlRootElement annotations
+		fileTree("${target}/com/axelor/apps/bankpayment/xsd/bankstatement/camt_053_001_02")
+				.include('*.java')
+				.each { javaFile ->
+					def content = javaFile.text
+
+					// Add imports after the package statement
+					if (content =~ /package com\.axelor\.apps\.bankpayment\.xsd\.bankstatement\.camt_053_001_02;/) {
+						content = content.replaceFirst(/package com\.axelor\.apps\.bankpayment\.xsd\.bankstatement\.camt_053_001_02;/, { match ->
+							match + '\n\nimport jakarta.xml.bind.annotation.XmlRootElement;'
+						})
+					}
+
+					// Add @XmlRootElement with the class name before the class declaration
+					def classDeclarationIndex = content.indexOf("public class ")
+					if (classDeclarationIndex != -1) {
+						def classNameStart = classDeclarationIndex + "public class ".length()
+						def classNameEnd = content.indexOf(" ", classNameStart)
+						def className = content.substring(classNameStart, classNameEnd)
+
+						content = content.substring(0, classDeclarationIndex) +
+								"@XmlRootElement(name=\"$className\")\n" +
+								content.substring(classDeclarationIndex)
+					}
+
+					javaFile.text = content
+				}
+	}
+
+	sourceSets {
+		main {
+			java {
+				srcDirs target
+			}
+		}
+	}
+}
+
+compileJava.dependsOn xjc_bankstatement
+generateCode.finalizedBy xjc_bankstatement
