@@ -43,6 +43,10 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.AddressServiceSaleImpl;
 import com.axelor.apps.sale.service.AdvancePaymentService;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
+import com.axelor.apps.sale.service.CartInitValueService;
+import com.axelor.apps.sale.service.CartInitValueServiceImpl;
+import com.axelor.apps.sale.service.CartService;
+import com.axelor.apps.sale.service.CartServiceImpl;
 import com.axelor.apps.sale.service.PackLineService;
 import com.axelor.apps.sale.service.PackLineServiceImpl;
 import com.axelor.apps.sale.service.PartnerSaleService;
@@ -50,6 +54,8 @@ import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
 import com.axelor.apps.sale.service.PricingGroupSaleServiceImpl;
 import com.axelor.apps.sale.service.ProductCategorySaleService;
 import com.axelor.apps.sale.service.ProductCategoryServiceSaleImpl;
+import com.axelor.apps.sale.service.SaleOrderGeneratorService;
+import com.axelor.apps.sale.service.SaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.app.AppSaleServiceImpl;
 import com.axelor.apps.sale.service.config.SaleConfigService;
@@ -255,5 +261,8 @@ public class SaleModule extends AxelorModule {
     bind(LoyaltyAccountService.class).to(LoyaltyAccountServiceImpl.class);
     bind(LoyaltyAccountPointsManagementService.class)
         .to(LoyaltyAccountPointsManagementServiceImpl.class);
+    bind(SaleOrderGeneratorService.class).to(SaleOrderGeneratorServiceImpl.class);
+    bind(CartInitValueService.class).to(CartInitValueServiceImpl.class);
+    bind(CartService.class).to(CartServiceImpl.class);
   }
 }
