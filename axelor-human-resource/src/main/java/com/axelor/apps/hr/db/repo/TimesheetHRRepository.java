@@ -42,6 +42,8 @@ public class TimesheetHRRepository extends TimesheetRepository {
     if (timesheet.getTimesheetLineList() != null) {
       for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList())
         Beans.get(TimesheetLineHRRepository.class).computeFullName(timesheetLine);
+
+      timesheetLineService.setToDate(timesheet);
     }
     return super.save(timesheet);
   }
