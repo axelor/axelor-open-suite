@@ -51,8 +51,7 @@ public class SaleOrderLineRestController {
   @HttpExceptionHandler
   public Response createSaleOrderLine(SaleOrderLinePostRequest requestBody) throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().createAccess(SaleOrderLine.class).check();
-    new SecurityCheck().writeAccess(SaleOrder.class).check();
+    new SecurityCheck().createAccess(SaleOrderLine.class).writeAccess(SaleOrder.class).check();
 
     SaleOrderLineGeneratorService saleorderLineCreateService =
         Beans.get(SaleOrderLineGeneratorService.class);
