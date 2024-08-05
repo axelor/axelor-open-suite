@@ -10,6 +10,8 @@
     <many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
     <integer name="qty" title="Quantity" min="1" default="1"/>
     <many-to-one name="cart" title="Cart" ref="com.axelor.apps.sale.db.Cart"/>
+    <many-to-one name="variantProduct" title="Product variant"
+      ref="com.axelor.apps.base.db.Product"/>
 
   </entity>
 
