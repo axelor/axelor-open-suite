@@ -8,6 +8,13 @@
     <extend target="/">
       <attribute name="onLoad" value="action-account-group-tax-on-load"/>
     </extend>
+    <extend target="//panel[@name='mainPanel']/field[@name='isNonDeductibleTax']">
+      <insert position="after">
+        <field name="manageByAmount" widget="boolean-select"
+          if="__config__.app.isApp('account')" x-false-text="Manage by percentage"
+          x-true-text="Manage by amount" colSpan="3"/>
+      </insert>
+    </extend>
     <extend target="//panel-tabs">
       <insert position="inside">
         <panel-related name="accountManagementListPanel"

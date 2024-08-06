@@ -553,8 +553,17 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   }
 
   public Integer getDaybookMoveCount(AccountingBatch accountingBatch) throws AxelorException {
+
+    if (AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS
+            != accountingBatch.getActionSelect()
+        || accountingBatch.getYear() == null) {
+      return 0;
+    }
+
     Set<Year> yearSet = new HashSet<>();
     yearSet.add(accountingBatch.getYear());
+
+    int daybookMoveCount = 0;
 
     if (accountingBatch.getCompany() != null
         && accountConfigService

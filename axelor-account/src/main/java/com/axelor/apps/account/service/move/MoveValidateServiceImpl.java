@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -868,7 +869,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void checkTaxAmount(Move move) throws AxelorException {
-    if (this.isReverseCharge(move) || this.isFinancialDiscount(move)) {
+    if (move == null
+        || this.isReverseCharge(move)
+        || this.isFinancialDiscount(move)
+        || this.isFromModifiedInvoice(move)) {
       return;
     }
 
@@ -966,6 +970,19 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     return false;
+  }
+
+  protected boolean isFromModifiedInvoice(Move move) {
+    Invoice invoice = move.getInvoice();
+    if (invoice == null || ObjectUtils.isEmpty(invoice.getInvoiceLineTaxList())) {
+      return false;
+    }
+
+    return invoice.getInvoiceLineTaxList().stream()
+        .anyMatch(
+            invoiceLineTax ->
+                invoiceLineTax.getTaxTotal().compareTo(invoiceLineTax.getPercentageTaxTotal())
+                    != 0);
   }
 
   protected void checkMoveLineDescription(Move move) throws AxelorException {

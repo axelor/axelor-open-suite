@@ -149,39 +149,60 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
     Set<TaxLine> taxLineSet = invoiceMoveLine.getTaxLineSet();
     List<TaxPaymentMoveLine> taxPaymentMoveLineList = new ArrayList<>();
+
+    if (paymentAmount.compareTo(BigDecimal.ZERO) == 0
+        || invoiceTotalAmount.compareTo(BigDecimal.ZERO) == 0) {
+      return taxPaymentMoveLineList;
+    }
+
     for (TaxLine taxLine : taxLineSet) {
       BigDecimal vatRate = taxLine.getValue();
 
-      BigDecimal baseAmount = BigDecimal.ZERO;
-      if (BigDecimal.ZERO.compareTo(vatRate) != 0) {
-        baseAmount =
-            (invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit()))
-                .divide(
-                    vatRate.divide(BigDecimal.valueOf(100)),
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                    BigDecimal.ROUND_HALF_UP);
-      } else {
-        baseAmount = invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit());
-      }
-
-      BigDecimal detailPaymentAmount =
-          baseAmount
-              .multiply(paymentAmount)
-              .divide(invoiceTotalAmount, RETURNED_SCALE, RoundingMode.HALF_UP)
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      BigDecimal paymentRatio =
+          paymentAmount.divide(invoiceTotalAmount, RETURNED_SCALE, RoundingMode.HALF_UP);
 
       TaxPaymentMoveLine taxPaymentMoveLine =
-          new TaxPaymentMoveLine(
-              customerPaymentMoveLine,
+          taxPaymentMoveLineService.createTaxPaymentMoveLineWithFixedAmount(
+              invoiceMove.getInvoice(),
+              paymentRatio,
+              vatSystemSelect,
+              invoiceMoveLine,
               taxLine,
-              reconcile,
-              vatRate,
-              detailPaymentAmount,
-              reconcile.getEffectiveDate());
+              customerPaymentMoveLine,
+              reconcile);
 
-      taxPaymentMoveLine.setFiscalPosition(invoiceMove.getFiscalPosition());
+      if (taxPaymentMoveLine == null) {
 
-      taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
+        BigDecimal baseAmount = BigDecimal.ZERO;
+        if (BigDecimal.ZERO.compareTo(vatRate) != 0) {
+          baseAmount =
+              (invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit()))
+                  .divide(
+                      vatRate.divide(BigDecimal.valueOf(100)),
+                      AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                      BigDecimal.ROUND_HALF_UP);
+        } else {
+          baseAmount = invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit());
+        }
+
+        BigDecimal detailPaymentAmount =
+            baseAmount
+                .multiply(paymentRatio)
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+
+        taxPaymentMoveLine =
+            new TaxPaymentMoveLine(
+                customerPaymentMoveLine,
+                taxLine,
+                reconcile,
+                vatRate,
+                detailPaymentAmount,
+                reconcile.getEffectiveDate());
+
+        taxPaymentMoveLine.setFiscalPosition(invoiceMove.getFiscalPosition());
+
+        taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
+      }
 
       taxPaymentMoveLine.setVatSystemSelect(vatSystemSelect);
 

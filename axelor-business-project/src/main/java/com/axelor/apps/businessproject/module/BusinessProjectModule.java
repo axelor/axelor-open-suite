@@ -128,12 +128,12 @@ import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderLineInitValueSupplychainServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderPurchaseServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineInitValueSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 
