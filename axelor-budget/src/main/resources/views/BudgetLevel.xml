@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Sections" name="budget-level-grid"
+    orderBy="code" canNew="false">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="globalBudget"/>
+    <field name="parentBudgetLevel"/>
+    <field name="totalAmountExpected" x-scale="$currencyNumberOfDecimals"/>
+    <field name="totalAmountAvailable" x-scale="$currencyNumberOfDecimals"/>
+    <field name="totalAmountCommitted" x-scale="$currencyNumberOfDecimals"/>
+    <field name="realizedWithNoPo" x-scale="$currencyNumberOfDecimals"/>
+    <field name="realizedWithPo" x-scale="$currencyNumberOfDecimals"/>
+    <field name="totalFirmGap" x-scale="$currencyNumberOfDecimals"/>
+    <field name="statusSelect"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
+  </grid>
+
+  <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Budget level"
+    name="budget-level-template-grid" orderBy="code">
+    <field name="code"/>
+    <field name="name"/>
+  </grid>
+
+  <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Budget level"
+    name="budget-level-children-template-grid" orderBy="code">
+    <field name="parentBudgetLevel"/>
+    <field name="code"/>
+    <field name="name"/>
+  </grid>
+
+  <form model="com.axelor.apps.budget.db.BudgetLevel" title="Section" name="budget-level-form"
+    width="large" onNew="action-budget-level-defaults-groups-onnew"
+    onLoad="action-budget-level-group-onload">
+    <panel name="mainPanel" colSpan="12">
+      <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
+        widget="NavSelect" selection-in="'Draft','Validated'"/>
+    </panel>
+
+    <panel name="overViewPanel" title="Overview" canCollapse="true">
+      <panel name="budgetLevelHiddenPanel" hidden="true" colSpan="12">
+        <field name="globalBudget.statusSelect"/>
+      </panel>
+
+      <panel name="generalPanel" colSpan="12" itemSpan="4">
+        <field name="code" readonlyIf="statusSelect != 'draft'"/>
+        <field name="name" readonlyIf="statusSelect != 'draft'"/>
+        <field name="globalBudget" hideIf="!globalBudget" readonly="true"
+          form-view="global-budget-form" colSpan="2"/>
+        <field name="parentBudgetLevel" readonly="true" hideIf="!parentBudgetLevel"
+          form-view="budget-level-form" colSpan="2"/>
+        <field name="statusSelect" hidden="true"/>
+      </panel>
+      <panel name="datesPanel" colSpan="12" showIf="$popup()">
+        <field name="fromDate" colSpan="4" required="true"
+          onChange="action-budget-level-group-from-to-dates-onchange"/>
+        <field name="toDate" colSpan="4" required="true"
+          onChange="action-budget-level-group-from-to-dates-onchange"/>
+        <button name="updateDatesBtn" colSpan="4" title="Update dates" hidden="true"
+          onClick="save,action-budget-budget-level-method-set-dates" css="btn-danger"
+          readonlyIf="code == null || name == null || statusSelect != 'draft'"/>
+      </panel>
+      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
+        title="Total amounts" showIf="id">
+        <field name="totalAmountExpected" x-scale="$currencyNumberOfDecimals"/>
+        <field name="totalAmountAvailable" x-scale="$currencyNumberOfDecimals"/>
+        <field name="availableAmountWithSimulated" x-scale="$currencyNumberOfDecimals"/>
+        <field name="simulatedAmount" x-scale="$currencyNumberOfDecimals"/>
+        <field name="totalAmountCommitted" x-scale="$currencyNumberOfDecimals"/>
+        <field name="realizedWithNoPo" x-scale="$currencyNumberOfDecimals"/>
+        <field name="realizedWithPo" x-scale="$currencyNumberOfDecimals"/>
+        <field name="totalAmountPaid" x-scale="$currencyNumberOfDecimals"/>
+        <field name="totalFirmGap" x-scale="$currencyNumberOfDecimals"/>
+        <field name="totalAmountRealized" hidden="true" x-scale="$currencyNumberOfDecimals"/>
+        <field name="$currencyNumberOfDecimals" hidden="true"/>
+      </panel>
+
+    </panel>
+    <panel sidebar="true" name="buttonsPanel" hidden="true">
+      <button name="validateBtn" title="Validate"
+        onClick="action-budget-level-group-validate" hidden="true"/>
+      <button name="draftBtn" title="Draft" onClick="action-budget-level-group-draft"
+        hidden="true"/>
+    </panel>
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-navy">
+      <field name="budgetLevelList" title="Sections" form-view="budget-level-form"
+        grid-view="budget-level-grid" colSpan="12" canEdit="statusSelect == 'draft'"
+        canNew="statusSelect == 'draft'" canRemove="statusSelect == 'draft'"
+        hideIf="budgetList != null &amp;&amp; budgetList.length &gt;= 1"/>
+      <spacer colSpan="12"/>
+      <label name="orLabel" title="Or" colSpan="12"
+        hideIf="(budgetList != null &amp;&amp; budgetList.length &gt;= 1) || (budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1)"/>
+      <spacer colSpan="12"/>
+      <field name="budgetList" title="Lines" colSpan="12" form-view="budget-form"
+        grid-view="budget-grid"
+        hideIf="budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1"
+        canNew="statusSelect == 'draft'" canEdit="statusSelect == 'draft'"
+        canRemove="statusSelect == 'draft'"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.apps.budget.db.BudgetLevel" title="Budget level"
+    name="budget-level-template-form" onNew="action-budget-level-template-group-onnew"
+    onLoad="action-budget-level-template-record-scenario">
+    <panel name="generalPanel" colSpan="12">
+      <field name="fullName" colSpan="12" hidden="true"/>
+      <field name="code" colSpan="4"/>
+      <field name="name" colSpan="4"/>
+      <field name="budgetStructure" colSpan="2" readonly="true" showIf="budgetStructure"
+        form-view="budget-structure-form" grid-view="budget-structure-grid"/>
+      <field name="parentBudgetLevel" colSpan="2" readonly="true" showIf="parentBudgetLevel"
+        form-view="budget-level-template-form" grid-view="budget-level-template-grid"/>
+      <field name="$isScenario" hidden="true"/>
+    </panel>
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red">
+      <field name="budgetLevelList" title="Sections"
+        hideIf="(budgetList != null &amp;&amp; budgetList.length &gt;= 1) || (budgetScenarioVariableSet != null &amp;&amp; budgetScenarioVariableSet.length &gt;= 1)"
+        colSpan="12" form-view="budget-level-template-form"
+        grid-view="budget-level-children-template-grid"/>
+      <field name="budgetList" title="Lines"
+        hideIf="(budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1) || $isScenario"
+        colSpan="12" form-view="budget-included-template-form"
+        grid-view="budget-lines-template-grid"/>
+      <field name="budgetScenarioVariableSet" title="Variables"
+        hideIf="(budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1) || !$isScenario"
+        colSpan="12" form-view="budget-scenario-variable-form"
+        grid-view="budget-scenario-variable-grid" canNew="false" canEdit="false" canSelect="true"/>
+    </panel>
+  </form>
+
+
+  <action-group name="action-budget-level-group-onnew">
+    <action name="action-budget-level-record-set-defaults"/>
+    <action name="action-budget-level-attrs-set-attrs"/>
+    <action name="action-global-budget-method-hide-amounts"/>
+  </action-group>
+
+  <action-group name="action-budget-level-template-group-onnew">
+    <action name="action-budget-level-template-record-onnew"/>
+    <action name="action-budget-level-template-record-scenario"/>
+  </action-group>
+
+  <action-group name="action-budget-level-group-onload">
+    <action name="action-budget-level-attrs-set-attrs"/>
+    <action name="action-global-budget-method-hide-amounts" if="!id"/>
+    <action name="action-budget-level-method-show-validate-fields"/>
+  </action-group>
+
+  <action-group name="action-budget-level-group-validate">
+    <action name="action-budget-level-validate-validate"/>
+    <action name="action-budget-level-method-validate"/>
+  </action-group>
+
+  <action-group name="action-budget-level-group-draft">
+    <action name="action-budget-level-validate-draft"/>
+    <action name="action-budget-level-method-draft"/>
+  </action-group>
+
+  <action-validate name="action-budget-level-validate-validate">
+    <alert
+      message="By validating this section, you will validate children sections and budgets linked too. Do you want to continue ?"/>
+  </action-validate>
+
+  <action-validate name="action-budget-level-validate-draft">
+    <alert
+      message="By drafting this section, you will set children sections and budgets linked in draft too. Do you want to continue ?"/>
+  </action-validate>
+
+
+  <action-attrs name="action-budget-level-attrs-set-attrs">
+    <attribute name="domain" for="parentBudgetLevel" expr="eval: _domain" if=" _domain"/>
+    <attribute for="code" name="focus" expr="true"/>
+  </action-attrs>
+
+  <action-record name="action-budget-level-record-set-group-defaults"
+    model="com.axelor.apps.budget.db.BudgetLevel">
+    <field name="fromDate" expr="eval: fromDate == null ? __parent__?.fromDate : fromDate"/>
+    <field name="toDate" expr="eval: toDate == null ? __parent__?.toDate : toDate"/>
+  </action-record>
+
+  <action-record name="action-budget-level-record-set-defaults"
+    model="com.axelor.apps.budget.db.BudgetLevel">
+    <field name="statusSelect"
+      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT"/>
+    <field name="parentBudgetLevel" expr="eval: __parent__"
+      if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
+    <field name="globalBudget" expr="eval: __parent__"
+      if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.GlobalBudget'"/>
+    <field name="typeSelect" expr="eval: _typeSelect"/>
+    <field name="typeSelect" expr="eval: __parent__.typeSelect" if="__parent__"/>
+    <field name="sourceSelect" expr="eval: __parent__.sourceSelect" if="__parent__"/>
+    <field name="sourceSelect"
+      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_SOURCE_CUSTOM"
+      if="(_typeSelect == com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET) || (__parent__ &amp;&amp; (__parent__.typeSelect == com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET))"/>
+    <field name="startDate" expr="eval: __parent__?.startDate"/>
+    <field name="endDate" expr="eval: __parent__?.endDate"/>
+    <field name="company" expr="eval: __parent__?.company"/>
+    <field name="$currencyNumberOfDecimals"
+      expr="eval: __parent__?.company?.currency?.numberOfDecimals"/>
+  </action-record>
+
+  <action-record name="action-budget-level-template-record-onnew"
+    model="com.axelor.apps.budget.db.BudgetLevel">
+    <field name="budgetStructure" expr="eval: __parent__"
+      if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetStructure'"/>
+    <field name="parentBudgetLevel" expr="eval: __parent__"
+      if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
+    <field name="company" expr="eval: __parent__.company" if="__parent__"/>
+  </action-record>
+
+  <action-record name="action-budget-level-template-record-scenario"
+    model="com.axelor.apps.budget.db.BudgetLevel">
+    <field name="$isScenario" expr="eval: __parent__?.isScenario"/>
+  </action-record>
+
+  <action-group name="action-budget-level-defaults-groups-onnew">
+    <action name="action-budget-level-record-set-group-defaults"/>
+    <action name="action-budget-level-group-onnew"/>
+  </action-group>
+
+  <action-group name="action-budget-level-group-from-to-dates-onchange">
+    <action name="action-budget-level-validate-from-to-dates"/>
+    <action name="action-budget-level-method-show-update-dates-btn"/>
+  </action-group>
+
+  <action-validate name="action-budget-level-validate-from-to-dates">
+    <error message="Invalid dates"
+      if="toDate != null &amp;&amp; fromDate != null &amp;&amp; toDate &lt; fromDate"
+      action="action-budget-level-record-null-endDate"/>
+  </action-validate>
+
+  <action-record name="action-budget-level-record-null-endDate"
+    model="com.axelor.apps.budget.db.BudgetLevel">
+    <field name="endDate" expr="eval: null"/>
+  </action-record>
+
+  <action-method name="action-budget-budget-level-method-set-dates">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="setDates"/>
+  </action-method>
+
+  <action-method name="action-budget-level-method-show-update-dates-btn">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="showUpdateDatesBtn"/>
+  </action-method>
+
+  <action-method name="action-budget-level-method-validate">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="validate"/>
+  </action-method>
+
+  <action-method name="action-budget-level-method-show-validate-fields">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="showButtonFields"/>
+  </action-method>
+
+  <action-method name="action-budget-level-method-draft">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="draft"/>
+  </action-method>
+
+  <action-view name="action-budget-view-budget-level" title="Sections"
+    model="com.axelor.apps.budget.db.BudgetLevel">
+    <view type="form" name="budget-level-form"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+
+</object-views>

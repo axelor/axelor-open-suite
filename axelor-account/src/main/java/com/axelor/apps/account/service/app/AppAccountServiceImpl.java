@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,13 +24,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppAccount;
-import com.axelor.studio.db.AppBudget;
 import com.axelor.studio.db.AppInvoice;
 import com.axelor.studio.db.repo.AppAccountRepository;
-import com.axelor.studio.db.repo.AppBudgetRepository;
 import com.axelor.studio.db.repo.AppInvoiceRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
@@ -44,8 +44,6 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
 
   protected AppAccountRepository appAccountRepo;
 
-  protected AppBudgetRepository appBudgetRepo;
-
   protected AppInvoiceRepository appInvoiceRepo;
 
   protected AccountConfigRepository accountConfigRepo;
@@ -58,15 +56,22 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService,
+      AppSettingsStudioService appSettingsService,
+      MetaModuleRepository metaModuleRepo,
+      MetaFileRepository metaFileRepo,
       AppAccountRepository appAccountRepo,
-      AppBudgetRepository appBudgetRepo,
       AppInvoiceRepository appInvoiceRepo,
       AccountConfigRepository accountConfigRepo,
       CompanyRepository companyRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+    super(
+        appRepo,
+        metaFiles,
+        appVersionService,
+        metaModelRepo,
+        appSettingsService,
+        metaModuleRepo,
+        metaFileRepo);
     this.appAccountRepo = appAccountRepo;
-    this.appBudgetRepo = appBudgetRepo;
     this.appInvoiceRepo = appInvoiceRepo;
     this.accountConfigRepo = accountConfigRepo;
     this.companyRepo = companyRepo;
@@ -75,11 +80,6 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
   @Override
   public AppAccount getAppAccount() {
     return appAccountRepo.all().fetchOne();
-  }
-
-  @Override
-  public AppBudget getAppBudget() {
-    return appBudgetRepo.all().fetchOne();
   }
 
   @Override

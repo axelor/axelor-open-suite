@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,8 +37,14 @@ public class ICalendarEventController {
 
   @SuppressWarnings("unchecked")
   public void addEmailGuest(ActionRequest request, ActionResponse response)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, MessagingException, IOException, ICalendarException, ParseException {
+      throws ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          AxelorException,
+          MessagingException,
+          IOException,
+          ICalendarException,
+          ParseException {
     ICalendarEvent event = request.getContext().asType(ICalendarEvent.class);
     try {
       Map<String, Object> guestEmail = (Map<String, Object>) request.getContext().get("guestEmail");

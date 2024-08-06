@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,20 +19,21 @@
 package com.axelor.apps.base.service.message;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ModelEmailLink;
 import com.axelor.apps.base.db.PrintingSettings;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.ModelEmailLinkRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAccount;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.Message;
@@ -43,27 +44,21 @@ import com.axelor.message.service.SendMailQueueService;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
 import com.axelor.studio.db.AppBase;
-import com.axelor.text.StringTemplates;
-import com.axelor.text.Templates;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
 
 public class MessageServiceBaseImpl extends MessageServiceImpl implements MessageBaseService {
 
@@ -71,6 +66,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
 
   protected final UserService userService;
   protected final AppBaseService appBaseService;
+  protected final PrintingTemplatePrintService printingTemplatePrintService;
 
   @Inject
   public MessageServiceBaseImpl(
@@ -79,7 +75,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
       SendMailQueueService sendMailQueueService,
       AppSettingsMessageService appSettingsMessageService,
       UserService userService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      PrintingTemplatePrintService printingTemplatePrintService) {
     super(
         metaAttachmentRepository,
         messageRepository,
@@ -87,6 +84,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
         appSettingsMessageService);
     this.userService = userService;
     this.appBaseService = appBaseService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
   }
 
   @Override
@@ -209,41 +207,28 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
     }
 
     PrintingSettings printSettings = company.getPrintingSettings();
-    if (printSettings == null || printSettings.getDefaultMailBirtTemplate() == null) {
+    if (printSettings == null || printSettings.getDefaultMailPrintTemplate() == null) {
       return null;
     }
 
-    BirtTemplate birtTemplate = printSettings.getDefaultMailBirtTemplate();
+    PrintingTemplate template = printSettings.getDefaultMailPrintTemplate();
 
-    logger.debug("Default BirtTemplate : {}", birtTemplate);
+    logger.debug("Default Template : {}", template);
 
-    Templates templates = new StringTemplates('$', '$');
-    Map<String, Object> templatesContext = Maps.newHashMap();
     try {
       Class<? extends Model> className =
           (Class<? extends Model>) Class.forName(message.getClass().getName());
-      templatesContext.put("Message", JPA.find(className, message.getId()));
-    } catch (ClassNotFoundException e) {
-      TraceBackService.trace(e);
-    }
+      Model model = JPA.find(className, message.getId());
 
-    String fileName =
-        "Message "
-            + message.getSubject()
-            + "-"
-            + appBaseService.getTodayDate(company).format(DateTimeFormatter.BASIC_ISO_DATE);
+      String fileName =
+          "Message "
+              + message.getSubject()
+              + "-"
+              + appBaseService.getTodayDate(company).format(DateTimeFormatter.BASIC_ISO_DATE);
+      return printingTemplatePrintService.getPrintLink(
+          template, new PrintingGenFactoryContext(model), fileName);
 
-    try {
-      return Beans.get(TemplateMessageServiceBaseImpl.class)
-          .generateBirtTemplateLink(
-              templates,
-              templatesContext,
-              fileName,
-              birtTemplate.getTemplateLink(),
-              birtTemplate.getFormat(),
-              birtTemplate.getBirtTemplateParameterList());
-
-    } catch (AxelorException e) {
+    } catch (AxelorException | ClassNotFoundException e) {
       TraceBackService.trace(e);
       throw new IllegalStateException(e);
     }
@@ -262,7 +247,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Message sendSMS(Message message) throws IOException, JSONException {
+  public Message sendSMS(Message message) throws IOException {
 
     if (appBaseService.getAppBase().getActivateSendingEmail()) {
       return super.sendSMS(message);
@@ -304,10 +289,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
   public String getFullEmailAddress(EmailAddress emailAddress) {
     String partnerName = "";
     if (emailAddress.getPartner() != null) {
-      partnerName =
-          new String(
-              emailAddress.getPartner().getSimpleFullName().getBytes(),
-              StandardCharsets.ISO_8859_1);
+      partnerName = emailAddress.getPartner().getSimpleFullName();
     }
 
     return "\"" + partnerName + "\" <" + emailAddress.getAddress() + ">";

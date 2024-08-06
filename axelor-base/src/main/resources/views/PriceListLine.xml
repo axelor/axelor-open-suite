@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <grid name="price-list-line-grid" title="Price list lines"
     model="com.axelor.apps.base.db.PriceListLine">
-    <hilite background="danger" if="anomalySelect == 1"/>
+    <hilite background="danger" if="anomalySelect == 1 || anomalySelect == 3"/>
     <hilite background="warning" if="anomalySelect == 2"/>
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="productCategory" form-view="product-category-form"
@@ -67,7 +67,8 @@
     <field name="amount" expr="eval: product?.purchasePrice"
       if="product &amp;&amp; _parent?.typeSelect == 2 &amp;&amp; typeSelect == 3"/>
     <field name="anomalySelect"
-      expr="eval: product.sellable? product.isUnrenewed? 2 : null : 1"/>
+      expr="eval: _parent?.typeSelect == 1 ? (!product.sellable ? 1 : (product.isUnrenewed ? 2 : 0)) : (_parent?.typeSelect == 2 &amp;&amp; !product.purchasable ? 3 : 0)"
+      if="product"/>
   </action-record>
 
   <action-record name="action-price-list-line-record-type-select"

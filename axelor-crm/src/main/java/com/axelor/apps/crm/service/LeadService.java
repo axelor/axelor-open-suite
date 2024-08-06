@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,6 @@ package com.axelor.apps.crm.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
-import com.axelor.apps.crm.db.LeadStatus;
 import com.axelor.apps.crm.db.LostReason;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,7 @@ public interface LeadService {
    * @return
    * @throws AxelorException
    */
-  public String getSequence() throws AxelorException;
+  public String getSequence(Partner partner) throws AxelorException;
 
   /**
    * Assign user company to partner
@@ -82,7 +81,7 @@ public interface LeadService {
   public void loseLead(Lead lead, LostReason lostReason, String lostReasonStr)
       throws AxelorException;
 
-  public String processFullName(String enterpriseName, String name, String firstName);
+  public boolean computeIsLost(Lead lead) throws AxelorException;
 
-  public LeadStatus getDefaultLeadStatus();
+  public void kanbanLeadOnMove(Lead lead) throws AxelorException;
 }

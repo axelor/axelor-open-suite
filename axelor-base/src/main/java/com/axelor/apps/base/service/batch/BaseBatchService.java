@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,6 +44,10 @@ public class BaseBatchService extends AbstractBatchService {
     switch (baseBatch.getActionSelect()) {
       case BaseBatchRepository.ACTION_SYNCHRONIZE_CALENDARS:
         return synchronizeCalendars(baseBatch);
+      case BaseBatchRepository.ACTION_PASSWORD_CHANGE:
+        return passwordChange(baseBatch);
+      case BaseBatchRepository.ACTION_COUNTRY_RECOMPUTE_ADDRESS:
+        return recomputeAddressForCountries(baseBatch);
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -55,5 +59,13 @@ public class BaseBatchService extends AbstractBatchService {
 
   public Batch synchronizeCalendars(BaseBatch baseBatch) {
     return Beans.get(BatchCalendarSynchronization.class).run(baseBatch);
+  }
+
+  public Batch passwordChange(BaseBatch baseBatch) {
+    return Beans.get(BatchPasswordChange.class).run(baseBatch);
+  }
+
+  public Batch recomputeAddressForCountries(BaseBatch baseBatch) {
+    return Beans.get(BatchCountryAddressRecompute.class).run(baseBatch);
   }
 }

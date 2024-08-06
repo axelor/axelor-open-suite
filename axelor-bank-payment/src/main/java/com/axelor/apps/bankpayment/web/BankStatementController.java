@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,8 +23,8 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveService;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
@@ -37,6 +37,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -44,34 +45,14 @@ import org.apache.commons.collections.CollectionUtils;
 @Singleton
 public class BankStatementController {
 
-  public void runImport(ActionRequest request, ActionResponse response) {
-    try {
-      BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+  public void runImport(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
+    BankStatement bankStatement = request.getContext().asType(BankStatement.class);
 
-      BankStatementRepository bankStatementRepo = Beans.get(BankStatementRepository.class);
-      BankStatementService bankStatementService = Beans.get(BankStatementService.class);
-      bankStatement = bankStatementRepo.find(bankStatement.getId());
-      bankStatementService.runImport(bankStatement, true);
-
-    } catch (Exception e) {
-      TraceBackService.trace(
-          response, e, ExceptionOriginRepository.BANK_STATEMENT, ResponseMessageType.ERROR);
-    }
-    response.setReload(true);
-  }
-
-  public void print(ActionRequest request, ActionResponse response) {
-    try {
-      BankStatement bankStatement = request.getContext().asType(BankStatement.class);
-      bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());
-      String name = bankStatement.getName();
-      String fileLink = Beans.get(BankStatementService.class).print(bankStatement);
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ExceptionOriginRepository.BANK_STATEMENT);
-    }
-
+    BankStatementRepository bankStatementRepo = Beans.get(BankStatementRepository.class);
+    BankStatementImportService bankStatementService = Beans.get(BankStatementImportService.class);
+    bankStatement = bankStatementRepo.find(bankStatement.getId());
+    bankStatementService.runImport(bankStatement, true);
     response.setReload(true);
   }
 
@@ -142,8 +123,7 @@ public class BankStatementController {
     }
   }
 
-  public void deleteStatement(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void deleteStatement(ActionRequest request, ActionResponse response) {
     try {
       BankStatement bankStatement = request.getContext().asType(BankStatement.class);
       bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
 import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -38,7 +37,9 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 
 @Singleton
 public class AnalyticDistributionLineController {
@@ -46,8 +47,16 @@ public class AnalyticDistributionLineController {
   public void computeAmount(ActionRequest request, ActionResponse response) {
     try {
       AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-      response.setValue(
-          "amount", Beans.get(AnalyticMoveLineService.class).computeAmount(analyticMoveLine));
+      AnalyticLine parent =
+          Beans.get(AnalyticControllerUtils.class).getParentWithContext(request, analyticMoveLine);
+
+      AnalyticMoveLineService analyticMoveLineService = Beans.get(AnalyticMoveLineService.class);
+
+      BigDecimal amount =
+          parent != null
+              ? analyticMoveLineService.computeAmount(analyticMoveLine, parent.getLineAmount())
+              : analyticMoveLineService.computeAmount(analyticMoveLine);
+      response.setValue("amount", amount);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -71,12 +80,16 @@ public class AnalyticDistributionLineController {
   public void manageNewAnalyticDistributionLine(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
-      Class<?> parentClass = request.getContext().getParent().getContextClass();
-      if (AnalyticLine.class.isAssignableFrom(parentClass)) {
-        AnalyticLine parent = request.getContext().getParent().asType(AnalyticLine.class);
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+
+      AnalyticLine parent =
+          Beans.get(AnalyticControllerUtils.class).getParentWithContext(request, analyticMoveLine);
+
+      if (parent != null) {
         AnalyticLineService analyticMoveLineService = Beans.get(AnalyticLineService.class);
         response.setValue("analyticJournal", analyticMoveLineService.getAnalyticJournal(parent));
         response.setValue("date", analyticMoveLineService.getDate(parent));
+        response.setValue("currency", analyticMoveLineService.getCompanyCurrency(parent));
       }
 
     } catch (Exception e) {
@@ -84,44 +97,24 @@ public class AnalyticDistributionLineController {
     }
   }
 
-  public void calculateAmountWithPercentage(ActionRequest request, ActionResponse response)
+  public void setAnalyticAxisDomain(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    try {
-      Class<?> parentClass = request.getContext().getParent().getContextClass();
-      if (AnalyticLine.class.isAssignableFrom(parentClass)) {
-        AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-        AnalyticLine parent = request.getContext().getParent().asType(AnalyticLine.class);
-        response.setValue(
-            "amount",
-            Beans.get(AnalyticLineService.class)
-                .getAnalyticAmountFromParent(parent, analyticMoveLine));
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setAnalyticAxisDomain(ActionRequest request, ActionResponse response) {
-    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+    AnalyticDistributionLine analyticDistributionLine =
+        request.getContext().asType(AnalyticDistributionLine.class);
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        analyticDistributionLine.getAnalyticDistributionTemplate();
     Company company = null;
-    if (analyticMoveLine.getAnalyticJournal() != null
-        && analyticMoveLine.getAnalyticJournal().getCompany() != null) {
-      company = analyticMoveLine.getAnalyticJournal().getCompany();
+    if (analyticDistributionTemplate != null && analyticDistributionTemplate.getCompany() != null) {
+      company = analyticDistributionTemplate.getCompany();
     } else {
-      Context parent = request.getContext().getParent();
-      if (parent.getParent() != null && parent.getParent().get("company") != null) {
-        company = (Company) parent.get("company");
-      } else if (parent.get("move") != null && ((Move) parent.get("move")).getCompany() != null) {
-        company = ((Move) parent.get("move")).getCompany();
-      }
+      company =
+          ContextHelper.getFieldFromContextParent(request.getContext(), "company", Company.class);
     }
     if (company != null) {
       response.setAttr(
           "analyticAxis",
           "domain",
-          Beans.get(AnalyticMoveLineService.class)
-              .getAnalyticAxisDomain(analyticMoveLine, company));
+          Beans.get(AnalyticMoveLineService.class).getAnalyticAxisDomain(company));
     }
   }
 

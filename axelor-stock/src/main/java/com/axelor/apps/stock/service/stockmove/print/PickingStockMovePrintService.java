@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 package com.axelor.apps.stock.service.stockmove.print;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
 import java.io.File;
 import java.io.IOException;
@@ -34,15 +33,13 @@ public interface PickingStockMovePrintService {
    * @param userType
    * @return the link to the generated file.
    * @throws IOException
+   * @throws AxelorException
    */
-  String printStockMoves(List<Long> ids, String userType) throws IOException;
+  String printStockMoves(List<Long> ids, String userType) throws IOException, AxelorException;
 
-  ReportSettings prepareReportSettings(StockMove stockMove, String format) throws AxelorException;
+  File print(StockMove stockMove) throws AxelorException;
 
-  File print(StockMove stockMove, String format) throws AxelorException;
-
-  String printStockMove(StockMove stockMove, String format, String userType)
-      throws AxelorException, IOException;
+  String printStockMove(StockMove stockMove, String userType) throws AxelorException, IOException;
 
   String getFileName(StockMove stockMove);
 }

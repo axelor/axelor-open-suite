@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class TrainingSessionServiceImpl implements TrainingSessionService {
@@ -54,16 +53,6 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
     }
 
     trainingSessionRepo.save(trainingSession);
-  }
-
-  @Override
-  public String computeFullName(TrainingSession trainingSession) {
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
-    return trainingSession.getFromDate().format(formatter)
-        + " - "
-        + trainingSession.getToDate().format(formatter);
   }
 
   @Override

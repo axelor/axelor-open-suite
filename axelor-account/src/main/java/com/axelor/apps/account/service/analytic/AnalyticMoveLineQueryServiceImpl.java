@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -138,8 +138,11 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
   protected String getAndQuery(
       String query, List<AnalyticMoveLineQueryParameter> searchAnalyticMoveLineQueryParameterList) {
     Map<MoveLine, List<AnalyticMoveLine>> analyticMoveLineList =
-        Beans.get(AnalyticMoveLineRepository.class).all().filter("self.moveLine is not null")
-            .fetch().stream()
+        Beans.get(AnalyticMoveLineRepository.class)
+            .all()
+            .filter("self.moveLine is not null")
+            .fetch()
+            .stream()
             .collect(Collectors.groupingBy(AnalyticMoveLine::getMoveLine, Collectors.toList()));
 
     Map<AnalyticAxis, Set<AnalyticAccount>> paramMap =

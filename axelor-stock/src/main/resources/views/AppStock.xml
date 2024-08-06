@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-stock-config-form" title="App stock" model="com.axelor.studio.db.AppStock"
     canDelete="false" canNew="false" width="large">
@@ -11,6 +11,9 @@
       <field name="isSeparateShipmentOperations" widget="boolean-switch" colSpan="4"/>
       <field name="isRequiredShipmentSupplierDetails" widget="boolean-switch" colSpan="4"/>
       <field name="stockUnit" colSpan="4" form-view="unit-form" grid-view="unit-grid"/>
+      <field name="isManageStockLocationOnStockMoveLine" widget="boolean-switch" colSpan="4"
+        onChange="action-app-stock-validate-config-error"/>
+      <field name="isIncotermEnabled" widget="boolean-switch" colSpan="4"/>
     </panel>
     <panel name="barCodePanel" title="Barcode">
       <panel name="trackingNumberBarCodePanel" title="Tracking number" colSpan="12">
@@ -58,5 +61,18 @@
     <view type="grid" name="stock-config-grid"/>
     <view type="form" name="stock-config-form"/>
   </action-view>
+
+  <action-validate name="action-app-stock-validate-config-error">
+    <error
+      message="Stock reservation feature cannot be active when we are managing stock locations on stock move line."
+      if="isManageStockLocationOnStockMoveLine &amp;&amp; __config__.app.getApp('supplychain')?.manageStockReservation"
+      action="action-app-stock-record-set-manage-stock-location-in-line-false"/>
+  </action-validate>
+
+  <action-record
+    name="action-app-stock-record-set-manage-stock-location-in-line-false"
+    model="com.axelor.studio.db.AppStock">
+    <field name="isManageStockLocationOnStockMoveLine" expr="eval: false"/>
+  </action-record>
 
 </object-views>

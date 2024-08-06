@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,7 +47,10 @@ public class ProjectDashboardBusinessSupportServiceImpl extends ProjectDashboard
     List<Map<String, Object>> newsList = new ArrayList<>();
     List<ProjectAnnouncement> announcementList = new ArrayList<>();
 
-    projectRepo.all().filter("self.id IN ?1", projectService.getContextProjectIds()).fetch()
+    projectRepo
+        .all()
+        .filter("self.id IN ?1", projectService.getContextProjectIds())
+        .fetch()
         .stream()
         .forEach(subProject -> announcementList.addAll(subProject.getAnnouncementList()));
 

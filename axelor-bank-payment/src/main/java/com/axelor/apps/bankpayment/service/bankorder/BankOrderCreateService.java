@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,7 +27,6 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
-import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -35,7 +34,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -48,20 +46,17 @@ import org.slf4j.LoggerFactory;
 public class BankOrderCreateService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  protected BankOrderRepository bankOrderRepo;
-  protected BankOrderService bankOrderService;
+  protected BankOrderRepository bankOrderRepository;
   protected BankOrderLineService bankOrderLineService;
   protected InvoiceService invoiceService;
 
   @Inject
   public BankOrderCreateService(
-      BankOrderRepository bankOrderRepo,
-      BankOrderService bankOrderService,
+      BankOrderRepository bankOrderRepository,
       BankOrderLineService bankOrderLineService,
       InvoiceService invoiceService) {
 
-    this.bankOrderRepo = bankOrderRepo;
-    this.bankOrderService = bankOrderService;
+    this.bankOrderRepository = bankOrderRepository;
     this.bankOrderLineService = bankOrderLineService;
     this.invoiceService = invoiceService;
   }
@@ -103,16 +98,6 @@ public class BankOrderCreateService {
     bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_NOT_REJECTED);
     bankOrder.setSenderCompany(senderCompany);
     bankOrder.setSenderBankDetails(senderBankDetails);
-    EbicsUser signatoryEbicsUser =
-        bankOrderService.getDefaultEbicsUserFromBankDetails(senderBankDetails);
-    User signatoryUser = null;
-    if (signatoryEbicsUser != null) {
-      signatoryUser = signatoryEbicsUser.getAssociatedUser();
-      bankOrder.setSignatoryEbicsUser(signatoryEbicsUser);
-    }
-    if (signatoryUser != null) {
-      bankOrder.setSignatoryUser(signatoryUser);
-    }
 
     if (!bankOrderFileFormat.getIsMultiCurrency()) {
       bankOrder.setBankOrderCurrency(currency);
@@ -183,7 +168,7 @@ public class BankOrderCreateService {
     bankOrder.addBankOrderLineListItem(bankOrderLine);
     invoicePayment.setBankOrder(bankOrder);
 
-    bankOrder = bankOrderRepo.save(bankOrder);
+    bankOrder = bankOrderRepository.save(bankOrder);
 
     return bankOrder;
   }

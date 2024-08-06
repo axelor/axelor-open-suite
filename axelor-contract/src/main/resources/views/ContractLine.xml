@@ -2,59 +2,392 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="contract-line-grid" title="Contract Lines"
     model="com.axelor.apps.contract.db.ContractLine" canMove="true" orderBy="sequence">
+    <hilite strong="true" color="default" if="typeSelect != 0"/>
     <hilite if="isConsumptionLine" background="primary"/>
     <field name="productName"/>
-    <field name="qty"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
     <field name="isConsumptionLine"/>
-    <field name="price"/>
-    <field name="exTaxTotal"/>
-    <field name="inTaxTotal"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="exTaxTotal" x-scale="$currencyNumberOfDecimals"/>
+    <field name="inTaxTotal" x-scale="$currencyNumberOfDecimals"/>
+    <field name="isToRevaluate"/>
+    <field name="initialPricePerYear" readonly="true" x-scale="$currencyNumberOfDecimals"/>
+    <field name="yearlyPriceRevalued" readonly="true" x-scale="$currencyNumberOfDecimals"/>
+    <field name="typeSelect" hidden="true"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+  </grid>
+
+  <grid name="contract-line-yer-grid" title="Contract Lines"
+    model="com.axelor.apps.contract.db.ContractLine" canMove="true" orderBy="sequence">
+    <field name="productName"/>
+    <field name="pricing"/>
+  </grid>
+
+  <grid name="additional-contract-line-grid" title="Additional benefit lines"
+    model="com.axelor.apps.contract.db.ContractLine">
+    <hilite strong="true" color="default" if="typeSelect != 0"/>
+    <hilite if="isInvoiced" background="success"/>
+    <field name="productName"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="exTaxTotal" x-scale="$currencyNumberOfDecimals"/>
+    <field name="inTaxTotal" x-scale="$currencyNumberOfDecimals"/>
+    <field name="isInvoiced" hidden="true"/>
+    <field name="invoiceId" type="string" title="Invoice N°"/>
+    <field name="subscriptionFromDate" type="date" title="From"/>
+    <field name="subscriptionToDate" type="date" title="To"/>
+    <field name="statusSelect" type="string" title="Status"/>
+    <field name="typeSelect" hidden="true"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+  </grid>
+
+  <grid name="contract-line-grid-for-template" title="Contract Lines"
+    model="com.axelor.apps.contract.db.ContractLine">
+    <hilite if="isConsumptionLine" background="primary"/>
+    <field name="productName"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="isConsumptionLine" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+  </grid>
+
+  <grid name="additional-contract-line-grid-for-template" title="Additional benefit lines"
+    model="com.axelor.apps.contract.db.ContractLine">
+    <field name="productName"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <form name="contract-line-form" title="Contract line"
-    model="com.axelor.apps.contract.db.ContractLine"
-    onNew="action-contract-line-attrs-hide-consumption-line,action-contract-line-attrs-scale-and-precision"
-    onLoad="action-contract-line-attrs-hide-consumption-line,action-contract-line-attrs-scale-and-precision">
-
+    model="com.axelor.apps.contract.db.ContractLine" onNew="action-contract-line-group-onnew"
+    onLoad="action-contract-line-group-edit-view">
     <panel-tabs name="mainPanelTab">
-      <panel name="informationsPanel" title="Information">
-        <field name="product" canEdit="false"
-          onChange="action-method-contract-version-change-product,action-method-contract-line-compute-total"
-          domain="self.dtype = 'Product'"/>
-        <field name="productName"/>
-        <field name="qty" readonlyIf="isConsumptionLine"
+      <panel name="productPanel" title="Information" showIf="typeSelect > 0">
+        <field name="productName" colSpan="9" title="Title"/>
+        <field name="typeSelect" requiredIf="typeSelect != 0" colSpan="3"
+          onChange="action-contract-line-method-empty-line"/>
+        <panel name="descriptionPanel" showIf="typeSelect == 1" title="Description"
+          colSpan="12">
+          <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
+        </panel>
+      </panel>
+      <panel name="informationsPanel" title="Information" showIf="typeSelect == 0">
+        <field name="product" canEdit="false" colSpan="5"
+          onSelect="action-contract-line-method-domain-product"
+          onChange="action-contract-line-group-product-onchange" domain="self.dtype = 'Product'"/>
+        <field name="productName" colSpan="5"/>
+        <field name="typeSelect" requiredIf="typeSelect != 0" colSpan="2"
+          onChange="action-contract-line-method-empty-line"/>
+        <field name="qty" readonlyIf="isConsumptionLine" x-scale="$nbDecimalDigitForQty"
           onChange="action-method-contract-line-compute-total"/>
-        <field name="price" onChange="action-method-contract-line-compute-total"/>
-        <field name="taxLine" canEdit="false"
+        <field name="initialUnitPrice" readonly="true" showIf="initialUnitPrice"/>
+        <field name="price" x-scale="$nbDecimalDigitForUnitPrice"
           onChange="action-method-contract-line-compute-total"/>
-        <field name="unit" canEdit="false"/>
+        <panel name="discountPanel" colSpan="12">
+          <field name="discountTypeSelect" colSpan="3"
+            onChange="action-method-contract-line-compute-total"/>
+          <field name="discountAmount" hideIf="discountTypeSelect == 0" colSpan="3"
+            onChange="action-method-contract-line-compute-total"
+            x-scale="$nbDecimalDigitForUnitPrice"/>
+          <field name="priceDiscounted" readonly="true" colSpan="3"
+            showIf="priceDiscounted != 0 &amp;&amp; discountTypeSelect != 0"
+            x-scale="$nbDecimalDigitForUnitPrice"/>
+        </panel>
+        <field name="taxLineSet" canEdit="false"
+          onChange="action-method-contract-line-compute-total" widget="TagSelect"/>
+        <field name="unit" canEdit="false" onChange="action-contract-line-validate-unit-type"
+          required="true"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
+
         <field name="isConsumptionLine" hidden="true"
-          onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute-total"/>
+          onChange="action-contract-line-group-is-consumption-line-onchange"/>
+        <field name="consumptionMaxQuantity" showIf="isConsumptionLine"/>
         <field name="isInvoiced" readonly="true" showIf="isInvoiced"/>
         <field name="description" colSpan="12" widget="html"/>
         <field name="contractVersion" hidden="true"/>
       </panel>
-      <panel name="analyticDistributionPanel" title="Analytics"
-        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
-        onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
+
+      <panel name="pricesPerYearPanel" title="Prices per year">
+        <field name="initialPricePerYear" readonly="true"/>
+        <field name="yearlyPriceRevalued" readonly="true"/>
+        <field name="isToRevaluate"/>
+      </panel>
+
+      <panel name="analyticDistributionPanel" title="Analytics">
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false"
-          onChange="action-contract-line-method-create-distribution"/>
+          onChange="action-contract-line-group-analytic-distribution-template-onchange"/>
+        <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+          onSelect="action-contract-line-method-set-axis-domain"
+          onChange="action-contract-line-method-axis-create-analytic-line"/>
+        <panel name="axisAnalyticAccountPanel" colSpan="12"
+          readonlyIf="analyticDistributionTemplate">
+          <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+          <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+          <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+          <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+        </panel>
         <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
           grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form" colSpan="12"
-          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+          onChange="action-contract-line-group-analytic-move-line-list-onchange"/>
+        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+      </panel>
+      <panel name="datePanel" title="Date" hidden="true">
+        <field name="fromDate" onChange="action-method-contract-line-check-from-date"/>
+      </panel>
+    </panel-tabs>
+  </form>
+
+  <form name="additional-contract-line-form" title="Additional benefit"
+    model="com.axelor.apps.contract.db.ContractLine" readonlyIf="isInvoiced"
+    onNew="action-contract-line-group-additional-onnew-onload"
+    onLoad="action-contract-line-group-additional-onnew-onload">
+    <panel-tabs name="mainPanelTab">
+      <panel name="productPanel" title="Information" showIf="typeSelect > 0">
+        <field name="productName" colSpan="9" title="Title"/>
+        <field name="typeSelect" requiredIf="typeSelect != 0" colSpan="3"
+          onChange="action-contract-line-method-empty-line"/>
+        <panel name="descriptionPanel" showIf="typeSelect == 1" title="Description"
+          colSpan="12">
+          <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
+        </panel>
+      </panel>
+      <panel name="informationsPanel" title="Information" showIf="typeSelect == 0">
+        <field name="product" canEdit="false" colSpan="5"
+          onSelect="action-contract-line-method-domain-product"
+          onChange="action-contract-line-additional-group-product-onchange"
+          domain="self.dtype = 'Product'"/>
+        <field name="productName" colSpan="5"/>
+        <field name="typeSelect" requiredIf="typeSelect != 0" colSpan="2"
+          onChange="action-contract-line-method-empty-line"/>
+        <field name="qty" readonlyIf="isConsumptionLine" x-scale="$nbDecimalDigitForQty"
+          onChange="action-method-contract-line-compute-total"/>
+        <field name="price" x-scale="$nbDecimalDigitForUnitPrice"
+          onChange="action-method-contract-line-compute-total"/>
+        <field name="taxLineSet" canEdit="false"
+          onChange="action-method-contract-line-compute-total" widget="TagSelect"/>
+        <field name="unit" canEdit="false" required="true"/>
+        <field name="exTaxTotal" readonly="true"/>
+        <field name="inTaxTotal" readonly="true"/>
+        <field name="isInvoiced" readonly="true" showIf="isInvoiced"/>
+        <field name="description" colSpan="12" widget="html"/>
+      </panel>
+      <panel name="analyticDistributionPanel" title="Analytics">
+        <field name="analyticDistributionTemplate"
+          grid-view="analytic-distribution-template-grid"
+          form-view="analytic-distribution-template-form" canEdit="false"
+          onSelect="action-contract-line-attrs-set-analytic-distribution-template-domain"
+          onChange="action-contract-line-group-analytic-distribution-template-onchange"/>
+        <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+          onSelect="action-contract-line-method-set-axis-domain"
+          onChange="action-contract-line-method-axis-create-analytic-line"/>
+        <panel name="axisAnalyticAccountPanel" colSpan="12"
+          readonlyIf="analyticDistributionTemplate">
+          <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+          <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+          <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+          <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+        </panel>
+        <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
+          colSpan="12" grid-view="analytic-move-line-distribution-grid"
+          form-view="analytic-move-line-distribution-form"
+          onChange="action-contract-line-group-analytic-move-line-list-onchange"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
       </panel>
     </panel-tabs>
   </form>
+
+  <form name="contract-line-form-for-template" title="Contract Line"
+    model="com.axelor.apps.contract.db.ContractLine"
+    onNew="action-contract-line-method-scale-and-precision"
+    onLoad="action-contract-line-method-scale-and-precision">
+    <panel name="mainPanel">
+      <field name="product" canEdit="false"
+        onSelect="action-contract-line-method-domain-product"
+        onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
+      <field name="productName"/>
+      <field name="qty" readonlyIf="isConsumptionLine" x-scale="$nbDecimalDigitForQty"/>
+      <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
+      <field name="taxLineSet" canEdit="false" widget="TagSelect"/>
+      <field name="unit" canEdit="false" required="true"/>
+      <field name="isConsumptionLine"
+        onChange="action-method-contract-line-change-is-consumption-line"/>
+      <field name="description" colSpan="12" widget="html"/>
+    </panel>
+  </form>
+
+  <form name="additional-contract-line-form-for-template" title="Additional benefit"
+    model="com.axelor.apps.contract.db.ContractLine"
+    onNew="action-contract-line-method-scale-and-precision"
+    onLoad="action-contract-line-method-scale-and-precision">
+    <panel name="mainPanel">
+      <field name="product" canEdit="false"
+        onSelect="action-contract-line-method-domain-product"
+        onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
+      <field name="productName"/>
+      <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+      <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
+      <field name="taxLineSet" canEdit="false" widget="TagSelect"/>
+      <field name="unit" canEdit="false" required="true"/>
+      <field name="description" colSpan="12" widget="html"/>
+    </panel>
+  </form>
+
+  <form name="contract-line-yer-form-for-template" title="Contract line"
+    model="com.axelor.apps.contract.db.ContractLine"
+    onNew="action-contract-line-method-scale-and-precision"
+    onLoad="action-contract-line-method-scale-and-precision">
+    <panel-tabs name="mainPanelTab">
+      <panel name="informationsPanel" title="Information">
+        <panel name="infoPanel" title="Information" colSpan="12">
+          <field name="product" canEdit="false"
+            onChange="action-contract-template-method-change-product"
+            domain="self.dtype = 'Product'"/>
+          <field name="productName"/>
+          <field name="taxLineSet" canEdit="false" colSpan="12"/>
+        </panel>
+        <panel name="pricingPanel" title="Pricing" colSpan="12" itemSpan="12">
+          <field name="pricing" canNew="true" canEdit="true"
+            onChange="action-contract-line-group-pricing-onchange"
+            form-view="contract-line-pricing-form" grid-view="contract-line-grid"/>
+        </panel>
+      </panel>
+    </panel-tabs>
+  </form>
+
+  <form name="contract-line-yer-form" title="Contract line"
+    model="com.axelor.apps.contract.db.ContractLine"
+    onNew="action-contract-line-group-pricing-onnew"
+    onLoad="action-contract-line-group-pricing-onload">
+    <panel-tabs name="mainPanelTab">
+      <panel name="informationsPanel" title="Information">
+        <panel name="infoPanel" title="Information" colSpan="12">
+          <field name="product" canEdit="false"
+            onSelect="action-contract-line-method-domain-product"
+            onChange="action-contract-line-group-product-onchange" domain="self.dtype = 'Product'"/>
+          <field name="productName"/>
+          <field name="taxLineSet" canEdit="false"
+            onChange="action-method-contract-line-compute-total" colSpan="12"/>
+        </panel>
+        <panel name="pricingPanel" title="Pricing" colSpan="12" itemSpan="12">
+          <field name="pricing" canNew="true" canEdit="true"
+            onChange="action-contract-line-group-pricing-onchange"
+            form-view="contract-line-pricing-form" grid-view="pricing-line-grid"/>
+          <static name="usedPricingAlert" hidden="true" colSpan="12" showIf="$pricingUsed">
+            <![CDATA[<><Badge bg="warning">{_t('This pricing is already used by another contract line. Use the + button to create a new copy.')}</Badge></>]]>
+          </static>
+          <field name="pricing" showIf="pricing" showTitle="false" canSelect="false"
+            canNew="false" canRemove="false">
+            <editor x-show-titles="false" x-viewer="true">
+              <button title="Show lines" name="showLineBtn"
+                onClick="action-contract-line-group-pricing-show-line" showIf="!$showLine"/>
+              <field name="pricingLineList" colSpan="12" readonly="true" showIf="$showLine"/>
+              <field name="$showLine" hidden="true"/>
+            </editor>
+          </field>
+        </panel>
+      </panel>
+
+      <panel name="datePanel" title="Date" hidden="true">
+        <field name="fromDate" onChange="action-method-contract-line-check-from-date"/>
+      </panel>
+    </panel-tabs>
+  </form>
+
+  <!-- ACTION GROUP -->
+
+  <action-group name="action-contract-line-group-onnew">
+    <action name="action-method-contract-line-fill-default"/>
+    <action name="action-contract-line-group-edit-view"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-edit-view">
+    <action name="action-contract-line-attrs-hide-consumption-line"/>
+    <action name="action-contract-line-method-scale-and-precision"/>
+    <action name="action-contract-line-method-hide-date-panel"/>
+    <action name="action-contract-line-method-hide-is-to-revaluate"/>
+    <action name="action-contract-line-group-manage-analytic"/>
+    <action name="action-contract-line-method-product-required"/>
+    <action name="action-contract-line-attrs-selection-in-type-select"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-additional-onnew-onload">
+    <action name="action-contract-line-method-scale-and-precision"/>
+    <action name="action-contract-line-attrs-hide-consumption-line"/>
+    <action name="action-contract-line-group-manage-analytic"/>
+    <action name="action-contract-line-method-product-required"/>
+    <action name="action-contract-line-attrs-selection-in-type-select"/>
+  </action-group>
+
+  <action-group
+    name="action-contract-line-group-analytic-distribution-template-onchange">
+    <action name="action-contract-line-method-create-distribution"/>
+    <action name="action-contract-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-analytic-move-line-list-onchange">
+    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+    <action name="action-contract-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-manage-analytic">
+    <action name="action-contract-line-method-hide-axis-analytic-account"/>
+    <action name="action-contract-line-method-print-analytic-account"/>
+    <action name="action-contract-line-attrs-read-only-distribution-lines"/>
+    <action name="action-contract-line-method-set-analytic-distribution-panel-hidden"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-product-onchange">
+    <action name="action-method-contract-version-change-product"/>
+    <action name="action-method-contract-line-compute-total"/>
+    <action name="action-contract-line-validate-unit-type"/>
+    <action name="action-contract-line-group-manage-analytic"/>
+  </action-group>
+
+  <action-group name="action-contract-line-additional-group-product-onchange">
+    <action name="action-method-contract-change-product"/>
+    <action name="action-method-contract-line-compute-total"/>
+    <action name="action-contract-line-group-manage-analytic"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-is-consumption-line-onchange">
+    <action name="action-method-contract-line-change-is-consumption-line"/>
+    <action name="action-method-contract-line-compute-total"/>
+  </action-group>
+
+  <!-- ACTION ATTRS -->
 
   <action-attrs name="action-contract-line-attrs-hide-consumption-line"
     model="com.axelor.apps.contract.db.ContractLine">
@@ -70,132 +403,135 @@
 
   <action-attrs name="action-contract-line-attrs-read-only-distribution-lines">
     <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
+      expr="eval: !__config__.app.isApp('account') || __repo__(AccountConfig).findByCompany(__parent__?.contract?.company)?.analyticDistributionTypeSelect != 1"
+      if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.contract.db.ContractVersion'"/>
+    <attribute name="readonly" for="analyticMoveLineList"
+      expr="eval: !__config__.app.isApp('account') || __repo__(AccountConfig).findByCompany(__parent__?.company)?.analyticDistributionTypeSelect != 1"
+      if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.contract.db.Contract'"/>
   </action-attrs>
 
-  <action-method name="action-contract-line-method-create-distribution">
-    <call class="com.axelor.apps.contract.web.ContractLineController"
-      method="createAnalyticDistributionWithTemplate"/>
-  </action-method>
+  <action-attrs name="action-contract-line-attrs-selection-in-type-select">
+    <attribute name="selection-in" for="typeSelect" expr="[0,1]"/>
+  </action-attrs>
+
+  <!-- ACTION RECORD -->
 
   <action-record name="action-method-contract-line-change-is-consumption-line"
     model="com.axelor.apps.contract.db.ContractLine">
     <field name="qty" expr="eval: 0"/>
   </action-record>
 
+  <!-- ACTION METHOD -->
+
+  <action-method name="action-contract-line-method-create-distribution">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="createAnalyticDistributionWithTemplate"/>
+  </action-method>
+
   <action-method name="action-method-contract-line-compute-total">
     <call class="com.axelor.apps.contract.web.ContractLineController" method="computeTotal"/>
   </action-method>
 
-  <action-attrs name="action-contract-line-attrs-scale-and-precision">
-    <attribute name="scale" for="qty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    <attribute name="scale" for="price"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+  <action-method name="action-method-contract-line-fill-default">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="fillDefault"/>
+  </action-method>
+  <action-method name="action-method-contract-line-check-from-date">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="checkFromDate"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-hide-date-panel">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="hidePanels"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-hide-is-to-revaluate">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="hideIsToRevaluate"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-print-analytic-account">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="printAnalyticAccounts"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-set-axis-domain">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="setAxisDomains"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-axis-create-analytic-line">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="createAnalyticAccountLines"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-hide-axis-analytic-account">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="manageAxis"/>
+  </action-method>
+
+  <action-method
+    name="action-contract-line-method-set-analytic-distribution-panel-hidden">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="setAnalyticDistributionPanelHidden"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-scale-and-precision">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="setScaleAndPrecision"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-empty-line">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="emptyLine"/>
+  </action-method>
+
+  <!-- ACTION VALIDATE -->
+
+  <action-validate name="action-contract-line-validate-unit-type">
+    <alert
+      message="Warning! The yearly price is calculated based on unit price and &quot;Invoicing duration&quot; from the config panel.
+Please be careful when using products with unit being a time unit.
+In case you have contract lines with different invoicing duration, you can activate and use the Addtional Benefits management feature."
+      if="unit?.unitTypeSelect == 3"/>
+  </action-validate>
+
+  <!-- Pricing actions -->
+
+  <action-attrs name="action-contract-line-attrs-check-pricing">
+    <attribute for="$pricingUsed" name="value"
+      expr="eval: pricing != null &amp;&amp; __repo__(ContractLine).all().filter('self.pricing = ?', pricing).count() > 0"/>
   </action-attrs>
 
-  <grid name="additional-contract-line-grid" title="Additional benefit lines"
-    model="com.axelor.apps.contract.db.ContractLine">
-    <hilite if="isInvoiced" background="success"/>
-    <field name="productName"/>
-    <field name="qty"/>
-    <field name="price"/>
-    <field name="exTaxTotal"/>
-    <field name="inTaxTotal"/>
-    <field name="isInvoiced" hidden="true"/>
-    <field name="invoiceId" type="string" title="Invoice N°"/>
-    <field name="subscriptionFromDate" type="date" title="From"/>
-    <field name="subscriptionToDate" type="date" title="To"/>
-    <field name="statusSelect" type="string" title="Status"/>
-  </grid>
+  <action-group name="action-contract-line-group-pricing-onnew">
+    <action name="action-contract-line-group-onnew"/>
+  </action-group>
 
-  <form name="additional-contract-line-form" title="Additional benefit"
-    model="com.axelor.apps.contract.db.ContractLine" readonlyIf="isInvoiced"
-    onNew="action-contract-line-attrs-scale-and-precision"
-    onLoad="action-contract-line-attrs-scale-and-precision">
+  <action-group name="action-contract-line-group-pricing-onload">
+    <action name="action-contract-line-group-edit-view"/>
+    <action name="action-contract-line-attrs-check-pricing"/>
+  </action-group>
 
-    <panel-tabs name="mainPanelTab">
-      <panel name="informationsPanel" title="Information">
-        <field name="product" canEdit="false"
-          onChange="action-method-contract-change-product,action-method-contract-line-compute-total"
-          domain="self.dtype = 'Product'"/>
-        <field name="productName"/>
-        <field name="qty" readonlyIf="isConsumptionLine"
-          onChange="action-method-contract-line-compute-total"/>
-        <field name="price" onChange="action-method-contract-line-compute-total"/>
-        <field name="taxLine" canEdit="false"
-          onChange="action-method-contract-line-compute-total"/>
-        <field name="unit" canEdit="false"/>
-        <field name="exTaxTotal" readonly="true"/>
-        <field name="inTaxTotal" readonly="true"/>
-        <field name="isInvoiced" readonly="true" showIf="isInvoiced"/>
-        <field name="description" colSpan="12" widget="html"/>
-      </panel>
-      <panel name="analyticDistributionPanel" title="Analytics"
-        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
-        onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
-        <field name="analyticDistributionTemplate"
-          grid-view="analytic-distribution-template-grid"
-          form-view="analytic-distribution-template-form" canEdit="false"
-          onSelect="action-contract-line-attrs-set-analytic-distribution-template-domain"
-          onChange="action-contract-line-method-create-distribution"/>
-        <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
-          colSpan="12" grid-view="analytic-move-line-distribution-grid"
-          form-view="analytic-move-line-distribution-form"
-          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
-        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
-      </panel>
-    </panel-tabs>
-  </form>
+  <action-group name="action-contract-line-group-pricing-onchange">
+    <action name="action-contract-line-attrs-check-pricing"/>
+    <action name="action-contract-line-attrs-hide-pricing-lines"/>
+  </action-group>
 
-  <grid name="contract-line-grid-for-template" title="Contract Lines"
-    model="com.axelor.apps.contract.db.ContractLine">
-    <hilite if="isConsumptionLine" background="primary"/>
-    <field name="productName"/>
-    <field name="qty"/>
-    <field name="price"/>
-    <field name="isConsumptionLine" hidden="true"/>
-  </grid>
+  <action-group name="action-contract-line-group-pricing-show-line">
+    <action name="action-contract-line-attrs-show-pricing-lines"/>
+    <action name="action-pricing-group-attrs-pricing-line-list"/>
+  </action-group>
 
-  <form name="contract-line-form-for-template" title="Contract Line"
-    model="com.axelor.apps.contract.db.ContractLine"
-    onNew="action-contract-line-attrs-scale-and-precision"
-    onLoad="action-contract-line-attrs-scale-and-precision">
-    <panel name="mainPanel">
-      <field name="product" canEdit="false"
-        onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
-      <field name="productName"/>
-      <field name="qty" readonlyIf="isConsumptionLine"/>
-      <field name="price"/>
-      <field name="taxLine" canEdit="false"/>
-      <field name="unit" canEdit="false"/>
-      <field name="isConsumptionLine"
-        onChange="action-method-contract-line-change-is-consumption-line"/>
-      <field name="description" colSpan="12" widget="html"/>
-    </panel>
-  </form>
+  <action-attrs name="action-contract-line-attrs-hide-pricing-lines">
+    <attribute for="$showLine" name="value" expr="false"/>
+  </action-attrs>
 
-  <grid name="additional-contract-line-grid-for-template" title="Additional benefit lines"
-    model="com.axelor.apps.contract.db.ContractLine">
-    <field name="productName"/>
-    <field name="qty"/>
-    <field name="price"/>
-  </grid>
+  <action-attrs name="action-contract-line-attrs-show-pricing-lines">
+    <attribute for="$showLine" name="value" expr="true"/>
+  </action-attrs>
 
-  <form name="additional-contract-line-form-for-template" title="Additional benefit"
-    model="com.axelor.apps.contract.db.ContractLine"
-    onNew="action-contract-line-attrs-scale-and-precision"
-    onLoad="action-contract-line-attrs-scale-and-precision">
-    <panel name="mainPanel">
-      <field name="product" canEdit="false"
-        onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
-      <field name="productName"/>
-      <field name="qty"/>
-      <field name="price"/>
-      <field name="taxLine" canEdit="false"/>
-      <field name="unit" canEdit="false"/>
-      <field name="description" colSpan="12" widget="html"/>
-    </panel>
-  </form>
+  <action-method name="action-contract-line-method-product-required">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="setProductRequired"/>
+  </action-method>
 
+  <action-method name="action-contract-line-method-domain-product">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="computeProductDomain"/>
+  </action-method>
 </object-views>

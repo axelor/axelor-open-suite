@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,26 +18,34 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.FinancialDiscount;
+import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
-import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.batch.BatchDoubtfulCustomer;
+import com.axelor.apps.account.service.batch.PreviewBatch;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -56,9 +64,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,15 +75,19 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected int jpaLimit = 20;
+  private final int ALTERNATIVE_SCALE = 10;
 
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
   protected InvoiceRepository invoiceRepository;
   protected PaymentService paymentService;
   protected AppAccountService appAccountService;
-  protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
+  protected AccountingCutOffService cutOffService;
+  protected MoveLineTaxService moveLineTaxService;
+  protected CurrencyScaleService currencyScaleService;
+  protected AccountingBatchRepository accountingBatchRepo;
 
   @Inject
   public MoveLineServiceImpl(
@@ -85,17 +96,23 @@ public class MoveLineServiceImpl implements MoveLineService {
       PaymentService paymentService,
       MoveLineToolService moveLineToolService,
       AppAccountService appAccountService,
-      AccountConfigService accountConfigService,
       InvoiceTermService invoiceTermService,
-      MoveLineControlService moveLineControlService) {
+      MoveLineControlService moveLineControlService,
+      AccountingCutOffService cutOffService,
+      MoveLineTaxService moveLineTaxService,
+      CurrencyScaleService currencyScaleService,
+      AccountingBatchRepository accountingBatchRepo) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
     this.moveLineToolService = moveLineToolService;
     this.appAccountService = appAccountService;
-    this.accountConfigService = accountConfigService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineControlService = moveLineControlService;
+    this.cutOffService = cutOffService;
+    this.moveLineTaxService = moveLineTaxService;
+    this.currencyScaleService = currencyScaleService;
+    this.accountingBatchRepo = accountingBatchRepo;
   }
 
   @Override
@@ -160,6 +177,12 @@ public class MoveLineServiceImpl implements MoveLineService {
           I18n.get(AccountExceptionMessage.MOVE_LINE_RECONCILE_LINE_NO_SELECTED));
     }
 
+    moveLineTaxService.checkEmptyTaxLines(moveLineList);
+
+    if (paymentService.reconcileMoveLinesWithCompatibleAccounts(moveLineList)) {
+      return;
+    }
+
     Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap =
         getPopulatedReconcilableMoveLineMap(moveLineList);
 
@@ -183,7 +206,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
   }
 
-  protected Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
+  @Override
+  public Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
     List<MoveLine> fetchedDebitMoveLineList =
         moveLineLists.getLeft().stream()
@@ -215,7 +239,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
   }
 
-  protected Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>>
+  @Override
+  public Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>>
       getPopulatedReconcilableMoveLineMap(List<MoveLine> moveLineList) {
 
     Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
@@ -302,7 +327,19 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   public boolean checkManageCutOffDates(MoveLine moveLine) {
-    return moveLine.getAccount() != null && moveLine.getAccount().getManageCutOffPeriod();
+    return appAccountService.getAppAccount().getManageCutOffPeriod()
+        && moveLine.getAccount() != null
+        && moveLine.getAccount().getManageCutOffPeriod();
+  }
+
+  @Override
+  public boolean checkManageCutOffDates(MoveLine moveLine, int functionalOriginSelect) {
+    return this.checkManageCutOffDates(moveLine)
+        && !Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
+                MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
+            .contains(functionalOriginSelect);
   }
 
   @Override
@@ -316,102 +353,99 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   public BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate) {
-    if (moveDate == null
-        || moveLine.getCutOffStartDate() == null
-        || moveLine.getCutOffEndDate() == null) {
+    if (moveDate == null || !moveLineToolService.isCutOffActive(moveLine)) {
       return BigDecimal.ZERO;
     }
     BigDecimal daysProrata =
         BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
     BigDecimal daysTotal =
         BigDecimal.valueOf(
-            ChronoUnit.DAYS.between(moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()));
+                ChronoUnit.DAYS.between(moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()))
+            .add(BigDecimal.ONE);
     if (daysTotal.compareTo(BigDecimal.ZERO) == 0) {
       return BigDecimal.ZERO;
     }
-    BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
 
-    return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
-  }
-
-  @Override
-  public boolean checkManageAnalytic(Move move) throws AxelorException {
-    return move != null
-        && move.getCompany() != null
-        && appAccountService.getAppAccount().getManageAnalyticAccounting()
-        && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
-  }
-
-  @Override
-  public LocalDate getFinancialDiscountDeadlineDate(MoveLine moveLine) {
-    if (moveLine == null) {
-      return null;
+    BigDecimal prorata = BigDecimal.ONE;
+    if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
+      prorata = daysProrata.divide(daysTotal, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
     }
 
-    int discountDelay =
-        Optional.of(moveLine)
-            .map(MoveLine::getFinancialDiscount)
-            .map(FinancialDiscount::getDiscountDelay)
-            .orElse(0);
-
-    LocalDate deadlineDate = moveLine.getDueDate().minusDays(discountDelay);
-
-    return deadlineDate.isBefore(moveLine.getDate()) ? moveLine.getDate() : deadlineDate;
+    return currencyScaleService.getScaledValue(
+        moveLine, prorata.multiply(moveLine.getCurrencyAmount()));
   }
 
   @Override
-  public void computeFinancialDiscount(MoveLine moveLine) {
-    if (!appAccountService.getAppAccount().getManageFinancialDiscount()) {
-      return;
+  public void computeCutOffProrataAmount(AccountingBatch accountingBatch) throws AxelorException {
+    Company company = accountingBatch.getCompany();
+    LocalDate moveDate = accountingBatch.getMoveDate();
+    Set<Journal> journalSet = accountingBatch.getJournalSet();
+    int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
+
+    int offset = 0;
+    List<MoveLine> moveLineList;
+    Query<MoveLine> moveLineQuery =
+        cutOffService.getMoveLines(company, journalSet, moveDate, accountingCutOffTypeSelect);
+
+    while (!(moveLineList = moveLineQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
+
+      for (MoveLine moveLine : moveLineList) {
+        ++offset;
+
+        this.computeCutOffProrataAmount(moveLine, moveDate);
+      }
+
+      JPA.clear();
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public MoveLine computeCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate) {
+    if (moveDate != null && moveLineToolService.isCutOffActive(moveLine)) {
+      BigDecimal daysProrata =
+          BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
+      BigDecimal daysTotal =
+          BigDecimal.valueOf(
+                  ChronoUnit.DAYS.between(
+                      moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()))
+              .add(BigDecimal.ONE);
+
+      if (daysTotal.compareTo(BigDecimal.ZERO) != 0) {
+        BigDecimal prorata = BigDecimal.ONE;
+        if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
+          prorata = daysProrata.divide(daysTotal, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
+        }
+
+        moveLine.setCutOffProrataAmount(
+            currencyScaleService.getScaledValue(
+                moveLine, prorata.multiply(moveLine.getCurrencyAmount())));
+        moveLine.setAmountBeforeCutOffProrata(moveLine.getCredit().max(moveLine.getDebit()));
+        moveLine.setDurationCutOffProrata(daysProrata.toString() + "/" + daysTotal.toString());
+      }
     }
 
-    if (moveLine.getAccount() != null
-        && moveLine.getAccount().getUseForPartnerBalance()
-        && moveLine.getFinancialDiscount() != null) {
-      FinancialDiscount financialDiscount = moveLine.getFinancialDiscount();
-      BigDecimal amount = moveLine.getCredit().max(moveLine.getDebit());
+    return moveLine;
+  }
 
-      moveLine.setFinancialDiscountRate(financialDiscount.getDiscountRate());
-      moveLine.setFinancialDiscountTotalAmount(
-          amount.multiply(
-              financialDiscount
-                  .getDiscountRate()
-                  .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
-      moveLine.setRemainingAmountAfterFinDiscount(
-          amount.subtract(moveLine.getFinancialDiscountTotalAmount()));
+  @Override
+  public Batch validatePreviewBatch(List<Long> recordIdList, Long batchId, int actionSelect)
+      throws AxelorException {
+    PreviewBatch batch;
+
+    if (actionSelect == AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF) {
+      batch = Beans.get(BatchAccountingCutOff.class);
+    } else if (actionSelect == AccountingBatchRepository.ACTION_DOUBTFUL_CUSTOMER) {
+      batch = Beans.get(BatchDoubtfulCustomer.class);
     } else {
-      moveLine.setFinancialDiscount(null);
-      moveLine.setFinancialDiscountRate(BigDecimal.ZERO);
-      moveLine.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
-      moveLine.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, AccountExceptionMessage.BATCH_NO_PREVIEW);
     }
 
-    this.computeInvoiceTermsFinancialDiscount(moveLine);
-  }
+    batch.setRecordIdList(recordIdList);
+    batch.run(accountingBatchRepo.find(batchId));
 
-  @Override
-  public void computeInvoiceTermsFinancialDiscount(MoveLine moveLine) {
-    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      moveLine.getInvoiceTermList().stream()
-          .filter(it -> !it.getIsPaid() && it.getAmountRemaining().compareTo(it.getAmount()) == 0)
-          .forEach(
-              it ->
-                  invoiceTermService.computeFinancialDiscount(
-                      it,
-                      moveLine.getCredit().max(moveLine.getDebit()),
-                      moveLine.getFinancialDiscount(),
-                      moveLine.getFinancialDiscountTotalAmount(),
-                      moveLine.getRemainingAmountAfterFinDiscount()));
-    }
-  }
-
-  public Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) {
-    BatchAccountingCutOff batchAccountingCutOff = Beans.get(BatchAccountingCutOff.class);
-
-    batchAccountingCutOff.recordIdList = recordIdList;
-    batchAccountingCutOff.run(Beans.get(AccountingBatchRepository.class).find(batchId));
-
-    return batchAccountingCutOff.getBatch();
+    return batch.getBatch();
   }
 
   public void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner) {

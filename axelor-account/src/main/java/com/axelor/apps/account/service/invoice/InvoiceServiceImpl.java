@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -50,7 +49,6 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.AxelorMessageException;
-import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
@@ -64,11 +62,9 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -76,9 +72,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateMessageService;
-import com.axelor.utils.ModelTool;
-import com.axelor.utils.StringTool;
 import com.axelor.utils.ThrowConsumer;
+import com.axelor.utils.helpers.ModelHelper;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -91,7 +87,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -107,7 +102,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected ValidateFactory validateFactory;
   protected VentilateFactory ventilateFactory;
   protected CancelFactory cancelFactory;
-  protected AlarmEngineService<Invoice> alarmEngineService;
   protected InvoiceRepository invoiceRepo;
   protected AppAccountService appAccountService;
   protected PartnerService partnerService;
@@ -120,13 +114,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected TaxService taxService;
   protected InvoiceProductStatementService invoiceProductStatementService;
   protected TemplateMessageService templateMessageService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
+  protected InvoicePrintService invoicePrintService;
 
   @Inject
   public InvoiceServiceImpl(
       ValidateFactory validateFactory,
       VentilateFactory ventilateFactory,
       CancelFactory cancelFactory,
-      AlarmEngineService<Invoice> alarmEngineService,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
@@ -138,12 +133,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       AppBaseService appBaseService,
       TaxService taxService,
       InvoiceProductStatementService invoiceProductStatementService,
-      TemplateMessageService templateMessageService) {
+      TemplateMessageService templateMessageService,
+      InvoiceTermFilterService invoiceTermFilterService,
+      InvoicePrintService invoicePrintService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
     this.cancelFactory = cancelFactory;
-    this.alarmEngineService = alarmEngineService;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
     this.partnerService = partnerService;
@@ -156,65 +152,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.taxService = taxService;
     this.invoiceProductStatementService = invoiceProductStatementService;
     this.templateMessageService = templateMessageService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
+    this.invoicePrintService = invoicePrintService;
   }
 
   // WKF
-
-  @Override
-  public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices) {
-    return alarmEngineService.get(Invoice.class, invoices);
-  }
-
-  /**
-   * Lever l'ensemble des alarmes d'une facture.
-   *
-   * @param invoice Une facture.
-   * @throws Exception
-   */
-  @Override
-  public void raisingAlarms(Invoice invoice, String alarmEngineCode) {
-
-    Alarm alarm = alarmEngineService.get(alarmEngineCode, invoice, true);
-
-    if (alarm != null) {
-
-      alarm.setInvoice(invoice);
-    }
-  }
-
-  public Journal getJournal(Invoice invoice) throws AxelorException {
-
-    Company company = invoice.getCompany();
-    if (company == null) return null;
-
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-    // Taken from legacy JournalService but negative cases seem rather strange
-    switch (invoice.getOperationTypeSelect()) {
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getSupplierCreditNoteJournal(accountConfig)
-            : accountConfigService.getSupplierPurchaseJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getSupplierPurchaseJournal(accountConfig)
-            : accountConfigService.getSupplierCreditNoteJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getCustomerCreditNoteJournal(accountConfig)
-            : accountConfigService.getCustomerSalesJournal(accountConfig);
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-        return invoice.getInTaxTotal().signum() < 0
-            ? accountConfigService.getCustomerSalesJournal(accountConfig)
-            : accountConfigService.getCustomerCreditNoteJournal(accountConfig);
-      default:
-        throw new AxelorException(
-            invoice,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(AccountExceptionMessage.JOURNAL_1),
-            invoice.getInvoiceId());
-    }
-  }
 
   /**
    * Fonction permettant de calculer l'intégralité d'une facture :
@@ -253,7 +195,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         };
 
     Invoice invoice1 = invoiceGenerator.generate();
-    invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+    }
+
     invoice1.setInvoiceProductStatement(
         invoiceProductStatementService.getInvoiceProductStatement(invoice1));
     return invoice1;
@@ -312,6 +257,26 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Transactional(rollbackOn = {Exception.class})
   protected void ventilateProcess(Invoice invoice) throws AxelorException {
+
+    this.checkPreconditions(invoice);
+    this.computeEstimatedPaymentDate(invoice);
+
+    log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
+
+    ventilateFactory.getVentilator(invoice).process();
+
+    invoiceRepo.save(invoice);
+    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
+      invoicePrintService.printAndSave(
+          invoice,
+          InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
+          accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
+          null);
+    }
+  }
+
+  @Override
+  public void checkPreconditions(Invoice invoice) throws AxelorException {
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -369,20 +334,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
       throw new AxelorException(
           invoice, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(message));
-    }
-
-    log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
-
-    ventilateFactory.getVentilator(invoice).process();
-
-    invoiceRepo.save(invoice);
-    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
-      Beans.get(InvoicePrintService.class)
-          .printAndSave(
-              invoice,
-              InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
-              ReportSettings.FORMAT_PDF,
-              null);
     }
   }
 
@@ -445,7 +396,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
         long clientRefundsAmount =
             getRefundsAmount(
-                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+                invoice.getPartner().getId(),
+                InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND,
+                invoice.getOperationSubTypeSelect());
 
         if (clientRefundsAmount > 0) {
           return I18n.get(AccountExceptionMessage.INVOICE_NOT_IMPUTED_CLIENT_REFUNDS);
@@ -455,7 +408,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
         long supplierRefundsAmount =
             getRefundsAmount(
-                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+                invoice.getPartner().getId(),
+                InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND,
+                invoice.getOperationSubTypeSelect());
 
         if (supplierRefundsAmount > 0) {
           return I18n.get(AccountExceptionMessage.INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS);
@@ -466,17 +421,21 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     return null;
   }
 
-  protected long getRefundsAmount(Long partnerId, int refundType) {
+  protected long getRefundsAmount(Long partnerId, int refundType, int operationSubTypeSelect) {
     return invoiceRepo
         .all()
         .filter(
             "self.partner.id = ?"
                 + " AND self.operationTypeSelect = ?"
                 + " AND self.statusSelect = ?"
-                + " AND self.amountRemaining > 0",
+                + " AND self.amountRemaining > 0"
+                + " AND self.operationSubTypeSelect = ?",
             partnerId,
             refundType,
-            InvoiceRepository.STATUS_VENTILATED)
+            InvoiceRepository.STATUS_VENTILATED,
+            operationSubTypeSelect == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+                ? InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+                : InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT)
         .count();
   }
 
@@ -754,7 +713,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException {
     Set<Invoice> invoices = getDefaultAdvancePaymentInvoice(invoice);
-    String domain = "self.id IN (" + StringTool.getIdListString(invoices) + ")";
+    String domain = "self.id IN (" + StringHelper.getIdListString(invoices) + ")";
 
     return domain;
   }
@@ -773,7 +732,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     filter +=
         " AND self.partner = :_partner "
             + "AND self.currency = :_currency "
-            + "AND self.operationTypeSelect = :_operationTypeSelect";
+            + "AND self.internalReference IS NULL";
+
     advancePaymentInvoices =
         new HashSet<>(
             invoiceRepo
@@ -781,7 +741,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 .filter(filter)
                 .bind("_status", InvoiceRepository.STATUS_VALIDATED)
                 .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
-                .bind("_operationTypeSelect", invoice.getOperationTypeSelect())
+                .bind(
+                    "_operationType",
+                    InvoiceToolService.isPurchase(invoice)
+                        ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                        : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
                 .bind("_partner", partner)
                 .bind("_currency", currency)
                 .fetch());
@@ -854,7 +818,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         continue;
       }
       for (MoveLine moveLine : moveLineList) {
-        BigDecimal amountRemaining = moveLine.getAmountRemaining();
+        BigDecimal amountRemaining = moveLine.getAmountRemaining().abs();
         if (amountRemaining != null && amountRemaining.compareTo(BigDecimal.ZERO) > 0) {
           return false;
         }
@@ -907,7 +871,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   protected String writeGeneralFilterForAdvancePayment() {
-    return "self.statusSelect = :_status" + " AND self.operationSubTypeSelect = :_operationSubType";
+    return "self.statusSelect = :_status AND self.operationSubTypeSelect = :_operationSubType AND self.operationTypeSelect = :_operationType";
   }
 
   @Override
@@ -977,7 +941,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     IntCounter doneCounter = new IntCounter();
 
     int errorCount =
-        ModelTool.apply(
+        ModelHelper.apply(
             Invoice.class,
             invoiceIds,
             new ThrowConsumer<Invoice, Exception>() {
@@ -1162,13 +1126,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional
   public void validatePfp(Long invoiceId) {
     Invoice invoice = invoiceRepo.find(invoiceId);
-    User currentUser = AuthUtils.getUser();
+    User pfpValidatorUser =
+        invoice.getPfpValidatorUser() != null ? invoice.getPfpValidatorUser() : AuthUtils.getUser();
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      invoiceTermPfpService.validatePfp(invoiceTerm, currentUser);
+      invoiceTermPfpService.validatePfp(invoiceTerm, pfpValidatorUser);
     }
 
-    invoice.setPfpValidatorUser(currentUser);
+    invoice.setPfpValidatorUser(pfpValidatorUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);
     invoice.setDecisionPfpTakenDateTime(
         appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDateTime());
@@ -1188,12 +1153,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public boolean checkInvoiceTerms(Invoice invoice) throws AxelorException {
-    return CollectionUtils.isNotEmpty(invoiceTermService.getUnpaidInvoiceTerms(invoice));
+    return CollectionUtils.isNotEmpty(invoiceTermFilterService.getUnpaidInvoiceTerms(invoice));
   }
 
   @Override
   public LocalDate getFinancialDiscountDeadlineDate(
       Invoice invoice, FinancialDiscount financialDiscount) {
+    if (invoice.getInvoiceDate() == null) {
+      return null;
+    }
+
     int discountDelay =
         Optional.ofNullable(financialDiscount).map(FinancialDiscount::getDiscountDelay).orElse(0);
 
@@ -1216,5 +1185,42 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 Optional.ofNullable(it.getMoveLine()).map(MoveLine::getMove).orElse(null),
                 it.getMoveLine(),
                 invoice));
+  }
+
+  @Override
+  public Invoice computeEstimatedPaymentDate(Invoice invoice) {
+    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return invoice;
+    }
+    if (invoice.getPartner() != null && invoice.getPartner().getPaymentDelay() != null) {
+
+      int paymentDelay = invoice.getPartner().getPaymentDelay().intValue();
+
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        if (invoiceTerm.getDueDate() != null && invoiceTerm.getEstimatedPaymentDate() == null) {
+          invoiceTerm.setEstimatedPaymentDate(invoiceTerm.getDueDate().plusDays(paymentDelay));
+        }
+      }
+    } else {
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        if (invoiceTerm.getEstimatedPaymentDate() != null) {
+          continue;
+        }
+
+        LocalDate estimatedPaymentDate = invoiceTerm.getDueDate();
+
+        invoiceTerm.setEstimatedPaymentDate(estimatedPaymentDate);
+      }
+    }
+    return invoice;
+  }
+
+  @Override
+  public void updateThirdPartyPayerPartner(Invoice invoice) {
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+      invoice.getInvoiceTermList().stream()
+          .filter(it -> it.getAmount().compareTo(it.getAmountRemaining()) == 0)
+          .forEach(it -> it.setThirdPartyPayerPartner(invoice.getThirdPartyPayerPartner()));
+    }
   }
 }

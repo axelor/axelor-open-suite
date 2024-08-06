@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
+import com.axelor.apps.businessproject.service.ProjectGenerateInvoiceService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -85,7 +86,7 @@ public class InvoicingProjectController {
     }
     if (projects.size() > 0) {
       for (InvoicingProject invProject : projects) {
-        invoice = Beans.get(InvoicingProjectService.class).generateInvoice(invProject);
+        invoice = Beans.get(ProjectGenerateInvoiceService.class).generateInvoice(invProject);
         if (invoice != null) {
           invoiceIdList.add(invoice.getId());
           try {

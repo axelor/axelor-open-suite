@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,25 +18,42 @@
  */
 package com.axelor.apps.crm.db.repo;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
-import com.axelor.apps.crm.service.LeadService;
-import com.axelor.inject.Beans;
+import com.axelor.apps.crm.service.LeadComputeNameService;
+import com.axelor.apps.crm.service.app.AppCrmService;
+import com.google.inject.Inject;
+import javax.persistence.PersistenceException;
 
 public class LeadManagementRepository extends LeadRepository {
 
+  protected AppCrmService appCrmService;
+  protected LeadComputeNameService leadComputeNameService;
+
+  @Inject
+  public LeadManagementRepository(
+      AppCrmService appCrmService, LeadComputeNameService leadComputeNameService) {
+    this.appCrmService = appCrmService;
+    this.leadComputeNameService = leadComputeNameService;
+  }
+
   @Override
   public Lead save(Lead entity) {
-    LeadService leadService = Beans.get(LeadService.class);
+    try {
+      String fullName =
+          leadComputeNameService.processFullName(
+              entity.getEnterpriseName(), entity.getName(), entity.getFirstName());
+      entity.setFullName(fullName);
 
-    String fullName =
-        leadService.processFullName(
-            entity.getEnterpriseName(), entity.getName(), entity.getFirstName());
-    entity.setFullName(fullName);
+      if (entity.getLeadStatus() == null) {
+        entity.setLeadStatus(appCrmService.getLeadDefaultStatus());
+      }
 
-    if (entity.getLeadStatus() == null) {
-      entity.setLeadStatus(leadService.getDefaultLeadStatus());
+      return super.save(entity);
+
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
-
-    return super.save(entity);
   }
 }

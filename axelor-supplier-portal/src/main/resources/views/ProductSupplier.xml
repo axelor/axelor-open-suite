@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="product-supplier-portal-grid" title="Product supplier"
     model="com.axelor.apps.supplierportal.db.ProductSupplier">
@@ -21,8 +21,10 @@
         <field name="imgProduct" showTitle="false" colSpan="12" widget="Image">
           <viewer>
 					<![CDATA[
-			    		<img ng-show="record.imgProduct" ng-src="{{$image('picture', 'content')}}" />
-          				<img ng-show="!record.imgProduct" src="img/product-default.png" />
+          				<>
+          					{id && <Image src={$image('id', 'content')}></Image>}
+          					{!id && <Image src="img/product-default.png"></Image>}
+          				</>
 					]]>
           </viewer>
         </field>

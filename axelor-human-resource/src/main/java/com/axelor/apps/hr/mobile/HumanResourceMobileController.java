@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -48,10 +48,13 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.expense.ExpenseService;
-import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.expense.ExpenseComputationService;
+import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.ExpenseToolService;
+import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
-import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
@@ -111,8 +114,8 @@ public class HumanResourceMobileController {
             user.getName());
       }
 
-      ExpenseService expenseService = Beans.get(ExpenseService.class);
-      Expense expense = expenseService.getOrCreateExpense(employee);
+      ExpenseToolService expenseToolService = Beans.get(ExpenseToolService.class);
+      Expense expense = expenseToolService.getOrCreateExpense(employee);
 
       ExpenseLine expenseLine = new ExpenseLine();
       expenseLine.setEmployee(employee);
@@ -191,7 +194,7 @@ public class HumanResourceMobileController {
       }
 
       List<ExpenseLine> expenseLineList =
-          Beans.get(ExpenseService.class).getExpenseLineList(expense);
+          Beans.get(ExpenseLineService.class).getExpenseLineList(expense);
       if (expenseLineList != null && !expenseLineList.isEmpty()) {
         Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
         while (expenseLineIter.hasNext()) {
@@ -258,8 +261,10 @@ public class HumanResourceMobileController {
               user.getName());
         }
 
-        ExpenseService expenseService = Beans.get(ExpenseService.class);
-        Expense expense = expenseService.getOrCreateExpense(employee);
+        ExpenseToolService expenseToolService = Beans.get(ExpenseToolService.class);
+        ExpenseComputationService expenseComputationService =
+            Beans.get(ExpenseComputationService.class);
+        Expense expense = expenseToolService.getOrCreateExpense(employee);
 
         ExpenseLine expenseLine;
         Object idO = requestData.get("id");
@@ -313,7 +318,7 @@ public class HumanResourceMobileController {
           }
         }
         expense.addGeneralExpenseLineListItem(expenseLine);
-        expense = expenseService.compute(expense);
+        expense = expenseComputationService.compute(expense);
 
         Beans.get(ExpenseRepository.class).save(expense);
         HashMap<String, Object> data = new HashMap<>();
@@ -403,8 +408,10 @@ public class HumanResourceMobileController {
       LocalDate date =
           LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE);
       TimesheetRepository timesheetRepository = Beans.get(TimesheetRepository.class);
-      TimesheetService timesheetService = Beans.get(TimesheetService.class);
+      TimesheetCreateService timesheetCreateService = Beans.get(TimesheetCreateService.class);
       TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
+      TimesheetLineCreateService timesheetLineCreateService =
+          Beans.get(TimesheetLineCreateService.class);
 
       if (user != null) {
         Employee employee = user.getEmployee();
@@ -415,7 +422,7 @@ public class HumanResourceMobileController {
                 .order("-id")
                 .fetchOne();
         if (timesheet == null) {
-          timesheet = timesheetService.createTimesheet(employee, date, date);
+          timesheet = timesheetCreateService.createTimesheet(employee, date, date);
         }
         BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
 
@@ -434,7 +441,7 @@ public class HumanResourceMobileController {
                   request.getData().get("comments").toString());
         } else {
           line =
-              timesheetLineService.createTimesheetLine(
+              timesheetLineCreateService.createTimesheetLine(
                   project,
                   product,
                   timesheet.getEmployee(),
@@ -534,7 +541,7 @@ public class HumanResourceMobileController {
                 requestData.get("toDateT").toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
       }
       leave.setEndOnSelect(new Integer(requestData.get("endOn").toString()));
-      leave.setDuration(Beans.get(LeaveService.class).computeDuration(leave));
+      leave.setDuration(Beans.get(LeaveRequestComputeDurationService.class).computeDuration(leave));
       leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
       if (requestData.get("comments") != null) {
         leave.setComments(requestData.get("comments").toString());

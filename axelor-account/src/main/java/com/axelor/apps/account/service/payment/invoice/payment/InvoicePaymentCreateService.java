@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
@@ -47,23 +48,15 @@ public interface InvoicePaymentCreateService {
       throws AxelorException;
 
   /**
-   * Create an invoice payment for the specified invoice and with the specified bank details.
+   * Create an invoice payment for the specified invoice and with the specified bank details, and
+   * add the payment to the invoice payment list.
    *
    * @param invoice
    * @param companyBankDetails
-   * @return
+   * @return the created payment
    */
-  public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
+  InvoicePayment createAndAddInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
       throws AxelorException;
-
-  InvoicePayment createInvoicePayment(
-      Invoice invoice,
-      InvoiceTerm invoiceTerm,
-      PaymentMode paymentMode,
-      BankDetails companyBankDetails,
-      LocalDate paymentDate,
-      LocalDate bankDepositDate,
-      String chequeNumber);
 
   InvoicePayment createInvoicePayment(
       Invoice invoice,
@@ -94,5 +87,14 @@ public interface InvoicePaymentCreateService {
 
   InvoicePayment createInvoicePayment(
       Invoice invoice, BankDetails companyBankDetails, LocalDate paymentDate)
+      throws AxelorException;
+
+  InvoiceTerm updateInvoiceTermsAmounts(
+      InvoiceTerm invoiceTerm,
+      BigDecimal amount,
+      Reconcile reconcile,
+      Move move,
+      PaymentSession paymentSession,
+      boolean isRefund)
       throws AxelorException;
 }

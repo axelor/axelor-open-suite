@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,9 +40,7 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import java.util.Arrays;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -54,7 +52,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/manuf-order")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -159,7 +156,8 @@ public class ManufOrderRestController {
   @POST
   @HttpExceptionHandler
   public Response addWastedProduct(
-      @PathParam("manufOrderId") long manufOrderId, WastedProductPostRequest requestBody) {
+      @PathParam("manufOrderId") long manufOrderId, WastedProductPostRequest requestBody)
+      throws AxelorException {
     RequestValidator.validateBody(requestBody);
 
     new SecurityCheck().writeAccess(ManufOrder.class).createAccess(ProdProduct.class).check();
@@ -172,10 +170,8 @@ public class ManufOrderRestController {
 
     Beans.get(ManufOrderProductRestService.class).addWasteProduct(manufOrder, prodProduct);
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        "Waste product successfully added to manufacturing order",
-        new WastedProductResponse(prodProduct));
+    return ResponseConstructor.buildCreateResponse(
+        prodProduct, new WastedProductResponse(prodProduct));
   }
 
   @Operation(
@@ -225,9 +221,7 @@ public class ManufOrderRestController {
                 manufOrder,
                 requestBody.getProductType());
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        "Product successfully added to manufacturing order.",
-        new ManufOrderStockMoveLineResponse(stockMoveLine));
+    return ResponseConstructor.buildCreateResponse(
+        stockMoveLine, new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 }

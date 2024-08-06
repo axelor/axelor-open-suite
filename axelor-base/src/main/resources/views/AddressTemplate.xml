@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="address-template-grid" title="Address templates"
+    model="com.axelor.apps.base.db.AddressTemplate">
+    <field name="name"/>
+    <field name="engineSelect"/>
+  </grid>
+
+  <form name="address-template-form" title="Address templates"
+    model="com.axelor.apps.base.db.AddressTemplate">
+    <panel name="mainPanel" title="Address Template">
+      <field name="name"/>
+      <field name="engineSelect"/>
+      <field name="addressL2Str" colSpan="12"/>
+      <field name="addressL3Str" colSpan="12"/>
+      <field name="addressL4Str" colSpan="12"/>
+      <field name="addressL5Str" colSpan="12"/>
+      <field name="addressL6Str" colSpan="12"/>
+      <field name="templateStr" colSpan="12"/>
+    </panel>
+
+    <panel-related title="Address Template Lines"
+      name="addressTemplateLineListRelatedPanel" field="addressTemplateLineList" colSpan="12"
+      form-view="address-template-line-form" grid-view="address-template-line-grid"/>
+  </form>
+
+
+</object-views>

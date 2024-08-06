@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,7 +44,7 @@ import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.App;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -116,7 +116,7 @@ public class DataBackupCreateService {
           .put("com.axelor.apps.base.db.BirtTemplate", "self.name = :name")
           .put("com.axelor.apps.base.db.BirtTemplateParameter", "self.name = :name")
           .put("com.axelor.apps.crm.db.EventCategory", "self.code = :code")
-          .put("com.axelor.apps.account.db.AccountChart", "self.code = :code")
+          .put("com.axelor.apps.account.db.AccountingConfigTemplate", "self.code = :code")
           .put("com.axelor.apps.bankpayment.db.BankOrderFileFormat", "self.name = :name")
           .put("com.axelor.apps.bankpayment.db.BankStatementFileFormat", "self.name = :name")
           .build();
@@ -738,7 +738,7 @@ public class DataBackupCreateService {
   }
 
   public String createRelativeDate(LocalDate date) {
-    LocalDate currentDate = DateTool.getTodayDate(null);
+    LocalDate currentDate = LocalDateHelper.getTodayDate(null);
     long years = currentDate.until(date, ChronoUnit.YEARS);
     currentDate = currentDate.plusYears(years);
 

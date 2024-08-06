@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,9 +31,9 @@ import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.utils.service.ListToolService;
 import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -48,8 +48,8 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AnalyticToolService analyticToolService;
   protected AccountConfigService accountConfigService;
-  protected ListToolService listToolService;
   protected AppAccountService appAccountService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public InvoiceLineAnalyticServiceImpl(
@@ -57,14 +57,14 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
-      ListToolService listToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      CurrencyScaleService currencyScaleService) {
     this.analyticAccountRepository = analyticAccountRepository;
     this.analyticMoveLineService = analyticMoveLineService;
     this.analyticToolService = analyticToolService;
     this.accountConfigService = accountConfigService;
-    this.listToolService = listToolService;
     this.appAccountService = appAccountService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -82,6 +82,8 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
             invoice.getPartner(),
             invoiceLine.getProduct(),
             invoice.getCompany(),
+            invoice.getTradingName(),
+            invoiceLine.getAccount(),
             InvoiceToolService.isPurchase(invoice));
     invoiceLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 
@@ -108,7 +110,10 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
       if (invoiceLine.getAnalyticMoveLineList() != null) {
         for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
           analyticMoveLineService.updateAnalyticMoveLine(
-              analyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
+              analyticMoveLine,
+              currencyScaleService.getScaledValue(
+                  analyticMoveLine, invoiceLine.getCompanyExTaxTotal()),
+              date);
         }
       }
       return analyticMoveLineList;
@@ -127,7 +132,7 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             invoiceLine.getAnalyticDistributionTemplate(),
-            invoiceLine.getCompanyExTaxTotal(),
+            currencyScaleService.getScaledValue(invoiceLine, invoiceLine.getCompanyExTaxTotal()),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
             date);
 

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid model="com.axelor.apps.intervention.db.InterventionQuestion"
+    title="Intervention question" name="intervention-question-grid" groupBy="interventionRange"
+    orderBy="interventionRange.orderSeq,orderSeq" canNew="false" canDelete="false">
+    <hilite if="state == 'ANSWERED'" color="success"/>
+    <hilite if="state == 'NOT_ANSWERED'" color="danger"/>
+    <hilite if="state == 'INDICATION'" color="info"/>
+    <hilite if="state == 'PRIVATE'" color="grey"/>
+    <hilite if="state == 'CONDITIONAL'" color="violet"/>
+    <field name="title"/>
+    <field name="answerTypeSelect"/>
+    <field name="interventionRange" hidden="true"/>
+    <field name="interventionRange.rangeVal" hidden="true"/>
+    <field name="interventionRange.equipment" hidden="true"/>
+    <field name="interventionRange.orderSeq" hidden="true"/>
+    <field name="orderSeq" hidden="true"/>
+    <field name="isRequired" hidden="true"/>
+    <field name="isPrivate" hidden="true"/>
+    <field name="isConditional" hidden="true"/>
+    <field name="summary" hidden="true"/>
+    <field name="isAnswered" hidden="true"/>
+    <field name="state" hidden="true"/>
+  </grid>
+
+  <grid model="com.axelor.apps.intervention.db.InterventionQuestion"
+    title="Intervention question" name="intervention-question-grid-dashlet" canEdit="false"
+    canNew="false" canDelete="false">
+    <field name="title"/>
+    <field name="answerTypeSelect"/>
+    <field name="listAnswer"/>
+  </grid>
+
+  <form model="com.axelor.apps.intervention.db.InterventionQuestion"
+    title="Intervention question" name="intervention-question-form" width="large" canNew="false"
+    canDelete="false" onLoad="action.intervention.question.attrs.default">
+    <panel name="mainPanel">
+      <panel name="mainInfoPanel" colSpan="8" itemSpan="12" readonly="true">
+        <field name="title" showTitle="false" widget="string" placeholder="Title"
+          css="brk-input-large brk-input-bold"/>
+        <field name="indication" showTitle="false" hidden="true" showIf="indication"
+          placeholder="Indication" widget="string"/>
+        <field name="listAnswer" hidden="true" showIf="answerTypeSelect === 'list'"
+          requiredIf="answerTypeSelect === 'list' &amp;&amp; isRequired"
+          grid-view="answer-value-grid" form-view="answer-value-form"
+          domain="self IN :answerValueList" x-order="sequence"/>
+        <field name="textAnswer" hidden="true" showIf="answerTypeSelect === 'text'"
+          requiredIf="answerTypeSelect === 'text' &amp;&amp; isRequired"/>
+        <field name="dateAnswer" hidden="true" showIf="answerTypeSelect === 'date'"
+          requiredIf="answerTypeSelect === 'date' &amp;&amp; isRequired"/>
+        <field name="pictureAnswer" hidden="true" showIf="answerTypeSelect === 'picture'"
+          requiredIf="answerTypeSelect === 'picture' &amp;&amp; isRequired"
+          grid-view="meta-file-grid" form-view="meta-file-form" widget="Image"/>
+        <field name="measureAnswer" hidden="true" showIf="answerTypeSelect === 'measure'"
+          requiredIf="answerTypeSelect === 'measure' &amp;&amp; isRequired"/>
+        <field name="checkboxAnswer" hidden="true" showIf="answerTypeSelect === 'checkbox'"
+          requiredIf="answerTypeSelect === 'checkbox' &amp;&amp; isRequired"
+          widget="inline-checkbox"/>
+        <field name="indicationText" showTitle="false" placeholder="Indication" hidden="true"
+          showIf="answerTypeSelect === 'indication'"
+          requiredIf="answerTypeSelect === 'indication' &amp;&amp; isRequired" widget="string"/>
+        <field name="signatureAnswer" hidden="true" showIf="answerTypeSelect === 'signature'"
+          requiredIf="answerTypeSelect === 'signature' &amp;&amp; isRequired" widget="drawing"
+          x-stroke-width="2" x-drawing-height="300" x-drawing-width="540"/>
+        <label hidden="true" showIf="answerTypeSelect === 'signature' &amp;&amp; !$readonly()"
+          title="Upload a file or log in to the mobile app to sign"/>
+        <field name="advancedMonitoringAnswer" hidden="true"
+          requiredIf="answerTypeSelect === 'advancedMonitoring' &amp;&amp; isRequired"
+          onChange="action-intervention-question-method-advanced-monitoring-answer"
+          showIf="answerTypeSelect === 'advancedMonitoring'"/>
+      </panel>
+      <panel name="configPanel" colSpan="4" itemSpan="12">
+        <field name="answerTypeSelect"/>
+        <field name="desiredUnit" grid-view="unit-grid" form-view="unit-form" hidden="true"
+          showIf="answerTypeSelect === 'measure'"/>
+        <field name="isRequired" widget="InlineCheckbox"/>
+        <field name="isPrivate" widget="InlineCheckbox"/>
+        <field name="isConditional" widget="InlineCheckbox"/>
+        <field name="summary" widget="InlineCheckbox"/>
+      </panel>
+    </panel>
+    <panel name="equipmentPanel" title="Equipment informations" hidden="true"
+      showIf="interventionRange.equipment">
+      <field name="interventionRange.equipment" readonly="true"/>
+    </panel>
+    <panel-tabs name="equipmentPanelTabs" hidden="true"
+      showIf="interventionRange.equipment">
+      <panel name="equipmentsLinesPanel" title="Equipments lines">
+        <panel-dashlet action="action-intervention-question-view-equipments-lines"
+          colSpan="12"/>
+      </panel>
+    </panel-tabs>
+    <panel name="hiddenPanel" title="Hidden" hidden="true" colSpan="12" itemSpan="12">
+      <field name="defaultTextValue"/>
+      <field name="checkboxName"/>
+      <field name="answerValueList" grid-view="answer-value-grid"
+        form-view="answer-value-form" widget="TagSelect"/>
+      <field name="conditionalInterventionQuestion" grid-view="intervention-question-grid"
+        form-view="intervention-question-form"/>
+      <field name="conditionalAnswerValueSet" grid-view="answer-value-grid"
+        form-view="answer-value-form" widget="TagSelect"/>
+      <field name="advancedMonitoringAddress"/>
+      <field name="intervention"/>
+    </panel>
+    <panel-mail name="mailsPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-attrs name="action.intervention.question.attrs.default"
+    model="com.axelor.apps.intervention.db.InterventionQuestion">
+    <attribute for="checkboxAnswer" name="title" expr="eval: checkboxName"
+      if="checkboxName &amp;&amp; checkboxName
+    != ''"/>
+    <attribute for="mainInfoPanel" name="readonly"
+      expr="eval: !com.axelor.apps.intervention.service.helper.InterventionQuestionHelper.isActive(__self__)"/>
+    <attribute for="textAnswer" name="value" expr="eval: defaultTextValue"
+      if="defaultTextValue &amp;&amp;
+    defaultTextValue != '' &amp;&amp; answerTypeSelect == 'text' &amp;&amp; !textAnswer &amp;&amp; com.axelor.apps.intervention.service.helper.InterventionQuestionHelper.isActive(__self__)"/>
+    <attribute for="listAnswer" name="value"
+      expr="eval: __repo__(AnswerValue).find(answerValueList.find{it.isDefault}?.id
+    ?: 0)"
+      if="!listAnswer &amp;&amp; answerTypeSelect == 'list' &amp;&amp; com.axelor.apps.intervention.service.helper.InterventionQuestionHelper.isActive(__self__)"/>
+    <attribute for="checkboxAnswer" name="value" expr="eval: false"
+      if="!checkboxAnswer &amp;&amp; answerTypeSelect
+    == 'checkbox' &amp;&amp; com.axelor.apps.intervention.service.helper.InterventionQuestionHelper.isActive(__self__)"/>
+  </action-attrs>
+
+  <action-view name="action-intervention-question-view-equipments-lines"
+    title="Equipments lines" model="com.axelor.apps.intervention.db.EquipmentLine">
+    <view type="grid" name="intervention-question-equipment-line-grid"/>
+    <view type="form" name="equipment-line-form"/>
+    <domain>self.equipment = :equipment</domain>
+    <context name="equipment" expr="eval: interventionRange?.equipment"/>
+    <context name="_interventionQuestion" expr="eval: __self__"/>
+  </action-view>
+
+  <action-method name="action-intervention-question-method-advanced-monitoring-answer">
+    <call class="com.axelor.apps.intervention.web.InterventionQuestionController"
+      method="advancedMonitoringAnswer"/>
+  </action-method>
+
+</object-views>

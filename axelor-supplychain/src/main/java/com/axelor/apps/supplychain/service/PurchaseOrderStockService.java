@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import java.math.BigDecimal;
@@ -41,7 +42,9 @@ public interface PurchaseOrderStockService {
       StockMove stockMove,
       StockMove qualityStockMove,
       PurchaseOrderLine purchaseOrderLine,
-      BigDecimal qty)
+      BigDecimal qty,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException;
 
   public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,7 +32,10 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.common.ObjectUtils;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveDefaultServiceImpl implements MoveDefaultService {
 
@@ -109,21 +112,22 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
     FiscalPosition fiscalPosition = move.getFiscalPosition();
 
     for (MoveLine moveLine : move.getMoveLineList()) {
-      TaxLine taxLine =
-          moveLine.getTaxLineBeforeReverse() != null
-              ? moveLine.getTaxLineBeforeReverse()
-              : moveLine.getTaxLine();
+      Set<TaxLine> taxLineSet =
+          CollectionUtils.isNotEmpty(moveLine.getTaxLineBeforeReverseSet())
+              ? moveLine.getTaxLineBeforeReverseSet()
+              : moveLine.getTaxLineSet();
       TaxEquiv taxEquiv = null;
-      moveLine.setTaxLineBeforeReverse(null);
-      if (fiscalPosition != null && taxLine != null) {
-        taxEquiv = fiscalPositionService.getTaxEquiv(fiscalPosition, taxLine.getTax());
+      moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
+
+      if (fiscalPosition != null && CollectionUtils.isNotEmpty(taxLineSet)) {
+        taxEquiv = fiscalPositionService.getTaxEquivFromTaxLines(fiscalPosition, taxLineSet);
 
         if (taxEquiv != null) {
-          moveLine.setTaxLineBeforeReverse(taxLine);
-          taxLine = taxService.getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
+          moveLine.setTaxLineBeforeReverseSet(taxLineSet);
+          taxLineSet = taxService.getTaxLineSet(taxEquiv.getToTaxSet(), move.getDate());
         }
       }
-      moveLine.setTaxLine(taxLine);
+      moveLine.setTaxLineSet(taxLineSet);
       moveLine.setTaxEquiv(taxEquiv);
     }
   }

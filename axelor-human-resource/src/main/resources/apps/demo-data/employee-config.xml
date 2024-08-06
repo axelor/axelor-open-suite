@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.1.xsd">
 
   <input file="studio_appEmployee.csv" separator=";" type="com.axelor.studio.db.AppEmployee"
     search="self.app.code = :code" update="true"/>
@@ -23,7 +23,10 @@
   </input>
 
   <input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";"
-    search="self.importId  = :importId"/>
+    search="self.importId  = :importId">
+    <bind to="recoveryLeaveReason" column="recoveryLeaveReason_importId"
+      search="self.importId = :recoveryLeaveReason_importId" if="recoveryLeaveReason_importId"/>
+  </input>
 
   <input file="hr_hrConfig.csv" type="com.axelor.apps.hr.db.HRConfig" separator=";"
     search="self.importId = :importId"/>
@@ -44,6 +47,10 @@
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(hireDate)"/>
     <bind to="leavingDate" column="leavingDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(leavingDate)"/>
+    <bind to="seniorityDate" column="seniorityDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(seniorityDate)"/>
+    <bind to="birthDate" column="birthDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(birthDate)"/>
   </input>
 
   <input file="hr_contract.csv" separator=";" type="com.axelor.apps.hr.db.EmploymentContract"
@@ -56,12 +63,18 @@
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(hireDate)"/>
     <bind to="leavingDate" column="leavingDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(leavingDate)"/>
+    <bind to="seniorityDate" column="seniorityDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(seniorityDate)"/>
+    <bind to="birthDate" column="birthDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(birthDate)"/>
   </input>
 
   <input file="auth_user.csv" separator=";" search="self.importId = :importId"
     type="com.axelor.auth.db.User" update="true"/>
 
   <input file="hr_hrBatch.csv" type="com.axelor.apps.hr.db.HrBatch" separator=";"/>
+
+  <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
 
   <input file="hr_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer" separator=";"/>
 

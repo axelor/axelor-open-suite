@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,10 +33,13 @@ import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -52,8 +55,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   protected AppSupplychainService appSupplychainService;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
   protected PartnerSupplychainService partnerSupplychainService;
-  protected SaleConfigService saleConfigService;
-  protected SaleOrderCheckAnalyticService saleOrderCheckAnalyticService;
+  protected AnalyticToolSupplychainService analyticToolSupplychainService;
 
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
@@ -70,7 +72,9 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
       SaleConfigService saleConfigService,
-      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService) {
+      AnalyticToolSupplychainService analyticToolSupplychainService,
+      SaleOrderService saleOrderService,
+      SaleOrderPrintService saleOrderPrintService) {
     super(
         sequenceService,
         partnerRepo,
@@ -78,14 +82,16 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
         appSaleService,
         appCrmService,
         userService,
-        saleOrderLineService);
+        saleOrderLineService,
+        saleOrderService,
+        saleConfigService,
+        saleOrderPrintService);
     this.saleOrderStockService = saleOrderStockService;
     this.saleOrderPurchaseService = saleOrderPurchaseService;
     this.appSupplychainService = appSupplychainService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
-    this.saleConfigService = saleConfigService;
-    this.saleOrderCheckAnalyticService = saleOrderCheckAnalyticService;
+    this.analyticToolSupplychainService = analyticToolSupplychainService;
   }
 
   @Override
@@ -97,11 +103,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       return;
     }
 
-    if (saleConfigService
-        .getSaleConfig(saleOrder.getCompany())
-        .getIsAnalyticDistributionRequired()) {
-      saleOrderCheckAnalyticService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
-    }
+    analyticToolSupplychainService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
 
     if (partnerSupplychainService.isBlockedPartnerOrParent(saleOrder.getClientPartner())) {
       throw new AxelorException(
@@ -196,10 +198,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     List<StockMove> stockMoves =
         Beans.get(StockMoveRepository.class)
             .all()
-            .filter(
-                "self.originId = ? AND self.originTypeSelect = ?",
-                saleOrder.getId(),
-                "com.axelor.apps.sale.db.SaleOrder")
+            .filter("? MEMBER OF self.saleOrderSet", saleOrder.getId())
             .fetch();
     if (!stockMoves.isEmpty()) {
       for (StockMove stockMove : stockMoves) {
@@ -213,5 +212,6 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       }
     }
     super.completeSaleOrder(saleOrder);
+    accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
   }
 }

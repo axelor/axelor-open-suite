@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="account-management-grid" title="Account management list"
     model="com.axelor.apps.account.db.AccountManagement">
@@ -17,7 +17,10 @@
     <field name="globalAccountingCashAccount" canEdit="false" form-view="account-form"
       grid-view="account-grid"/>
     <field name="analyticDistributionTemplate" if-module="axelor-account"
-      if="__config__.app.isApp('account')" canNew="true"/>
+      if="__config__.app.isApp('account')" canNew="true" domain="self.company = :company"
+      readonlyIf="company.accountConfig.analyticDistributionTypeSelect != 3"/>
+    <field name="company.accountConfig" hidden="true"/>
+    <field name="company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
   </grid>
 
   <grid name="account-management-product-grid" title="Account managements"
@@ -32,8 +35,9 @@
       form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid" canEdit="false"/>
     <field name="purchaseAccount" if-module="axelor-account" form-view="account-form"
       grid-view="account-grid" if="__config__.app.isApp('account')" canEdit="false"
-      domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation')"/>
-    <field name="purchaseTax" form-view="tax-form" grid-view="tax-grid" canEdit="false"/>
+      domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('charge', 'debt', 'immobilisation') AND self.statusSelect = 1"/>
+    <field name="purchaseTaxSet" form-view="tax-form" grid-view="tax-grid" canEdit="false"
+      widget="TagSelect"/>
     <field name="purchFixedAssetsAccount"
       domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
       canEdit="false"/>
@@ -41,10 +45,13 @@
       grid-view="account-grid" if="__config__.app.isApp('account')"
       domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
       canEdit="false"/>
-    <field name="saleTax" form-view="tax-form" grid-view="tax-grid"/>
+    <field name="saleTaxSet" form-view="tax-form" grid-view="tax-grid" widget="TagSelect"/>
     <field name="analyticDistributionTemplate" if-module="axelor-account"
       if="__config__.app.isApp('account')" grid-view="analytic-distribution-template-grid"
-      form-view="analytic-distribution-template-form" canNew="true"/>
+      form-view="analytic-distribution-template-form" domain="self.company = :company"
+      readonlyIf="company.accountConfig.analyticDistributionTypeSelect != 3"/>
+    <field name="company.accountConfig" hidden="true"/>
+    <field name="company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
   </grid>
 
 
@@ -75,7 +82,8 @@
           domain="self.statusSelect = 1 AND self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt')"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false"/>
-        <field name="purchaseTax" form-view="tax-form" grid-view="tax-grid" canEdit="false"/>
+        <field name="purchaseTaxSet" form-view="tax-form" grid-view="tax-grid" canEdit="false"
+          widget="TagSelect"/>
       </panel>
 
       <panel name="fixedAssetsConfig1Panel" title="Purchases of fixed assets" colSpan="12"
@@ -95,7 +103,8 @@
           domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false"/>
-        <field name="saleTax" form-view="tax-form" grid-view="tax-grid" canEdit="false"/>
+        <field name="saleTaxSet" form-view="tax-form" grid-view="tax-grid" canEdit="false"
+          widget="TagSelect"/>
       </panel>
 
       <!-- TAX -->
@@ -133,6 +142,10 @@
           domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false"/>
+        <field name="vatPendingAccount"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false"/>
       </panel>
 
       <!-- PAYMENT -->
@@ -164,37 +177,17 @@
         <field name="paymentMode.accountingMethodSelect" hidden="true"/>
       </panel>
 
-      <panel name="analyticsPanel" title="Analytics" colSpan="12" showIf="typeSelect != 2">
-        <field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account"
+      <panel name="analyticsPanel" title="Analytics" colSpan="12"
+        showIf="typeSelect != 2 &amp;&amp; company.accountConfig.analyticDistributionTypeSelect == 3">
+        <field name="analyticDistributionTemplate" if-module="axelor-account"
           if="__config__.app.isApp('account')" grid-view="analytic-distribution-template-grid"
-          form-view="analytic-distribution-template-form"/>
+          form-view="analytic-distribution-template-form" domain="self.company = :company"/>
+        <field name="company.accountConfig" hidden="true"/>
+        <field name="company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
       </panel>
       <panel name="taxPanel" title="Tax" colSpan="12" hidden="true">
         <field name="tax" form-view="tax-form" grid-view="tax-grid"
           requiredIf="typeSelect == 2"/>
-      </panel>
-      <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
-        showIf="typeSelect == 2">
-        <field name="allowedFinDiscountTaxVatSystem1Account"
-          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFinancialDiscount()"
-          canEdit="false" colSpan="6"/>
-        <field name="allowedFinDiscountTaxVatSystem2Account"
-          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
-          canEdit="false" colSpan="6"/>
-        <field name="obtainedFinDiscountTaxVatSystem1Account"
-          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
-          canEdit="false" colSpan="6"/>
-        <field name="obtainedFinDiscountTaxVatSystem2Account"
-          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
-          canEdit="false" colSpan="6"/>
       </panel>
     </panel>
   </form>
@@ -212,13 +205,13 @@
     <attribute name="hidden" for="saleAccount"
       expr="eval: !__parent__?.sellable || __parent__?.expense"
       if="__parent__?._model == 'com.axelor.apps.base.db.Partner'"/>
-    <attribute name="hidden" for="saleTax"
+    <attribute name="hidden" for="saleTaxSet"
       expr="eval: !__parent__?.sellable || __parent__?.expense"
       if="__parent__?._model == 'com.axelor.apps.base.db.Partner'"/>
     <attribute name="hidden" for="saleAccount"
       expr="eval: !__parent__?.__parent__?.sellable || __parent__?.__parent__?.expense"
       if="!__parent__?._model == 'com.axelor.apps.base.db.Partner'"/>
-    <attribute name="hidden" for="saleTax"
+    <attribute name="hidden" for="saleTaxSet"
       expr="eval: !__parent__?.__parent__?.sellable || __parent__?.__parent__?.expense"
       if="!__parent__?._model == 'com.axelor.apps.base.db.Partner'"/>
   </action-attrs>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,9 @@ package com.axelor.apps.purchase.service.config;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseConfig;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.i18n.I18n;
@@ -39,5 +41,16 @@ public class PurchaseConfigService {
     }
 
     return purchaseConfig;
+  }
+
+  public PrintingTemplate getPurchaseOrderPrintTemplate(Company company) throws AxelorException {
+    PrintingTemplate purchaseOrderPrintTemplate =
+        getPurchaseConfig(company).getPurchaseOrderPrintTemplate();
+    if (purchaseOrderPrintTemplate == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return purchaseOrderPrintTemplate;
   }
 }

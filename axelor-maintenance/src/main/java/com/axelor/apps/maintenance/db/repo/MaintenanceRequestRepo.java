@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,5 +38,12 @@ public class MaintenanceRequestRepo extends MaintenanceRequestRepository {
     }
 
     return super.save(entity);
+  }
+
+  @Override
+  public MaintenanceRequest copy(MaintenanceRequest entity, boolean deep) {
+    MaintenanceRequest copy = super.copy(entity, deep);
+    copy.setStatusSelect(STATUS_PLANNED);
+    return copy;
   }
 }

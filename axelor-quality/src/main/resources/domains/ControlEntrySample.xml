@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="ControlEntrySample" cacheable="true">
+    <integer name="entrySampleNbr" title="Number"/>
+    <string name="entrySampleRef" title="Reference"/>
+    <integer name="resultSelect" selection="quality.control.entry.sample.result.select"
+      title="Result" default="1"/>
+    <many-to-one name="controlEntry" ref="com.axelor.apps.quality.db.ControlEntry"
+      title="Control entry"/>
+    <one-to-many name="controlEntryPlanLinesList"
+      ref="com.axelor.apps.quality.db.ControlEntryPlanLine" title="Control entry sample lines"
+      mappedBy="controlEntrySample"/>
+    <string name="fullName" title="Full name" namecolumn="true"><![CDATA[
+        if (controlEntry != null) {
+          return controlEntry.getName() + " " + entrySampleRef + " " + entrySampleNbr;
+        }
+        return entrySampleRef + " " + entrySampleNbr;
+    ]]></string>
+
+    <extra-code>
+			<![CDATA[
+				public static final int RESULT_NOT_CONTROLLED = 1;
+				public static final int RESULT_COMPLIANT = 2;
+				public static final int RESULT_NOT_COMPLIANT = 3;
+			]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

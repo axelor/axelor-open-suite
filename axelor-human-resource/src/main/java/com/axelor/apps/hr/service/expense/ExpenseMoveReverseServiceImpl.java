@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,28 +21,31 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
-import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.hr.db.Expense;
-import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 
 public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPaymentImpl {
 
-  protected ExpenseRepository expenseRepository;
-  protected ExpenseService expenseService;
+  protected ExpensePaymentService expensePaymentService;
+  protected AppService appService;
 
   @Inject
   public ExpenseMoveReverseServiceImpl(
@@ -52,13 +55,17 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
       MoveRepository moveRepository,
       MoveLineCreateService moveLineCreateService,
       ExtractContextMoveService extractContextMoveService,
-      CancelFactory cancelFactory,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentCancelService invoicePaymentCancelService,
+      MoveToolService moveToolService,
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
-      ExpenseRepository expenseRepository,
-      ExpenseService expenseService) {
+      BankReconciliationLineService bankReconciliationLineService,
+      CurrencyScaleService currencyScaleService,
+      UnreconcileService unReconcileService,
+      MoveInvoiceTermService moveInvoiceTermService,
+      ExpensePaymentService expensePaymentService,
+      AppService appService) {
     super(
         moveCreateService,
         reconcileService,
@@ -68,12 +75,18 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
         extractContextMoveService,
         invoicePaymentRepository,
         invoicePaymentCancelService,
+        moveToolService,
         bankReconciliationService,
-        bankReconciliationLineRepository);
-    this.expenseRepository = expenseRepository;
-    this.expenseService = expenseService;
+        bankReconciliationLineRepository,
+        bankReconciliationLineService,
+        currencyScaleService,
+        unReconcileService,
+        moveInvoiceTermService);
+    this.expensePaymentService = expensePaymentService;
+    this.appService = appService;
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public Move generateReverse(
       Move move,
@@ -89,24 +102,26 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
             isAutomaticAccounting,
             isUnreconcileOriginalMove,
             dateOfReversion);
-    if (!Beans.get(AppService.class).isApp("expense")) {
+    if (!appService.isApp("expense")) {
       return reverseMove;
     }
 
-    Expense expense = getLinkedExpense(move);
-
-    if (expense != null) {
-      expenseService.resetExpensePaymentAfterCancellation(expense);
-    }
+    cancelVentilation(move);
+    cancelPayment(move);
     return reverseMove;
   }
 
-  protected Expense getLinkedExpense(Move move) {
-    return expenseRepository
-        .all()
-        .filter("self.paymentMove.id = :paymentMove AND self.statusSelect = :statusSelect")
-        .bind("paymentMove", move.getId())
-        .bind("statusSelect", ExpenseRepository.STATUS_REIMBURSED)
-        .fetchOne();
+  protected void cancelPayment(Move move) {
+    Expense expensePayment = move.getExpensePayment();
+    if (expensePayment != null) {
+      expensePaymentService.resetExpensePaymentAfterCancellation(expensePayment);
+    }
+  }
+
+  protected void cancelVentilation(Move move) {
+    Expense expense = move.getExpense();
+    if (expense != null) {
+      expense.setVentilated(false);
+    }
   }
 }

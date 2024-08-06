@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="AppBase" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <datetime name="todayDateT" title="Today date" tz="true"/>
-    <many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language"
-      title="Default Partner language"/>
+    <many-to-one name="defaultPartnerLocalization"
+      ref="com.axelor.apps.base.db.Localization" title="Default Partner Localization"/>
+
     <boolean name="emailAccountByUser" title="Manage mail account by user" default="false"/>
     <boolean name="emailAccountByCompany" title="Manage mail account by company"
       default="false"/>
@@ -20,14 +21,13 @@
     <!-- Interfaces QAS et SVI -->
     <string name="qasWsdlUrl" title="URL to QAS WSDL"/>
 
+
+    <string name="draftPrefix" title="Draft prefix for sequences" default="#"
+      help="The default value is #"/>
+
     <!-- Mapping API -->
     <integer name="mapApiSelect" title="Mapping service provider"
       selection="base.app.base.map.api.select" default="2"/>
-
-    <!-- Routing service API for Open Street Map> -->
-    <integer name="osmRoutingServiceApiSelect"
-      title="Routing service provider for Open Street Map"
-      selection="base.app.base.osm.routing.api.select" default="1"/>
 
     <string name="googleMapsApiKey" title="Google Maps API key"/>
 
@@ -95,8 +95,6 @@
     <boolean name="checkExistingSequenceOnGeneration"
       title="Check existing sequence on generation" default="true"/>
 
-    <boolean name="checkRegistrationCode" title="Check registration code" default="true"/>
-
     <boolean name="manageMultiBanks" title="Manage multi banks"/>
 
     <boolean name="manageProductVariants" title="Manage product variants"/>
@@ -111,6 +109,11 @@
 
     <boolean name="enableMultiCompany" title="Enable multi-company management"
       default="true"/>
+
+    <boolean name="activatePartnerRelations" title="Activate partner delegations"
+      default="false"/>
+
+    <boolean name="enableTaxNumbers" title="Enable tax numbers"/>
 
     <many-to-one name="passwordChangedTemplate" ref="com.axelor.message.db.Template"
       title="Template for changed password"/>
@@ -149,12 +152,32 @@
       default="false"/>
     <boolean name="manageCcBccRelatedTo" title="Manage related CC &amp; BCC emails"/>
 
-    <string name="customAppStyle" title="Custom style" large="true"
-      help="Custom css to personnalize web user interface."/>
-
     <integer name="processTimeout" default="10" title="Timeout for processes (seconds)"
       help="Maximum time before a process called by an user starts running in the background"
       min="1"/>
+
+    <many-to-one name="pfxCertificate" title="PFX Certificate"
+      ref="com.axelor.apps.base.db.PfxCertificate"/>
+
+    <many-to-one name="clientSituationPrintTemplate"
+      ref="com.axelor.apps.base.db.PrintingTemplate" title="Client situation template"/>
+    <many-to-one name="companyPhoneBookPrintTemplate"
+      ref="com.axelor.apps.base.db.PrintingTemplate" title="Company phone book template"/>
+    <many-to-one name="contactPhoneBookPrintTemplate"
+      ref="com.axelor.apps.base.db.PrintingTemplate" title="Contact phone book template"/>
+    <many-to-one name="productCatalogPGQLPrintTemplate"
+      ref="com.axelor.apps.base.db.PrintingTemplate" title="Product catalog PGQL template"/>
+
+    <boolean name="enablePricingScale" title="Enable pricing scale"/>
+    <boolean name="isPricingComputingOrder" title="Pricing computing order"
+      help="When selected, this is the pricing scale computation order."/>
+
+    <boolean name="isActivateInstanceInfoShortcut" default="false"
+      title="Activate the instance information shortcut"
+      help="This configuration allows quick access to the type of environment and the configured date and time"/>
+    <boolean name="isActivateCompanyChangeShortcut" default="false"
+      title="Activate the company change shortcut"
+      help="This configuration allows quick access to the active company change"/>
 
     <extra-code>
 	   		<![CDATA[
@@ -165,9 +188,6 @@
 	   			public static final int MAP_API_GOOGLE = 1;
 	   			public static final int MAP_API_OPEN_STREET_MAP = 2;
 
-	   			public static final int ROUTING_API_YOURS = 1;
-	   			public static final int ROUTING_API_OSRM = 2;
-
 	   			public static final String SEQUENCE_PER_PRODUCT = "Per product";
 	   			public static final String SEQUENCE_PER_PRODUCT_CATEGORY = "Per product category";
 
@@ -177,7 +197,7 @@
 
     <track>
       <field name="todayDateT" on="UPDATE"/>
-      <field name="defaultPartnerLanguage" on="UPDATE"/>
+      <field name="defaultPartnerLocalization" on="UPDATE"/>
       <field name="emailAccountByUser" on="UPDATE"/>
       <field name="emailAccountByCompany" on="UPDATE"/>
 
@@ -213,9 +233,7 @@
       <field name="passwordChangedTemplate" on="UPDATE"/>
       <field name="generatePartnerSequence" on="UPDATE"/>
       <field name="checkExistingSequenceOnGeneration" on="UPDATE"/>
-      <field name="checkRegistrationCode" on="UPDATE"/>
       <field name="storeStreets" on="UPDATE"/>
-      <field name="osmRoutingServiceApiSelect" on="UPDATE"/>
       <field name="fixerApiKey" on="UPDATE"/>
       <field name="isFixerAPIPaid" on="UPDATE"/>
       <field name="nbDecimalDigitForQty" on="UPDATE"/>
@@ -236,9 +254,11 @@
       <field name="geoNamesZipUrl" on="UPDATE"/>
       <field name="manageSubsidiaryPartner" on="UPDATE"/>
       <field name="manageCcBccRelatedTo" on="UPDATE"/>
-      <field name="customAppStyle" on="UPDATE"/>
       <field name="processTimeout" on="UPDATE"/>
-      <!-- 31 fields -->
+      <field name="activatePartnerRelations" on="UPDATE"/>
+      <field name="enablePricingScale" on="UPDATE"/>
+      <field name="isPricingComputingOrder" on="UPDATE"/>
+      <!-- 32 fields -->
     </track>
 
   </entity>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,16 +31,24 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.Template;
 import com.google.inject.servlet.RequestScoped;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RequestScoped
 public class AccountConfigService {
+
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public AccountConfig getAccountConfig(Company company) throws AxelorException {
 
@@ -342,17 +350,50 @@ public class AccountConfigService {
     return accountConfig.getSupplierAdvancePaymentAccount();
   }
 
-  public Account getCashPositionVariationAccount(AccountConfig accountConfig)
+  public Account getCashPositionVariationDebitAccount(AccountConfig accountConfig)
       throws AxelorException {
 
-    if (accountConfig.getCashPositionVariationAccount() == null) {
+    if (accountConfig.getCashPositionVariationDebitAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_27),
           I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
-    return accountConfig.getCashPositionVariationAccount();
+    return accountConfig.getCashPositionVariationDebitAccount();
+  }
+
+  public Account getCashPositionVariationDebitAccountDontThrow(AccountConfig accountConfig) {
+    try {
+      return getCashPositionVariationDebitAccount(accountConfig);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      log.debug(e.getMessage());
+    }
+    return null;
+  }
+
+  public Account getCashPositionVariationCreditAccount(AccountConfig accountConfig)
+      throws AxelorException {
+
+    if (accountConfig.getCashPositionVariationCreditAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_51),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getCashPositionVariationCreditAccount();
+  }
+
+  public Account getCashPositionVariationCreditAccountDontThrow(AccountConfig accountConfig) {
+    try {
+      return getCashPositionVariationCreditAccount(accountConfig);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      log.debug(e.getMessage());
+    }
+    return null;
   }
 
   public Account getReimbursementAccount(AccountConfig accountConfig) throws AxelorException {
@@ -698,23 +739,23 @@ public class AccountConfigService {
     return account;
   }
 
-  public Tax getPurchFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
-    if (accountConfig.getPurchFinancialDiscountTax() == null) {
+  public PrintingTemplate getInvoicePrintTemplate(Company company) throws AxelorException {
+    PrintingTemplate invoicePrintTemplate = getAccountConfig(company).getInvoicePrintTemplate();
+    if (ObjectUtils.isEmpty(invoicePrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_TAX),
-          accountConfig.getCompany().getName());
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
-    return accountConfig.getPurchFinancialDiscountTax();
+    return invoicePrintTemplate;
   }
 
-  public Tax getSaleFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
-    if (accountConfig.getSaleFinancialDiscountTax() == null) {
+  public Account getBillOfExchReceivAccount(AccountConfig accountConfig) throws AxelorException {
+    if (accountConfig.getBillOfExchReceivAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_TAX),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_BILL_OF_EXCHANGE_RECEIV_ACCOUNT),
           accountConfig.getCompany().getName());
     }
-    return accountConfig.getSaleFinancialDiscountTax();
+    return accountConfig.getBillOfExchReceivAccount();
   }
 }

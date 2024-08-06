@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
@@ -49,10 +49,10 @@ public class StockMoveLineController {
           stockMove = Optional.ofNullable(parentContext.asType(StockMove.class));
         } else if (parentContext.getContextClass().equals(ManufOrder.class)) {
           ManufOrder manufOrder = parentContext.asType(ManufOrder.class);
-          ManufOrderStockMoveService manufOrderStockMoveService =
-              Beans.get(ManufOrderStockMoveService.class);
+          ManufOrderGetStockMoveService manufOrderGetStockMoveService =
+              Beans.get(ManufOrderGetStockMoveService.class);
           stockMove =
-              manufOrderStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
+              manufOrderGetStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
         }
       }
       if (!stockMove.isPresent()) {
@@ -74,11 +74,13 @@ public class StockMoveLineController {
    * @param response
    */
   public void setProductInfo(ActionRequest request, ActionResponse response) {
-    StockMoveLine stockMoveLine;
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
+    StockMove stockMove = stockMoveLine.getStockMove();
     try {
-      stockMoveLine = request.getContext().asType(StockMoveLine.class);
+
       Company company;
-      StockMove stockMove = stockMoveLine.getStockMove();
+
       if (stockMove == null) {
         Context parentContext = request.getContext().getParent();
         if (parentContext.getContextClass().equals(StockMove.class)) {
@@ -103,16 +105,16 @@ public class StockMoveLineController {
       }
 
       if (stockMoveLine.getProduct() == null) {
-        stockMoveLine = new StockMoveLine();
-        stockMoveLine.setStockMove(stockMove);
+        stockMoveLineService.resetStockMoveLine(stockMoveLine);
         response.setValues(Mapper.toMap(stockMoveLine));
         return;
       }
 
-      Beans.get(StockMoveLineService.class).setProductInfo(stockMove, stockMoveLine, company);
+      stockMoveLineService.setProductInfo(stockMove, stockMoveLine, company);
       response.setValues(stockMoveLine);
     } catch (Exception e) {
-      stockMoveLine = new StockMoveLine();
+      stockMoveLineService.resetStockMoveLine(stockMoveLine);
+      stockMoveLine.setStockMove(stockMove);
       response.setValues(Mapper.toMap(stockMoveLine));
       TraceBackService.trace(response, e);
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,7 @@ import com.axelor.rpc.ActionResponse;
 public class SopController {
   public void generateSOPLines(ActionRequest request, ActionResponse response) {
     Sop sop = request.getContext().asType(Sop.class);
-    if (sop.getYear() == null) {
+    if (sop.getPeriodYear() == null) {
       response.setError("Please specify the year to generate lines.");
     } else {
       try {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,36 +23,46 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected AppAccountService appAccountService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected FiscalPositionService fiscalPositionService;
   protected CurrencyService currencyService;
+  protected CurrencyScaleService currencyScaleService;
+  protected TaxService taxService;
 
   @Inject
   public MoveLineRecordServiceImpl(
       AppAccountService appAccountService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       FiscalPositionService fiscalPositionService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      CurrencyScaleService currencyScaleService,
+      TaxService taxService) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.fiscalPositionService = fiscalPositionService;
     this.currencyService = currencyService;
+    this.currencyScaleService = currencyScaleService;
+    this.taxService = taxService;
   }
 
   @Override
@@ -62,7 +72,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     BigDecimal currencyRate = BigDecimal.ONE;
 
     if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
-      if (move.getMoveLineList().size() == 0) {
+      if (ObjectUtils.isEmpty(move.getMoveLineList())) {
         currencyRate =
             currencyService.getCurrencyConversionRate(currency, companyCurrency, move.getDate());
       } else {
@@ -75,11 +85,16 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     BigDecimal total = moveLine.getCredit().add(moveLine.getDebit());
 
     if (total.signum() != 0) {
-      moveLine.setCurrencyAmount(
+      boolean isCredit = moveLine.getCredit().signum() > 0;
+      BigDecimal currencyAmount =
           total.divide(
               moveLine.getCurrencyRate(),
-              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-              RoundingMode.HALF_UP));
+              currencyScaleService.getScale(move),
+              RoundingMode.HALF_UP);
+      if (isCredit) {
+        currencyAmount = currencyAmount.negate();
+      }
+      moveLine.setCurrencyAmount(currencyAmount);
     }
   }
 
@@ -106,24 +121,27 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     Account accountingAccount = moveLine.getAccount();
 
     if (accountingAccount == null || !accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
+      moveLine.setTaxLineSet(Sets.newHashSet());
+      moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
       return;
     }
 
-    TaxLine taxLine = moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
+    Set<TaxLine> taxLineSet =
+        moveLoadDefaultConfigService.getTaxLineSet(move, moveLine, accountingAccount);
+    Set<TaxLine> taxLineBeforeReverseSet = moveLine.getTaxLineBeforeReverseSet();
+
     TaxEquiv taxEquiv = null;
-    moveLine.setTaxLineBeforeReverse(null);
-    if (taxLine != null) {
-      if (move.getFiscalPosition() != null) {
-        taxEquiv = fiscalPositionService.getTaxEquiv(move.getFiscalPosition(), taxLine.getTax());
-      }
-
-      moveLine.setTaxLine(taxLine);
-
+    if (CollectionUtils.isNotEmpty(taxLineSet) && move.getFiscalPosition() != null) {
+      taxEquiv =
+          fiscalPositionService.getTaxEquivFromTaxLines(
+              move.getFiscalPosition(), taxLineBeforeReverseSet);
       if (taxEquiv != null) {
-        moveLine.setTaxEquiv(taxEquiv);
-        moveLine.setTaxLineBeforeReverse(taxLine);
+        moveLine.setTaxLineBeforeReverseSet(taxLineBeforeReverseSet);
+        taxLineSet = taxService.getTaxLineSet(taxEquiv.getToTaxSet(), moveLine.getDate());
       }
     }
+    moveLine.setTaxLineSet(taxLineSet);
+    moveLine.setTaxEquiv(taxEquiv);
 
     if (ObjectUtils.notEmpty(accountingAccount.getVatSystemSelect())) {
       moveLine.setVatSystemSelect(accountingAccount.getVatSystemSelect());
@@ -144,17 +162,20 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
 
   @Override
   public void setDebitCredit(MoveLine moveLine) {
-    if (moveLine.getAccount() == null) {
-      return;
+    BigDecimal currencyAmount = moveLine.getCurrencyAmount();
+    BigDecimal currencyRate = moveLine.getCurrencyRate();
+    BigDecimal newCurrencyAmount =
+        currencyScaleService.getCompanyScaledValue(
+            moveLine, currencyAmount.multiply(currencyRate).abs());
+
+    if (currencyAmount.signum() < 0) {
+      moveLine.setDebit(BigDecimal.ZERO);
+      moveLine.setCredit(newCurrencyAmount);
     }
 
-    BigDecimal amount = moveLine.getCurrencyAmount().multiply(moveLine.getCurrencyRate());
-
-    if (moveLine.getAccount().getCommonPosition() == AccountRepository.COMMON_POSITION_CREDIT) {
-      moveLine.setCredit(amount);
-    } else if (moveLine.getAccount().getCommonPosition()
-        == AccountRepository.COMMON_POSITION_DEBIT) {
-      moveLine.setDebit(amount);
+    if (currencyAmount.signum() > 0) {
+      moveLine.setCredit(BigDecimal.ZERO);
+      moveLine.setDebit(newCurrencyAmount);
     }
   }
 
@@ -179,5 +200,17 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       moveLine.setPartnerSeq(null);
       moveLine.setPartnerFullName(null);
     }
+  }
+
+  @Override
+  public void setCounter(MoveLine moveLine, Move move) {
+    int counter =
+        ObjectUtils.notEmpty(move.getMoveLineList())
+            ? move.getMoveLineList().stream()
+                .map(MoveLine::getCounter)
+                .max(Comparator.naturalOrder())
+                .orElse(0)
+            : 0;
+    moveLine.setCounter(counter + 1);
   }
 }

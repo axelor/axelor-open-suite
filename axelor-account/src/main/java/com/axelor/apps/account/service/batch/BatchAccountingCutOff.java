@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.base.AxelorException;
@@ -40,28 +39,24 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BatchAccountingCutOff extends BatchStrategy {
+public class BatchAccountingCutOff extends PreviewBatch {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AccountingCutOffService cutOffService;
-  protected MoveLineRepository moveLineRepository;
   protected AccountingBatchRepository accountingBatchRepository;
-  public List<Long> recordIdList;
 
   @Inject
   public BatchAccountingCutOff(
-      AccountingCutOffService cutOffService,
-      MoveLineRepository moveLineRepository,
-      AccountingBatchRepository accountingBatchRepository) {
+      AccountingCutOffService cutOffService, AccountingBatchRepository accountingBatchRepository) {
     super();
-    this.cutOffService = cutOffService;
-    this.moveLineRepository = moveLineRepository;
     this.accountingBatchRepository = accountingBatchRepository;
+    this.cutOffService = cutOffService;
   }
 
   @Override
@@ -70,31 +65,29 @@ public class BatchAccountingCutOff extends BatchStrategy {
 
     LocalDate moveDate = accountingBatch.getMoveDate();
     int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
-    updateBatch(moveDate, accountingCutOffTypeSelect);
-    if (this.recordIdList == null) {
-      this._processMovesByQuery(accountingBatch);
-    } else {
-      this._processMovesByIds(accountingBatch);
-    }
+    this.updateBatch(moveDate, accountingCutOffTypeSelect);
+
+    super.process();
   }
 
-  protected void _processMovesByQuery(AccountingBatch accountingBatch) {
+  @Override
+  protected void _processByQuery(AccountingBatch accountingBatch) {
     Company company = accountingBatch.getCompany();
     LocalDate moveDate = accountingBatch.getMoveDate();
-    Journal researchJournal = accountingBatch.getResearchJournal();
+    Set<Journal> journalSet = accountingBatch.getJournalSet();
     int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
 
     int offset = 0;
     List<Move> moveList;
     Query<Move> moveQuery =
-        cutOffService.getMoves(company, researchJournal, moveDate, accountingCutOffTypeSelect);
+        cutOffService.getMoves(company, journalSet, moveDate, accountingCutOffTypeSelect);
 
     while (!(moveList = moveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
 
       findBatch();
       accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
       company = accountingBatch.getCompany();
-      researchJournal = accountingBatch.getResearchJournal();
+      journalSet = accountingBatch.getJournalSet();
 
       for (Move move : moveList) {
         ++offset;
@@ -109,10 +102,10 @@ public class BatchAccountingCutOff extends BatchStrategy {
     }
   }
 
-  protected void _processMovesByIds(AccountingBatch accountingBatch) {
+  protected void _processByIds(AccountingBatch accountingBatch) {
     List<Move> moveList =
         recordIdList.stream()
-            .map(it -> moveLineRepository.find(it))
+            .map(it -> moveLineRepo.find(it))
             .filter(Objects::nonNull)
             .map(MoveLine::getMove)
             .distinct()
@@ -132,7 +125,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
       String moveDescription = accountingBatch.getMoveDescription();
       String reverseMoveDescription = accountingBatch.getReverseMoveDescription();
       int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
-      int cutOffMoveStatusSelect = accountingBatch.getCutOffMoveStatusSelect();
+      int cutOffMoveStatusSelect = accountingBatch.getGeneratedMoveStatusSelect();
       boolean automaticReverse = accountingBatch.getAutomaticReverse();
       boolean automaticReconcile = accountingBatch.getAutomaticReconcile();
       String prefixOrigin =
@@ -206,9 +199,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
 
     comment.append(
         String.format(
-            "\n\t"
-                + I18n.get(
-                    com.axelor.apps.base.exceptions.BaseExceptionMessage.ALARM_ENGINE_BATCH_4),
+            "\n\t" + I18n.get(com.axelor.apps.base.exceptions.BaseExceptionMessage.BASE_BATCH_3),
             batch.getAnomaly()));
 
     super.stop();

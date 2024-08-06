@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,7 +32,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.StringHTMLListBuilder;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -81,7 +81,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
         accountingReportDas2CheckService.checkMandatoryDataForDas2Export(accountingReport);
 
     if (!CollectionUtils.isEmpty(errorList)) {
-      StringHTMLListBuilder errorMessageBuilder = new StringHTMLListBuilder();
+      StringHtmlListBuilder errorMessageBuilder = new StringHtmlListBuilder();
       errorList.forEach(errorMessageBuilder::append);
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, errorMessageBuilder.toString());

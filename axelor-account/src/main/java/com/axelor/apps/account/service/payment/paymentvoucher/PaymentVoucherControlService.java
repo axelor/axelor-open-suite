@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -84,17 +84,6 @@ public class PaymentVoucherControlService {
           I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_CONTROL_1),
           I18n.get(BaseExceptionMessage.EXCEPTION),
           paymentVoucher.getRef());
-    }
-
-    // Si on a des lignes à payer (dans le deuxième tableau)
-    if (!paymentVoucher.getHasAutoInput()
-        && (paymentVoucher.getPayVoucherElementToPayList() == null
-            || paymentVoucher.getPayVoucherElementToPayList().size() == 0)) {
-      throw new AxelorException(
-          paymentVoucher,
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),
-          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
     if (journal == null || paymentModeAccount == null) {

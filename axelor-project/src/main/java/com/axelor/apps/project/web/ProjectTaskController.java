@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -111,6 +111,16 @@ public class ProjectTaskController {
       projectTask = Beans.get(ProjectTaskRepository.class).find(projectTask.getId());
       Beans.get(ProjectTaskService.class).deleteProjectTask(projectTask);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void fillSubtask(ActionRequest request, ActionResponse response) {
+    try {
+      ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+      Beans.get(ProjectTaskService.class).fillSubtask(projectTask);
+      response.setValues(projectTask);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

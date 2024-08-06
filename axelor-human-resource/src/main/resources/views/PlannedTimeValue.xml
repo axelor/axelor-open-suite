@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="planned-time-value-grid" title="Planned time values"
+    model="com.axelor.apps.project.db.PlannedTimeValue">
+    <field name="plannedTime"/>
+  </grid>
+
+  <form name="planned-time-value-form" title="Planned time value"
+    model="com.axelor.apps.project.db.PlannedTimeValue">
+    <panel name="mainPanel">
+      <field name="plannedTime" title="Planned time" colSpan="12"
+        onChange="action-planned-time-value-method-check-if-exists"/>
+    </panel>
+  </form>
+
+  <action-method name="action-planned-time-value-method-check-if-exists">
+    <call class="com.axelor.apps.hr.web.project.PlannedTimeValueController"
+      method="checkIfExists"/>
+  </action-method>
+</object-views>

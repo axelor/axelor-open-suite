@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,9 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ManufOrderProductResponse;
+import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
@@ -45,15 +47,21 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
   protected ProductStockLocationService productStockLocationService;
   protected ManufOrderService manufOrderService;
   protected StockMoveLineService stockMoveLineService;
+  protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
+  protected ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService;
 
   @Inject
   public ManufOrderProductRestServiceImpl(
       ProductStockLocationService productStockLocationService,
       ManufOrderService manufOrderService,
-      StockMoveLineService stockMoveLineService) {
+      StockMoveLineService stockMoveLineService,
+      ManufOrderGetStockMoveService manufOrderGetStockMoveService,
+      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService) {
     this.productStockLocationService = productStockLocationService;
     this.manufOrderService = manufOrderService;
     this.stockMoveLineService = stockMoveLineService;
+    this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
+    this.manufOrderUpdateStockMoveService = manufOrderUpdateStockMoveService;
   }
 
   public List<ProdProduct> getProdProductsOfProduct(
@@ -290,7 +298,15 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
 
     StockMoveLine stockMoveLine =
         stockMoveLineService.createStockMoveLine(
-            stockMove, product, trackingNumber, qty, BigDecimal.ZERO, null, null);
+            stockMove,
+            product,
+            trackingNumber,
+            qty,
+            BigDecimal.ZERO,
+            null,
+            null,
+            stockMove.getFromStockLocation(),
+            stockMove.getToStockLocation());
 
     addProductInManufOrder(manufOrder, stockMoveLine, productType);
 
@@ -303,11 +319,11 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
       throws AxelorException {
     if (manufOrder != null && stockMoveLine != null && PRODUCT_TYPE_PRODUCED.equals(productType)) {
       manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
-      manufOrderService.updateProducedStockMoveFromManufOrder(manufOrder);
+      manufOrderUpdateStockMoveService.updateProducedStockMoveFromManufOrder(manufOrder);
     }
     if (manufOrder != null && stockMoveLine != null && PRODUCT_TYPE_CONSUMED.equals(productType)) {
       manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
-      manufOrderService.updateConsumedStockMoveFromManufOrder(manufOrder);
+      manufOrderUpdateStockMoveService.updateConsumedStockMoveFromManufOrder(manufOrder);
     }
   }
 
@@ -315,11 +331,11 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
       throws AxelorException {
     StockMove stockMove = null;
     if (manufOrder != null && PRODUCT_TYPE_PRODUCED.equals(productType)) {
-      stockMove = manufOrderService.getProducedStockMoveFromManufOrder(manufOrder);
+      stockMove = manufOrderGetStockMoveService.getProducedStockMoveFromManufOrder(manufOrder);
     }
 
     if (manufOrder != null && PRODUCT_TYPE_CONSUMED.equals(productType)) {
-      stockMove = manufOrderService.getConsumedStockMoveFromManufOrder(manufOrder);
+      stockMove = manufOrderGetStockMoveService.getConsumedStockMoveFromManufOrder(manufOrder);
     }
     return stockMove;
   }

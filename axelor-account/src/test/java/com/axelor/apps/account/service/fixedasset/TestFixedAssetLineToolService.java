@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,13 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
+import static org.mockito.Mockito.mock;
+
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.account.service.FindFixedAssetService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.time.LocalDate;
@@ -28,28 +32,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class TestFixedAssetLineToolService {
+class TestFixedAssetLineToolService {
 
-  private FixedAssetLineToolService fixedAssetLineToolService;
+  private static FixedAssetLineToolService fixedAssetLineToolService;
 
-  @Before
-  public void prepare() {
-    fixedAssetLineToolService = new FixedAssetLineToolServiceImpl();
+  @BeforeAll
+  static void prepare() {
+    CurrencyScaleService currencyScaleService = mock(CurrencyScaleService.class);
+    FindFixedAssetService findFixedAssetService = mock(FindFixedAssetService.class);
+    fixedAssetLineToolService =
+        new FixedAssetLineToolServiceImpl(currencyScaleService, findFixedAssetService);
   }
 
   @Test
-  public void groupAndSortByDateFixedAssetLineEmpty() {
+  void groupAndSortByDateFixedAssetLineEmpty() {
     FixedAsset fixedAsset = createFixedAsset(12, new ArrayList<>(), new ArrayList<>());
-    Assert.assertTrue(
+    Assertions.assertTrue(
         fixedAssetLineToolService.groupAndSortByDateFixedAssetLine(fixedAsset).isEmpty());
   }
 
   @Test
-  public void groupAndSortByDateFixedAssetLineSimpleCasePeriodicityMonth() {
+  void groupAndSortByDateFixedAssetLineSimpleCasePeriodicityMonth() {
     List<LocalDate> fiscalDateList =
         Lists.newArrayList(
             LocalDate.of(2022, 3, 31),
@@ -71,11 +78,11 @@ public class TestFixedAssetLineToolService {
             LocalDate.of(2022, 4, 30),
             LocalDate.of(2022, 5, 31),
             LocalDate.of(2022, 6, 30));
-    Assert.assertEquals(expectedSet, localDateResults);
+    Assertions.assertEquals(expectedSet, localDateResults);
   }
 
   @Test
-  public void groupAndSortByDateFixedAssetLineRealCasePeriodicityYear() {
+  void groupAndSortByDateFixedAssetLineRealCasePeriodicityYear() {
     List<LocalDate> fiscalDateList =
         Lists.newArrayList(
             LocalDate.of(2023, 1, 31),
@@ -99,7 +106,7 @@ public class TestFixedAssetLineToolService {
             LocalDate.of(2025, 1, 31),
             LocalDate.of(2026, 1, 31),
             LocalDate.of(2026, 9, 20));
-    Assert.assertEquals(expectedSet, localDateResults);
+    Assertions.assertEquals(expectedSet, localDateResults);
   }
 
   protected FixedAsset createFixedAsset(

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,10 +19,7 @@
 package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.db.MrpLine;
-import com.axelor.inject.Beans;
 import java.util.Map;
 
 public class MrpLineManagementRepository extends MrpLineRepository {
@@ -44,29 +41,7 @@ public class MrpLineManagementRepository extends MrpLineRepository {
         && !mrpLine.getMaturityDate().isEqual(mrpLine.getEstimatedDeliveryDate())) {
       json.put("respectDeliveryDelayDate", mrpLine.getEstimatedDeliveryDate());
     }
-    if (PurchaseOrder.class.getName().equals(mrpLine.getProposalSelect())) {
-      PurchaseOrder purchaseOrder =
-          Beans.get(PurchaseOrderRepository.class).find(mrpLine.getProposalSelectId());
-      if (purchaseOrder != null) {
-        mrpLine.setIsOutDayNbBetweenPurchaseAndProposal(
-            mrpLine.getProduct() != null
-                && mrpLine.getMaturityDate() != null
-                && (purchaseOrder.getEstimatedReceiptDate() == null
-                    || mrpLine.getProduct().getMrpFamily() == null
-                    || Math.abs(
-                            mrpLine.getMaturityDate().toEpochDay()
-                                - purchaseOrder.getEstimatedReceiptDate().toEpochDay())
-                        > mrpLine
-                            .getProduct()
-                            .getMrpFamily()
-                            .getDayNbBetweenPurchaseAndProposal()));
-        json.put(
-            "isOutDayNbBetweenPurchaseAndProposal",
-            mrpLine.getIsOutDayNbBetweenPurchaseAndProposal());
-      } else {
-        json.put("proposalSelectId", null);
-      }
-    }
+
     return mrpLineMap;
   }
 

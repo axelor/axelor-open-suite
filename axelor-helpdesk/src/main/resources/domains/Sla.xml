@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="helpdesk" package="com.axelor.apps.helpdesk.db"/>
 
@@ -13,7 +13,8 @@
       selection="helpdesk.priority.select" default="2"/>
     <many-to-one name="ticketType" ref="com.axelor.apps.helpdesk.db.TicketType"
       title="Ticket type"/>
-    <integer name="reachStageSelect" title="Reach stage" selection="helpdesk.status.select"/>
+    <many-to-one name="reachStageTicketStatus"
+      ref="com.axelor.apps.helpdesk.db.TicketStatus" title="Reach stage"/>
     <integer name="days" title="days" min="0"/>
     <integer name="hours" title="hours" min="0"/>
     <boolean name="isWorkingDays" title="Working Days"/>

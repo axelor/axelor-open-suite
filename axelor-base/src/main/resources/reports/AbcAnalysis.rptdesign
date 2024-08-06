@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <simple-property-list name="includeResource">
         <value>translation_fr_FR</value>
         <value>translation_en_US</value>
@@ -76,20 +76,6 @@
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="Locale" id="3676">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">true</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
             <property name="controlType">text-box</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
@@ -1013,7 +999,7 @@ $func$ LANGUAGE plpgsql; ]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -1055,7 +1041,7 @@ $func$ LANGUAGE plpgsql; ]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select message_key,message_value as "translation"
 from meta_translation
-WHERE message_key = ? AND language = ?]]></xml-property>
+WHERE message_key = ? AND language = substring(?, '^[a-zA-Z]+')]]></xml-property>
         </oda-data-set>
     </data-sets>
     <page-setup>
@@ -1084,7 +1070,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                     </column>
                     <row id="203">
                         <cell id="4049">
-                            <text id="4026">
+                            <image id="4053">
                                 <property name="dataSet">abcAnalysisHeaderDS</property>
                                 <list-property name="boundDataColumns">
                                     <structure>
@@ -1114,15 +1100,11 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                                         <property name="allowExport">true</property>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE >
-	<TR>
-		<VALUE-OF format="HTML">
-		"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='"+row["logo_width"]+"' height='"+row["logo_height"]+"'/></TD>"
- 		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="210">
                             <property name="verticalAlign">middle</property>

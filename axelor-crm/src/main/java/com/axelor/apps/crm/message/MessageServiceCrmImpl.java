@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
@@ -50,20 +51,25 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
       SendMailQueueService sendMailQueueService,
       AppSettingsMessageService appSettingsMessageService,
       UserService userService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      PrintingTemplatePrintService printingTemplatePrintService) {
     super(
         metaAttachmentRepository,
         messageRepository,
         sendMailQueueService,
         appSettingsMessageService,
         userService,
-        appBaseService);
+        appBaseService,
+        printingTemplatePrintService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
   public Message createMessage(Event event)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, IOException {
+      throws AxelorException,
+          ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          IOException {
 
     // Get template depending on event type
     Template template = null;

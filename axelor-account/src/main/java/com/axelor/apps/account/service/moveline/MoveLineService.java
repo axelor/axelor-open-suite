@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,15 +18,17 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface MoveLineService {
 
@@ -45,23 +47,27 @@ public interface MoveLineService {
 
   boolean checkManageCutOffDates(MoveLine moveLine);
 
+  boolean checkManageCutOffDates(MoveLine moveLine, int functionalOriginSelect);
+
   void applyCutOffDates(
       MoveLine moveLine, Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
 
-  public boolean checkManageAnalytic(Move move) throws AxelorException;
+  MoveLine computeCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
 
-  @CallMethod
-  LocalDate getFinancialDiscountDeadlineDate(MoveLine moveLine);
-
-  void computeFinancialDiscount(MoveLine moveLine);
-
-  void computeInvoiceTermsFinancialDiscount(MoveLine moveLine);
-
-  Batch validateCutOffBatch(List<Long> recordIdList, Long batchId);
+  Batch validatePreviewBatch(List<Long> recordIdList, Long batchId, int actionSelect)
+      throws AxelorException;
 
   void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
 
   List<MoveLine> getReconcilableMoveLines(List<Integer> moveLineIds);
+
+  Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> getPopulatedReconcilableMoveLineMap(
+      List<MoveLine> moveLineList);
+
+  Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
+      Pair<List<MoveLine>, List<MoveLine>> moveLineLists);
+
+  void computeCutOffProrataAmount(AccountingBatch accountingBatch) throws AxelorException;
 }

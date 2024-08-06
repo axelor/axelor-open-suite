@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,7 +53,8 @@ public interface ITranslation {
       "Invoice.purchaseInvoiceAdvPaymentNo"; /*)*/
   public static final String INVOICE_PURCHASE_INVOICE_BALANCE_NO = /*$$(*/
       "Invoice.purchaseInvoiceBalanceNo"; /*)*/
-  public static final String INVOICE_PURCHASE_REFUND_NO = /*$$(*/ "Invoice.purchaseRefundNo"; /*)*/
+  public static final String INVOICE_PURCHASE_REFUND_NO = /*$$(*/
+      "Invoice.purchaseCreditNoteNo"; /*)*/
   public static final String INVOICE_INVOICE_NO = /*$$(*/ "Invoice.invoiceNo"; /*)*/
   public static final String INVOICE_INVOICE_ADV_PAYMENT_NO = /*$$(*/
       "Invoice.invoiceAdvPaymentNo"; /*)*/
@@ -65,6 +66,8 @@ public interface ITranslation {
   public static final String INVOICE_OF = /*$$(*/ "Invoice.of"; /*)*/
   public static final String INVOICE_IMPUTED_ON = /*$$(*/ "Invoice.imputedOn"; /*)*/
   public static final String INVOICE_TOTAL_TO_PAY = /*$$(*/ "Invoice.totalToPay"; /*)*/
+  public static final String INVOICE_TOTAL_TO_BE_CREDITED = /*$$(*/
+      "Invoice.totalToBeCredited"; /*)*/
   public static final String INVOICE_CANCEL_INVOICE_NO = /*$$(*/ "Invoice.cancelInvoiceNo"; /*)*/
 
   public static final String INVOICE_TIMESHEET_TITLE = /*$$(*/ "Invoice.timesheetTitle"; /*)*/
@@ -119,6 +122,12 @@ public interface ITranslation {
       "Invoice.invoiceTermHoldBackTrue"; /*)*/
   public static final String INVOICE_INVOICE_TERMS_HOLD_BACK_FALSE = /*$$(*/
       "Invoice.invoiceTermHoldBackFalse"; /*)*/
+  public static final String INVOICE_REFUND_PART_1 = /*$$(*/ "Invoice.refundInvoicePart1"; /*)*/
+  public static final String INVOICE_REFUND_PART_2 = /*$$(*/ "Invoice.refundInvoicePart2"; /*)*/
+  public static final String INVOICE_NO_DISCOUNT_EARLY_PAYMENT = /*$$(*/
+      "Invoice.noDiscountEarlyPayment"; /*)*/
+  public static final String INVOICE_COEFIICIENT = /*$$(*/ "Invoice.coefficient"; /*)*/
+
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
   public static final String ACCOUNTING_REPORT_RECAP_BY_ACCOUNT = /*$$(*/
@@ -539,6 +548,9 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_2001_DESCRIPTION = /*$$(*/
       "AccountingReportType2001.description"; /*)*/
 
+  public static final String ACCOUNTING_REPORT_3000_ALL_COMPANIES = /*$$(*/
+      "AccountingReportType3000.allCompanies"; /*)*/
+
   public static final String SALE_INVOICE_DETAILS_REPORT_TITLE = /*$$(*/
       "SaleInvoicesDetails.title"; /*)*/
   public static final String SALE_INVOICE_DETAILS_REPORT_COMPANY = /*$$(*/
@@ -755,6 +767,8 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType17.acquisition"; /*)*/
   public static final String ACCOUNTING_REPORT_17_ASSET_DISPOSAL =
       /*$$(*/ "AccountingReportType17.asset_disposal"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_ASSET_SCRAP =
+      /*$$(*/ "AccountingReportType17.asset_scrap"; /*)*/
   public static final String ACCOUNTING_REPORT_17_YEAR_END_VALUE =
       /*$$(*/ "AccountingReportType17.year_end_value"; /*)*/
   public static final String ACCOUNTING_REPORT_17_DEPRECIATION =
@@ -1070,4 +1084,14 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType.date"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_USER =
       /*$$(*/ "AccountingReportType.user"; /*)*/
+
+  public static final String INVOICE_TYPE = /*$$(*/ "Invoice.type"; /*)*/
+  public static final String INVOICE_TAXES = /*$$(*/ "Invoice.taxes"; /*)*/
+  public static final String INVOICE_TOTAL_TAXES = /*$$(*/ "Invoice.totalTaxes"; /*)*/
+  public static final String INVOICE_TAX_CODE = /*$$(*/ "Invoice.taxCode"; /*)*/
+  public static final String INVOICE_EXPENSES_ON_RECEIPTS = /*$$(*/
+      "Invoice.expensesOnReceipts"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_NO_ACCOUTING_ENTRY = /*$$(*/
+      "AccountingReport.noEntry"; /*)*/
 }

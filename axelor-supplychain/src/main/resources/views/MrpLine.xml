@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="mrp-line-grid" model="com.axelor.apps.supplychain.db.MrpLine" title="Results"
     groupBy="product" sortable="false"
@@ -19,8 +19,6 @@
     <hilite color="info" strong="true"
       if="[5,8,9,11].indexOf($get('mrpLineType.elementSelect')) != -1"/>
     <field name="product" hidden="true"/>
-    <button name="alertIconButton" showIf="$get('isOutDayNbBetweenPurchaseAndProposal')"
-      onClick="refresh" readonlyIf="true" icon="fa-exclamation-triangle"/>
     <button name="toggleBtn" icon="fa-exchange" onClick="action-mrp-line-method-toggle"
       showIf="!proposalGenerated &amp;&amp; [5,8].indexOf($get('mrpLineType.elementSelect')) != -1"/>
     <field name="proposalToProcess" showIf="!proposalGenerated"/>
@@ -57,7 +55,6 @@
     <field name="product.defaultSupplierPartner.id" hidden="true"/>
     <field name="supplierPartner.id" hidden="true"/>
     <field name="warnDelayFromSupplier" hidden="true"/>
-    <field name="isOutDayNbBetweenPurchaseAndProposal" hidden="true"/>
   </grid>
 
   <form name="mrp-line-form" model="com.axelor.apps.supplychain.db.MrpLine" title="Result"
@@ -67,18 +64,16 @@
     <panel name="mainPanel">
       <field name="$warnDelayFromSupplierLabel" readonly="true" showTitle="false" colSpan="12"
         showIf="warnDelayFromSupplier">
-        <viewer><![CDATA[
-	                    <h4>
-	                        <span class="label label-warning" x-translate>The product will not be delivered in time for its corresponding need.</span>
-	                    </h4>
-					]]></viewer>
+        <viewer>
+          <![CDATA[<><Badge bg="warning">{_t('The product will not be delivered in time for its corresponding need.')}</Badge></>]]>
+        </viewer>
       </field>
       <field name="product" readonly="true" canEdit="false"/>
       <field name="mrpLineType" readonly="true"/>
       <field name="qty" onChange="action-temp-complete-is-edited-by-user"
-        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
+        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
       <field name="maturityDate" onChange="action-temp-complete-is-edited-by-user"
-        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
+        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
       <field name="cumulativeQty" css="bold" readonly="true"/>
       <field name="product.unit" readonly="true"/>
       <field name="minQty" readonly="true"/>
@@ -86,7 +81,7 @@
       <field name="reOrderQty" readonly="true"/>
       <field name="stockLocation" readonly="true"/>
       <field name="maxLevel" readonly="true"/>
-      <field name="partner" showIf="partner"/>
+      <field name="partner" showIf="partner" form-view="partner-form" grid-view="partner-grid"/>
       <field name="estimatedDeliveryMrpLine" readonly="true" showIf="estimatedDeliveryMrpLine"
         form-view="mrp-line-form"/>
       <field name="deliveryDelayDate" showIf="deliveryDelayDate"/>
@@ -106,13 +101,13 @@
       <field name="proposalSelect" title="Proposal" widget="RefSelect" readonly="true"
         showIf="proposalGenerated"/>
       <field name="isEditedByUser"
-        hideIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5 &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
+        hideIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5 &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
       <field name="mrp.mrpTypeSelect" hidden="true"/>
       <field name="warnDelayFromSupplier" hidden="true"/>
     </panel>
 
     <panel name="supplierPanel" showIf="mrpLineType.elementSelect == 5">
-      <field name="supplierPartner"
+      <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-validate-supplier-catalog, action-mrp-line-attrs-domain-supplier-partner"/>
     </panel>
   </form>

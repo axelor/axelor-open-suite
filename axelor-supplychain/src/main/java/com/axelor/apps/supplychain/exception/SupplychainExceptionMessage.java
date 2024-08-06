@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,9 +31,6 @@ public final class SupplychainExceptionMessage {
   /** Purchase order Service */
   public static final String PURCHASE_ORDER_1 = /*$$(*/
       "%s please configure a virtual supplier stock location for the company %s" /*)*/;
-
-  public static final String PURCHASE_ORDER_2 = /*$$(*/
-      "Error : you have exceeded the budget %s for this period" /*)*/;
 
   public static final String PO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The purchase order %s invoiced amount cannot be greater than its total amount." /*)*/;
@@ -115,13 +112,6 @@ public final class SupplychainExceptionMessage {
       "Can't cancel a stock move that is partially or totally invoiced." /*)*/;
   public static final String STOCK_MOVE_CANCEL_WRONG_INVOICE_STATUS_ALERT = /*$$(*/
       "An invoice at status draft or validated is linked to the stock move %s. Please contact the invoicing/accounting department before any changes." /*)*/;
-
-  /** Stock move line service */
-  public static final String STOCK_MOVE_MISSING_SALE_ORDER = /*$$(*/
-      "Missing link to sale order line (from sale order id = %s) for stock move line %s" /*)*/;
-
-  public static final String STOCK_MOVE_MISSING_PURCHASE_ORDER = /*$$(*/
-      "Missing purchase order with id %s for stock move line %s" /*)*/;
 
   /** Batch Invoicing */
   public static final String BATCH_INVOICING_1 = /*$$(*/
@@ -317,7 +307,7 @@ public final class SupplychainExceptionMessage {
       "Stock move %s has already been invoiced." /*)*/;
 
   public static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
-      "It is not allowed to invoice a greater quantity %s than the delivered quantity %s. Pls check the invoice line with this product %s." /*)*/;
+      "It is not allowed to invoice a greater quantity %s than the delivered quantity %s. Please check the invoice line with this product %s." /*)*/;
 
   public static final String SALE_ORDER_COMPLETE_MANUALLY = /*$$(*/
       "There is at least one draft or planned stock move for this sale order." /*)*/;
@@ -364,11 +354,6 @@ public final class SupplychainExceptionMessage {
   public static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
       "Field fieldSelect is null for %s" /*)*/;
 
-  public static final String CUT_OFF_BATCH_NO_LINE = /*$$(*/
-      "You must select at least one line to validate" /*)*/;
-
-  public static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
-      "No partner account was found for company %s." /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER = /*$$(*/
       "The invoiced partner must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER = /*$$(*/
@@ -376,11 +361,26 @@ public final class SupplychainExceptionMessage {
   public static final String SALE_ORDER_MERGE_ERROR_INCOTERM = /*$$(*/
       "The incoterm must be the same for all sale orders" /*)*/;
 
+  public static final String PURCHASE_ORDER_MERGE_CONFIRMATION_NEEDED = /*$$(*/
+      "The stock location must be the same for all purchase orders." /*)*/;
+
   public static final String MISSING_FORECASTED_INV_CUST_ACCOUNT = /*$$(*/
       "Please select a forecasted invoice customer account in the accounting batch" /*)*/;
   public static final String MISSING_FORECASTED_INV_SUPP_ACCOUNT = /*$$(*/
       "Please select a forecasted invoice supplier account in the accounting batch" /*)*/;
-
   public static final String STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT = /*$$(*/
       "The following stock move lines are already associated with invoice lines and can not be splitted: %s" /*)*/;
+
+  public static final String SALE_SHIPMENT_THRESHOLD_EXCEEDED = /*$$(*/
+      "Carriage paid threshold is exceeded, all shipment cost lines are removed" /*)*/;
+
+  public static final String COULD_NOT_FIND_ELIGIBLE_EMAIL_TEMPLATE_FOR_STOCK_RULES = /*$$(*/
+      "Could not find eligible email template for stock rules: %s" /*)*/;
+
+  public static final String
+      COULD_NOT_FIND_RECIPIENTS_FOR_MESSAGE_GENERATED_FROM_STOCK_RULES = /*$$(*/
+          "Could not find recipients for message generated from stock rules: %s" /*)*/;
+
+  public static final String STOCK_MOVE_INVOICING_ERROR = /*$$(*/
+      "This stock move needs to be invoiced manually, manual intervention is needed : %s" /*)*/;
 }

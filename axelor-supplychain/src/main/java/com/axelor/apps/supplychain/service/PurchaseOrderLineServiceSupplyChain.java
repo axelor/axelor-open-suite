@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,9 +25,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 
 public interface PurchaseOrderLineServiceSupplyChain {
 
-  public PurchaseOrderLine createPurchaseOrderLine(
+  PurchaseOrderLine createPurchaseOrderLine(
       PurchaseOrder purchaseOrder, SaleOrderLine saleOrderLine) throws AxelorException;
-
-  public PurchaseOrderLine createAnalyticDistributionWithTemplate(
-      PurchaseOrderLine purchaseOrderLine);
 }

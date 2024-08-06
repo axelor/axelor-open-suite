@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid model="com.axelor.apps.base.db.PricingRule" title="Pricing rules"
     name="pricing-rule-grid" groupBy="concernedModel,typeSelect" orderBy="name">
@@ -14,13 +14,12 @@
   </grid>
 
   <form model="com.axelor.apps.base.db.PricingRule" title="Pricing rule"
-    name="pricing-rule-form" width="large"
-    onLoad="action-pricing-rule-attrs-display-meta-json-field">
+    name="pricing-rule-form" width="large" onNew="action-pricing-rule-group-onnew"
+    onLoad="action-pricing-rule-group-onload">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="concernedModel"
-        onChange="action-pricing-rule-attrs-field-to-populate-clear"
-        domain="self.name = 'SaleOrderLine'"/>
+      <field name="concernedModel" domain="self.name != 'Pricing'"
+        onChange="action-pricing-rule-attrs-field-to-populate-clear"/>
       <field name="company"/>
       <field name="typeSelect" onChange="action-pricing-rule-attrs-field-to-populate-clear"/>
       <field name="fieldTypeSelect" showIf="typeSelect == 1"/>
@@ -44,6 +43,16 @@
     </panel-mail>
   </form>
 
+  <action-group name="action-pricing-rule-group-onnew">
+    <action name="action-pricing-rule-record-onnew"/>
+    <action name="action-pricing-rule-attrs-set-type-select-selection"/>
+  </action-group>
+
+  <action-group name="action-pricing-rule-group-onload">
+    <action name="action-pricing-rule-attrs-display-meta-json-field"/>
+    <action name="action-pricing-rule-attrs-set-type-select-selection"/>
+  </action-group>
+
   <action-attrs name="action-pricing-rule-attrs-field-to-populate-clear">
     <attribute name="value" for="fieldToPopulate" expr="eval: null"/>
   </action-attrs>
@@ -62,5 +71,15 @@
     <attribute name="value" for="metaJsonField" expr="eval:null"
       if="eval:__this__?.fieldToPopulate== null || __this__?.fieldToPopulate.json == false"/>
   </action-attrs>
+
+  <action-attrs name="action-pricing-rule-attrs-set-type-select-selection">
+    <attribute for="typeSelect" name="selection-in" expr="eval: [_typeSelect]"
+      if="_typeSelect"/>
+  </action-attrs>
+
+  <action-record name="action-pricing-rule-record-onnew"
+    model="com.axelor.apps.base.db.PricingRule">
+    <field name="typeSelect" expr="eval: _typeSelect"/>
+  </action-record>
 
 </object-views>

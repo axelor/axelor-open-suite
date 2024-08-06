@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -104,4 +104,16 @@ public final class SaleExceptionMessage {
 
   public static final String OPPORTUNITY_PARTNER_MISSING = /*$$(*/
       "You must fill a partner for the opportunity %s." /*)*/;
+
+  public static final String SALE_ORDER_NO_DETAIL_LINE = /*$$(*/
+      "Please enter at least one detail line." /*)*/;
+
+  public static final String SALE_ORDER_NEW_VERSION = /*$$(*/
+      "Actual version saved, past version recovered." /*)*/;
+
+  public static final String SALE_ORDER_NO_NEW_VERSION = /*$$(*/
+      "Actual version overwritten." /*)*/;
+
+  public static final String SALE_ORDER_CANNOT_DELETE_COMFIRMED_ORDER = /*$$(*/
+      "It is not possible to delete a confirmed order." /*)*/;
 }

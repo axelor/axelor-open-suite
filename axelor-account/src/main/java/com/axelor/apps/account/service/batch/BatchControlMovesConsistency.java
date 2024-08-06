@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -59,9 +59,16 @@ public class BatchControlMovesConsistency extends BatchStrategy {
           try {
             move = moveRepo.find(move.getId());
             moveValidateService.checkConsistencyPreconditions(move);
+            incrementDone();
           } catch (AxelorException e) {
             TraceBackService.trace(
                 new AxelorException(move, e.getCategory(), I18n.get(e.getMessage())),
+                null,
+                batch.getId());
+            incrementAnomaly();
+          } catch (Exception e) {
+            TraceBackService.trace(
+                new AxelorException(e, move, TraceBackRepository.CATEGORY_INCONSISTENCY),
                 null,
                 batch.getId());
             incrementAnomaly();

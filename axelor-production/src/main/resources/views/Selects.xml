@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -16,6 +16,11 @@
     <option value="7">Merged</option>
   </selection>
 
+  <selection name="production.manuf.operation.continuity.select">
+    <option value="0">No continuity</option>
+    <option value="1">Optional continuity</option>
+    <option value="2">Continuity by default</option>
+  </selection>
   <selection name="production.bill.of.material.status.select">
     <option value="1">Draft</option>
     <option value="2">Validated</option>
@@ -71,7 +76,13 @@
   <selection name="supplychain.mrp.line.related.to.select"
     id="production.supplychain.mrp.line.related.to.select">
     <option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
-    <option value="com.axelor.apps.production.db.OperationOrder">Operation order</option>
+    <option value="com.axelor.apps.production.db.OperationOrder">Manufacturing operation</option>
+  </selection>
+
+  <selection
+    name="production.supplychain.mrp.line.type.supply.method.for.manufacturing.orders.select">
+    <option value="0">On operations start</option>
+    <option value="1">On order start</option>
   </selection>
 
   <selection name="production.cost.sheet.line.type.select">
@@ -118,6 +129,7 @@
 
   <selection name="production.batch.action.select">
     <option value="1">Compute work in progress valuation</option>
+    <option value="2">Fill SOP real values</option>
   </selection>
 
   <selection name="production.cost.sheet.calculation.type.select">
@@ -130,11 +142,6 @@
   <selection name="production.weekly.planning.type.select">
     <option value="1">Human resources</option>
     <option value="2">Machine</option>
-  </selection>
-
-  <selection name="production.sop.line.status">
-    <option value="1">Draft</option>
-    <option value="2">Confirmed</option>
   </selection>
 
   <selection name="production.cost.calculations.status.select">
@@ -157,6 +164,27 @@
 
   <selection name="batch.batch.type.select" id="production.batch.batch.type.select">
     <option value="700">Production batch</option>
+  </selection>
+
+  <selection name="production.config.capacity.select">
+    <option value="1">Infinite</option>
+    <option value="2">Finite</option>
+  </selection>
+
+  <selection name="production.config.scheduling.select">
+    <option value="1">As soon as possible</option>
+    <option value="2">At the latest</option>
+  </selection>
+
+  <selection name="production.bill.of.material.import.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Imported</option>
+    <option value="3">Validated</option>
+  </selection>
+
+  <selection name="stock.tracking.number.origin.move.type.select"
+    id="production.stock.tracking.number.origin.move.type.select">
+    <option value="5">Manufacturing</option>
   </selection>
 
 </object-views>

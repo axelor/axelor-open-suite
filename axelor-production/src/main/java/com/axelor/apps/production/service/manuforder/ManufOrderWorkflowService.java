@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,44 +20,34 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ManufOrderWorkflowService {
 
-  ManufOrder plan(ManufOrder manufOrder) throws AxelorException;
-
-  List<ManufOrder> plan(List<ManufOrder> manufOrderList) throws AxelorException;
-
-  List<ManufOrder> plan(List<ManufOrder> manufOrderList, boolean quickSolve) throws AxelorException;
-
   void start(ManufOrder manufOrder) throws AxelorException;
 
-  void pause(ManufOrder manufOrder);
+  void pause(ManufOrder manufOrder) throws AxelorException;
 
   void resume(ManufOrder manufOrder);
 
   boolean finish(ManufOrder manufOrder) throws AxelorException;
+
+  void finishManufOrder(ManufOrder manufOrder) throws AxelorException;
 
   boolean partialFinish(ManufOrder manufOrder) throws AxelorException;
 
   void cancel(ManufOrder manufOrder, CancelReason cancelReason, String cancelReasonStr)
       throws AxelorException;
 
-  LocalDateTime computePlannedStartDateT(ManufOrder manufOrder);
-
-  LocalDateTime computePlannedEndDateT(ManufOrder manufOrder);
-
   void allOpFinished(ManufOrder manufOrder) throws AxelorException;
 
-  OperationOrder getFirstOperationOrder(ManufOrder manufOrder);
+  List<Partner> getOutsourcePartners(ManufOrder manufOrder) throws AxelorException;
 
-  OperationOrder getLastOperationOrder(ManufOrder manufOrder);
+  void setOperationOrderMaxPriority(ManufOrder manufOrder);
 
-  void updatePlannedDates(ManufOrder manufOrder, LocalDateTime plannedStartDateT)
-      throws AxelorException;
+  boolean sendPartialFinishMail(ManufOrder manufOrder);
 
-  void createPurchaseOrder(ManufOrder manufOrder) throws AxelorException;
+  boolean sendFinishedMail(ManufOrder manufOrder);
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <menuitem name="invoice-root" title="Invoicing" order="-1000"
     if="__config__.app.isApp('invoice')" icon="fa-file-text-o" icon-background="#31b4a9"/>
@@ -19,16 +19,17 @@
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
-  <menuitem name="invoice-root-custrefunds" parent="invoice-root" order="200"
-    title="Cust. Refunds" action="invoice.root.custrefunds"/>
+  <menuitem name="invoice-root-cust-credit-note" parent="invoice-root" order="200"
+    title="Cust. Credit notes" action="invoice.root.custrefunds"/>
 
-  <action-view name="invoice.root.custrefunds" title="Cust. Refunds"
+  <action-view name="invoice.root.custrefunds" title="Cust. Credit notes"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-refund-grid"/>
     <view type="form" name="invoice-form"/>
     <view-param name="search-filters" value="customer-refunds-filters"/>
     <domain>self.operationTypeSelect = 4</domain>
     <context name="_operationTypeSelect" expr="eval:4"/>
+    <context name="_operationSubTypeSelect" expr="eval:1"/>
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
@@ -84,16 +85,17 @@
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
-  <menuitem name="invoice-root-purchase-suprefunds" parent="invoice-root" order="600"
-    title="Suppl. Refunds" action="invoice.root.purchase.suprefunds"/>
+  <menuitem name="invoice-root-purchase-sup-credit-note" parent="invoice-root" order="600"
+    title="Suppl. Credit notes" action="invoice.root.purchase.sup.credit.note"/>
 
-  <action-view name="invoice.root.purchase.suprefunds" title="Suppl. Refunds"
+  <action-view name="invoice.root.purchase.sup.credit.note" title="Suppl. Credit notes"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-supplier-refund-grid"/>
     <view type="form" name="invoice-form"/>
     <view-param name="search-filters" value="supplier-refunds-filters"/>
     <domain>self.operationTypeSelect = 2</domain>
     <context name="_operationTypeSelect" expr="eval:2"/>
+    <context name="_operationSubTypeSelect" expr="eval:1"/>
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
@@ -148,20 +150,22 @@
     <view type="grid" name="move-grid"/>
     <view type="form" name="move-form"/>
     <view-param name="search-filters" value="move-filters"/>
+    <domain> self.massEntryStatusSelect = 0</domain>
     <context name="_isActivateSimulatedMoves"
       expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
-  <menuitem name="account-root-move-simplified-move" parent="account-root-move"
-    title="Simplified Moves" action="account.root.move.move.simplifed" order="200"/>
+  <menuitem name="account-root-move-mass-entry-move" parent="account-root-move"
+    title="Mass entry" action="account.root.move.mass.entry.move" order="0"/>
 
-  <action-view name="account.root.move.move.simplifed"
-    model="com.axelor.apps.account.db.Move" title="Simplified Moves">
-    <view name="move-grid" type="grid"/>
-    <view name="move-simplified-form" type="form"/>
+  <action-view name="account.root.move.mass.entry.move" title="Mass entry"
+    model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="move-mass-entry-grid"/>
+    <view type="form" name="move-mass-entry-form"/>
     <view-param name="search-filters" value="move-filters"/>
+    <domain> self.massEntryStatusSelect != 0</domain>
     <context name="_isActivateSimulatedMoves"
-      expr="eval:__user__.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
+      expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
   <menuitem name="account-root-move-move-line" parent="account-root-move"
@@ -172,6 +176,7 @@
     <view type="grid" name="move-line-grid"/>
     <view type="form" name="move-line-form"/>
     <view-param name="search-filters" value="move-line-filters"/>
+    <domain>self.move.massEntryStatusSelect = 0</domain>
   </action-view>
 
   <menuitem name="account-root-pfp" title="PFP" parent="account-root"
@@ -301,9 +306,21 @@
     <view-param name="search-filters" value="reconcile-group-filters"/>
   </action-view>
 
+  <menuitem name="account-root-periodic-processing-reconcile-group-proposal"
+    parent="account-root-periodic-processing" title="Reconcile Group proposals"
+    action="account.root.periodic.processing.reconcile.group.proposal" order="4"/>
+
+  <action-view name="account.root.periodic.processing.reconcile.group.proposal"
+    title="Reconcile Group proposals" model="com.axelor.apps.account.db.ReconcileGroup">
+    <view type="grid" name="reconcile-group-grid"/>
+    <view type="form" name="reconcile-group-form"/>
+    <view-param name="search-filters" value="reconcile-group-filters"/>
+    <domain>self.isProposal IS true</domain>
+  </action-view>
+
   <menuitem name="account-root-periodic-processing-overpayment-clearances"
     parent="account-root-periodic-processing" title="Overpayments clearances"
-    action="account.root.periodic.processing.overpayment.clearances" order="400"/>
+    action="account.root.periodic.processing.overpayment.clearances" order="5"/>
 
   <action-view name="account.root.periodic.processing.overpayment.clearances"
     title="Overpayments clearances" model="com.axelor.apps.account.db.AccountClearance">
@@ -314,7 +331,7 @@
 
   <menuitem name="account-root-periodic-processing-shift-irrecoverable"
     parent="account-root-periodic-processing" title="Shift to irrecoverable"
-    action="account.root.periodic.processing.shift.irrecoverable" order="500"/>
+    action="account.root.periodic.processing.shift.irrecoverable" order="6"/>
 
   <action-view name="account.root.periodic.processing.shift.irrecoverable"
     title="Shift to irrecoverable" model="com.axelor.apps.account.db.Irrecoverable">
@@ -325,7 +342,7 @@
 
   <menuitem name="account-root-periodic-processing-cheque-reject"
     parent="account-root-periodic-processing" title="Rejects of cheques"
-    action="account.root.periodic.processing.cheque.reject" order="600"/>
+    action="account.root.periodic.processing.cheque.reject" order="7"/>
 
   <action-view name="account.root.periodic.processing.cheque.reject"
     title="Rejects of cheques" model="com.axelor.apps.account.db.ChequeRejection">
@@ -337,7 +354,7 @@
   </action-view>
 
   <menuitem name="account-root-periodic-processing-annual-processing"
-    parent="account-root-periodic-processing" title="Annual processing" order="700"/>
+    parent="account-root-periodic-processing" title="Annual processing" order="8"/>
 
   <menuitem name="account-root-periodic-processing-annual-processing-year-closure"
     parent="account-root-periodic-processing-annual-processing" title="Year closure"
@@ -441,7 +458,21 @@
     <view type="grid" name="accounting-report-grid"/>
     <view type="form" name="accounting-report-form"/>
     <view-param name="search-filters" value="accounting-report-filters"/>
-    <domain>self.reportType.typeSelect &lt; 1000 or self.reportType.typeSelect &gt;= 2000</domain>
+    <domain>self.reportType.typeSelect &lt; 1000 OR self.reportType.typeSelect BETWEEN 2000 AND 2999</domain>
+    <context name="_isCustom" expr="eval: false"/>
+  </action-view>
+
+  <menuitem name="account-root-accounting-custom-accounting-reports"
+    parent="account-root-accounting" title="Custom accounting reports"
+    action="account.root.accounting.custom.accounting.reports" order="250"/>
+
+  <action-view name="account.root.accounting.custom.accounting.reports"
+    title="Custom accounting reports" model="com.axelor.apps.account.db.AccountingReport">
+    <view type="grid" name="accounting-report-grid"/>
+    <view type="form" name="accounting-report-form"/>
+    <view-param name="search-filters" value="accounting-report-filters"/>
+    <domain>self.reportType.typeSelect = 3000</domain>
+    <context name="_isCustom" expr="eval: true"/>
   </action-view>
 
   <menuitem name="account-root-accounting-accounting-exports"
@@ -500,33 +531,16 @@
     <context name="_reportExportTypeSelect" expr="2"/>
   </action-view>
 
-  <menuitem name="account-root-budget-management" parent="account-root"
-    if="__config__.app.isApp('budget')" title="Budget Preparation" order="800"/>
+  <menuitem name="account-root-accounting-conf-accounting-config-templates"
+    action="account.conf.reporting.accounting.config.templates" parent="account-conf-reporting"
+    title="Accounting configurations templates" order="500"/>
 
-  <menuitem name="account-root-budget-management-my-budgets"
-    parent="account-root-budget-management" title="My budgets"
-    action="account.root.budget.management.my.budgets" order="100"/>
-
-  <action-view name="account.root.budget.management.my.budgets" title="My budgets"
-    model="com.axelor.apps.account.db.Budget">
-    <view type="grid" name="budget-grid"/>
-    <view type="form" name="budget-form"/>
-    <view-param name="search-filters" value="budget-filters"/>
-    <domain>self.inChargeUser.id = :_id</domain>
-    <context name="_id" expr="eval: __user__.id"/>
+  <action-view name="account.conf.reporting.accounting.config.templates"
+    title="Accounting configurations templates"
+    model="com.axelor.apps.account.db.AccountingConfigTemplate">
+    <view type="grid" name="accounting-config-template-grid"/>
+    <view type="form" name="accounting-config-template-form"/>
   </action-view>
-
-  <menuitem name="account-root-budget-management-all-budgets"
-    parent="account-root-budget-management" title="All budgets"
-    action="account.root.budget.management.all.budgets" order="200"/>
-
-  <action-view name="account.root.budget.management.all.budgets" title="All budgets"
-    model="com.axelor.apps.account.db.Budget">
-    <view type="grid" name="budget-grid"/>
-    <view type="form" name="budget-form"/>
-    <view-param name="search-filters" value="budget-filters"/>
-  </action-view>
-
 
   <menuitem title="Fixed assets" name="account-root-asset-management" parent="account-root"
     order="1100"/>
@@ -686,6 +700,16 @@
     <view type="form" name="tax-form"/>
     <view-param name="search-filters" value="tax-filters"/>
   </action-view>
+
+  <menuitem name="account-conf-financial-tax-type" parent="account-conf-financial"
+    title="Tax types" action="account.conf.financial.tax.type" order="1050"/>
+
+  <action-view name="account.conf.financial.tax.type" title="Tax types"
+    model="com.axelor.apps.account.db.TaxType">
+    <view type="grid" name="tax-type-grid"/>
+    <view type="form" name="tax-type-form"/>
+  </action-view>
+
   <menuitem name="account-conf-financial-service-types" parent="account-conf-financial"
     title="Service types" action="account.conf.financial.service.types" order="1100"/>
 
@@ -696,7 +720,8 @@
   </action-view>
 
   <menuitem name="account-conf-financial-tax-number" parent="account-conf-financial"
-    title="Tax numbers" action="account.conf.financial.tax.number" order="1200"/>
+    title="Tax numbers" action="account.conf.financial.tax.number" order="1200"
+    if="__config__.app.getApp('base')?.getEnableTaxNumbers()"/>
 
   <action-view name="account.conf.financial.tax.number" title="Tax number"
     model="com.axelor.apps.account.db.TaxNumber">
@@ -771,6 +796,8 @@
     <view type="grid" name="analytic-move-line-grid"/>
     <view type="form" name="analytic-move-line-form"/>
     <view-param name="search-filters" value="analytic-move-line-filters"/>
+    <view-param name="default-search-filters"
+      value="analytic-move-line-filters-type-select"/>
   </action-view>
 
   <menuitem name="account-conf-analytic-distribution-template"
@@ -839,15 +866,16 @@
   </action-view>
 
 
-  <menuitem name="top-invoicing-custrefunds" title="Cust. Refunds"
+  <menuitem name="top-invoicing-cust-credit-note" title="Cust. Credit notes"
     action="top.invoicing.custrefunds" parent="top-invoicing" top="true"/>
 
-  <action-view name="top.invoicing.custrefunds" title="Cust. Refunds"
+  <action-view name="top.invoicing.custrefunds" title="Cust. Credit notes"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-refund-grid"/>
     <view type="form" name="invoice-form"/>
     <view-param name="search-filters" value="customer-refunds-filters"/>
     <domain>self.operationTypeSelect = 4</domain>
+    <context name="_operationSubTypeSelect" expr="eval:1"/>
     <context name="_operationTypeSelect" expr="eval:4"/>
   </action-view>
 
@@ -864,16 +892,17 @@
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
-  <menuitem name="top-invoicing-supplrefunds" title="Suppl. Refunds"
+  <menuitem name="top-invoicing-suppl-credit-note" title="Suppl. Credit notes"
     action="top.invoicing.supplrefunds" parent="top-invoicing" top="true"/>
 
-  <action-view name="top.invoicing.supplrefunds" title="Suppl. Refunds"
+  <action-view name="top.invoicing.supplrefunds" title="Suppl. Credit notes"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-supplier-refund-grid"/>
     <view type="form" name="invoice-form"/>
     <view-param name="search-filters" value="supplier-refunds-filters"/>
     <domain>self.operationTypeSelect = 2</domain>
     <context name="_operationTypeSelect" expr="eval:2"/>
+    <context name="_operationSubTypeSelect" expr="eval:1"/>
   </action-view>
 
   <menuitem name="menu-account-sale-invoice-dashboard-1" parent="invoice-root-report"
@@ -947,6 +976,10 @@
     <view-param name="width" value="800"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="show-toolbar" value="false"/>
+    <context name="_company" expr="eval: company?.id"/>
+    <context name="_moveTemplateType" expr="eval: moveTemplateType?.id"/>
+    <context name="_moveTemplateId" expr="eval: id"/>
+    <context name="_isPopup" expr="eval: false"/>
   </action-view>
 
   <menuitem name="move-template-root" title="Move Templates" parent="account-conf"

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
@@ -69,6 +70,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
   protected BatchRepository batchRepository;
   protected BankDetailsService bankDetailsService;
   protected FixedAssetDateService fixedAssetDateService;
+  protected CurrencyScaleService currencyScaleService;
   private Batch batch;
 
   @Inject
@@ -81,7 +83,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       MoveLineCreateService moveLineCreateService,
       BatchRepository batchRepository,
       BankDetailsService bankDetailsService,
-      FixedAssetDateService fixedAssetDateService) {
+      FixedAssetDateService fixedAssetDateService,
+      CurrencyScaleService currencyScaleService) {
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
@@ -91,6 +94,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     this.batchRepository = batchRepository;
     this.bankDetailsService = bankDetailsService;
     this.fixedAssetDateService = fixedAssetDateService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -188,7 +192,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     if (fixedAssetDerogatoryLine.getFixedAsset().getGrossValue().signum() < 0) {
       amount = amount.negate();
     }
-    return amount;
+    return currencyScaleService.getCompanyScaledValue(
+        fixedAssetDerogatoryLine.getFixedAsset(), amount);
   }
 
   protected Account computeDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
@@ -219,6 +224,9 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       LocalDate disposalDate)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
+    if (fixedAsset.getMoveGenerationException() == FixedAssetRepository.MOVE_GENERATION_NO_MOVES) {
+      return null;
+    }
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();

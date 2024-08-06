@@ -1,0 +1,5 @@
+"importId";"name";"rangeTypeSelect";"equipmentFamily.importId";"equipmentFamilySet"
+1;"E_Monitor";"equipment";1;
+2;"F_Monitor_Printer";"family";;1|3
+3;"Start/end range";"intervention";;
+4;"F_Storage";"family";;2

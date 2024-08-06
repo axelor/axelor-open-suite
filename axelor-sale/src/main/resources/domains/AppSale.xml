@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="AppSale" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="manageSaleOrderVersion" title="Manage sale order versions"
       default="false"/>
     <boolean name="printingOnSOFinalization"
       title="Generate the pdf printing during sale order finalization" default="false"/>
+    <boolean name="isPastVersionRecovery" title="Activate past versions recovery"/>
     <boolean name="manageSalesUnits" title="Manage sales unit on products"/>
     <boolean name="enableConfigurator" title="Enable business configurator"/>
     <boolean name="allowPendingOrderModification"/>
@@ -28,15 +29,21 @@
     <boolean name="isDisplaySaleOrderLineNumber" title="Display sale order line number"/>
     <boolean name="enableSalesProductByTradName" title="Filter products by trading name"
       default="false"/>
+    <boolean name="activateMultiLevelSaleOrderLines"
+      title="Activate multi-level sale order lines" default="false"/>
     <many-to-one name="saleUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"/>
     <boolean name="managePartnerComplementaryProduct"
       title="Manage partner complementary product"/>
     <boolean name="isEnableCalculationEntireQuotationUsingPricing"
       title="Enable calculation of the entire quotation using pricing"/>
-    <boolean name="enablePricingScale" title="Enable pricing scale"/>
     <boolean name="considerZeroCost"
       title="Consider zero cost and zero price lines in the margin"
       help="When activated, the total margin of a sale order will take into account sale order lines where the cost price or the sale price is zero."/>
+    <boolean name="isEditableGridEnabled"
+      title="Enable editable grid on quotation / sales order lines"
+      help="This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view."/>
+    <boolean name="isDiscountEnabledOnEditableGrid"
+      title="Enable discount on editable lines"/>
 
     <track>
       <field name="manageSaleOrderVersion" on="UPDATE"/>
@@ -56,8 +63,8 @@
       <field name="saleUnit" on="UPDATE"/>
       <field name="managePartnerComplementaryProduct" on="UPDATE"/>
       <field name="isEnableCalculationEntireQuotationUsingPricing" on="UPDATE"/>
-      <field name="enablePricingScale" on="UPDATE"/>
       <field name="considerZeroCost" on="UPDATE"/>
+      <field name="isEditableGridEnabled" on="UPDATE"/>
     </track>
   </entity>
 

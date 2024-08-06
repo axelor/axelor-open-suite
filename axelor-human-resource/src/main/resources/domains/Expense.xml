@@ -1,13 +1,14 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="Expense" cacheable="true">
 
     <string name="expenseSeq" title="Expense N°" readonly="true"/>
+    <integer name="typeSelect" title="Type" selection="hr.expense.type.select"/>
 
     <datetime name="sentDateTime" title="Sent Date" readonly="true"/>
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
@@ -15,6 +16,7 @@
       default="1" readonly="true"/>
     <many-to-one name="employee" ref="Employee" title="Employee" readonly="true"
       required="true"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
     <one-to-many name="generalExpenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine"
       title="General expense lines" mappedBy="generalExpense"/>
@@ -26,7 +28,6 @@
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
     <date name="moveDate" title="Move Date"/>
-    <many-to-one name="move" ref="com.axelor.apps.account.db.Move"/>
     <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by"
       readonly="true"/>
     <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By"
@@ -39,7 +40,6 @@
       selection="hr.expense.company.cb.payment" default="1"/>
     <many-to-one name="payrollPreparation"
       ref="com.axelor.apps.hr.db.PayrollPreparation"/>
-    <boolean name="multipleUsers" title="Multiple users" default="false"/>
     <one-to-many name="employeeAdvanceUsageList"
       ref="com.axelor.apps.hr.db.EmployeeAdvanceUsage" mappedBy="expense" title="Employee advances"
       readonly="true" orphanRemoval="false"/>
@@ -88,6 +88,9 @@
 
             public static final int COMPANY_CB_PAYMENT_NO = 1;
             public static final int COMPANY_CB_PAYMENT_COMPANYS_CREDIT_CARD = 2;
+
+            public static final int TYPE_EXPENSE = 1;
+	  		public static final int TYPE_EXPENSE_DECLARATION = 2;
 	  ]]>
     </extra-code>
   </entity>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,7 +44,7 @@ public interface PeriodService {
 
   public void testOpenPeriod(Period period) throws AxelorException;
 
-  public void close(Period period) throws AxelorException;
+  public void close(Period period);
 
   public void closeTemporarily(Period period) throws AxelorException;
 
@@ -95,4 +95,8 @@ public interface PeriodService {
   void openPeriod(Period period);
 
   void closureInProgress(Period period);
+
+  void closePeriod(Period period);
+
+  void resetStatusSelect(Period period);
 }

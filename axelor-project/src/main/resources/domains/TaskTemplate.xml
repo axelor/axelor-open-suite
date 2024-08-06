@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="TaskTemplate">
-    <string name="name" namecolumn="true" title="Name" search="id,name"/>
+    <string name="name" namecolumn="true" title="Name"/>
     <decimal name="delayToStart" default="0" title="Delay to start (Hours)"/>
     <decimal name="duration" title="Duration (Hours)"/>
     <decimal name="totalPlannedHrs" title="Total planned hours"/>
@@ -16,10 +16,12 @@
       mappedBy="parentTaskTemplate"/>
     <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
     <many-to-one name="team" ref="com.axelor.team.db.Team"/>
-    <boolean name="isUniqueTaskForMultipleQuantity"/>
+    <boolean name="isUniqueTaskForMultipleQuantity" default="true"/>
     <string name="description" title="Description" large="true"/>
     <many-to-one name="projectTaskCategory"
       ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Project task category"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <decimal name="qty" title="Quantity" min="0"/>
   </entity>
 
 </domain-models>

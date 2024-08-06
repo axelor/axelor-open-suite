@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,8 +33,7 @@ import com.google.inject.persist.Transactional;
 
 public class WorkflowCancelServiceProjectImpl extends WorkflowCancelServiceContractImpl {
 
-  @Inject InvoicingProjectRepository invoicingProjectRepo;
-
+  protected InvoicingProjectRepository invoicingProjectRepo;
   protected ConsumptionLineRepository consumptionLineRepo;
 
   @Inject
@@ -43,13 +42,15 @@ public class WorkflowCancelServiceProjectImpl extends WorkflowCancelServiceContr
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
-      ConsumptionLineRepository consumptionLineRepo) {
+      ConsumptionLineRepository consumptionLineRepo,
+      InvoicingProjectRepository invoicingProjectRepo) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
         saleOrderRepository,
         purchaseOrderRepository,
         consumptionLineRepo);
+    this.invoicingProjectRepo = invoicingProjectRepo;
   }
 
   @Override

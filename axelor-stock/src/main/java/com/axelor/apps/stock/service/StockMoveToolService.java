@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import java.math.BigDecimal;
 
 public interface StockMoveToolService {
@@ -33,12 +33,12 @@ public interface StockMoveToolService {
    *
    * @param stockMoveType Type de mouvement de stock
    * @param company la société
+   * @param stockMove
    * @return la chaine contenant la séquence du StockMove
    * @throws AxelorException Aucune séquence de StockMove n'a été configurée
    */
-  public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException;
-
-  public int getStockMoveType(StockLocation fromStockLocation, StockLocation toStockLocation);
+  public String getSequenceStockMove(int stockMoveType, Company company, StockMove stockMove)
+      throws AxelorException;
 
   public BigDecimal compute(StockMove stockMove);
 
@@ -71,18 +71,18 @@ public interface StockMoveToolService {
   /**
    * Get from address from stock move or stock location.
    *
-   * @param stockMove
+   * @param stockMoveLine
    * @return
    */
-  Address getFromAddress(StockMove stockMove);
+  Address getFromAddress(StockMove stockMove, StockMoveLine stockMoveLine);
 
   /**
    * Get to address from stock move or stock location.
    *
-   * @param stockMove
+   * @param stockMoveLine
    * @return
    */
-  Address getToAddress(StockMove stockMove);
+  Address getToAddress(StockMove stockMove, StockMoveLine stockMoveLine);
 
   /**
    * Get partner address.
@@ -91,14 +91,16 @@ public interface StockMoveToolService {
    * @return
    * @throws AxelorException
    */
-  Address getPartnerAddress(StockMove stockMove) throws AxelorException;
+  Address getPartnerAddress(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException;
 
   /**
    * Get company address.
    *
-   * @param stockMove
+   * @param stockMoveLine
    * @return
    * @throws AxelorException
    */
-  Address getCompanyAddress(StockMove stockMove) throws AxelorException;
+  Address getCompanyAddress(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException;
 }

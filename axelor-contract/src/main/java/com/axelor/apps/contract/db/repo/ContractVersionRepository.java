@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,11 +21,18 @@ package com.axelor.apps.contract.db.repo;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
-import com.axelor.inject.Beans;
-import com.axelor.utils.ModelTool;
+import com.axelor.utils.helpers.ModelHelper;
+import com.google.inject.Inject;
 import java.util.List;
 
 public class ContractVersionRepository extends AbstractContractVersionRepository {
+
+  protected ContractLineRepository contractLineRepository;
+
+  @Inject
+  public ContractVersionRepository(ContractLineRepository contractLineRepository) {
+    this.contractLineRepository = contractLineRepository;
+  }
 
   public ContractVersion copy(Contract contract) {
     ContractVersion newVersion = new ContractVersion();
@@ -58,10 +65,12 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
 
     newVersion.setDoNotRenew(currentVersion.getDoNotRenew());
 
-    ContractLineRepository repository = Beans.get(ContractLineRepository.class);
     List<ContractLine> lines =
-        ModelTool.copy(repository, currentVersion.getContractLineList(), false);
-    newVersion.setContractLineList(lines);
+        ModelHelper.copy(contractLineRepository, currentVersion.getContractLineList(), false);
+
+    for (ContractLine line : lines) {
+      newVersion.addContractLineListItem(line);
+    }
 
     newVersion.setIsTimeProratedInvoice(currentVersion.getIsTimeProratedInvoice());
     newVersion.setIsVersionProratedInvoice(currentVersion.getIsVersionProratedInvoice());

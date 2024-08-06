@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
@@ -58,41 +59,6 @@ public interface TimesheetLineService {
       String timePref, BigDecimal duration, BigDecimal dailyWorkHrs, boolean toHours)
       throws AxelorException;
 
-  /**
-   * Creates a timesheet line.
-   *
-   * @param project
-   * @param product
-   * @param employee
-   * @param date
-   * @param timesheet
-   * @param hours
-   * @param comments
-   * @return the created timesheet line.
-   */
-  TimesheetLine createTimesheetLine(
-      Project project,
-      Product product,
-      Employee employee,
-      LocalDate date,
-      Timesheet timesheet,
-      BigDecimal hours,
-      String comments);
-
-  /**
-   * Creates a timesheet line without project and product. Used to generate timesheet lines for
-   * holidays or day leaves.
-   *
-   * @param employee
-   * @param date
-   * @param timesheet
-   * @param hours
-   * @param comments
-   * @return the created timesheet line.
-   */
-  TimesheetLine createTimesheetLine(
-      Employee employee, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments);
-
   TimesheetLine updateTimesheetLine(
       TimesheetLine timesheetLine,
       Project project,
@@ -120,4 +86,17 @@ public interface TimesheetLineService {
    * @return {@link Map}
    */
   Map<Project, BigDecimal> getProjectTimeSpentMap(List<TimesheetLine> timesheetLineList);
+
+  public void checkDailyLimit(
+      Timesheet timesheet, TimesheetLine currentTimesheetLine, BigDecimal hoursDuration)
+      throws AxelorException;
+
+  Integer getDailyLimitFromApp();
+
+  boolean isExceedingDailyLimit(
+      BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit);
+
+  Product getDefaultProduct(TimesheetLine timesheetLine);
+
+  void resetTimesheetLineTimer(TSTimer tsTimer);
 }

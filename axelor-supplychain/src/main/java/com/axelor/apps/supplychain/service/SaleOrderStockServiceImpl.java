@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -49,6 +50,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -61,7 +63,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
@@ -78,6 +82,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected SupplyChainConfigService supplyChainConfigService;
   protected ProductCompanyService productCompanyService;
   protected PartnerStockSettingsService partnerStockSettingsService;
+  protected TaxService taxService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -93,7 +98,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       AppSupplychainService appSupplychainService,
       SupplyChainConfigService supplyChainConfigService,
       ProductCompanyService productCompanyService,
-      PartnerStockSettingsService partnerStockSettingsService) {
+      PartnerStockSettingsService partnerStockSettingsService,
+      TaxService taxService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockConfigService = stockConfigService;
@@ -107,6 +113,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.supplyChainConfigService = supplyChainConfigService;
     this.productCompanyService = productCompanyService;
     this.partnerStockSettingsService = partnerStockSettingsService;
+    this.taxService = taxService;
   }
 
   @Override
@@ -157,16 +164,28 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected Optional<StockMove> createStockMove(
       SaleOrder saleOrder, LocalDate estimatedDeliveryDate, List<SaleOrderLine> saleOrderLineList)
       throws AxelorException {
-
-    StockMove stockMove =
-        this.createStockMove(saleOrder, saleOrder.getCompany(), estimatedDeliveryDate);
+    Company company = saleOrder.getCompany();
+    StockMove stockMove = this.createStockMove(saleOrder, company, estimatedDeliveryDate);
     stockMove.setDeliveryCondition(saleOrder.getDeliveryCondition());
+
+    StockLocation toStockLocation = saleOrder.getToStockLocation();
+    if (toStockLocation == null) {
+      toStockLocation =
+          partnerStockSettingsService.getDefaultExternalStockLocation(
+              saleOrder.getClientPartner(), company, null);
+    }
+    if (toStockLocation == null) {
+      toStockLocation =
+          stockConfigService.getCustomerVirtualStockLocation(
+              stockConfigService.getStockConfig(company));
+    }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       if (saleOrderLine.getProduct() != null) {
         BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
         if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
-          createStockMoveLine(stockMove, saleOrderLine, qty);
+          createStockMoveLine(
+              stockMove, saleOrderLine, qty, saleOrder.getStockLocation(), toStockLocation);
         }
       }
     }
@@ -209,7 +228,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     }
 
     setReservationDateTime(stockMove, saleOrder);
-    stockMoveService.plan(stockMove);
+    stockMoveService.planWithNoSplit(stockMove);
 
     return Optional.of(stockMove);
   }
@@ -299,8 +318,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
             StockMoveRepository.TYPE_OUTGOING);
 
     stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
-    stockMove.setOriginId(saleOrder.getId());
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_SALE_ORDER);
+    stockMove.setSaleOrderSet(Sets.newHashSet(saleOrder));
     stockMove.setOrigin(saleOrder.getSaleOrderSeq());
     stockMove.setStockMoveLineList(new ArrayList<>());
     stockMove.setTradingName(saleOrder.getTradingName());
@@ -311,6 +329,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setInvoicedPartner(saleOrder.getInvoicedPartner());
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
+    }
+    if (saleOrder.getPrintingSettings() != null) {
+      stockMove.setPrintingSettings(saleOrder.getPrintingSettings());
     }
     return stockMove;
   }
@@ -379,17 +400,28 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   @Override
-  public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine)
+  public StockMoveLine createStockMoveLine(
+      StockMove stockMove,
+      SaleOrderLine saleOrderLine,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
     return createStockMoveLine(
         stockMove,
         saleOrderLine,
-        saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine));
+        saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine),
+        fromStockLocation,
+        toStockLocation);
   }
 
   @Override
   public StockMoveLine createStockMoveLine(
-      StockMove stockMove, SaleOrderLine saleOrderLine, BigDecimal qty) throws AxelorException {
+      StockMove stockMove,
+      SaleOrderLine saleOrderLine,
+      BigDecimal qty,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
+      throws AxelorException {
 
     if (this.isStockMoveProduct(saleOrderLine)) {
 
@@ -427,9 +459,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
 
       BigDecimal taxRate = BigDecimal.ZERO;
-      TaxLine taxLine = saleOrderLine.getTaxLine();
-      if (taxLine != null) {
-        taxRate = taxLine.getValue();
+      Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
+      if (CollectionUtils.isNotEmpty(taxLineSet)) {
+        taxRate = taxService.getTotalTaxRateInPercentage(taxLineSet);
       }
       if (saleOrderLine.getQty().signum() != 0) {
         companyUnitPriceUntaxed =
@@ -457,7 +489,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               saleOrderLine.getSaleOrder().getInAti(),
               taxRate,
               saleOrderLine,
-              null);
+              null,
+              fromStockLocation,
+              toStockLocation);
 
       if (saleOrderLine.getDeliveryState() == 0) {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
@@ -551,22 +585,12 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     return deliveryState;
   }
 
-  @Override
-  public Optional<SaleOrder> findSaleOrder(StockMove stockMove) {
-    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
-        && stockMove.getOriginId() != null) {
-      return Optional.ofNullable(saleOrderRepository.find(stockMove.getOriginId()));
-    } else {
-      return Optional.empty();
-    }
-  }
-
   /**
    * Use delivered partner if the configuration is set in generated stock move, else the default is
    * client partner.
    */
   protected Partner computePartnerToUseForStockMove(SaleOrder saleOrder) {
-    if (appSupplychainService.getAppSupplychain().getActivatePartnerRelations()
+    if (appBaseService.getAppBase().getActivatePartnerRelations()
         && saleOrder.getDeliveredPartner() != null) {
       return saleOrder.getDeliveredPartner();
     } else {

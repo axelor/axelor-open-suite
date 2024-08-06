@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,31 +18,33 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
-import com.axelor.inject.Beans;
-import com.axelor.studio.app.service.AppService;
+import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.google.inject.Inject;
 
 public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementRepository {
 
-  @Inject private AppService appService;
+  @Inject
+  public PurchaseOrderSupplychainRepository(
+      AppBaseService appBaseService, PurchaseOrderSequenceService purchaseOrderSequenceService) {
+    super(appBaseService, purchaseOrderSequenceService);
+  }
 
   @Override
   public PurchaseOrder copy(PurchaseOrder entity, boolean deep) {
 
     PurchaseOrder copy = super.copy(entity, deep);
 
-    if (!appService.isApp("supplychain")) {
+    if (!appBaseService.isApp("supplychain")) {
       return copy;
     }
 
     copy.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
     copy.setAmountInvoiced(null);
-    copy.setBudget(null);
 
     if (copy.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
@@ -50,20 +52,9 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
         purchaseOrderLine.setReceivedQty(null);
         purchaseOrderLine.setAmountInvoiced(null);
         purchaseOrderLine.setInvoiced(null);
-        purchaseOrderLine.setBudgetDistributionList(null);
-        purchaseOrderLine.setBudgetDistributionSumAmount(null);
       }
     }
 
     return copy;
-  }
-
-  @Override
-  public PurchaseOrder save(PurchaseOrder purchaseOrder) {
-
-    if (appService.isApp("supplychain")) {
-      Beans.get(PurchaseOrderSupplychainService.class).generateBudgetDistribution(purchaseOrder);
-    }
-    return super.save(purchaseOrder);
   }
 }

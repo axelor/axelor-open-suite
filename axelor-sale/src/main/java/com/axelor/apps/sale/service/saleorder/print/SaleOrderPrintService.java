@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
 package com.axelor.apps.sale.service.saleorder.print;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.sale.db.SaleOrder;
 import java.io.File;
 import java.io.IOException;
@@ -33,14 +33,21 @@ public interface SaleOrderPrintService {
    * @param ids ids of the sale order.
    * @return the link to the generated file.
    * @throws IOException
+   * @throws AxelorException
    */
-  String printSaleOrders(List<Long> ids) throws IOException;
+  String printSaleOrders(List<Long> ids) throws IOException, AxelorException;
 
-  ReportSettings prepareReportSettings(SaleOrder saleOrder, boolean proforma, String format)
+  File print(
+      SaleOrder saleOrder,
+      boolean proforma,
+      PrintingTemplate saleOrderPrintTemplate,
+      boolean toAttach)
       throws AxelorException;
 
-  File print(SaleOrder saleOrder, boolean proforma, String format) throws AxelorException;
+  File print(SaleOrder saleOrder, boolean proforma, PrintingTemplate saleOrderPrintTemplate)
+      throws AxelorException;
 
-  String printSaleOrder(SaleOrder saleOrder, boolean proforma, String format)
+  String printSaleOrder(
+      SaleOrder saleOrder, boolean proforma, PrintingTemplate saleOrderPrintTemplate)
       throws AxelorException, IOException;
 }

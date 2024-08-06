@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     id="supplychain-sale-order-form" extension="true">
@@ -19,10 +19,6 @@
     <extend target="//field[@name='shipmentMode']">
       <attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
       <attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
-    </extend>
-    <extend target="//panel-related[@name='detailLinesPanel']">
-      <attribute name="onChange"
-        value="action-sale-order-line-change-group,supplychain-action-create-shipment-cost-line"/>
     </extend>
   </form>
 
@@ -42,7 +38,7 @@
         target="com.axelor.apps.base.db.Partner"
         onSelect="action-supplychain-so-generate-supplier-partner-domain" required="true"/>
       <button name="generatePOConfirmBtn" title="Confirm Purchase order generation"
-        onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+        onClick="action-sale-order-group-generate-po-select-supplierpartner"/>
     </panel>
   </form>
 
@@ -80,10 +76,11 @@
       <separator colSpan="12"/>
       <field name="numberOfPeriods" showIf="$readonly()" colSpan="4">
         <viewer><![CDATA[
-		                  <span>{{record.numberOfPeriods}}</span>
-		                  <span> </span>
-		                  <span ng-show="record.periodicityTypeSelect == 1" x-translate>day(s)</span>
-		                  <span ng-show="record.periodicityTypeSelect == 2" x-translate>month(s)</span>
+		              <>
+		                  <span>{numberOfPeriods}</span>
+		                  {periodicityTypeSelect == 1 && <span> {_t('day(s)')} </span>}
+		                  {periodicityTypeSelect == 2 && <span> {_t('month(s)')} </span>}
+		              </>
 				]]></viewer>
       </field>
       <field name="numberOfPeriods" showIf="!$readonly()" colSpan="4"
@@ -101,6 +98,8 @@
         action="action-sale-order-view-subscription-invoices" colSpan="12"/>
     </panel>
   </form>
+
+  <!-- ACTION GROUPs -->
 
   <action-group id="action-group-supplychain-sale-order-validate-changes"
     name="action-group-sale-order-validate-changes">
@@ -137,6 +136,14 @@
     <action name="action-sale-order-attrs-interco"/>
   </action-group>
 
+  <action-group name="action-sale-order-group-generate-po-select-supplierpartner">
+    <action name="action-supplychain-so-generate-po-check-supplier-partner"/>
+    <action
+      name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+  </action-group>
+
+  <!-- ACTION METHOD -->
+
   <action-method name="action-supplychain-sale-order-method-get-stock-location">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
   </action-method>
@@ -170,11 +177,15 @@
       method="setNextInvoicingStartPeriodDate"/>
   </action-method>
 
+  <!-- ACTION VALIDATE -->
+
   <action-validate
     name="action-supplychain-sale-order-validate-check-amount-timetable">
     <alert message="The amount to be spread over the timetable is negative."
       if="amountToBeSpreadOverTheTimetable &lt; 0"/>
   </action-validate>
+
+  <!-- ACTION RECORD -->
 
   <action-record name="action-record-load-dummy-supplier-partner"
     model="com.axelor.apps.sale.db.SaleOrder">
@@ -217,6 +228,8 @@
       expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(deliveredPartner)"
       if="deliveredPartner != null"/>
   </action-record>
+
+  <!-- ACTION ATTRS -->
 
   <action-attrs name="action-sale-order-attrs-interco">
     <attribute for="interco" name="hidden"
@@ -310,16 +323,9 @@
       if="company != null &amp;&amp; clientPartner != null"/>
   </action-record>
 
-  <action-record name="action-sale-order-record-update-timetable-amounts"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="timetableList"
-      expr="eval: timetableList.collect{it -> it.amount = (exTaxTotal * it.percentage / 100).setScale(__config__.app.getApp('base')?.nbDecimalDigitForUnitPrice, java.math.RoundingMode.HALF_UP); it}"
-      if="timetableList != null"/>
-  </action-record>
-
   <action-attrs name="action-sale-order-attrs-set-is-ispm-required">
     <attribute name="value" for="isIspmRequired"
-      expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.addressL7Country?.isIspmRequired"/>
+      expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.country?.isIspmRequired"/>
   </action-attrs>
 
   <action-method name="action-sale-order-method-allocate-all">
@@ -380,6 +386,16 @@
   <action-method name="action-supplychain-sale-order-method-get-to-stock-location">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="getToStockLocation"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-set-advance-payment">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="setAdvancePayment"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-update-timetable-amounts">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="updateTimetableAmounts"/>
   </action-method>
 
 </object-views>

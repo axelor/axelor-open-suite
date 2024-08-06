@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.service.PeriodControlService;
-import com.axelor.apps.account.service.PeriodServiceAccount;
+import com.axelor.apps.account.service.period.PeriodControlService;
+import com.axelor.apps.account.service.period.PeriodServiceAccount;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Period;
@@ -86,7 +86,7 @@ public class PeriodController {
             "adjustBtn",
             "hidden",
             !(period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
-                && period.getYear().getStatusSelect() == YearRepository.STATUS_CLOSED));
+                && period.getYear().getStatusSelect() == YearRepository.STATUS_ADJUSTING));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <cards name="catalog-cards" title="Catalogs" model="com.axelor.apps.crm.db.Catalog">
     <field name="name"/>
     <field name="catalogType"/>
     <field name="description"/>
     <template><![CDATA[
-			<div>
-				<div class="span4 card-image">
-					<img ng-src="{{$image(null, 'image')}}" >
-				</div>
-				<div class="span8">
-					<strong>{{name}}</strong>
-					<p class="muted" > <span x-translate>Catalog type</span> : {{catalogType.name}}</p>
-					<p class="muted">{{description}}</p>
-					<div class="buttons">
-						<a class="btn btn-small btn-info" href="" ui-action-click="com.axelor.apps.crm.web.CatalogController:showPdf" x-translate> Show PDF</a>
-					</div>
-				</div>
-			</div>
+			<>
+				<Box d="grid" gridTemplateColumns="33% 67%">
+					<Box d="flex" flexDirection="column" alignItems="center" mt={2} style={{ width: 128, height: 64 }}>
+						<Image src={$image(null, 'image')} w={100} h={100} style={{ borderRadius: "100%" }}></Image>
+					</Box>
+		        	<Box>
+						<strong>{name}</strong>
+						<Box as="p" color="secondary">{_t('Catalog type')} : {catalogType.name}</Box>
+			        	<Box as="p" color="secondary">{description}</Box>
+		            	<Button size="sm" variant="info" onClick={$action("com.axelor.apps.crm.web.CatalogController:showPdf")}>{_t('Show PDF')}</Button>
+					</Box>
+				</Box>
+			</>
 			]]>
     </template>
   </cards>
@@ -35,6 +35,12 @@
 
   <form name="catalog-form" title="Catalog" model="com.axelor.apps.crm.db.Catalog"
     width="large" onSave="action-crm-validate-catalog-onsave">
+    <menubar>
+      <menu name="catalogToolsMenu" title="Tools" icon="fa-wrench">
+        <item name="sendEmailItem" title="Send Email"
+          action="save,action-catalog-view-send-email-wizard"/>
+      </menu>
+    </menubar>
     <panel name="mainPanel">
       <panel name="imagePanel" itemSpan="12" colSpan="2">
         <field name="image" widget="Image"/>
@@ -43,7 +49,7 @@
         <field name="name"/>
         <field name="catalogType" required="true"/>
         <field name="pdfFile" widget="binary-link" form-view="meta-files-form"
-          grid-view="meta-files-grid"/>
+          grid-view="meta-files-grid" x-accept=".pdf"/>
         <button name="showPdfButton" title="Show PDF"
           onClick="save, action-crm-method-catalog-show-pdf" readonlyIf="!pdfFile"/>
         <field name="description" colSpan="12"/>
@@ -56,6 +62,22 @@
     </panel-mail>
   </form>
 
+  <form name="catalog-send-email-wizard-form" title="Catalog"
+    model="com.axelor.utils.db.Wizard" onNew="action-catalog-attrs-set-model">
+    <panel name="mainPanel">
+      <field name="$template" type="many-to-one" target="com.axelor.message.db.Template"
+        title="Template" form-view="template-form" grid-view="template-grid"
+        domain="self.metaModel.fullName = 'com.axelor.apps.crm.db.Catalog' AND self.isSystem != true"
+        colSpan="4" required="true"/>
+      <field name="$contactSet" title="Contact list" type="many-to-many" widget="TagSelect"
+        target="com.axelor.apps.base.db.Partner" form-view="partner-contact-form"
+        grid-view="partner-contact-grid" colSpan="8" domain="self.isContact = true"/>
+      <button name="validateBtn" colSpan="4" title="Validate"
+        onClick="action-catalog-method-send-email,close" colOffset="2" readonlyIf="!$contactSet"/>
+      <button name="cancelBtn" colSpan="4" title="Cancel" onClick="close"/>
+    </panel>
+  </form>
+
   <action-validate name="action-crm-validate-catalog-onsave">
     <error message="Only pdf files are allowed"
       if="eval: pdfFile != null &amp;&amp; com.google.common.io.Files.getFileExtension(pdfFile.fileName) != 'pdf'"/>
@@ -63,6 +85,24 @@
 
   <action-method name="action-crm-method-catalog-show-pdf">
     <call class="com.axelor.apps.crm.web.CatalogController" method="showPdf"/>
+  </action-method>
+
+  <action-attrs name="action-catalog-attrs-set-model">
+    <attribute name="value" for="$template"
+      expr="eval: __repo__(Template).all().filter('self.metaModel.fullName = ?1 and self.isDefault = true and self.isSystem != true','com.axelor.apps.crm.db.Catalog').fetchOne()"/>
+  </action-attrs>
+
+  <action-view name="action-catalog-view-send-email-wizard" title="Catalog"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="catalog-send-email-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_catalogId" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-catalog-method-send-email">
+    <call class="com.axelor.apps.crm.web.CatalogController" method="sendEmail"/>
   </action-method>
 
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,10 +23,14 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.rpc.Context;
 import java.util.List;
+import java.util.Set;
 
 public interface MoveLineToolService {
 
@@ -52,16 +56,25 @@ public interface MoveLineToolService {
 
   List<MoveLine> getReconciliableDebitMoveLines(List<MoveLine> moveLineList);
 
-  TaxLine getTaxLine(MoveLine moveLine) throws AxelorException;
-
   MoveLine setCurrencyAmount(MoveLine moveLine);
 
   boolean checkCutOffDates(MoveLine moveLine);
 
   boolean isEqualTaxMoveLine(
-      Account account, TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml);
+      Account account, Set<TaxLine> taxLineSet, Integer vatSystem, Long id, MoveLine ml);
 
   void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException;
 
   void setAmountRemainingReconciliableMoveLines(Context context);
+
+  boolean isCutOffActive(MoveLine moveLine);
+
+  void setDecimals(MoveLine moveLine, Move move);
+
+  List<MoveLine> getMoveExcessDueList(
+      boolean excessPayment, Company company, Partner partner, Long invoiceId);
+
+  boolean isMoveLineTaxAccount(MoveLine moveLine);
+
+  void setIsNonDeductibleTax(MoveLine moveLine, Tax tax);
 }

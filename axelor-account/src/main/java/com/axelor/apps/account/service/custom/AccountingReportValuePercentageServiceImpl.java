@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,9 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
@@ -36,6 +38,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -59,6 +62,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
@@ -70,7 +74,17 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
             this.getColumnCode(
                 column.getPercentageBaseColumn(), parentTitle, groupColumn, configAnalyticAccount));
 
-    if (valuesMap == null) {
+    if (valuesMap == null || column.getCode().equals(column.getPercentageBaseColumn())) {
+      if (accountingReport.getTraceAnomalies()
+          && StringUtils.notEmpty(column.getPercentageBaseColumn())) {
+        this.traceException(
+            AccountExceptionMessage.CUSTOM_REPORT_WRONG_PERCENTAGE_BASE_COLUMN,
+            accountingReport,
+            groupColumn,
+            column,
+            line);
+      }
+
       this.addNullValue(
           column,
           groupColumn,
@@ -88,6 +102,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
           valuesMap,
           valuesMapByColumn,
           valuesMapByLine,
+          companySet,
           configAnalyticAccount,
           startDate,
           endDate,
@@ -104,6 +119,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       Map<String, AccountingReportValue> valuesMap,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
@@ -145,6 +161,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
+          companySet,
           configAnalyticAccount,
           valuesMap.get(code),
           totalValue,
@@ -164,6 +181,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       AccountingReportValue baseValue,
       AccountingReportValue totalValue,
@@ -174,7 +192,8 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       BigDecimal result,
       int analyticCounter)
       throws AxelorException {
-    if (baseValue == null) {
+    if (baseValue == null
+        || (totalValue == null && StringUtils.notEmpty(line.getPercentageTotalLine()))) {
       this.addNullValue(
           column,
           groupColumn,
@@ -183,6 +202,15 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
           configAnalyticAccount,
           parentTitle,
           lineCode);
+
+      if (accountingReport.getTraceAnomalies()) {
+        this.traceException(
+            AccountExceptionMessage.REPORT_TYPE_TOTAL_LINE_NOT_EXISTS,
+            accountingReport,
+            groupColumn,
+            column,
+            line);
+      }
 
       return;
     } else if (totalValue != null && totalValue.getResult().signum() != 0) {
@@ -210,6 +238,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
         result,
         valuesMapByColumn,
         valuesMapByLine,
+        companySet,
         configAnalyticAccount,
         lineCode,
         analyticCounter);

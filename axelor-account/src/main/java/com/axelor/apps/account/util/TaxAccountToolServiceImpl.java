@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -62,8 +62,11 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
       } else if (accountingSituation.getVatSystemSelect()
           == AccountingSituationRepository.VAT_DELIVERY) {
         return MoveLineRepository.VAT_COMMON_SYSTEM;
+      } else if (accountingSituation.getVatSystemSelect()
+          == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+        return MoveLineRepository.VAT_CASH_PAYMENTS;
       }
-    } else {
+    } else if (account != null) {
       return account.getVatSystemSelect();
     }
     return MoveLineRepository.VAT_SYSTEM_DEFAULT;

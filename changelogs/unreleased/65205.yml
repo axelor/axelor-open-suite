@@ -1,3 +1,0 @@
----
-title: "Invoice : Fix when we try to save an invoice with an analytic move line on invoice line"
-type: fix

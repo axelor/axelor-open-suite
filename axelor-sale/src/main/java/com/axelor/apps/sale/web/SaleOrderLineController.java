@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -39,7 +40,6 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.translation.ITranslation;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -50,18 +50,16 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class SaleOrderLineController {
 
   public void compute(ActionRequest request, ActionResponse response) {
-
     Context context = request.getContext();
-
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-
     SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
-
     try {
       compute(response, saleOrder, saleOrderLine);
     } catch (Exception e) {
@@ -107,14 +105,13 @@ public class SaleOrderLineController {
         product = Beans.get(ProductRepository.class).find(product.getId());
         saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
 
-        if (Beans.get(AppSaleService.class).getAppSale().getEnablePricingScale()) {
+        if (Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale()) {
           Optional<Pricing> defaultPricing =
               pricingService.getRandomPricing(
                   saleOrder.getCompany(),
-                  saleOrderLine.getProduct(),
-                  saleOrderLine.getProduct().getProductCategory(),
-                  SaleOrderLine.class.getSimpleName(),
-                  null);
+                  saleOrderLine,
+                  null,
+                  PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING);
 
           if (defaultPricing.isPresent()
               && !saleOrderLineService.hasPricingLine(saleOrderLine, saleOrder)) {
@@ -154,12 +151,12 @@ public class SaleOrderLineController {
     if (saleOrder == null
         || saleOrderLine == null
         || saleOrder.getClientPartner() == null
-        || saleOrderLine.getTaxLine() == null) return;
+        || CollectionUtils.isEmpty(saleOrderLine.getTaxLineSet())) return;
 
     response.setValue(
         "taxEquiv",
         Beans.get(FiscalPositionService.class)
-            .getTaxEquiv(saleOrder.getFiscalPosition(), saleOrderLine.getTaxLine().getTax()));
+            .getTaxEquivFromTaxLines(saleOrder.getFiscalPosition(), saleOrderLine.getTaxLineSet()));
   }
 
   public void getDiscount(ActionRequest request, ActionResponse response) {
@@ -185,14 +182,14 @@ public class SaleOrderLineController {
                 saleOrder,
                 saleOrderLine,
                 saleOrderLineService.getInTaxUnitPrice(
-                    saleOrder, saleOrderLine, saleOrderLine.getTaxLine()));
+                    saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet()));
       } else {
         discounts =
             saleOrderLineService.getDiscountsFromPriceLists(
                 saleOrder,
                 saleOrderLine,
                 saleOrderLineService.getExTaxUnitPrice(
-                    saleOrder, saleOrderLine, saleOrderLine.getTaxLine()));
+                    saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet()));
       }
 
       if (discounts != null) {
@@ -209,7 +206,7 @@ public class SaleOrderLineController {
                 "price",
                 taxService.convertUnitPrice(
                     true,
-                    saleOrderLine.getTaxLine(),
+                    saleOrderLine.getTaxLineSet(),
                     price,
                     appBaseService.getNbDecimalDigitForUnitPrice()));
           } else {
@@ -218,7 +215,7 @@ public class SaleOrderLineController {
                 "inTaxPrice",
                 taxService.convertUnitPrice(
                     false,
-                    saleOrderLine.getTaxLine(),
+                    saleOrderLine.getTaxLineSet(),
                     price,
                     appBaseService.getNbDecimalDigitForUnitPrice()));
           }
@@ -231,7 +228,7 @@ public class SaleOrderLineController {
               "discountAmount",
               taxService.convertUnitPrice(
                   saleOrderLine.getProduct().getInAti(),
-                  saleOrderLine.getTaxLine(),
+                  saleOrderLine.getTaxLineSet(),
                   (BigDecimal) discounts.get("discountAmount"),
                   appBaseService.getNbDecimalDigitForUnitPrice()));
         } else {
@@ -258,14 +255,14 @@ public class SaleOrderLineController {
 
     try {
       BigDecimal inTaxPrice = saleOrderLine.getInTaxPrice();
-      TaxLine taxLine = saleOrderLine.getTaxLine();
+      Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
 
       response.setValue(
           "price",
           Beans.get(TaxService.class)
               .convertUnitPrice(
                   true,
-                  taxLine,
+                  taxLineSet,
                   inTaxPrice,
                   Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
@@ -286,14 +283,14 @@ public class SaleOrderLineController {
 
     try {
       BigDecimal exTaxPrice = saleOrderLine.getPrice();
-      TaxLine taxLine = saleOrderLine.getTaxLine();
+      Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
 
       response.setValue(
           "inTaxPrice",
           Beans.get(TaxService.class)
               .convertUnitPrice(
                   false,
-                  taxLine,
+                  taxLineSet,
                   exTaxPrice,
                   Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
@@ -321,7 +318,8 @@ public class SaleOrderLineController {
       BigDecimal price = saleOrderLine.getPrice();
       BigDecimal inTaxPrice =
           price.add(
-              price.multiply(saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100))));
+              price.multiply(
+                  Beans.get(TaxService.class).getTotalTaxRate(saleOrderLine.getTaxLineSet())));
 
       response.setValue("inTaxPrice", inTaxPrice);
 
@@ -434,13 +432,11 @@ public class SaleOrderLineController {
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
       Partner partner =
           Beans.get(SaleOrderLineService.class).getSaleOrder(context).getClientPartner();
-      String userLanguage = AuthUtils.getUser().getLanguage();
       Product product = saleOrderLine.getProduct();
 
       if (product != null) {
         Map<String, String> translation =
-            internationalService.getProductDescriptionAndNameTranslation(
-                product, partner, userLanguage);
+            internationalService.getProductDescriptionAndNameTranslation(product, partner);
 
         String description = translation.get("description");
         String productName = translation.get("productName");
@@ -449,7 +445,10 @@ public class SaleOrderLineController {
             && !description.isEmpty()
             && productName != null
             && !productName.isEmpty()) {
-          response.setValue("description", description);
+          if (Boolean.TRUE.equals(
+              Beans.get(AppSaleService.class).getAppSale().getIsEnabledProductDescriptionCopy())) {
+            response.setValue("description", description);
+          }
           response.setValue("productName", productName);
         }
       }

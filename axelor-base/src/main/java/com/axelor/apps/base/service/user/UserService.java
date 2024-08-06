@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,9 +23,11 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.User;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaPermissionRule;
 import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -115,7 +117,7 @@ public interface UserService {
   @Transactional
   public void createPartner(User user);
 
-  public String getLanguage();
+  public String getLocalizationCode();
 
   /**
    * Get user's active company address.
@@ -138,8 +140,12 @@ public interface UserService {
    * @throws AxelorException
    */
   User changeUserPassword(User user, Map<String, Object> values)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException;
+      throws ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          MessagingException,
+          IOException,
+          AxelorException;
 
   /**
    * Processs changed user password.
@@ -176,17 +182,6 @@ public interface UserService {
   String getPasswordPatternDescription();
 
   /**
-   * Verify current connected user's password
-   *
-   * @param password
-   * @return
-   */
-  boolean verifyCurrentUserPassword(String password);
-
-  @Transactional
-  public void generateRandomPasswordForUsers(List<Long> userIds);
-
-  /**
    * Setting user's partner
    *
    * @param partner
@@ -195,4 +190,12 @@ public interface UserService {
    */
   @Transactional
   public Partner setUserPartner(Partner partner, User user);
+
+  public void generateRandomPasswordForUser(User user);
+
+  List<Permission> getPermissions(User user);
+
+  List<MetaPermissionRule> getMetaPermissionRules(User user);
+
+  void setActiveCompany(User user, Company company);
 }

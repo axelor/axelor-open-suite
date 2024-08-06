@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -12,7 +12,9 @@
       orderBy="priority"/>
     <string name="name" title="Label" required="true" massUpdate="true"/>
     <string name="code" title="Code"/>
-    <boolean name="outsourcing" title="Outsourcing"/>
+    <boolean name="outsourcing" title="Outsourced"/>
+    <boolean name="outsourcable" title="Outsourcable"/>
+    <boolean name="prodProcessLinesOutsourcable" title="Subcontracting service"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
     <string name="fullName" namecolumn="true" title="Label"/>
@@ -20,11 +22,15 @@
       selection="production.prod.process.status.select" default="1"/>
 
     <boolean name="isConsProOnOperation" title="Manage consumed products on phases"/>
+    <boolean name="operationContinuity" title="Operation Continuity"/>
 
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Production stock location" massUpdate="true"/>
     <many-to-one name="producedProductStockLocation"
       ref="com.axelor.apps.stock.db.StockLocation" title="Stock location for produced product"
+      massUpdate="true"/>
+    <many-to-one name="residualProductsDefaultStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Stock location for residual products"
       massUpdate="true"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <many-to-one name="workshopStockLocation"
@@ -46,6 +52,29 @@
       ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing stock location"/>
     <boolean name="generatePurchaseOrderOnMoPlanning"
       title="Generate a purchase order on MO planning"/>
+    <long name="leadTime" title="Lead time" formula="true" readonly="true">
+    <![CDATA[
+           SELECT
+                SUM(
+                    GREATEST(
+                             COALESCE(pppl.starting_duration, 0) + COALESCE(pppl.duration_per_cycle, 0) + COALESCE(pppl.ending_duration, 0),
+                             COALESCE(pppl.human_duration, 0)
+                            )
+                             + COALESCE(pppl.time_before_next_operation, 0)
+                            )
+            FROM
+                production_prod_process pp
+            JOIN
+                production_prod_process_line pppl ON pp.id = pppl.prod_process
+            WHERE
+                pp.id = id
+            GROUP BY
+                pp.id
+    ]]>
+    </long>
+    <many-to-many name="generatedPurchaseOrderProductSet"
+      ref="com.axelor.apps.base.db.Product" title="Products for generated purchase order"/>
+    <boolean name="isPersonalized" title="Personalized"/>
 
     <extra-code><![CDATA[
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,8 +21,7 @@ package com.axelor.apps.base.service.pricing;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.db.Model;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,36 +32,29 @@ public interface PricingService {
    * productCategory, modelName, previousPricing.
    *
    * @param company {@link Company}: can be null
-   * @param product {@link Product}: can be null
-   * @param productCategory {@link ProductCategory}: can be null
-   * @param modelName {@link String}: can be null or empty
-   * @param previousPricing {@link Pricing}: can be null
-   * @return a {@link Optional} of Pricing.
+   * @param model {@link Model}
+   * @param pricing {@link Pricing}: can be null
+   * @param typeSelect : can be null
+   * @return a {@link Optional} of Pricing.c
    */
   Optional<Pricing> getRandomPricing(
-      Company company,
-      Product product,
-      ProductCategory productCategory,
-      String modelName,
-      Pricing previousPricing);
+      Company company, Model model, Pricing pricing, String typeSelect);
+
+  Optional<Pricing> getRootPricingForNextPricings(Company company, Model model, String typeSelect);
 
   /**
    * This method will get all pricings filtered with company, product, productCategory, modelName,
    * previousPricing.
    *
    * @param company {@link Company}: can be null
-   * @param product {@link Product}: can be null
-   * @param productCategory {@link ProductCategory}: can be null
-   * @param modelName {@link String}: can be null or empty
-   * @param previousPricing {@link Pricing}: can be null
+   * @param model {@link Model}
+   * @param pricing {@link Pricing}: can be null
+   * @param typeSelect: can be null
    * @return a {@link Optional} of Pricing.
    */
-  List<Pricing> getPricings(
-      Company company,
-      Product product,
-      ProductCategory productCategory,
-      String modelName,
-      Pricing previousPricing);
+  List<Pricing> getPricings(Company company, Model model, Pricing pricing, String typeSelect);
+
+  List<Pricing> getAllPricings(Company company, Model model, String typeSelect);
 
   public void historizePricing(Pricing pricing) throws AxelorException;
 

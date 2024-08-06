@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,21 +36,14 @@ public interface BillOfMaterialService {
 
   static final String UNIT_DAY_CODE = "JR";
 
-  public List<BillOfMaterial> getBillOfMaterialSet(Product product);
-
   public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
 
   public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine) throws AxelorException;
 
   public BillOfMaterial generateNewVersion(BillOfMaterial billOfMaterial);
 
-  public String getFileName(BillOfMaterial billOfMaterial);
-
-  public String getReportLink(
-      BillOfMaterial billOfMaterial, String name, String language, String format)
+  public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom)
       throws AxelorException;
-
-  public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom);
 
   public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) throws AxelorException;
 
@@ -58,8 +51,6 @@ public interface BillOfMaterialService {
 
   BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth)
       throws AxelorException;
-
-  String computeName(BillOfMaterial bom);
 
   void addRawMaterials(long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
       throws AxelorException;
@@ -91,4 +82,16 @@ public interface BillOfMaterialService {
    * @throws AxelorException
    */
   List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException;
+
+  BillOfMaterial setDraftStatus(BillOfMaterial billOfMaterial) throws AxelorException;
+
+  BillOfMaterial setValidateStatus(BillOfMaterial billOfMaterial) throws AxelorException;
+
+  BillOfMaterial setApplicableStatus(BillOfMaterial billOfMaterial) throws AxelorException;
+
+  BillOfMaterial setObsoleteStatus(BillOfMaterial billOfMaterial) throws AxelorException;
+
+  int getPriority(BillOfMaterial billOfMaterial);
+
+  List<BillOfMaterial> getSubBillOfMaterial(BillOfMaterial billOfMaterial);
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,24 +22,33 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.PricingLine;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.PricingLineRepository;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.EntityHelper;
+import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
+import com.axelor.rpc.Context;
+import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,27 +71,78 @@ public class PricingServiceImpl implements PricingService {
 
   @Override
   public Optional<Pricing> getRandomPricing(
-      Company company,
-      Product product,
-      ProductCategory productCategory,
-      String modelName,
-      Pricing previousPricing) {
+      Company company, Model model, Pricing pricing, String typeSelect) {
+    return getPricings(company, model, null, typeSelect).stream().findAny();
+  }
 
-    return getPricings(company, product, productCategory, modelName, previousPricing).stream()
-        .findAny();
+  @Override
+  public Optional<Pricing> getRootPricingForNextPricings(
+      Company company, Model model, String typeSelect) {
+    List<Pricing> pricings = getAllPricings(company, model, typeSelect);
+
+    Set<Long> pricingsPointedTo =
+        pricings.stream()
+            .map(Pricing::getLinkedPricing)
+            .filter(Objects::nonNull)
+            .map(Pricing::getId)
+            .collect(Collectors.toSet());
+
+    Optional<Pricing> rootPricing = Optional.empty();
+
+    // find the pricing that doesn't have any pricing pointing to it, that's the root
+    for (Pricing pricing : pricings) {
+      if (!pricingsPointedTo.contains(pricing.getId())) {
+        rootPricing = Optional.of(pricing);
+        break;
+      }
+    }
+
+    return rootPricing;
   }
 
   @Override
   public List<Pricing> getPricings(
-      Company company,
-      Product product,
-      ProductCategory productCategory,
-      String modelName,
-      Pricing previousPricing) {
-
-    LOG.debug("Fetching pricings");
+      Company company, Model model, Pricing pricing, String typeSelect) {
     StringBuilder filter = new StringBuilder();
     Map<String, Object> bindings = new HashMap<>();
+    pricingFetchFilter(filter, bindings, company, model, typeSelect);
+
+    if (pricing != null) {
+      filter.append("AND self.linkedPricing = :linkedPricing ");
+      bindings.put("linkedPricing", pricing);
+    } else {
+      filter.append("AND self.linkedPricing is NULL ");
+    }
+
+    filter.append("AND (self.archived = false OR self.archived is null) ");
+
+    LOG.debug("Filtering pricing with {}", filter);
+    List<Pricing> pricings = pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
+
+    return appendFormulaFilter(pricings, model);
+  }
+
+  @Override
+  public List<Pricing> getAllPricings(Company company, Model model, String typeSelect) {
+    StringBuilder filter = new StringBuilder();
+    Map<String, Object> bindings = new HashMap<>();
+    pricingFetchFilter(filter, bindings, company, model, typeSelect);
+
+    filter.append("AND (self.archived = false OR self.archived is null) ");
+
+    LOG.debug("Filtering pricing with {}", filter);
+    List<Pricing> pricings = pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
+
+    return appendFormulaFilter(pricings, model);
+  }
+
+  protected void pricingFetchFilter(
+      StringBuilder filter,
+      Map<String, Object> bindings,
+      Company company,
+      Model model,
+      String typeSelect) {
+    LOG.debug("Fetching pricings");
 
     filter.append("self.startDate <= :todayDate ");
     filter.append("AND (self.endDate > :todayDate OR self.endDate = NULL) ");
@@ -93,56 +153,32 @@ public class PricingServiceImpl implements PricingService {
       bindings.put("company", company);
     }
 
-    if (modelName != null) {
+    if (model != null) {
       filter.append("AND self.concernedModel.name = :modelName ");
-      bindings.put("modelName", modelName);
+      bindings.put("modelName", EntityHelper.getEntityClass(model).getSimpleName());
     }
 
-    if (previousPricing != null) {
-      filter.append("AND self.previousPricing = :previousPricing ");
-      bindings.put("previousPricing", previousPricing);
-    } else {
-      filter.append("AND self.previousPricing is NULL ");
+    if (typeSelect != null) {
+      filter.append("AND self.typeSelect = :typeSelect ");
+      bindings.put("typeSelect", typeSelect);
     }
-    filter.append("AND (self.archived = false OR self.archived is null) ");
-
-    appendProductFilter(product, productCategory, filter, bindings);
-    LOG.debug("Filtering pricing with {}", filter.toString());
-    return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
   }
 
-  protected void appendProductFilter(
-      Product product,
-      ProductCategory productCategory,
-      StringBuilder filter,
-      Map<String, Object> bindings) {
-    StringBuilder productFilter = new StringBuilder();
-    productFilter.append("(");
-    if (product != null) {
-      productFilter.append("self.product = :product ");
-      bindings.put("product", product);
-
-      if (product.getParentProduct() != null) {
-        productFilter.append("OR self.product = :parentProduct ");
-        bindings.put("parentProduct", product.getParentProduct());
-      }
-      if (productCategory != null) {
-        productFilter.append("OR self.productCategory = :productCategory ");
-        bindings.put("productCategory", productCategory);
-      }
-    } else {
-      if (productCategory != null) {
-        productFilter.append("self.productCategory = :productCategory ");
-        bindings.put("productCategory", productCategory);
+  protected List<Pricing> appendFormulaFilter(List<Pricing> pricings, Model model) {
+    Context scriptContext = new Context(Mapper.toMap(model), EntityHelper.getEntityClass(model));
+    ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
+    List<Pricing> filteredPricings = new ArrayList<>();
+    for (Pricing pricing : pricings) {
+      try {
+        if (Boolean.TRUE.equals(scriptHelper.eval(pricing.getFormula()))) {
+          filteredPricings.add(pricing);
+        }
+      } catch (Exception e) {
+        TraceBackService.trace(e);
       }
     }
-    productFilter.append(")");
 
-    // if productFilter is more than just "()"
-    if (productFilter.length() > 2) {
-      filter.append("AND ");
-      filter.append(productFilter);
-    }
+    return filteredPricings;
   }
 
   @Override
@@ -187,7 +223,7 @@ public class PricingServiceImpl implements PricingService {
     currentPricing.setClass4PricingRule(pricing.getClass4PricingRule());
     currentPricing.setCompany(pricing.getCompany());
     currentPricing.setConcernedModel(pricing.getConcernedModel());
-    currentPricing.setPreviousPricing(pricing.getPreviousPricing());
+    currentPricing.setLinkedPricing(pricing.getLinkedPricing());
     currentPricing.setResult1PricingRule(pricing.getResult1PricingRule());
     currentPricing.setResult2PricingRule(pricing.getResult2PricingRule());
     currentPricing.setResult3PricingRule(pricing.getResult3PricingRule());
@@ -196,6 +232,7 @@ public class PricingServiceImpl implements PricingService {
     currentPricing.setImportOrigin(pricing.getImportOrigin());
     currentPricing.setProduct(pricing.getProduct());
     currentPricing.setProductCategory(pricing.getProductCategory());
+    currentPricing.setFormula(pricing.getFormula());
     currentPricing.setVersion(pricing.getVersion());
     currentPricing.setAttrs(pricing.getAttrs());
     currentPricing.clearPricingLineList();

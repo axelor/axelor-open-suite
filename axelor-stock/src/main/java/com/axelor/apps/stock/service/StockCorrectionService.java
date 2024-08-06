@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,10 +44,13 @@ public interface StockCorrectionService {
       Product product,
       TrackingNumber trackingNumber,
       BigDecimal realQty,
-      StockCorrectionReason reason)
+      StockCorrectionReason reason,
+      String comments)
       throws Exception;
 
   void updateCorrectionQtys(StockCorrection stockCorrection, BigDecimal realQty);
 
   void updateReason(StockCorrection stockCorrection, StockCorrectionReason reason);
+
+  void updateComments(StockCorrection stockCorrection, String comments);
 }

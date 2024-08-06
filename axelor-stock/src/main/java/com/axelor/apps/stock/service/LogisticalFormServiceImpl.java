@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -45,8 +45,8 @@ import com.axelor.rpc.Context;
 import com.axelor.rpc.ContextEntity;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
-import com.axelor.utils.QueryBuilder;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.QueryBuilder;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -520,12 +520,12 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
             StockMoveRepository.STATUS_PLANNED, StockMoveRepository.STATUS_REALIZED));
     domainList.add("COALESCE(self.fullySpreadOverLogisticalFormsFlag, FALSE) = FALSE");
     if (logisticalForm.getStockLocation() != null) {
-      domainList.add("self.fromStockLocation = :stockLocation");
+      domainList.add("self.stockMoveLineList.fromStockLocation = :stockLocation");
     }
     List<StockMove> fullySpreadStockMoveList = getFullySpreadStockMoveList(logisticalForm);
 
     if (!fullySpreadStockMoveList.isEmpty()) {
-      String idListString = StringTool.getIdListString(fullySpreadStockMoveList);
+      String idListString = StringHelper.getIdListString(fullySpreadStockMoveList);
       domainList.add(String.format("self.id NOT IN (%s)", idListString));
     }
 

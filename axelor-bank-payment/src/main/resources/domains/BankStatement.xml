@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
@@ -12,8 +12,7 @@
     <date name="toDate" title="To Date"/>
     <integer name="statusSelect" title="Status"
       selection="bankpayment.bank.statement.status.select" readonly="true" default="1"/>
-    <many-to-one name="ebicsPartner" ref="com.axelor.apps.bankpayment.db.EbicsPartner"
-      title="Ebics Partner"/>
+
     <many-to-one name="bankStatementFileFormat"
       ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="File format"/>
     <many-to-one name="bankStatementFile" ref="com.axelor.meta.db.MetaFile" title="File"/>

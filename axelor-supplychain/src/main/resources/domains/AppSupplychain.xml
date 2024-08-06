@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="AppSupplychain" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="custStockMoveMgtOnSO" title="Customer deliveries management"
       default="false"/>
@@ -84,7 +84,11 @@
       title="Purchase order without incoming stock move"/>
     <boolean name="manageAdvancePaymentsFromPaymentConditions"
       title="Manage advance payments from payment conditions" default="false"/>
-    <boolean name="activatePartnerRelations" title="Activate partner delegations"/>
+
+    <boolean name="autoFillDeliveryRealQty" title="Auto fill delivery real quantity"
+      default="true"/>
+    <boolean name="autoFillReceiptRealQty" title="Auto fill receipt real quantity"
+      default="true"/>
 
     <track>
       <field name="custStockMoveMgtOnSO" on="UPDATE"/>
@@ -125,7 +129,6 @@
       <field name="isSaleOrderWithoutOutgoingStockMove" on="UPDATE"/>
       <field name="isPurchaseOrderWithoutIncomingStockMove" on="UPDATE"/>
       <field name="manageAdvancePaymentsFromPaymentConditions" on="UPDATE"/>
-      <field name="activatePartnerRelations" on="UPDATE"/>
     </track>
   </entity>
 

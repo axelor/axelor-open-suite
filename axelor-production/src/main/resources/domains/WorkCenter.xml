@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -15,28 +15,31 @@
       selection="iproduction.work.center.type.select"/>
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
-    <long name="durationPerCycle" title="Duration / cycle (hh:mm:ss)"/>
-    <long name="timingOfImplementation" title="Timing of implementation (hh:mm:ss)"/>
-    <boolean name="isRevaluationAtActualPrices" title="Revaluation at actual prices"/>
-
-    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <long name="durationPerCycle" title="Duration / cycle (hhh:mm:ss)"/>
+    <boolean name="isRevaluationAtActualPrices" title="Revaluation at actual prices"
+      help="By enabling this, the total cost price will be calculated by considering the real duration (including hours) of production cycle."/>
 
     <integer name="costTypeSelect" title="Cost type"
       selection="iproduction.work.center.cost.type.select"/>
     <decimal name="costAmount" title="Cost (W.T.)"/>
 
-    <one-to-many name="prodHumanResourceList"
-      ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="workCenter"
-      title="Human resources"/>
+    <integer name="hrCostTypeSelect" title="Cost type"
+      selection="iproduction.work.center.cost.type.select"/>
+    <decimal name="hrCostAmount" title="Cost (W.T.)"/>
+    <long name="hrDurationPerCycle" title="HR Duration Per Cycle (hhh:mm:ss)"/>
 
     <many-to-one name="operationOrder"
-      ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
+      ref="com.axelor.apps.production.db.OperationOrder" title="Manufacturing operation"/>
 
     <many-to-one name="costSheetGroup"
       ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
     <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool"
       title="Tools"/>
     <integer name="sequence" title="Priority"/>
+    <long name="startingDuration" title="Starting duration (hhh:mm:ss)"/>
+    <long name="setupDuration" title="Duration between two cycles (hhh:mm:ss)"/>
+    <long name="endingDuration" title="Ending duration (hhh:mm:ss)"/>
+    <long name="timeBeforeNextOperation" title="Time between two operations (hhh:mm:ss)"/>
     <extra-code>
 		<![CDATA[
 
@@ -62,7 +65,6 @@
       <field name="maxCapacityPerCycle"/>
       <field name="durationPerCycle"/>
       <field name="isRevaluationAtActualPrices"/>
-      <field name="product"/>
       <field name="costTypeSelect"/>
       <field name="costAmount"/>
       <field name="operationOrder"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -525,7 +525,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Ticket.class);
     Filter filter =
         new JPQLFilter(
-            "self.customer.id = "
+            "self.customerPartner.id = "
                 + user.getPartner().getId()
                 + " AND self.assignedToUser.id = "
                 + user.getId());
@@ -540,7 +540,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Ticket.class);
     Filter filter =
         new JPQLFilter(
-            "self.customer.id = "
+            "self.customerPartner.id = "
                 + user.getPartner().getId()
                 + " AND self.assignedToUser.id = "
                 + user.getActiveCompany().getId());
@@ -555,7 +555,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Ticket.class);
     Filter filter =
         new JPQLFilter(
-            "self.customer.id = "
+            "self.customerPartner.id = "
                 + user.getPartner().getId()
                 + " AND self.assignedToUser.id = "
                 + user.getId()
@@ -575,7 +575,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Ticket.class);
     Filter filter =
         new JPQLFilter(
-            "self.customer.id = "
+            "self.customerPartner.id = "
                 + user.getPartner().getId()
                 + " AND self.assignedToUser.id = "
                 + user.getId()

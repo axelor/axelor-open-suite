@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,4 +42,25 @@ public final class ProjectExceptionMessage {
       "The parent task creates a loop in the task tree." /*)*/;
   public static final String RESOURCE_ALREADY_BOOKED_ERROR_MSG = /*$$(*/
       "This resource is already booked for this period" /*)*/;
+
+  public static final String PROJECT_SEQUENCE_ERROR = /*$$(*/
+      "The company %s doesn't have any configured sequence for Project" /*)*/;
+
+  public static final String PROJECT_CONFIG_1 = /*$$(*/
+      "%s : You must configure Project module for company %s" /*)*/;
+
+  public static final String PROJECT_GROOVY_FORMULA_ERROR = /*$$(*/
+      "Please check the compute full name groovy formula in project app configuration" /*)*/;
+
+  public static final String PROJECT_GROOVY_FORMULA_SYNTAX_ERROR = /*$$(*/
+      "Full name could not be computed, please check the groovy formula." /*)*/;
+
+  public static final String PROJECT_TASK_INFINITE_LOOP_ISSUE = /*$$(*/
+      "Task parent or children has not been configured correctly." /*)*/;
+
+  public static final String PROJECT_CONFIG_COMPLETED_PROJECT_STATUS_MISSING = /*$$(*/
+      "Please set the completed project status in the project configuration." /*)*/;
+
+  public static final String PROJECT_CONFIG_COMPLETED_PAID_PROJECT_STATUS_MISSING = /*$$(*/
+      "Please set the completed paid project status in the project configuration." /*)*/;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.contract.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -40,6 +41,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
+import java.util.Comparator;
 
 @Singleton
 public class ContractVersionController {
@@ -92,10 +94,11 @@ public class ContractVersionController {
         response.setError(I18n.get(ContractExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
         return;
       }
-      Beans.get(ContractService.class)
-          .activeNextVersion(
-              contractVersion.getNextContract(),
-              getTodayDate(contractVersion.getNextContract().getCompany()));
+      LocalDate date =
+          contractVersion.getSupposedActivationDate() == null
+              ? getTodayDate(contractVersion.getNextContract().getCompany())
+              : contractVersion.getSupposedActivationDate();
+      Beans.get(ContractService.class).activeNextVersion(contractVersion.getNextContract(), date);
       response.setView(
           ActionView.define(I18n.get("Contract"))
               .model(Contract.class.getName())
@@ -127,26 +130,66 @@ public class ContractVersionController {
     }
   }
 
-  public void changeProduct(ActionRequest request, ActionResponse response) {
+  public void changeProduct(ActionRequest request, ActionResponse response) throws AxelorException {
     ContractLineService contractLineService = Beans.get(ContractLineService.class);
     ContractLine contractLine = new ContractLine();
-
     try {
+
       contractLine = request.getContext().asType(ContractLine.class);
 
       ContractVersion contractVersion =
           request.getContext().getParent().asType(ContractVersion.class);
       Contract contract =
           contractVersion.getNextContract() == null
-              ? contractVersion.getContract()
+              ? request.getContext().getParent().getParent().asType(Contract.class)
               : contractVersion.getNextContract();
       Product product = contractLine.getProduct();
-
+      if (product == null) {
+        contractLine = contractLineService.resetProductInformation(contractLine);
+        response.setValues(contractLine);
+        return;
+      }
       contractLine = contractLineService.fillAndCompute(contractLine, contract, product);
       response.setValues(contractLine);
     } catch (Exception e) {
       response.setValues(contractLineService.reset(contractLine));
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateContractLines(ActionRequest request, ActionResponse response) {
+    ContractLineService contractLineService = Beans.get(ContractLineService.class);
+    Contract contract = request.getContext().getParent().asType(Contract.class);
+    try {
+      ContractVersion contractVersion =
+          Beans.get(ContractVersionRepository.class)
+              .find(contract.getCurrentContractVersion().getId());
+      if (contractVersion.getSupposedActivationDate() != null) {
+        contractLineService.updateContractLinesFromContractVersion(contractVersion);
+      }
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void checkSupposedActivationDate(ActionRequest request, ActionResponse response) {
+    ContractVersion contractVersion = request.getContext().asType(ContractVersion.class);
+    try {
+      LocalDate date = contractVersion.getSupposedActivationDate();
+      if (date != null
+          && contractVersion.getContractLineList() != null
+          && contractVersion.getContractLineList().stream()
+              .anyMatch(it -> it.getFromDate() != null && it.getFromDate().isBefore(date))) {
+        response.setValue(
+            "supposedActivationDate",
+            contractVersion.getContractLineList().stream()
+                .map(it -> it.getFromDate())
+                .min(Comparator.comparing(LocalDate::toEpochDay))
+                .orElseGet(null));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
     }
   }
 

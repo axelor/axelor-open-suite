@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,12 +22,18 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.PaymentConditionService;
-import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.PfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -37,44 +43,65 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.common.ObjectUtils;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
-  protected MoveLineControlService moveLineControlService;
   protected PartnerRepository partnerRepository;
   protected BankDetailsService bankDetailsService;
-  protected MoveToolService moveToolService;
   protected PeriodService periodService;
   protected PaymentConditionService paymentConditionService;
+  protected InvoiceTermService invoiceTermService;
+  protected AppBaseService appBaseService;
+  protected PartnerAccountService partnerAccountService;
+  protected JournalService journalService;
+  protected MoveLineService moveLineService;
+  protected PfpService pfpService;
+  protected MoveToolService moveToolService;
 
   @Inject
   public MoveRecordSetServiceImpl(
-      MoveLineControlService moveLineControlService,
       PartnerRepository partnerRepository,
       BankDetailsService bankDetailsService,
-      MoveToolService moveToolService,
       PeriodService periodService,
-      PaymentConditionService paymentConditionService) {
-    this.moveLineControlService = moveLineControlService;
+      PaymentConditionService paymentConditionService,
+      InvoiceTermService invoiceTermService,
+      MoveLineService moveLineService,
+      AppBaseService appBaseService,
+      PartnerAccountService partnerAccountService,
+      JournalService journalService,
+      PfpService pfpService,
+      MoveToolService moveToolService) {
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
-    this.moveToolService = moveToolService;
     this.periodService = periodService;
     this.paymentConditionService = paymentConditionService;
+    this.invoiceTermService = invoiceTermService;
+    this.moveLineService = moveLineService;
+    this.appBaseService = appBaseService;
+    this.partnerAccountService = partnerAccountService;
+    this.journalService = journalService;
+    this.pfpService = pfpService;
+    this.moveToolService = moveToolService;
   }
 
   @Override
-  public void setPeriod(Move move) throws AxelorException {
-    if (move.getDate() != null && move.getCompany() != null) {
-      move.setPeriod(
-          periodService.getActivePeriod(
-              move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+  public void setPeriod(Move move) {
+    try {
+      if (move.getDate() != null && move.getCompany() != null) {
+        move.setPeriod(
+            periodService.getActivePeriod(
+                move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+      }
+    } catch (AxelorException axelorException) {
+      move.setPeriod(null);
     }
   }
 
@@ -174,28 +201,9 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
   @Override
   public void setFunctionalOriginSelect(Move move) {
-    move.setFunctionalOriginSelect(computeFunctionalOriginSelect(move));
-  }
-
-  /**
-   * Compute the default functional origin select of the move.
-   *
-   * @param move any move, cannot be null
-   * @return the default functional origin select if there is one, else return null
-   */
-  protected Integer computeFunctionalOriginSelect(Move move) {
-    if (move.getJournal() == null) {
-      return null;
-    }
-    String authorizedFunctionalOriginSelect =
-        move.getJournal().getAuthorizedFunctionalOriginSelect();
-
-    if (ObjectUtils.isEmpty(authorizedFunctionalOriginSelect)
-        || authorizedFunctionalOriginSelect.split(",").length != 1) {
-      return null;
-    }
-
-    return Integer.valueOf(authorizedFunctionalOriginSelect);
+    move.setFunctionalOriginSelect(
+        moveToolService.computeFunctionalOriginSelect(
+            move.getJournal(), move.getMassEntryStatusSelect()));
   }
 
   @Override
@@ -216,5 +224,99 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     BankDetails defaultBankDetails =
         bankDetailsService.getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     move.setCompanyBankDetails(defaultBankDetails);
+  }
+
+  @Override
+  public void setOriginDate(Move move) {
+    Objects.requireNonNull(move);
+
+    if (move.getDate() != null
+        && move.getJournal() != null
+        && move.getJournal().getIsFillOriginDate()) {
+      move.setOriginDate(move.getDate());
+    } else if (move.getDate() == null
+        || (move.getJournal() == null
+            || (move.getJournal() != null && !move.getJournal().getIsFillOriginDate()))) {
+      move.setOriginDate(null);
+    }
+  }
+
+  @Override
+  public void setPfpStatus(Move move) throws AxelorException {
+    Objects.requireNonNull(move);
+
+    if (move.getJournal() != null && move.getJournal().getJournalType() != null) {
+      JournalType journalType = move.getJournal().getJournalType();
+      if (pfpService.isManagePassedForPayment(move.getCompany())
+          && pfpService.isManagePFPInRefund(move.getCompany())
+          && (journalType.getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+              || journalType.getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE)) {
+        move.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
+      }
+    }
+  }
+
+  @Override
+  public void setPfpValidatorUser(Move move) {
+    Objects.requireNonNull(move);
+
+    move.setPfpValidatorUser(
+        invoiceTermService.getPfpValidatorUser(move.getPartner(), move.getCompany()));
+  }
+
+  @Override
+  public Map<String, Object> computeTotals(Move move) {
+
+    Map<String, Object> values = new HashMap<>();
+    if (move.getMoveLineList() == null) {
+      return values;
+    }
+    values.put("$totalLines", move.getMoveLineList().size());
+
+    BigDecimal totalDebit =
+        move.getMoveLineList().stream()
+            .map(MoveLine::getDebit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    values.put("$totalDebit", totalDebit);
+
+    BigDecimal totalCredit =
+        move.getMoveLineList().stream()
+            .map(MoveLine::getCredit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    values.put("$totalCredit", totalCredit);
+
+    Predicate<? super MoveLine> isDebitCreditFilter =
+        ml -> ml.getCredit().compareTo(BigDecimal.ZERO) > 0;
+    if (totalDebit.compareTo(totalCredit) > 0) {
+      isDebitCreditFilter = ml -> ml.getDebit().compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    BigDecimal totalCurrency =
+        move.getMoveLineList().stream()
+            .filter(isDebitCreditFilter)
+            .map(MoveLine::getCurrencyAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .abs();
+    values.put("$totalCurrency", totalCurrency);
+
+    BigDecimal difference = totalDebit.subtract(totalCredit);
+    values.put("$difference", difference);
+
+    return values;
+  }
+
+  @Override
+  public void setThirdPartyPayerPartner(Move move) {
+    if (!appBaseService.getAppBase().getActivatePartnerRelations()) {
+      return;
+    }
+
+    if (journalService.isThirdPartyPayerOk(move.getJournal())) {
+      move.setThirdPartyPayerPartner(partnerAccountService.getPayedByPartner(move.getPartner()));
+    } else {
+      move.setThirdPartyPayerPartner(null);
+    }
   }
 }

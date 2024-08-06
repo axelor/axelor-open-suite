@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,4 +38,10 @@ public interface StockMoveServiceSupplychain {
   public void setDefaultInvoicedPartner(StockMove stockMove);
 
   void checkInvoiceStatus(StockMove stockMove) throws AxelorException;
+
+  public void setInvoicingStatusInvoicedDelayed(StockMove stockMove);
+
+  public void setInvoicingStatusInvoicedValidated(StockMove stockMove);
+
+  void fillRealQuantities(StockMove stockMove);
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <chart name="chart.total.hours.per.day" title="" stacked="true">
     <dataset type="jpql"><![CDATA[
@@ -70,6 +70,336 @@
     <category key="_employee" type="text" title="Employee"/>
     <series key="_amount" aggregate="sum" type="bar" title="amount"/>
   </chart>
+
+  <custom name="my-leave-request-custom-view" title="Leave Requests"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getConnectedEmployeeLeaveData
+    </dataset>
+    <template><![CDATA[
+	<>
+		<Box w={100}>
+			{data.map((item,index) => {
+				const sumOfAllStatus = item.statusCount["1"] + item.statusCount["2"] + item.statusCount["3"] + item.statusCount["4"];
+				const p3Status = item.statusCount["1"] + item.statusCount["2"] + item.statusCount["3"];
+				const p2Status = item.statusCount["1"] + item.statusCount["2"];
+
+				return (
+					<Box d="grid" gridTemplateColumns="50% 50%" justifyContent="center" alignItems="center">
+						<Box d="grid" gridTemplateColumns="60% 40%" justifyContent="center" alignItems="center">
+							<Box d="flex" justifyContent="flex-end" style={{ maxWidth: "80%", maxHeight: "80%" }} m={2}>
+								<Box d="flex" justifyContent="center" alignItems="center" rounded="circle" style={{ width: 170, height: 170,
+								backgroundImage: `repeating-conic-gradient(
+									from 0deg,
+									#FFDF00 0deg calc(3.6deg * calc((${item.statusCount["1"]} * 100) / ${sumOfAllStatus})),
+									orange calc(3.6deg * calc((${item.statusCount["1"]} * 100) / ${sumOfAllStatus})) calc(3.6deg * calc((${p2Status} * 100) / ${sumOfAllStatus})),
+									green calc(3.6deg * calc((${p2Status} * 100)/${sumOfAllStatus})) calc(3.6deg * calc((${p3Status} * 100) / ${sumOfAllStatus})),
+									red calc(3.6deg * calc((${p3Status} * 100)/${sumOfAllStatus})) calc(3.6deg * 100))` }}>
+									<Box rounded="circle" style={{ width: 140, height: 140, backgroundColor: "white" }}/>
+								</Box>
+							</Box>
+							<Box>
+								<Box d="flex" justifyContent="space-between">
+									<Box d="flex" justifyContent="space-between">
+										<Box style={{ width: 15, height: 15, backgroundColor: "#ffdf00" }} m={1}/>
+										<span>{_t('Draft')}</span>
+									</Box>
+									<span>{item.statusCount["1"]}</span>
+								</Box>
+								<Box d="flex" justifyContent="space-between">
+									<Box d="flex" justifyContent="space-between">
+										<Box style={{ width: 15, height: 15, backgroundColor: "orange" }} m={1}/>
+										<span> {_t('Waiting')}</span>
+									</Box>
+									<span>{item.statusCount["2"]}</span>
+								</Box>
+								<Box d="flex" justifyContent="space-between">
+									<Box d="flex" justifyContent="space-between">
+										<Box style={{ width: 15, height: 15, backgroundColor: "green" }} m={1}/>
+										<span> {_t('Validated')}</span>
+									</Box>
+									<span>{item.statusCount["3"]}</span>
+								</Box>
+								<Box d="flex" justifyContent="space-between">
+									<Box d="flex" justifyContent="space-between">
+										<Box style={{ width: 15, height: 15, backgroundColor: "red" }} m={1}/>
+										<span> {_t('Refused')}</span>
+									</Box>
+									<span>{item.statusCount["4"]}</span>
+								</Box>
+							</Box>
+						</Box>
+						<Box d="flex" justifyContent="center">
+							<Box d="flex" flexDirection="column" justifyContent="center" border borderWidth={1} borderColor="black" rounded={1} style={{ width: 250, height: 150, backgroundColor: "#ecebf3" }}>
+								<Box d="flex" flexDirection="column" alignItems="center" mb={3}>
+									<span>{_t('Vacation pay')}</span>
+									<Badge fontSize={6} fontWeight="bold" bg="primary" mt={1}>
+										<Link href="#/ds/leave.all/edit/" target="_self" color="white" style={{ textDecoration: "none" }}>{_t('Create Leave Request')}</Link>
+									</Badge>
+								</Box>
+								<Box d="flex" justifyContent="space-between" borderTop borderWidth={1} borderColor="black" w={100}>
+									<Box d="flex" flexDirection="column" flex="1" alignItems="center" mt={1}>
+										<span>{item.leaveCount.valid}</span>
+										<Badge style={{ backgroundColor: "#777777", textTransform: "uppercase" }}>{_t('Valid')}</Badge>
+									</Box>
+									<Box d="flex" flexDirection="column" flex="1" alignItems="center" mt={1}>
+										<span>{item.leaveCount.balance}</span>
+										<Badge style={{ backgroundColor: "#777777", textTransform: "uppercase" }}>{_t('Balance')}</Badge>
+									</Box>
+									<Box d="flex" flexDirection="column" flex="1" alignItems="center" mt={1}>
+										<span>{item.leaveCount.taken}</span>
+										<Badge style={{ backgroundColor: "#777777", textTransform: "uppercase" }}>{_t('Taken')}</Badge>
+									</Box>
+								</Box>
+							</Box>
+						</Box>
+					</Box>
+				);
+			})}
+		</Box>
+	</>
+    ]]></template>
+  </custom>
+
+  <custom name="my-expenses-custom-view" title="Expenses" css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getConnectedEmployeeExpenseData
+    </dataset>
+    <template><![CDATA[
+		<>
+			<Box w={100}>
+				{data.map((item,index) => {
+					const statusTitle = [_t('Draft'),_t('Waiting'),_t('Validated'),_t('Reimbursed'),_t('Refused'),_t('Canceled')];
+					return (
+						<Link key={item.expenseId} href={`#/ds/expense.all/edit/${item.expenseId}`} d="flex" flexDirection="column" justifyContent="center" alignItems="center" border borderWidth={1} borderColor="dark-subtle" rounded={1} color="black" m={2} style={{width: "95%", backgroundColor: "#E8E8E8", minHeight: 80, textDecoration: "none" }}>
+								<Box d="flex" flexDirection="row" alignItems="center" w={100}>
+									<Box flex="1" textAlign="center"><b>{$moment(item.date).format('YYYY MMM ddd')}</b></Box>
+									<Box flex="0.5" borderTop borderColor="dark-subtle" borderWidth={1} />
+									<Box flex="1" textAlign="center"><b>{item.inTaxTotal} €</b></Box>
+									<Box flex="1" textAlign="center">{item.description}</Box>
+								</Box>
+								<Box d="flex" w={100} mt={1} ms={5}>
+									{Array(6).fill().map((_, index) => (
+				                    	<Box key={index} d="flex" flexDirection="column" style={{ width: "18%" }}>
+				                        	<Box d="flex" alignItems="center">
+					                    		<Box border borderColor={index < item.status ? "primary" : "primary-subtle"} rounded="circle" bg={index < item.status ? "primary" : "primary-subtle"} style={{ width: 15, height: 15 }} />
+					                    		{index < 5 && <Box flex="1" borderTop borderWidth={2} borderColor={index < item.status - 1 ? "primary" : "primary-subtle"} /> }
+				                        	</Box>
+				                        	<Box style={{ fontSize : 12 }}>{statusTitle[index]}</Box>
+				                        </Box>
+				                    ))}
+								</Box>
+						</Link>
+					);
+				})}
+			</Box>
+		</>
+	  ]]></template>
+  </custom>
+
+  <custom name="my-timesheets-custom-view" title="Time Sheet" css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getConnectedEmployeeTimesheetData
+    </dataset>
+    <template><![CDATA[
+	<>
+		<Box w={100}>
+			{data.map((item,index) => {
+				const totalPresent = item.atWork + item.notAtWork;
+				return (
+					<Box d="grid" gridTemplateColumns="60% 40%" justifyContent="center" alignItems="center">
+						<Box d="flex" justifyContent="flex-end" style={{ maxWidth: "80%", maxHeight: "80%" }} m={2}>
+							<Box d="flex" justifyContent="center" alignItems="center" rounded="circle" style={{ width: 170, height: 170,
+							backgroundImage: `repeating-conic-gradient(
+								from 0deg,
+								green 0deg calc(3.6deg * (${item.atWork} * 100) / ${totalPresent}),
+								red calc(3.6deg * (${item.atWork} * 100) / ${totalPresent}) calc(3.6deg * 100))` }}>
+								<Box rounded="circle" style={{ width: 140, height: 140, backgroundColor: "white" }}/>
+							</Box>
+						</Box>
+						<Box>
+							<Box d="flex" flexDirection="row">
+								<Box style={{ width: 15, height: 15, backgroundColor: "green" }} m={1}/>
+								<span>{_t('Present')} ({item.atWork})</span>
+							</Box>
+							<Box d="flex" flexDirection="row">
+								<Box style={{ width: 15, height: 15, backgroundColor: "red" }} m={1}/>
+								<span>{_t('Absent')} ({item.notAtWork})</span>
+							</Box>
+							<Badge fontSize={6} fontWeight="bold" style={{ backgroundColor: "#159983"}} mt={2}>
+								<Link href="#/ds/edit.timesheet/" target="_self" color="white" style={{ textDecoration: "none" }}>{_t('I am at work')}</Link>
+							</Badge>
+						</Box>
+					</Box>
+				);
+			})}
+		</Box>
+    </>
+    ]]></template>
+  </custom>
+
+  <custom name="my-extra-hours-custom-view" title="Extra Hours" css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getConnectedEmployeeExtraHrsData
+    </dataset>
+    <template><![CDATA[
+		<>
+			<Box w={100}>
+				{data.map((item,index) => {
+					return (
+						<Link key={item.extraHrId} href={`#/ds/extra.hours.all/edit/${item.extraHrId}`} d="flex" justifyContent="space-between" alignItems="center" border borderWidth={1} borderColor="dark-subtle" rounded={1} color="black" m={2} style={{width: "95%", backgroundColor: "#E8E8E8", minHeight: 60, textDecoration: "none" }}>
+							<Box flex="1" textAlign="center"><b>{$moment(item.date).format('YYYY MMM ddd')}</b></Box>
+							<Box flex="0.5" borderTop borderColor="dark-subtle" borderWidth={1}/>
+							<Box flex="1" textAlign="center"><b>+ {item.duration} h</b></Box>
+							<Box flex="1" textAlign="center">{item.description}</Box>
+						</Link>
+					);
+				})}
+			</Box>
+		</>
+	  ]]></template>
+  </custom>
+
+  <custom name="hr-manager-leave-requests-custom-view" title="Leave Requests"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeLeaveData
+    </dataset>
+    <template><![CDATA[
+	<>
+		<Box w={100}>
+			{data.map((item,index) => {
+				return (
+					<Link key={item.leaveRequestId} href={`#/ds/leave.all/edit/${item.leaveRequestId}`} d="flex" flexDirection="row" justifyContent="center" alignItems="center" border borderWidth={1} borderColor="dark-subtle" rounded={1} color="black" m={2} style={{width: "95%", backgroundColor: "#E8E8E8", minHeight: 80, textDecoration: "none" }}>
+						<Box flex="1" textAlign="center" fontSize="14px">
+							<Box as="span" fontWeight="bold">{item.fullName}</Box> <Box/>
+							<Box as="span" color="secondary">{$moment(item.fromDate).format('L')} - {$moment(item.toDate).format('L')}</Box>
+						</Box>
+						<Box as="p" flex="1" textAlign="center" color="secondary" fontSize="12px">{item.leaveReason}</Box>
+						<Box flex="1" textAlign="center">
+							<Badge style={{ backgroundColor: "#2584fe" }}>{item.statusSelect}</Badge>
+						</Box>
+					</Link>
+				);
+			})}
+		</Box>
+	</>
+    ]]></template>
+  </custom>
+
+  <custom name="hr-manager-expenses-custom-view" title="Expenses" css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeExpenseData
+    </dataset>
+    <template><![CDATA[
+	<>
+		<Box w={100}>
+			{data.map((item,index) => {
+				return (
+					<Link key={item.expenseId} href={`#/ds/expense.all/edit/${item.expenseId}`} d="flex" flexDirection="row" justifyContent="center" alignItems="center" border borderWidth={1} borderColor="dark-subtle" rounded={1} color="black" m={2} style={{width: "95%", backgroundColor: "#E8E8E8", minHeight: 80, textDecoration: "none" }}>
+						<Box flex="1" textAlign="center" fontSize="14px">
+							<Box as="span" fontWeight="bold">{item.fullName}</Box> <Box/>
+							<Box as="span" color="secondary">{$moment(item.date).format('L')}</Box>
+						</Box>
+						<Box as="p" flex="1" textAlign="center" color="secondary" fontSize="12px">{item.expenseType}</Box>
+						<Box flex="1" textAlign="center">
+							<Badge style={{ backgroundColor: "#2584fe" }}>{item.statusSelect}</Badge>
+						</Box>
+					</Link>
+				);
+			})}
+		</Box>
+	</>
+	  ]]></template>
+  </custom>
+
+  <custom name="hr-manager-timesheets-custom-view" title="Timesheets"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeTimesheetData
+    </dataset>
+    <template><![CDATA[
+	<>
+		<Box w={100}>
+			{data.map((item,index) => {
+				const totalPresent = item.atWork + item.notAtWork;
+				return (
+					<Box d="grid" gridTemplateColumns="60% 40%" justifyContent="center" alignItems="center">
+						<Box d="flex" justifyContent="flex-end" style={{ maxWidth: "80%", maxHeight: "80%" }} m={2}>
+							<Box d="flex" justifyContent="center" alignItems="center" rounded="circle" style={{ width: 170, height: 170,
+							backgroundImage: `repeating-conic-gradient(
+								from 0deg,
+								green 0deg calc(3.6deg * (${item.atWork} * 100) / ${totalPresent}),
+								red calc(3.6deg * (${item.atWork} * 100) / ${totalPresent}) calc(3.6deg * 100))` }}>
+								<Box rounded="circle" style={{ width: 140, height: 140, backgroundColor: "white" }}/>
+							</Box>
+						</Box>
+						<Box>
+							<Box d="flex" flexDirection="row">
+								<Box style={{ width: 15, height: 15, backgroundColor: "green" }} m={1}/>
+								<span>{_t('Present')} ({item.atWork})</span>
+							</Box>
+							<Box d="flex" flexDirection="row">
+								<Box style={{ width: 15, height: 15, backgroundColor: "red" }} m={1}/>
+								<span>{_t('Absent')} ({item.notAtWork})</span>
+							</Box>
+							<Badge fontSize={6} fontWeight="bold" style={{ backgroundColor: "#159983"}} mt={2}>{_t('I am at work')}</Badge>
+						</Box>
+					</Box>
+				);
+			})}
+		</Box>
+    </>
+    ]]></template>
+  </custom>
+
+  <custom name="hr-manager-extra-hours-custom-view" title="Extra Hours"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeExtraHrsData
+    </dataset>
+    <template><![CDATA[
+	<>
+		<Box w={100}>
+			{data.map((item,index) => {
+				return (
+					<Link key={item.extraHrId} href={`#/ds/extra.hours.all/edit/${item.extraHrId}`} d="flex" flexDirection="row" justifyContent="center" alignItems="center" border borderWidth={1} borderColor="dark-subtle" rounded={1} color="black" m={2} style={{width: "95%", backgroundColor: "#E8E8E8", minHeight: 80, textDecoration: "none" }}>
+						<Box flex="1" textAlign="center" fontSize="14px">
+							<Box as="span" fontWeight="bold">{item.fullName}</Box> <Box/>
+							<Box as="span" color="secondary">{$moment(item.date).format('L')}</Box>
+						</Box>
+						<Box flex="0.5" borderTop borderColor="dark-subtle" borderWidth={1}/>
+						<Box flex="1" textAlign="center"><b>+ {item.duration} h</b></Box>
+						<Box flex="1" textAlign="center">{item.description}</Box>
+					</Link>
+				);
+			})}
+		</Box>
+	</>
+	  ]]></template>
+  </custom>
+
+  <custom name="hr-manager-medical-visits-custom-view" title="Medical visits"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeMedicalVisitData
+    </dataset>
+    <template><![CDATA[
+	<>
+		<Box w={100}>
+			{data.map((item,index) => {
+				return (
+					<Link key={item.medicalVisitId} href={`#/ds/medical.visit.all/edit/${item.medicalVisitId}`} d="flex" flexDirection="row" justifyContent="center" alignItems="center" border borderWidth={1} borderColor="dark-subtle" rounded={1} color="black" m={2} ps={3} style={{width: "95%", backgroundColor: "#E8E8E8", minHeight: 80, textDecoration: "none" }}>
+						<Box as="p" flex="1" textAlign="start" color="secondary" fontSize="14px">{$moment(item.fromDate).format('YYYY-MM-DD-hh:mm')} - {$moment(item.toDate).format('YYYY-MM-DD-hh:mm')}</Box>
+						<Box as="p" flex="1" textAlign="center" color="secondary" fontSize="12px">{item.visitReason}</Box>
+						<Box as="p" flex="1" textAlign="center" fontSize="12px" fontWeight="bold">{item.employeeName}</Box>
+					</Link>
+				);
+			})}
+		</Box>
+	</>
+    ]]></template>
+  </custom>
 
   <action-record model="com.axelor.apps.hr.db.Expense"
     name="action.hr.chart.set.period.last.month">

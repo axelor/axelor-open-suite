@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -27,19 +27,18 @@
     <integer name="invoicesCopySelect" title="Invoices copy" default="1"
       selection="grade.1.up.to.10.select"/>
 
-    <!-- PAGE SEPA -->
-    <one-to-many name="umrList" ref="com.axelor.apps.account.db.Umr" mappedBy="partner"
-      title="UMR List"/>
-    <many-to-one name="activeUmr" ref="com.axelor.apps.account.db.Umr"
-      title="Active UMR" index="false"/>
+    <boolean name="isThirdPartyPayer" title="Third-party payer" default="false"/>
 
-    <many-to-one name="analyticDistributionTemplate"
-      title="Analytic distribution template"
-      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" index="false"/>
+    <!-- PAGE SEPA -->
+    <one-to-many name="invoicingPaymentSituationList"
+      ref="com.axelor.apps.account.db.InvoicingPaymentSituation" mappedBy="partner"
+      title="Invoicing/payment situations"/>
 
     <string name="specificTaxNote" title="Specific tax note" large="true"/>
 
     <boolean name="isFactor" title="Factor"/>
+    <boolean name="isCompensation" title="Compensation"/>
+
     <boolean name="factorizedCustomer"/>
     <string name="sellerCode"/>
     <many-to-one name="das2Activity" ref="com.axelor.apps.account.db.Das2Activity"
@@ -69,7 +68,6 @@
       <field name="financialDiscount" on="UPDATE"/>
       <field name="das2Activity" on="UPDATE"/>
       <field name="paymentCondition" on="UPDATE"/>
-      <field name="activeUmr" on="UPDATE"/>
     </track>
 
   </entity>

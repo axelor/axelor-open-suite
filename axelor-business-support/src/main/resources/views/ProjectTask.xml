@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="business-support-version-project-task-grid" orderBy="-taskDate">
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
-    <field name="progressSelect" widget="SelectProgress"/>
+    <field name="progress" widget="SelectProgress"/>
     <field name="projInvTypeSelect"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
       if="__config__.app.getApp('business-project').automaticInvoicing" readonlyIf="invoiced"
@@ -17,7 +17,7 @@
 
   <grid name="project-task-client-grid" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask" edit-icon="true" orderBy="taskDate">
-    <hilite if="$get('status.isCompleted') == true" color="success"/>
+    <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
     <field name="name"/>
@@ -28,7 +28,7 @@
     <field name="targetVersion"/>
     <field name="taskEndDate" hidden="true"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
-    <field name="status.isCompleted" hidden="true"/>
+    <field name="project.completedTaskStatus.id" hidden="true"/>
   </grid>
 
   <form name="project-task-client-form" title="Ticket"
@@ -37,20 +37,22 @@
     <panel name="mainPanel">
       <panel name="statusPanel" showIf="project.isShowStatus" stacked="true" colSpan="12">
         <field name="status" widget="NavSelect" showTitle="false" x-order="sequence"/>
+        <field name="typeSelect" hidden="true"/>
       </panel>
       <field name="$viewerTags" showTitle="false" readonly="true"
         showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="4" hidden="true">
         <viewer>
-					<![CDATA[
-						<h4 class="text-right">
-							<span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the client</span>
-							<span class="label label-success" ng-show="record.assignment == 2 && record.$provider == null" x-translate>Task assigned to the provider</span>
-							<span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.3em;" ng-show="record.assignment == 2 && record.$provider != null" x-translate>Task assigned to</span><span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 0.0em;" ng-show="record.assignment == 2 && record.$provider != null">{{record.$provider}}</span>
-
-							<span class="label label-important" ng-show="(!record.isOrderAccepted && record.invoicingType == 2 && record.exTaxTotal != 0) || (!record.isOrderAccepted && record.invoicingType == 1)" x-translate>Order Proposed</span>
-							<span class="label label-success" ng-show="record.isOrderAccepted" x-translate>Order Accepted</span>
-						</h4>
-					]]>
+        	<![CDATA[
+                   <>
+                       <Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
+                           {assignment == 1 && <Badge bg="danger">{_t('Task assigned to the client')}</Badge>}
+                           {assignment == 2 && !$provider && <Badge bg="success">{_t('Task assigned to the provider')}</Badge>}
+                           {assignment == 2 && $provider && <Badge bg="success">{_t('Task assigned to')} {$provider}</Badge>}
+                           {((!isOrderAccepted && invoicingType == 2 && exTaxTotal != 0) || (!isOrderAccepted && invoicingType == 1)) && <Badge bg="danger">{_t('Order Proposed')}</Badge>}
+                           {isOrderAccepted && <Badge bg="success">{_t('Order Accepted')}</Badge>}
+                       </Box>
+                   </>
+            ]]>
         </viewer>
       </field>
       <field name="$provider" hidden="true" type="string"/>
@@ -58,9 +60,11 @@
         <field name="fullName" showTitle="false" colSpan="12">
           <viewer depends="name">
 					<![CDATA[
-						<h3>
-							<span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
-						</h3>
+						<>
+							<h3>
+								<span>{name}</span>
+							</h3>
+						</>
 					]]>
           </viewer>
           <editor>
@@ -78,7 +82,7 @@
       </panel>
       <panel name="actionsPanel" colSpan="4">
         <button name="acceptOrderBtn" title="Accept Order" hidden="true"
-          showIf="typeSelect == 'ticket'" hideIf="!invoicingType || isOrderAccepted"
+          showIf="typeSelect == 'ticket' &amp;&amp; invoicingType &amp;&amp; !isOrderAccepted"
           onClick="action-project-task-attrs-onclick-order-accepted,save" colSpan="12"/>
         <button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider"
           hidden="true" onClick="action-project-task-attrs-assginment-provider,save"
@@ -97,8 +101,8 @@
         <field name="customerReferral" hidden="true" showIf="typeSelect == 'ticket'"
           onSelect="action-project-task-attrs-customer-referral-domain"
           if="__config__.app.isApp('business-project')"/>
-        <field name="progressSelect" colSpan="6" widget="SelectProgress"
-          onChange="action-project-task-update-planned-progress" readonlyIf="id"/>
+        <field name="progress" colSpan="6"
+          onChange="action-project-task-group-progress-onchange" readonlyIf="id"/>
         <field name="assignment" hidden="true" readonlyIf="id" showIf="typeSelect == 'ticket'"/>
       </panel>
     </panel>
@@ -119,8 +123,8 @@
           if-module="axelor-business-project"/>
         <panel name="pricingPanel" showIf="invoicingType == 2" colSpan="12">
           <field name="quantity" colSpan="4" onChange="action-project-task-group-qty-onchange"/>
-          <field name="unit" colSpan="4" domain="self.unitTypeSelect=3" form-view="unit-form"
-            grid-view="unit-grid" canEdit="false"/>
+          <field name="invoicingUnit" colSpan="4" domain="self.unitTypeSelect=3"
+            form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
           <field name="unitPrice" colSpan="4"
             onChange="action-project-task-group-unit-price-onchange"/>
           <field name="exTaxTotal" readonly="true" colSpan="4"/>

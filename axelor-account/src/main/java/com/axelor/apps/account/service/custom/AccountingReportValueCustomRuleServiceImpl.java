@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.common.StringUtils;
 import com.axelor.rpc.Context;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AccountingReportValueCustomRuleServiceImpl extends AccountingReportValueAbstractService
@@ -61,6 +63,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       AccountingReportConfigLine line,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       String parentTitle,
       LocalDate startDate,
@@ -80,6 +83,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
             groupColumn,
             valuesMapByColumn,
             valuesMapByLine,
+            companySet,
             configAnalyticAccount,
             startDate,
             endDate,
@@ -95,6 +99,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
+          companySet,
           configAnalyticAccount,
           startDate,
           endDate,
@@ -111,6 +116,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
@@ -124,6 +130,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
         groupColumn,
         valuesMapByColumn,
         valuesMapByLine,
+        companySet,
         configAnalyticAccount,
         startDate,
         endDate,
@@ -139,6 +146,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
@@ -159,6 +167,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
 
     BigDecimal result =
         this.getResultFromCustomRule(
+            accountingReport,
             column,
             line,
             groupColumn,
@@ -174,7 +183,10 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     }
 
     String lineTitle = line.getLabel();
-    if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+    if ((column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+            && (line.getRuleTypeSelect()
+                    != AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+                || column.getPriority() > line.getPriority()))
         || (groupColumn != null
             && groupColumn.getRuleTypeSelect()
                 == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)) {
@@ -198,6 +210,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
         result,
         valuesMapByColumn,
         valuesMapByLine,
+        companySet,
         configAnalyticAccount,
         lineCode,
         analyticCounter);
@@ -238,6 +251,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
   }
 
   protected BigDecimal getResultFromCustomRule(
+      AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       AccountingReportConfigLine groupColumn,
@@ -258,6 +272,10 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     try {
       return (BigDecimal) scriptHelper.eval(rule);
     } catch (Exception e) {
+      if (accountingReport.getTraceAnomalies()) {
+        this.traceException(e, accountingReport, groupColumn, column, line);
+      }
+
       this.addNullValue(
           column,
           groupColumn,

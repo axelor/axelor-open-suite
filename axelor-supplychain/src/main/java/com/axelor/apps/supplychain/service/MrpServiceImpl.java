@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,7 +31,6 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -72,7 +71,7 @@ import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.message.service.MailMessageService;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -97,7 +96,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,6 +129,8 @@ public class MrpServiceImpl implements MrpService {
 
   protected List<StockLocation> stockLocationList;
   protected Map<Long, Integer> productMap;
+  protected Map<Long, Integer> productMapToBeAssigned;
+  protected Integer currentLevel;
   protected Mrp mrp;
   protected LocalDate today;
 
@@ -271,6 +271,15 @@ public class MrpServiceImpl implements MrpService {
     this.createStockHistoryMrpLines();
   }
 
+  protected void fillMrpLinesForProductMap(Map<Long, Integer> productMap) throws AxelorException {
+    // Get the stock for each product on each stock location
+    this.createAvailableStockMrpLines(productMap);
+    this.createPurchaseMrpLines(productMap);
+    this.createSaleOrderMrpLines(productMap);
+    this.createSaleForecastMrpLines(productMap);
+    this.createStockHistoryMrpLines(productMap);
+  }
+
   protected void doCalculation(Mrp mrp) throws AxelorException {
 
     log.debug("Do calculation");
@@ -296,10 +305,13 @@ public class MrpServiceImpl implements MrpService {
   protected void checkInsufficientCumulativeQty() throws AxelorException {
 
     for (int level = 0; level <= this.getMaxLevel(); level++) {
-
+      this.currentLevel = level;
+      this.productMapToBeAssigned = new HashMap<>();
       for (Product product : this.getProductList(level)) {
-
         this.checkInsufficientCumulativeQty(product);
+      }
+      if (productMapToBeAssigned != null && !this.productMapToBeAssigned.isEmpty()) {
+        this.fillMrpLinesForProductMap(productMapToBeAssigned);
       }
     }
   }
@@ -416,7 +428,7 @@ public class MrpServiceImpl implements MrpService {
             || (mrpLine.getMrpLineType().getElementSelect()
                     == MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK
                 && firstPass))
-        && cumulativeQty.compareTo(mrpLine.getMinQty()) < 0) {
+        && cumulativeQty.compareTo(minQty) < 0) {
 
       Company company = null;
       StockLocation stockLocation = mrpLine.getStockLocation();
@@ -516,7 +528,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void createProposalMrpLine(
+  protected MrpLine createProposalMrpLine(
       Mrp mrp,
       Product product,
       MrpLineType mrpLineType,
@@ -530,7 +542,11 @@ public class MrpServiceImpl implements MrpService {
     LocalDate initialMaturityDate = maturityDate;
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
-      maturityDate = maturityDate.minusDays(product.getSupplierDeliveryTime());
+      maturityDate =
+          maturityDate
+              .minusDays(product.getSupplierDeliveryTime())
+              .minusDays(mrpLineType.getSecurityDelay());
+      initialMaturityDate = initialMaturityDate.minusDays(mrpLineType.getSecurityDelay());
       reorderQty = reorderQty.max(this.getSupplierCatalogMinQty(product));
       if (appPurchaseService.getAppPurchase() != null
           && appPurchaseService.getAppPurchase().getManageMultiplePurchaseQuantity()) {
@@ -607,6 +623,7 @@ public class MrpServiceImpl implements MrpService {
     }
 
     this.copyMrpLineOrigins(mrpLine, mrpLineOriginList);
+    return mrpLine;
   }
 
   protected boolean getWarnDelayFromSupplier(MrpLine mrpLine, LocalDate initialMaturityDate) {
@@ -749,6 +766,10 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createPurchaseMrpLines() throws AxelorException {
+    this.createPurchaseMrpLines(this.productMap);
+  }
+
+  protected void createPurchaseMrpLines(Map<Long, Integer> productMap) throws AxelorException {
     MrpLineType purchaseOrderMrpLineType =
         mrpLineTypeService.getMrpLineType(
             MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER, mrp.getMrpTypeSelect());
@@ -758,7 +779,7 @@ public class MrpServiceImpl implements MrpService {
     }
 
     String statusSelect = purchaseOrderMrpLineType.getStatusSelect();
-    List<Integer> statusList = StringTool.getIntegerList(statusSelect);
+    List<Integer> statusList = StringHelper.getIntegerList(statusSelect);
 
     if (statusList.isEmpty()) {
       statusList.add(PurchaseOrderRepository.STATUS_VALIDATED);
@@ -771,7 +792,7 @@ public class MrpServiceImpl implements MrpService {
             .filter(
                 "self.product.id in (?1) AND self.purchaseOrder.stockLocation in (?2) AND self.receiptState != ?3 "
                     + "AND self.purchaseOrder.statusSelect IN (?4)",
-                this.productMap.keySet(),
+                productMap.keySet(),
                 this.stockLocationList,
                 PurchaseOrderRepository.STATE_RECEIVED,
                 statusList)
@@ -835,6 +856,10 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createSaleOrderMrpLines() throws AxelorException {
+    this.createSaleOrderMrpLines(this.productMap);
+  }
+
+  protected void createSaleOrderMrpLines(Map<Long, Integer> productMap) throws AxelorException {
     List<MrpLineType> saleOrderMrpLineTypeList =
         mrpLineTypeService.getMrpLineTypeList(
             MrpLineTypeRepository.ELEMENT_SALE_ORDER, mrp.getMrpTypeSelect());
@@ -854,7 +879,7 @@ public class MrpServiceImpl implements MrpService {
         saleOrderLineList = new ArrayList<>();
 
         List<Integer> statusList =
-            StringTool.getIntegerList(saleOrderMrpLineType.getStatusSelect());
+            StringHelper.getIntegerList(saleOrderMrpLineType.getStatusSelect());
 
         String filter =
             "self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.deliveryState != ?3 "
@@ -874,7 +899,7 @@ public class MrpServiceImpl implements MrpService {
                 .all()
                 .filter(
                     filter,
-                    this.productMap.keySet(),
+                    productMap.keySet(),
                     this.stockLocationList,
                     SaleOrderLineRepository.DELIVERY_STATE_DELIVERED,
                     statusList)
@@ -900,7 +925,7 @@ public class MrpServiceImpl implements MrpService {
 
       for (MrpLineType saleOrderMrpLineType : saleOrderMrpLineTypeList) {
         List<Integer> statusList =
-            StringTool.getIntegerList(saleOrderMrpLineType.getStatusSelect());
+            StringHelper.getIntegerList(saleOrderMrpLineType.getStatusSelect());
 
         for (SaleOrderLine saleOrderLine : saleOrderLineList) {
           if (saleOrderLine.getSaleOrder() != null) {
@@ -998,6 +1023,10 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createSaleForecastMrpLines() throws AxelorException {
+    this.createSaleForecastMrpLines(this.productMap);
+  }
+
+  protected void createSaleForecastMrpLines(Map<Long, Integer> productMap) throws AxelorException {
 
     MrpLineType saleForecastMrpLineType =
         mrpLineTypeService.getMrpLineType(
@@ -1018,7 +1047,7 @@ public class MrpServiceImpl implements MrpService {
               .all()
               .filter(
                   "self.product.id in (?1) AND self.stockLocation in (?2) AND self.forecastDate >= ?3 AND self.statusSelect = ?4",
-                  this.productMap.keySet(),
+                  productMap.keySet(),
                   this.stockLocationList,
                   today,
                   MrpForecastRepository.STATUS_CONFIRMED)
@@ -1039,6 +1068,10 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createStockHistoryMrpLines() throws AxelorException {
+    this.createStockHistoryMrpLines(this.productMap);
+  }
+
+  protected void createStockHistoryMrpLines(Map<Long, Integer> productMap) throws AxelorException {
     MrpLineType stockHistoryMrpLineType =
         mrpLineTypeService.getMrpLineType(
             MrpLineTypeRepository.ELEMENT_STOCK_HISTORY, mrp.getMrpTypeSelect());
@@ -1049,7 +1082,7 @@ public class MrpServiceImpl implements MrpService {
 
     this.mrp = mrpRepository.find(mrp.getId());
 
-    for (Long productId : this.productMap.keySet()) {
+    for (Long productId : productMap.keySet()) {
       Product product = productRepository.find(productId);
       Mrp mrp = mrpRepository.find(this.mrp.getId());
       this.createStockHistoryWeigthedLine(
@@ -1271,6 +1304,11 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createAvailableStockMrpLines() throws AxelorException {
+    this.createAvailableStockMrpLines(this.productMap);
+  }
+
+  protected void createAvailableStockMrpLines(Map<Long, Integer> productMap)
+      throws AxelorException {
 
     MrpLineType availableStockMrpLineType =
         mrpLineTypeService.getMrpLineType(
@@ -1280,7 +1318,7 @@ public class MrpServiceImpl implements MrpService {
       return;
     }
 
-    for (Long productId : this.productMap.keySet()) {
+    for (Long productId : productMap.keySet()) {
       Mrp mrp = mrpRepository.find(this.mrp.getId());
       if (mrp.getComputeWithSubStockLocation()) {
         for (StockLocation stockLocation : this.stockLocationList) {
@@ -1479,11 +1517,9 @@ public class MrpServiceImpl implements MrpService {
             product.getFullName());
       }
       if (!this.productMap.containsKey(product.getId())) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(SupplychainExceptionMessage.MRP_NO_PRODUCT_ID),
-            product.getCode(),
-            product.getName());
+        int nextLevel = currentLevel + 1;
+        this.productMap.put(product.getId(), nextLevel);
+        this.productMapToBeAssigned.put(product.getId(), nextLevel);
       }
       return mrpLineService.createMrpLine(
           mrp,
@@ -1508,94 +1544,6 @@ public class MrpServiceImpl implements MrpService {
         mrpLine.addMrpLineOriginListItem(mrpLineService.copyMrpLineOrigin(mrpLineOrigin));
       }
     }
-  }
-
-  @Override
-  public void generateSelectedProposals(Mrp mrp, boolean isProposalPerSupplier)
-      throws AxelorException {
-
-    Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
-    Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier = new HashMap<>();
-    List<MrpLine> mrpLineList;
-
-    if (getSelectedMrpLines(mrp).count() <= 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(SupplychainExceptionMessage.MRP_GENERATE_PROPOSAL_NO_LINE_SELECTED));
-    }
-
-    while (!(mrpLineList = getSelectedMrpLines(mrp).fetch(1)).isEmpty()) {
-      mrp = mrpRepository.find(mrp.getId());
-      generateProposals(
-          isProposalPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLineList);
-      JPA.clear();
-    }
-  }
-
-  protected Query<MrpLine> getSelectedMrpLines(Mrp mrp) {
-    return mrpLineRepository
-        .all()
-        .filter(
-            "self.mrp.id = ?1 AND self.proposalToProcess = true AND self.proposalGenerated = false",
-            mrp.getId())
-        .order("maturityDate");
-  }
-
-  @Override
-  public void generateAllProposals(Mrp mrp, boolean isProposalsPerSupplier) throws AxelorException {
-    Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
-    Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier = new HashMap<>();
-    List<MrpLine> mrpLineList;
-
-    if (getAllMrpLines(mrp).count() <= 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(SupplychainExceptionMessage.MRP_GENERATE_PROPOSAL_NO_POSSIBLE_LINE));
-    }
-
-    while (!(mrpLineList = getAllMrpLines(mrp).fetch(1)).isEmpty()) {
-      mrp = mrpRepository.find(mrp.getId());
-      generateProposals(
-          isProposalsPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLineList);
-      JPA.clear();
-    }
-  }
-
-  protected Query<MrpLine> getAllMrpLines(Mrp mrp) {
-    return mrpLineRepository
-        .all()
-        .filter(
-            "self.mrp.id = :mrpId AND self.proposalGenerated = false AND self.mrpLineType.elementSelect in (:purchaseProposal, :manufProposal)")
-        .bind("mrpId", mrp.getId())
-        .bind("purchaseProposal", MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)
-        .bind("manufProposal", MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)
-        .order("maturityDate");
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void generateProposals(
-      boolean isProposalPerSupplier,
-      Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders,
-      Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier,
-      List<MrpLine> mrpLineList)
-      throws AxelorException {
-    for (MrpLine mrpLine : mrpLineList) {
-      if (!mrpLine.getProposalGenerated()) {
-        generateProposal(isProposalPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLine);
-      }
-    }
-  }
-
-  protected void generateProposal(
-      boolean isProposalPerSupplier,
-      Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders,
-      Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier,
-      MrpLine mrpLine)
-      throws AxelorException {
-    mrpLineService.generateProposal(
-        mrpLine, purchaseOrders, purchaseOrdersPerSupplier, isProposalPerSupplier);
-    mrpLine.setProposalToProcess(false);
-    mrpLineRepository.save(mrpLine);
   }
 
   @Override
@@ -1709,32 +1657,5 @@ public class MrpServiceImpl implements MrpService {
   @Transactional
   public void saveErrorInMrp(Mrp mrp, Exception e) {
     mrp.setErrorLog(e.getMessage());
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void massUpdateProposalToProcess(Mrp mrp, boolean proposalToProcess) {
-    Query<MrpLine> mrpLineQuery =
-        mrpLineRepository
-            .all()
-            .filter(
-                "self.mrp.id = :mrpId AND self.mrpLineType.elementSelect in (:purchaseProposal, :manufProposal)")
-            .bind("mrpId", mrp.getId())
-            .bind("purchaseProposal", MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)
-            .bind("manufProposal", MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)
-            .order("id");
-
-    int offset = 0;
-    List<MrpLine> mrpLineList;
-
-    while (!(mrpLineList = mrpLineQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
-      for (MrpLine mrpLine : mrpLineList) {
-        offset++;
-
-        mrpLineService.updateProposalToProcess(mrpLine, true);
-      }
-
-      JPA.clear();
-    }
   }
 }

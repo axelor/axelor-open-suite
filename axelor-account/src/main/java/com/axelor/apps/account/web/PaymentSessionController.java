@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,8 +22,10 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionEmailService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
@@ -62,17 +64,6 @@ public class PaymentSessionController {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       Beans.get(PaymentSessionService.class).setJournal(paymentSession);
       response.setValue("journal", paymentSession.getJournal());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void computeTotal(ActionRequest request, ActionResponse response) {
-    try {
-      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      Beans.get(PaymentSessionService.class).computeTotalPaymentSession(paymentSession);
-      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -167,8 +158,19 @@ public class PaymentSessionController {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      StringBuilder flashMessage =
-          Beans.get(PaymentSessionValidateService.class).processInvoiceTerms(paymentSession);
+      StringBuilder flashMessage;
+
+      if (paymentSession.getPaymentMode() != null
+          && paymentSession.getPaymentMode().getTypeSelect()
+              == PaymentModeRepository.TYPE_EXCHANGES) {
+        flashMessage =
+            Beans.get(PaymentSessionBillOfExchangeValidateService.class)
+                .processInvoiceTerms(paymentSession);
+      } else {
+        flashMessage =
+            Beans.get(PaymentSessionValidateService.class).processInvoiceTerms(paymentSession);
+      }
+
       if (flashMessage.length() > 0) {
         response.setInfo(flashMessage.toString());
       }
@@ -370,11 +372,24 @@ public class PaymentSessionController {
     }
   }
 
-  public void showInvoiceTermDashlet(ActionRequest request, ActionResponse response) {
+  public void removeNegativeLines(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
 
+      Beans.get(PaymentSessionService.class).removeNegativeLines(paymentSession);
+
+      response.setInfo(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_NEGATIVE_LINES_REMOVED));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showInvoiceTermDashlet(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
       List<InvoiceTerm> invoiceTermList =
           Beans.get(InvoiceTermRepository.class).findByPaymentSession(paymentSession).fetch();
       int partnerCount =

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
@@ -28,18 +27,19 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
+import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
@@ -47,10 +47,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
@@ -70,7 +68,9 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       InvoiceLineAnalyticService invoiceLineAnalyticService,
       SupplierCatalogService supplierCatalogService,
       TaxService taxService,
-      InternationalService internationalService) {
+      InternationalService internationalService,
+      InvoiceLineAttrsService invoiceLineAttrsService,
+      CurrencyScaleService currencyScaleService) {
     super(
         currencyService,
         priceListService,
@@ -82,7 +82,9 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         accountConfigService,
         invoiceLineAnalyticService,
         taxService,
-        internationalService);
+        internationalService,
+        invoiceLineAttrsService,
+        currencyScaleService);
     this.supplierCatalogService = supplierCatalogService;
   }
 
@@ -100,7 +102,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       }
     } else {
       if (product.getSalesUnit() != null) {
-        return product.getPurchasesUnit();
+        return product.getSalesUnit();
       } else {
         return product.getUnit();
       }
@@ -147,13 +149,12 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return super.fillProductInformation(invoice, invoiceLine);
-    }
-
     Map<String, Object> productInformation =
         new HashMap<>(super.fillProductInformation(invoice, invoiceLine));
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return productInformation;
+    }
 
     computeSequence(invoice, invoiceLine);
 
@@ -189,28 +190,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
     }
   }
 
-  public void computeBudgetDistributionSumAmount(InvoiceLine invoiceLine, Invoice invoice) {
-    List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
-    PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
-    BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
-    LocalDate computeDate = invoice.getInvoiceDate();
-
-    if (purchaseOrderLine != null && purchaseOrderLine.getPurchaseOrder().getOrderDate() != null) {
-      computeDate = purchaseOrderLine.getPurchaseOrder().getOrderDate();
-    }
-
-    if (budgetDistributionList != null && !budgetDistributionList.isEmpty()) {
-
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        budgetDistributionSumAmount =
-            budgetDistributionSumAmount.add(budgetDistribution.getAmount());
-        Beans.get(BudgetSupplychainService.class)
-            .computeBudgetDistributionSumAmount(budgetDistribution, computeDate);
-      }
-    }
-    invoiceLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
-  }
-
   protected void setSupplierCatalogProductInfo(
       Map<String, Object> productInformation, Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
@@ -237,7 +216,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
             company,
             invoice.getCurrency(),
             invoice.getInvoiceDate(),
-            invoiceLine.getTaxLine(),
+            invoiceLine.getTaxLineSet(),
             false));
     productInformation.put(
         "inTaxPrice",
@@ -247,16 +226,16 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
             company,
             invoice.getCurrency(),
             invoice.getInvoiceDate(),
-            invoiceLine.getTaxLine(),
+            invoiceLine.getTaxLineSet(),
             true));
   }
 
   @Override
   public Map<String, String> getProductDescriptionAndNameTranslation(
-      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException {
+      Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine, userLanguage);
+      return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine);
     }
 
     Product product = invoiceLine.getProduct();
@@ -268,7 +247,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       return Collections.emptyMap();
     }
 
-    return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine, userLanguage);
+    return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine);
   }
 
   public void checkMinQty(

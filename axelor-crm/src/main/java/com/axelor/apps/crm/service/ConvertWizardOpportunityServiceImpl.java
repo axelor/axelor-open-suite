@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,7 +39,7 @@ public class ConvertWizardOpportunityServiceImpl implements ConvertWizardOpportu
   }
 
   @Override
-  public void createOpportunity(Map<String, Object> opportunityMap, Partner partner)
+  public Opportunity createOpportunity(Map<String, Object> opportunityMap, Partner partner)
       throws AxelorException {
     Opportunity opportunity =
         (Opportunity)
@@ -48,6 +48,8 @@ public class ConvertWizardOpportunityServiceImpl implements ConvertWizardOpportu
                 Mapper.toBean(Opportunity.class, null),
                 Mapper.of(Opportunity.class));
     opportunity.setPartner(partner);
+    opportunity.setName(partner.getFullName());
     opportunityService.saveOpportunity(opportunity);
+    return opportunity;
   }
 }

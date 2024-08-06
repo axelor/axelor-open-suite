@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -17,6 +17,7 @@
     <option value="2">Planned</option>
     <option value="3">Realized</option>
     <option value="4">Canceled</option>
+    <option value="5">Merged</option>
   </selection>
 
   <selection name="stock.stock.move.available.status.select">
@@ -119,26 +120,9 @@
     <option value="2">LIFO</option>
   </selection>
 
-  <selection name="stockmove.origin.select">
-    <option value="com.axelor.apps.stock.db.Inventory" data-grid="inventory-grid"
-      data-form="inventory-form">Inventory</option>
-    <option value="com.axelor.apps.sale.db.SaleOrder" data-grid="sale-order-grid"
-      data-form="sale-order-form">Sale order</option>
-    <option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid"
-      data-form="purchase-order-form">Purchase order</option>
-    <option value="com.axelor.apps.production.db.ManufOrder" data-grid="manuf-order-grid"
-      data-form="manuf-order-form">Manufacturing order</option>
-    <option value="com.axelor.apps.production.db.OperationOrder"
-      data-grid="operation-order-grid" data-form="operation-order-form">Operation order</option>
-    <option value="com.axelor.apps.stock.db.StockCorrection"
-      data-grid="stock-correction-grid" data-form="stock-correction-form">Stock correction</option>
-  </selection>
-
   <selection name='inventory.export.format.select'>
-    <option value="pdf">PDF</option>
-    <option value="xlsx">XLS</option>
+    <option value="printingTemplate">Printing template</option>
     <option value="csv">CSV</option>
-    <option value="ods">ODS</option>
   </selection>
 
   <selection name="stock.correction.status.select">
@@ -172,6 +156,17 @@
     <option value="wapCorrection">Wap correction</option>
     <option value="cancelation">Cancelation</option>
     <option value="updateStockLocationFromProduct">Update stock location from product</option>
+  </selection>
+
+  <selection name="stock.tracking.number.origin.move.type.select">
+    <option value="1">Manual</option>
+    <option value="2">Inventory</option>
+  </selection>
+
+
+
+  <selection name="message.related.to.select" id="stockRule.message.related.to.select">
+    <option value="com.axelor.apps.stock.db.StockRules">Stock Rules</option>
   </selection>
 
 </object-views>

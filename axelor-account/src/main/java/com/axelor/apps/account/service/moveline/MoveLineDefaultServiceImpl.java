@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,26 +23,41 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
   protected AppAccountService appAccountService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected AnalyticToolService analyticToolService;
+  protected CompanyConfigService companyConfigService;
 
   @Inject
   public MoveLineDefaultServiceImpl(
       AppAccountService appAccountService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      AnalyticToolService analyticToolService,
+      CompanyConfigService companyConfigService) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.analyticToolService = analyticToolService;
+    this.companyConfigService = companyConfigService;
   }
 
   @Override
@@ -68,12 +83,11 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
     Account accountingAccount =
         moveLoadDefaultConfigService.getAccountingAccountFromAccountConfig(move);
 
-    if (accountingAccount != null) {
+    if (accountingAccount != null
+        && (ObjectUtils.isEmpty(move.getMoveLineList())
+            || move.getMoveLineList().size() == 1
+                && Objects.equals(move.getMoveLineList().get(0), moveLine))) {
       moveLine.setAccount(accountingAccount);
-
-      if (!accountingAccount.getUseForPartnerBalance()) {
-        moveLine.setPartner(null);
-      }
 
       AnalyticDistributionTemplate analyticDistributionTemplate =
           accountingAccount.getAnalyticDistributionTemplate();
@@ -84,8 +98,9 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
       }
     }
 
-    TaxLine taxLine = moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
-    moveLine.setTaxLine(taxLine);
+    Set<TaxLine> taxLineSet =
+        moveLoadDefaultConfigService.getTaxLineSet(move, moveLine, accountingAccount);
+    moveLine.setTaxLineSet(taxLineSet);
   }
 
   @Override
@@ -104,12 +119,21 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
   }
 
   @Override
-  public void setIsOtherCurrency(MoveLine moveLine, Move move) {
+  public void setIsOtherCurrency(MoveLine moveLine, Move move) throws AxelorException {
     if (move == null) {
       return;
     }
 
-    moveLine.setIsOtherCurrency(!move.getCurrency().equals(move.getCompanyCurrency()));
+    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
+
+    if (move.getCurrency() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MOVE_12),
+          move.getReference());
+    }
+
+    moveLine.setIsOtherCurrency(!move.getCurrency().equals(companyCurrency));
   }
 
   @Override
@@ -135,8 +159,14 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
 
   @Override
   public void setDefaultDistributionTemplate(MoveLine moveLine, Move move) throws AxelorException {
-    if (move != null && moveLineComputeAnalyticService.checkManageAnalytic(move.getCompany())) {
-      moveLineComputeAnalyticService.selectDefaultDistributionTemplate(moveLine);
+    if (move == null) {
+      return;
+    }
+
+    if (analyticToolService.isManageAnalytic(move.getCompany())) {
+      moveLineComputeAnalyticService.selectDefaultDistributionTemplate(moveLine, move);
+    } else {
+      moveLine.setAnalyticDistributionTemplate(null);
     }
   }
 }

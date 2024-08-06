@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,27 +18,32 @@
  */
 package com.axelor.apps.helpdesk.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.apps.helpdesk.exceptions.HelpdeskExceptionMessage;
+import com.axelor.apps.helpdesk.service.TicketAssignmentService;
 import com.axelor.apps.helpdesk.service.TicketService;
+import com.axelor.apps.helpdesk.service.TicketStatusService;
+import com.axelor.apps.helpdesk.service.TicketWorkflowService;
 import com.axelor.apps.helpdesk.service.TimerTicketService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.date.DateTool;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 @Singleton
 public class TicketController {
@@ -59,7 +64,7 @@ public class TicketController {
       if (id == null && ids == null) {
         response.setAlert(I18n.get(HelpdeskExceptionMessage.SELECT_TICKETS));
       } else {
-        Beans.get(TicketService.class).assignToMeTicket(id, ids);
+        Beans.get(TicketAssignmentService.class).assignToMeTicket(id, ids);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -79,14 +84,11 @@ public class TicketController {
 
       if (ticket.getStartDateT() != null) {
         if (ticket.getDuration() != null && ticket.getDuration() != 0) {
-          response.setValue(
-              "endDateT", DateTool.plusSeconds(ticket.getStartDateT(), ticket.getDuration()));
+          response.setValue("endDateT", Beans.get(TicketService.class).computeEndDate(ticket));
 
         } else if (ticket.getEndDateT() != null
             && ticket.getEndDateT().isAfter(ticket.getStartDateT())) {
-          Duration duration =
-              DurationTool.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
-          response.setValue("duration", DurationTool.getSecondsDuration(duration));
+          response.setValue("duration", Beans.get(TicketService.class).computeDuration(ticket));
         }
       }
     } catch (Exception e) {
@@ -107,11 +109,13 @@ public class TicketController {
       if (ticket.getDuration() != null) {
         if (ticket.getStartDateT() != null) {
           response.setValue(
-              "endDateT", DateTool.plusSeconds(ticket.getStartDateT(), ticket.getDuration()));
+              "endDateT",
+              LocalDateHelper.plusSeconds(ticket.getStartDateT(), ticket.getDuration()));
 
         } else if (ticket.getEndDateT() != null) {
           response.setValue(
-              "startDateT", DateTool.minusSeconds(ticket.getEndDateT(), ticket.getDuration()));
+              "startDateT",
+              LocalDateHelper.minusSeconds(ticket.getEndDateT(), ticket.getDuration()));
         }
       }
     } catch (Exception e) {
@@ -133,13 +137,10 @@ public class TicketController {
 
         if (ticket.getStartDateT() != null
             && ticket.getStartDateT().isBefore(ticket.getEndDateT())) {
-          Duration duration =
-              DurationTool.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
-          response.setValue("duration", DurationTool.getSecondsDuration(duration));
+          response.setValue("duration", Beans.get(TicketService.class).computeDuration(ticket));
 
         } else if (ticket.getDuration() != null) {
-          response.setValue(
-              "startDateT", DateTool.minusSeconds(ticket.getEndDateT(), ticket.getDuration()));
+          response.setValue("startDateT", Beans.get(TicketService.class).computeStartDate(ticket));
         }
       }
     } catch (Exception e) {
@@ -153,19 +154,26 @@ public class TicketController {
       TimerTicketService service = Beans.get(TimerTicketService.class);
 
       Timer timer = service.find(ticket);
-
-      boolean hideStart = false;
-      boolean hideCancel = true;
-      if (timer != null) {
-        hideStart = timer.getStatusSelect() == TimerRepository.TIMER_STARTED;
-        hideCancel =
-            timer.getTimerHistoryList().isEmpty()
-                || timer.getStatusSelect().equals(TimerRepository.TIMER_STOPPED);
-      }
-
-      response.setAttr("startTimerBtn", HIDDEN_ATTR, hideStart);
-      response.setAttr("stopTimerBtn", HIDDEN_ATTR, !hideStart);
-      response.setAttr("cancelTimerBtn", HIDDEN_ATTR, hideCancel);
+      TicketStatus inProgressStatus = Beans.get(TicketStatusService.class).findOngoingStatus();
+      response.setAttr(
+          "startTimerBtn",
+          HIDDEN_ATTR,
+          timer == null
+              || timer.getStatusSelect() == TimerRepository.TIMER_STARTED
+              || !ticket.getTicketStatus().equals(inProgressStatus));
+      response.setAttr(
+          "stopTimerBtn",
+          HIDDEN_ATTR,
+          timer == null
+              || timer.getStatusSelect() != TimerRepository.TIMER_STARTED
+              || !ticket.getTicketStatus().equals(inProgressStatus));
+      response.setAttr(
+          "cancelTimerBtn",
+          HIDDEN_ATTR,
+          timer == null
+              || timer.getTimerHistoryList().isEmpty()
+              || timer.getStatusSelect().equals(TimerRepository.TIMER_STOPPED)
+              || !ticket.getTicketStatus().equals(inProgressStatus));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -253,5 +261,75 @@ public class TicketController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void startTicket(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Ticket ticket =
+        Optional.ofNullable(request.getContext().asType(Ticket.class))
+            .map(t -> Beans.get(TicketRepository.class).find(t.getId()))
+            .orElse(null);
+
+    Beans.get(TicketWorkflowService.class).startTicket(ticket);
+    response.setReload(true);
+  }
+
+  public void resolveTicket(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Ticket ticket =
+        Optional.ofNullable(request.getContext().asType(Ticket.class))
+            .map(t -> Beans.get(TicketRepository.class).find(t.getId()))
+            .orElse(null);
+
+    Beans.get(TicketWorkflowService.class).resolveTicket(ticket);
+    response.setReload(true);
+  }
+
+  public void closeTicket(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Ticket ticket =
+        Optional.ofNullable(request.getContext().asType(Ticket.class))
+            .map(t -> Beans.get(TicketRepository.class).find(t.getId()))
+            .orElse(null);
+
+    Beans.get(TicketWorkflowService.class).closeTicket(ticket);
+    response.setReload(true);
+  }
+
+  public void openTicket(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Ticket ticket = request.getContext().asType(Ticket.class);
+
+    Beans.get(TicketWorkflowService.class).openTicket(ticket);
+    response.setValue("ticketStatus", ticket.getTicketStatus());
+  }
+
+  public void updateDummyStatus(ActionRequest request, ActionResponse response) {
+    Ticket ticket = request.getContext().asType(Ticket.class);
+
+    TicketStatus ticketStatus = ticket.getTicketStatus();
+
+    if (ticketStatus != null) {
+      TicketStatusService ticketStatusService = Beans.get(TicketStatusService.class);
+      response.setValue(
+          "$isResolved", ticketStatus.equals(ticketStatusService.findResolvedStatus()));
+      response.setValue("$isClosed", ticketStatus.equals(ticketStatusService.findClosedStatus()));
+      response.setValue(
+          "$isInProgress", ticketStatus.equals(ticketStatusService.findOngoingStatus()));
+    } else {
+      response.setValue("$isResolved", false);
+      response.setValue("$isClosed", false);
+      response.setValue("$isInProgress", false);
+    }
+  }
+
+  public void computeSlaAndDeadLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    TicketRepository ticketRepo = Beans.get(TicketRepository.class);
+    Ticket ticket = request.getContext().asType(Ticket.class);
+
+    Beans.get(TicketService.class).computeSLAAndDeadLine(ticket);
+    response.setValue("slaPolicy", ticket.getSlaPolicy());
+    response.setValue("deadlineDateT", ticket.getDeadlineDateT());
   }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806072022</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -80,23 +80,6 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="4050">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">true</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3818">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -165,7 +148,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -205,7 +188,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key as message_key, coalesce(nullif(LangTranslate.message_value, ''), LangTranslate.message_key) as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -783,6 +766,12 @@ where AccountingReport.id = ?
                     <text-property name="heading">analytic_distribution_template</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">transferred_reason_select</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">transferred_reason_select</text-property>
+                    <text-property name="heading">transferred_reason_select</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">account_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">account_name</text-property>
@@ -817,6 +806,12 @@ where AccountingReport.id = ?
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_distribution_template_name</text-property>
                     <text-property name="heading">analytic_distribution_template_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">original_value</property>
@@ -938,71 +933,81 @@ where AccountingReport.id = ?
                     </structure>
                     <structure>
                         <property name="position">12</property>
+                        <property name="name">transferred_reason_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
                         <property name="name">account_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">account_code</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">date_from</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">16</property>
                         <property name="name">date_to</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">17</property>
                         <property name="name">subtotal_by_analytic_distribution</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">18</property>
                         <property name="name">analytic_distribution_template_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">19</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
                         <property name="name">original_value</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">21</property>
                         <property name="name">acquisition</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">22</property>
                         <property name="name">asset_disposal</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">21</property>
+                        <property name="position">23</property>
                         <property name="name">year_end_value</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">22</property>
+                        <property name="position">24</property>
                         <property name="name">year_start_value</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">23</property>
+                        <property name="position">25</property>
                         <property name="name">depreciation_charge</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">24</property>
+                        <property name="position">26</property>
                         <property name="name">year_end_value2</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">25</property>
+                        <property name="position">27</property>
                         <property name="name">accounting_value</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1089,97 +1094,111 @@ where AccountingReport.id = ?
                 </structure>
                 <structure>
                     <property name="position">12</property>
+                    <property name="name">transferred_reason_select</property>
+                    <property name="nativeName">transferred_reason_select</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
                     <property name="name">account_name</property>
                     <property name="nativeName">account_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">14</property>
                     <property name="name">account_code</property>
                     <property name="nativeName">account_code</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">15</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">16</property>
                     <property name="name">date_to</property>
                     <property name="nativeName">date_to</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">17</property>
                     <property name="name">subtotal_by_analytic_distribution</property>
                     <property name="nativeName">subtotal_by_analytic_distribution</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">18</property>
                     <property name="name">analytic_distribution_template_name</property>
                     <property name="nativeName">analytic_distribution_template_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">19</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
                     <property name="name">original_value</property>
                     <property name="nativeName">original_value</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">21</property>
                     <property name="name">acquisition</property>
                     <property name="nativeName">acquisition</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">20</property>
+                    <property name="position">22</property>
                     <property name="name">asset_disposal</property>
                     <property name="nativeName">asset_disposal</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">21</property>
+                    <property name="position">23</property>
                     <property name="name">year_end_value</property>
                     <property name="nativeName">year_end_value</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">22</property>
+                    <property name="position">24</property>
                     <property name="name">year_start_value</property>
                     <property name="nativeName">year_start_value</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">23</property>
+                    <property name="position">25</property>
                     <property name="name">depreciation_charge</property>
                     <property name="nativeName">depreciation_charge</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">24</property>
+                    <property name="position">26</property>
                     <property name="name">year_end_value2</property>
                     <property name="nativeName">year_end_value2</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">25</property>
+                    <property name="position">27</property>
                     <property name="name">accounting_value</property>
                     <property name="nativeName">accounting_value</property>
                     <property name="dataType">decimal</property>
@@ -1198,13 +1217,15 @@ where AccountingReport.id = ?
 	Asset.disposal_value AS disposal_value,
 	Asset.disposal_date AS disposal_date,
 	Asset.analytic_distribution_template AS analytic_distribution_template,
+	Asset.transferred_reason_select,
 	CONCAT(Account.code, ' ', Account.name) AS account_name,
 	Account.code AS account_code,
 	AccountingReport.date_from AS date_from,
 	AccountingReport.date_to AS date_to,
 	AccountingReport.subtotal_by_analytic_distribution AS subtotal_by_analytic_distribution,
 	AnalyticDistributionTemplate.name AS analytic_distribution_template_name,
-	CASE 
+	Currency.number_of_decimals,
+	CASE
 		WHEN acquisition_date <= date_from 
 		THEN Asset.gross_value 
 		ELSE 0
@@ -1216,18 +1237,23 @@ where AccountingReport.id = ?
 	END AS acquisition,
 	CASE 
 		WHEN disposal_date >= date_from AND disposal_date <= date_to
-		THEN disposal_value
+		THEN Asset.gross_value
 		ELSE 0
 	END AS asset_disposal,
-	Asset.gross_value - disposal_value AS year_end_value,
+	Asset.gross_value - 
+	 (CASE 
+		WHEN disposal_date >= date_from AND disposal_date <= date_to
+		THEN Asset.gross_value
+		ELSE 0
+	END) AS year_end_value,
 	COALESCE(SUM(
 		CASE 
 			WHEN 
 				AccountingReport.date_from IS NULL 
-				OR AssetLine.depreciation_date <= AccountingReport.date_from
+				OR AssetLine.depreciation_date < AccountingReport.date_from
    			THEN assetLine.depreciation 
    		END
-   	), 0) AS year_start_value,
+   	), 0) + Asset.import_already_depreciated_amount AS year_start_value,
 	SUM(
 		CASE 
 			WHEN (date_from IS NULL OR depreciation_date >= date_from)
@@ -1236,21 +1262,20 @@ where AccountingReport.id = ?
    		END
    	) AS depreciation_charge,
     COALESCE(SUM(
-        CASE
-            WHEN
-                AccountingReport.date_from IS NULL
-                OR AssetLine.depreciation_date <= AccountingReport.date_from
-            THEN assetLine.depreciation
-        END
-    ), 0) + SUM(
-        CASE
-            WHEN (date_from IS NULL OR depreciation_date >= date_from)
-                AND (date_to IS NULL OR depreciation_date <= date_to)
-            THEN depreciation
-        END
-    ) AS year_end_value2,
-    MIN(assetLine.accounting_value)
-    as accounting_value
+		CASE 
+			WHEN 
+				AccountingReport.date_from IS NULL 
+				OR AssetLine.depreciation_date < AccountingReport.date_from
+   			THEN assetLine.depreciation 
+   		END
+   	), 0) + Asset.import_already_depreciated_amount + SUM(
+		CASE 
+			WHEN (date_from IS NULL OR depreciation_date >= date_from)
+				AND (date_to IS NULL OR depreciation_date <= date_to)
+   			THEN depreciation 
+   		END
+   	) AS year_end_value2,
+     COALESCE(MIN(assetLine.accounting_value), Asset.gross_value - disposal_value) as accounting_value
 	
 FROM public.account_accounting_report as AccountingReport
 
@@ -1267,8 +1292,15 @@ LEFT JOIN public.account_accounting_report_account_set AS AccountSet
 ON AccountSet.account_accounting_report = AccountingReport.id
 
 LEFT JOIN public.account_fixed_asset_line AS AssetLine
-ON AssetLine.fixed_asset = Asset.id OR AssetLine.fiscal_fixed_asset = Asset.id OR AssetLine.ifrs_fixed_asset = Asset.id
-   	
+ON ((AssetLine.fixed_asset = Asset.id OR AssetLine.fiscal_fixed_asset = Asset.id OR AssetLine.ifrs_fixed_asset = Asset.id)
+	AND AssetLine.type_select = AccountingReport.fixed_asset_line_type_select
+	AND (AccountingReport.date_to IS NULL OR AssetLine.depreciation_date <= AccountingReport.date_to)
+	AND AssetLine.status_select = 2)
+
+LEFT JOIN public.base_company AS Company ON (Company.id = Asset.company)
+
+LEFT JOIN public.base_currency AS Currency ON (Currency.id = Company.currency)
+
 WHERE
 	(
 		Asset.status_select in (2,3) 
@@ -1282,11 +1314,9 @@ WHERE
    	AND Asset.company = AccountingReport.company
    	AND (AccountingReport.analytic_distribution_template IS NULL OR Asset.analytic_distribution_template = AccountingReport.analytic_distribution_template)
    	AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
-   	AND AssetLine.type_select = AccountingReport.fixed_asset_line_type_select
-   	AND (AccountingReport.date_to IS NULL OR AssetLine.depreciation_date <= AccountingReport.date_to)
    	
 GROUP BY Asset.id, Account.code, Account.name, AccountingReport.date_from, AccountingReport.date_to, 
-		 AccountingReport.subtotal_by_analytic_distribution, AnalyticDistributionTemplate.name 
+		 AccountingReport.subtotal_by_analytic_distribution, AnalyticDistributionTemplate.name, Currency.number_of_decimals
    	
 ORDER BY Account.code
 
@@ -1592,23 +1622,18 @@ ORDER BY Account.code
                         <property name="fontSize">9pt</property>
                         <cell id="4731">
                             <property name="verticalAlign">middle</property>
-                            <text id="5496">
-                                <property name="fontSize">8pt</property>
+                            <image id="5923">
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
                                         <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="4636">
                             <property name="textAlign">center</property>
@@ -2629,6 +2654,18 @@ ORDER BY Account.code
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">transferred_reason_select</property>
+                                <text-property name="displayName">transferred_reason_select</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["transferred_reason_select"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="5553"/>
@@ -3006,15 +3043,56 @@ ORDER BY Account.code
                                         <property name="fontFamily">sans-serif</property>
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
+                                        <property name="color">green</property>
                                         <property name="marginTop">2pt</property>
                                         <property name="marginBottom">2pt</property>
                                         <property name="textAlign">center</property>
+                                        <property name="display">inline</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
                                                     <value type="javascript">'AccountingReportType17.asset_disposal'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                    <label id="5967">
+                                        <property name="display">inline</property>
+                                        <text-property name="text">/</text-property>
+                                    </label>
+                                    <text id="5966">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="color">blue</property>
+                                        <property name="marginTop">2pt</property>
+                                        <property name="marginBottom">2pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="display">inline</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'AccountingReportType17.asset_scrap'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3270,92 +3348,68 @@ else {
                                         </text>
                                     </cell>
                                     <cell id="5829">
-                                        <data id="5889">
+                                        <text id="5950">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">original_value_sum1</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["original_value_sum1"] != null? row["original_value_sum1"]:0, row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5830">
-                                        <data id="5890">
+                                        <text id="5951">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">acquisition_sum1</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["acquisition_sum1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5831">
-                                        <data id="5891">
+                                        <text id="5952">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">asset_disposal_sum1</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["asset_disposal_sum1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5832">
-                                        <data id="5892">
+                                        <text id="5953">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">year_end_value_sum1</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["year_end_value_sum1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5833">
-                                        <data id="5893">
+                                        <text id="5954">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">year_start_value_sum1</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["year_start_value_sum1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5834">
-                                        <data id="5894">
+                                        <text id="5955">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">depreciation_charge_sum1</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["depreciation_charge_sum1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5835">
-                                        <data id="5895">
+                                        <text id="5956">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">year_end_value2_sum1</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["year_end_value2_sum1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5836">
-                                        <data id="5921">
+                                        <text id="5957">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">accounting_value_sum1</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["accounting_value_sum2"] != null? row["accounting_value_sum2"]:0, row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                 </row>
                             </footer>
@@ -3484,92 +3538,68 @@ else {
                                         </text>
                                     </cell>
                                     <cell id="5858">
-                                        <data id="5896">
+                                        <text id="5925">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">original_value_sum2</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["original_value_sum2"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5859">
-                                        <data id="5897">
+                                        <text id="5927">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">acquisition_sum2</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["acquisition_sum2"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5860">
-                                        <data id="5898">
+                                        <text id="5944">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">asset_disposal_sum2</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["asset_disposal_sum2"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5861">
-                                        <data id="5899">
+                                        <text id="5945">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">year_end_value_sum2</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["year_end_value_sum2"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5862">
-                                        <data id="5900">
+                                        <text id="5946">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">year_start_value_sum2</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["year_start_value_sum2"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5863">
-                                        <data id="5901">
+                                        <text id="5947">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">depreciation_charge_sum2</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["depreciation_charge_sum2"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5864">
-                                        <data id="5902">
+                                        <text id="5948">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">year_end_value2_sum2</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["year_end_value2_sum2"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5865">
-                                        <data id="5919">
+                                        <text id="5949">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">#,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">accounting_value_sum2</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["accounting_value_sum2"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                 </row>
                             </footer>
@@ -3644,92 +3674,74 @@ else {
                                     </data>
                                 </cell>
                                 <cell id="5596">
-                                    <data id="5614">
+                                    <text id="5924">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">original_value</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["original_value"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5597">
-                                    <data id="5615">
+                                    <text id="5926">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">acquisition</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["acquisition"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5598">
-                                    <data id="5611">
+                                    <text id="5928">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">asset_disposal</property>
-                                    </data>
+                                        <method name="onRender"><![CDATA[if(row["transferred_reason_select"] == 1){
+ this.getStyle().color = "blue";
+}
+else if (row["transferred_reason_select"] != 0){
+ this.getStyle().color = "green";
+}]]></method>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["asset_disposal"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5599">
-                                    <data id="5616">
+                                    <text id="5929">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">year_end_value</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["year_end_value"] != null?row["year_end_value"]:0, row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5600">
-                                    <data id="5619">
+                                    <text id="5940">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">year_start_value</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["year_start_value"] != null? row["year_start_value"]:0, row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5601">
-                                    <data id="5618">
+                                    <text id="5941">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">depreciation_charge</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["depreciation_charge"] != null? row["depreciation_charge"]:0, row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5602">
-                                    <data id="5620">
+                                    <text id="5942">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">year_end_value2</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["year_end_value2"] != null? row["year_end_value2"]:0, row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5603">
-                                    <data id="5917">
+                                    <text id="5943">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">accounting_value</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["accounting_value"] != null? row["accounting_value"]:0, row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                         </detail>
@@ -3776,100 +3788,122 @@ else {
                                 <cell id="5872">
                                     <property name="fontSize">9pt</property>
                                     <property name="textAlign">right</property>
-                                    <data id="5882">
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
-                                        <property name="resultSetColumn">Aggregation</property>
-                                    </data>
+                                    <text id="5958">
+                                        <property name="fontSize">9pt</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["original_value_sum"] != null? row["original_value_sum"]:0, row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5873">
-                                    <data id="5883">
+                                    <text id="5959">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">acquisition_sum</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["acquisition_sum"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5874">
                                     <property name="fontSize">9pt</property>
                                     <property name="textAlign">right</property>
-                                    <data id="5884">
+                                    <text id="5960">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">asset_disposal_sum</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["asset_disposal_sum"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5875">
                                     <property name="fontSize">9pt</property>
                                     <property name="textAlign">right</property>
-                                    <data id="5885">
+                                    <text id="5961">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">year_end_value_sum</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["year_end_value_sum"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5876">
                                     <property name="fontSize">9pt</property>
                                     <property name="textAlign">right</property>
-                                    <data id="5886">
+                                    <text id="5962">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">year_start_value_sum</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["year_start_value_sum"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5877">
-                                    <data id="5887">
+                                    <text id="5963">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">depreciation_charge_sum</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["depreciation_charge_sum"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5878">
-                                    <data id="5888">
+                                    <text id="5964">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">year_end_value2_sum</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["year_end_value2_sum"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5879">
-                                    <data id="5922">
+                                    <text id="5965">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">#,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">accounting_value_sum</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["accpunting_value_sum"]!= null? row["accpunting_value_sum"]:0, row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                         </footer>
                     </table>
+                </cell>
+            </row>
+        </grid>
+        <grid id="5924">
+            <property name="dataSet">LineDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">row.__rownum != -1</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">reference</property>
+                    <text-property name="displayName">reference</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["reference"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="5925"/>
+            <row id="5926">
+                <cell id="5927">
+                    <text id="5928">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReport.noEntry'
+</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
             </row>
         </grid>

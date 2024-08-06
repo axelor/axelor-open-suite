@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="subscription-so-invoice-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
@@ -34,5 +34,12 @@
     <field name="displayStockMoveOnInvoicePrinting"
       expr="eval: __user__.activeCompany?.accountConfig?.displayStockMoveOnInvoicePrinting"/>
   </action-record>
+
+  <action-attrs name="action-invoice-attrs-operationsubtype-selection"
+    id="action-supplychain-invoice-attrs-operationsubtype-selection" if-module="axelor-supplychain">
+    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [1,2]"/>
+    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [1,2,3,6]"
+      if="operationTypeSelect == 1"/>
+  </action-attrs>
 
 </object-views>

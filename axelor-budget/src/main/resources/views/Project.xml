@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
+    extension="true" id="budget-project-form">
+
+    <extend target="//panel[@name='datePanel']">
+      <insert position="after">
+        <panel name="budgetPanel" title="Budget" colSpan="12" sidebar="true"
+          if="__config__.app.getApp('budget')?.getEnableProject()" canCollapse="true">
+          <field name="globalBudgetSet" widget="TagSelect" colSpan="12"
+            form-view="global-budget-form" grid-view="global-budget-grid"
+            domain="self.company = :company AND self.statusSelect = 2" canNew="false"
+            canEdit="false"/>
+        </panel>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='purchasesPanel']">
+      <insert position="before">
+        <panel name="budgetPanelTab" title="Global budgets"
+          if="__config__.app.getApp('budget')?.getEnableProject()" colSpan="12">
+          <panel-related field="globalBudgetSet" showTitle="false"
+            name="globalBudgetSet" readonly="true" form-view="global-budget-form"
+            grid-view="global-budget-grid" colSpan="12"/>
+        </panel>
+      </insert>
+
+    </extend>
+  </form>
+</object-views>

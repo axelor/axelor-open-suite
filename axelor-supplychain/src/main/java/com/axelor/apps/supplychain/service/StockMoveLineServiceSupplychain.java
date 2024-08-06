@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import java.math.BigDecimal;
@@ -71,7 +72,9 @@ public interface StockMoveLineServiceSupplychain {
       boolean taxed,
       BigDecimal taxRate,
       SaleOrderLine saleOrderLine,
-      PurchaseOrderLine purchaseOrderLine)
+      PurchaseOrderLine purchaseOrderLine,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException;
 
   /**
@@ -84,7 +87,7 @@ public interface StockMoveLineServiceSupplychain {
   StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)
       throws AxelorException;
 
-  boolean isAvailableProduct(StockMove stockMove, StockMoveLine stockMoveLine);
+  boolean isAvailableProduct(StockMoveLine stockMoveLine) throws AxelorException;
 
   void setInvoiceStatus(StockMoveLine stockMoveLine);
 

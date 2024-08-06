@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <selection name="equipment.type.select">
+    <option value="place">Place</option>
+    <option value="equipment">Equipment</option>
+  </selection>
+
+  <selection name="equipment.indicator.select">
+    <option value="1" color="green">Under contract and operational</option>
+    <option value="2" color="red">Under contract and non-operational</option>
+    <option value="3" color="blue">Off-contract and operational</option>
+    <option value="4" color="orange">Off-contract and non-operational</option>
+  </selection>
+
+  <selection name="answer.type.select">
+    <option value="list">Value list</option>
+    <option value="text">Text</option>
+    <option value="date">Date</option>
+    <option value="picture">Picture</option>
+    <option value="measure">Measure</option>
+    <option value="checkbox">Checkbox</option>
+    <option value="indication">Indication</option>
+    <option value="signature">Signature</option>
+    <option value="advancedMonitoring">Advanced monitoring</option>
+  </selection>
+
+  <selection name="customer.request.status.select">
+    <option value="10">Draft</option>
+    <option value="20">Taken into account</option>
+    <option value="30">In progress</option>
+    <option value="40">Finished</option>
+    <option value="50">Cancelled</option>
+  </selection>
+
+  <selection name="customer.request.priority.select">
+    <option value="urgent">Urgent</option>
+    <option value="important">Important</option>
+    <option value="normal">Normal</option>
+  </selection>
+
+  <selection name="customer.request.real.gt.indicator.select">
+    <option value="ok">Ok</option>
+    <option value="fail">Fail</option>
+    <option value="alert">On alert</option>
+    <option value="urgent">URGENT</option>
+    <option value="respected">Respected</option>
+    <option value="nonRespected">Non respected</option>
+  </selection>
+
+  <selection name="intervention.status.select">
+    <option value="10">To plan</option>
+    <option value="20">Planned</option>
+    <option value="30">Started</option>
+    <option value="40">Suspended</option>
+    <option value="50">Finished</option>
+    <option value="60">Cancelled</option>
+  </selection>
+
+  <selection name="intervention.advanced.monitoring.answer.select">
+    <option value="home">Home</option>
+    <option value="office">Office</option>
+    <option value="previous">Previous intervention</option>
+    <option value="next">Next intervention</option>
+  </selection>
+
+  <selection id="intervention.duration.type.select" name="base.duration.type.select">
+    <option value="3">Hour</option>
+  </selection>
+
+  <selection name="range.type.type.select">
+    <option value="equipment">By equipment</option>
+    <option value="family">By equipment family</option>
+    <option value="standard">Standard</option>
+  </selection>
+
+  <selection name="sequence.generic.code.select"
+    id="intervention.sequence.generic.code.select">
+    <option value="customerRequest">Customer request</option>
+    <option value="intervention">Intervention</option>
+  </selection>
+
+  <selection name="intervention.batch.action.select">
+    <option value="1">Generate intervention for active contracts</option>
+  </selection>
+
+  <selection name="intervention.contract.intervention.planning.preference">
+    <option value="1">Morning</option>
+    <option value="2">Afternoon</option>
+    <option value="3">No preference</option>
+  </selection>
+
+  <selection name="meta.schedule.batch.service.select"
+    id="intervention.meta.schedule.batch.service.select">
+    <option value="com.axelor.apps.intervention.service.batch.InterventionBatchService">
+      com.axelor.apps.intervention.service.batch.InterventionBatchService
+    </option>
+  </selection>
+
+</object-views>

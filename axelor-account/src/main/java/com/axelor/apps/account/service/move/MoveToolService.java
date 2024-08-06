@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -143,6 +143,8 @@ public interface MoveToolService {
    */
   BigDecimal getTotalDebitAmount(List<MoveLine> debitMoveLineList);
 
+  BigDecimal getTotalCurrencyAmount(List<MoveLine> moveLineList);
+
   /**
    * Compute the balance amount : total debit - total credit
    *
@@ -191,7 +193,7 @@ public interface MoveToolService {
 
   boolean checkMoveLinesCutOffDates(Move move);
 
-  List<Move> getMovesWithDuplicatedOrigin(Move move) throws AxelorException;
+  List<Move> getMovesWithDuplicatedOrigin(Move move);
 
   List<Move> findDaybookAndAccountingByYear(Set<Year> yearList);
 
@@ -201,4 +203,26 @@ public interface MoveToolService {
   void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
 
   void setDescriptionOnMoveLineList(Move move);
+
+  BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit);
+
+  boolean isMultiCurrency(Move move);
+
+  @CallMethod
+  List<Integer> getMoveStatusSelectWithoutAccounted(
+      String moveStatusSelect, Set<Company> companySet);
+
+  List<Integer> getMoveStatusSelect(String moveStatusSelect, Set<Company> companySet);
+
+  @CallMethod
+  List<Integer> getMoveStatusSelectWithoutAccounted(String moveStatusSelect, Company company);
+
+  List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company);
+
+  List<Integer> getMoveStatusSelection(Company company, Journal journal) throws AxelorException;
+
+  Integer computeFunctionalOriginSelect(Journal journal, Integer massEntryStatus);
+
+  List<MoveLine> getRefundAdvancePaymentMoveLines(InvoicePayment invoicePayment)
+      throws AxelorException;
 }

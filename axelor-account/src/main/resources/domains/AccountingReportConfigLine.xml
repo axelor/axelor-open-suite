@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -30,6 +30,10 @@
     <boolean name="notComputedIfIntersect" title="Do not compute intersection"/>
     <boolean name="computePreviousYear" title="Compute previous year"/>
     <boolean name="computeOtherPeriod" title="Compute on comparison period"/>
+    <boolean name="balanceBeforePeriod" title="Period's start balance"/>
+    <boolean name="negateValue" title="Negate value"/>
+    <boolean name="hideDetailedLinesWithoutMoves"
+      title="Hide detailed lines without any move"/>
     <many-to-many name="accountTypeSet" title="Account types"
       ref="com.axelor.apps.account.db.AccountType"/>
     <many-to-many name="accountSet" title="Accounts"
@@ -39,8 +43,8 @@
     <many-to-one name="reportTypeColumn" title="Report type"
       ref="com.axelor.apps.account.db.AccountingReportType"/>
     <string name="rule" title="Rule" large="true"/>
-    <string name="accountCode" title="Account code"/>
-    <string name="analyticAccountCode" title="Analytic account code"/>
+    <string name="accountCode" title="Account code" large="true"/>
+    <string name="analyticAccountCode" title="Analytic account code" large="true"/>
     <string name="groupsWithoutColumn" title="Groups without this column"/>
     <many-to-many ref="com.axelor.apps.account.db.AnalyticAccount"
       name="analyticAccountSet" title="Analytic accounts"/>
@@ -60,7 +64,8 @@
 
       // RESULT SELECT
       public static final int RESULT_DEBIT_MINUS_CREDIT = 1;
-      public static final int RESULT_CREDIT_MINUS_DEBIT = 2;
+      public static final int RESULT_DEBIT = 2;
+      public static final int RESULT_CREDIT = 6;
       public static final int RESULT_SAME_AS_COLUMN = 3;
       public static final int RESULT_SAME_AS_LINE = 4;
       public static final int RESULT_SAME_AS_GROUP = 5;

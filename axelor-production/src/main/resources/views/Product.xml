@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="product-production-form" title="Product" model="com.axelor.apps.base.db.Product"
     onNew="action-product-attrs-scale-and-precision-production"
     onLoad="action-product-attrs-scale-and-precision-production">
     <panel name="mainPanel" colSpan="12">
-      <field name="costSheetGroup" showIf="productSubTypeSelect == 3" canEdit="false"
-        form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"
-        domain="self.costTypeSelect = 1"/>
-      <field name="economicManufOrderQty"/>
       <field name="defaultBillOfMaterial" canEdit="false"
         onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form"
         grid-view="bill-of-material-grid"
@@ -40,6 +36,14 @@
     </panel>
   </form>
 
+  <form id="production-product-form" name="product-form" title="Product"
+    model="com.axelor.apps.base.db.Product" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-product-group-production-onnew"/>
+      <attribute name="onLoad" value="action-product-group-production-onload"/>
+    </extend>
+  </form>
+
   <action-view name="action-product-view-production-process"
     title="Production processes" model="com.axelor.apps.production.db.ProdProcess">
     <view type="grid" name="prod-process-grid"/>
@@ -51,7 +55,7 @@
     title="Where-used list" model="com.axelor.apps.production.db.BillOfMaterial">
     <view type="grid" name="product-bill-of-material-grid"/>
     <view type="form" name="bill-of-material-form"/>
-    <domain>self.billOfMaterialSet.product.id = :id</domain>
+    <domain>self.billOfMaterialLineList.product.id = :id</domain>
   </action-view>
 
   <action-view name="action-product-view-create-bill-of-material"
@@ -110,5 +114,22 @@
   <action-method name="action-method-production-open-product-tree">
     <call class="com.axelor.apps.production.web.ProductController" method="openProductTree"/>
   </action-method>
+
+  <action-method name="action-product-method-bom-import-line-product-onnew">
+    <call class="com.axelor.apps.production.web.ProductController"
+      method="bomImportLineProductOnNew"/>
+  </action-method>
+
+  <action-group name="action-product-group-production-onnew">
+    <action name="action-stock-product-group-on-new"/>
+    <action name="action-product-attrs-scale-and-precision-production"/>
+    <action name="action-product-record-default-production"/>
+    <action name="action-product-method-bom-import-line-product-onnew"/>
+  </action-group>
+
+  <action-group name="action-product-group-production-onload">
+    <action name="action-stock-product-group-on-load"/>
+    <action name="action-product-attrs-scale-and-precision-production"/>
+  </action-group>
 
 </object-views>

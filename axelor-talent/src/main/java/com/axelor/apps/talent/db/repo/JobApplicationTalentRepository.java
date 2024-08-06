@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,17 +19,23 @@
 package com.axelor.apps.talent.db.repo;
 
 import com.axelor.apps.talent.db.JobApplication;
-import com.axelor.apps.talent.service.JobApplicationService;
+import com.axelor.apps.talent.service.JobApplicationComputeNameService;
 import com.google.inject.Inject;
 
 public class JobApplicationTalentRepository extends JobApplicationRepository {
 
-  @Inject private JobApplicationService jobApplicationService;
+  protected JobApplicationComputeNameService jobApplicationComputeNameService;
+
+  @Inject
+  public JobApplicationTalentRepository(
+      JobApplicationComputeNameService jobApplicationComputeNameService) {
+    this.jobApplicationComputeNameService = jobApplicationComputeNameService;
+  }
 
   @Override
   public JobApplication save(JobApplication entity) {
 
-    entity.setFullName(jobApplicationService.computeFullName(entity));
+    entity.setFullName(jobApplicationComputeNameService.computeFullName(entity));
 
     return super.save(entity);
   }

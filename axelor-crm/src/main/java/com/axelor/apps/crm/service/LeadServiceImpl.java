@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LeadServiceImpl implements LeadService {
 
@@ -84,10 +85,11 @@ public class LeadServiceImpl implements LeadService {
    * @return
    * @throws AxelorException
    */
-  public String getSequence() throws AxelorException {
+  public String getSequence(Partner partner) throws AxelorException {
 
     String seq =
-        sequenceService.getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner);
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -230,25 +232,29 @@ public class LeadServiceImpl implements LeadService {
     lead.setLostReasonStr(lostReasonStr);
   }
 
-  public String processFullName(String enterpriseName, String name, String firstName) {
-    StringBuilder fullName = new StringBuilder();
-
-    if (!Strings.isNullOrEmpty(enterpriseName)) {
-      fullName.append(enterpriseName);
-      if (!Strings.isNullOrEmpty(name) || !Strings.isNullOrEmpty(firstName)) fullName.append(", ");
-    }
-    if (!Strings.isNullOrEmpty(name) && !Strings.isNullOrEmpty(firstName)) {
-      fullName.append(firstName);
-      fullName.append(" ");
-      fullName.append(name);
-    } else if (!Strings.isNullOrEmpty(firstName)) fullName.append(firstName);
-    else if (!Strings.isNullOrEmpty(name)) fullName.append(name);
-
-    return fullName.toString();
+  @Override
+  public boolean computeIsLost(Lead lead) throws AxelorException {
+    return appCrmService.getLostLeadStatus().equals(lead.getLeadStatus());
   }
 
   @Override
-  public LeadStatus getDefaultLeadStatus() {
-    return leadStatusRepo.getDefaultStatus();
+  public void kanbanLeadOnMove(Lead lead) throws AxelorException {
+    LeadStatus leadStatus = lead.getLeadStatus();
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+    LeadStatus convertedLeadStatus = appCrmService.getConvertedLeadStatus();
+
+    if (Objects.isNull(leadStatus)) {
+      return;
+    }
+    if (leadStatus.equals(convertedLeadStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_CONVERT_KANBAN));
+    }
+    if (leadStatus.equals(lostLeadStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_LOSE_KANBAN));
+    }
   }
 }

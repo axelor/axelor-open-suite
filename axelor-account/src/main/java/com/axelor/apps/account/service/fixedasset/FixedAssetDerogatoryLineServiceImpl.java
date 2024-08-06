@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,6 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.RETURNED_SCALE;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
@@ -27,16 +25,18 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatoryLineService {
 
@@ -45,15 +45,18 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   protected FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepository;
 
   protected FixedAssetLineToolService fixedAssetLineToolService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public FixedAssetDerogatoryLineServiceImpl(
       FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService,
       FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepository,
-      FixedAssetLineToolService fixedAssetLineToolService) {
+      FixedAssetLineToolService fixedAssetLineToolService,
+      CurrencyScaleService currencyScaleService) {
     this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
     this.fixedAssetLineToolService = fixedAssetLineToolService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -94,7 +97,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
             computeDerogatoryBalanceAmount(
                 previousFixedAssetDerogatoryLine,
                 line.getDerogatoryAmount(),
-                line.getIncomeDepreciationAmount()));
+                line.getIncomeDepreciationAmount(),
+                line.getFixedAsset()));
         previousFixedAssetDerogatoryLine = line;
       }
     }
@@ -102,7 +106,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
 
   @Override
   public List<FixedAssetDerogatoryLine> computePlannedFixedAssetDerogatoryLineList(
-      FixedAsset fixedAsset) {
+      FixedAsset fixedAsset) throws AxelorException {
     LinkedHashMap<LocalDate, List<FixedAssetLine>> dateFixedAssetLineGrouped =
         fixedAssetLineToolService.groupAndSortByDateFixedAssetLine(fixedAsset);
 
@@ -116,7 +120,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
               extractLineWithType(entry.getValue(), FixedAssetLineRepository.TYPE_SELECT_ECONOMIC),
               extractLineWithType(entry.getValue(), FixedAssetLineRepository.TYPE_SELECT_FISCAL),
               previousFixedAssetDerogatoryLine,
-              entry.getKey());
+              entry.getKey(),
+              fixedAsset);
       derogatoryLine.setFixedAsset(fixedAsset);
       fixedAssetDerogatoryLineList.add(derogatoryLine);
       previousFixedAssetDerogatoryLine = derogatoryLine;
@@ -129,22 +134,22 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
       FixedAssetLine economicFixedAssetLine,
       FixedAssetLine fiscalFixedAssetLine,
       FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine,
-      LocalDate date) {
+      LocalDate date,
+      FixedAsset fixedAsset)
+      throws AxelorException {
     // Initialisation of fiscal and economic depreciation
     BigDecimal depreciationAmount = BigDecimal.ZERO;
     if (economicFixedAssetLine != null) {
       depreciationAmount =
-          economicFixedAssetLine.getDepreciation() == null
-              ? BigDecimal.ZERO
-              : economicFixedAssetLine.getDepreciation();
+          fixedAssetLineToolService.getCompanyScaledValue(
+              economicFixedAssetLine.getDepreciation(), fixedAsset);
     }
 
     BigDecimal fiscalDepreciationAmount = BigDecimal.ZERO;
     if (fiscalFixedAssetLine != null) {
       fiscalDepreciationAmount =
-          fiscalFixedAssetLine.getDepreciation() == null
-              ? BigDecimal.ZERO
-              : fiscalFixedAssetLine.getDepreciation();
+          fixedAssetLineToolService.getCompanyScaledValue(
+              fiscalFixedAssetLine.getDepreciation(), fixedAsset);
     }
 
     BigDecimal derogatoryAmount = null;
@@ -152,15 +157,23 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
 
     // If fiscal depreciation is greater than economic depreciation then we fill
     // derogatoryAmount, else incomeDepreciation.
-    if (fiscalDepreciationAmount.abs().compareTo(depreciationAmount.abs()) > 0) {
-      derogatoryAmount = fiscalDepreciationAmount.subtract(depreciationAmount);
+    if (fixedAssetLineToolService.isGreaterThan(
+        fiscalDepreciationAmount.abs(), depreciationAmount.abs(), fixedAsset)) {
+      derogatoryAmount =
+          fixedAssetLineToolService.getCompanyScaledValue(
+              fiscalDepreciationAmount, depreciationAmount, fixedAsset, BigDecimal::subtract);
     } else {
-      incomeDepreciationAmount = depreciationAmount.subtract(fiscalDepreciationAmount);
+      incomeDepreciationAmount =
+          fixedAssetLineToolService.getCompanyScaledValue(
+              depreciationAmount, fiscalDepreciationAmount, fixedAsset, BigDecimal::subtract);
     }
 
     BigDecimal derogatoryBalanceAmount =
         computeDerogatoryBalanceAmount(
-            previousFixedAssetDerogatoryLine, derogatoryAmount, incomeDepreciationAmount);
+            previousFixedAssetDerogatoryLine,
+            derogatoryAmount,
+            incomeDepreciationAmount,
+            fixedAsset);
     return createFixedAssetDerogatoryLine(
         date,
         depreciationAmount,
@@ -186,7 +199,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   protected BigDecimal computeDerogatoryBalanceAmount(
       FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine,
       BigDecimal derogatoryAmount,
-      BigDecimal incomeDepreciationAmount) {
+      BigDecimal incomeDepreciationAmount,
+      FixedAsset fixedAsset) {
     BigDecimal derogatoryBalanceAmount;
     BigDecimal previousDerogatoryBalanceAmount =
         previousFixedAssetDerogatoryLine == null
@@ -199,7 +213,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
       derogatoryBalanceAmount =
           derogatoryAmount.subtract(BigDecimal.ZERO).add(previousDerogatoryBalanceAmount);
     }
-    return derogatoryBalanceAmount;
+    return fixedAssetLineToolService.getCompanyScaledValue(derogatoryBalanceAmount, fixedAsset);
   }
 
   @Override
@@ -212,27 +226,23 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   }
 
   protected void multiplyLineBy(FixedAssetDerogatoryLine line, BigDecimal prorata) {
+    FixedAsset fixedAsset = line.getFixedAsset();
 
     line.setDepreciationAmount(
-        prorata
-            .multiply(line.getDepreciationAmount())
-            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getDepreciationAmount(), prorata, fixedAsset, BigDecimal::multiply));
     line.setFiscalDepreciationAmount(
-        prorata
-            .multiply(line.getFiscalDepreciationAmount())
-            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getFiscalDepreciationAmount(), prorata, fixedAsset, BigDecimal::multiply));
     line.setDerogatoryAmount(
-        prorata
-            .multiply(line.getDerogatoryAmount())
-            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getDerogatoryAmount(), prorata, fixedAsset, BigDecimal::multiply));
     line.setIncomeDepreciationAmount(
-        prorata
-            .multiply(line.getIncomeDepreciationAmount())
-            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getIncomeDepreciationAmount(), prorata, fixedAsset, BigDecimal::multiply));
     line.setDerogatoryBalanceAmount(
-        prorata
-            .multiply(line.getDerogatoryBalanceAmount())
-            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getDerogatoryBalanceAmount(), prorata, fixedAsset, BigDecimal::multiply));
   }
 
   /**
@@ -262,10 +272,11 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
             ? BigDecimal.ZERO
             : lastRealizedDerogatoryLine.getDerogatoryBalanceAmount();
     BigDecimal amount =
-        firstPlannedDerogatoryLine
-            .getDerogatoryBalanceAmount()
-            .subtract(lastDerogatoryBalanceAmount)
-            .abs();
+        fixedAssetLineToolService.getCompanyScaledValue(
+            firstPlannedDerogatoryLine.getDerogatoryBalanceAmount().abs(),
+            lastDerogatoryBalanceAmount.abs(),
+            firstPlannedDerogatoryLine.getFixedAsset(),
+            BigDecimal::subtract);
     if (amount.signum() == 0) {
       return;
     }
@@ -315,6 +326,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
               });
     }
   }
+
   /**
    * {@inheritDoc}
    *
@@ -330,6 +342,25 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     fixedAssetDerogatoryLineList.clear();
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NullPointerException if fixedAssetDerogatoryLineList or linesToRemove is null
+   */
+  @Override
+  public void clear(
+      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList,
+      List<FixedAssetDerogatoryLine> linesToRemove) {
+    Objects.requireNonNull(fixedAssetDerogatoryLineList);
+    Objects.requireNonNull(linesToRemove);
+    linesToRemove.forEach(
+        line -> {
+          fixedAssetDerogatoryLineList.remove(line);
+          remove(line);
+        });
+    linesToRemove.clear();
+  }
+
   @Override
   @Transactional
   public void remove(FixedAssetDerogatoryLine line) {
@@ -338,15 +369,17 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   }
 
   @Override
-  public void filterListByStatus(
-      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, int status) {
-    List<FixedAssetDerogatoryLine> derogatoryLinesToRemove = new ArrayList<>();
-    if (fixedAssetDerogatoryLineList != null) {
-      fixedAssetDerogatoryLineList.stream()
-          .filter(line -> line.getStatusSelect() == status)
-          .forEach(line -> derogatoryLinesToRemove.add(line));
-      fixedAssetDerogatoryLineList.removeIf(line -> line.getStatusSelect() == status);
+  public void filterListByDate(
+      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, LocalDate date) {
+    if (CollectionUtils.isEmpty(fixedAssetDerogatoryLineList) || date == null) {
+      return;
     }
-    clear(derogatoryLinesToRemove);
+    List<FixedAssetDerogatoryLine> derogatoryLinesToRemove =
+        fixedAssetDerogatoryLineList.stream()
+            .filter(
+                line ->
+                    line.getDepreciationDate() == null || line.getDepreciationDate().isAfter(date))
+            .collect(Collectors.toList());
+    clear(fixedAssetDerogatoryLineList, derogatoryLinesToRemove);
   }
 }

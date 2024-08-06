@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,11 @@
  */
 package com.axelor.apps.hr.web.timesheet;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
@@ -33,16 +31,21 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.timesheet.TimesheetDomainService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
+import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
+import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeService;
+import com.axelor.apps.hr.service.timesheet.TimesheetRemoveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -76,7 +79,7 @@ public class TimesheetController {
   public void prefillLines(ActionRequest request, ActionResponse response) {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
-      Beans.get(TimesheetService.class).prefillLines(timesheet);
+      Beans.get(TimesheetLeaveService.class).prefillLines(timesheet);
       response.setValues(timesheet);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -130,7 +133,7 @@ public class TimesheetController {
       }
 
       timesheet =
-          Beans.get(TimesheetService.class)
+          Beans.get(TimesheetLineGenerationService.class)
               .generateLines(
                   timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
       response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
@@ -213,7 +216,8 @@ public class TimesheetController {
             .add("grid", "timesheet-line-grid")
             .add("form", "timesheet-line-form");
 
-    Beans.get(TimesheetService.class).createDomainAllTimesheetLine(user, employee, actionView);
+    Beans.get(TimesheetDomainService.class)
+        .createDomainAllTimesheetLine(user, employee, actionView);
 
     response.setView(actionView.map());
   }
@@ -250,7 +254,8 @@ public class TimesheetController {
             .context(
                 "todayDate", Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()));
 
-    Beans.get(TimesheetService.class).createValidateDomainTimesheetLine(user, employee, actionView);
+    Beans.get(TimesheetDomainService.class)
+        .createValidateDomainTimesheetLine(user, employee, actionView);
 
     response.setView(actionView.map());
   }
@@ -357,7 +362,8 @@ public class TimesheetController {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 
-      Message message = Beans.get(TimesheetService.class).cancelAndSendCancellationEmail(timesheet);
+      Message message =
+          Beans.get(TimesheetWorkflowService.class).cancelAndSendCancellationEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -373,7 +379,7 @@ public class TimesheetController {
 
   /**
    * Called from timesheet form view, on clicking "return to draft" button. <br>
-   * Call {@link TimesheetService#draft(Timesheet)}
+   * Call {@link TimesheetWorkflowService#draft(Timesheet)}
    *
    * @param request
    * @param response
@@ -383,7 +389,7 @@ public class TimesheetController {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 
-      Beans.get(TimesheetService.class).draft(timesheet);
+      Beans.get(TimesheetWorkflowService.class).draft(timesheet);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -403,7 +409,7 @@ public class TimesheetController {
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 
       Message message =
-          Beans.get(TimesheetService.class).confirmAndSendConfirmationEmail(timesheet);
+          Beans.get(TimesheetWorkflowService.class).confirmAndSendConfirmationEmail(timesheet);
 
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
@@ -451,21 +457,15 @@ public class TimesheetController {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
-      TimesheetService timesheetService = Beans.get(TimesheetService.class);
 
-      timesheetService.checkEmptyPeriod(timesheet);
-
-      computeTimeSpent(request, response);
-
-      Message message = timesheetService.validateAndSendValidationEmail(timesheet);
+      Message message =
+          Beans.get(TimesheetWorkflowService.class).validateAndSendValidationEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
       }
-      Beans.get(PeriodService.class)
-          .checkPeriod(timesheet.getCompany(), timesheet.getToDate(), timesheet.getFromDate());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {
@@ -478,10 +478,14 @@ public class TimesheetController {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
       // confirm
-      Beans.get(TimesheetService.class).confirm(timesheet);
-
-      // validate
-      this.valid(request, response);
+      Message message = Beans.get(TimesheetWorkflowService.class).complete(timesheet);
+      if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
+        response.setInfo(
+            String.format(
+                I18n.get("Email sent to %s"),
+                Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
+      }
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -494,7 +498,8 @@ public class TimesheetController {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 
-      Message message = Beans.get(TimesheetService.class).refuseAndSendRefusalEmail(timesheet);
+      Message message =
+          Beans.get(TimesheetWorkflowService.class).refuseAndSendRefusalEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -509,43 +514,12 @@ public class TimesheetController {
     }
   }
 
-  public void computeTimeSpent(ActionRequest request, ActionResponse response) {
-    Timesheet timesheet = request.getContext().asType(Timesheet.class);
-    timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
-    if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
-      Beans.get(TimesheetService.class).computeTimeSpent(timesheet);
-    }
-  }
-
   /* Count Tags displayed on the menu items */
   @CallMethod
   public String timesheetValidateMenuTag() {
 
     return Beans.get(HRMenuTagService.class)
         .countRecordsTag(Timesheet.class, TimesheetRepository.STATUS_CONFIRMED);
-  }
-
-  public void printTimesheet(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    Timesheet timesheet = request.getContext().asType(Timesheet.class);
-
-    String name = I18n.get("Timesheet") + " " + timesheet.getFullName().replace("/", "-");
-
-    String fileLink =
-        ReportFactory.createReport(IReport.TIMESHEET, name)
-            .addParam("TimesheetId", timesheet.getId())
-            .addParam(
-                "Timezone",
-                timesheet.getCompany() != null ? timesheet.getCompany().getTimezone() : null)
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .toAttach(timesheet)
-            .generate()
-            .getFileLink();
-
-    logger.debug("Printing {}", name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   public void setShowActivity(ActionRequest request, ActionResponse response) {
@@ -566,6 +540,9 @@ public class TimesheetController {
       }
     }
 
+    Integer dailyLimit = Beans.get(AppHumanResourceService.class).getAppTimesheet().getDailyLimit();
+
+    response.setValue("$dailyLimit", dailyLimit);
     response.setValue("$showActivity", showActivity);
   }
 
@@ -577,7 +554,9 @@ public class TimesheetController {
         "hr/timesheet/?timesheetId="
             + context.get("id")
             + "&showActivity="
-            + context.get("showActivity");
+            + context.get("showActivity")
+            + "&dailyLimit="
+            + context.get("dailyLimit");
 
     response.setView(
         ActionView.define(I18n.get("Timesheet lines"))
@@ -592,7 +571,8 @@ public class TimesheetController {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       TimesheetService timesheetService = Beans.get(TimesheetService.class);
 
-      BigDecimal periodTotal = timesheetService.computePeriodTotal(timesheet);
+      BigDecimal periodTotal =
+          Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet);
 
       response.setAttr("periodTotal", "value", periodTotal);
       response.setAttr("$periodTotalConvert", "hidden", false);
@@ -641,7 +621,8 @@ public class TimesheetController {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
-      Beans.get(TimesheetService.class).generateLinesFromExpectedProjectPlanning(timesheet);
+      Beans.get(TimesheetProjectPlanningTimeService.class)
+          .generateLinesFromExpectedProjectPlanning(timesheet);
       response.setReload(true);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -652,7 +633,7 @@ public class TimesheetController {
 
     Timesheet timesheet = request.getContext().asType(Timesheet.class);
     if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
-      Beans.get(TimesheetService.class).removeAfterToDateTimesheetLines(timesheet);
+      Beans.get(TimesheetRemoveService.class).removeAfterToDateTimesheetLines(timesheet);
     }
     response.setValues(timesheet);
   }

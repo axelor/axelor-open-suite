@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,11 +27,12 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -58,6 +59,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected ExtractContextMoveService extractContextMoveService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
+  protected MoveToolService moveToolService;
+  protected UnreconcileService unReconcileService;
+  protected MoveInvoiceTermService moveInvoiceTermService;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -68,7 +72,11 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       MoveLineCreateService moveLineCreateService,
       ExtractContextMoveService extractContextMoveService,
       InvoicePaymentRepository invoicePaymentRepository,
-      InvoicePaymentCancelService invoicePaymentCancelService) {
+      InvoicePaymentCancelService invoicePaymentCancelService,
+      MoveToolService moveToolService,
+      UnreconcileService unReconcileService,
+      MoveInvoiceTermService moveInvoiceTermService) {
+
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
     this.moveValidateService = moveValidateService;
@@ -77,6 +85,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     this.extractContextMoveService = extractContextMoveService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
+    this.moveToolService = moveToolService;
+    this.unReconcileService = unReconcileService;
+    this.moveInvoiceTermService = moveInvoiceTermService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -151,21 +162,26 @@ public class MoveReverseServiceImpl implements MoveReverseService {
 
       newMove.addMoveLineListItem(newMoveLine);
 
+      if (newMove.getPaymentCondition() == null) {
+        newMove.setPaymentCondition(move.getPaymentCondition());
+      }
+      moveInvoiceTermService.generateInvoiceTerms(newMove);
+
       if (isUnreconcileOriginalMove) {
         List<Reconcile> reconcileList =
             Beans.get(ReconcileRepository.class)
                 .all()
                 .filter(
-                    "self.statusSelect != ?1 AND (self.debitMoveLine = ?2 OR self.creditMoveLine = ?2)",
+                    "self.statusSelect != ?1 AND (self.debitMoveLine.id = ?2 OR self.creditMoveLine.id = ?2)",
                     ReconcileRepository.STATUS_CANCELED,
-                    moveLine)
+                    moveLine.getId())
                 .fetch();
         for (Reconcile reconcile : reconcileList) {
-          reconcileService.unreconcile(reconcile);
+          unReconcileService.unreconcile(reconcile);
         }
+      } else {
+        cancelInvoicePayment(move);
       }
-
-      cancelInvoicePayment(move);
 
       if (validatedMove && isAutomaticReconcile) {
         if (isDebit) {
@@ -212,13 +228,18 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected MoveLine generateReverseMoveLine(
       Move reverseMove, MoveLine originMoveLine, LocalDate dateOfReversion, boolean isDebit)
       throws AxelorException {
+
+    BigDecimal currencyAmount = originMoveLine.getCurrencyAmount();
+
+    currencyAmount = moveToolService.computeCurrencyAmountSign(currencyAmount, isDebit);
+
     MoveLine reverseMoveLine =
         moveLineCreateService.createMoveLine(
             reverseMove,
             originMoveLine.getPartner(),
             originMoveLine.getAccount(),
-            originMoveLine.getCurrencyAmount(),
-            originMoveLine.getTaxLine(),
+            currencyAmount,
+            originMoveLine.getTaxLineSet(),
             originMoveLine.getDebit().add(originMoveLine.getCredit()),
             originMoveLine.getCurrencyRate(),
             !isDebit,

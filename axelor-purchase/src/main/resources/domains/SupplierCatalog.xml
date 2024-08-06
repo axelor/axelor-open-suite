@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -20,7 +20,12 @@
     <decimal name="calculatedPrice" title="Calculated price/Qty"/>
     <one-to-many name="shippingCoefList" mappedBy="supplierCatalog"
       title="Shipping Coefficients" ref="com.axelor.apps.base.db.ShippingCoef"/>
+    <one-to-many name="productMultipleQtyList"
+      ref="com.axelor.apps.base.db.ProductMultipleQty" title="Multiple quantities"
+      mappedBy="supplierCatalog" orderBy="multipleQty"/>
+    <boolean name="isTakeProductMultipleQty" title="Take product multiple qty"/>
     <decimal name="minQty" title="Quantity min" precision="20" scale="10" min="0"/>
+    <decimal name="maxQty" title="Quantity max" precision="20" scale="10" min="0"/>
     <boolean name="isTakingProductPurchasePrice" title="Take product purchase price"
       default="false"/>
   </entity>

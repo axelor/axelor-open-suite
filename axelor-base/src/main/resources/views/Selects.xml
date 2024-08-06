@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -36,8 +36,7 @@
   <selection name="partner.title.type.select">
     <option value="1">M.</option>
     <option value="2">Ms.</option>
-    <option value="3">Dr</option>
-    <option value="4">Prof.</option>
+    <option value="3">Mx.</option>
   </selection>
 
   <selection name="partner.partner.type.select">
@@ -70,12 +69,7 @@
     <option value="1">From stock</option>
     <option value="2">Purchase</option>
     <option value="3">Produce</option>
-  </selection>
-
-  <selection name='ialarm.type.select'>
-    <option value='invoice'>Invoice</option>
-    <option value='payment'>Payment Schedule</option>
-    <option value='reject'>Reject</option>
+    <option value="4">Stock and produce</option>
   </selection>
 
   <selection name='iimport.type.select'>
@@ -100,8 +94,13 @@
 
   <selection name='iadministration.export.type.select'>
     <option value="pdf">PDF</option>
-    <option value="xlsx">XLS</option>
+    <option value="xlsx">XLSX</option>
     <option value="ods">ODS</option>
+    <option value="xls">XLS</option>
+    <option value="doc">DOC</option>
+    <option value="docx">DOCX</option>
+    <option value="odt">ODT</option>
+    <option value="html">HTML</option>
   </selection>
 
   <selection name='iadministration.declaration.of.exchanges.export.type.select'>
@@ -123,6 +122,8 @@
 
   <selection name='ibase.batch.action.select'>
     <option value='2'>Calendar synchronization</option>
+    <option value='3'>Password change</option>
+    <option value='4'>Recompute all addresses</option>
   </selection>
 
   <selection name="base.routing.rule.type.select">
@@ -134,11 +135,6 @@
   <selection name="base.app.base.map.api.select">
     <option value="1">Google</option>
     <option value="2">Open street map</option>
-  </selection>
-
-  <selection name="base.app.base.osm.routing.api.select">
-    <option value="1">YOUR navigation</option>
-    <option value="2">OSRM</option>
   </selection>
 
   <selection name="base.app.base.currency.api.select">
@@ -159,11 +155,13 @@
   <selection name="base.price.list.type.select">
     <option value="1">Sale</option>
     <option value="2">Purchase</option>
+    <option value="3">Customer contract</option>
+    <option value="4">Supplier contract</option>
   </selection>
 
   <selection name="base.price.list.line.type.select">
-    <option value="1">Discount</option>
-    <option value="2">Additionnal</option>
+    <option value="1">PriceListLineSelect.Discount</option>
+    <option value="2">Increase</option>
     <option value="3">Replace</option>
   </selection>
 
@@ -176,6 +174,7 @@
   <selection name="base.price.list.line.anomaly.select">
     <option value="1">Product unavailable for sale</option>
     <option value="2">Product not renewed</option>
+    <option value="3">Product unavailable for purchase</option>
   </selection>
 
   <selection name="day.month.select">
@@ -333,6 +332,10 @@
     <option value="2">Formula</option>
   </selection>
 
+  <selection name="unit.conversion.entity.select">
+    <option value="0">All</option>
+  </selection>
+
   <selection name="i.calendar.user.status.select">
     <option value="1">Yes</option>
     <option value="2">No</option>
@@ -375,9 +378,9 @@
 
   <selection name="printing.setting.logo.position">
     <option value="0">None</option>
-    <option value="1">Left</option>
+    <option value="1">Position.Left</option>
     <option value="2">Center</option>
-    <option value="3">Right</option>
+    <option value="3">Position.Right</option>
   </selection>
 
   <selection name="icrm.calendar.type.select">
@@ -411,6 +414,18 @@
     <option value="integer">Integer</option>
     <option value="date">Date</option>
     <option value="time">Time</option>
+  </selection>
+
+  <selection name="base.printing.template.type.select">
+    <option value="1"
+      data-print-factory="com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryFile">File</option>
+    <option value="2"
+      data-print-factory="com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryBirt">Birt</option>
+  </selection>
+
+  <selection name="base.printing.template.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Active</option>
   </selection>
 
   <selection name="base.blocking.select">
@@ -540,6 +555,7 @@
   <selection name='trace.back.origin.select'>
     <option value="default">Default</option>
     <option value="import">Importing</option>
+    <option value="addressRecompute">Recompute addresses batch</option>
   </selection>
 
   <selection name="base.print.template.format.select">
@@ -572,8 +588,8 @@
   </selection>
 
   <selection name="base.print.settings.footer.text.alignment.select">
-    <option value="left">Left</option>
-    <option value="right">Right</option>
+    <option value="left">Position.Left</option>
+    <option value="right">Position.Right</option>
     <option value="center">Center</option>
   </selection>
 
@@ -642,8 +658,8 @@
   </selection>
 
   <selection name="printing.setting.address.position">
-    <option value="0">Right</option>
-    <option value="1">Left</option>
+    <option value="0">Position.Right</option>
+    <option value="1">Position.Left</option>
   </selection>
 
   <selection name="batch.action.launch.origin.select">
@@ -653,7 +669,6 @@
 
   <selection name="batch.batch.type.select">
     <option value="100">Base batch</option>
-    <option value="101">Alarm engine batch</option>
     <option value="102">Mail batch</option>
     <option value="103">Import batch</option>
   </selection>
@@ -715,6 +730,71 @@
     <option value="3">UPDATE</option>
     <option value="4">DELETE</option>
     <option value="5">EXPORT</option>
+  </selection>
+
+  <selection name="research.model.selection">
+    <option value="com.axelor.apps.base.db.Partner">Partner</option>
+    <option value="com.axelor.apps.base.db.Partner.Contact">Contact</option>
+  </selection>
+
+  <selection name="research.primary.key.type.select">
+    <option value="String">String</option>
+    <option value="LocalDate">Date</option>
+  </selection>
+
+  <selection name="base.batch.password.change.action.select">
+    <option value="1">Generate new random passwords</option>
+    <option value="2">Force the users to update password the next login</option>
+    <option value="3">Generate new random passwords and force password change</option>
+  </selection>
+
+  <selection name="base.faker.api.field.param.type.select">
+    <option value="int">int</option>
+    <option value="long">long</option>
+    <option value="double">double</option>
+    <option value="boolean">boolean</option>
+    <option value="java.lang.String">String</option>
+    <option value="java.util.Date">Date (YYYY-MM-DD)</option>
+    <option value="java.sql.Timestamp">Timestamp (YYYY-MM-DD)</option>
+    <option value="java.util.concurrent.TimeUnit">TimeUnit</option>
+  </selection>
+
+  <selection name="base.faker.api.field.data.type.select">
+    <option value="Integer">Integer</option>
+    <option value="Long">Long</option>
+    <option value="BigDecimal">BigDecimal</option>
+    <option value="LocalDate">LocalDate</option>
+    <option value="LocalDateTime">LocalDateTime</option>
+    <option value="String">String</option>
+    <option value="Boolean">Boolean</option>
+  </selection>
+
+  <selection name="base.partner.link.type.type.select">
+    <option value="empty" hidden="true"/> <!-- unused value, the select is completed in other modules -->
+  </selection>
+
+  <selection name="base.registration.number.template.validation.method.select">
+    <option
+      value="com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidatorFRA">French registration number validation</option>
+  </selection>
+
+  <selection name="tax.type.type.select">
+    <option value="1">VAT</option>
+    <option value="2">Other</option>
+  </selection>
+
+  <selection name="base.site.type.select">
+    <option value="1">Internal</option>
+    <option value="2">External</option>
+  </selection>
+
+  <selection name="base.pricing.type.select">
+    <option value="Default">Default</option>
+  </selection>
+
+  <selection name="base.file.type.select">
+    <option value="1">ContractFile</option>
+    <option value="2">EmployeeFile</option>
   </selection>
 
 </object-views>

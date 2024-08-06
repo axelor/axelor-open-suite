@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
     <field name="inventorySeq" width="120"/>
@@ -18,7 +18,7 @@
     width="large" onNew="action-inventory-record-new">
     <menubar>
       <menu title="Tools" icon="fa-wrench" name="inventoryMenu">
-        <item name="showStockMoveItem" action="action-inventory-method-show-stockmoves"
+        <item name="showStockMoveItem" action="save,action-inventory-method-show-stockmoves"
           title="Show stock move(s)" readonlyIf="statusSelect != 5"/>
       </menu>
     </menubar>
@@ -68,7 +68,10 @@
 
         <panel name="exportPanel" title="Export"
           showIf="statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 6" colSpan="12">
-          <field name="formatSelect"/>
+          <field name="formatSelect" colSpan="3"/>
+          <field name="inventoryPrintTemplate" showIf="formatSelect == 'printingTemplate'"
+            colSpan="3" domain="self.metaModel.name = 'Inventory'"
+            grid-view="printing-template-grid" form-view="printing-template-form"/>
           <panel name="showinventoryPanel" colSpan="3" stacked="true">
             <button name="showInventoryBtn" title="Export" readonlyIf="formatSelect == null"
               onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != 'csv'"/>
@@ -188,7 +191,7 @@
   <action-record name="action-inventory-record-new"
     model="com.axelor.apps.stock.db.Inventory">
     <field name="statusSelect" expr="1"/>
-    <field name="formatSelect" expr="pdf"/>
+    <field name="formatSelect" expr="printingTemplate"/>
     <field name="stockLocation" expr="eval:_location"/>
     <field name="company"
       expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company :__user__.activeCompany"/>
@@ -282,10 +285,10 @@
     model="com.axelor.apps.stock.db.Inventory" title="Inventories filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <filter title="Planned Inventories">
+    <filter name="inventories-filters-planned-inventories" title="Planned Inventories">
       <domain>self.statusSelect = 1</domain>
     </filter>
-    <filter title="Inventories History">
+    <filter name="inventories-filters-inventories-history" title="Inventories History">
       <domain>self.statusSelect = 2</domain>
     </filter>
   </search-filters>

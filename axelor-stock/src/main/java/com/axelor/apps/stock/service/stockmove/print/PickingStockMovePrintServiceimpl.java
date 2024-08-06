@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,22 +18,25 @@
  */
 package com.axelor.apps.stock.service.stockmove.print;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.exception.StockExceptionMessage;
-import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.ModelHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -44,65 +47,75 @@ import java.util.Optional;
 
 public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintService {
 
-  @Inject private StockMoveService stockMoveService;
+  protected StockMoveService stockMoveService;
+  protected StockConfigService stockConfigService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
 
-  @Override
-  public String printStockMoves(List<Long> ids, String userType) throws IOException {
-    List<File> printedStockMoves = new ArrayList<>();
-    ModelTool.apply(
-        StockMove.class,
-        ids,
-        new ThrowConsumer<StockMove, Exception>() {
-          @Override
-          public void accept(StockMove stockMove) throws Exception {
-            printedStockMoves.add(print(stockMove, ReportSettings.FORMAT_PDF));
-          }
-        });
-    stockMoveService.setPickingStockMovesEditDate(ids, userType);
-    String fileName = getStockMoveFilesName(true, ReportSettings.FORMAT_PDF);
-    return PdfTool.mergePdfToFileLink(printedStockMoves, fileName);
+  @Inject
+  public PickingStockMovePrintServiceimpl(
+      StockMoveService stockMoveService,
+      StockConfigService stockConfigService,
+      PrintingTemplatePrintService printingTemplatePrintService) {
+    this.stockMoveService = stockMoveService;
+    this.stockConfigService = stockConfigService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
   }
 
   @Override
-  public ReportSettings prepareReportSettings(StockMove stockMove, String format)
-      throws AxelorException {
-    if (stockMove.getPrintingSettings() == null) {
+  public String printStockMoves(List<Long> ids, String userType)
+      throws IOException, AxelorException {
+    List<File> printedStockMoves = new ArrayList<>();
+    int errorCount =
+        ModelHelper.apply(
+            StockMove.class,
+            ids,
+            new ThrowConsumer<StockMove, Exception>() {
+              @Override
+              public void accept(StockMove stockMove) throws Exception {
+                try {
+                  printedStockMoves.add(print(stockMove));
+                } catch (Exception e) {
+                  TraceBackService.trace(e);
+                  throw e;
+                }
+              }
+            });
+    if (errorCount > 0) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          String.format(
-              I18n.get(StockExceptionMessage.STOCK_MOVES_MISSING_PRINTING_SETTINGS),
-              stockMove.getStockMoveSeq()),
-          stockMove);
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
+    }
+    stockMoveService.setPickingStockMovesEditDate(ids, userType);
+    String fileName = getStockMoveFilesName(true);
+    return PrintingTemplateHelper.mergeToFileLink(printedStockMoves, fileName);
+  }
+
+  @Override
+  public File print(StockMove stockMove) throws AxelorException {
+    stockMoveService.checkPrintingSettings(stockMove);
+    PrintingTemplate pickingStockMovePrintTemplate =
+        stockConfigService
+            .getStockConfig(stockMove.getCompany())
+            .getPickingStockMovePrintTemplate();
+    if (ObjectUtils.isEmpty(pickingStockMovePrintTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
-    String locale = ReportSettings.getPrintingLocale(stockMove.getPartner());
     String title = getFileName(stockMove);
 
-    ReportSettings reportSetting =
-        ReportFactory.createReport(IReport.PICKING_STOCK_MOVE, title + " - ${date}");
-    return reportSetting
-        .addParam("StockMoveId", stockMove.getId())
-        .addParam(
-            "Timezone",
-            stockMove.getCompany() != null ? stockMove.getCompany().getTimezone() : null)
-        .addParam("Locale", locale)
-        .addParam("HeaderHeight", stockMove.getPrintingSettings().getPdfHeaderHeight())
-        .addParam("FooterHeight", stockMove.getPrintingSettings().getPdfFooterHeight())
-        .addFormat(format);
+    return printingTemplatePrintService.getPrintFile(
+        pickingStockMovePrintTemplate,
+        new PrintingGenFactoryContext(stockMove),
+        title + " - ${date}");
   }
 
   @Override
-  public File print(StockMove stockMove, String format) throws AxelorException {
-    ReportSettings reportSettings = prepareReportSettings(stockMove, format);
-    return reportSettings.generate().getFile();
-  }
-
-  @Override
-  public String printStockMove(StockMove stockMove, String format, String userType)
+  public String printStockMove(StockMove stockMove, String userType)
       throws AxelorException, IOException {
     stockMoveService.setPickingStockMoveEditDate(stockMove, userType);
-    String fileName = getStockMoveFilesName(false, ReportSettings.FORMAT_PDF);
-    return PdfTool.getFileLinkFromPdfFile(print(stockMove, format), fileName);
+    return PrintingTemplateHelper.getFileLink(print(stockMove));
   }
 
   /**
@@ -110,16 +123,14 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
    *
    * @param plural if there is one or multiple stock moves.
    */
-  public String getStockMoveFilesName(boolean plural, String format) {
+  public String getStockMoveFilesName(boolean plural) {
 
     return I18n.get(plural ? "Stock moves" : "Stock move")
         + " - "
         + Beans.get(AppBaseService.class)
             .getTodayDate(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
-            .format(DateTimeFormatter.BASIC_ISO_DATE)
-        + "."
-        + format;
+            .format(DateTimeFormatter.BASIC_ISO_DATE);
   }
 
   @Override

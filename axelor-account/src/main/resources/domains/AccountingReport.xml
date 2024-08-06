@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -12,8 +12,9 @@
     <date name="dateTo" title="To"/>
     <date name="otherDateFrom" title="From"/>
     <date name="otherDateTo" title="To"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      required="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company"
+      title="Companies"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency"
       title="Origin currency"/>
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
@@ -33,12 +34,8 @@
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
 
     <boolean name="isComparativeBalance" title="Comparative balance" default="false"/>
-    <date name="previousDateFrom" title="From (N-1)"/>
-    <date name="previousDateTo" title="To (N-1)"/>
-    <many-to-one name="previousYear" ref="com.axelor.apps.base.db.Year"
-      title="Year (N-1)"/>
-    <many-to-one name="previousPeriod" ref="com.axelor.apps.base.db.Period"
-      title="Period (N-1)"/>
+    <many-to-one name="otherYear" ref="com.axelor.apps.base.db.Year" title="Year"/>
+    <many-to-one name="otherPeriod" ref="com.axelor.apps.base.db.Period" title="Period"/>
 
     <many-to-one name="reportType" ref="com.axelor.apps.account.db.AccountingReportType"
       title="Report type"/>
@@ -46,7 +43,8 @@
     <boolean name="detailed" title="Detailed" default="false"/>
     <integer name="statusSelect" title="Status"
       selection="iaccount.accounting.report.status.select" readonly="true" default="1"/>
-
+    <string name="moveStatusSelect" title="Move statuses"
+      selection="iaccount.move.status.select"/>
     <decimal name="totalDebit" title="Total Debit" readonly="true"/>
     <decimal name="totalCredit" title="Total Credit" readonly="true"/>
     <decimal name="balance" title="Balance" readonly="true"/>
@@ -59,7 +57,8 @@
 
     <!--Report 7 : Partner genereal ledger -->
     <boolean name="displayOnlyNotCompletelyLetteredMoveLines"
-      title="Display only not completely lettered move lines" default="false"/>
+      title="Display only not completely lettered move lines" default="false"
+      help="By selecting this option, only move lines not lettered or partially lettered are displayed."/>
     <boolean name="displayCumulativeBalance" title="Display cumulative balance on printing"/>
 
 
@@ -85,7 +84,6 @@
       title="Analytic Distribution Template"/>
 
     <boolean name="subtotalByAnalyticDistribution" title="Subtotal by analytic distribution"/>
-    <boolean name="displaySimulatedMove" title="Show simulated moves"/>
 
     <!-- Report 19 & 20 DAS2 -->
     <decimal name="minAmountExcl" title="Min. amount (€)"
@@ -102,9 +100,6 @@
       selection="account.fixed.asset.line.type.select" default="1"/>
 
     <!-- Report 3000 -->
-    <boolean name="displayDeltaYear" title="Display the delta between years"/>
-    <boolean name="displayDeltaYearPercentage"
-      title="Display the percentage delta between years"/>
     <boolean name="displayAnalyticAccountsDetails" title="Display analytic accounts details"/>
     <boolean name="displayDetails" title="Display detailed lines"/>
     <one-to-many ref="com.axelor.apps.account.db.AccountingReportAnalyticConfigLine"
@@ -113,6 +108,9 @@
 
     <boolean name="excludeViewAccount" default="false"/>
     <boolean name="excludeCommitmentSpecialAccount" default="false"/>
+
+    <!-- Transient -->
+    <boolean name="traceAnomalies" transient="true"/>
 
     <unique-constraint columns="ref,company"/>
 

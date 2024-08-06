@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,35 +22,34 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
-import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
-import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
 import com.axelor.apps.supplychain.db.Timetable;
-import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
@@ -60,12 +59,11 @@ import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     implements SaleOrderSupplychainService {
@@ -74,6 +72,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   protected SaleOrderStockService saleOrderStockService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
+  protected AccountingSituationSupplychainService accountingSituationSupplychainService;
+  protected TrackingNumberSupplychainService trackingNumberSupplychainService;
+
+  protected PartnerLinkSupplychainService partnerLinkSupplychainService;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -83,21 +85,31 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       SaleOrderRepository saleOrderRepo,
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
+      SaleConfigService saleConfigService,
+      SaleOrderLineCreateService saleOrderLineCreateService,
       AppSupplychainService appSupplychainService,
       SaleOrderStockService saleOrderStockService,
       PartnerStockSettingsService partnerStockSettingsService,
-      StockConfigService stockConfigService) {
+      StockConfigService stockConfigService,
+      AccountingSituationSupplychainService accountingSituationSupplychainService,
+      TrackingNumberSupplychainService trackingNumberSupplychainService,
+      PartnerLinkSupplychainService partnerLinkSupplychainService) {
     super(
         saleOrderLineService,
         appBaseService,
         saleOrderLineRepo,
         saleOrderRepo,
         saleOrderComputeService,
-        saleOrderMarginService);
+        saleOrderMarginService,
+        saleConfigService,
+        saleOrderLineCreateService);
     this.appSupplychainService = appSupplychainService;
     this.saleOrderStockService = saleOrderStockService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
+    this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+    this.trackingNumberSupplychainService = trackingNumberSupplychainService;
+    this.partnerLinkSupplychainService = partnerLinkSupplychainService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -141,10 +153,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
     List<StockMove> allStockMoves =
         Beans.get(StockMoveRepository.class)
-            .findAllBySaleOrderAndStatus(
-                StockMoveRepository.ORIGIN_SALE_ORDER,
-                saleOrder.getId(),
-                StockMoveRepository.STATUS_PLANNED)
+            .findAllBySaleOrderAndStatus(saleOrder, StockMoveRepository.STATUS_PLANNED)
             .fetch();
     List<StockMove> stockMoves =
         !allStockMoves.isEmpty()
@@ -154,6 +163,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
             : allStockMoves;
     checkAvailabiltyRequest =
         stockMoves.size() != allStockMoves.size() ? true : checkAvailabiltyRequest;
+    saleOrder
+        .getSaleOrderLineList()
+        .forEach(trackingNumberSupplychainService::freeOriginSaleOrderLine);
     if (!stockMoves.isEmpty()) {
       StockMoveService stockMoveService = Beans.get(StockMoveService.class);
       CancelReason cancelReason = appSupplychain.getCancelReasonOnChangingSaleOrder();
@@ -167,11 +179,16 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         stockMoveService.cancel(stockMove, cancelReason);
         stockMove.setArchived(true);
         for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
+          TrackingNumber trackingNumber = stockMoveline.getTrackingNumber();
+          if (trackingNumber != null) {
+            trackingNumber.setOriginSaleOrderLine(null);
+          }
           stockMoveline.setSaleOrderLine(null);
           stockMoveline.setArchived(true);
         }
       }
     }
+
     return checkAvailabiltyRequest;
   }
 
@@ -253,117 +270,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrderRepo.save(saleOrder);
-  }
-
-  @Override
-  public String createShipmentCostLine(SaleOrder saleOrder) throws AxelorException {
-    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
-    Partner client = saleOrder.getClientPartner();
-    ShipmentMode shipmentMode = saleOrder.getShipmentMode();
-
-    if (shipmentMode == null) {
-      return null;
-    }
-    Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
-    if (shippingCostProduct == null) {
-      return null;
-    }
-    BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
-    if (client != null) {
-      List<CustomerShippingCarriagePaid> carriagePaids =
-          client.getCustomerShippingCarriagePaidList();
-      for (CustomerShippingCarriagePaid customerShippingCarriagePaid : carriagePaids) {
-        if (shipmentMode.getId() == customerShippingCarriagePaid.getShipmentMode().getId()) {
-          if (customerShippingCarriagePaid.getShippingCostsProduct() != null) {
-            shippingCostProduct = customerShippingCarriagePaid.getShippingCostsProduct();
-          }
-          carriagePaidThreshold = customerShippingCarriagePaid.getCarriagePaidThreshold();
-          break;
-        }
-      }
-    }
-    if (carriagePaidThreshold != null && shipmentMode.getHasCarriagePaidPossibility()) {
-      if (computeExTaxTotalWithoutShippingLines(saleOrder).compareTo(carriagePaidThreshold) >= 0) {
-        String message = removeShipmentCostLine(saleOrder);
-        saleOrderComputeService.computeSaleOrder(saleOrder);
-        saleOrderMarginService.computeMarginSaleOrder(saleOrder);
-        return message;
-      }
-    }
-    if (alreadyHasShippingCostLine(saleOrder, shippingCostProduct)) {
-      return null;
-    }
-    SaleOrderLine shippingCostLine = createShippingCostLine(saleOrder, shippingCostProduct);
-    saleOrderLines.add(shippingCostLine);
-    saleOrderComputeService.computeSaleOrder(saleOrder);
-    saleOrderMarginService.computeMarginSaleOrder(saleOrder);
-    return null;
-  }
-
-  @Override
-  public boolean alreadyHasShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct) {
-    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
-    if (saleOrderLines == null) {
-      return false;
-    }
-    for (SaleOrderLine saleOrderLine : saleOrderLines) {
-      if (shippingCostProduct.equals(saleOrderLine.getProduct())) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  @Override
-  public SaleOrderLine createShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct)
-      throws AxelorException {
-    SaleOrderLine shippingCostLine = new SaleOrderLine();
-    shippingCostLine.setSaleOrder(saleOrder);
-    shippingCostLine.setProduct(shippingCostProduct);
-    saleOrderLineService.computeProductInformation(shippingCostLine, saleOrder);
-    saleOrderLineService.computeValues(saleOrder, shippingCostLine);
-    return shippingCostLine;
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public String removeShipmentCostLine(SaleOrder saleOrder) {
-    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
-    if (saleOrderLines == null) {
-      return null;
-    }
-    List<SaleOrderLine> linesToRemove = new ArrayList<>();
-    for (SaleOrderLine saleOrderLine : saleOrderLines) {
-      if (saleOrderLine.getProduct().getIsShippingCostsProduct()) {
-        linesToRemove.add(saleOrderLine);
-      }
-    }
-    if (linesToRemove.isEmpty()) {
-      return null;
-    }
-    for (SaleOrderLine lineToRemove : linesToRemove) {
-      saleOrderLines.remove(lineToRemove);
-      if (lineToRemove.getId() != null) {
-        saleOrderLineRepo.remove(lineToRemove);
-      }
-    }
-    saleOrder.setSaleOrderLineList(saleOrderLines);
-    return I18n.get("Carriage paid threshold is exceeded, all shipment cost lines are removed");
-  }
-
-  @Override
-  public BigDecimal computeExTaxTotalWithoutShippingLines(SaleOrder saleOrder) {
-    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
-    if (saleOrderLines == null) {
-      return BigDecimal.ZERO;
-    }
-    BigDecimal exTaxTotal = BigDecimal.ZERO;
-    for (SaleOrderLine saleOrderLine : saleOrderLines) {
-      if (!saleOrderLine.getProduct().getIsShippingCostsProduct()) {
-        exTaxTotal = exTaxTotal.add(saleOrderLine.getExTaxTotal());
-      }
-    }
-    return exTaxTotal;
+    accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
   }
 
   public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(SaleOrder saleOrder) {
@@ -373,9 +280,19 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       Partner clientPartner =
           Beans.get(PartnerRepository.class).find(saleOrder.getClientPartner().getId());
       if (clientPartner != null) {
-        setDefaultInvoicedAndDeliveredPartners(saleOrder, clientPartner);
+        saleOrder.setInvoicedPartner(
+            partnerLinkSupplychainService.getDefaultInvoicedPartner(clientPartner));
+        saleOrder.setDeliveredPartner(
+            partnerLinkSupplychainService.getDefaultDeliveredPartner(clientPartner));
         setInvoicedAndDeliveredAddresses(saleOrder);
       }
+    } else if (saleOrder != null && saleOrder.getClientPartner() == null) {
+      saleOrder.setInvoicedPartner(null);
+      saleOrder.setDeliveredPartner(null);
+      saleOrder.setMainInvoicingAddress(null);
+      saleOrder.setMainInvoicingAddressStr(null);
+      saleOrder.setDeliveryAddress(null);
+      saleOrder.setDeliveryAddressStr(null);
     }
   }
 
@@ -391,54 +308,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
           Beans.get(PartnerService.class).getDeliveryAddress(saleOrder.getDeliveredPartner()));
       saleOrder.setDeliveryAddressStr(
           Beans.get(AddressService.class).computeAddressStr(saleOrder.getDeliveryAddress()));
-    }
-  }
-
-  protected void setDefaultInvoicedAndDeliveredPartners(
-      SaleOrder saleOrder, Partner clientPartner) {
-    if (!CollectionUtils.isEmpty(clientPartner.getPartner1SupplychainLinkList())) {
-      List<PartnerSupplychainLink> partnerSupplychainLinkList =
-          clientPartner.getPartner1SupplychainLinkList();
-      // Retrieve all Invoiced by Type
-      List<PartnerSupplychainLink> partnerSupplychainLinkInvoicedByList =
-          partnerSupplychainLinkList.stream()
-              .filter(
-                  partnerSupplychainLink ->
-                      PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY.equals(
-                          partnerSupplychainLink.getPartnerSupplychainLinkType().getTypeSelect()))
-              .collect(Collectors.toList());
-      // Retrieve all Delivered by Type
-      List<PartnerSupplychainLink> partnerSupplychainLinkDeliveredByList =
-          partnerSupplychainLinkList.stream()
-              .filter(
-                  partnerSupplychainLink ->
-                      PartnerSupplychainLinkTypeRepository.TYPE_SELECT_DELIVERED_BY.equals(
-                          partnerSupplychainLink.getPartnerSupplychainLinkType().getTypeSelect()))
-              .collect(Collectors.toList());
-
-      // If there is only one, then it is the default one
-      if (partnerSupplychainLinkInvoicedByList.size() == 1) {
-        PartnerSupplychainLink partnerSupplychainLinkInvoicedBy =
-            partnerSupplychainLinkInvoicedByList.get(0);
-        saleOrder.setInvoicedPartner(partnerSupplychainLinkInvoicedBy.getPartner2());
-      } else if (partnerSupplychainLinkInvoicedByList.isEmpty()) {
-        saleOrder.setInvoicedPartner(clientPartner);
-      } else {
-        saleOrder.setInvoicedPartner(null);
-      }
-      if (partnerSupplychainLinkDeliveredByList.size() == 1) {
-        PartnerSupplychainLink partnerSupplychainLinkDeliveredBy =
-            partnerSupplychainLinkDeliveredByList.get(0);
-        saleOrder.setDeliveredPartner(partnerSupplychainLinkDeliveredBy.getPartner2());
-      } else if (partnerSupplychainLinkDeliveredByList.isEmpty()) {
-        saleOrder.setDeliveredPartner(clientPartner);
-      } else {
-        saleOrder.setDeliveredPartner(null);
-      }
-
-    } else {
-      saleOrder.setInvoicedPartner(clientPartner);
-      saleOrder.setDeliveredPartner(clientPartner);
     }
   }
 
@@ -472,5 +341,82 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       toStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
     }
     return toStockLocation;
+  }
+
+  @Override
+  public void setAdvancePayment(SaleOrder saleOrder) {
+    if (appSupplychainService.getAppSupplychain().getManageAdvancePaymentsFromPaymentConditions()
+        && saleOrder.getPaymentCondition() != null
+        && saleOrder.getPaymentCondition().getAdvancePaymentNeeded() != null) {
+      saleOrder.setAdvancePaymentNeeded(
+          saleOrder.getPaymentCondition().getAdvancePaymentNeeded().compareTo(BigDecimal.ZERO) > 0);
+      saleOrder.setAdvancePaymentAmountNeeded(
+          saleOrder
+              .getInTaxTotal()
+              .multiply(
+                  saleOrder
+                      .getPaymentCondition()
+                      .getAdvancePaymentNeeded()
+                      .divide(BigDecimal.valueOf(100)))
+              .setScale(2, RoundingMode.HALF_UP));
+    }
+  }
+
+  @Override
+  public void updateTimetableAmounts(SaleOrder saleOrder) {
+    if (saleOrder.getTimetableList() != null) {
+      saleOrder
+          .getTimetableList()
+          .forEach(
+              timetable ->
+                  timetable.setAmount(
+                      saleOrder
+                          .getExTaxTotal()
+                          .multiply(
+                              timetable
+                                  .getPercentage()
+                                  .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP))
+                          .setScale(
+                              appBaseService.getAppBase().getNbDecimalDigitForUnitPrice(),
+                              RoundingMode.HALF_UP)));
+    }
+  }
+
+  @Override
+  public boolean isIncotermRequired(SaleOrder saleOrder) {
+    return saleOrder.getSaleOrderLineList() != null
+        && saleOrder.getSaleOrderLineList().stream()
+            .anyMatch(
+                saleOrderLine ->
+                    saleOrderLine.getProduct() != null
+                        && saleOrderLine
+                            .getProduct()
+                            .getProductTypeSelect()
+                            .equals(ProductRepository.PRODUCT_TYPE_STORABLE))
+        && isSameAlpha2Code(saleOrder)
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION;
+  }
+
+  protected boolean isSameAlpha2Code(SaleOrder saleOrder) {
+    String saleOrderA2C = null;
+    String stockLocationA2C = null;
+    String companyA2C = null;
+    if (saleOrder.getDeliveryAddress() != null
+        && saleOrder.getDeliveryAddress().getCountry() != null) {
+      saleOrderA2C = saleOrder.getDeliveryAddress().getCountry().getAlpha2Code();
+    }
+    StockLocation stockLocation = saleOrder.getStockLocation();
+    if (stockLocation != null
+        && stockLocation.getAddress() != null
+        && stockLocation.getAddress().getCountry() != null) {
+      stockLocationA2C = stockLocation.getAddress().getCountry().getAlpha2Code();
+    }
+    if (saleOrder.getCompany() != null
+        && saleOrder.getCompany().getAddress() != null
+        && saleOrder.getCompany().getAddress().getCountry() != null) {
+      companyA2C = saleOrder.getCompany().getAddress().getCountry().getAlpha2Code();
+    }
+    return stockLocation != null && saleOrderA2C != null && !saleOrderA2C.equals(stockLocationA2C)
+        || stockLocation == null && saleOrderA2C != null && !saleOrderA2C.equals(companyA2C);
   }
 }

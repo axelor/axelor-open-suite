@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <!-- Recruitment menus -->
   <menuitem name="recruitment-root" parent="hr-root"
-    if="__config__.app.isApp('recruitment')" title="Recruitment" icon="fa-handshake-o"
+    if="__config__.app.isApp('recruitment')" title="Recruitment" icon="handshake"
     icon-background="#84429f" order="200"/>
 
   <menuitem name="recruitment-job-position-open" parent="recruitment-root"
@@ -80,7 +80,7 @@
     model="com.axelor.apps.talent.db.TrainingRegister" title="All trainings">
     <view name="training-register-grid" type="grid"/>
     <view name="training-register-form" type="form"/>
-    <view-param name="search-filters" value="my-training-register-fitlers"/>
+    <view-param name="search-filters" value="my-training-register-filters"/>
     <context name="_employeeId" expr="eval:__user__.employee?.id"/>
     <context name="_employeeList"
       expr="eval:([0] + __user__.teamSet.members.employee.id).flatten()"/>
@@ -136,7 +136,7 @@
     model="com.axelor.apps.talent.db.Appraisal" title="Appraisals">
     <view name="appraisal-grid" type="grid"/>
     <view name="appraisal-form" type="form"/>
-    <view-param name="search-filters" value="appraisal-fitlers"/>
+    <view-param name="search-filters" value="appraisal-filters"/>
     <domain>self.isTemplate = false</domain>
     <context name="_userId" expr="eval:__user__.id"/>
     <context name="_teamUserIds" expr="eval:([0] + __user__.teamSet.members.id).flatten()"/>
@@ -163,5 +163,11 @@
     <view type="grid" name="appraisal-type-grid"/>
     <view type="form" name="appraisal-type-form"/>
   </action-view>
+
+  <!-- MyHR -->
+
+  <menuitem name="my-hr-appraisal-all-appraisals" title="Appraisals"
+    action="appraisal.all.appraisals" parent="my-hr-root" order="600"
+    if="__config__.app.isApp('appraisal')" icon="fa-comments-o" icon-background="#84429f"/>
 
 </object-views>

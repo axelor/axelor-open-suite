@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO line"
     name="purchase-order-line-form" extension="true" id="project-purchase-order-line-form">
@@ -24,8 +24,9 @@
       readonly="true"/>
     <field name="productName" readonly="true"/>
     <field name="exTaxTotal" aggregate="sum" readonly="true"/>
-    <field name="amountInvoiced"/>
+    <field name="amountInvoiced" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="purchaseOrder.currency"/>
+    <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="toInvoice"/>
     <field name="invoiced"/>
     <button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced"

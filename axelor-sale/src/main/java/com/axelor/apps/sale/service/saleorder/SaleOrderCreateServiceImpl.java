@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,11 +27,13 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.AuthUtils;
@@ -56,6 +58,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   protected AppSaleService appSaleService;
   protected SaleOrderService saleOrderService;
   protected SaleOrderComputeService saleOrderComputeService;
+  protected DMSService dmsService;
+  protected SaleOrderLineRepository saleOrderLineRepository;
 
   @Inject
   public SaleOrderCreateServiceImpl(
@@ -63,13 +67,17 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       SaleOrderService saleOrderService,
-      SaleOrderComputeService saleOrderComputeService) {
+      SaleOrderComputeService saleOrderComputeService,
+      DMSService dmsService,
+      SaleOrderLineRepository saleOrderLineRepository) {
 
     this.partnerService = partnerService;
     this.saleOrderRepo = saleOrderRepo;
     this.appSaleService = appSaleService;
     this.saleOrderService = saleOrderService;
     this.saleOrderComputeService = saleOrderComputeService;
+    this.dmsService = dmsService;
+    this.saleOrderLineRepository = saleOrderLineRepository;
   }
 
   @Override
@@ -84,6 +92,41 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setTeam(saleOrder.getSalespersonUser().getActiveTeam());
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
     saleOrderService.computeEndOfValidityDate(saleOrder);
+    return saleOrder;
+  }
+
+  @Override
+  public SaleOrder createSaleOrder(
+      User salespersonUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate estimatedShippingDate,
+      String internalReference,
+      String externalReference,
+      PriceList priceList,
+      Partner clientPartner,
+      Team team,
+      TaxNumber taxNumber,
+      String internalNote,
+      FiscalPosition fiscalPosition)
+      throws AxelorException {
+    SaleOrder saleOrder =
+        createSaleOrder(
+            salespersonUser,
+            company,
+            contactPartner,
+            currency,
+            estimatedShippingDate,
+            internalReference,
+            externalReference,
+            priceList,
+            clientPartner,
+            team,
+            taxNumber,
+            fiscalPosition,
+            null);
+    saleOrder.setInternalNote(internalNote);
     return saleOrder;
   }
 
@@ -162,81 +205,6 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public SaleOrder mergeSaleOrders(
-      List<SaleOrder> saleOrderList,
-      Currency currency,
-      Partner clientPartner,
-      Company company,
-      Partner contactPartner,
-      PriceList priceList,
-      Team team,
-      TaxNumber taxNumber,
-      FiscalPosition fiscalPosition)
-      throws AxelorException {
-
-    String numSeq = "";
-    String externalRef = "";
-    for (SaleOrder saleOrderLocal : saleOrderList) {
-      if (!numSeq.isEmpty()) {
-        numSeq += "-";
-      }
-      numSeq += saleOrderLocal.getSaleOrderSeq();
-
-      if (!externalRef.isEmpty()) {
-        externalRef += "|";
-      }
-      if (saleOrderLocal.getExternalReference() != null) {
-        externalRef += saleOrderLocal.getExternalReference();
-      }
-    }
-
-    SaleOrder saleOrderMerged =
-        this.createSaleOrder(
-            AuthUtils.getUser(),
-            company,
-            contactPartner,
-            currency,
-            null,
-            numSeq,
-            externalRef,
-            priceList,
-            clientPartner,
-            team,
-            taxNumber,
-            fiscalPosition);
-
-    this.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
-
-    saleOrderComputeService.computeSaleOrder(saleOrderMerged);
-
-    saleOrderRepo.save(saleOrderMerged);
-
-    this.removeOldSaleOrders(saleOrderList);
-
-    return saleOrderMerged;
-  }
-
-  // Attachment of all sale order lines to new sale order
-  protected void attachToNewSaleOrder(List<SaleOrder> saleOrderList, SaleOrder saleOrderMerged) {
-    for (SaleOrder saleOrder : saleOrderList) {
-      int countLine = 1;
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        saleOrderLine.setSequence(countLine * 10);
-        saleOrderMerged.addSaleOrderLineListItem(saleOrderLine);
-        countLine++;
-      }
-    }
-  }
-
-  // Remove old sale orders after merge
-  protected void removeOldSaleOrders(List<SaleOrder> saleOrderList) {
-    for (SaleOrder saleOrder : saleOrderList) {
-      saleOrderRepo.remove(saleOrder);
-    }
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder createSaleOrder(
       SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList)
       throws AxelorException {
@@ -263,7 +231,9 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         if (saleOrderLine.getProduct() != null) {
-          saleOrderLineService.resetPrice(saleOrderLine);
+          if (!saleOrder.getTemplate()) {
+            saleOrderLineService.resetPrice(saleOrderLine);
+          }
           saleOrderLineService.fillPrice(saleOrderLine, saleOrder);
           saleOrderLineService.computeValues(saleOrder, saleOrderLine);
         }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -98,8 +98,6 @@
     <many-to-one name="stockMoveOrigin" ref="com.axelor.apps.stock.db.StockMove"
       title="Stock Move Origin"/>
 
-    <string name="originTypeSelect" title="Origin Type" selection="stockmove.origin.select"/>
-    <long name="originId" title="Origin Id"/>
     <string name="origin" readonly="true" title="Origin"/>
     <boolean name="availabilityRequest" title="Availability request"/>
 
@@ -113,13 +111,19 @@
     <string name="note" title="Notes" large="true"/>
 
     <boolean name="filterOnAvailableProducts" title="Filter on available products"
-      default="true" transient="true"/>
+      default="true"/>
 
     <many-to-one name="reversionOriginStockMove" title="Origin stock move"
       ref="com.axelor.apps.stock.db.StockMove"/>
 
     <string name="pickingOrderComments" title="Comment to display on picking order"
       large="true"/>
+
+    <many-to-one name="inventory" title="Inventory"
+      ref="com.axelor.apps.stock.db.Inventory" copy="false"/>
+    <many-to-one name="stockCorrection" title="Stock correction"
+      ref="com.axelor.apps.stock.db.StockCorrection" copy="false"/>
+
     <unique-constraint columns="stockMoveSeq,company"/>
 
     <extra-code><![CDATA[
@@ -129,6 +133,7 @@
 		public static final int STATUS_PLANNED = 2;
 		public static final int STATUS_REALIZED = 3;
 		public static final int STATUS_CANCELED = 4;
+		public static final int STATUS_MERGED = 5;
 
 		// AVAILABLE STATUS SELECT
 		public static final int STATUS_AVAILABLE = 1;
@@ -148,9 +153,6 @@
 		public static final int CONFORMITY_NONE = 1;
 		public static final int CONFORMITY_COMPLIANT = 2;
 		public static final int CONFORMITY_NON_COMPLIANT = 3;
-
-		public static final String ORIGIN_INVENTORY = "com.axelor.apps.stock.db.Inventory";
-		public static final String ORIGIN_STOCK_CORRECTION = "com.axelor.apps.stock.db.StockCorrection";
 	]]></extra-code>
 
     <track>

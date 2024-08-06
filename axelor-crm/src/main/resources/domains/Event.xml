@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -30,6 +30,8 @@
     <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner"
       title="Contact"/>
     <many-to-one name="eventLead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
+    <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity"
+      title="Opportunity"/>
 
     <!-- Call -->
     <integer name="callTypeSelect" title="Call type" default="2"
@@ -44,6 +46,8 @@
 
     <many-to-one name="recurrenceConfiguration"
       ref="com.axelor.apps.crm.db.RecurrenceConfiguration"/>
+
+    <finder-method name="findByPartner" using="partner" all="true"/>
 
     <extra-code>
       	<![CDATA[

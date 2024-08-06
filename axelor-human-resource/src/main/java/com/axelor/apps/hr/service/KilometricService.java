@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,6 +32,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.KilometricAllowanceRule;
 import com.axelor.apps.hr.db.KilometricLog;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.KilometricLogRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
@@ -44,7 +45,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.BufferedReader;
@@ -85,7 +86,8 @@ public class KilometricService {
     return employee.getKilometricLogList().stream()
         .filter(
             log ->
-                DateTool.isBetween(log.getYear().getFromDate(), log.getYear().getToDate(), refDate))
+                LocalDateHelper.isBetween(
+                    log.getYear().getFromDate(), log.getYear().getToDate(), refDate))
         .findFirst()
         .orElse(null);
   }
@@ -210,7 +212,6 @@ public class KilometricService {
         price = price.add(max.subtract(min).multiply(rule.getRate()));
       }
     }
-
     return price.setScale(2, RoundingMode.HALF_UP);
   }
 
@@ -226,6 +227,10 @@ public class KilometricService {
   }
 
   public BigDecimal computeDistance(ExpenseLine expenseLine) throws AxelorException {
+    if (expenseLine.getKilometricTypeSelect() == ExpenseLineRepository.KILOMETRIC_TYPE_ROUND_TRIP) {
+      return computeDistance(expenseLine.getFromCity(), expenseLine.getToCity())
+          .multiply(BigDecimal.valueOf(2));
+    }
     return computeDistance(expenseLine.getFromCity(), expenseLine.getToCity());
   }
 
@@ -237,7 +242,7 @@ public class KilometricService {
    * @return
    * @throws AxelorException
    */
-  protected BigDecimal computeDistance(String fromCity, String toCity) throws AxelorException {
+  public BigDecimal computeDistance(String fromCity, String toCity) throws AxelorException {
 
     BigDecimal distance = BigDecimal.ZERO;
     if (StringUtils.isEmpty(fromCity)
@@ -252,7 +257,7 @@ public class KilometricService {
           break;
 
         case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
-          distance = this.getDistanceUsingOSM(fromCity, toCity);
+          distance = this.getDistanceUsingOSRMApi(fromCity, toCity);
           break;
       }
       return distance;
@@ -285,33 +290,6 @@ public class KilometricService {
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR,
         msg);
-  }
-
-  protected BigDecimal getDistanceUsingOSM(String fromCity, String toCity)
-      throws JSONException, AxelorException, URISyntaxException, IOException {
-    AppBase appBase = appBaseService.getAppBase();
-    BigDecimal distance = BigDecimal.ZERO;
-
-    if (appBase.getOsmRoutingServiceApiSelect() == AppBaseRepository.ROUTING_API_YOURS) {
-      distance = this.getDistanceUsingYOURSApi(fromCity, toCity);
-    } else if (appBase.getOsmRoutingServiceApiSelect() == AppBaseRepository.ROUTING_API_OSRM) {
-      distance = this.getDistanceUsingOSRMApi(fromCity, toCity);
-    }
-    return distance;
-  }
-
-  protected BigDecimal getDistanceUsingYOURSApi(String fromCity, String toCity)
-      throws AxelorException, JSONException, URISyntaxException, IOException {
-    BigDecimal distance = BigDecimal.ZERO;
-    JSONObject json = getYOURSApiResponse(fromCity, toCity);
-    distance = BigDecimal.valueOf(json.getJSONObject("properties").getDouble("distance"));
-    if (distance.compareTo(BigDecimal.ZERO) == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR,
-          ITranslation.NO_ROUTE);
-    }
-    return distance;
   }
 
   protected BigDecimal getDistanceUsingOSRMApi(String fromCity, String toCity)
@@ -384,40 +362,6 @@ public class KilometricService {
             originCoordinates, destinationCoordinates);
 
     return this.getApiResponse(uri, HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR);
-  }
-
-  /**
-   * Get JSON response from YOURS(Yet Another Openstreetmap Route Service) API.
-   *
-   * @param origins
-   * @param destinations
-   * @return
-   * @throws AxelorException
-   * @throws JSONException
-   * @throws URISyntaxException
-   * @throws IOException
-   */
-  protected JSONObject getYOURSApiResponse(String origins, String destinations)
-      throws AxelorException, JSONException, URISyntaxException, IOException {
-
-    Map<String, Object> originMap = this.getLocationMap(origins);
-    Map<String, Object> destinationMap = this.getLocationMap(destinations);
-
-    String flat = originMap.get("latitude").toString();
-    String flon = originMap.get("longitude").toString();
-    String tlat = destinationMap.get("latitude").toString();
-    String tlon = destinationMap.get("longitude").toString();
-
-    URIBuilder ub = new URIBuilder("http://www.yournavigation.org/api/1.0/gosmore.php");
-    ub.addParameter("format", "geojson");
-    ub.addParameter("flat", flat);
-    ub.addParameter("flon", flon);
-    ub.addParameter("tlat", tlat);
-    ub.addParameter("tlon", tlon);
-    ub.addParameter("v", "motorcar");
-    ub.addParameter("fast", "0");
-    return this.getApiResponse(
-        ub.toString(), HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR);
   }
 
   protected Map<String, Object> getLocationMap(String location) throws AxelorException {

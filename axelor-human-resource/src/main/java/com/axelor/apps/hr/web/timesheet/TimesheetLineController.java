@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -54,13 +54,18 @@ public class TimesheetLineController {
       } else {
         timesheet = timesheetLine.getTimesheet();
       }
+      TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
       BigDecimal hoursDuration =
-          Beans.get(TimesheetLineService.class)
-              .computeHoursDuration(timesheet, timesheetLine.getDuration(), true);
+          timesheetLineService.computeHoursDuration(timesheet, timesheetLine.getDuration(), true);
+
+      // check daily limit
+      timesheetLineService.checkDailyLimit(timesheet, timesheetLine, hoursDuration);
 
       response.setValue(HOURS_DURATION_FIELD, hoursDuration);
 
     } catch (Exception e) {
+      response.setValue(DURATION_FIELD, 0);
+      response.setValue(HOURS_DURATION_FIELD, 0);
       TraceBackService.trace(response, e);
     }
   }
@@ -111,5 +116,30 @@ public class TimesheetLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void checkDailyLimit(ActionRequest request, ActionResponse response) {
+    try {
+      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+      Timesheet timesheet;
+      Context parent = request.getContext().getParent();
+      if (parent != null && parent.getContextClass().equals(Timesheet.class)) {
+        timesheet = parent.asType(Timesheet.class);
+      } else {
+        timesheet = timesheetLine.getTimesheet();
+      }
+      Beans.get(TimesheetLineService.class)
+          .checkDailyLimit(timesheet, timesheetLine, timesheetLine.getHoursDuration());
+    } catch (Exception e) {
+      response.setValue(DURATION_FIELD, 0);
+      response.setValue(HOURS_DURATION_FIELD, 0);
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setProduct(ActionRequest request, ActionResponse response) {
+    TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+    response.setAttr(
+        "product", "value", Beans.get(TimesheetLineService.class).getDefaultProduct(timesheetLine));
   }
 }

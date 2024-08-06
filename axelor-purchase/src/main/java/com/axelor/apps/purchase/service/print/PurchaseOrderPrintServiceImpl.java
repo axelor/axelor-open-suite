@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,24 +18,27 @@
  */
 package com.axelor.apps.purchase.service.print;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
-import com.axelor.apps.purchase.report.IReport;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.studio.db.AppBase;
-import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.ModelHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -48,80 +51,78 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
 
   protected AppPurchaseService appPurchaseService;
   protected AppBaseService appBaseService;
+  protected PurchaseOrderService purchaseOrderService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
+  protected PurchaseConfigService purchaseConfigService;
 
   @Inject
   public PurchaseOrderPrintServiceImpl(
-      AppPurchaseService appPurchaseService, AppBaseService appBaseService) {
+      AppPurchaseService appPurchaseService,
+      AppBaseService appBaseService,
+      PurchaseOrderService purchaseOrderService,
+      PrintingTemplatePrintService printingTemplatePrintService,
+      PurchaseConfigService purchaseConfigService) {
     this.appPurchaseService = appPurchaseService;
     this.appBaseService = appBaseService;
+    this.purchaseOrderService = purchaseOrderService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
+    this.purchaseConfigService = purchaseConfigService;
   }
 
   @Override
-  public String printPurchaseOrder(PurchaseOrder purchaseOrder, String formatPdf)
-      throws AxelorException {
-    String fileName = getFileName(purchaseOrder) + "." + formatPdf;
-    return PdfTool.getFileLinkFromPdfFile(print(purchaseOrder, formatPdf), fileName);
+  public String printPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+    return PrintingTemplateHelper.getFileLink(print(purchaseOrder));
   }
 
   @Override
-  public String printPurchaseOrders(List<Long> ids) throws IOException {
+  public String printPurchaseOrders(List<Long> ids) throws IOException, AxelorException {
     List<File> printedPurchaseOrders = new ArrayList<>();
-    ModelTool.apply(
-        PurchaseOrder.class,
-        ids,
-        new ThrowConsumer<PurchaseOrder, Exception>() {
+    int errorCount =
+        ModelHelper.apply(
+            PurchaseOrder.class,
+            ids,
+            new ThrowConsumer<PurchaseOrder, Exception>() {
 
-          @Override
-          public void accept(PurchaseOrder purchaseOrder) throws Exception {
-            printedPurchaseOrders.add(print(purchaseOrder, ReportSettings.FORMAT_PDF));
-          }
-        });
-
+              @Override
+              public void accept(PurchaseOrder purchaseOrder) throws Exception {
+                try {
+                  printedPurchaseOrders.add(print(purchaseOrder));
+                } catch (Exception e) {
+                  TraceBackService.trace(e);
+                  throw e;
+                }
+              }
+            });
+    if (errorCount > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
+    }
     Integer status = Beans.get(PurchaseOrderRepository.class).find(ids.get(0)).getStatusSelect();
     String fileName = getPurchaseOrderFilesName(status);
-    return PdfTool.mergePdfToFileLink(printedPurchaseOrders, fileName);
+    return PrintingTemplateHelper.mergeToFileLink(printedPurchaseOrders, fileName);
   }
 
-  public File print(PurchaseOrder purchaseOrder, String formatPdf) throws AxelorException {
-    ReportSettings reportSettings = prepareReportSettings(purchaseOrder, formatPdf);
-    return reportSettings.generate().getFile();
+  @Override
+  public File print(PurchaseOrder purchaseOrder) throws AxelorException {
+    PrintingTemplate purchaseOrderPrintTemplate =
+        purchaseConfigService.getPurchaseOrderPrintTemplate(purchaseOrder.getCompany());
+    return print(
+        purchaseOrder, purchaseOrderPrintTemplate, purchaseOrderPrintTemplate.getToAttach());
   }
 
-  public ReportSettings prepareReportSettings(PurchaseOrder purchaseOrder, String formatPdf)
+  @Override
+  public File print(
+      PurchaseOrder purchaseOrder, PrintingTemplate purchaseOrderPrintTemplate, boolean toAttach)
       throws AxelorException {
-    if (purchaseOrder.getPrintingSettings() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          String.format(
-              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
-              purchaseOrder.getPurchaseOrderSeq()),
-          purchaseOrder);
-    }
-    String locale = ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
+    purchaseOrderService.checkPrintingSettings(purchaseOrder);
     String title = getFileName(purchaseOrder);
-    AppBase appBase = appBaseService.getAppBase();
-    ReportSettings reportSetting =
-        ReportFactory.createReport(IReport.PURCHASE_ORDER, title + " - ${date}");
 
-    return reportSetting
-        .addParam("PurchaseOrderId", purchaseOrder.getId())
-        .addParam(
-            "Timezone",
-            purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getTimezone() : null)
-        .addParam("Locale", locale)
-        .addParam(
-            "GroupProducts",
-            appBase.getIsRegroupProductsOnPrintings()
-                && purchaseOrder.getGroupProductsOnPrintings())
-        .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
-        .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
-        .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
-        .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
-        .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
-        .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
-        .addParam(
-            "AddressPositionSelect", purchaseOrder.getPrintingSettings().getAddressPositionSelect())
-        .addFormat(formatPdf);
+    return printingTemplatePrintService.getPrintFile(
+        purchaseOrderPrintTemplate,
+        new PrintingGenFactoryContext(EntityHelper.getEntity(purchaseOrder)),
+        title + " - ${date}",
+        toAttach);
   }
 
   protected String getPurchaseOrderFilesName(Integer status) {
@@ -135,9 +136,7 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
         + appBaseService
             .getTodayDate(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
-            .format(DateTimeFormatter.BASIC_ISO_DATE)
-        + "."
-        + ReportSettings.FORMAT_PDF;
+            .format(DateTimeFormatter.BASIC_ISO_DATE);
   }
 
   @Override

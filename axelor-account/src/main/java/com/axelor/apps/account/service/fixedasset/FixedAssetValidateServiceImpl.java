@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,9 +22,13 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -41,17 +45,20 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
 
   protected FixedAssetRepository fixedAssetRepo;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public FixedAssetValidateServiceImpl(
       FixedAssetLineService fixedAssetLineService,
       FixedAssetGenerationService fixedAssetGenerationService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
-      FixedAssetRepository fixedAssetRepo) {
+      FixedAssetRepository fixedAssetRepo,
+      CurrencyScaleService currencyScaleService) {
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetRepo = fixedAssetRepo;
+    this.currencyScaleService = currencyScaleService;
   }
 
   /**
@@ -97,11 +104,14 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
 
       Optional<FixedAssetLine> lastRealizedLine =
           fixedAssetLineService.findNewestFixedAssetLine(
-              fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0);
+              fixedAsset, FixedAssetLineRepository.STATUS_REALIZED, 0);
       if (lastRealizedLine.isPresent()) {
-        fixedAsset.setAccountingValue(lastRealizedLine.get().getAccountingValue());
+        fixedAsset.setAccountingValue(
+            currencyScaleService.getCompanyScaledValue(
+                fixedAsset, lastRealizedLine.get().getAccountingValue()));
       } else if (fixedAsset.getIsEqualToFiscalDepreciation()) {
-        fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
+        fixedAsset.setAccountingValue(
+            currencyScaleService.getCompanyScaledValue(fixedAsset, fixedAsset.getGrossValue()));
       } else if (fixedAsset.getDepreciationPlanSelect().isEmpty()
           || fixedAsset
               .getDepreciationPlanSelect()
@@ -109,7 +119,8 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
         fixedAsset.setAccountingValue(BigDecimal.ZERO);
       } else {
         fixedAsset.setAccountingValue(
-            fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
+            currencyScaleService.getCompanyScaledValue(
+                fixedAsset, fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue())));
       }
     }
     if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
@@ -125,7 +136,16 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
     for (Long id : fixedAssetIds) {
       FixedAsset fixedAsset = fixedAssetRepo.find(id);
       if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
-        validate(fixedAsset);
+        try {
+          validate(fixedAsset);
+        } catch (AxelorException e) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(AccountExceptionMessage.FIXED_ASSET_MASS_VALIDATION_EXCEPTION),
+              fixedAsset.getId(),
+              e.getLocalizedMessage());
+        }
+
         JPA.clear();
         count++;
       }

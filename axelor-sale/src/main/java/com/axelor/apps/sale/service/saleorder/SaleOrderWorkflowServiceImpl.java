@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.CancelReason;
@@ -33,13 +32,13 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.app.AppCrmService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -59,6 +58,9 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   protected AppCrmService appCrmService;
   protected UserService userService;
   protected SaleOrderLineService saleOrderLineService;
+  protected SaleOrderService saleOrderService;
+  protected SaleConfigService saleConfigService;
+  protected SaleOrderPrintService saleOrderPrintService;
 
   @Inject
   public SaleOrderWorkflowServiceImpl(
@@ -68,7 +70,10 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       AppSaleService appSaleService,
       AppCrmService appCrmService,
       UserService userService,
-      SaleOrderLineService saleOrderLineService) {
+      SaleOrderLineService saleOrderLineService,
+      SaleOrderService saleOrderService,
+      SaleConfigService saleConfigService,
+      SaleOrderPrintService saleOrderPrintService) {
 
     this.sequenceService = sequenceService;
     this.partnerRepo = partnerRepo;
@@ -77,6 +82,9 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     this.appCrmService = appCrmService;
     this.userService = userService;
     this.saleOrderLineService = saleOrderLineService;
+    this.saleOrderService = saleOrderService;
+    this.saleConfigService = saleConfigService;
+    this.saleOrderPrintService = saleOrderPrintService;
   }
 
   @Override
@@ -91,11 +99,11 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   }
 
   @Override
-  public String getSequence(Company company) throws AxelorException {
+  public String getSequence(Company company, SaleOrder saleOrder) throws AxelorException {
 
     String seq =
         sequenceService.getSequenceNumber(
-            SequenceRepository.SALES_ORDER, company, SaleOrder.class, "saleOrderSeq");
+            SequenceRepository.SALES_ORDER, company, SaleOrder.class, "saleOrderSeq", saleOrder);
     if (seq == null) {
       throw new AxelorException(
           company,
@@ -175,15 +183,11 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       }
     }
 
-    if (saleOrder.getVersionNumber() == 1
-        && sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
-      saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
+    if (sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
+      saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany(), saleOrder));
     }
 
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
-    if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
-      this.saveSaleOrderPDFAsAttachment(saleOrder);
-    }
 
     Opportunity opportunity = saleOrder.getOpportunity();
     if (opportunity != null) {
@@ -191,6 +195,10 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     }
 
     saleOrderRepo.save(saleOrder);
+
+    if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
+      this.saveSaleOrderPDFAsAttachment(saleOrder);
+    }
   }
 
   @Override
@@ -240,53 +248,11 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
   @Override
   public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException {
-
-    if (saleOrder.getPrintingSettings() == null) {
-      if (saleOrder.getCompany().getPrintingSettings() != null) {
-        saleOrder.setPrintingSettings(saleOrder.getCompany().getPrintingSettings());
-      } else {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            String.format(
-                I18n.get(SaleExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS),
-                saleOrder.getSaleOrderSeq()),
-            saleOrder);
-      }
-    }
-
-    ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder) + "-${date}")
-        .addParam("Locale", ReportSettings.getPrintingLocale(saleOrder.getClientPartner()))
-        .addParam(
-            "Timezone",
-            saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
-        .addParam("SaleOrderId", saleOrder.getId())
-        .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
-        .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
-        .addParam(
-            "AddressPositionSelect", saleOrder.getPrintingSettings().getAddressPositionSelect())
-        .toAttach(saleOrder)
-        .generate()
-        .getFileLink();
-
-    //		String relatedModel = generalService.getPersistentClass(saleOrder).getCanonicalName();
-    // required ?
-
-  }
-
-  @Override
-  public String getFileName(SaleOrder saleOrder) {
-    String fileNamePrefix;
-    if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
-        || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-      fileNamePrefix = "Sale quotation";
-    } else {
-      fileNamePrefix = "Sale order";
-    }
-
-    return I18n.get(fileNamePrefix)
-        + " "
-        + saleOrder.getSaleOrderSeq()
-        + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "");
+    saleOrderPrintService.print(
+        saleOrder,
+        false,
+        saleConfigService.getSaleOrderPrintTemplate(saleOrder.getCompany()),
+        true);
   }
 
   /**
@@ -295,6 +261,6 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
    * @param saleOrder a sale order being finalized
    */
   protected void checkSaleOrderBeforeFinalization(SaleOrder saleOrder) throws AxelorException {
-    Beans.get(SaleOrderService.class).checkUnauthorizedDiscounts(saleOrder);
+    saleOrderService.checkUnauthorizedDiscounts(saleOrder);
   }
 }

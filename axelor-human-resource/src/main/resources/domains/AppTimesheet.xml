@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="AppTimesheet" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <integer name="invoicingTypeLogTimesSelect" title="Invoicing Type for Log Times"
       selection="hrs.timesheet.line.invoicing.type.select" default="1"/>
@@ -17,6 +17,7 @@
 
     <!-- Timesheet Timer configuration -->
     <boolean name="enableTimer" title="Start&amp;Stop" default="true"/>
+    <boolean name="isMultipleTimerEnabled" title="Enable multiple timer" default="false"/>
     <boolean name="editModeTSTimer" title="Edit Start&amp;Stop Timer On Stop" default="true"/>
     <boolean name="keepProject" title="Keep Project for Start&amp;Stop Timer" default="true"/>
 
@@ -37,6 +38,8 @@
     <boolean name="needValidation" title="Need validation" default="false"/>
     <boolean name="enableActivity" title="Enable activity"
       help="Allow to associate a product to the timesheet line (pre-requisite: only for product type that are services and Activity field is TRUE). Additional configuration can also be found in Application config --> Users/companies --> Companies --> Human resources config."/>
+    <integer name="dailyLimit" title="Daily limit"
+      help="Time limit for a day in a timesheet"/>
 
     <track>
       <field name="invoicingTypeLogTimesSelect" on="UPDATE"/>
@@ -58,6 +61,7 @@
       <field name="timesheetReminderTemplate" on="UPDATE"/>
       <field name="displayTaskColumnInPrinting" on="UPDATE"/>
       <field name="displayActivityColumnInPrinting" on="UPDATE"/>
+      <field name="isMultipleTimerEnabled" on="UPDATE"/>
     </track>
   </entity>
 

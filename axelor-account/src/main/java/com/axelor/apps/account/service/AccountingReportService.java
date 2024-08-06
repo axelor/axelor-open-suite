@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -67,7 +67,7 @@ public interface AccountingReportService {
 
   public BigDecimal getCreditBalanceType4();
 
-  public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException;
+  public boolean areThereTooManyLines(AccountingReport accountingReport) throws AxelorException;
 
   public void testReportedDateField(LocalDate reportedDate) throws AxelorException;
 
@@ -84,4 +84,6 @@ public interface AccountingReportService {
    */
   public Map<String, Object> getFieldsFromReportTypeModelAccountingReport(
       AccountingReport accountingReport) throws AxelorException;
+
+  void checkReportType(AccountingReport accountingReport) throws AxelorException;
 }

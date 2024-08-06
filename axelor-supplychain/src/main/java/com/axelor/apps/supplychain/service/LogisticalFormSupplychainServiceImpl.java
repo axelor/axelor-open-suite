@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,12 +20,9 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
-import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
@@ -54,17 +51,8 @@ public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceI
       return logisticalFormLine;
     }
 
-    StockMove stockMove =
-        logisticalFormLine.getStockMoveLine() != null
-            ? logisticalFormLine.getStockMoveLine().getStockMove()
-            : null;
-
-    if (stockMove != null
-        && stockMove.getOriginId() != null
-        && stockMove.getOriginId() != 0
-        && stockMove.getOriginTypeSelect().equals(StockMoveRepository.ORIGIN_SALE_ORDER)) {
-      logisticalFormLine.setSaleOrder(
-          Beans.get(SaleOrderRepository.class).find(stockMove.getOriginId()));
+    if (stockMoveLine.getSaleOrderLine() != null) {
+      logisticalFormLine.setSaleOrder(stockMoveLine.getSaleOrderLine().getSaleOrder());
     }
 
     return logisticalFormLine;

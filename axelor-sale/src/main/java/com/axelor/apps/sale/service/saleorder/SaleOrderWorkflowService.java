@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,7 @@ public interface SaleOrderWorkflowService {
 
   Partner validateCustomer(SaleOrder saleOrder);
 
-  String getSequence(Company company) throws AxelorException;
+  String getSequence(Company company, SaleOrder saleOrder) throws AxelorException;
 
   void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
       throws AxelorException;
@@ -38,8 +38,6 @@ public interface SaleOrderWorkflowService {
   void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
   void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
-
-  String getFileName(SaleOrder saleOrder);
 
   void completeSaleOrder(SaleOrder saleOrder) throws AxelorException;
 }

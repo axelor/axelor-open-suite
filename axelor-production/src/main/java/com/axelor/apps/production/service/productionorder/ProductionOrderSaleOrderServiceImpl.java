@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,45 +20,41 @@ package com.axelor.apps.production.service.productionorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.i18n.I18n;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleOrderService {
 
-  protected UnitConversionService unitConversionService;
   protected ProductionOrderService productionOrderService;
   protected ProductionOrderRepository productionOrderRepo;
   protected AppProductionService appProductionService;
+  protected ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService;
+  protected StockLocationLineService stockLocationLineService;
 
   @Inject
   public ProductionOrderSaleOrderServiceImpl(
-      UnitConversionService unitConversionService,
       ProductionOrderService productionOrderService,
       ProductionOrderRepository productionOrderRepo,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService,
+      StockLocationLineService stockLocationLineService) {
 
-    this.unitConversionService = unitConversionService;
     this.productionOrderService = productionOrderService;
     this.productionOrderRepo = productionOrderRepo;
     this.appProductionService = appProductionService;
+    this.productionOrderSaleOrderMOGenerationService = productionOrderSaleOrderMOGenerationService;
+    this.stockLocationLineService = stockLocationLineService;
   }
 
   @Override
@@ -91,7 +87,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
   protected ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
 
-    return productionOrderService.createProductionOrder(saleOrder);
+    return productionOrderService.createProductionOrder(saleOrder, null);
   }
 
   @Override
@@ -100,107 +96,34 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
     Product product = saleOrderLine.getProduct();
 
-    if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE
+    // Produce everything
+    if (saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
         && product != null
         && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
 
-      BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
+      BigDecimal qtyToProduce = saleOrderLine.getQty();
 
-      if (billOfMaterial == null) {
-        billOfMaterial = product.getDefaultBillOfMaterial();
+      return productionOrderSaleOrderMOGenerationService.generateManufOrders(
+          productionOrder, saleOrderLine, product, qtyToProduce);
+
+    }
+    // Produce only missing qty
+    else if (saleOrderLine.getSaleSupplySelect()
+            == SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE
+        && product != null
+        && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+
+      BigDecimal availableQty =
+          stockLocationLineService.getAvailableQty(
+              saleOrderLine.getSaleOrder().getStockLocation(), product);
+      BigDecimal qtyToProduce = saleOrderLine.getQty().subtract(availableQty);
+
+      if (qtyToProduce.compareTo(BigDecimal.ZERO) > 0) {
+        return productionOrderSaleOrderMOGenerationService.generateManufOrders(
+            productionOrder, saleOrderLine, product, qtyToProduce);
       }
-
-      if (billOfMaterial == null && product.getParentProduct() != null) {
-        billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
-      }
-
-      if (billOfMaterial == null) {
-        throw new AxelorException(
-            saleOrderLine,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM),
-            product.getName(),
-            product.getCode());
-      }
-
-      if (billOfMaterial.getProdProcess() == null) {
-        return null;
-      }
-
-      Unit unit = saleOrderLine.getProduct().getUnit();
-      BigDecimal qty = saleOrderLine.getQty();
-      if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
-        qty =
-            unitConversionService.convert(
-                saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
-      }
-
-      return generateManufOrders(
-          productionOrder,
-          billOfMaterial,
-          qty,
-          LocalDateTime.now(),
-          saleOrderLine.getSaleOrder(),
-          saleOrderLine);
     }
 
     return null;
-  }
-
-  /**
-   * Loop through bill of materials components to generate manufacturing order for given sale order
-   * line and all of its sub manuf order needed to get components for parent manufacturing order.
-   *
-   * @param productionOrder Initialized production order with no manufacturing order.
-   * @param billOfMaterial the bill of material of the parent manufacturing order
-   * @param qtyRequested the quantity requested of the parent manufacturing order.
-   * @param startDate startDate of creation
-   * @param saleOrder a sale order
-   * @return the updated production order with all generated manufacturing orders.
-   * @throws AxelorException
-   */
-  protected ProductionOrder generateManufOrders(
-      ProductionOrder productionOrder,
-      BillOfMaterial billOfMaterial,
-      BigDecimal qtyRequested,
-      LocalDateTime startDate,
-      SaleOrder saleOrder,
-      SaleOrderLine saleOrderLine)
-      throws AxelorException {
-
-    List<BillOfMaterial> childBomList = new ArrayList<>();
-    childBomList.add(billOfMaterial);
-    // prevent infinite loop
-    int depth = 0;
-    while (!childBomList.isEmpty()) {
-      if (depth >= 100) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(ProductionExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
-      }
-      List<BillOfMaterial> tempChildBomList = new ArrayList<>();
-      for (BillOfMaterial childBom : childBomList) {
-        productionOrder =
-            productionOrderService.addManufOrder(
-                productionOrder,
-                childBom.getProduct(),
-                childBom,
-                qtyRequested.multiply(childBom.getQty()),
-                startDate,
-                null,
-                saleOrder,
-                saleOrderLine,
-                ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER);
-        tempChildBomList.addAll(
-            childBom.getBillOfMaterialSet().stream()
-                .filter(BillOfMaterial::getDefineSubBillOfMaterial)
-                .collect(Collectors.toList()));
-      }
-      childBomList.clear();
-      childBomList.addAll(tempChildBomList);
-      tempChildBomList.clear();
-      depth++;
-    }
-    return productionOrder;
   }
 }

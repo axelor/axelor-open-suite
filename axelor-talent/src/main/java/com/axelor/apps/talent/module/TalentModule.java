@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,15 +28,27 @@ import com.axelor.apps.talent.db.repo.TrainingRegisterRepository;
 import com.axelor.apps.talent.db.repo.TrainingRegisterTalentRepository;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;
 import com.axelor.apps.talent.db.repo.TrainingSessionTalentRepository;
+import com.axelor.apps.talent.service.AppTalentService;
+import com.axelor.apps.talent.service.AppTalentServiceImpl;
 import com.axelor.apps.talent.service.AppraisalService;
 import com.axelor.apps.talent.service.AppraisalServiceImpl;
+import com.axelor.apps.talent.service.JobApplicationComputeNameService;
+import com.axelor.apps.talent.service.JobApplicationComputeNameServiceImpl;
 import com.axelor.apps.talent.service.JobApplicationService;
 import com.axelor.apps.talent.service.JobApplicationServiceImpl;
 import com.axelor.apps.talent.service.JobPositionService;
 import com.axelor.apps.talent.service.JobPositionServiceImpl;
 import com.axelor.apps.talent.service.MailAccountServiceTalentImpl;
+import com.axelor.apps.talent.service.TalentDashboardService;
+import com.axelor.apps.talent.service.TalentDashboardServiceImpl;
+import com.axelor.apps.talent.service.TrainingRegisterComputeNameService;
+import com.axelor.apps.talent.service.TrainingRegisterComputeNameServiceImpl;
+import com.axelor.apps.talent.service.TrainingRegisterComputeRatingService;
+import com.axelor.apps.talent.service.TrainingRegisterComputeRatingServiceImpl;
 import com.axelor.apps.talent.service.TrainingRegisterService;
 import com.axelor.apps.talent.service.TrainingRegisterServiceImpl;
+import com.axelor.apps.talent.service.TrainingSessionComputeNameService;
+import com.axelor.apps.talent.service.TrainingSessionComputeNameServiceImpl;
 import com.axelor.apps.talent.service.TrainingSessionService;
 import com.axelor.apps.talent.service.TrainingSessionServiceImpl;
 
@@ -55,5 +67,12 @@ public class TalentModule extends AxelorModule {
     bind(MailAccountServiceBaseImpl.class).to(MailAccountServiceTalentImpl.class);
     bind(JobPositionService.class).to(JobPositionServiceImpl.class);
     bind(AppraisalService.class).to(AppraisalServiceImpl.class);
+    bind(AppTalentService.class).to(AppTalentServiceImpl.class);
+    bind(TalentDashboardService.class).to(TalentDashboardServiceImpl.class);
+    bind(JobApplicationComputeNameService.class).to(JobApplicationComputeNameServiceImpl.class);
+    bind(TrainingRegisterComputeNameService.class).to(TrainingRegisterComputeNameServiceImpl.class);
+    bind(TrainingSessionComputeNameService.class).to(TrainingSessionComputeNameServiceImpl.class);
+    bind(TrainingRegisterComputeRatingService.class)
+        .to(TrainingRegisterComputeRatingServiceImpl.class);
   }
 }

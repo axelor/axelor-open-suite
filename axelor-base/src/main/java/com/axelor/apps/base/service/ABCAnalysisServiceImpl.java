@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,6 @@ package com.axelor.apps.base.service;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisClass;
@@ -33,13 +32,11 @@ import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -88,21 +85,17 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   public List<ABCAnalysisClass> initABCClasses() {
     List<ABCAnalysisClass> abcAnalysisClassList = new ArrayList<>();
 
-    abcAnalysisClassList.add(
-        createAbcClass("A", 0, BigDecimal.valueOf(80), BigDecimal.valueOf(20)));
-    abcAnalysisClassList.add(
-        createAbcClass("B", 1, BigDecimal.valueOf(15), BigDecimal.valueOf(30)));
-    abcAnalysisClassList.add(createAbcClass("C", 2, BigDecimal.valueOf(5), BigDecimal.valueOf(50)));
+    abcAnalysisClassList.add(createAbcClass("A", BigDecimal.valueOf(80), BigDecimal.valueOf(20)));
+    abcAnalysisClassList.add(createAbcClass("B", BigDecimal.valueOf(15), BigDecimal.valueOf(30)));
+    abcAnalysisClassList.add(createAbcClass("C", BigDecimal.valueOf(5), BigDecimal.valueOf(50)));
 
     return abcAnalysisClassList;
   }
 
-  protected ABCAnalysisClass createAbcClass(
-      String name, Integer sequence, BigDecimal worth, BigDecimal qty) {
+  protected ABCAnalysisClass createAbcClass(String name, BigDecimal worth, BigDecimal qty) {
     ABCAnalysisClass abcAnalysisClass = new ABCAnalysisClass();
 
     abcAnalysisClass.setName(name);
-    abcAnalysisClass.setSequence(sequence);
     abcAnalysisClass.setWorth(worth);
     abcAnalysisClass.setQty(qty);
 
@@ -205,7 +198,8 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     Query<Product> productQuery =
         productRepository
             .all()
-            .filter("self.id IN (" + StringTool.getIdListString(getProductSet(abcAnalysis)) + ")");
+            .filter(
+                "self.id IN (" + StringHelper.getIdListString(getProductSet(abcAnalysis)) + ")");
 
     while (!(productList = productQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       abcAnalysis = abcAnalysisRepository.find(abcAnalysis.getId());
@@ -367,30 +361,8 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     }
 
     abcAnalysis.setAbcAnalysisSeq(
-        sequenceService.getSequenceNumber(sequence, ABCAnalysis.class, "abcAnalysisSeq"));
-  }
-
-  @Override
-  public String printReport(ABCAnalysis abcAnalysis, String reportType) throws AxelorException {
-    if (abcAnalysis.getStatusSelect() != ABCAnalysisRepository.STATUS_FINISHED) {
-      throw new AxelorException(
-          abcAnalysis,
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BaseExceptionMessage.ABC_CLASSES_INVALID_STATE_FOR_REPORTING));
-    }
-
-    String name = I18n.get("ABC Analysis") + " - " + abcAnalysis.getAbcAnalysisSeq();
-
-    return ReportFactory.createReport(IReport.ABC_ANALYSIS, name)
-        .addParam("abcAnalysisId", abcAnalysis.getId())
-        .addParam("Locale", ReportSettings.getPrintingLocale(null))
-        .addParam(
-            "Timezone",
-            abcAnalysis.getCompany() != null ? abcAnalysis.getCompany().getTimezone() : null)
-        .addFormat(reportType)
-        .toAttach(abcAnalysis)
-        .generate()
-        .getFileLink();
+        sequenceService.getSequenceNumber(
+            sequence, ABCAnalysis.class, "abcAnalysisSeq", abcAnalysis));
   }
 
   @Override

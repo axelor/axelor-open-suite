@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,18 +28,18 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.PfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
@@ -47,7 +47,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -59,32 +58,34 @@ public class PaymentVoucherLoadService {
 
   protected CurrencyService currencyService;
   protected PaymentVoucherToolService paymentVoucherToolService;
-  protected PayVoucherDueElementRepository payVoucherDueElementRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
   protected PayVoucherDueElementService payVoucherDueElementService;
   protected PayVoucherElementToPayService payVoucherElementToPayService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
-  protected InvoiceTermService invoiceTermService;
+  protected PfpService pfpService;
+  protected CurrencyScaleService currencyScaleService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
 
   @Inject
   public PaymentVoucherLoadService(
       CurrencyService currencyService,
       PaymentVoucherToolService paymentVoucherToolService,
-      PayVoucherDueElementRepository payVoucherDueElementRepo,
       PaymentVoucherRepository paymentVoucherRepository,
       PayVoucherDueElementService payVoucherDueElementService,
       PayVoucherElementToPayService payVoucherElementToPayService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
-      InvoiceTermService invoiceTermService) {
-
+      PfpService pfpService,
+      CurrencyScaleService currencyScaleService,
+      InvoiceTermFilterService invoiceTermFilterService) {
     this.currencyService = currencyService;
     this.paymentVoucherToolService = paymentVoucherToolService;
-    this.payVoucherDueElementRepo = payVoucherDueElementRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
     this.payVoucherDueElementService = payVoucherDueElementService;
     this.payVoucherElementToPayService = payVoucherElementToPayService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
-    this.invoiceTermService = invoiceTermService;
+    this.pfpService = pfpService;
+    this.currencyScaleService = currencyScaleService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
   /**
@@ -100,18 +101,16 @@ public class PaymentVoucherLoadService {
 
     String query =
         "(self.moveLine.partner = :partner OR self.invoice.partner = :partner) "
-            + "and (self.isPaid = FALSE OR self.amountRemaining > 0) "
+            + "and (self.isPaid = FALSE OR self.amountRemaining != 0) "
             + "and (self.moveLine.move.company = :company OR self.invoice.company = :company) "
             + "and self.moveLine.account.useForPartnerBalance = 't' "
             + "and self.moveLine.move.ignoreInDebtRecoveryOk = 'f' "
             + "and (self.moveLine.move.statusSelect = :statusDaybook OR self.moveLine.move.statusSelect = :statusAccounted) "
-            + "and (self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName OR (self.moveLine.move.tradingName = NULL AND self.invoice.tradingName = NULL)) "
+            + "and (:tradingName = NULL OR self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName) "
             + "and (self.invoice = null or self.invoice.operationTypeSelect = :operationTypeSelect) "
             + "and ((self.invoice is not null and self.invoice.currency = :currency) or self.moveLine.move.currency = :currency)";
 
-    if (Beans.get(AccountConfigService.class)
-                .getAccountConfig(paymentVoucher.getCompany())
-                .getIsManagePassedForPayment()
+    if (pfpService.isManagePassedForPayment(paymentVoucher.getCompany())
             && paymentVoucher.getOperationTypeSelect()
                 == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
         || paymentVoucher.getOperationTypeSelect()
@@ -126,7 +125,7 @@ public class PaymentVoucherLoadService {
       query += " and self.moveLine.credit > 0 ";
     }
 
-    return invoiceTermService.filterNotAwaitingPayment(
+    return invoiceTermFilterService.filterNotAwaitingPayment(
         invoiceTermRepo
             .all()
             .filter(query)
@@ -179,9 +178,11 @@ public class PaymentVoucherLoadService {
 
     payVoucherDueElement.setMoveLine(invoiceTerm.getMoveLine());
 
-    payVoucherDueElement.setDueAmount(invoiceTerm.getAmount());
-
-    payVoucherDueElement.setAmountRemaining(this.getAmountRemaining(paymentVoucher, invoiceTerm));
+    payVoucherDueElement.setDueAmount(
+        currencyScaleService.getScaledValue(invoiceTerm, invoiceTerm.getAmount()));
+    payVoucherDueElement.setAmountRemaining(
+        currencyScaleService.getScaledValue(
+            invoiceTerm, this.getAmountRemaining(paymentVoucher, invoiceTerm)));
 
     payVoucherDueElement.setCurrency(
         invoiceTerm.getMoveLine().getMove().getCurrency() != null
@@ -291,25 +292,25 @@ public class PaymentVoucherLoadService {
     payVoucherElementToPay.setCurrency(payVoucherDueElement.getCurrency());
 
     BigDecimal amountRemainingInElementCurrency =
-        currencyService
-            .getAmountCurrencyConvertedAtDate(
+        currencyScaleService.getScaledValue(
+            paymentVoucher,
+            currencyService.getAmountCurrencyConvertedAtDate(
                 paymentVoucher.getCurrency(),
                 payVoucherElementToPay.getCurrency(),
                 amountRemaining,
-                paymentDate)
-            .setScale(2, RoundingMode.HALF_UP);
+                paymentDate));
 
     BigDecimal amountImputedInElementCurrency =
         amountRemainingInElementCurrency.min(payVoucherElementToPay.getRemainingAmount());
 
     BigDecimal amountImputedInPayVouchCurrency =
-        currencyService
-            .getAmountCurrencyConvertedAtDate(
+        currencyScaleService.getScaledValue(
+            paymentVoucher,
+            currencyService.getAmountCurrencyConvertedAtDate(
                 payVoucherElementToPay.getCurrency(),
                 paymentVoucher.getCurrency(),
                 amountImputedInElementCurrency,
-                paymentDate)
-            .setScale(2, RoundingMode.HALF_UP);
+                paymentDate));
 
     payVoucherElementToPay.setAmountToPay(amountImputedInElementCurrency);
     payVoucherElementToPay.setAmountToPayCurrency(amountImputedInPayVouchCurrency);
@@ -387,7 +388,7 @@ public class PaymentVoucherLoadService {
       BigDecimal maxAmountToPayRemaining = amountToPay;
       for (MoveLine moveLine : moveLineInvoiceToPay) {
         if (maxAmountToPayRemaining.compareTo(BigDecimal.ZERO) > 0) {
-          BigDecimal amountPay = maxAmountToPayRemaining.min(moveLine.getAmountRemaining());
+          BigDecimal amountPay = maxAmountToPayRemaining.min(moveLine.getAmountRemaining().abs());
           moveLine.setMaxAmountToReconcile(amountPay);
           debitMoveLines.add(moveLine);
           maxAmountToPayRemaining = maxAmountToPayRemaining.subtract(amountPay);

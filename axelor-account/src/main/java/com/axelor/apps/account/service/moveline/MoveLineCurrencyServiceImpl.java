@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,9 +22,10 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -35,15 +36,24 @@ public class MoveLineCurrencyServiceImpl implements MoveLineCurrencyService {
   protected CurrencyService currencyService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveLineService moveLineService;
+  protected MoveToolService moveToolService;
+  protected CurrencyScaleService currencyScaleService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
   public MoveLineCurrencyServiceImpl(
       CurrencyService currencyService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      MoveToolService moveToolService,
+      CurrencyScaleService currencyScaleService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.currencyService = currencyService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveLineService = moveLineService;
+    this.moveToolService = moveToolService;
+    this.currencyScaleService = currencyScaleService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   @Override
@@ -72,14 +82,16 @@ public class MoveLineCurrencyServiceImpl implements MoveLineCurrencyService {
       BigDecimal currencyAmount = moveLine.getDebit().add(moveLine.getCredit());
       currencyAmount =
           currencyAmount.divide(
-              currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+              currencyRate, currencyScaleService.getScale(move), RoundingMode.HALF_UP);
 
-      moveLine.setCurrencyAmount(currencyAmount);
+      moveLine.setCurrencyAmount(
+          moveToolService.computeCurrencyAmountSign(
+              currencyAmount, moveLine.getDebit().signum() > 0));
       moveLine.setCurrencyRate(currencyRate);
 
       moveLine.clearInvoiceTermList();
       moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
-      moveLineService.computeFinancialDiscount(moveLine);
+      moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, move);
     }
   }
 }

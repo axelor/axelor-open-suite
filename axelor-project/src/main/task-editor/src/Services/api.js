@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -51,6 +51,7 @@ const PROJECT_FIELDS = [
   'fullName',
   'projectStatus',
   'projectTaskCategorySet',
+  'completedTaskStatus',
 ];
 
 const TASK_FIELDS = [
@@ -70,7 +71,7 @@ const TASK_FIELDS = [
   'status.isCompleted',
   'status.isDefaultCompleted',
   'priority.technicalTypeSelect',
-  'progressSelect',
+  'progress',
   'attrs',
   'statusBeforeComplete',
   'sequence',
@@ -163,7 +164,7 @@ export async function deleteSection(id) {
 
 export async function getMessages({ id, offset = 0, limit = 4, relatedModel } = {}) {
   let res = await Service.get(
-    `ws/rest/com.axelor.mail.db.MailMessage/messages?limit=${limit}&offset=${offset}&relatedId=${id}&relatedModel=${relatedModel}`,
+    `ws/messages?limit=${limit}&offset=${offset}&relatedId=${id}&relatedModel=${relatedModel}`,
   );
   if (res && res.data) {
     return { comments: res.data, offset: res.offset, total: res.total };
@@ -171,11 +172,11 @@ export async function getMessages({ id, offset = 0, limit = 4, relatedModel } = 
 }
 
 export async function removeMessage(data) {
-  let res = await Service.post(`ws/rest/com.axelor.mail.db.MailMessage/${data.id}/remove`, {
-    data,
+  const res = await Service.request(`ws/messages/${data?.id}`, {
+    method: 'DELETE',
   });
-  if (res && res.data && res.data[0]) {
-    return res.data[0];
+  if (res?.status === 0) {
+    return data;
   }
 }
 

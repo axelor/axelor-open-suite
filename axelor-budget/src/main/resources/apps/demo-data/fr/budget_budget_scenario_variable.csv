@@ -1,0 +1,13 @@
+"importId";"name";"code";"entryMethod";"formula";"category"
+1;"CA Previsionnelle";"CAPREV";0;;1
+2;"Charges Non Courantes diverses";"CHNC";1;"10*(CAPREV/CA)";5
+3;"Charges RH";"CHRH";1;"CHNC*1.12";2
+4;"Investissement Actionnaires";"INVACT";0;;1
+5;"Production Previsionnelle";"PRODPREV";1;"ASS*(CAPREV/CA)";3
+6;"Assurance";"ASS";0;;5
+7;"Electricité";"ELEC";1;"PRODPREV*0.03";5
+8;"Gaz";"GAZ";1;"PRODPREV*0.05";5
+9;"Chauffage";"CHAUF";1;"CHRH*0.01";5
+10;"Eau";"EAU";1;"PRODPREV*0.03";5
+11;"Résultat Intermédiaire";"RESINT";1;"CAPREV-CHNC";4
+12;"Chiffre d'affaire";"CA";0;;3

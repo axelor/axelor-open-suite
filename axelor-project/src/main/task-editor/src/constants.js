@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,7 +39,7 @@ export const DUPLICATE_TASK_OPTIONS = [
   },
   {
     name: 'taskDate',
-    label: translate('TaskEditor.taskDate'),
+    label: translate('Start date'),
   },
   {
     name: 'taskEndDate',
@@ -54,7 +54,7 @@ export const DUPLICATE_TASK_OPTIONS = [
     label: translate('Status'),
   },
   {
-    name: 'progressSelect',
+    name: 'progress',
     label: translate('Progress'),
   },
   {
@@ -97,7 +97,7 @@ export const SORT_COLUMNS = [
     fieldName: 'fullName',
   },
   { code: 'taskEndDate', name: translate('Due Date'), sortFunction: sortByDate },
-  { code: 'taskDate', name: translate('TaskEditor.taskDate'), sortFunction: sortByDate },
+  { code: 'taskDate', name: translate('Start date'), sortFunction: sortByDate },
   {
     code: 'priority',
     name: translate('Priority'),
@@ -105,7 +105,7 @@ export const SORT_COLUMNS = [
     fieldName: 'priority.technicalTypeSelect',
   },
   { code: 'status', name: translate('Status'), sortFunction: sortObject, fieldName: 'name' },
-  { code: 'progressSelect', name: translate('Progress'), sortFunction: sortByKey },
+  { code: 'progress', name: translate('Progress'), sortFunction: sortByKey },
   { code: 'projectTaskCategory', name: translate('Category'), sortFunction: sortObject, fieldName: 'name' },
 ];
 

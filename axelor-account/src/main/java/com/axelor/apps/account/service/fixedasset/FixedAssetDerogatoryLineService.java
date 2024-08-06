@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,7 @@ public interface FixedAssetDerogatoryLineService {
       FixedAssetLine fixedAssetLine,
       FixedAssetLine fiscalFixedAssetLine,
       int statusSelect);
+
   /**
    * This method will generate a fixedAssetDerogatoryLine list based on fixedAsset's fiscal and
    * economic lines that are planned. Keep in mind that it will not compute realized lines, and
@@ -46,7 +47,8 @@ public interface FixedAssetDerogatoryLineService {
    * that are realized. (Because it depends of the previous line) It might be necessary to
    * recalculate derogatoryBalanceAmount.
    */
-  List<FixedAssetDerogatoryLine> computePlannedFixedAssetDerogatoryLineList(FixedAsset fixedAsset);
+  List<FixedAssetDerogatoryLine> computePlannedFixedAssetDerogatoryLineList(FixedAsset fixedAsset)
+      throws AxelorException;
 
   void multiplyLinesBy(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLine, BigDecimal prorata);
 
@@ -74,7 +76,9 @@ public interface FixedAssetDerogatoryLineService {
       FixedAssetLine economicFixedAssetLine,
       FixedAssetLine fiscalFixedAssetLine,
       FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine,
-      LocalDate date);
+      LocalDate date,
+      FixedAsset fixedAsset)
+      throws AxelorException;
 
   /**
    * This method will remove every fixedAssetDerogatoryLine from database, then use {@link
@@ -85,13 +89,24 @@ public interface FixedAssetDerogatoryLineService {
   void clear(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList);
 
   /**
-   * Filter list with statusSelect = status. Filtered lines will be remove from database by calling
-   * {@link FixedAssetDerogatoryLineRepository#remove(FixedAssetLine)}
+   * Filter list with depreciationDate after date. Filtered lines will be remove from database by
+   * calling {@link FixedAssetDerogatoryLineRepository#remove(FixedAssetDerogatoryLine)}
    *
-   * @param fixedAssetLineList
-   * @param status
+   * @param fixedAssetDerogatoryLineList
+   * @param date
    */
-  void filterListByStatus(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, int status);
+  void filterListByDate(
+      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, LocalDate date);
 
-  public void remove(FixedAssetDerogatoryLine line);
+  /**
+   * This method will remove every linesToRemove from database and from fixedAssetDerogatoryLineList
+   *
+   * @param fixedAssetDerogatoryLineList
+   * @param linesToRemove
+   */
+  void clear(
+      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList,
+      List<FixedAssetDerogatoryLine> linesToRemove);
+
+  void remove(FixedAssetDerogatoryLine line);
 }

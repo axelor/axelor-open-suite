@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -56,11 +56,7 @@ public class MoveLineCheckServiceImpl implements MoveLineCheckService {
       analyticMoveLineService.validateLines(
           moveLine.getAnalyticDistributionTemplate().getAnalyticDistributionLineList());
 
-      if (!analyticMoveLineService.validateAnalyticMoveLines(moveLine.getAnalyticMoveLineList())) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(AccountExceptionMessage.INVALID_ANALYTIC_MOVE_LINE));
-      }
+      checkAnalyticMoveLinesPercentage(moveLine);
 
       analyticDistributionTemplateService.validateTemplatePercentages(
           moveLine.getAnalyticDistributionTemplate());
@@ -71,7 +67,10 @@ public class MoveLineCheckServiceImpl implements MoveLineCheckService {
   public void checkAnalyticAxes(MoveLine moveLine) throws AxelorException {
     if (moveLine.getAccount() != null) {
       accountService.checkAnalyticAxis(
-          moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
+          moveLine.getAccount(),
+          moveLine.getAnalyticDistributionTemplate(),
+          moveLine.getAccount().getAnalyticDistributionRequiredOnMoveLines(),
+          false);
     }
   }
 
@@ -105,8 +104,20 @@ public class MoveLineCheckServiceImpl implements MoveLineCheckService {
     for (MoveLine moveLine : moveLineList) {
       if (moveLine != null && moveLine.getAccount() != null) {
         accountService.checkAnalyticAxis(
-            moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
+            moveLine.getAccount(),
+            moveLine.getAnalyticDistributionTemplate(),
+            moveLine.getAccount().getAnalyticDistributionRequiredOnMoveLines(),
+            false);
       }
+    }
+  }
+
+  @Override
+  public void checkAnalyticMoveLinesPercentage(MoveLine moveLine) throws AxelorException {
+    if (!analyticMoveLineService.validateAnalyticMoveLines(moveLine.getAnalyticMoveLineList())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVALID_ANALYTIC_MOVE_LINE));
     }
   }
 }

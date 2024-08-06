@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
 
 import { PRIORITY } from '../../constants';
 import { StaticSelect } from '../../Components';
 
 const useStyles = makeStyles(theme => ({
-  progressSelect: {
+  progress: {
     paddingBlock: '9.5px',
   },
 }));
@@ -42,28 +42,47 @@ export function TaskPrioritySelect({ options: _options, ...props }) {
   return <StaticSelect name="priority" options={options} {...props} />;
 }
 
-const ProgressOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const MIN_PROGRESS_VALUE = 0;
+const MAX_PROGRESS_VALUE = 100;
 
-export function TaskProgressSelect({ t, ...props }) {
+export function TaskProgress({ ...props }) {
   const classes = useStyles();
+
+  const [value, setValue] = useState(parseFloat(props.value).toFixed(2));
+
+  useEffect(() => setValue(parseFloat(props.value).toFixed(2)), [props.value]);
+
+  const formatProgressValue = event => {
+    let newValue = parseFloat(event.target.value);
+
+    if (newValue < MIN_PROGRESS_VALUE) {
+      newValue = MIN_PROGRESS_VALUE;
+    }
+    if (newValue > MAX_PROGRESS_VALUE) {
+      newValue = MAX_PROGRESS_VALUE;
+    }
+
+    setValue(newValue.toFixed(2));
+    props.onChange(newValue, event);
+  };
+
   return (
-    <Select
-      native
-      classes={{
-        select: classes.progressSelect,
-      }}
+    <TextField
+      variant="outlined"
+      type="number"
+      classes={{ select: classes.progress }}
       inputProps={{
-        name: 'progressSelect',
-        id: 'outlined-progressSelect',
+        min: MIN_PROGRESS_VALUE,
+        max: MAX_PROGRESS_VALUE,
+        step: 1,
+        name: 'progress',
+        id: 'outlined-progress',
       }}
       {...props}
-    >
-      <option aria-label={t('TaskEditor.none')} value="" />
-      {ProgressOptions.map(progress => (
-        <option key={progress} value={progress}>
-          {progress} %
-        </option>
-      ))}
-    </Select>
+      value={value}
+      onChange={event => setValue(event.target.value)}
+      onBlur={formatProgressValue}
+      onClick={formatProgressValue}
+    />
   );
 }

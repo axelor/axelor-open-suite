@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,8 +31,6 @@ public interface ABCAnalysisService {
   List<ABCAnalysisClass> initABCClasses();
 
   void setSequence(ABCAnalysis abcAnalysis) throws AxelorException;
-
-  String printReport(ABCAnalysis abcAnalysis, String reportType) throws AxelorException;
 
   void checkClasses(ABCAnalysis abcAnalysis) throws AxelorException;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,16 +18,18 @@
  */
 package com.axelor.apps.supplychain.service.declarationofexchanges;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ProductCompanyService;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.stock.db.CustomsCodeNomenclature;
 import com.axelor.apps.stock.db.ModeOfTransport;
 import com.axelor.apps.stock.db.NatureOfTransaction;
@@ -38,14 +40,13 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
-import com.axelor.apps.supplychain.report.IReport;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.io.MoreFiles;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -55,7 +56,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -106,6 +106,8 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
                 PARTNER_SEQ,
                 INVOICE)));
     this.stockMoveToolService = Beans.get(StockMoveToolService.class);
+    this.supplyChainConfigService = Beans.get(SupplyChainConfigService.class);
+    this.printingTemplatePrintService = Beans.get(PrintingTemplatePrintService.class);
   }
 
   @Override
@@ -138,7 +140,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
 
     try {
       MoreFiles.createParentDirectories(path);
-      CsvTool.csvWriter(
+      CsvHelper.csvWriter(
           path.getParent().toString(),
           path.getFileName().toString(),
           ';',
@@ -227,13 +229,13 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     String srcDstCountry;
     String dept;
     try {
-      Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMoveLine.getStockMove());
-      srcDstCountry = partnerAddress.getAddressL7Country().getAlpha2Code();
+      Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMove, stockMoveLine);
+      srcDstCountry = partnerAddress.getCountry().getAlpha2Code();
     } catch (AxelorException e) {
       srcDstCountry = e.getMessage();
     }
     try {
-      Address companyAddress = stockMoveToolService.getCompanyAddress(stockMoveLine.getStockMove());
+      Address companyAddress = stockMoveToolService.getCompanyAddress(stockMove, stockMoveLine);
       dept = companyAddress.getCity().getDepartment().getCode();
     } catch (AxelorException e) {
       dept = e.getMessage();
@@ -247,9 +249,9 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
         countryOrigCode = srcDstCountry;
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-          && ObjectUtils.notEmpty(stockMove.getFromStockLocation().getAddress())) {
+          && ObjectUtils.notEmpty(stockMoveLine.getFromStockLocation().getAddress())) {
         countryOrigCode =
-            stockMove.getFromStockLocation().getAddress().getAddressL7Country().getAlpha2Code();
+            stockMoveLine.getFromStockLocation().getAddress().getCountry().getAlpha2Code();
       } else {
         countryOrigCode = "";
       }
@@ -323,13 +325,19 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
 
   @Override
   protected String exportToPDF() throws AxelorException {
-    return ReportFactory.createReport(IReport.DECLARATION_OF_EXCHANGES_OF_GOODS, getTitle())
-        .addParam("DeclarationOfExchangesId", declarationOfExchanges.getId())
-        .addParam("UserId", Optional.ofNullable(AuthUtils.getUser()).map(User::getId).orElse(null))
-        .addParam("Locale", ReportSettings.getPrintingLocale())
-        .addFormat(declarationOfExchanges.getFormatSelect())
-        .toAttach(declarationOfExchanges)
-        .generate()
-        .getFileLink();
+    SupplyChainConfig supplyChainConfig =
+        supplyChainConfigService.getSupplyChainConfig(declarationOfExchanges.getCompany());
+    PrintingTemplate declarationOfExchGoodsPrintTemplate =
+        supplyChainConfig.getDeclarationOfExchGoodsPrintTemplate();
+    if (ObjectUtils.isEmpty(declarationOfExchGoodsPrintTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return printingTemplatePrintService.getPrintLink(
+        declarationOfExchGoodsPrintTemplate,
+        new PrintingGenFactoryContext(declarationOfExchanges),
+        getTitle(),
+        true);
   }
 }

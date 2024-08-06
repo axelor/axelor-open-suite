@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,18 +27,20 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -78,7 +80,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       ValidateFactory validateFactory,
       VentilateFactory ventilateFactory,
       CancelFactory cancelFactory,
-      AlarmEngineService<Invoice> alarmEngineService,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
@@ -91,6 +92,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       TaxService taxService,
       InvoiceProductStatementService invoiceProductStatementService,
       TemplateMessageService templateMessageService,
+      InvoiceTermFilterService invoiceTermFilterService,
+      InvoicePrintService invoicePrintService,
       InvoiceLineRepository invoiceLineRepo,
       IntercoService intercoService,
       StockMoveRepository stockMoveRepository) {
@@ -98,7 +101,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         validateFactory,
         ventilateFactory,
         cancelFactory,
-        alarmEngineService,
         invoiceRepo,
         appAccountService,
         partnerService,
@@ -110,7 +112,9 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         appBaseService,
         taxService,
         invoiceProductStatementService,
-        templateMessageService);
+        templateMessageService,
+        invoiceTermFilterService,
+        invoicePrintService);
     this.invoiceLineRepo = invoiceLineRepo;
     this.intercoService = intercoService;
     this.stockMoveRepository = stockMoveRepository;
@@ -169,7 +173,12 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
             .all()
             .filter(filter)
             .bind("_status", InvoiceRepository.STATUS_VALIDATED)
-            .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
+            .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            .bind(
+                "_operationType",
+                InvoiceToolService.isPurchase(invoice)
+                    ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                    : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
     if (saleOrder != null) {
       query.bind("_saleOrder", saleOrder);
     } else if (purchaseOrder != null) {

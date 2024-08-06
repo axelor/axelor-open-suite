@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,4 +22,8 @@ public interface ITranslation {
 
   public static final String CRM_APP_NAME = /*$$(*/ "value:CRM"; /*)*/
   public static final String SALE_QUOTATION = /*$$(*/ "Sale quotation" /*)*/;
+  public static final String CRM_DUPLICATE_RECORDS_FOUND = /*$$(*/ "Duplicate records found" /*)*/;
+  public static final String CRM_DUPLICATE_LEADS = /*$$(*/ "Duplicate leads :" /*)*/;
+  public static final String CRM_DUPLICATE_CONTACTS = /*$$(*/ "Duplicate contacts :" /*)*/;
+  public static final String CRM_DUPLICATE_PROSPECTS = /*$$(*/ "Duplicate prospects :" /*)*/;
 }

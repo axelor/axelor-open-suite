@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="quality-control-grid" title="Quality controls"
     model="com.axelor.apps.quality.db.QualityControl">
     <toolbar>
       <button name="sendEmailBtn" title="Send email"
         onClick="action-quality-control-method-send-email"/>
+      <button name="printBtn" hideIf="true" onClick=""/>
     </toolbar>
     <field name="reference" width="120"/>
     <field name="name"/>
@@ -26,10 +27,13 @@
     model="com.axelor.apps.quality.db.QualityControl"
     onNew="action-quality-control-group-onnew-actions"
     onLoad="action-quality-control-group-onload-actions">
+    <toolbar>
+      <button name="printBtn" title="Print"
+        onClick="save,action-quality-control-validate-printing-settings,action-method-print-template"
+        showIf="statusSelect == 6"/>
+    </toolbar>
     <menubar>
       <menu title="Tools">
-        <item title="Print" action="save,action-quality-control-method-print"
-          showIf="statusSelect == 6"/>
         <item title="Send email" action="save,action-quality-control-method-send-email"
           showIf="statusSelect == 6"/>
       </menu>
@@ -120,9 +124,11 @@
     <field name="responsible"/>
     <template>
             <![CDATA[
-            <h4>{{reference}}</h4>
-            <div class="card-body">{{team.name}}</div>
-            <div class="card-body">{{responsible.name}}</div>
+            <>
+	            <strong>{reference}</strong>
+	            <Box>{team.name}</Box>
+	            <Box>{responsible.name}</Box>
+            </>
     		]]>
     </template>
 
@@ -221,11 +227,6 @@
       method="preFillOperationsFromOptionals"/>
   </action-method>
 
-  <action-method name="action-quality-control-method-print">
-    <call class="com.axelor.apps.quality.web.QualityControlController"
-      method="printQualityControl"/>
-  </action-method>
-
   <action-method name="action-quality-control-method-send-email">
     <call class="com.axelor.apps.quality.web.QualityControlController" method="sendEmail"/>
   </action-method>
@@ -242,12 +243,17 @@
       if="project != null &amp;&amp; project?.company != null"/>
   </action-record>
 
+  <action-validate name="action-quality-control-validate-printing-settings">
+    <error message="Please fill printing settings on quality control" if="!printingSettings"/>
+  </action-validate>
+
   <search-filters name="quality-control-filters"
     model="com.axelor.apps.quality.db.QualityControl" title="Quality control filters">
-    <filter title="My quality controls">
+    <filter name="quality-control-filters-my-quality-controls" title="My quality controls">
       <domain>self.responsible.user.id = :_userId</domain>
     </filter>
-    <filter title="My team quality controls">
+    <filter name="quality-control-filters-my-team-quality-controls"
+      title="My team quality controls">
       <domain>self.team.id = :_myActiveTeamId</domain>
     </filter>
   </search-filters>

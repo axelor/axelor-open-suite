@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,8 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -31,33 +33,23 @@ import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 
 public interface PurchaseOrderLineService {
 
   public BigDecimal getExTaxUnitPrice(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine)
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, Set<TaxLine> taxLineSet)
       throws AxelorException;
 
   public BigDecimal getInTaxUnitPrice(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine)
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, Set<TaxLine> taxLineSet)
       throws AxelorException;
 
   public BigDecimal getPurchaseMaxPrice(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
-  public TaxLine getTaxLine(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine)
-      throws AxelorException;
-
-  /**
-   * Get optional tax line.
-   *
-   * @param purchaseOrder
-   * @param purchaseOrderLine
-   * @return
-   */
-  Optional<TaxLine> getOptionalTaxLine(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
+  public Set<TaxLine> getTaxLineSet(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
   public BigDecimal computePurchaseOrderLine(PurchaseOrderLine purchaseOrderLine);
 
@@ -95,10 +87,12 @@ public interface PurchaseOrderLineService {
 
   public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine);
 
-  public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response);
-
-  public String[] getProductSupplierInfos(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
+  public void checkMultipleQty(
+      Company company,
+      Partner supplierPartner,
+      PurchaseOrderLine purchaseOrderLine,
+      ActionResponse response)
+      throws AxelorException;
 
   PurchaseOrderLine fill(PurchaseOrderLine line, PurchaseOrder purchaseOrder)
       throws AxelorException;

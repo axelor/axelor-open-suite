@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="calendar-event-grid" model="com.axelor.apps.base.db.ICalendarEvent"
     title="Events" orderBy="-startDateTime">
@@ -30,9 +30,11 @@
       <field name="subject" showTitle="false" colSpan="12">
         <viewer depends="subject">
                     <![CDATA[
-                        <h3>
-                            <span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.subject}}</span>
-                        </h3>
+                        <>
+                        	<h3>
+                        		<span>{subject}</span>
+                        	</h3>
+                        </>
                     ]]>
         </viewer>
         <editor>

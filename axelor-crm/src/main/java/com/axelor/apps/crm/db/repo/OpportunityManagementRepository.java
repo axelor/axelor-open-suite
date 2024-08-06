@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,20 +21,35 @@ package com.axelor.apps.crm.db.repo;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
-import com.axelor.apps.crm.service.OpportunityService;
+import com.axelor.apps.crm.service.OpportunitySequenceService;
 import com.axelor.apps.crm.service.app.AppCrmService;
-import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppCrm;
+import com.google.inject.Inject;
 import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class OpportunityManagementRepository extends OpportunityRepository {
 
+  protected AppCrmService appCrmService;
+  protected OpportunitySequenceService opportunitySequenceService;
+
+  @Inject
+  public OpportunityManagementRepository(
+      AppCrmService appCrmService, OpportunitySequenceService opportunitySequenceService) {
+    this.appCrmService = appCrmService;
+    this.opportunitySequenceService = opportunitySequenceService;
+  }
+
   @Override
   public Opportunity copy(Opportunity entity, boolean deep) {
     Opportunity copy = super.copy(entity, deep);
-    OpportunityStatus status = Beans.get(OpportunityStatusRepository.class).getDefaultStatus();
-    copy.setOpportunityStatus(status);
+    try {
+      OpportunityStatus status = appCrmService.getOpportunityDefaultStatus();
+      copy.setOpportunityStatus(status);
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
     copy.setLostReason(null);
     copy.setOpportunitySeq(null);
     return copy;
@@ -43,13 +58,12 @@ public class OpportunityManagementRepository extends OpportunityRepository {
   @Override
   public Opportunity save(Opportunity opportunity) {
     try {
-      OpportunityService opportunityService = Beans.get(OpportunityService.class);
       if (opportunity.getOpportunitySeq() == null) {
-        opportunityService.setSequence(opportunity);
+        opportunitySequenceService.setSequence(opportunity);
       }
 
       if (opportunity.getOpportunityStatus() == null) {
-        opportunity.setOpportunityStatus(opportunityService.getDefaultOpportunityStatus());
+        opportunity.setOpportunityStatus(appCrmService.getOpportunityDefaultStatus());
       }
 
       return super.save(opportunity);
@@ -65,7 +79,7 @@ public class OpportunityManagementRepository extends OpportunityRepository {
       final String closedWonId = "$closedWonId";
       final String closedLostId = "$closedLostId";
 
-      AppCrm appCrm = Beans.get(AppCrmService.class).getAppCrm();
+      AppCrm appCrm = appCrmService.getAppCrm();
 
       if (appCrm.getClosedWinOpportunityStatus() != null) {
         json.put(closedWonId, appCrm.getClosedWinOpportunityStatus().getId());

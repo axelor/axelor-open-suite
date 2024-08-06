@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -23,10 +23,6 @@
     <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine"
       title="Machine" initParam="true"/>
 
-    <one-to-many name="prodHumanResourceList"
-      ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="operationOrder"
-      title="Human resources"/>
-
     <one-to-many name="toConsumeProdProductList"
       ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeOperationOrder"
       title="Products to consume"/>
@@ -46,12 +42,23 @@
     <datetime name="plannedStartDateT" title="Planned start"/>
     <datetime name="plannedEndDateT" title="Planned end"/>
 
+    <datetime name="plannedEndWithWaitingDateT" readonly="true">
+      <![CDATA[
+      if (plannedEndDateT != null) {
+        return plannedEndDateT.plusSeconds(prodProcessLine.getTimeBeforeNextOperation());
+      }
+      return null;
+      ]]>
+    </datetime>
+
     <datetime name="realStartDateT" title="Real start"/>
     <datetime name="realEndDateT" title="Real end"/>
 
     <one-to-many name="inStockMoveList" ref="com.axelor.apps.stock.db.StockMove"
       title="Stock move in" mappedBy="inOperationOrder"/>
-    <long name="plannedDuration" title="Planned duration (hh:mm:ss)"/>
+    <long name="plannedDuration" title="Planning duration (hhh:mm:ss)"/>
+    <long name="plannedHumanDuration" title="Planned human duration (hhh:mm:ss)"/>
+    <long name="plannedMachineDuration" title="Planned machine duration (hhh:mm:ss)"/>
     <long name="realDuration" title="Real duration (hh:mm:ss)"/>
 
     <boolean name="isWithDifference">
@@ -63,8 +70,8 @@
     </boolean>
 
     <one-to-many name="operationOrderDurationList"
-      ref="com.axelor.apps.production.db.OperationOrderDuration" title="Operation Order Durations"
-      mappedBy="operationOrder"/>
+      ref="com.axelor.apps.production.db.OperationOrderDuration"
+      title="Manufacturing Operation Durations" mappedBy="operationOrder"/>
 
     <string name="comments" title="Comments" large="true"/>
 
@@ -73,10 +80,10 @@
 
     <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool"
       title="Tools" initParam="true"/>
-    <boolean name="useLineInGeneratedPurchaseOrder"
-      title="Use this line in the generated purchase order"/>
 
     <boolean name="outsourcing" title="Outsourcing"/>
+    <many-to-one name="outsourcingPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Subcontractor"/>
 
     <extra-code><![CDATA[
 		// STATUS SELECT

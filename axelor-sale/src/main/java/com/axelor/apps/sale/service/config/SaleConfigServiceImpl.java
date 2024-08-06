@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,14 +20,17 @@ package com.axelor.apps.sale.service.config;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 
 public class SaleConfigServiceImpl implements SaleConfigService {
 
+  @Override
   public SaleConfig getSaleConfig(Company company) throws AxelorException {
 
     SaleConfig saleConfig = company.getSaleConfig();
@@ -42,5 +45,16 @@ public class SaleConfigServiceImpl implements SaleConfigService {
     }
 
     return saleConfig;
+  }
+
+  @Override
+  public PrintingTemplate getSaleOrderPrintTemplate(Company company) throws AxelorException {
+    PrintingTemplate saleOrderPrintTemplate = getSaleConfig(company).getSaleOrderPrintTemplate();
+    if (ObjectUtils.isEmpty(saleOrderPrintTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return saleOrderPrintTemplate;
   }
 }

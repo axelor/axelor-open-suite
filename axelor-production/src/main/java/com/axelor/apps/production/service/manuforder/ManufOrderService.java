@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.production.service.manuforder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
@@ -37,6 +38,17 @@ public interface ManufOrderService {
   public static int DEFAULT_PRIORITY = 2;
   public static int DEFAULT_PRIORITY_INTERVAL = 10;
   public static boolean IS_TO_INVOICE = false;
+
+  /**
+   * This method check if operation orders regardless of manufOrder. If manufOrder is outsourced,
+   * the method will return false as they are outsourced because of manufOrder.
+   *
+   * @param manufOrder
+   * @return true if lines are outsourced regardless of manufOrder, else false.
+   */
+  boolean areLinesOutsourced(ManufOrder manufOrder);
+
+  void setOperationOrdersOutsourcing(ManufOrder manufOrder);
 
   public interface ManufOrderOriginType {}
 
@@ -77,6 +89,7 @@ public interface ManufOrderService {
   public ManufOrder createManufOrder(
       Product product,
       BigDecimal qty,
+      Unit unit,
       int priority,
       boolean isToInvoice,
       Company company,
@@ -156,68 +169,6 @@ public interface ManufOrderService {
       throws AxelorException;
 
   /**
-   * On changing {@link ManufOrder#consumedStockMoveLineList}, we also update the stock move.
-   *
-   * @param manufOrder
-   */
-  void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
-
-  StockMove getConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
-
-  /**
-   * On changing {@link ManufOrder#producedStockMoveLineList}, we also update the stock move.
-   *
-   * @param manufOrder
-   * @throws AxelorException
-   */
-  void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
-
-  StockMove getProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
-
-  /**
-   * Check the realized consumed stock move lines in manuf order has not changed.
-   *
-   * @param manufOrder a manuf order from context.
-   * @param oldManufOrder a manuf order from database.
-   * @throws AxelorException if the check fails.
-   */
-  void checkConsumedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
-      throws AxelorException;
-
-  /**
-   * Check the realized produced stock move lines in manuf order has not changed.
-   *
-   * @param manufOrder a manuf order from context.
-   * @param oldManufOrder a manuf order from database.
-   * @throws AxelorException if the check fails.
-   */
-  void checkProducedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
-      throws AxelorException;
-
-  /**
-   * Check between a new and an old stock move line list whether a realized stock move line has been
-   * deleted.
-   *
-   * @param stockMoveLineList a stock move line list from view context.
-   * @param oldStockMoveLineList a stock move line list from database.
-   * @throws AxelorException if the check fails.
-   */
-  void checkRealizedStockMoveLineList(
-      List<StockMoveLine> stockMoveLineList, List<StockMoveLine> oldStockMoveLineList)
-      throws AxelorException;
-
-  /**
-   * Compute {@link ManufOrder#diffConsumeProdProductList}, then add and remove lines to the stock
-   * move to match the stock move line list. The list can be from manuf order or operation order.
-   *
-   * @param stockMoveLineList
-   * @param stockMove
-   * @throws AxelorException
-   */
-  void updateStockMoveFromManufOrder(List<StockMoveLine> stockMoveLineList, StockMove stockMove)
-      throws AxelorException;
-
-  /**
    * Create a query to find product's consume and missing qty of a specific/all company and a
    * specific/all stock location in a Manuf Order
    *
@@ -271,4 +222,18 @@ public interface ManufOrderService {
   List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder);
 
   public BigDecimal computeProducibleQty(ManufOrder manufOrder) throws AxelorException;
+
+  /**
+   * Method that will update planned dates of manuf order. Unlike the other methods, this will not
+   * reset planned dates of the operation orders of the manuf order. This method must be called when
+   * changement has occured in operation orders.
+   *
+   * @param manufOrder
+   */
+  public void updatePlannedDates(ManufOrder manufOrder);
+
+  void checkApplicableManufOrder(ManufOrder manufOrder) throws AxelorException;
+
+  public Map<Product, BigDecimal> getMissingComponents(ManufOrder manufOrder)
+      throws AxelorException;
 }

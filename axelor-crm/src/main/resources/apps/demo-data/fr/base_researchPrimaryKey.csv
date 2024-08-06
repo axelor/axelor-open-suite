@@ -1,0 +1,4 @@
+"importId";"code";"name";"typeSelect"
+"1";"P.NAME";"Partner.name";"String"
+"2";"O.SEQ";"Opportunity.seq";"String"
+"3";"O.DATE";"Opportunity.date";"LocalDate"

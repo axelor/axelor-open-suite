@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-sale-config-form" title="App sale" model="com.axelor.studio.db.AppSale"
     canDelete="false" canNew="false" width="large" onLoad="action-sale-attrs-set-hidden">
@@ -11,6 +11,8 @@
         onChange="action-app-sale-attrs-manage-sale-order-version-onchange"/>
       <field name="printingOnSOFinalization" widget="boolean-switch"
         readonlyIf="manageSaleOrderVersion"/>
+      <field name="isPastVersionRecovery" widget="boolean-switch"
+        readonlyIf="!manageSaleOrderVersion"/>
       <field name="enableConfigurator" widget="boolean-switch"/>
       <field name="allowPendingOrderModification" widget="boolean-switch"/>
       <field name="manageMultipleSaleQuantity" widget="boolean-switch"/>
@@ -24,10 +26,13 @@
       <field name="enableSalesProductByTradName" widget="boolean-switch"/>
       <field name="saleUnit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
-      <field name="enablePricingScale" widget="boolean-switch"/>
-      <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
-        showIf="enablePricingScale"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
+      <field name="isEditableGridEnabled" widget="boolean-switch"/>
+      <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
+        showIf="isEditableGridEnabled"/>
+      <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
+        hidden="true"/>
+      <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"
@@ -52,12 +57,16 @@
   <action-attrs name="action-app-sale-attrs-manage-sale-order-version-onchange">
     <attribute name="value" expr="eval: true" for="printingOnSOFinalization"
       if="manageSaleOrderVersion"/>
+    <attribute name="value" expr="eval: false" for="isPastVersionRecovery"
+      if="!manageSaleOrderVersion"/>
   </action-attrs>
 
   <action-attrs name="action-sale-attrs-set-hidden"
     model="com.axelor.studio.db.AppSale">
     <attribute name="hidden" for="enableSalesProductByTradName"
       expr="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <attribute for="isEnableCalculationEntireQuotationUsingPricing" name="hidden"
+      expr="eval: !__config__.app.getApp('base')?.enablePricingScale"/>
   </action-attrs>
 
 </object-views>

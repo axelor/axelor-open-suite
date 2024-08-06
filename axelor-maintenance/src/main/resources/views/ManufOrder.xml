@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="maintenance-manuf-order-grid" title="Maintenance orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
@@ -48,6 +48,9 @@
     model="com.axelor.apps.production.db.ManufOrder" width="large"
     onLoad="action-maintenance-manuf-order-group-onload"
     onNew="action-maintenance-manuf-order-group-onnew">
+    <toolbar>
+      <button name="printBtn" hideIf="true" onClick=""/>
+    </toolbar>
     <menubar>
       <menu name="manufOrderReportsMenu" title="Reports" showTitle="true" icon="fa-files-o">
         <item name="printItem" title="Print" showIf="statusSelect > 1"
@@ -72,22 +75,18 @@
         <field name="$viewerIsOutsourcing" showTitle="false" readonly="true"
           showIf="$readonly()" depends="prodProcess.outsourcing" colSpan="2">
           <viewer><![CDATA[
-
-		<h4 class="text-right">
-			<span class="label label-default" style="background-color: #E0A83C; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prodProcess.outsourcing" x-translate>Outsourced</span>
-		</h4>
-
+			<>
+				<Box d="flex" justifyContent="flex-end">
+					{prodProcess.outsourcing && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Outsourced')}</Badge>}
+				</Box>
+			</>
       ]]></viewer>
         </field>
         <field name="$viewerIsPermanent" showTitle="false"
           showIf="typeSelect == 2 &amp;&amp; $readonly()" colSpan="2">
-          <viewer depends="typeSelect"><![CDATA[
-
-		<h4 style="text-align: left;">
-			<span class="label label-default" style="background-color: green; margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate>Permanent</span>
-		</h4>
-
-      ]]></viewer>
+          <viewer depends="typeSelect">
+            <![CDATA[<><Badge style={{ backgroundColor: "green" }}>{_t('Permanent')}</Badge></>]]>
+          </viewer>
         </field>
         <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
           widget="NavSelect"/>
@@ -161,11 +160,13 @@
             onChange="action-manuf-order-validate-planned-end-date"/>
           <field name="$totalPlannedDuration" title="Total Planned Duration" readonly="true"
             type="long" widget="duration" x-big="true" x-seconds="true"/>
+          <field name="$totalLeadTimeDuration" title="Total Lead Duration" readonly="true"
+            type="long" widget="duration" x-big="true" x-seconds="true"/>
           <field name="cancelReason" hidden="true" form-view="cancel-reason-form"
             grid-view="cancel-reason-grid"/>
           <field name="cancelReasonStr" title="Cancel Reason" hidden="true" readonly="true"
-            showIf="cancelReason != null &amp;&amp; cancelReasonStr != null" colSpan="12" css="red">
-            <viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
+            showIf="cancelReason != null &amp;&amp; cancelReasonStr != null" colSpan="12">
+            <viewer><![CDATA[<><Box color="danger">{cancelReasonStr}</Box></>]]></viewer>
           </field>
         </panel>
         <panel name="realDatesPanel" title="Real dates" showIf="statusSelect > 3">
@@ -303,5 +304,9 @@
     <attribute name="value" for="machineType" expr="eval: machine?.machineType"
       if="!machineType"/>
   </action-attrs>
+
+  <action-method name="action-manuf-order-method-print">
+    <call class="com.axelor.apps.maintenance.web.ManufOrderController" method="print"/>
+  </action-method>
 
 </object-views>

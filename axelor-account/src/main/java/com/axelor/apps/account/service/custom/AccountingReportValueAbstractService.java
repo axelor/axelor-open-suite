@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,21 +18,23 @@
  */
 package com.axelor.apps.account.service.custom;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountType;
-import com.axelor.apps.account.db.AccountingReport;
-import com.axelor.apps.account.db.AccountingReportConfigLine;
-import com.axelor.apps.account.db.AccountingReportValue;
-import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.report.ITranslation;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -40,10 +42,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -52,6 +57,7 @@ public abstract class AccountingReportValueAbstractService {
   protected AccountingReportValueRepository accountingReportValueRepo;
   protected AnalyticAccountRepository analyticAccountRepo;
   protected DateService dateService;
+  protected Map<String, Integer> groupAccountMap;
 
   @Inject
   public AccountingReportValueAbstractService(
@@ -63,6 +69,8 @@ public abstract class AccountingReportValueAbstractService {
     this.accountingReportValueRepo = accountingReportValueRepo;
     this.analyticAccountRepo = analyticAccountRepo;
     this.dateService = dateService;
+
+    this.groupAccountMap = new HashMap<>(Map.of("nextValue", 0));
   }
 
   protected void addNullValue(
@@ -93,21 +101,46 @@ public abstract class AccountingReportValueAbstractService {
       BigDecimal result,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       String lineCode,
       int analyticCounter)
       throws AxelorException {
     DateTimeFormatter format = dateService.getDateFormat();
     String period = String.format("%s - %s", startDate.format(format), endDate.format(format));
-    int groupNumber = groupColumn == null ? 0 : groupColumn.getSequence();
+    String columnCode =
+        this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
+
     int columnNumber = column.getSequence();
     int lineNumber = line.getSequence();
+    int groupNumber = 0;
+
+    if (groupColumn != null) {
+      if (groupColumn.getTypeSelect() == AccountingReportConfigLineRepository.TYPE_GROUP) {
+        groupNumber = groupColumn.getSequence();
+      }
+    } else if (StringUtils.notEmpty(parentTitle)) {
+      if (!this.groupAccountMap.containsKey(parentTitle)) {
+        int nextValue = groupAccountMap.get("nextValue");
+        groupAccountMap.put(parentTitle, nextValue++);
+        groupAccountMap.replace("nextValue", nextValue);
+      }
+
+      groupNumber = groupAccountMap.get(parentTitle);
+    }
+
+    int companyNumber =
+        companySet.size() == 1
+            ? companySet.iterator().next().getId().intValue()
+            : Integer.MAX_VALUE;
 
     AccountingReportValue accountingReportValue =
         new AccountingReportValue(
             groupNumber,
             columnNumber,
             lineNumber + AccountingReportValueServiceImpl.getLineOffset(),
+            AccountingReportValueServiceImpl.getPeriodNumber(),
+            companyNumber,
             analyticCounter,
             this.getStyleSelect(groupColumn, column, line),
             groupColumn == null
@@ -119,15 +152,13 @@ public abstract class AccountingReportValueAbstractService {
             lineTitle,
             parentTitle,
             period,
+            this.getCompanyString(companySet),
             accountingReport,
             line,
             column,
             configAnalyticAccount);
 
     accountingReportValueRepo.save(accountingReportValue);
-
-    String columnCode =
-        this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
 
     if (valuesMapByColumn.containsKey(columnCode)) {
       valuesMapByColumn.get(columnCode).put(lineCode, accountingReportValue);
@@ -194,61 +225,57 @@ public abstract class AccountingReportValueAbstractService {
   }
 
   protected List<String> getAccountFilters(
-      Set<Account> accountSet,
-      Set<AccountType> accountTypeSet,
-      String groupColumnFilter,
-      String columnAccountFilter,
-      String lineAccountFilter,
-      boolean moveLine) {
-    List<String> queryList = new ArrayList<>();
+      Set<AccountType> accountTypeSet, String groupColumnFilter, boolean areAllAccountSetsEmpty) {
+    List<String> queryList = new ArrayList<>(Arrays.asList("self.isRegulatoryAccount IS FALSE"));
 
-    if (CollectionUtils.isNotEmpty(accountSet)) {
-      queryList.add(
-          String.format(
-              "(self%1$s IS NULL OR self%1$s IN :accountSet)", moveLine ? ".account" : ""));
+    if (!areAllAccountSetsEmpty) {
+      queryList.add("(self IS NULL OR self IN :accountSet)");
     }
 
     if (!Strings.isNullOrEmpty(groupColumnFilter)) {
-      queryList.add(this.getAccountFilterQueryList(groupColumnFilter, "groupColumn", moveLine));
-    }
-
-    if (!Strings.isNullOrEmpty(columnAccountFilter)) {
-      queryList.add(this.getAccountFilterQueryList(columnAccountFilter, "column", moveLine));
-    }
-
-    if (!Strings.isNullOrEmpty(lineAccountFilter)) {
-      queryList.add(this.getAccountFilterQueryList(lineAccountFilter, "line", moveLine));
+      queryList.add(this.getAccountFilterQueryList(groupColumnFilter));
     }
 
     if (CollectionUtils.isNotEmpty(accountTypeSet)) {
-      queryList.add(
-          String.format(
-              "(self%1$s IS NULL OR self%1$s.accountType IN :accountTypeSet)",
-              moveLine ? ".account" : ""));
-    }
-
-    if (!moveLine) {
-      queryList.add("self.isRegulatoryAccount IS FALSE");
+      queryList.add("(self IS NULL OR self.accountType IN :accountTypeSet)");
     }
 
     return queryList;
   }
 
-  protected String getAccountFilterQueryList(String accountFilter, String type, boolean moveLine) {
+  protected String getCompanyString(Set<Company> companySet) {
+    return companySet.size() == 1
+        ? companySet.iterator().next().getName()
+        : I18n.get(ITranslation.ACCOUNTING_REPORT_3000_ALL_COMPANIES);
+  }
+
+  protected boolean areAllAnalyticAccountSetsEmpty(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line) {
+    return CollectionUtils.isEmpty(accountingReport.getAnalyticAccountSet())
+        && (groupColumn == null || CollectionUtils.isEmpty(groupColumn.getAnalyticAccountSet()))
+        && CollectionUtils.isEmpty(column.getAnalyticAccountSet())
+        && CollectionUtils.isEmpty(line.getAnalyticAccountSet())
+        && (line.getDetailBySelect()
+                != AccountingReportConfigLineRepository.DETAIL_BY_ANALYTIC_ACCOUNT
+            || !accountingReport.getDisplayDetails());
+  }
+
+  protected String getAccountFilterQueryList(String accountFilter) {
     String[] tokens = accountFilter.split(",");
     List<String> filterQueryList = new ArrayList<>();
 
     for (int i = 0; i < tokens.length; i++) {
-      filterQueryList.add(
-          String.format(
-              "self%s.code LIKE :%sAccountFilter%d", moveLine ? ".account" : "", type, i));
+      filterQueryList.add(String.format("self.code LIKE :groupColumnAccountFilter%d", i));
     }
 
     return String.format("(%s)", String.join(" OR ", filterQueryList));
   }
 
   protected <T extends Model> Query<T> bindAccountFilters(
-      Query<T> moveLineQuery, String accountFilter, String type) {
+      Query<T> moveLineQuery, String accountFilter) {
     if (StringUtils.isEmpty(accountFilter)) {
       return moveLineQuery;
     }
@@ -256,7 +283,7 @@ public abstract class AccountingReportValueAbstractService {
     String[] tokens = accountFilter.split(",");
 
     for (int i = 0; i < tokens.length; i++) {
-      moveLineQuery = moveLineQuery.bind(String.format("%sAccountFilter%d", type, i), tokens[i]);
+      moveLineQuery = moveLineQuery.bind(String.format("groupColumnAccountFilter%d", i), tokens[i]);
     }
 
     return moveLineQuery;
@@ -265,5 +292,65 @@ public abstract class AccountingReportValueAbstractService {
   protected Set<AnalyticAccount> fetchAnalyticAccountsFromCode(String code) {
     return new HashSet<>(
         analyticAccountRepo.all().filter("self.code LIKE :code").bind("code", code).fetch());
+  }
+
+  protected AccountingReport fetchAccountingReport(AccountingReport accountingReport) {
+    boolean traceAnomalies = accountingReport.getTraceAnomalies();
+
+    accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
+    accountingReport.setTraceAnomalies(traceAnomalies);
+
+    return accountingReport;
+  }
+
+  protected void traceException(
+      String errorMessage,
+      AccountingReport accountingReport,
+      AccountingReportConfigLine group,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line) {
+    this.traceException(
+        new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(errorMessage)),
+        accountingReport,
+        group,
+        column,
+        line);
+  }
+
+  protected void traceException(
+      Exception e,
+      AccountingReport accountingReport,
+      AccountingReportConfigLine group,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line) {
+    AxelorException axelorException;
+    String message =
+        Optional.of(e)
+            .map(Throwable::getCause)
+            .map(Throwable::getLocalizedMessage)
+            .orElse(e.getLocalizedMessage());
+
+    if (group == null) {
+      axelorException =
+          new AxelorException(
+              accountingReport,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(AccountExceptionMessage.CUSTOM_REPORT_ANOMALY_NO_GROUP),
+              column.getCode(),
+              line.getCode(),
+              message);
+    } else {
+      axelorException =
+          new AxelorException(
+              accountingReport,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(AccountExceptionMessage.CUSTOM_REPORT_ANOMALY_GROUP),
+              group.getCode(),
+              column.getCode(),
+              line.getCode(),
+              message);
+    }
+
+    TraceBackService.trace(axelorException);
   }
 }
