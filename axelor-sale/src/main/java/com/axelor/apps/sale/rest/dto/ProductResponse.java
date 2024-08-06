@@ -18,24 +18,33 @@
  */
 package com.axelor.apps.sale.rest.dto;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.ResponseStructure;
-
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductResponse extends ResponseStructure {
 
   protected Long productId;
-  protected BigDecimal price;
+  protected List<PriceResponse> prices;
+  protected CurrencyResponse currency;
 
-  public ProductResponse(Product product) {
-    super(product.getVersion());
-    this.productId = product.getId();
-    this.price= product.getCostPrice();
+  public ProductResponse(Long productId, List<PriceResponse> prices, CurrencyResponse currency) {
+    super(ObjectFinder.NO_VERSION);
+    this.productId = productId;
+    this.prices = new ArrayList<>(prices);
+    this.currency = currency;
   }
 
   public Long getProductId() {
     return productId;
+  }
+
+  public List<PriceResponse> getPrices() {
+    return prices;
+  }
+
+  public CurrencyResponse getCurrency() {
+    return currency;
   }
 }

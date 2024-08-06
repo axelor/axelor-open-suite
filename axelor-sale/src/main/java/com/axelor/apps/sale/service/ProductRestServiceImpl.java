@@ -18,20 +18,20 @@
  */
 package com.axelor.apps.sale.service;
 
-import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CompanyService;
-
+import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.sale.rest.dto.PriceResponse;
 import com.axelor.apps.sale.service.app.AppSaleService;
-
 import com.google.inject.Inject;
-
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductRestServiceImpl implements ProductRestService {
 
@@ -39,6 +39,7 @@ public class ProductRestServiceImpl implements ProductRestService {
   protected CompanyService companyService;
 
   protected PartnerRepository partnerRepository;
+  protected TaxService taxService;
 
   @Inject
   public ProductRestServiceImpl(
@@ -52,14 +53,29 @@ public class ProductRestServiceImpl implements ProductRestService {
     this.partnerRepository = partnerRepository;
   }
 
-
   @Override
-  public Product fetchProductPrice(Product product, Partner partner, Company company) throws JSONException {
-    JSONObject json = new JSONObject();
-    json.put("ProductId", product.getId());
+  public List<PriceResponse> fetchProductPrice(Product product, Partner partner, Company company) {
 
-    JSONObject jsonPrice = new JSONObject();
-    jsonPrice.put("Price HTT", product.)
-    return null;
+    List<PriceResponse> priceList = new ArrayList<>();
+    BigDecimal priceWT =
+        product.getSalePrice().setScale(appSaleService.getNbDecimalDigitForUnitPrice());
+    BigDecimal priceATI =
+        getProductPriceWithTax(product, company).setScale(appSaleService.getNbDecimalDigitForUnitPrice());
+
+    priceList.add(new PriceResponse("WT", priceWT));
+    priceList.add(new PriceResponse("ATI", priceATI));
+    return priceList;
+  }
+
+  protected BigDecimal getProductPriceWithTax(Product product, Company company) {
+    AccountManagement accountManagement =
+        product.getProductFamily().getAccountManagementList().stream()
+            .filter(accountManag -> accountManag.getCompany() == company)
+            .findFirst()
+            .get();
+
+    Tax tax = accountManagement.getSaleTaxSet().stream().findFirst().get();
+    BigDecimal taxValue = tax.getActiveTaxLine().getValue();
+    return product.getSalePrice().add(product.getSalePrice().multiply(taxValue.divide(BigDecimal.valueOf(100))));
   }
 }
