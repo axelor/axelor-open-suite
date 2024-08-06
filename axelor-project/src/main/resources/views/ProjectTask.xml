@@ -28,8 +28,7 @@
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
-      <button name="doneBtn" icon="fa-check"
-        onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
+      <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
         showIf="project.isShowStatus"/>
     </toolbar>
     <menubar>
@@ -47,7 +46,8 @@
     <panel name="mainPanel" colSpan="12">
       <panel name="statusPanel" stacked="true" colSpan="6">
         <field name="status" widget="NavSelect" showTitle="false"
-          showIf="project.isShowStatus" x-order="sequence"/>
+          showIf="project.isShowStatus" x-order="sequence"
+          onChange="action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
       </panel>
       <panel name="viewerTagsPanel" colSpan="4">
@@ -503,6 +503,13 @@
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="generateNewLink"/>
   </action-method>
 
+  <action-group name="action-project-task-group-click-done">
+    <action name="action-project-task-validate-finish-status"/>
+    <action name="action-project-task-record-change-status"/>
+    <action name="action-project-task-method-auto-change-progress"/>
+    <action name="save"/>
+  </action-group>
+
   <action-view name="action-project-task-view-task" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="form" name="project-task-form"/>
@@ -705,6 +712,10 @@
 
   <action-method name="action-project-task-method-defaults-from-parent-task">
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="fillSubtask"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-auto-change-progress">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="changeProgress"/>
   </action-method>
 
   <action-group name="action-project-task-group-project-category-onchange">

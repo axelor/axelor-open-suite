@@ -86,16 +86,23 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
       response.setAttr("multipleQtyNotRespectedLabel", "hidden", true);
       response.setValue("$qtyValid", true);
     } else {
-      String spanClass =
-          allowToForce ? ContextHelper.SPAN_CLASS_WARNING : ContextHelper.SPAN_CLASS_IMPORTANT;
-
-      String message = getMultipleQuantityErrorMessage(productMultipleQties);
-      String title = ContextHelper.formatLabel(message, spanClass, 75);
+      String title = getMultipleQtyTitle(productMultipleQties, allowToForce);
 
       response.setAttr("multipleQtyNotRespectedLabel", "title", title);
       response.setAttr("multipleQtyNotRespectedLabel", "hidden", false);
       response.setValue("$qtyValid", allowToForce);
     }
+  }
+
+  @Override
+  public String getMultipleQtyTitle(
+      List<ProductMultipleQty> productMultipleQties, boolean allowToForce) {
+    String spanClass =
+        allowToForce ? ContextHelper.SPAN_CLASS_WARNING : ContextHelper.SPAN_CLASS_IMPORTANT;
+
+    String message = getMultipleQuantityErrorMessage(productMultipleQties);
+    String title = ContextHelper.formatLabel(message, spanClass, 75);
+    return title;
   }
 
   @Override

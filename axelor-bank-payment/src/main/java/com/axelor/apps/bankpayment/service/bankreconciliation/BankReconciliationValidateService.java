@@ -29,6 +29,7 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -215,6 +216,7 @@ public class BankReconciliationValidateService {
     boolean isDebit = bankReconciliationLine.getDebit().compareTo(BigDecimal.ZERO) == 1;
 
     boolean firstLine = true;
+    boolean isForeignCurrency = BankReconciliationToolService.isForeignCurrency(bankReconciliation);
 
     if ((moveLinesToReconcileContext != null && !moveLinesToReconcileContext.isEmpty())) {
       boolean isUnderCorrection =
@@ -230,20 +232,27 @@ public class BankReconciliationValidateService {
             moveLineRepository.find(((Integer) moveLineToReconcile.get("id")).longValue());
         BigDecimal debit;
         BigDecimal credit;
-
         if (isDebit) {
+          BigDecimal moveLineCredit = moveLine.getCredit();
+          if (isForeignCurrency) {
+            moveLineCredit = moveLine.getCurrencyAmount().abs();
+          }
           debit =
               currencyScaleService.getScaledValue(
                   bankReconciliation,
-                  (moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()))
+                  (moveLineCredit.subtract(moveLine.getBankReconciledAmount()))
                       .min(bankStatementAmountRemaining));
           credit = BigDecimal.ZERO;
         } else {
           debit = BigDecimal.ZERO;
+          BigDecimal moveLineDebit = moveLine.getDebit();
+          if (isForeignCurrency) {
+            moveLineDebit = moveLine.getCurrencyAmount().abs();
+          }
           credit =
               currencyScaleService.getScaledValue(
                   bankReconciliation,
-                  (moveLine.getDebit().subtract(moveLine.getBankReconciledAmount()))
+                  (moveLineDebit.subtract(moveLine.getBankReconciledAmount()))
                       .min(bankStatementAmountRemaining));
         }
 

@@ -12,7 +12,10 @@
       <insert position="after">
         <field name="isNonDeductibleTax" widget="boolean-switch"
           onChange="action-tax-attrs-display-purchase-accounts" if-module="axelor-account"
-          if="__config__.app.isApp('account')"/>
+          if="__config__.app.isApp('account')" colSpan="3"/>
+        <field name="manageByAmount" widget="boolean-select"
+          if="__config__.app.isApp('account')" x-false-text="Manage by percentage"
+          x-true-text="Manage by amount" colSpan="3"/>
       </insert>
     </extend>
     <extend target="//panel-tabs">

@@ -75,12 +75,14 @@ import com.axelor.apps.production.service.ProductionProductStockLocationServiceI
 import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
+import com.axelor.apps.production.service.SaleOrderConfirmProductionService;
+import com.axelor.apps.production.service.SaleOrderConfirmProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionService;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineViewProductionService;
 import com.axelor.apps.production.service.SaleOrderLineViewProductionServiceImpl;
-import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
 import com.axelor.apps.production.service.SopService;
 import com.axelor.apps.production.service.SopServiceImpl;
 import com.axelor.apps.production.service.StockMoveLineProductionServiceImpl;
@@ -152,6 +154,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveSe
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
+import com.axelor.apps.production.service.observer.SaleOrderLineProductionObserver;
+import com.axelor.apps.production.service.observer.SaleOrderProductionObserver;
 import com.axelor.apps.production.service.operationorder.OperationOrderChartService;
 import com.axelor.apps.production.service.operationorder.OperationOrderChartServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderCreateBarcodeService;
@@ -189,13 +193,12 @@ import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProductVariantServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingServiceSupplyChainImpl;
-import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderLineViewSupplychainServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainServiceImpl;
 
 public class ProductionModule extends AxelorModule {
 
@@ -214,8 +217,6 @@ public class ProductionModule extends AxelorModule {
     bind(MrpServiceImpl.class).to(MrpServiceProductionImpl.class);
     bind(CostSheetService.class).to(CostSheetServiceImpl.class);
     bind(CostSheetLineService.class).to(CostSheetLineServiceImpl.class);
-    bind(SaleOrderWorkflowServiceSupplychainImpl.class)
-        .to(SaleOrderWorkflowServiceProductionImpl.class);
     bind(StockRulesSupplychainServiceImpl.class)
         .to(StockRulesSupplychainServiceProductionImpl.class);
     bind(BillOfMaterialRepository.class).to(BillOfMaterialManagementRepository.class);
@@ -306,5 +307,9 @@ public class ProductionModule extends AxelorModule {
     bind(OperationOrderCreateBarcodeService.class).to(OperationOrderCreateBarcodeServiceImpl.class);
     bind(SaleOrderLineDomainProductionService.class)
         .to(SaleOrderLineDomainProductionServiceImpl.class);
+    bind(SaleOrderLineViewProductionService.class).to(SaleOrderLineViewProductionServiceImpl.class);
+    bind(SaleOrderLineProductionObserver.class);
+    bind(SaleOrderProductionObserver.class);
+    bind(SaleOrderConfirmProductionService.class).to(SaleOrderConfirmProductionServiceImpl.class);
   }
 }

@@ -495,7 +495,7 @@
           field="saleOrderLineList" form-view="sale-order-line-form"
           grid-view="sale-order-line-editable-grid" orderBy="sequence"
           onChange="action-sale-order-method-on-line-change"
-          onNew="action-sale-order-line-group-editable-onnew"
+          onNew="action-sale-order-line-method-onnew-editable"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canMove="true" if="__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
@@ -779,6 +779,11 @@
 	                  </>
 	              ]]></viewer>
       </field>
+    </panel>
+    <panel name="loyaltyAccountPanel" title="Loyalty account" sidebar="true" hidden="true"
+      showIf="clientPartner &amp;&amp; $loyaltyPoints" canCollapse="true" collapseIf="true"
+      if="__config__.app.getApp('sale')?.getEnableLoyalty()">
+      <field name="$loyaltyPoints" readonly="true" title="Loyalty points" x-scale="0"/>
     </panel>
     <panel name="salesFollowUpPanel" title="Sales follow-up" hideIf="clientPartner == null"
       sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
@@ -1468,13 +1473,14 @@
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
-    <action name="action-sale-order-validate-check-on-confirm"/>
+    <action name="action-sale-order-method-check-before-confirm"/>
     <action name="save"/>
     <action name="action-business-project-method-generate-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     <action name="action-sale-order-method-confirm"/>
-    <action name="action-sale-order-method-notify-stock-move-created"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
+    <action name="action-sale-order-method-update-loyalty-account"
+      if="__config__.app.getApp('sale')?.enableLoyalty"/>
+    <action name="action-sale-order-method-reload"/>
   </action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
@@ -1533,6 +1539,10 @@
 
   <action-method name="action-sale-order-method-check-before-finalize">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="checkBeforeFinalize"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-check-before-confirm">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="checkBeforeConfirm"/>
   </action-method>
 
   <action-method name="action-sale-order-method-finalize-quotation">
@@ -1621,6 +1631,10 @@
 
   <action-method name="action-sale-order-method-version-recovery-btn">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="recoverVersion"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-reload">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="reloadMethod"/>
   </action-method>
 
   <action-view name="action-open-sale-order-merge-form" title="Merge sale orders"
@@ -2194,5 +2208,8 @@
     <attribute for="saleOrderLineList.discountAmount" name="hidden"
       expr="eval: !__config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid()"/>
   </action-attrs>
+  <action-method name="action-sale-order-method-update-loyalty-account">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="updateLoyaltyAccount"/>
+  </action-method>
 
 </object-views>

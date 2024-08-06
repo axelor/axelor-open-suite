@@ -6,4 +6,6 @@ import java.util.Map;
 
 public interface SaleOrderDummyService {
   Map<String, Object> getOnNewDummies(SaleOrder saleOrder) throws AxelorException;
+
+  Map<String, Object> getOnLoadDummies(SaleOrder saleOrder) throws AxelorException;
 }

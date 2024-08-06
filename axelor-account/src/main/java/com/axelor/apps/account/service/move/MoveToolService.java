@@ -196,7 +196,7 @@ public interface MoveToolService {
 
   List<Move> getMovesWithDuplicatedOrigin(Move move);
 
-  List<Move> findDaybookAndAccountingByYear(Set<Year> yearList);
+  List<Move> findMoveByYear(Set<Year> yearList, List<Integer> statusList);
 
   @CallMethod
   boolean isSimulatedMovePeriodClosed(Move move);
@@ -204,8 +204,6 @@ public interface MoveToolService {
   void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
 
   void setDescriptionOnMoveLineList(Move move);
-
-  BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit);
 
   boolean isMultiCurrency(Move move);
 
