@@ -20,11 +20,9 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -65,17 +63,6 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   }
 
   @Override
-  @Transactional
-  public Partner validateCustomer(SaleOrder saleOrder) {
-
-    Partner clientPartner = partnerRepo.find(saleOrder.getClientPartner().getId());
-    clientPartner.setIsCustomer(true);
-    clientPartner.setIsProspect(false);
-
-    return partnerRepo.save(clientPartner);
-  }
-
-  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancelSaleOrder(
       SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
@@ -109,37 +96,6 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     } else {
       saleOrder.setCancelReasonStr(cancelReasonStr);
     }
-    saleOrderRepo.save(saleOrder);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
-    List<Integer> authorizedStatus = new ArrayList<>();
-    authorizedStatus.add(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
-    authorizedStatus.add(SaleOrderRepository.STATUS_ORDER_COMPLETED);
-    if (saleOrder.getStatusSelect() == null
-        || !authorizedStatus.contains(saleOrder.getStatusSelect())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(SaleExceptionMessage.SALE_ORDER_CONFIRM_WRONG_STATUS));
-    }
-
-    saleOrderCheckService.checkSaleOrderLineList(saleOrder);
-
-    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
-    saleOrder.setConfirmationDateTime(appSaleService.getTodayDateTime().toLocalDateTime());
-    saleOrder.setConfirmedByUser(userService.getUser());
-
-    this.validateCustomer(saleOrder);
-
-    if (appSaleService.getAppSale().getCloseOpportunityUponSaleOrderConfirmation()) {
-      Opportunity opportunity = saleOrder.getOpportunity();
-      if (opportunity != null) {
-        opportunity.setOpportunityStatus(appCrmService.getClosedWinOpportunityStatus());
-      }
-    }
-
     saleOrderRepo.save(saleOrder);
   }
 

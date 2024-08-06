@@ -1,3 +1,0 @@
----
-title: "Move: fixed issue preventing partner selection if the move has a journal with multiple compatible partners."
-module: axelor-account

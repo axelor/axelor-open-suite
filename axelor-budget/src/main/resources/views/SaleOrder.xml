@@ -11,10 +11,6 @@
       <attribute name="onLoad" value="action-group-budget-saleorder-onload"/>
     </extend>
 
-    <extend target="//button[@name='confirmOrderBtn']">
-      <attribute name="onClick" value="action-group-budget-sale-order-confirm-onclick"/>
-    </extend>
-
     <extend target="//button[@name='cancelBtn']">
       <attribute name="onClick"
         value="save,action-sale-order-view-cancel,action-budget-sale-order-method-update-budget-lines"/>
@@ -41,12 +37,6 @@
       </insert>
     </extend>
   </form>
-
-  <action-group name="action-group-budget-sale-order-confirm-onclick">
-    <action name="action-method-budget-sale-order-confirm"
-      if="__config__.app.isApp('budget')"/>
-    <action name="action-sale-group-confirmed"/>
-  </action-group>
 
   <action-group name="action-budget-sale-order-group-on-save">
     <action name="action-supplychain-saleorder-onsave"/>
@@ -120,10 +110,6 @@
 
   <action-method name="action-budget-sale-order-method-update-budget-lines">
     <call class="com.axelor.apps.budget.web.SaleOrderController" method="updateBudgetLines"/>
-  </action-method>
-
-  <action-method name="action-method-budget-sale-order-confirm">
-    <call class="com.axelor.apps.budget.web.SaleOrderController" method="confirm"/>
   </action-method>
 
 </object-views>

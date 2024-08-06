@@ -6,6 +6,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.loyalty.LoyaltyAccountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDummyServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.google.inject.Inject;
@@ -21,10 +23,12 @@ public class SaleOrderDummyBudgetServiceImpl extends SaleOrderDummyServiceImpl {
   @Inject
   public SaleOrderDummyBudgetServiceImpl(
       AppBaseService appBaseService,
+      AppSaleService appSaleService,
       SaleOrderVersionService saleOrderVersionService,
+      LoyaltyAccountService loyaltyAccountService,
       CompanyService companyService,
       AccountConfigService accountConfigService) {
-    super(appBaseService, saleOrderVersionService);
+    super(appBaseService, appSaleService, saleOrderVersionService, loyaltyAccountService);
     this.companyService = companyService;
     this.accountConfigService = accountConfigService;
   }

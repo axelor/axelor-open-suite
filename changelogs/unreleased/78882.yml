@@ -1,3 +1,0 @@
----
-title: "Project API: fixed an issue where condition in permission were not evaluated correctly to access unit and planning time of a project."
-module: axelor-project

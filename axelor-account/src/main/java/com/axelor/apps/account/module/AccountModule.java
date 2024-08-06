@@ -191,10 +191,6 @@ import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
-import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
-import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupServiceImpl;
-import com.axelor.apps.account.service.invoice.InvoiceLineTaxToolService;
-import com.axelor.apps.account.service.invoice.InvoiceLineTaxToolServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingViewService;
@@ -233,6 +229,12 @@ import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementServiceImpl;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupServiceImpl;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxRecordService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxRecordServiceImpl;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelService;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationService;
@@ -863,6 +865,8 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceLineGroupService.class).to(InvoiceLineGroupServiceImpl.class);
 
     bind(InvoiceLineTaxGroupService.class).to(InvoiceLineTaxGroupServiceImpl.class);
+
+    bind(InvoiceLineTaxRecordService.class).to(InvoiceLineTaxRecordServiceImpl.class);
 
     bind(InvoiceTermPaymentGroupService.class).to(InvoiceTermPaymentGroupServiceImpl.class);
 
