@@ -1402,6 +1402,7 @@
 "No pricing scale used for this record",,,
 "No tax found for product %s",,,
 "No view configured for model %s.",,,
+"Non deductible tax",,,
 "Non-negotiable price list",,,
 "Non-unique key",,,
 "None",,,

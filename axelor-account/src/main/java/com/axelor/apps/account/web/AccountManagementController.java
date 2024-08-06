@@ -3,6 +3,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -35,8 +36,7 @@ public class AccountManagementController {
     if (!checkResult) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(
-              "Only one non-deductible tax is configured on the product/account %s. A non deductible tax should always be paired with at least one other deductible tax."),
+          I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR1),
           Optional.of(account).map(Account::getLabel).orElse(null));
     }
   }
