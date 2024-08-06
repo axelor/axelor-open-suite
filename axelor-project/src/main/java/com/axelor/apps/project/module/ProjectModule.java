@@ -21,6 +21,8 @@ package com.axelor.apps.project.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskLinkTypeManagementRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskLinkTypeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateManagementRepository;
@@ -56,6 +58,10 @@ import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.service.app.AppProjectServiceImpl;
 import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.apps.project.service.config.ProjectConfigServiceImpl;
+import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
+import com.axelor.apps.project.service.taskLink.ProjectTaskLinkServiceImpl;
+import com.axelor.apps.project.service.taskLink.ProjectTaskLinkTypeService;
+import com.axelor.apps.project.service.taskLink.ProjectTaskLinkTypeServiceImpl;
 import com.axelor.team.db.repo.TeamRepository;
 
 public class ProjectModule extends AxelorModule {
@@ -81,5 +87,8 @@ public class ProjectModule extends AxelorModule {
     bind(WikiRepository.class).to(WikiProjectRepository.class);
     bind(ProjectCreateTaskService.class).to(ProjectCreateTaskServiceImpl.class);
     bind(ProjectConfigService.class).to(ProjectConfigServiceImpl.class);
+    bind(ProjectTaskLinkService.class).to(ProjectTaskLinkServiceImpl.class);
+    bind(ProjectTaskLinkTypeService.class).to(ProjectTaskLinkTypeServiceImpl.class);
+    bind(ProjectTaskLinkTypeRepository.class).to(ProjectTaskLinkTypeManagementRepository.class);
   }
 }

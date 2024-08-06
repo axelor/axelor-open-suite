@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/data-import"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.1.xsd">
+
+  <input file="studio_appAccount.csv" separator=";" type="com.axelor.studio.db.AppAccount"
+    search="self.app.code = :code">
+  </input>
+
+  <input file="account_financialDiscount.csv" separator=";"
+    type="com.axelor.apps.account.db.FinancialDiscount" search="self.importId = :importId"/>
+
+  <input file="account_paymentCondition.csv" separator=";"
+    type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId"/>
+
+  <input file="account_paymentConditionLine.csv" separator=";"
+    type="com.axelor.apps.account.db.PaymentConditionLine" search="self.importId = :importId"/>
+
+</csv-inputs>

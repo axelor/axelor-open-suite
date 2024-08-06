@@ -217,7 +217,7 @@ public class ContractLineServiceImpl implements ContractLineService {
               product,
               contract.getCompany(),
               contractLine.getFiscalPosition(),
-              false);
+              contract.getTargetTypeSelect() == ContractRepository.SUPPLIER_CONTRACT);
     }
 
     return taxLineSet;

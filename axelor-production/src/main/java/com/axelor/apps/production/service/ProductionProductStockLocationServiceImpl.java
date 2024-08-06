@@ -36,11 +36,12 @@ import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.utils.StockLocationUtilsService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
-import com.axelor.apps.supplychain.service.StockLocationServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychain;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -64,9 +65,10 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       CompanyRepository companyRepository,
       StockLocationRepository stockLocationRepository,
       StockLocationService stockLocationService,
-      StockLocationServiceSupplychain stockLocationServiceSupplychain,
-      StockLocationLineService stockLocationLineService,
+      StockLocationUtilsServiceSupplychain stockLocationUtilsServiceSupplychain,
+      StockLocationLineFetchService stockLocationLineFetchService,
       StockLocationLineRepository stockLocationLineRepository,
+      StockLocationUtilsService stockLocationUtilsService,
       AppProductionService appProductionService,
       ManufOrderService manufOrderService,
       StockMoveLineRepository stockMoveLineRepository,
@@ -79,10 +81,11 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
         companyRepository,
         stockLocationRepository,
         stockLocationService,
-        stockLocationServiceSupplychain,
-        stockLocationLineService,
+        stockLocationUtilsServiceSupplychain,
+        stockLocationLineFetchService,
         stockLocationLineRepository,
-        appBaseService);
+        appBaseService,
+        stockLocationUtilsService);
     this.appProductionService = appProductionService;
     this.manufOrderService = manufOrderService;
     this.stockMoveLineRepository = stockMoveLineRepository;

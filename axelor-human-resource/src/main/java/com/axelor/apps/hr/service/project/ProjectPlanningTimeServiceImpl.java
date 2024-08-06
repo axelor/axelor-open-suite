@@ -60,6 +60,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,39 +181,31 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         (LocalDateTime)
             Adapter.adapt(datas.get("toDate"), LocalDateTime.class, LocalDateTime.class, null);
 
-    ProjectTask projectTask = null;
+    Project project = (Project) datas.get("project");
+    project = projectRepo.find(project.getId());
 
-    Map<String, Object> objMap = (Map) datas.get("project");
-    Project project = projectRepo.find(Long.parseLong(objMap.get("id").toString()));
     Integer timePercent = 0;
-
     if (datas.get("timepercent") != null) {
       timePercent = Integer.parseInt(datas.get("timepercent").toString());
     }
 
-    objMap = (Map) datas.get("employee");
-    Employee employee = employeeRepo.find(Long.parseLong(objMap.get("id").toString()));
+    Employee employee = (Employee) datas.get("employee");
+    employee = employeeRepo.find(employee.getId());
 
-    if (employee == null) {
-      return;
-    }
+    ProjectTask projectTask =
+        Optional.ofNullable((ProjectTask) datas.get("projectTask"))
+            .map(task -> projectTaskRepo.find(task.getId()))
+            .orElse(null);
 
-    if (datas.get("projectTask") != null) {
-      objMap = (Map) datas.get("projectTask");
-      projectTask = projectTaskRepo.find(Long.valueOf(objMap.get("id").toString()));
-    }
+    Product activity =
+        Optional.ofNullable((Product) datas.get("product"))
+            .map(p -> productRepo.find(p.getId()))
+            .orElse(null);
 
-    Product activity = null;
-    if (datas.get("product") != null) {
-      objMap = (Map) datas.get("product");
-      activity = productRepo.find(Long.valueOf(objMap.get("id").toString()));
-    }
-
-    Site site = null;
-    if (datas.get("site") != null) {
-      objMap = (Map) datas.get("site");
-      site = JPA.find(Site.class, Long.valueOf(objMap.get("id").toString()));
-    }
+    Site site =
+        Optional.ofNullable((Site) datas.get("site"))
+            .map(s -> JPA.find(Site.class, s.getId()))
+            .orElse(null);
 
     BigDecimal dailyWorkHrs = employee.getDailyWorkHours();
 
@@ -480,17 +473,23 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     List<Unit> units = new ArrayList<>();
     units.add(unit);
     units.addAll(
-        unitConversionRepository.all()
+        unitConversionRepository
+            .all()
             .filter("self.entitySelect = :entitySelect AND self.startUnit = :startUnit")
-            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT).bind("startUnit", unit)
-            .fetch().stream()
+            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT)
+            .bind("startUnit", unit)
+            .fetch()
+            .stream()
             .map(UnitConversion::getEndUnit)
             .collect(Collectors.toList()));
     units.addAll(
-        unitConversionRepository.all()
+        unitConversionRepository
+            .all()
             .filter("self.entitySelect = :entitySelect AND self.endUnit = :endUnit")
-            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT).bind("endUnit", unit)
-            .fetch().stream()
+            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT)
+            .bind("endUnit", unit)
+            .fetch()
+            .stream()
             .map(UnitConversion::getStartUnit)
             .collect(Collectors.toList()));
     return units;

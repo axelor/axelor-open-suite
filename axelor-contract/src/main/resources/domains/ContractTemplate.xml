@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="contract" package="com.axelor.apps.contract.db"/>
 
@@ -20,7 +20,7 @@
     <string name="note" multiline="true" large="true" title="Notes"/>
     <string name="name" title="Name" required="true" namecolumn="true"/>
 
-    <boolean name="isInvoicingManagement" title="Product management"/>
+    <boolean name="isInvoicingManagement" title="Invoicing management"/>
     <boolean name="isGroupedInvoicing" title="Grouped Invoicing" default="false"/>
     <boolean name="isConsumptionManagement" title="Consumption management"/>
     <boolean name="isAdditionaBenefitManagement" title="Additional benefit management"/>

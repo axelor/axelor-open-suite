@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed an issue where due date was not updated correctly when saving an invoice."
-module: axelor-account

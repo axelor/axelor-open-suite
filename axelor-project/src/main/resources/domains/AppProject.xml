@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -10,7 +10,8 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <string name="projectLabel" title="Project Label"/>
-    <boolean name="resourceManagement" title="Resource management"/>
+    <boolean name="resourceManagement" title="Resource management"
+      help="This option enables resource reservation on projects. You can create resources that can be booked on projects."/>
     <boolean name="checkResourceAvailibility" title="Check availability of resources"/>
     <boolean name="isEnableSignature" title="Enable task signature"/>
     <boolean name="isEnablePerProjectTaskSequence" title="Enable per project task sequence"/>
@@ -31,6 +32,9 @@
       ref="com.axelor.apps.project.db.TaskStatus"/>
     <string name="fullNameGroovyFormula" title="Full name groovy formula"
       help="This formula allows you to define the composition of the fullName through a groovy formula"/>
+
+    <boolean name="selectAutoProgressOnProjectTask" title="Enable task progress by status"
+      help="This option is used to activate the automatic allocation of progress to project tasks. If it is enabled, the progress field will be available in the task statuses and will generate the progress when these change. The percentage defined by default in the statuses will apply to all tasks."/>
 
     <track>
       <field name="projectLabel" on="UPDATE"/>
