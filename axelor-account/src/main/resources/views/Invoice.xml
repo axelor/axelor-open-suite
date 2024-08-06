@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <!-- VUE GENERALE -->
 
@@ -622,8 +622,11 @@
           grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change"
           canMove="true" orderBy="sequence" height="30"/>
       </panel>
-      <panel name="invoiceTaxPanel" title="Tax" showTitle="false">
-        <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
+      <panel name="invoiceTaxPanel" title="Tax" showTitle="false"
+        readonlyIf="statusSelect != 1">
+        <panel-related name="invoiceLineTaxListPanel" readonlyIf="statusSelect != 1"
+          field="invoiceLineTaxList" canRemove="false" canNew="false"
+          onChange="action-invoice-method-compute,action-invoice-method-generate-invoice-terms"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
       <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
@@ -666,7 +669,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         title="Business project" colSpan="12" if-module="axelor-business-project">
         <field name="project" onSelect="action-invoice-attrs-domain-project"
-          form-view="project-form" grid-view="project-grid" colSpan="6"/>
+          form-view="business-project-form" grid-view="project-grid" colSpan="6"/>
         <button name="updateLinesBtn" title="Update lines with selected project"
           onClick="save,action-invoice-business-project-method-update-lines,save" colSpan="6"
           readonlyIf="!project"/>
@@ -819,8 +822,10 @@
         <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
         <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
           <field name="financialDiscountRate" readonly="true"/>
-          <field name="financialDiscountTotalAmount" readonly="true"/>
-          <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+          <field name="financialDiscountTotalAmount" readonly="true"
+            x-scale="currency.numberOfDecimals"/>
+          <field name="remainingAmountAfterFinDiscount" readonly="true"
+            x-scale="currency.numberOfDecimals"/>
         </panel>
       </panel>
       <panel name="blockingsPanel" title="Blockings" showIf="statusSelect == 3"
@@ -901,7 +906,7 @@
         onClick="action-invoice-group-on-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="action-invoice-group-ventilate-button"
+        onClick="action-invoice-group-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-validate-and-ventilate-onclick"/>
@@ -1171,7 +1176,7 @@
         onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1"
         form-view="currency-form" grid-view="currency-grid"/>
       <field name="project" if-module="axelor-business-project"
-        onSelect="action-invoice-attrs-domain-project" form-view="project-form"
+        onSelect="action-invoice-attrs-domain-project" form-view="business-project-form"
         grid-view="project-grid" if="__config__.app.isApp('project')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"/>
     </panel>
@@ -1254,7 +1259,7 @@
         onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="action-invoice-group-ventilate-button"
+        onClick="action-invoice-group-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
         <button name="cancelBtn" title="Cancel"
@@ -1528,6 +1533,16 @@
     </panel>
   </form>
 
+  <form name="supplier-invoice-wizard-form" title="Supplier invoice"
+    model="com.axelor.apps.account.db.Invoice"
+    onLoad="action-invoice-record-set-initial-invoicenb-origin-date"
+    onSave="action-invoice-validate-check-origin-date,action-invoice-group-ventilate-button">
+    <panel name="mainPanel" colSpan="12">
+      <field name="supplierInvoiceNb" colSpan="6" required="true"/>
+      <field name="originDate" colSpan="6" required="true"/>
+    </panel>
+  </form>
+
   <action-group name="action-account-invoice-onnew-group">
     <action name="action-invoice-record-default"/>
     <action name="action-invoice-method-payment-mode-condition" if="company != null"/>
@@ -1673,6 +1688,13 @@
     <action name="action-invoice-group-before-ventilate"/>
     <action name="save"/>
     <action name="action-invoice-method-ventilate"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-ventilate">
+    <action name="action-invoice-method-set-supplier-invoice-number-and-origin-date"
+      if="(!supplierInvoiceNb || !originDate) &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2)"/>
+    <action name="action-invoice-group-ventilate-button"
+      if="(supplierInvoiceNb &amp;&amp; originDate &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2)) || (operationTypeSelect == 3 || operationTypeSelect == 4)"/>
   </action-group>
 
   <action-group name="action-invoice-group-before-ventilate">
@@ -2016,6 +2038,13 @@
       expr="call: com.axelor.apps.account.service.PartnerAccountService:getPayedByPartner(partner)"/>
   </action-record>
 
+  <action-record name="action-invoice-record-set-initial-invoicenb-origin-date"
+    model="com.axelor.apps.account.db.Invoice">
+    <field name="supplierInvoiceNb" expr="eval: _supplierInvoiceNb"/>
+    <field name="originDate" expr="eval: _originDate" if="_originDate"/>
+    <field name="originDate" expr="eval: __config__.date" if="!_originDate"/>
+  </action-record>
+
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-invoice-attrs-bank-details-from-partner-domain">
@@ -2186,6 +2215,12 @@
     <alert message="At least one pfp validator is missing, do you wish to continue ?"
       if="com.axelor.inject.Beans.get(com.axelor.apps.account.service.invoice.InvoiceTermService.class).getPfpValidatorUserCondition(__this__, null)
           &amp;&amp; invoiceTermList.any{it -> !it.pfpValidatorUser}"/>
+  </action-validate>
+
+
+  <action-validate name="action-invoice-validate-check-origin-date">
+    <error message="Invoice date of origin can't be in the future."
+      if="originDate?.isAfter(__config__.date)"/>
   </action-validate>
 
   <!-- ACTION METHOD -->
@@ -2446,6 +2481,12 @@
 
   <action-method name="action-invoice-method-manage-refund-titles">
     <call class="com.axelor.apps.account.web.InvoiceController" method="manageRefundFields"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-method-set-supplier-invoice-number-and-origin-date">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setSupplierInvoiceNbAndOriginDate"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"

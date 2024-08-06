@@ -279,4 +279,27 @@ public class CurrencyServiceImpl implements CurrencyService {
         this.getCurrencyConversionRate(startCurrency, endCurrency, invoiceDate),
         this.getCurrencyConversionRate(startCurrency, endCurrency, paymentDate));
   }
+
+  /**
+   * @param oldDate
+   * @param newDate
+   * @param startCurrency
+   * @param endCurrency
+   * @param oldCurrencyRate
+   * @return the currency rate at newDate only if currency rate is different between the two dates
+   * @throws AxelorException
+   */
+  @Override
+  public BigDecimal getCurrencyRate(
+      LocalDate oldDate,
+      LocalDate newDate,
+      Currency startCurrency,
+      Currency endCurrency,
+      BigDecimal oldCurrencyRate)
+      throws AxelorException {
+    if (!this.isSameCurrencyRate(oldDate, newDate, startCurrency, endCurrency)) {
+      return this.getCurrencyConversionRate(startCurrency, endCurrency, newDate);
+    }
+    return oldCurrencyRate;
+  }
 }

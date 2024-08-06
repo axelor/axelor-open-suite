@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-sale-config-form" title="App sale" model="com.axelor.studio.db.AppSale"
     canDelete="false" canNew="false" width="large" onLoad="action-sale-attrs-set-hidden">
@@ -30,9 +30,10 @@
       <field name="isEditableGridEnabled" widget="boolean-switch"/>
       <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
         showIf="isEditableGridEnabled"/>
-      <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
-        hidden="true"/>
+      <field name="isEnableCalculationEntireQuotation" widget="boolean-switch"/>
       <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>
+      <field name="enableLoyalty" widget="boolean-switch"/>
+      <field name="isCartManagementEnabled" widget="boolean-switch"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"
@@ -65,8 +66,6 @@
     model="com.axelor.studio.db.AppSale">
     <attribute name="hidden" for="enableSalesProductByTradName"
       expr="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <attribute for="isEnableCalculationEntireQuotationUsingPricing" name="hidden"
-      expr="eval: !__config__.app.getApp('base')?.enablePricingScale"/>
   </action-attrs>
 
 </object-views>

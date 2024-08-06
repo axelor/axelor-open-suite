@@ -29,14 +29,14 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineComplementaryProductService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLinePriceService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLinePricingService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComplementaryProductService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,6 +87,13 @@ public class SaleOrderLineProductProductionServiceImpl
         super.computeProductInformation(saleOrderLine, saleOrder);
     saleOrderLineMap.putAll(setBillOfMaterial(saleOrderLine));
 
+    return saleOrderLineMap;
+  }
+
+  @Override
+  public Map<String, Object> getProductionInformation(SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = super.getProductionInformation(saleOrderLine);
+    saleOrderLineMap.putAll(setBillOfMaterial(saleOrderLine));
     return saleOrderLineMap;
   }
 

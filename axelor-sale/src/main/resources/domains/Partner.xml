@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -14,6 +14,8 @@
       title="Customer Catalog Lines"/>
     <one-to-many name="complementaryProductList" title="Complementary product(s)"
       ref="com.axelor.apps.sale.db.ComplementaryProduct" mappedBy="partner"/>
+    <one-to-many name="loyaltyAccountList" title="Loyalty accounts"
+      ref="com.axelor.apps.sale.db.LoyaltyAccount" mappedBy="partner"/>
   </entity>
 
 </domain-models>

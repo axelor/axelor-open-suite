@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -28,6 +28,14 @@
 		public static final int STATUS_TEMPORARILY_CLOSED = 4;
 		public static final int STATUS_CLOSURE_IN_PROGRESS = 5;
 	]]></extra-code>
+
+    <track>
+      <field name="name"/>
+      <field name="code"/>
+      <field name="fromDate"/>
+      <field name="toDate"/>
+      <field name="statusSelect"/>
+    </track>
   </entity>
 
 </domain-models>

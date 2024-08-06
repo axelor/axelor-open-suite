@@ -18,12 +18,16 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.report.ReportGenerator;
 import com.google.common.base.Preconditions;
@@ -38,17 +42,23 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
 import org.eclipse.birt.report.data.oda.jdbc.IConnectionFactory;
 import org.eclipse.birt.report.engine.api.EngineConstants;
 import org.eclipse.birt.report.engine.api.EngineException;
+import org.eclipse.birt.report.engine.api.IGetParameterDefinitionTask;
 import org.eclipse.birt.report.engine.api.IPDFRenderOption;
+import org.eclipse.birt.report.engine.api.IParameterDefn;
 import org.eclipse.birt.report.engine.api.IRenderOption;
 import org.eclipse.birt.report.engine.api.IReportEngine;
 import org.eclipse.birt.report.engine.api.IReportRunnable;
@@ -128,6 +138,14 @@ public class BaseReportGenerator extends ReportGenerator {
     try (InputStream stream = found.openStream()) {
 
       final IReportRunnable report = engine.openReportDesign(designName, stream);
+
+      try {
+        checkParameters(params, report);
+      } catch (AxelorException exception) {
+        TraceBackService.trace(exception);
+        throw new RuntimeException(exception.getMessage());
+      }
+
       final IRunAndRenderTask task = engine.createRunAndRenderTask(report);
       final IRenderOption opts = new RenderOption();
 
@@ -165,6 +183,27 @@ public class BaseReportGenerator extends ReportGenerator {
               }
             }
           });
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  protected void checkParameters(Map<String, Object> params, final IReportRunnable report)
+      throws AxelorException {
+    IGetParameterDefinitionTask paramTask = engine.createGetParameterDefinitionTask(report);
+    Collection<IParameterDefn> reportParams = paramTask.getParameterDefns(false);
+
+    List<String> missingParams =
+        reportParams.stream()
+            .filter(IParameterDefn::isRequired)
+            .map(IParameterDefn::getName)
+            .filter(requiredParam -> params.get(requiredParam) == null)
+            .collect(Collectors.toList());
+
+    if (!CollectionUtils.isEmpty(missingParams)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.MISSING_BIRT_PARAMETER),
+          String.join(", ", missingParams));
     }
   }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="product-production-form" title="Product" model="com.axelor.apps.base.db.Product"
     onNew="action-product-attrs-scale-and-precision-production"
@@ -40,6 +40,7 @@
     model="com.axelor.apps.base.db.Product" extension="true">
     <extend target="/">
       <attribute name="onNew" value="action-product-group-production-onnew"/>
+      <attribute name="onLoad" value="action-product-group-production-onload"/>
     </extend>
   </form>
 
@@ -121,7 +122,14 @@
 
   <action-group name="action-product-group-production-onnew">
     <action name="action-stock-product-group-on-new"/>
+    <action name="action-product-attrs-scale-and-precision-production"/>
+    <action name="action-product-record-default-production"/>
     <action name="action-product-method-bom-import-line-product-onnew"/>
+  </action-group>
+
+  <action-group name="action-product-group-production-onload">
+    <action name="action-stock-product-group-on-load"/>
+    <action name="action-product-attrs-scale-and-precision-production"/>
   </action-group>
 
 </object-views>

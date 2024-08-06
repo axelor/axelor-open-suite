@@ -72,7 +72,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       DurationService durationService,
       ContractLineRepository contractLineRepo,
       ContractRepository contractRepository,
-      PartnerLinkSupplychainService partnerLinkSupplychainService) {
+      PartnerLinkSupplychainService partnerLinkSupplychainService,
+      ContractInvoicingService contractInvoicingService) {
     super(contractLineService, contractVersionService, sequenceService, contractVersionRepository);
     this.appBaseService = appBaseService;
     this.versionService = versionService;
@@ -80,6 +81,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.contractLineRepo = contractLineRepo;
     this.contractRepository = contractRepository;
     this.partnerLinkSupplychainService = partnerLinkSupplychainService;
+    this.contractInvoicingService = contractInvoicingService;
   }
 
   @Override
@@ -450,8 +452,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     Contract nextContract = newVersion.getNextContract();
     LocalDate todayDate = appBaseService.getTodayDate(contract.getCompany());
     waitingNextVersion(nextContract, todayDate);
-    activeNextVersion(nextContract, todayDate);
-    return newVersion.getContract();
+    return nextContract;
   }
 
   @Override

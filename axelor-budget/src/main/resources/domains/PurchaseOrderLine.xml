@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -13,7 +13,8 @@
       mappedBy="purchaseOrderLine"/>
     <decimal name="budgetRemainingAmountToAllocate"
       title="Remaining amount to allocate on budgets" precision="20" scale="3"/>
-    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account"/>
+    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account"
+      help="This field is only used for budget key computation and will not be used as account in the invoice"/>
     <decimal name="unassignedAmt" title="Unassigned amount" readonly="true" precision="20"
       scale="3"/>
     <string name="budgetStr" title="Budgets related"/>

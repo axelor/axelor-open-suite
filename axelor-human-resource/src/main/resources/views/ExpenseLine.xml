@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="expense-line-grid" title="Expense lines"
     model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
@@ -117,7 +117,7 @@
     <panel name="mainPanel" title="Main" colSpan="12">
       <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
-        form-view="project-form" grid-view="project-grid"/>
+        form-view="business-project-form" grid-view="project-grid"/>
       <field name="projectTask" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-method-compute-project-task-domain"
         onChange="action-expense-line-attrs-on-project-task-change" form-view="project-task-form"
@@ -195,7 +195,7 @@
     <panel name="kilometricAllowancePanel" title="Kilometric Allowance" colSpan="12">
       <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
-        form-view="project-form" grid-view="project-grid"/>
+        form-view="business-project-form" grid-view="project-grid"/>
       <field name="projectTask" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-method-compute-project-task-domain"
         onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-attrs-fill-arrival-from-site"
