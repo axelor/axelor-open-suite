@@ -82,6 +82,10 @@
 
     <string name="ticketNumber" title="Ticker number" readonly="true"/>
 
+    <one-to-many name="projectTaskLinkList"
+      ref="com.axelor.apps.project.db.ProjectTaskLink" title="Project task linked"
+      mappedBy="projectTask"/>
+
     <extra-code>
 
       // TYPE SELECT

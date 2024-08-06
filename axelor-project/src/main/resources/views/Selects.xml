@@ -55,5 +55,4 @@
     <option value="task">Task</option>
     <option value="ticket">Ticket</option>
   </selection>
-
 </object-views>
