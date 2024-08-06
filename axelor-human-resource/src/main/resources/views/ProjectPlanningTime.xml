@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="project-planning-time-grid" title="Planned time"
     model="com.axelor.apps.project.db.ProjectPlanningTime">
@@ -77,8 +77,9 @@
     </panel>
   </form>
 
-  <form name="project-planning-time-wizard-form" model="com.axelor.utils.db.Wizard"
-    title="Project planning time" onNew="action-project-planning-time-group-default">
+  <form name="project-planning-time-wizard-form"
+    model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project planning time"
+    onNew="action-project-planning-time-group-default">
     <panel name="mainPanel">
       <field name="fromDate" required="true" type="datetime" title="From"/>
       <field name="toDate" required="true" type="datetime" title="To"/>
@@ -110,7 +111,7 @@
   </form>
 
   <action-view name="action-project-view-add-multiple-project-planning-time"
-    title="Planned Time Planning" model="com.axelor.utils.db.Wizard">
+    title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="form" name="project-planning-time-wizard-form"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="show-toolbar" value="false"/>

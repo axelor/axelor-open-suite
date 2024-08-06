@@ -1,3 +1,0 @@
----
-title: "Contract: fixed a bug where it was impossible to activate a contract when automatic invoicing is enabled."
-module: axelor-contract

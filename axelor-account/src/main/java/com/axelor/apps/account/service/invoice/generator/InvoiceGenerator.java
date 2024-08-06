@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
@@ -61,6 +62,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -402,7 +404,9 @@ public abstract class InvoiceGenerator {
     if (invoice.getInvoiceLineTaxList() == null) {
       invoice.setInvoiceLineTaxList(new ArrayList<InvoiceLineTax>());
     } else {
+      List<InvoiceLineTax> invoiceLineTaxList = getUpdatedInvoiceLineTax(invoice);
       invoice.getInvoiceLineTaxList().clear();
+      invoice.getInvoiceLineTaxList().addAll(invoiceLineTaxList);
     }
   }
 
@@ -478,5 +482,25 @@ public abstract class InvoiceGenerator {
     logger.debug(
         "Invoice amounts : W.T. = {}, Tax = {}, A.T.I. = {}",
         new Object[] {invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal()});
+  }
+
+  protected List<InvoiceLineTax> getUpdatedInvoiceLineTax(Invoice invoice) {
+    List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<>();
+
+    if (ObjectUtils.isEmpty(invoice.getInvoiceLineTaxList())) {
+      return invoiceLineTaxList;
+    }
+
+    invoiceLineTaxList.addAll(
+        invoice.getInvoiceLineTaxList().stream()
+            .filter(
+                invoiceLineTax ->
+                    Beans.get(InvoiceLineTaxToolService.class).isManageByAmount(invoiceLineTax)
+                        && invoiceLineTax
+                                .getTaxTotal()
+                                .compareTo(invoiceLineTax.getPercentageTaxTotal())
+                            != 0)
+            .collect(Collectors.toList()));
+    return invoiceLineTaxList;
   }
 }

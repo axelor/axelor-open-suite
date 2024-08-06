@@ -193,8 +193,6 @@ import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
 import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.dayplanning.DayPlanningServiceImpl;
-import com.axelor.apps.base.service.exception.HandleExceptionResponse;
-import com.axelor.apps.base.service.exception.HandleExceptionResponseImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorServiceImpl;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
@@ -242,6 +240,8 @@ import com.axelor.apps.base.service.print.PrintTemplateService;
 import com.axelor.apps.base.service.print.PrintTemplateServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryProvider;
 import com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryProviderImpl;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateComputeNameService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateComputeNameServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateMetaService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateMetaServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
@@ -291,7 +291,6 @@ import com.axelor.team.db.repo.TeamTaskRepository;
 import com.axelor.utils.service.TranslationBaseService;
 import com.axelor.utils.service.TranslationBaseServiceImpl;
 import com.google.inject.matcher.AbstractMatcher;
-import com.google.inject.matcher.Matchers;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
@@ -301,10 +300,6 @@ public class BaseModule extends AxelorModule {
 
   @Override
   protected void configure() {
-    bindInterceptor(
-        Matchers.any(),
-        Matchers.annotatedWith(HandleExceptionResponse.class),
-        new HandleExceptionResponseImpl());
 
     bindInterceptor(
         new AbstractMatcher<>() {
@@ -474,5 +469,6 @@ public class BaseModule extends AxelorModule {
     bind(TranslationBaseService.class).to(TranslationBaseServiceImpl.class);
     bind(UserPermissionResponseComputeService.class)
         .to(UserPermissionResponseComputeServiceImpl.class);
+    bind(PrintingTemplateComputeNameService.class).to(PrintingTemplateComputeNameServiceImpl.class);
   }
 }

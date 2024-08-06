@@ -38,7 +38,6 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
@@ -81,18 +80,17 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
       InvoiceServiceSupplychainImpl invoiceService,
-      AppBusinessProjectService appBusinessProjectService,
       StockMoveRepository stockMoveRepository,
-      SaleOrderLineService saleOrderLineService,
-      SaleOrderWorkflowService saleOrderWorkflowService,
       InvoiceTermService invoiceTermService,
+      SaleOrderWorkflowService saleOrderWorkflowService,
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
+      CurrencyScaleService currencyScaleService,
+      AppBusinessProjectService appBusinessProjectService,
       AppBudgetService appBudgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
-      CurrencyScaleService currencyScaleService,
       BudgetService budgetService,
       BudgetToolsService budgetToolsService,
       InvoiceToolBudgetService invoiceToolBudgetService) {
@@ -103,7 +101,6 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         saleOrderRepo,
         invoiceRepo,
         invoiceService,
-        saleOrderLineService,
         stockMoveRepository,
         invoiceTermService,
         saleOrderWorkflowService,

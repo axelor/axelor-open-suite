@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="template-grid" id="template-grid-base" title="Templates"
     model="com.axelor.message.db.Template">
@@ -99,8 +99,8 @@
 					<span>{_t('We can access direct/o2o/m2o fields of template model by specifying field path surrounded by')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$$</Box><Box/>
 					<span>{_t('Examples')}</span>:
 					<ul>
-						<li> <span>{_t('To access product\'s full name')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.fullName$</Box> </li>
-						<li> <span>{_t('To access product\'s ProductCategory')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.productCategory.name$</Box> </li>
+						<li> <span>{_t("To access product's full name")}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.fullName$</Box> </li>
+						<li> <span>{_t("To access product's ProductCategory")}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.productCategory.name$</Box> </li>
 					</ul>
 				</p>
 				<p>

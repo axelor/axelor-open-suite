@@ -61,6 +61,8 @@ import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsService;
 import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsServiceImpl;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintServiceImpl;
+import com.axelor.apps.purchase.service.split.PurchaseOrderSplitService;
+import com.axelor.apps.purchase.service.split.PurchaseOrderSplitServiceImpl;
 
 public class PurchaseModule extends AxelorModule {
 
@@ -87,5 +89,6 @@ public class PurchaseModule extends AxelorModule {
     bind(PurchaseOrderAttrsService.class).to(PurchaseOrderAttrsServiceImpl.class);
     bind(PurchaseOrderCreateService.class).to(PurchaseOrderCreateServiceImpl.class);
     bind(PurchaseOrderSequenceService.class).to(PurchaseOrderSequenceServiceImpl.class);
+    bind(PurchaseOrderSplitService.class).to(PurchaseOrderSplitServiceImpl.class);
   }
 }

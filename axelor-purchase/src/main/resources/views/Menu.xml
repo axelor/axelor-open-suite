@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <menuitem name="sc-root-purchase" title="Purchases" order="-1800"
-    if="__config__.app.isApp('purchase')" icon="fa-shopping-cart" icon-background="#b6473f"/>
+    if="__config__.app.isApp('purchase')" icon="cart-fill" icon-background="#b6473f"/>
 
   <menuitem name="sc-root-purchase-suppliers" parent="sc-root-purchase" order="100"
     title="Suppliers" action="sc.root.purchase.suppliers"/>
@@ -53,7 +53,7 @@
   <!-- Purchase request menus -->
   <menuitem name="sc-root-purchase-request" parent="sc-root-purchase"
     if="__config__.app.isApp('purchase-request')" title="Internal purchase requests" order="400"
-    icon="fa-bullhorn" icon-background="#b6473f" action="sc.root.purchase.request.all"/>
+    icon="megaphone" icon-background="#b6473f" action="sc.root.purchase.request.all"/>
 
   <action-view name="sc.root.purchase.request.all"
     model="com.axelor.apps.purchase.db.PurchaseRequest" title="Internal purchase requests">

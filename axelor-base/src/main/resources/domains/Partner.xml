@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -129,6 +129,8 @@
       ref="com.axelor.apps.base.db.PartnerLink" title="Managed by" mappedBy="partner1"/>
     <one-to-many name="managedForPartnerLinkList"
       ref="com.axelor.apps.base.db.PartnerLink" title="Managed for" mappedBy="partner2"/>
+
+    <many-to-many ref="com.axelor.apps.base.db.Tag" name="partnerTagSet" title="Tags"/>
 
     <!-- -Json fields -->
     <string name="partnerAttrs" title="Fields" json="true"/>

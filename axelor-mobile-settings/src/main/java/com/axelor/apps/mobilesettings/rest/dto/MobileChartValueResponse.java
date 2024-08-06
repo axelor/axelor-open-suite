@@ -20,9 +20,9 @@ package com.axelor.apps.mobilesettings.rest.dto;
 
 public class MobileChartValueResponse {
   protected String label;
-  protected double value;
+  protected Object value;
 
-  public MobileChartValueResponse(String label, double value) {
+  public MobileChartValueResponse(String label, Object value) {
     this.label = label;
     this.value = value;
   }
@@ -31,7 +31,7 @@ public class MobileChartValueResponse {
     return label;
   }
 
-  public double getValue() {
+  public Object getValue() {
     return value;
   }
 }

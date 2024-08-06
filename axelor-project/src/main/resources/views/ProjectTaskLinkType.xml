@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="project-task-link-type-grid" title="Project task relation types"
+    model="com.axelor.apps.project.db.ProjectTaskLinkType">
+    <field name="name" required="true"/>
+    <field name="oppositeLinkType" readonly="true"/>
+  </grid>
+
+  <form name="project-task-link-type-form" title="Project task relation type"
+    model="com.axelor.apps.project.db.ProjectTaskLinkType">
+    <panel name="mainPanel">
+      <field name="name" required="true"/>
+      <field name="oppositeLinkType" readonly="true"/>
+    </panel>
+    <panel name="buttonPanel" sidebar="true">
+      <button name="manageOppositeLinkType" title="Manage opposite link type"
+        onClick="save, action-project-task-link-type-view-manage-opposite"/>
+    </panel>
+  </form>
+
+  <form name="opposite-link-type-form" title="Project task relation type"
+    model="com.axelor.utils.db.Wizard">
+    <panel name="selectPanel" colSpan="12" title="Select an existing project task link type">
+      <field name="$linkType" title="Opposite project task link type" requiredIf="!$name"
+        type="Many-to-one" target="com.axelor.apps.project.db.ProjectTaskLinkType"
+        onSelect="action-link-type-method-link-type-onselect"/>
+      <button showIf="$linkType" name="selectOppositeBtn"
+        title="Select an opposite link type"
+        onClick="action-project-task-link-type-method-select-opposite"/>
+    </panel>
+    <panel name="newPanel" colSpan="12" title="Generate a project task link type">
+      <field name="$name" title="Name" type="string" requiredIf="!$linkType"/>
+      <button showIf="$name" name="newOppositeBtn" title="Generate new opposite link type"
+        onClick="action-project-task-link-type-method-generate-opposite"/>
+    </panel>
+    <panel name="emptyPanel" colSpan="12" title="Empty opposite project task link type"
+      showIf="_isFilled">
+      <button name="emptyOpposite" title="Empty the opposite link type"
+        onClick="action-project-task-link-type-method-empty-opposite"/>
+    </panel>
+  </form>
+
+  <action-method name="action-project-task-link-type-method-generate-opposite">
+    <call class="com.axelor.apps.project.web.ProjectTaskLinkTypeController"
+      method="generateOppositeLinkType"/>
+  </action-method>
+
+  <action-method name="action-project-task-link-type-method-select-opposite">
+    <call class="com.axelor.apps.project.web.ProjectTaskLinkTypeController"
+      method="selectOppositeLinkType"/>
+  </action-method>
+
+  <action-method name="action-project-task-link-type-method-empty-opposite">
+    <call class="com.axelor.apps.project.web.ProjectTaskLinkTypeController"
+      method="emptyOppositeLinkType"/>
+  </action-method>
+
+  <action-method name="action-link-type-method-link-type-onselect">
+    <call class="com.axelor.apps.project.web.ProjectTaskLinkTypeController"
+      method="linkTypeDomain"/>
+  </action-method>
+
+  <action-view name="action-project-task-link-type-view-manage-opposite"
+    title="Generate opposite link type" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="opposite-link-type-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="width" value="800"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_isFilled" expr="eval: __this__?.oppositeLinkType"/>
+  </action-view>
+
+</object-views>

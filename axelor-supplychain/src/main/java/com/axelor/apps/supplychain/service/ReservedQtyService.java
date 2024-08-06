@@ -92,6 +92,7 @@ public interface ReservedQtyService {
       int toStatus,
       BigDecimal requestedReservedQty)
       throws AxelorException;
+
   /**
    * Update location line, stock move line and sale order line with computed allocated quantity,
    * where the location is {@link com.axelor.apps.stock.db.StockMove#toStockLocation}.

@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract"
     orderBy="-contractId">
@@ -138,7 +138,8 @@
       </panel>
     </panel>
     <panel name="contractTypePanel" title="Contract type" sidebar="true" showIf="!$readonly()">
-      <field name="contractTypeSelect"/>
+      <field name="contractTypeSelect"
+        onChange="action-contract-attrs-set-invoicing-management-title"/>
       <field name="targetTypeSelect" hidden="true" showIf="contractTypeSelect == 2"
         selection-in="[1,2]"/>
     </panel>
@@ -550,6 +551,7 @@
     <action name="action-contract-record-default"/>
     <action name="action-contract-attrs-partner-payment-config"/>
     <action name="action-contract-record-get-trading-names-management-config"/>
+    <action name="action-contract-attrs-set-invoicing-management-title"/>
   </action-group>
 
   <action-group name="action-contract-group-on-load">
@@ -559,6 +561,7 @@
     <action name="action-contract-method-contract-line-list-on-change"/>
     <action name="action-contract-method-additional-contract-line-list-on-change"/>
     <action name="action-contract-record-get-trading-names-management-config"/>
+    <action name="action-contract-attrs-set-invoicing-management-title"/>
   </action-group>
 
   <action-group name="action-contract-group-invoicing-management-change">
@@ -959,5 +962,12 @@
     <action name="action-contract-validate-on-going"/>
     <action name="action-contract-method-ongoing"/>
   </action-group>
+
+  <action-attrs name="action-contract-attrs-set-invoicing-management-title">
+    <attribute name="title" for="isInvoicingManagement"
+      expr="eval: com.axelor.i18n.I18n.get('Invoicing management')" if="contractTypeSelect == 1"/>
+    <attribute name="title" for="isInvoicingManagement"
+      expr="eval: com.axelor.i18n.I18n.get('Product management')" if="contractTypeSelect == 2"/>
+  </action-attrs>
 
 </object-views>
