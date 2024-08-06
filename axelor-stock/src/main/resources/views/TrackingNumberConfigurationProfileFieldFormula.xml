@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="tracking-number-configuration-profile-field-formula-grid"
+    title="Tracking Number Configuration profiles"
+    model="com.axelor.apps.stock.db.TrackingNumberConfigurationProfileFieldFormula"
+    orderBy="computationPriority" canMove="true">
+    <field name="metaField"
+      domain="self.metaModel.name = 'TrackingNumber'
+              AND self.name in ('dimension0', 'dimension1', 'dimension2', 'dimension3', 'mass', 'volume', 'unitMass', 'metricMass')"/>
+    <field name="formula"/>
+    <field name="computationPriority"/>
+  </grid>
+
+  <form name="tracking-number-configuration-profile-field-formula-form"
+    title="Tracking Number Configuration profile"
+    model="com.axelor.apps.stock.db.TrackingNumberConfigurationProfileFieldFormula">
+    <panel name="mainPanel" colSpan="12">
+      <field name="metaField"
+        domain="self.metaModel.name = 'TrackingNumber'
+              AND self.name in ('dimension0', 'dimension1', 'dimension2', 'dimension3', 'mass', 'volume', 'unitMass', 'metricMass')"/>
+      <field name="computationPriority"/>
+    </panel>
+    <panel name="formulaPanel" title="Formula" colSpan="12">
+      <field name="formula" colSpan="12" widget="CodeEditor" x-code-syntax="groovy"/>
+    </panel>
+  </form>
+
+</object-views>

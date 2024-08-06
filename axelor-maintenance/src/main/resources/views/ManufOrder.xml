@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="maintenance-manuf-order-grid" title="Maintenance orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
@@ -48,6 +48,9 @@
     model="com.axelor.apps.production.db.ManufOrder" width="large"
     onLoad="action-maintenance-manuf-order-group-onload"
     onNew="action-maintenance-manuf-order-group-onnew">
+    <toolbar>
+      <button name="printBtn" hideIf="true" onClick=""/>
+    </toolbar>
     <menubar>
       <menu name="manufOrderReportsMenu" title="Reports" showTitle="true" icon="fa-files-o">
         <item name="printItem" title="Print" showIf="statusSelect > 1"
@@ -156,6 +159,8 @@
           <field name="plannedEndDateT" title="End date"
             onChange="action-manuf-order-validate-planned-end-date"/>
           <field name="$totalPlannedDuration" title="Total Planned Duration" readonly="true"
+            type="long" widget="duration" x-big="true" x-seconds="true"/>
+          <field name="$totalLeadTimeDuration" title="Total Lead Duration" readonly="true"
             type="long" widget="duration" x-big="true" x-seconds="true"/>
           <field name="cancelReason" hidden="true" form-view="cancel-reason-form"
             grid-view="cancel-reason-grid"/>

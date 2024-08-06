@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module package="com.axelor.apps.budget.db" name="budget"/>
 
-  <entity name="BudgetLevel" implements="com.axelor.apps.base.interfaces.LocalDateInterval">
+  <entity name="BudgetLevel"
+    implements="com.axelor.apps.base.interfaces.LocalDateInterval,com.axelor.apps.base.interfaces.Currenciable">
     <string name="code" title="Code" required="true"/>
     <string name="name" title="Name" required="true"/>
 
@@ -107,6 +108,19 @@
          }
          ]]>
     </string>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return companyCurrency;
+	    ]]>
+    </many-to-one>
+
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <unique-constraint
       columns="code,parentId,globalId,typeSelect,company,fromDate,toDate"/>

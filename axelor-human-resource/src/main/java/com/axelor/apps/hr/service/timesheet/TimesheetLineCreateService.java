@@ -20,6 +20,8 @@ package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
@@ -38,5 +40,29 @@ public interface TimesheetLineCreateService {
       BigDecimal duration,
       String comments,
       boolean toInvoice)
+      throws AxelorException;
+
+  TimesheetLine createTimesheetLine(
+      Project project,
+      Product product,
+      Employee employee,
+      LocalDate date,
+      Timesheet timesheet,
+      BigDecimal hours,
+      String comments);
+
+  TimesheetLine createTimesheetLine(
+      Project project,
+      ProjectTask projectTask,
+      Product product,
+      Employee employee,
+      LocalDate date,
+      Timesheet timesheet,
+      BigDecimal hours,
+      String comments,
+      TSTimer timer);
+
+  TimesheetLine createTimesheetLine(
+      Employee employee, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments)
       throws AxelorException;
 }

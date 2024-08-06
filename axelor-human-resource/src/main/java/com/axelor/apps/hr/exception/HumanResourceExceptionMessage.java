@@ -134,6 +134,10 @@ public final class HumanResourceExceptionMessage {
       "The employee %s has no seniority date" /*)*/;
   public static final String EMPLOYEE_NO_BIRTH_DATE = /*$$(*/
       "The employee %s has no birth date" /*)*/;
+  public static final String EMPLOYEE_NO_USER = /*$$(*/
+      "The employee %s has no associated user." /*)*/;
+  public static final String EMPLOYEE_NO_ACTIVE_COMPANY = /*$$(*/
+      "The employee %s user has no active company." /*)*/;
   public static final String CONTACT_CANNOT_DELETE = /*$$(*/
       "This contact is referenced from employee %s - %s" /*)*/;
 
@@ -394,4 +398,10 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_LINE_UPDATED_CURRENCY_CURRENT_EXPENSE_INCONSISTENCY = /*$$(*/
       "Updated currency and current parent currency are incompatible." /*)*/;
+
+  public static final String TIMESHEET_INVALID_DATES = /*$$(*/
+      "The start date cannot be more recent than the end date." /*)*/;
+
+  public static final String TIMESHEET_LINE_INVALID_DATES = /*$$(*/
+      "%s date is invalid. It must be included in the timesheet's period." /*)*/;
 }

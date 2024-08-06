@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+
+  <form model="com.axelor.utils.db.Wizard" title="Global budget export"
+    name="budget-global-budget-export-wizard-form"
+    onNew="action-global-budget-export-method-initialize">
+    <panel name="mainPanel">
+      <field name="$advancedExportGlobalBudget" domain="self.metaModel.name = 'GlobalBudget'"
+        type="many-to-one" title="Advance export global budget"
+        target="com.axelor.apps.base.db.AdvancedExport" required="true"/>
+      <field name="$advancedExportBudgetLevel" domain="self.metaModel.name = 'BudgetLevel'"
+        type="many-to-one" title="Advance export budget level"
+        target="com.axelor.apps.base.db.AdvancedExport" required="true"/>
+      <field name="$advancedExportBudget" domain="self.metaModel.name = 'Budget'"
+        type="many-to-one" title="Advance export budget"
+        target="com.axelor.apps.base.db.AdvancedExport" required="true"/>
+      <field name="$advancedExportBudgetLine" domain="self.metaModel.name = 'BudgetLine'"
+        type="many-to-one" title="Advance export budget line"
+        target="com.axelor.apps.base.db.AdvancedExport" required="true"/>
+      <button name="okBtn" title="OK"
+        onClick="action-method-budget-level-method-export-budget-level" colOffset="11" colSpan="1"/>
+    </panel>
+  </form>
+
+  <action-method name="action-method-budget-level-method-export-budget-level">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="exportBudgetLevel"/>
+  </action-method>
+
+  <action-method name="action-global-budget-export-method-initialize">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="initializeValues"/>
+  </action-method>
+
+</object-views>

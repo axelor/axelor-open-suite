@@ -19,18 +19,22 @@
 package com.axelor.apps.account.service.invoice.attributes;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
 
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public InvoiceLineAttrsServiceImpl(CurrencyScaleServiceAccount currencyScaleServiceAccount) {
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+  public InvoiceLineAttrsServiceImpl(
+      CurrencyScaleService currencyScaleService, AppBaseService appBaseService) {
+    this.currencyScaleService = currencyScaleService;
+    this.appBaseService = appBaseService;
   }
 
   protected void addAttr(
@@ -52,7 +56,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("inTaxPrice", prefix),
         "scale",
-        currencyScaleServiceAccount.getScale(invoice),
+        currencyScaleService.getScale(invoice),
         attrsMap);
   }
 
@@ -62,7 +66,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("exTaxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getScale(invoice),
+        currencyScaleService.getScale(invoice),
         attrsMap);
   }
 
@@ -72,7 +76,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("inTaxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getScale(invoice),
+        currencyScaleService.getScale(invoice),
         attrsMap);
   }
 
@@ -82,7 +86,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("companyExTaxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getCompanyScale(invoice),
+        currencyScaleService.getCompanyScale(invoice),
         attrsMap);
   }
 
@@ -92,7 +96,17 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     this.addAttr(
         this.computeField("companyInTaxTotal", prefix),
         "scale",
-        currencyScaleServiceAccount.getCompanyScale(invoice),
+        currencyScaleService.getCompanyScale(invoice),
+        attrsMap);
+  }
+
+  @Override
+  public void addCoefficientScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
+    this.addAttr(
+        this.computeField("coefficient", prefix),
+        "scale",
+        appBaseService.getNbDecimalDigitForUnitPrice() + 2,
         attrsMap);
   }
 }

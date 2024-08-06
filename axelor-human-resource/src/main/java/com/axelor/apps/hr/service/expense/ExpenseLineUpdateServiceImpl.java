@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
@@ -12,6 +30,7 @@ import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
@@ -61,7 +80,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Employee employee,
       Currency currency,
       Boolean toInvoice,
-      Expense newExpense)
+      Expense newExpense,
+      ProjectTask projectTask)
       throws AxelorException {
     if (expenseLineToolService.isKilometricExpenseLine(expenseLine)) {
       updateKilometricExpenseLine(
@@ -78,7 +98,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
           currency,
           toInvoice,
           expenseProduct,
-          newExpense);
+          newExpense,
+          projectTask);
     } else {
       updateGeneralExpenseLine(
           expenseLine,
@@ -92,7 +113,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
           employee,
           currency,
           toInvoice,
-          newExpense);
+          newExpense,
+          projectTask);
     }
 
     if (newExpense != null) {
@@ -122,7 +144,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Employee employee,
       Currency currency,
       Boolean toInvoice,
-      Expense newExpense)
+      Expense newExpense,
+      ProjectTask projectTask)
       throws AxelorException {
 
     checkParentStatus(expenseLine.getExpense());
@@ -135,7 +158,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
         currency,
         expenseProduct,
         toInvoice,
-        newExpense);
+        newExpense,
+        projectTask);
     expenseProduct = expenseProduct != null ? expenseProduct : expenseLine.getExpenseProduct();
     totalAmount = totalAmount != null ? totalAmount : expenseLine.getTotalAmount();
     totalTax = totalTax != null ? totalTax : expenseLine.getTotalTax();
@@ -159,7 +183,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Currency currency,
       Boolean toInvoice,
       Product expenseProduct,
-      Expense newExpense)
+      Expense newExpense,
+      ProjectTask projectTask)
       throws AxelorException {
     checkParentStatus(expenseLine.getExpense());
     updateBasicExpenseLine(
@@ -171,7 +196,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
         currency,
         expenseProduct,
         toInvoice,
-        newExpense);
+        newExpense,
+        projectTask);
     updateKilometricExpenseLineInfo(
         expenseLine, kilometricAllowParam, kilometricType, fromCity, toCity, distance);
   }
@@ -225,7 +251,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Currency currency,
       Product expenseProduct,
       Boolean toInvoice,
-      Expense newExpense)
+      Expense newExpense,
+      ProjectTask projectTask)
       throws AxelorException {
     updateLineCurrency(expenseLine, currency, newExpense);
     if (project != null) {
@@ -245,6 +272,9 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     }
     if (expenseProduct != null) {
       expenseLine.setExpenseProduct(expenseProduct);
+    }
+    if (projectTask != null) {
+      expenseLine.setProjectTask(projectTask);
     }
   }
 

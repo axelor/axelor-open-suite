@@ -22,11 +22,11 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
+import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -35,21 +35,21 @@ public class BankReconciliationSelectedLineComputationServiceImpl
 
   protected BankReconciliationQueryService bankReconciliationQueryService;
   protected MoveLineRepository moveLineRepository;
-  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankReconciliationSelectedLineComputationServiceImpl(
       BankReconciliationQueryService bankReconciliationQueryService,
       MoveLineRepository moveLineRepository,
-      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
+      CurrencyScaleService currencyScaleService) {
     this.bankReconciliationQueryService = bankReconciliationQueryService;
     this.moveLineRepository = moveLineRepository;
-    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
   public BigDecimal computeBankReconciliationLinesSelection(BankReconciliation bankReconciliation) {
-    return currencyScaleServiceBankPayment.getScaledValue(
+    return currencyScaleService.getScaledValue(
         bankReconciliation,
         bankReconciliation.getBankReconciliationLineList().stream()
             .filter(BankReconciliationLine::getIsSelectedBankReconciliation)
@@ -68,7 +68,7 @@ public class BankReconciliationSelectedLineComputationServiceImpl
             .filter(filter)
             .bind(bankReconciliationQueryService.getBindRequestMoveLine(bankReconciliation))
             .fetch();
-    return currencyScaleServiceBankPayment.getScaledValue(
+    return currencyScaleService.getScaledValue(
         bankReconciliation,
         unreconciledMoveLines.stream()
             .filter(MoveLine::getIsSelectedBankReconciliation)
@@ -77,19 +77,23 @@ public class BankReconciliationSelectedLineComputationServiceImpl
   }
 
   @Override
+  @SuppressWarnings("rawtypes")
   public BigDecimal getSelectedMoveLineTotal(
       BankReconciliation bankReconciliation, List<LinkedHashMap> toReconcileMoveLineSet) {
-    BigDecimal selectedMoveLineTotal = BigDecimal.ZERO;
-    List<MoveLine> moveLineList = new ArrayList<>();
-    toReconcileMoveLineSet.forEach(
-        m ->
-            moveLineList.add(
-                moveLineRepository.find(
-                    Long.valueOf((Integer) ((LinkedHashMap<?, ?>) m).get("id")))));
-    for (MoveLine moveLine : moveLineList) {
-      selectedMoveLineTotal = selectedMoveLineTotal.add(moveLine.getCurrencyAmount().abs());
-    }
-    return currencyScaleServiceBankPayment.getScaledValue(
-        bankReconciliation, selectedMoveLineTotal);
+    BigDecimal selectedMoveLineTotal =
+        toReconcileMoveLineSet.stream()
+            .map(map -> map.get("id"))
+            .map(Object::toString)
+            .map(Long::valueOf)
+            .map(moveLineRepository::find)
+            .map(l -> getMoveLineAmount(l, bankReconciliation))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    return currencyScaleService.getScaledValue(bankReconciliation, selectedMoveLineTotal);
+  }
+
+  protected BigDecimal getMoveLineAmount(MoveLine moveLine, BankReconciliation bankReconciliation) {
+    return BankReconciliationToolService.isForeignCurrency(bankReconciliation)
+        ? moveLine.getCurrencyAmount().abs()
+        : moveLine.getDebit().add(moveLine.getCredit());
   }
 }

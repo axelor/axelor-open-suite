@@ -20,7 +20,10 @@ package com.axelor.apps.budget.service.globalbudget;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.GlobalBudget;
+import java.util.Map;
 
 public interface GlobalBudgetGroupService {
   void validateStructure(GlobalBudget globalBudget) throws AxelorException;
+
+  Map<String, Object> getOnNewValuesMap();
 }

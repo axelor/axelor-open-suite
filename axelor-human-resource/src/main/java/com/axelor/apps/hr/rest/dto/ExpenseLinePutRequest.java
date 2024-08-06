@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.rest.dto;
 
 import com.axelor.apps.base.db.Company;
@@ -7,6 +25,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
@@ -60,6 +79,8 @@ public class ExpenseLinePutRequest extends RequestStructure {
 
   @Min(0)
   private Long expenseId;
+
+  private Long projectTaskId;
 
   public Long getProjectId() {
     return projectId;
@@ -197,6 +218,14 @@ public class ExpenseLinePutRequest extends RequestStructure {
     this.expenseId = expenseId;
   }
 
+  public Long getProjectTaskId() {
+    return projectTaskId;
+  }
+
+  public void setProjectTaskId(Long projectTaskId) {
+    this.projectTaskId = projectTaskId;
+  }
+
   public Project fetchProject() {
     if (projectId == null || projectId == 0L) {
       return null;
@@ -252,5 +281,12 @@ public class ExpenseLinePutRequest extends RequestStructure {
       return null;
     }
     return ObjectFinder.find(Expense.class, expenseId, ObjectFinder.NO_VERSION);
+  }
+
+  public ProjectTask fetchProjectTask() {
+    if (projectTaskId == null || projectTaskId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
   }
 }

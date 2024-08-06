@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
@@ -58,6 +59,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
   protected MoveRepository moveRepo;
+  protected PfpService pfpService;
 
   @Inject
   public InvoiceTermPfpServiceImpl(
@@ -66,13 +68,15 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       AccountConfigService accountConfigService,
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo,
-      MoveRepository moveRepo) {
+      MoveRepository moveRepo,
+      PfpService pfpService) {
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.accountConfigService = accountConfigService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.moveRepo = moveRepo;
+    this.pfpService = pfpService;
   }
 
   @Override
@@ -129,12 +133,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       return true;
     }
     return validateUser(invoiceTerm, currentUser)
-        && (ObjectUtils.notEmpty(invoiceTerm.getPfpValidatorUser())
-            && invoiceTerm
-                .getPfpValidatorUser()
-                .equals(
-                    invoiceTermService.getPfpValidatorUser(
-                        invoiceTerm.getPartner(), invoiceTerm.getCompany())))
+        && invoiceTermService.checkPfpValidatorUser(invoiceTerm)
         && !invoiceTerm.getIsPaid();
   }
 
@@ -264,7 +263,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             originalInvoiceTerm.getIsHoldBack());
 
     if (originalInvoiceTerm.getApplyFinancialDiscount()) {
-      invoiceTermFinancialDiscountService.computeFinancialDiscount(invoiceTerm, invoice);
+      invoiceTermFinancialDiscountService.computeFinancialDiscount(invoiceTerm);
     }
 
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
@@ -380,8 +379,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
                     .max(originalInvoiceTerm.getMoveLine().getDebit())));
 
     if (originalInvoiceTerm.getApplyFinancialDiscount()) {
-      invoiceTermFinancialDiscountService.computeFinancialDiscount(
-          originalInvoiceTerm, originalInvoiceTerm.getInvoice());
+      invoiceTermFinancialDiscountService.computeFinancialDiscount(originalInvoiceTerm);
     }
 
     invoiceTermRepo.save(originalInvoiceTerm);
@@ -414,52 +412,65 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
 
   @Override
   public void validatePfpValidatedAmount(
-      MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount) throws AxelorException {
+      MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, Company reconcileCompany)
+      throws AxelorException {
     if (debitMoveLine == null
         || creditMoveLine == null
-        || isSupplierRefundRelated(debitMoveLine, creditMoveLine)) {
+        || isSupplierRefundRelated(debitMoveLine, creditMoveLine)
+        || !pfpService.isManagePassedForPayment(reconcileCompany)) {
       return;
     }
 
-    BigDecimal debitAmount =
-        debitMoveLine.getInvoiceTermList().stream()
-            .filter(
-                it ->
-                    Arrays.asList(
-                            InvoiceTermRepository.PFP_STATUS_NO_PFP,
-                            InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED,
-                            InvoiceTermRepository.PFP_STATUS_VALIDATED)
-                        .contains(it.getPfpValidateStatusSelect()))
-            .map(InvoiceTerm::getCompanyAmountRemaining)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-    if (amount.compareTo(debitAmount) > 0) {
-      throw new AxelorException(
-          debitMoveLine.getMove(),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.RECONCILE_PFP_AMOUNT_MISSING),
-          debitMoveLine.getMove().getReference(),
-          debitMoveLine.getAccount().getCode());
+    if (!ObjectUtils.isEmpty(debitMoveLine.getInvoiceTermList())
+        && debitMoveLine.getMove() != null
+        && MoveRepository.PFP_STATUS_AWAITING
+            == debitMoveLine.getMove().getPfpValidateStatusSelect()) {
+      BigDecimal debitAmount =
+          debitMoveLine.getInvoiceTermList().stream()
+              .filter(
+                  it ->
+                      Arrays.asList(
+                              InvoiceTermRepository.PFP_STATUS_NO_PFP,
+                              InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED,
+                              InvoiceTermRepository.PFP_STATUS_VALIDATED)
+                          .contains(it.getPfpValidateStatusSelect()))
+              .map(InvoiceTerm::getCompanyAmountRemaining)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      if (amount.compareTo(debitAmount) > 0) {
+        throw new AxelorException(
+            debitMoveLine.getMove(),
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.RECONCILE_PFP_AMOUNT_MISSING),
+            debitMoveLine.getMove().getReference(),
+            debitMoveLine.getAccount().getCode());
+      }
     }
-    BigDecimal creditAmount =
-        creditMoveLine.getInvoiceTermList().stream()
-            .filter(
-                it ->
-                    Arrays.asList(
-                            InvoiceTermRepository.PFP_STATUS_NO_PFP,
-                            InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED,
-                            InvoiceTermRepository.PFP_STATUS_VALIDATED)
-                        .contains(it.getPfpValidateStatusSelect()))
-            .map(InvoiceTerm::getCompanyAmountRemaining)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-    if (amount.compareTo(creditAmount) > 0) {
-      throw new AxelorException(
-          creditMoveLine.getMove(),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.RECONCILE_PFP_AMOUNT_MISSING),
-          creditMoveLine.getMove().getReference(),
-          creditMoveLine.getAccount().getCode());
+
+    if (!ObjectUtils.isEmpty(creditMoveLine.getInvoiceTermList())
+        && creditMoveLine.getMove() != null
+        && MoveRepository.PFP_STATUS_AWAITING
+            == creditMoveLine.getMove().getPfpValidateStatusSelect()) {
+      BigDecimal creditAmount =
+          creditMoveLine.getInvoiceTermList().stream()
+              .filter(
+                  it ->
+                      Arrays.asList(
+                              InvoiceTermRepository.PFP_STATUS_NO_PFP,
+                              InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED,
+                              InvoiceTermRepository.PFP_STATUS_VALIDATED)
+                          .contains(it.getPfpValidateStatusSelect()))
+              .map(InvoiceTerm::getCompanyAmountRemaining)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      if (amount.compareTo(creditAmount) > 0) {
+        throw new AxelorException(
+            creditMoveLine.getMove(),
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.RECONCILE_PFP_AMOUNT_MISSING),
+            creditMoveLine.getMove().getReference(),
+            creditMoveLine.getAccount().getCode());
+      }
     }
   }
 
@@ -484,5 +495,14 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     }
 
     return false;
+  }
+
+  @Override
+  public boolean isPfpValidatorUser(InvoiceTerm invoiceTerm, User user) {
+    return user != null
+        && (user.getIsSuperPfpUser()
+            || (invoiceTerm != null
+                && invoiceTerm.getPfpValidatorUser() != null
+                && user.equals(invoiceTerm.getPfpValidatorUser())));
   }
 }

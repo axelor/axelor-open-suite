@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -184,6 +184,12 @@
     <option value="Invoiced by">Invoiced by</option>
     <option value="Ordered by">Ordered by</option>
     <option value="Delivered by">Delivered by</option>
+  </selection>
+
+  <selection name="stock.tracking.number.origin.move.type.select"
+    id="supplychain.stock.tracking.number.origin.move.type.select">
+    <option value="3">Sale</option>
+    <option value="4">Purchase</option>
   </selection>
 
 </object-views>

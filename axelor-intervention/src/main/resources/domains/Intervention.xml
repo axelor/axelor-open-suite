@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+  <entity name="Intervention">
+    <integer name="statusSelect" title="Status" selection="intervention.status.select"
+      readonly="true" default="10" copy="false"/>
+    <string name="sequence" title="Sequence" unique="true" readonly="true" copy="false"/>
+    <string name="name" title="Name">
+      <![CDATA[
+        StringJoiner name = new StringJoiner(" - ");
+        if (requestSource != null) {
+          name.add(requestSource.getName());
+        }
+        if (requestSubject != null) {
+          name.add(requestSubject.getName());
+        }
+        if (StringUtils.isBlank(name.toString())) {
+          return String.format("%s", sequence);
+        }
+        return String.format("%s: %s", sequence, name.toString());
+      ]]>
+    </string>
+    <boolean name="isSurveyGenerationRunning"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
+    <many-to-one name="tradingName" title="Trading name"
+      ref="com.axelor.apps.base.db.TradingName"/>
+    <many-to-one name="deliveredPartner" title="Delivered partner"
+      ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-one name="address" title="Address" ref="com.axelor.apps.base.db.Address"/>
+    <many-to-one name="invoicedPartner" title="Invoiced partner"
+      ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-one name="contact" title="Contact" ref="com.axelor.apps.base.db.Partner"/>
+    <string name="description" title="Description" large="true" multiline="true"/>
+    <many-to-one name="requestSource" title="Request source"
+      ref="com.axelor.apps.intervention.db.RequestSource"/>
+    <many-to-one name="requestSubject" title="Request subject"
+      ref="com.axelor.apps.intervention.db.RequestSubject"/>
+    <many-to-one name="userInCharge" title="User in charge"
+      ref="com.axelor.auth.db.User"/>
+    <boolean name="outsourcing" title="Outsourcing"/>
+    <many-to-one name="supplierPartner" title="Supplier partner"
+      ref="com.axelor.apps.base.db.Partner"/>
+
+    <many-to-one name="interventionCategory" title="Intervention category"
+      ref="com.axelor.apps.intervention.db.InterventionCategory"/>
+    <many-to-one name="interventionType" title="Intervention type"
+      ref="com.axelor.apps.intervention.db.InterventionType"/>
+    <integer name="planningPreferenceSelect" title="Planning preference"
+      selection="intervention.contract.intervention.planning.preference" readonly="true"/>
+
+    <string name="priority" title="Priority" selection="customer.request.priority.select"/>
+    <boolean name="rescheduledIntervention" title="Rescheduled intervention"/>
+    <many-to-one name="justification" title="Justification"
+      ref="com.axelor.apps.intervention.db.Justification"/>
+    <many-to-one name="contract" title="Contract"
+      ref="com.axelor.apps.contract.db.Contract"/>
+    <many-to-one name="customerRequest" title="Customer request"
+      ref="com.axelor.apps.intervention.db.CustomerRequest"/>
+    <many-to-one name="opportunity" title="Opportunity"
+      ref="com.axelor.apps.crm.db.Opportunity"/>
+    <boolean name="commercialFollowUp" title="Commercial follow-up"/>
+    <boolean name="afterSaleServiceSaleOrderFollowUp"
+      title="After sale service sale order follow up"/>
+    <boolean name="technicalFollowUp" title="Technical follow up"/>
+    <many-to-one name="commercialUser" title="Commercial" ref="com.axelor.auth.db.User"/>
+    <many-to-one name="linkedSaleOrder" title="Linked sale order"
+      ref="com.axelor.apps.sale.db.SaleOrder"/>
+    <many-to-one name="linkedIntervention" title="Linked intervention"
+      ref="com.axelor.apps.intervention.db.Intervention"/>
+    <many-to-one name="reschedulingReason" title="Rescheduling reason"
+      ref="com.axelor.apps.intervention.db.ReschedulingReason"/>
+    <datetime name="startDateTime" title="Intervention.startDateTime" copy="false"/>
+    <datetime name="endDateTime" title="Intervention.endDateTime" copy="false"/>
+    <datetime name="lastStartDateTime" title="Intervention.lastStartDateTime"
+      readonly="true" copy="false"/>
+    <date name="estimatedDate" title="Estimated date" copy="false"/>
+    <integer name="estimatedDateMonth" title="Month" readonly="true" formula="true"
+      selection="iadministration.month.select">
+      <![CDATA[
+        floor(extract(month from estimated_date))
+      ]]>
+    </integer>
+    <long name="totalDuration" title="Total duration" readonly="true" copy="false"/>
+
+    <boolean name="offlineIntervention" title="Offline"/>
+
+    <many-to-many name="equipmentSet" title="Equipments"
+      ref="com.axelor.apps.intervention.db.Equipment" copy="false"/>
+
+    <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
+
+    <datetime name="planifStartDateTime" title="Start date"/>
+    <datetime name="planifEndDateTime" title="End date"/>
+
+
+    <one-to-many name="interventionRangeList" title="Intervention ranges"
+      ref="com.axelor.apps.intervention.db.InterventionRange" mappedBy="intervention" copy="false"/>
+
+    <boolean name="following" title="Following"/>
+    <integer name="nonConforming" title="Non-conforming" default="0"/>
+
+    <finder-method name="findBySeq" using="sequence"/>
+
+    <extra-imports>
+      import java.util.StringJoiner;
+      import com.axelor.common.StringUtils;
+    </extra-imports>
+
+    <extra-code>
+      <![CDATA[
+        // INTERVENTION STATUS SELECT
+        public static final int INTER_STATUS_TO_PLAN = 10;
+        public static final int INTER_STATUS_PLANNED = 20;
+        public static final int INTER_STATUS_STARTED = 30;
+        public static final int INTER_STATUS_SUSPENDED = 40;
+        public static final int INTER_STATUS_FINISHED = 50;
+        public static final int INTER_STATUS_CANCELLED = 60;
+      ]]>
+    </extra-code>
+
+    <track>
+      <field name="statusSelect"/>
+      <field name="interventionType"/>
+    </track>
+
+  </entity>
+
+</domain-models>

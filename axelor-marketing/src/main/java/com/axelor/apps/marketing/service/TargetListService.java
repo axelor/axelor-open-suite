@@ -26,11 +26,11 @@ import java.util.Set;
 
 public interface TargetListService {
 
-  public String getPartnerQuery(TargetList targetList);
+  String getPartnerQuery(TargetList targetList);
 
-  public String getLeadQuery(TargetList targetList);
+  String getLeadQuery(TargetList targetList);
 
-  public Set<Partner> getAllPartners(Set<TargetList> targetListSet) throws AxelorException;
+  Set<Partner> getAllPartners(Set<TargetList> targetListSet) throws AxelorException;
 
-  public Set<Lead> getAllLeads(Set<TargetList> targetListSet) throws AxelorException;
+  Set<Lead> getAllLeads(Set<TargetList> targetListSet) throws AxelorException;
 }

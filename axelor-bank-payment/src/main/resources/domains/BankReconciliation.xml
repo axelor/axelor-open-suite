@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankReconciliation">
+  <entity name="BankReconciliation" implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <string name="name" title="Label" namecolumn="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
@@ -67,6 +67,12 @@
     <decimal name="movesTheoreticalBalance" title="Moves theoretical balance" precision="20"
       scale="3"/>
 
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <finder-method name="findByBankDetails" using="bankDetails" all="true"/>
     <finder-method name="findOneByBankDetails" using="bankDetails" orderBy="-id"/>

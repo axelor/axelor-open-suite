@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="mrp-line-grid" id="mrp-line-production-grid"
     model="com.axelor.apps.supplychain.db.MrpLine" title="Results" extension="true">
@@ -14,6 +14,11 @@
     <extend target="//field[@name='mrpLineType.elementSelect']">
       <insert position="after">
         <field name="mrpLineType.typeSelect" hidden="true"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='supplierPartner']">
+      <insert position="after">
+        <field name="billOfMaterial"/>
       </insert>
     </extend>
   </grid>
@@ -29,6 +34,23 @@
       <insert position="after">
         <field name="mrpLineType.typeSelect"/>
       </insert>
+    </extend>
+    <extend target="//field[@name='mrpLineOriginList']">
+      <insert position="after">
+        <field name="billOfMaterial" showIf="mrpLineType.elementSelect == 8"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='qty']">
+      <attribute name="readonlyIf"
+        value="[5,8,12].indexOf(mrpLineType.elementSelect) == -1
+    				  &amp;&amp; (mrpLineType.elementSelect != 12 || (mrpLineType.elementSelect == 12 &amp;&amp; mrp.mrpTypeSelect == 2))
+    				  	&amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
+    </extend>
+    <extend target="//field[@name='maturityDate']">
+      <attribute name="readonlyIf"
+        value="[5,8,12].indexOf(mrpLineType.elementSelect) == -1
+    				  &amp;&amp; (mrpLineType.elementSelect != 12 || (mrpLineType.elementSelect == 12 &amp;&amp; mrp.mrpTypeSelect == 2))
+    				  	&amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
     </extend>
   </form>
 

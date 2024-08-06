@@ -27,9 +27,9 @@ import com.axelor.apps.purchase.db.repo.PurchaseRequestManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogManagementRepository;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
-import com.axelor.apps.purchase.service.CurrencyScaleServicePurchase;
-import com.axelor.apps.purchase.service.CurrencyScaleServicePurchaseImpl;
 import com.axelor.apps.purchase.service.ProductServicePurchaseImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
+import com.axelor.apps.purchase.service.PurchaseOrderCreateServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderDomainService;
 import com.axelor.apps.purchase.service.PurchaseOrderDomainServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLinePurchaseRepository;
@@ -41,6 +41,8 @@ import com.axelor.apps.purchase.service.PurchaseOrderMergingService;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingViewService;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingViewServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
+import com.axelor.apps.purchase.service.PurchaseOrderSequenceServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
@@ -82,7 +84,8 @@ public class PurchaseModule extends AxelorModule {
     bind(PurchaseOrderLineTaxService.class).to(PurchaseOrderLineTaxServiceImpl.class);
     bind(PurchaseOrderMergingService.class).to(PurchaseOrderMergingServiceImpl.class);
     bind(PurchaseOrderMergingViewService.class).to(PurchaseOrderMergingViewServiceImpl.class);
-    bind(CurrencyScaleServicePurchase.class).to(CurrencyScaleServicePurchaseImpl.class);
     bind(PurchaseOrderAttrsService.class).to(PurchaseOrderAttrsServiceImpl.class);
+    bind(PurchaseOrderCreateService.class).to(PurchaseOrderCreateServiceImpl.class);
+    bind(PurchaseOrderSequenceService.class).to(PurchaseOrderSequenceServiceImpl.class);
   }
 }

@@ -22,9 +22,9 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
-import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
-import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -33,17 +33,17 @@ import java.math.BigDecimal;
 public class BankReconciliationComputeServiceImpl implements BankReconciliationComputeService {
 
   protected BankReconciliationRepository bankReconciliationRepository;
-  protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
-  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
+  protected BankStatementLineRepository bankStatementLineRepository;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankReconciliationComputeServiceImpl(
       BankReconciliationRepository bankReconciliationRepository,
-      BankStatementLineAFB120Repository bankStatementLineAFB120Repository,
-      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
+      BankStatementLineRepository bankStatementLineRepository,
+      CurrencyScaleService currencyScaleService) {
     this.bankReconciliationRepository = bankReconciliationRepository;
-    this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
-    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
+    this.bankStatementLineRepository = bankStatementLineRepository;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -58,14 +58,14 @@ public class BankReconciliationComputeServiceImpl implements BankReconciliationC
       totalCashed = totalCashed.add(bankReconciliationLine.getCredit());
     }
     bankReconciliation.setComputedBalance(
-        currencyScaleServiceBankPayment.getScaledValue(
+        currencyScaleService.getScaledValue(
             bankReconciliation,
             bankReconciliation.getAccountBalance().add(totalCashed).subtract(totalPaid)));
 
     bankReconciliation.setTotalPaid(
-        currencyScaleServiceBankPayment.getScaledValue(bankReconciliation, totalPaid));
+        currencyScaleService.getScaledValue(bankReconciliation, totalPaid));
     bankReconciliation.setTotalCashed(
-        currencyScaleServiceBankPayment.getScaledValue(bankReconciliation, totalCashed));
+        currencyScaleService.getScaledValue(bankReconciliation, totalCashed));
     bankReconciliationRepository.save(bankReconciliation);
   }
 
@@ -84,12 +84,12 @@ public class BankReconciliationComputeServiceImpl implements BankReconciliationC
     BigDecimal startingBalance = BigDecimal.ZERO;
     if (ObjectUtils.isEmpty(previousBankReconciliation)) {
       BankStatementLine initialsBankStatementLine =
-          bankStatementLineAFB120Repository
+          bankStatementLineRepository
               .all()
               .filter(
                   "self.bankStatement = :bankStatement AND self.lineTypeSelect = :lineTypeSelect "
                       + "AND self.bankDetails = :bankDetails")
-              .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
+              .bind("lineTypeSelect", BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE)
               .bind("bankStatement", bankReconciliation.getBankStatement())
               .bind("bankDetails", bankDetails)
               .order("sequence")
@@ -105,7 +105,7 @@ public class BankReconciliationComputeServiceImpl implements BankReconciliationC
       }
     }
     bankReconciliation.setStartingBalance(
-        currencyScaleServiceBankPayment.getScaledValue(bankReconciliation, startingBalance));
+        currencyScaleService.getScaledValue(bankReconciliation, startingBalance));
     return bankReconciliation;
   }
 
@@ -127,7 +127,7 @@ public class BankReconciliationComputeServiceImpl implements BankReconciliationC
       endingBalance = endingBalance.add(amount);
     }
     bankReconciliation.setEndingBalance(
-        currencyScaleServiceBankPayment.getScaledValue(bankReconciliation, endingBalance));
+        currencyScaleService.getScaledValue(bankReconciliation, endingBalance));
     return bankReconciliation;
   }
 }

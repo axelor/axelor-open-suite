@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
@@ -11,6 +11,8 @@
       selection="bankpayment.bank.statement.file.format.statement.file.format.select"/>
     <string name="name" title="Name"/>
     <string name="description" title="Description" large="true" multiline="true"/>
+    <many-to-one name="bindingFile" title="Binding file"
+      ref="com.axelor.meta.db.MetaFile"/>
 
 
 
@@ -51,6 +53,8 @@
 		public static final String FILE_FORMAT_PAIN_002_001_02_ARA = "pain.002.001.02.ara";
 		public static final String FILE_FORMAT_PAIN_002_001_02_ACK = "pain.002.001.02.ack";
 
+        public static final String FILE_FORMAT_CSV_JMA_DOT = "csv.jma.dot";
+        public static final String FILE_FORMAT_CSV_YMD_DOT = "csv.ymd.dot";
 
 	]]></extra-code>
 

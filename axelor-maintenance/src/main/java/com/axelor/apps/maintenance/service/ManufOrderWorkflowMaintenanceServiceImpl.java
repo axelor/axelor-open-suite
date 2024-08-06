@@ -34,6 +34,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMove
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderTrackingNumberService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
@@ -62,7 +63,8 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       SequenceService sequenceService,
       ManufOrderOutsourceService manufOrderOutsourceService,
       OperationOrderOutsourceService operationOrderOutsourceService,
-      ProductService productService) {
+      ProductService productService,
+      ManufOrderTrackingNumberService manufOrderTrackingNumberService) {
     super(
         operationOrderWorkflowService,
         manufOrderStockMoveService,
@@ -78,7 +80,8 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         sequenceService,
         manufOrderOutsourceService,
         operationOrderOutsourceService,
-        productService);
+        productService,
+        manufOrderTrackingNumberService);
   }
 
   @Override

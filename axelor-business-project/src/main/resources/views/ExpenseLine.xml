@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="expense-line-project-grid" title="Expense lines"
     model="com.axelor.apps.hr.db.ExpenseLine">
@@ -38,10 +38,44 @@
     <field name="untaxedAmount" hidden="true"/>
   </grid>
 
+  <!-- HR GRID EXTENSTION -->
+  <grid name="expense-line-grid" id="business-project-expense-line-grid" title="Expense lines"
+    model="com.axelor.apps.hr.db.ExpenseLine" extension="true">
+    <extend target="//field[@name='project']">
+      <insert position="before">
+        <hilite color="danger"
+          if="site &amp;&amp; $get('site.invoicingTypeSelect') == 1 &amp;&amp; toInvoice == false"/>
+        <hilite color="danger"
+          if="!site &amp;&amp; $get('projectTask.invoicingType') == 1 &amp;&amp; toInvoice == false"/>
+        <field name="site.invoicingTypeSelect" hidden="true"
+          if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+        <field name="projectTask.invoicingType" hidden="true"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='projectTask']">
+      <attribute name="onChange" value="action-expense-line-group-on-project-task-change"/>
+    </extend>
+
+    <extend target="//field[@name='site']">
+      <attribute name="onChange" value="action-expense-line-attrs-update-to-invoice"/>
+    </extend>
+  </grid>
+
+  <!-- HR FORM EXTENSION -->
+  <form name="expense-line-form" id="business-project-expense-line-form" title="Expense line"
+    model="com.axelor.apps.hr.db.ExpenseLine" extension="true">
+    <extend target="//field[@name='projectTask']">
+      <attribute name="onChange" value="action-expense-line-group-on-project-task-change"/>
+    </extend>
+    <extend target="//field[@name='site']">
+      <attribute name="onChange" value="action-expense-line-attrs-update-to-invoice"/>
+    </extend>
+  </form>
+
   <action-attrs name="action-expense-line-attrs-domain-project"
     id="business-project-action-expense-line-attrs-domain-project">
     <attribute name="domain" for="project"
-      expr="eval: &quot; self.imputable = true AND (${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id}) &quot;"/>
+      expr="eval: &quot; self.projectStatus = 2 AND self.imputable = true AND (${__parent__?.employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__parent__?.employee?.user?.id}) &quot;"/>
   </action-attrs>
 
   <action-method name="action-expense-line-method-update-to-invoice">
@@ -58,5 +92,16 @@
     <call class="com.axelor.apps.businessproject.web.ExpenseLineProjectController"
       method="unsetProject"/>
   </action-method>
+
+  <!-- HR METHODS EXTENSION -->
+  <action-group name="action-expense-line-group-on-project-task-change">
+    <action name="action-expense-line-attrs-on-project-task-change"/>
+    <action name="action-expense-line-attrs-update-to-invoice"/>
+  </action-group>
+
+  <action-attrs name="action-expense-line-attrs-update-to-invoice">
+    <attribute for="toInvoice" name="value" expr="eval:site?.invoicingTypeSelect == 1"
+      if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+  </action-attrs>
 
 </object-views>

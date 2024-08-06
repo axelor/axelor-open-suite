@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
@@ -50,10 +50,10 @@
     <!-- SEPA Direct Debit -->
     <string name="icsNumber" title="ICS Number" min="13" max="13"/>
 
-    <many-to-one name="bankStatementLinesBirtTemplate"
-      title="Bank statement lines template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="bankReconciliationStatementBirtTemplate"
-      title="Bank reconciliation statement template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="bankStatementLinesPrintTemplate"
+      title="Bank statement lines template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="bankReconciliationStatementPrintTemplate"
+      title="Bank reconciliation statement template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
     <track>
       <field name="company" on="UPDATE"/>
@@ -78,8 +78,8 @@
       <field name="bnkStmtAutoReconcileDateMargin" on="UPDATE"/>
 
       <field name="icsNumber" on="UPDATE"/>
-      <field name="bankStatementLinesBirtTemplate" on="UPDATE"/>
-      <field name="bankReconciliationStatementBirtTemplate" on="UPDATE"/>
+      <field name="bankStatementLinesPrintTemplate" on="UPDATE"/>
+      <field name="bankReconciliationStatementPrintTemplate" on="UPDATE"/>
     </track>
 
   </entity>

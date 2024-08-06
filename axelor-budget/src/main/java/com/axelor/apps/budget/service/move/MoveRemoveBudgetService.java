@@ -22,8 +22,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.budget.service.AppBudgetService;
@@ -43,7 +43,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
       MoveRepository moveRepo,
       MoveLineRepository moveLineRepo,
       ArchivingService archivingService,
-      ReconcileService reconcileService,
+      UnreconcileService unReconcileService,
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository,
@@ -53,7 +53,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
         moveRepo,
         moveLineRepo,
         archivingService,
-        reconcileService,
+        unReconcileService,
         accountingSituationService,
         accountCustomerService,
         bankStatementLineAFB120Repository);

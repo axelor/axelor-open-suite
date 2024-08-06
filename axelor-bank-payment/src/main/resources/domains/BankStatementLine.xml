@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankStatementLine" persistable="true" strategy="CLASS">
+  <entity name="BankStatementLine" persistable="true" strategy="CLASS"
+    implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <date name="operationDate" title="Operation date"/>
     <date name="valueDate" title="Value date"/>
@@ -42,7 +43,23 @@
     <decimal name="amountRemainToReconcile" title="Amount remaining to reconcile"
       precision="20" scale="3"/>
 
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return currency;
+	    ]]>
+    </many-to-one>
+
+    <integer name="lineTypeSelect" title="Line type"
+      selection="bankpayment.bank.statement.line.line.type.select"/>
+
     <finder-method name="findByBankStatement" using="bankStatement" all="true"/>
+
+    <extra-code><![CDATA[
+		public static final int LINE_TYPE_INITIAL_BALANCE = 1;
+		public static final int LINE_TYPE_MOVEMENT = 2;
+		public static final int LINE_TYPE_FINAL_BALANCE = 3;
+	]]></extra-code>
   </entity>
 
 </domain-models>

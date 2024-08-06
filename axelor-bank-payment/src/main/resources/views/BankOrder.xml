@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders"
     model="com.axelor.apps.bankpayment.db.BankOrder">
@@ -84,10 +84,6 @@
   <form name="bank-order-form" title="Bank Order"
     model="com.axelor.apps.bankpayment.db.BankOrder" onNew="action-bank-order-group-onnew"
     onLoad="action-bank-order-group-on-load">
-    <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
-        onClick="save,action-method-print-birt"/>
-    </toolbar>
     <panel title="Status" name="statusPanel" readonlyIf="technicalOriginSelect == 1">
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
       <field name="$technicalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
@@ -321,10 +317,6 @@
 
   <form name="bank-order-send-form" title="Send a bank order"
     model="com.axelor.apps.bankpayment.db.BankOrder" onNew="action-bank-order-group-onnew">
-    <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
-        onClick="save,action-method-print-birt"/>
-    </toolbar>
     <panel name="statusPanel" title="Status" readonlyIf="technicalOriginSelect == 1">
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
       <field name="$technicalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
@@ -570,6 +562,8 @@
     <field name="bankOrderCurrency"
       if="bankOrderFileFormat?.currency == null &amp;&amp; senderBankDetails?.currency == null"
       expr="eval: senderCompany?.currency"/>
+    <field name="bankOrderCurrency" if="senderBankDetails?.currency != null"
+      expr="eval: senderBankDetails?.currency"/>
   </action-record>
 
   <action-record name="action-bank-order-record-update-bank-order-parameter"

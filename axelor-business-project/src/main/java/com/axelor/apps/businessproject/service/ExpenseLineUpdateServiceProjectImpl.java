@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
@@ -16,6 +34,7 @@ import com.axelor.apps.hr.service.expense.ExpenseLineToolService;
 import com.axelor.apps.hr.service.expense.ExpenseLineUpdateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -49,7 +68,8 @@ public class ExpenseLineUpdateServiceProjectImpl extends ExpenseLineUpdateServic
       Currency currency,
       Product expenseProduct,
       Boolean toInvoice,
-      Expense newExpense)
+      Expense newExpense,
+      ProjectTask projectTask)
       throws AxelorException {
     super.updateBasicExpenseLine(
         expenseLine,
@@ -60,7 +80,8 @@ public class ExpenseLineUpdateServiceProjectImpl extends ExpenseLineUpdateServic
         currency,
         expenseProduct,
         toInvoice,
-        newExpense);
+        newExpense,
+        projectTask);
     if (appBusinessProjectService.isApp("business-project")) {
       expenseLine.setToInvoice(getToInvoice(expenseLine, project, toInvoice));
     }

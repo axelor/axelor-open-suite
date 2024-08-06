@@ -978,8 +978,8 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     BigDecimal costPerHour =
         appProductionService.getIsCostPerProcessLine()
-            ? prodProcessLine.getCostAmount()
-            : workCenter.getCostAmount();
+            ? prodProcessLine.getHrCostAmount()
+            : workCenter.getHrCostAmount();
     BigDecimal durationHours =
         realDuration.divide(
             new BigDecimal(3600),

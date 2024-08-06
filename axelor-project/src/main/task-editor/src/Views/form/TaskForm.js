@@ -30,7 +30,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Editor, CommentList, AttachmentList, StaticSelect, DatePicker, ColumnSelect } from '../../Components';
 import CardItem from './FormCardItem';
 import AssigneeSelection from './AssigneeSelection';
-import { TaskPrioritySelect, TaskProgressSelect } from './TaskComponents';
+import { TaskPrioritySelect, TaskProgress } from './TaskComponents';
 import { updateTask } from '../../Services/api';
 import { useTaskEditor } from '../list/Context';
 import { translate } from '../../utils';
@@ -208,7 +208,7 @@ export default function TaskForm({
     priority: '',
     projectTaskCategory: '',
     taskDate: null,
-    progressSelect: 0,
+    progress: 0,
     taskEndDate: null,
     description: '',
   });
@@ -220,7 +220,7 @@ export default function TaskForm({
     status,
     priority,
     taskDate,
-    progressSelect,
+    progress,
     taskEndDate,
     description,
     projectTaskCategory,
@@ -239,13 +239,13 @@ export default function TaskForm({
       setTask({ ...res });
     }
   };
-  const handleChange = e => {
+  const handleChange = (value, event) => {
     setTask({
       ...task,
-      [e.target.name]: e.target.value,
+      [event.target.name]: value,
     });
-    if (e.target.name !== 'name') {
-      handleBlur(e);
+    if (event.target.name !== 'name') {
+      handleBlur(event);
     }
   };
 
@@ -547,14 +547,14 @@ export default function TaskForm({
             </Grid>
             <Grid item xs={8}>
               <FormControl variant="outlined" style={{ width: '100%', marginBottom: 15 }}>
-                <TaskProgressSelect t={translate} value={progressSelect} onChange={handleChange} />
+                <TaskProgress value={progress} onChange={handleChange} />
               </FormControl>
             </Grid>
           </React.Fragment>
         )}
         <Grid item xs={4}>
           <Typography variant="overline" className={classes.typography} display="block" gutterBottom>
-            {translate('TaskEditor.taskDate')}
+            {translate('Start date')}
           </Typography>
         </Grid>
         <Grid item xs={8}>
@@ -563,7 +563,7 @@ export default function TaskForm({
             inputClassName={classes.inputClassName}
             value={taskDate}
             name="taskDate"
-            label={translate('TaskEditor.taskDate')}
+            label={translate('Start date')}
             onChange={(value, e) => onChange(value, 'taskDate')}
           />
         </Grid>

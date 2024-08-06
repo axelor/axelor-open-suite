@@ -18,17 +18,18 @@
  */
 package com.axelor.apps.budget.service;
 
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class BudgetLineResetToolServiceImpl implements BudgetLineResetToolService {
 
-  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
-  public BudgetLineResetToolServiceImpl(CurrencyScaleServiceBudget currencyScaleServiceBudget) {
-    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
+  public BudgetLineResetToolServiceImpl(CurrencyScaleService currencyScaleService) {
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -36,8 +37,7 @@ public class BudgetLineResetToolServiceImpl implements BudgetLineResetToolServic
 
     entity.setArchived(false);
     entity.setAmountExpected(
-        currencyScaleServiceBudget.getCompanyScaledValue(
-            entity.getBudget(), entity.getAmountExpected()));
+        currencyScaleService.getCompanyScaledValue(entity.getBudget(), entity.getAmountExpected()));
     entity.setAmountCommitted(BigDecimal.ZERO);
     entity.setRealizedWithNoPo(BigDecimal.ZERO);
     entity.setRealizedWithPo(BigDecimal.ZERO);

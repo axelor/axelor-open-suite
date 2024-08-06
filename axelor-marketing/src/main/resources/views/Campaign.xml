@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="campaign-grid" title="Campaigns" model="com.axelor.apps.marketing.db.Campaign">
     <field name="name"/>
@@ -78,13 +78,13 @@
       </panel>
       <panel name="emailingPanel" title="Emailing" showIf="emailing" colSpan="12">
         <field name="partnerTemplate"
-          domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
+          domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (2)" showIf="emailing"/>
         <field name="leadTemplate"
-          domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
+          domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (2)" showIf="emailing"/>
         <field name="partnerReminderTemplate"
-          domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (4)"/>
+          domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (2)"/>
         <field name="leadReminderTemplate"
-          domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (4)"/>
+          domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (2)"/>
         <field name="emailAccount" showIf="emailing"/>
         <panel-dashlet name="generatedEmailsPanel" action="dashlet.generated.emails"
           height="350" colSpan="12"/>
@@ -192,7 +192,7 @@
     <hilite color="success" if="stageSelect &lt;= 4"/>
     <template><![CDATA[
 	        <>
-		        <h4>{name}</h4>
+		        <strong>{name}</strong>
 		        <Box>{campaignType.name}</Box>
 	        </>
 	]]></template>
@@ -268,7 +268,7 @@
   <action-record name="action-campaign-record-set-duration"
     model="com.axelor.apps.marketing.db.Campaign">
     <field name="duration"
-      expr="eval: com.axelor.utils.date.DurationTool.getSecondsDuration( com.axelor.utils.date.DurationTool.computeDuration(eventStartDateTime, eventEndDateTime))"
+      expr="eval: com.axelor.utils.helpers.date.DurationHelper.getSecondsDuration( com.axelor.utils.helpers.date.DurationHelper.computeDuration(eventStartDateTime, eventEndDateTime))"
       if="eventStartDateTime != null &amp;&amp; eventEndDateTime != null"/>
   </action-record>
 

@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed an issue with a partial multi currency payment computing the wrong amount remaining to pay."
-type: fix

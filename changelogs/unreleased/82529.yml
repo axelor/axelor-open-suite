@@ -1,0 +1,3 @@
+---
+title: "BankOrder : fixed manual multi currency bank order's move generation"
+module: axelor-bank-payment

@@ -20,17 +20,17 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class FixedAssetRecordServiceImpl implements FixedAssetRecordService {
 
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
-  public FixedAssetRecordServiceImpl(CurrencyScaleServiceAccount currencyScaleServiceAccount) {
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+  public FixedAssetRecordServiceImpl(CurrencyScaleService currencyScaleService) {
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -61,6 +61,6 @@ public class FixedAssetRecordServiceImpl implements FixedAssetRecordService {
         disposalAmount = BigDecimal.ZERO;
     }
 
-    return currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, disposalAmount);
+    return currencyScaleService.getCompanyScaledValue(fixedAsset, disposalAmount);
   }
 }

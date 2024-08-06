@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <chart name="chart.ticket.no.of.solved.my.ticket" title="My tickets"
     onInit="action.ticket.chart.set.date.1m">
@@ -41,18 +41,24 @@
       translation.message_value
       END) as _status
       FROM
-      helpdesk_ticket
+      helpdesk_ticket AS
+      _ticket
       LEFT
       JOIN
       meta_translation as translation
       ON
       translation.message_key = 'chart.resolved' AND
       translation.language = :_language
+      LEFT JOIN
+      helpdesk_ticket_status AS _ticket_status
+      ON
+      _ticket.ticket_status = _ticket_status.id
       WHERE
-      DATE(created_on) BETWEEN DATE(:fromDate) AND
-      DATE(:toDate)
-      AND assigned_to_user = :_user_id
-      AND status_select = 2
+      DATE(_ticket.created_on) BETWEEN DATE(:fromDate)
+      AND DATE(:toDate)
+      AND _ticket.assigned_to_user = :_user_id
+      AND _ticket_status.id = (SELECT
+      resolved_ticket_status FROM studio_app_helpdesk)
       GROUP BY
       translation.message_value
     </dataset>
@@ -80,9 +86,10 @@
       JOIN
       auth_user AS _user
       ON
-      _user.id = :_user_id
+      _user.id = self.assigned_to_user
       JOIN
-      team_team AS _team
+      team_team
+      AS _team
       ON
       _user.active_team = _team.id
       LEFT JOIN
@@ -110,21 +117,28 @@
       JOIN
       auth_user AS _user
       ON
-      _user.id = :_user_id
+      _user.id = _ticket.assigned_to_user
       JOIN
       team_team AS _team
       ON
       _user.active_team = _team.id
-      LEFT JOIN
+      LEFT
+      JOIN
       meta_translation as translation
       ON
       translation.message_key = 'chart.resolved' AND
       translation.language = :_language
+      LEFT JOIN
+      helpdesk_ticket_status AS _ticket_status
+      ON
+      _ticket.ticket_status = _ticket_status.id
       WHERE
-      DATE(_ticket.created_on) BETWEEN DATE(:fromDate) AND
+      DATE(_ticket.created_on) BETWEEN DATE(:fromDate)
+      AND
       DATE(:toDate)
       AND _team.id = :_myActiveTeam
-      AND _ticket.status_select = 2
+      AND _ticket_status.id = (SELECT
+      resolved_ticket_status FROM studio_app_helpdesk)
       GROUP BY
       translation.message_value
     </dataset>
@@ -170,15 +184,22 @@
       translation.message_value
       END) as _status
       FROM
-      helpdesk_ticket
+      helpdesk_ticket as _ticket
       LEFT JOIN
       meta_translation as
       translation
       ON
-      translation.message_key = 'chart.resolved' AND translation.language = :_language
+      translation.message_key = 'chart.resolved' AND
+      translation.language = :_language
+      LEFT JOIN
+      helpdesk_ticket_status AS _ticket_status
+      ON
+      _ticket.ticket_status = _ticket_status.id
       WHERE
-      DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
-      AND status_select = 2
+      DATE(_ticket.created_on) BETWEEN DATE(:fromDate)
+      AND DATE(:toDate)
+      AND _ticket_status.id = (SELECT resolved_ticket_status FROM
+      studio_app_helpdesk)
       GROUP BY
       translation.message_value
     </dataset>

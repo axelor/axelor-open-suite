@@ -20,7 +20,7 @@ package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.report.engine.ReportSettings;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -44,7 +44,7 @@ public interface ManufOrderPrintService {
    */
   String printManufOrder(ManufOrder manufOrder) throws AxelorException;
 
-  ReportSettings prepareReportSettings(ManufOrder manufOrder) throws AxelorException;
+  File print(ManufOrder manufOrder) throws AxelorException;
 
   /** Returns the filename of a printing with multiple manuf orders. */
   String getManufOrdersFilename();
