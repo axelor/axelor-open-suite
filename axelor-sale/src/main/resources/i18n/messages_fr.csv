@@ -38,6 +38,7 @@
 "Amount","Montant",,
 "Amount A.T.I.","Montant T.T.C.",,
 "Amount Tax","Montant Taxe",,
+"Amount Tax (via percentages)","Montant Taxe (via pourcentages)",,
 "Amount invoiced W.T.","Montant facturé HT",,
 "Amount to be spread over the timetable","Montant restant à étaler sur l'échéancier",,
 "An attribute with the same name already exists.","Un attribut avec le même nom existe déjà.",,
