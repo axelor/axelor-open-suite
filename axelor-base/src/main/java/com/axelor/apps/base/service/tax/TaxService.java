@@ -144,7 +144,10 @@ public class TaxService {
     }
     return taxLineSet.stream()
         .filter(Objects::nonNull)
-        .filter(taxLine -> taxLine.getTax() != null && !taxLine.getTax().getIsNonDeductibleTax())
+        .filter(
+            taxLine ->
+                taxLine.getTax() == null
+                    || (taxLine.getTax() != null && !taxLine.getTax().getIsNonDeductibleTax()))
         .map(TaxLine::getValue)
         .filter(Objects::nonNull)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
