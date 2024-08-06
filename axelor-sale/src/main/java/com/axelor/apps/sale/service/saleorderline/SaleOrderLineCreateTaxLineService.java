@@ -27,4 +27,6 @@ public interface SaleOrderLineCreateTaxLineService {
 
   List<SaleOrderLineTax> createsSaleOrderLineTax(
       SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList);
+
+  List<SaleOrderLineTax> getUpdatedSaleOrderLineTax(SaleOrder saleOrder);
 }

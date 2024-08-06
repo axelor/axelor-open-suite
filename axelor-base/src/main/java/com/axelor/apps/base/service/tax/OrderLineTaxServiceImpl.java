@@ -82,6 +82,7 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
                       AppBaseService.COMPUTATION_SCALING,
                       RoundingMode.HALF_UP));
       orderLineTax.setTaxTotal(currencyScaleService.getScaledValue(taxTotal, currencyScale));
+      orderLineTax.setPercentageTaxTotal(orderLineTax.getTaxTotal());
     }
     orderLineTax.setInTaxTotal(
         currencyScaleService.getScaledValue(exTaxBase.add(taxTotal), currencyScale));

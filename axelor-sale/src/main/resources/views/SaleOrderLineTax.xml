@@ -33,6 +33,7 @@
       <field name="saleOrder" hidden="true"/>
       <field name="saleOrder.currency" hidden="true"/>
       <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
+      <field name="taxLine.tax.manageByAmount" hidden="true"/>
     </panel>
   </form>
 
