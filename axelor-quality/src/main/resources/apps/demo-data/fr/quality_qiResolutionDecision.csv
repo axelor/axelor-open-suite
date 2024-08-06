@@ -1,0 +1,7 @@
+"importId";"qiResolution.importId";"qiDecision.importId";"quantity";"description";"qiResolutionDefault.importId";"responsible";"responsiblePartner.importId";"documentReference";"fixedAmount";"directCost";"totalCost";"acceptance";"acceptedQty";"rejectedQty"
+"1";"1";"2";"2";"Demande remplacement";"1";"3";"77";;"100";;;"2";;
+"2";"1";"7";"2";"Retour fournisseur";"1";"1";"90005";;;"50";;"2";;
+"3";"2";"6";"5";"Retouche";"2";"1";"90005";;"200";;"3";"5";;
+"4";"4";"2";"2";"Demande remplacement";"4";"5";"153";;"250";;;;;
+"5";"5";"2";"1";"Demande remplacement";"5";"1";"90005";;"200";"300";;"1";;
+"6";"6";"7";"2";"Retour fournisseur";"6";"3";"152";;"300";"150";;"2";;

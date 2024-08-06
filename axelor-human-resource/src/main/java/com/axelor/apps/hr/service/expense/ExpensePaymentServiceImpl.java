@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,16 +25,16 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -62,7 +62,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
   protected MoveLineCreateService moveLineCreateService;
   protected MoveValidateService moveValidateService;
   protected ReconcileService reconcileService;
-  protected BankOrderService bankOrderService;
+  protected BankOrderCancelService bankOrderCancelService;
   protected MoveCancelService moveCancelService;
   protected BankOrderRepository bankOrderRepository;
   protected ExpenseRepository expenseRepository;
@@ -77,7 +77,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
       MoveLineCreateService moveLineCreateService,
       MoveValidateService moveValidateService,
       ReconcileService reconcileService,
-      BankOrderService bankOrderService,
+      BankOrderCancelService bankOrderCancelService,
       MoveCancelService moveCancelService,
       BankOrderRepository bankOrderRepository,
       ExpenseRepository expenseRepository,
@@ -89,7 +89,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     this.moveLineCreateService = moveLineCreateService;
     this.moveValidateService = moveValidateService;
     this.reconcileService = reconcileService;
-    this.bankOrderService = bankOrderService;
+    this.bankOrderCancelService = bankOrderCancelService;
     this.moveCancelService = moveCancelService;
     this.bankOrderRepository = bankOrderRepository;
     this.expenseRepository = expenseRepository;
@@ -125,12 +125,8 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
           .getGenerateMoveForInvoicePayment()) {
         this.createMoveForExpensePayment(expense);
       }
-      if (paymentMode.getAutomaticTransmission()) {
-        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
-      } else {
-        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-        expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
-      }
+      expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+      expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
     }
     expense.setPaymentAmount(
         expense
@@ -253,13 +249,12 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     BankOrder bankOrder = expense.getBankOrder();
 
     if (bankOrder != null) {
-      if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT
-          || bankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED) {
+      if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(HumanResourceExceptionMessage.EXPENSE_PAYMENT_CANCEL));
       } else if (bankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
-        bankOrderService.cancelBankOrder(bankOrder);
+        bankOrderCancelService.cancelBankOrder(bankOrder);
       }
     }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -40,6 +41,7 @@ import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -62,7 +64,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
-import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -76,6 +78,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {
@@ -138,10 +141,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     task.setDescription(saleOrderLine.getDescription());
     task.setQuantity(saleOrderLine.getQty());
     task.setSaleOrderLine(saleOrderLine);
-    task.setToInvoice(
-        saleOrderLine.getSaleOrder() != null
-            ? saleOrderLine.getSaleOrder().getToInvoiceViaTask()
-            : false);
 
     if (isTimeUnitValid(orderLineUnit)) {
       task.setTimeUnit(orderLineUnit);
@@ -181,7 +180,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Override
   public ProjectTask updateDiscount(ProjectTask projectTask) {
     PriceList priceList = projectTask.getProject().getPriceList();
-    if (priceList == null) {
+    Contract frameworkCustomerContract = projectTask.getFrameworkCustomerContract();
+    if (frameworkCustomerContract != null || priceList == null) {
       this.emptyDiscounts(projectTask);
       return projectTask;
     }
@@ -270,6 +270,14 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       invoiceLineList.addAll(this.createInvoiceLine(invoice, projectTask, priority * 100 + count));
       count++;
     }
+
+    if (projectTaskList.stream()
+        .anyMatch(
+            task ->
+                task.getInvoicingType().equals(ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS))) {
+      invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_IN_PROGRESS_INVOICE);
+    }
+
     return invoiceLineList;
   }
 
@@ -302,7 +310,10 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             InvoiceLine invoiceLine = this.createInvoiceLine();
             invoiceLine.setProject(projectTask.getProject());
             invoiceLine.setSaleOrderLine(projectTask.getSaleOrderLine());
-            projectTask.setInvoiceLine(invoiceLine);
+            invoiceLine.addProjectTaskSetItem(projectTask);
+            projectTask.addInvoiceLineSetItem(invoiceLine);
+
+            setProgressAndCoefficient(invoiceLine, projectTask);
 
             List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
             invoiceLines.add(invoiceLine);
@@ -312,6 +323,21 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         };
 
     return invoiceLineGenerator.creates();
+  }
+
+  protected void setProgressAndCoefficient(InvoiceLine invoiceLine, ProjectTask projectTask) {
+    if (projectTask.getInvoicingType().equals(ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS)) {
+      BigDecimal invoicingProgress = projectTask.getInvoicingProgress();
+
+      BigDecimal progress = projectTask.getProgress();
+      invoiceLine.setPreviousProgress(invoicingProgress);
+      invoiceLine.setNewProgress(progress);
+
+      invoiceLine.setCoefficient(
+          progress
+              .subtract(invoicingProgress)
+              .divide(BigDecimal.valueOf(100), BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+    }
   }
 
   @Override
@@ -487,7 +513,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public ProjectTask setProjectTaskValues(ProjectTask projectTask) throws AxelorException {
-    if (projectTask.getSaleOrderLine() != null || projectTask.getInvoiceLine() != null) {
+    if (projectTask.getSaleOrderLine() != null
+        || CollectionUtils.isNotEmpty(projectTask.getInvoiceLineSet())) {
       return projectTask;
     }
     projectTask = updateTaskFinancialInfo(projectTask);

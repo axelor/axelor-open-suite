@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,9 +20,11 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.PurchaseOrderProjectService;
 import com.axelor.apps.project.db.ProjectTask;
@@ -39,6 +41,7 @@ import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskController {
 
@@ -97,7 +100,7 @@ public class ProjectTaskController {
   public void onChangeCategory(ActionRequest request, ActionResponse response) {
     try {
       ProjectTask task = request.getContext().asType(ProjectTask.class);
-      if (task.getSaleOrderLine() == null && task.getInvoiceLine() == null) {
+      if (task.getSaleOrderLine() == null && CollectionUtils.isEmpty(task.getInvoiceLineSet())) {
         ProjectTaskBusinessProjectService projectTaskBusinessProjectService =
             Beans.get(ProjectTaskBusinessProjectService.class);
         task = projectTaskBusinessProjectService.resetProjectTaskValues(task);
@@ -189,5 +192,37 @@ public class ProjectTaskController {
           .setProjectAndProjectTask(purchaseOrderId, projectTask.getProject(), projectTask);
       response.setCanClose(true);
     }
+  }
+
+  public void getProductData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    Map<String, Object> productMap =
+        Beans.get(ProjectFrameworkContractService.class).getProductDataFromContract(projectTask);
+    response.setValues(productMap);
+  }
+
+  public void getEmployeeProduct(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    Product employeeProduct =
+        Beans.get(ProjectFrameworkContractService.class).getEmployeeProduct(projectTask);
+    response.setValue("product", employeeProduct);
+  }
+
+  public void getCustomerContractDomain(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    String domain =
+        Beans.get(ProjectFrameworkContractService.class).getCustomerContractDomain(projectTask);
+    response.setAttr("frameworkCustomerContract", "domain", domain);
+  }
+
+  public void getSupplierContractDomain(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    String domain =
+        Beans.get(ProjectFrameworkContractService.class).getSupplierContractDomain(projectTask);
+    response.setAttr("frameworkSupplierContract", "domain", domain);
   }
 }

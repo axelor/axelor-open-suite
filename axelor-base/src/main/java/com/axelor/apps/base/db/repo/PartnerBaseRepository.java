@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,6 @@ import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import java.util.List;
-import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class PartnerBaseRepository extends PartnerRepository {
@@ -40,22 +39,6 @@ public class PartnerBaseRepository extends PartnerRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
-  }
-
-  @Override
-  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    if (!context.containsKey("json-enhance")) {
-      return json;
-    }
-    try {
-      Long id = (Long) json.get("id");
-      Partner partner = find(id);
-      json.put("address", Beans.get(PartnerService.class).getDefaultAddress(partner));
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    return json;
   }
 
   @Override

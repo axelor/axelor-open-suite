@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -35,27 +36,31 @@ public class SaleOrderVersionServiceImpl implements SaleOrderVersionService {
   protected SaleOrderLineRepository saleOrderLineRepository;
   protected AppBaseService appBaseService;
   protected SaleOrderOnLineChangeService saleOrderOnLineChangeService;
+  protected SequenceService sequenceService;
 
   @Inject
   public SaleOrderVersionServiceImpl(
       SaleOrderRepository saleOrderRepository,
       SaleOrderLineRepository saleOrderLineRepository,
       AppBaseService appBaseService,
-      SaleOrderOnLineChangeService saleOrderOnLineChangeService) {
+      SaleOrderOnLineChangeService saleOrderOnLineChangeService,
+      SequenceService sequenceService) {
     this.saleOrderRepository = saleOrderRepository;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.appBaseService = appBaseService;
     this.saleOrderOnLineChangeService = saleOrderOnLineChangeService;
+    this.sequenceService = sequenceService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void createNewVersion(SaleOrder saleOrder) {
+  public void createNewVersion(SaleOrder saleOrder) throws AxelorException {
     saleOrder
         .getSaleOrderLineList()
         .forEach(saleOrderLine -> historizeSaleOrderLine(saleOrder, saleOrderLine));
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
     saleOrder.setVersionNumber(saleOrder.getVersionNumber() + 1);
+    saleOrder.setSaleOrderSeq(sequenceService.getDraftSequenceNumber(saleOrder));
   }
 
   @Transactional(rollbackOn = {Exception.class})

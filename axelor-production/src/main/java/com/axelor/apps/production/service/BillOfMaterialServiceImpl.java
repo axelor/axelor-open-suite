@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,7 +32,6 @@ import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -43,7 +42,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -167,7 +165,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
               + noOfPersonalizedBOM
               + ")";
       personalizedBOM.setName(name);
-      personalizedBOM.setFullName(name);
       personalizedBOM.setPersonalized(true);
       List<BillOfMaterialLine> billOfMaterialLineList = billOfMaterial.getBillOfMaterialLineList();
 
@@ -369,19 +366,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  public String computeName(BillOfMaterial bom) {
-    Integer nbDecimalDigitForBomQty =
-        Beans.get(AppProductionService.class).getAppProduction().getNbDecimalDigitForBomQty();
-    return bom.getProduct().getName()
-        + " - "
-        + bom.getQty().setScale(nbDecimalDigitForBomQty, RoundingMode.HALF_UP)
-        + " "
-        + bom.getUnit().getName()
-        + " - "
-        + bom.getId();
-  }
-
-  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void addRawMaterials(
       long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
@@ -504,7 +488,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       return Collections.emptyList();
     }
     String stringQuery =
-        "SELECT DISTINCT self.product.id from BillOfMaterial as self WHERE self.company.id in (?1)";
+        "SELECT DISTINCT self.product.id from BillOfMaterial as self WHERE self.company.id in (?1) AND self.product IS NOT NULL";
     Query query = JPA.em().createQuery(stringQuery, Long.class);
 
     query.setParameter(1, companySet.stream().map(Company::getId).collect(Collectors.toList()));

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -166,41 +167,6 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   }
 
   @Override
-  public TimesheetLine createTimesheetLine(
-      Project project,
-      Product product,
-      Employee employee,
-      LocalDate date,
-      Timesheet timesheet,
-      BigDecimal hours,
-      String comments) {
-
-    TimesheetLine timesheetLine = new TimesheetLine();
-
-    timesheetLine.setDate(date);
-    timesheetLine.setComments(comments);
-    timesheetLine.setProduct(product);
-    timesheetLine.setProject(project);
-    timesheetLine.setEmployee(employee);
-    timesheetLine.setHoursDuration(hours);
-    try {
-      timesheetLine.setDuration(computeHoursDuration(timesheet, hours, false));
-    } catch (AxelorException e) {
-      log.error(e.getLocalizedMessage());
-      TraceBackService.trace(e);
-    }
-    timesheet.addTimesheetLineListItem(timesheetLine);
-
-    return timesheetLine;
-  }
-
-  @Override
-  public TimesheetLine createTimesheetLine(
-      Employee employee, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments) {
-    return createTimesheetLine(null, null, employee, date, timesheet, hours, comments);
-  }
-
-  @Override
   public TimesheetLine updateTimesheetLine(
       TimesheetLine timesheetLine,
       Project project,
@@ -284,7 +250,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     }
   }
 
-  protected Integer getDailyLimitFromApp() {
+  @Override
+  public Integer getDailyLimitFromApp() {
     return appHumanResourceService.getAppTimesheet().getDailyLimit();
   }
 
@@ -299,7 +266,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
-  protected boolean isExceedingDailyLimit(
+  @Override
+  public boolean isExceedingDailyLimit(
       BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit) {
     return totalHoursDuration.add(hoursDuration).compareTo(new BigDecimal(dailyLimit)) > 0;
   }
@@ -312,5 +280,21 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
             I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINES_EXCEED_DAILY_LIMIT),
             dailyLimit,
             date.format(dateService.getDateFormat())));
+  }
+
+  @Override
+  public Product getDefaultProduct(TimesheetLine timesheetLine) {
+    if (timesheetLine.getProduct() == null) {
+      return timesheetLine.getEmployee().getProduct();
+    }
+    return timesheetLine.getProduct();
+  }
+
+  @Override
+  public void resetTimesheetLineTimer(TSTimer tsTimer) {
+    TimesheetLine timesheetLine = tsTimer.getTimesheetLine();
+    if (timesheetLine != null) {
+      timesheetLine.setTimer(null);
+    }
   }
 }

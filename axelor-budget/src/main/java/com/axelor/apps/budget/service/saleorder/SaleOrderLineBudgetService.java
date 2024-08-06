@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,30 +19,19 @@
 package com.axelor.apps.budget.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import java.util.List;
 
 public interface SaleOrderLineBudgetService {
-
-  List<BudgetDistribution> addBudgetDistribution(SaleOrderLine saleOrderLine);
 
   void fillBudgetStrOnLine(SaleOrderLine saleOrderLine, boolean multiBudget);
 
   String searchAndFillBudgetStr(SaleOrderLine saleOrderLine, boolean multiBudget);
 
-  String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
+  String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
 
-  String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
+  String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
   void checkAmountForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException;
-
-  void computeBudgetDistributionSumAmount(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
-
-  String getGroupBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
-
-  String getSectionBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
-
-  String getLineBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean isBudget);
 }

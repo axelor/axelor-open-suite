@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
@@ -35,18 +36,18 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
   protected MoveLineQueryRepository moveLineQueryRepository;
   protected AppBaseService appBaseService;
   protected ReconcileRepository reconcileRepository;
-  protected ReconcileService reconcileService;
+  protected UnreconcileService unReconcileService;
 
   @Inject
   public MoveLineQueryServiceImpl(
       MoveLineQueryRepository moveLineQueryRepository,
       AppBaseService appBaseService,
       ReconcileRepository reconcileRepository,
-      ReconcileService reconcileService) {
+      UnreconcileService unReconcileService) {
     this.moveLineQueryRepository = moveLineQueryRepository;
     this.appBaseService = appBaseService;
     this.reconcileRepository = reconcileRepository;
-    this.reconcileService = reconcileService;
+    this.unReconcileService = unReconcileService;
   }
 
   @Override
@@ -91,7 +92,7 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
       throws AxelorException {
     for (Reconcile reconcile : reconcileList) {
       reconcile = reconcileRepository.find(reconcile.getId());
-      reconcileService.unreconcile(reconcile);
+      unReconcileService.unreconcile(reconcile);
       JPA.clear();
     }
   }

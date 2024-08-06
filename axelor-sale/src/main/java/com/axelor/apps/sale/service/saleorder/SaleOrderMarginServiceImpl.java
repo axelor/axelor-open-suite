@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.sale.service.saleorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -42,15 +43,18 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
   protected AppSaleService appSaleService;
   protected CurrencyService currencyService;
   protected ProductCompanyService productCompanyService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public SaleOrderMarginServiceImpl(
       AppSaleService appSaleService,
       CurrencyService currencyService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      CurrencyScaleService currencyScaleService) {
     this.appSaleService = appSaleService;
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -94,19 +98,26 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
     BigDecimal subMarginRate = BigDecimal.ZERO;
     BigDecimal totalWT =
         currencyService.getAmountCurrencyConvertedAtDate(
-            saleOrder.getCurrency(), company.getCurrency(), exTaxTotal, null);
+            saleOrder.getCurrency(),
+            company != null ? company.getCurrency() : null,
+            exTaxTotal,
+            null);
 
     if (product != null
         && exTaxTotal.compareTo(BigDecimal.ZERO) != 0
         && subTotalCostPrice.compareTo(BigDecimal.ZERO) != 0) {
-      subTotalGrossMargin = totalWT.subtract(subTotalCostPrice);
+      subTotalGrossMargin =
+          currencyScaleService.getCompanyScaledValue(
+              saleOrder, totalWT.subtract(subTotalCostPrice));
       subMarginRate = computeRate(totalWT, subTotalGrossMargin);
     }
 
     if (appSaleService.getAppSale().getConsiderZeroCost()
         && (exTaxTotal.compareTo(BigDecimal.ZERO) == 0
             || subTotalCostPrice.compareTo(BigDecimal.ZERO) == 0)) {
-      subTotalGrossMargin = exTaxTotal.subtract(subTotalCostPrice);
+      subTotalGrossMargin =
+          currencyScaleService.getCompanyScaledValue(
+              saleOrder, exTaxTotal.subtract(subTotalCostPrice));
       subMarginRate = computeRate(exTaxTotal, subTotalGrossMargin);
     }
 

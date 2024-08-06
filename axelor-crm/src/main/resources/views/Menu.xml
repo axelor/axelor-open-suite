@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <menuitem name="crm-root" title="CRM" order="-2100" if="__config__.app.isApp('crm')"
     icon="fa-user" icon-background="#2fa042"/>
@@ -73,7 +73,6 @@
     <context name="_isProspect" expr="true"/>
     <context name="_domain"
       expr="self.isContact = false AND self.isProspect = true AND self.user.id = :_internalUserId"/>
-    <context name="json-enhance" expr="eval:true"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
@@ -84,7 +83,6 @@
 
   <action-view name="crm.all.prospects" title="All prospects"
     model="com.axelor.apps.base.db.Partner">
-    <view type="kanban" name="partner-prospect-kanban"/>
     <view type="cards" name="partner-cards"/>
     <view type="grid" name="partner-prospect-grid"/>
     <view type="form" name="partner-customer-form"/>
@@ -94,7 +92,6 @@
     <domain>self.isContact = false AND self.isProspect = true</domain>
     <context name="_isProspect" expr="true"/>
     <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
-    <context name="json-enhance" expr="eval:true"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
@@ -116,7 +113,6 @@
     <context name="_isProspect" expr="true"/>
     <context name="_domain"
       expr="self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = true"/>
-    <context name="json-enhance" expr="eval:true"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
@@ -126,6 +122,7 @@
 
   <action-view name="crm.closed.prospects" title="Closed prospects"
     model="com.axelor.apps.base.db.Partner">
+    <view type="kanban" name="partner-prospect-kanban"/>
     <view type="cards" name="partner-cards"/>
     <view type="grid" name="partner-prospect-grid"/>
     <view type="form" name="partner-customer-form"/>
@@ -136,7 +133,6 @@
     <context name="_isProspect" expr="true"/>
     <context name="_domain"
       expr="self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = false"/>
-    <context name="json-enhance" expr="eval:true"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
@@ -156,7 +152,6 @@
     <domain>self.isContact = false AND self.isCustomer = true</domain>
     <context name="_isCustomer" expr="true"/>
     <context name="_domain" expr="self.isContact = false AND self.isCustomer = true"/>
-    <context name="json-enhance" expr="eval:true"/>
   </action-view>
 
   <menuitem name="crm-root-contacts" parent="crm-root-customer-follow-up" title="Contacts"
@@ -172,6 +167,14 @@
     <view-param name="default-search-filters" value="contact-filters-prospects-clients"/>
     <domain>self.isContact = true AND self.isEmployee = false</domain>
     <context name="_domain" expr="self.isContact = true AND self.isEmployee = false"/>
+  </action-view>
+
+  <menuitem name="crm-root-tour" parent="crm-root" title="Tour" action="crm.root.tour"
+    order="450"/>
+
+  <action-view name="crm.root.tour" title="Tour" model="com.axelor.apps.crm.db.Tour">
+    <view type="grid" name="tour-grid"/>
+    <view type="form" name="tour-form"/>
   </action-view>
 
   <menuitem name="crm-root-catalog" parent="crm-root" title="Catalogs"
@@ -560,12 +563,22 @@
     <view type="form" name="company-department-form"/>
   </action-view>
 
-  <menuitem title="Type" name="crm-conf-type" parent="crm-conf" action="crm.conf.type"
-    order="900"/>
-  <action-view name="crm.conf.type" title="Type"
+  <menuitem title="Custom types" name="crm-conf-custom-types" parent="crm-conf" order="900"/>
+
+  <menuitem title="Partner types" name="crm-conf-partner-type"
+    parent="crm-conf-custom-types" action="crm.conf.partner.types" order="100"/>
+  <action-view name="crm.conf.partner.types" title="Partner types"
     model="com.axelor.apps.base.db.PartnerCategory">
     <view type="grid" name="partner-category-grid"/>
     <view type="form" name="partner-category-form"/>
+  </action-view>
+
+  <menuitem title="Opportunity types" name="crm-conf-opportunity-type"
+    parent="crm-conf-custom-types" action="crm.conf.opportunity.types" order="200"/>
+  <action-view name="crm.conf.opportunity.types" title="Opportunity types"
+    model="com.axelor.apps.crm.db.OpportunityType">
+    <view type="grid" name="opportunity-type-grid"/>
+    <view type="form" name="opportunity-type-form"/>
   </action-view>
 
   <menuitem title="Custom status" name="crm-conf-custom-status" parent="crm-conf"

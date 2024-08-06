@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
     orderBy="-sentDateTime">
@@ -52,7 +52,6 @@
     onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
-        <item name="printExpenseItem" title="Print" action="save,action-method-print-birt"/>
         <item name="printAll" title="Print report and files"
           action="save,action-expense-method-print-report-and-proof-file"/>
       </menu>
@@ -63,31 +62,31 @@
         <field name="expenseSeq" showTitle="false" colSpan="8">
           <viewer depends="expenseSeq">
 					<![CDATA[
-						<h3>
-							<span x-translate>Expense</span>
-							{{record.expenseSeq}}
-						</h3>
+						<>
+							<h3>
+								<span>{_t('Expense')} {expenseSeq}</span>
+							</h3>
+						</>
 					]]>
           </viewer>
         </field>
         <field name="ventilated" readonly="true" showTitle="false" showIf="ventilated"
           colSpan="4">
           <viewer>
-						<![CDATA[
-							<h3>
-								<span class="label label-important" x-translate>Ventilated</span>
-							</h3>
-						]]>
+			<![CDATA[<><Badge bg="danger">{_t('Ventilated')}</Badge></>]]>
           </viewer>
         </field>
         <panel name="generalInfoPanel" colSpan="12">
+          <field name="typeSelect" readonlyIf="_isExpenseDeclaration || statusSelect > 1"/>
+          <spacer/>
           <field name="company" canEdit="false" form-view="company-form"
             grid-view="company-grid"
             onChange="action-expense-record-company-onchange,action-expense-attrs-kilometric-panel-visibility"
             required="true"/>
           <field name="employee" form-view="employee-form"
             onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
-            canEdit="false" canView="false" onChange="action-expense-record-employee-onchange"
+            canEdit="false" canView="false"
+            onChange="action-expense-record-employee-onchange,action-expense-method-update-general-and-kilometric-expense-line-employee"
             required="true"/>
           <field name="currency" canEdit="false" colSpan="6" required="true"
             readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
@@ -132,32 +131,37 @@
             onClick="save,action-expense-method-cancel-payment"/>
         </panel>
         <panel name="inTaxTotalPanel" readonly="true">
-          <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+          <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
             <viewer
-              depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund,currency.symbol">
+              depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund">
 		                    <![CDATA[
-		                    <dl class="dl-horizontal">
-		                        <dt x-translate>Total W.T.</dt>
-		                        <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
-		                        <dt x-translate>Total tax</dt>
-		                        <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
-		                        <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
-		                        <dt ng-show="record.personalExpenseAmount != 0" x-translate>Personal expense</dt>
-		                        <dd ng-show="record.personalExpenseAmount != 0"> -{{$fmt('personalExpenseAmount')}}</dd>
-		                        <dt ng-show="record.withdrawnCash != 0" x-translate>Withdrawn cash</dt>
-		                        <dd ng-show="record.withdrawnCash != 0">-{{$fmt('withdrawnCash')}}</dd>
-		                        <dt ng-show="record.advanceAmount != 0" x-translate>Advance</dt>
-		                        <dd ng-show="record.advanceAmount != 0">-{{$fmt('advanceAmount')}}</dd>
-		                        <dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}" x-translate>Payment</dt>
-		                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{$fmt('paymentAmount')}}</dd>
-		                        <dt class="order-subtotal-total" x-translate>TotalToRefund</dt>
-		                        <dd class="order-subtotal-total">{{$fmt('$totalToRefund') | currency: record.currency.symbol}}</dd>
-		                    </dl>
+			                  <>
+			                      <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+			                          <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+			                     	  <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+			                     	  <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+			                     	  <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+			                     	  <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+			                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
+			                     	  {personalExpenseAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Personal expense')}</Box>}
+			                     	  {personalExpenseAmount != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('personalExpenseAmount')}</Box>}
+			                     	  {withdrawnCash != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Withdrawn cash')}</Box>}
+			                     	  {withdrawnCash != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('withdrawnCash')}</Box>}
+			                     	  {advanceAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance')}</Box>}
+			                     	  {advanceAmount != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('paymentAmount')}</Box>}
+			                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal" color="primary">{_t('Payment')}</Box>}
+			                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dd" m={0} px={3} py={1} color="primary">-{$fmt('paymentAmount')}</Box>}
+			                          <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('TotalToRefund')}</Box>
+			                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('$totalToRefund')}</Box>
+			                      </Box>
+			                  </>
 		                    ]]>
             </viewer>
           </field>
-          <field name="$totalToRefund" title="Total to refund" type="decimal" hidden="true"/>
+          <field name="$totalToRefund" title="Total to refund" type="decimal" hidden="true"
+            x-currency="currency.symbol"/>
+          <field name="exTaxTotal" x-currency="currency.symbol" hidden="true"/>
+          <field name="taxTotal" x-currency="currency.symbol" hidden="true"/>
         </panel>
       </panel>
     </panel>
@@ -177,7 +181,8 @@
     <panel-tabs name="mainPanelTab">
       <panel name="generalExpenseLineListMainPanel" title="General expenses">
         <static name="overAmountLimitText" hidden="true" colSpan="12">
-          <![CDATA[<span class='label label-warning'>At least one line of this expense exceeds the authorised amount for its type of expense.</span>]]></static>
+          <![CDATA[<><Badge bg="warning">At least one line of this expense exceeds the authorised amount for its type of expense.</Badge></>]]>
+        </static>
         <panel-related name="generalExpenseLineListPanel"
           field="generalExpenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1"
           colSpan="12" editable="true" form-view="expense-line-form" grid-view="expense-line-grid"
@@ -194,7 +199,8 @@
         canNew="false" canSelect="false" canEdit="true" editable="true"
         form-view="employee-advance-usage-expense-form"
         grid-view="employee-advance-usage-expense-grid"/>
-      <panel name="accountInfoPanel" title="Account information">
+      <panel name="accountInfoPanel" title="Account information" hidden="true"
+        showIf="typeSelect==1">
         <panel name="moveInfoPanel" title="Account information">
           <field name="moveDate" readonly="true" colSpan="4"/>
         </panel>
@@ -300,12 +306,16 @@
       expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
     <field name="currency"
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany.currency ?: __user__.activeCompany.currency"/>
+    <field name="typeSelect"
+      expr="eval: _isExpenseDeclaration ? com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE_DECLARATION : com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE"/>
   </action-record>
 
   <action-record name="action-expense-record-employee-onchange"
     model="com.axelor.apps.hr.db.Expense">
     <field name="bankDetails"
-      expr="eval: employee?.mainEmploymentContract?.payCompany ? employee.mainEmploymentContract.payCompany.defaultBankDetails : employee.user.activeCompany.defaultBankDetails"/>
+      expr="eval: employee?.mainEmploymentContract?.payCompany ? employee?.mainEmploymentContract?.payCompany?.defaultBankDetails : employee?.user?.activeCompany?.defaultBankDetails"/>
+    <field name="currency"
+      expr="eval: employee?.mainEmploymentContract?.payCompany.currency ?: employee?.user?.activeCompany?.currency"/>
   </action-record>
 
   <action-record name="action-expense-record-company-onchange"
@@ -362,7 +372,7 @@
 
   <action-attrs name="action-expense-attrs-hide-button-readonly-field">
     <attribute name="hidden" for="ventilateBtn"
-      expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated"/>
+      expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated || _isExpenseDeclaration"/>
     <attribute name="hidden" for="validateBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="refuseBtn"
@@ -381,10 +391,8 @@
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2"
       if="__user__.employee?.hrManager"/>
-    <attribute name="readonly" for="employee" expr="eval: true"
-      if="!__user__.employee?.hrManager"/>
-    <attribute name="readonly" for="employee" expr="eval: statusSelect &gt; 2"
-      if="__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="employee"
+      expr="eval: statusSelect &gt; 2 || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
   </action-attrs>
 
   <action-attrs name="action-expense-attrs-expense-company-cb">
@@ -427,6 +435,12 @@
   <action-method name="action-expense-method-update-moveDate-and-period">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController"
       method="updateMoveDateAndPeriod"/>
+  </action-method>
+
+  <action-method
+    name="action-expense-method-update-general-and-kilometric-expense-line-employee">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController"
+      method="updateGeneralAndKilometricExpenseLineEmployee"/>
   </action-method>
 
   <action-method name="action-expense-method-check-total-amount">

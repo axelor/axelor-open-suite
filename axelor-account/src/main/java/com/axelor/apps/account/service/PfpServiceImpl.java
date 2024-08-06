@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -60,5 +62,18 @@ public class PfpServiceImpl implements PfpService {
   protected boolean isActivatePassedForPayment() {
     return appAccountService.getAppAccount() != null
         && appAccountService.getAppAccount().getActivatePassedForPayment();
+  }
+
+  @Override
+  public boolean getPfpCondition(Invoice invoice) throws AxelorException {
+    return this.isManagePassedForPayment(invoice.getCompany())
+        && this.getOperationTypePurchaseCondition(invoice);
+  }
+
+  @Override
+  public boolean getOperationTypePurchaseCondition(Invoice invoice) throws AxelorException {
+    return invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+            && this.isManagePFPInRefund(invoice.getCompany()));
   }
 }

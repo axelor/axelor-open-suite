@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -131,7 +131,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
     }
 
     for (int i = 0; i < saleOrderLineList.size(); i++) {
-      saleOrderLineList.get(i).setSequence(i);
+      saleOrderLineList.get(i).setSequence(i + 1);
     }
 
     return saleOrderLineList;
@@ -174,10 +174,11 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
   @Override
   public void onLineChange(SaleOrder saleOrder) throws AxelorException {
     this.handleComplementaryProducts(saleOrder);
-    if (saleOrder.getSaleOrderLineList().stream()
-        .anyMatch(
-            saleOrderLine ->
-                saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK)) {
+    if (saleOrder.getSaleOrderLineList() != null
+        && saleOrder.getSaleOrderLineList().stream()
+            .anyMatch(
+                saleOrderLine ->
+                    saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK)) {
       if (appSaleService.getAppSale().getEnablePackManagement()
           && saleOrderLineService.isStartOfPackTypeLineQtyChanged(
               saleOrder.getSaleOrderLineList())) {

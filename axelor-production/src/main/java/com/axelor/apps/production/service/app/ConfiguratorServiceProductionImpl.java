@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,7 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Optional;
 
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
@@ -120,8 +121,10 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
   }
 
   protected void setProductionInformation(SaleOrderLine saleOrderLine) {
-    saleOrderLine.setBillOfMaterial(getDefaultBOM(saleOrderLine));
-
+    BillOfMaterial defaultBOM = getDefaultBOM(saleOrderLine);
+    saleOrderLine.setBillOfMaterial(defaultBOM);
+    saleOrderLine.setProdProcess(
+        Optional.ofNullable(defaultBOM).map(BillOfMaterial::getProdProcess).orElse(null));
     if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PURCHASE
         || saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE) {
       saleOrderLine.setStandardDelay(saleOrderLine.getProduct().getStandardDelay());

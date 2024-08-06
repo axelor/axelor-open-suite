@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -28,21 +28,6 @@
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
-        <scalar-parameter name="Locale" id="5">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
         <scalar-parameter name="DBName" id="8">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -178,7 +163,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -218,9 +203,9 @@
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
-from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation"
+from meta_translation as LangTranslate
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -412,10 +397,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select 
+            <xml-property name="queryText"><![CDATA[select
 Company.name as company_name,
 AccountingReport.date_val as report_date,
-AccountingReport.publication_date_time as report_date_edition, 
+AccountingReport.publication_date_time as report_date_edition,
 MetaFile.file_path as logo_path,
 Currency.code as currencyCode,
 Company.height as logo_height,
@@ -690,23 +675,23 @@ where AccountingReport.id = ? ]]></xml-property>
                     <property name="nativeDataType">-5</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select DISTINCT MoveLine.id as moveLine_id, 
-MoveLine.name as move_line_name, 
+            <xml-property name="queryText"><![CDATA[select DISTINCT MoveLine.id as moveLine_id,
+MoveLine.name as move_line_name,
 MoveLine.description as move_line_description,
-MoveLine.date_val, 
+MoveLine.date_val,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as concatAccount,
 CONCAT(Journal.code, ' ', Journal.name) as concatJournal,
 MoveLine.account_code as accountCode,
 Journal.code as journalCode,
-MoveLine.debit as debit, 
-MoveLine.credit as credit, 
+MoveLine.debit as debit,
+MoveLine.credit as credit,
 MoveLine.debit + MoveLine.credit as amountRemaining,
 Account.id as accountId
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.bankpayment_bank_reconciliation_line as BankReconciliationLine on MoveLine.id = BankReconciliationLine.move_line
 left outer join public.account_move as Move on MoveLine.move = Move.id
-left outer join public.account_account as Account on MoveLine.account  = Account.id 
+left outer join public.account_account as Account on MoveLine.account  = Account.id
 left outer join public.account_account_type as AccountType on Account.account_type = AccountType.id
 left outer join public.account_accounting_report_account_set as AccountSet on AccountSet.account_accounting_report = AccountingReport.id
 left outer join public.base_company as Company on AccountingReport.company = Company.id
@@ -715,27 +700,28 @@ left outer join public.account_journal as Journal on Move.journal = Journal.id
 where BankReconciliationLine.id is null
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val <= AccountingReport.date_val
-AND Move.company = AccountingReport.company 
+AND Move.company = AccountingReport.company
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
-AND Move.status_select not in (1,4)
+AND Move.status_select not in (1,4,5)
 AND AccountType.technical_type_select like 'cash'
-AND MoveLine.bank_reconciled_amount != MoveLine.debit + MoveLine.credit
+AND MoveLine.bank_reconciled_amount != abs(MoveLine.currency_amount)
 AND Move.ignore_in_accounting_ok in (false,null)
+AND Move.functional_origin_select not in (1,2)
 
 
 UNION
 
-SELECT MoveLine.id as moveLine_id, 
-MoveLine.name as move_line_name, 
+SELECT MoveLine.id as moveLine_id,
+MoveLine.name as move_line_name,
 MoveLine.description as move_line_description,
-MoveLine.date_val, 
+MoveLine.date_val,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as concatAccount,
 CONCAT(Journal.code, ' ', Journal.name) as concatJournal,
 MoveLine.account_code as accountCode,
 Journal.code as journalCode,
-MoveLine.debit as debit, 
-MoveLine.credit as credit, 
+MoveLine.debit as debit,
+MoveLine.credit as credit,
 (MoveLine.debit + MoveLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validate_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
 Account.id as accountId
 from public.account_accounting_report as AccountingReport
@@ -743,7 +729,7 @@ left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?
 left outer join public.bankpayment_bank_reconciliation_line as BankReconciliationLine on MoveLine.id = BankReconciliationLine.move_line
 LEFT JOIN public.bankpayment_bank_reconciliation as BankReconciliation on BankReconciliationLine.bank_reconciliation = BankReconciliation.id
 left outer join public.account_move as Move on MoveLine.move = Move.id
-left outer join public.account_account as Account on MoveLine.account  = Account.id 
+left outer join public.account_account as Account on MoveLine.account  = Account.id
 left outer join public.account_account_type as AccountType on Account.account_type = AccountType.id
 left outer join public.account_accounting_report_account_set as AccountSet on AccountSet.account_accounting_report = AccountingReport.id
 left outer join public.base_company as Company on AccountingReport.company = Company.id
@@ -752,13 +738,14 @@ left outer join public.account_journal as Journal on Move.journal = Journal.id
 where BankReconciliationLine.id is not null
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val <= AccountingReport.date_val
-AND Move.company = AccountingReport.company 
+AND Move.company = AccountingReport.company
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
-AND Move.status_select not in (1,4)
+AND Move.status_select not in (1,4,5)
 AND AccountType.technical_type_select like 'cash'
-AND BankReconciliation.validate_date_time is not null
+AND MoveLine.bank_reconciled_amount != abs(MoveLine.currency_amount)
 AND Move.ignore_in_accounting_ok in (false,null)
+AND Move.functional_origin_select not in (1,2)
 group by MoveLine.id,
 MoveLine.name,
 MoveLine.description,
@@ -768,7 +755,7 @@ MoveLine.debit,
 MoveLine.credit,
 concatJournal,
 accountId
-HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validate_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validate_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < abs(MoveLine.currency_amount)
 
 order by accountCode,journalCode,move_line_name
 
@@ -954,7 +941,7 @@ order by accountCode,journalCode,move_line_name
 BankStatementLine.operation_date as date,
 BankStatementLine.reference as reference,
 BankStatementLine.description as name,
-BankStatementLine.debit AS debit , 
+BankStatementLine.debit AS debit ,
 BankStatementLine.credit AS credit,
 BankStatementLine.debit + BankStatementLine.credit as amountRemaining,
 BankDetails.id as bankDetailsId
@@ -981,7 +968,7 @@ select  BankDetails.full_name as bankdetailsfullname,
 BankStatementLine.operation_date as date,
 BankStatementLine.reference as reference,
 BankStatementLine.description as name,
-BankStatementLine.debit AS debit , 
+BankStatementLine.debit AS debit ,
 BankStatementLine.credit AS credit,
 (BankStatementLine.debit + BankStatementLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validate_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
 BankDetails.id as bankDetailsId
@@ -998,7 +985,7 @@ and AccountingReport.currency = BankStatementLine.currency
 AND BankStatementLine.operation_date <= AccountingReport.date_val
 AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportBankDetailsSet.bank_details_set = BankStatementLine.bank_details)
 AND AccountingReport.company = Company.id
-AND BankReconciliation.validate_date_time is not null
+AND (BankReconciliation.validate_date_time is null OR (BankReconciliation.validate_date_time is not null AND BankReconciliationLine.move_line is null))
 AND BankStatementLine.amount_remain_to_reconcile > 0
 AND BankStatementLine.line_type_select = 2
 group by BankStatementLine.id,
@@ -1072,8 +1059,8 @@ WHERE Account.id = ?
 AND Account.id is not null
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val <= AccountingReport.date_val
-AND Move.company = AccountingReport.company 
-AND Move.status_select not in (1,4)
+AND Move.company = AccountingReport.company
+AND Move.status_select not in (1,4,5)
 AND Move.ignore_in_accounting_ok in (false,null)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InitialBankAccountBalance" id="6534">
@@ -1239,12 +1226,12 @@ BankDetails.id as bankDetailsId,
 BankDetails.full_name as bankdetailsfullname,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as concatAccount
 FROM public.account_accounting_report as AccountingReport
-CROSS JOIN base_bank_details as BankDetails 
+CROSS JOIN base_bank_details as BankDetails
 FULL JOIN bankpayment_bank_statement_line_afb120 as BankStatementLine  on BankDetails.id = BankStatementLine.bank_details
 FULL JOIN bankpayment_bank_reconciliation_line as BankReconciliationLine on BankStatementLine.id = BankReconciliationLine.bank_statement_line
 FULL JOIN account_move_line as MoveLine on  BankReconciliationLine.move_line = MoveLine.id
 FULL JOIN account_account as Account on MoveLine.account  = Account.id
-LEFT JOIN public.account_accounting_report_bank_details_set as AccountingReportBankDetailsSet on AccountingReport.id = AccountingReportBankDetailsSet.account_accounting_report 
+LEFT JOIN public.account_accounting_report_bank_details_set as AccountingReportBankDetailsSet on AccountingReport.id = AccountingReportBankDetailsSet.account_accounting_report
 left join public.account_accounting_report_account_set as AccountSet on AccountSet.account_accounting_report = AccountingReport.id
 where (AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportBankDetailsSet.bank_details_set = BankDetails.id)
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
@@ -1427,8 +1414,8 @@ GROUP by Account.id,BankDetails.id,bankdetailsfullname,concatAccount
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT AccountAmountTable.accountAmount, 
-BankAmountTable.bankAmount, 
+            <xml-property name="queryText"><![CDATA[SELECT AccountAmountTable.accountAmount,
+BankAmountTable.bankAmount,
 UnreconcileAmountTableSupSup.finalTotalunreconcileAmount,
 AccountAmountTable.accountAmount - BankAmountTable.bankAmount as gapBetweenAccountAndBank,
 AccountAmountTable.accountAmount - BankAmountTable.bankAmount- UnreconcileAmountTableSupSup.finalTotalunreconcileAmount as unreconcileGap
@@ -1441,8 +1428,8 @@ WHERE Account.id = ?
 AND Account.id is not null
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val <= AccountingReport.date_val
-AND Move.company = AccountingReport.company 
-AND Move.status_select not in (1,4)
+AND Move.company = AccountingReport.company
+AND Move.status_select not in (1,4,5)
 AND Move.ignore_in_accounting_ok in (false,null)) as AccountAmountTable
 CROSS JOIN
 (SELECT BankStatementLine.credit - BankStatementLine.debit as bankAmount
@@ -1466,7 +1453,7 @@ from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.bankpayment_bank_reconciliation_line as BankReconciliationLine on MoveLine.id = BankReconciliationLine.move_line
 left outer join public.account_move as Move on MoveLine.move = Move.id
-left outer join public.account_account as Account on MoveLine.account  = Account.id 
+left outer join public.account_account as Account on MoveLine.account  = Account.id
 left outer join public.account_account_type as AccountType on Account.account_type = AccountType.id
 left outer join public.account_accounting_report_account_set as AccountSet on AccountSet.account_accounting_report = AccountingReport.id
 left outer join public.base_company as Company on AccountingReport.company = Company.id
@@ -1476,24 +1463,24 @@ where Account.id = ?
 and BankReconciliationLine.id is null
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val <= AccountingReport.date_val
-AND Move.company = AccountingReport.company 
+AND Move.company = AccountingReport.company
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
-AND Move.status_select not in (1,4)
+AND Move.status_select not in (1,4,5)
 AND AccountType.technical_type_select like 'cash'
 AND MoveLine.bank_reconciled_amount != MoveLine.debit + MoveLine.credit
 AND Move.ignore_in_accounting_ok in (false,null)
 UNION
 select coalesce(SUM(coalesce(UnreconcileAmountTable.unreconcileAmount,0)),0) as totalUnreconcileAmount
 from(
-SELECT (MoveLine.debit - MoveLine.credit) 
+SELECT (MoveLine.debit - MoveLine.credit)
 - SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validate_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as unreconcileAmount
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.bankpayment_bank_reconciliation_line as BankReconciliationLine on MoveLine.id = BankReconciliationLine.move_line
 LEFT JOIN public.bankpayment_bank_reconciliation as BankReconciliation on BankReconciliationLine.bank_reconciliation = BankReconciliation.id
 left outer join public.account_move as Move on MoveLine.move = Move.id
-left outer join public.account_account as Account on MoveLine.account  = Account.id 
+left outer join public.account_account as Account on MoveLine.account  = Account.id
 left outer join public.account_account_type as AccountType on Account.account_type = AccountType.id
 left outer join public.account_accounting_report_account_set as AccountSet on AccountSet.account_accounting_report = AccountingReport.id
 left outer join public.base_company as Company on AccountingReport.company = Company.id
@@ -1503,7 +1490,7 @@ where Account.id = ?
 and BankReconciliationLine.id is not null
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val <= AccountingReport.date_val
-AND Move.company = AccountingReport.company 
+AND Move.company = AccountingReport.company
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
 AND Move.status_select not in (1,4)
@@ -2519,7 +2506,7 @@ this.height = row["logo_height"];]]></method>
                                             <list-property name="arguments">
                                                 <structure>
                                                     <property name="name">Expression</property>
-                                                    <expression name="value" type="javascript">row["reference"]</expression>
+                                                    <expression name="value" type="javascript">row["date"]</expression>
                                                 </structure>
                                             </list-property>
                                             <property name="allowExport">true</property>

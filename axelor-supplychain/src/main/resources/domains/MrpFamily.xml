@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
@@ -10,8 +10,6 @@
     <string name="code" title="Code"/>
     <string name="name" title="Name"/>
     <integer name="dayNb" title="Number of days"/>
-    <integer name="dayNbBetweenPurchaseAndProposal"
-      title="Days between firm and proposal purchase"/>
 
   </entity>
 

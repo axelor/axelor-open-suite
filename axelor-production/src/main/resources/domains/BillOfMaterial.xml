@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -24,7 +24,6 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <boolean name="hasNoManageStock" title="Not manage stock"/>
     <boolean name="personalized" title="Personalized"/>
-    <decimal name="wasteRate" title="Waste rate (%)"/>
     <integer name="statusSelect" title="Status" readonly="true"
       selection="production.bill.of.material.status.select" default="1"/>
     <many-to-one name="workshopStockLocation"
@@ -39,6 +38,11 @@
       ref="com.axelor.apps.production.db.BillOfMaterial" title="Original bill of materials"/>
     <one-to-many name="bomChildTreeList" ref="TempBomTree" mappedBy="parentBom"/>
     <one-to-many name="bomTreeList" ref="TempBomTree" mappedBy="bom"/>
+
+    <many-to-one name="billOfMaterialsImport"
+      ref="com.axelor.apps.production.db.BillOfMaterialImport"/>
+
+    <string name="mark" title="Mark"/>
 
     <string name="note" large="true"/>
 
@@ -63,7 +67,6 @@
       <field name="company"/>
       <field name="hasNoManageStock"/>
       <field name="personalized"/>
-      <field name="wasteRate"/>
       <field name="statusSelect"/>
       <field name="workshopStockLocation"/>
       <field name="fullName"/>

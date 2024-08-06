@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,8 @@ package com.axelor.apps.businessproject.service.projectgenerator.factory;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
@@ -37,22 +39,33 @@ public class ProjectGeneratorFactoryAlone implements ProjectGeneratorFactory {
 
   private ProjectBusinessService projectBusinessService;
   private ProjectRepository projectRepository;
+  protected final SequenceService sequenceService;
 
   @Inject
   public ProjectGeneratorFactoryAlone(
-      ProjectBusinessService projectBusinessService, ProjectRepository projectRepository) {
+      ProjectBusinessService projectBusinessService,
+      ProjectRepository projectRepository,
+      SequenceService sequenceService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
+    this.sequenceService = sequenceService;
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsBusinessProject(true);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       saleOrderLine.setProject(project);
     }
+    project = projectRepository.save(project);
+    try {
+      project.setCode(sequenceService.getDraftSequenceNumber(project));
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+    }
+
     return projectRepository.save(project);
   }
 

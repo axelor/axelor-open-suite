@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.service.config.SaleConfigServiceImpl;
 import com.google.inject.Inject;
@@ -29,7 +30,16 @@ import java.util.List;
 public class SupplychainSaleConfigServiceImpl extends SaleConfigServiceImpl
     implements SupplychainSaleConfigService {
 
-  @Inject private AccountingSituationRepository accountingSituationRepo;
+  protected AccountingSituationRepository accountingSituationRepo;
+  protected CurrencyScaleService currencyScaleService;
+
+  @Inject
+  public SupplychainSaleConfigServiceImpl(
+      AccountingSituationRepository accountingSituationRepo,
+      CurrencyScaleService currencyScaleService) {
+    this.accountingSituationRepo = accountingSituationRepo;
+    this.currencyScaleService = currencyScaleService;
+  }
 
   @Transactional
   public void updateCustomerCredit(SaleConfig saleConfig) {
@@ -41,7 +51,9 @@ public class SupplychainSaleConfigServiceImpl extends SaleConfigServiceImpl
             .fetch();
 
     for (AccountingSituation accountingSituation : accountingSituationList) {
-      accountingSituation.setAcceptedCredit(saleConfig.getAcceptedCredit());
+      accountingSituation.setAcceptedCredit(
+          currencyScaleService.getCompanyScaledValue(
+              accountingSituation.getCompany(), saleConfig.getAcceptedCredit()));
       accountingSituationRepo.save(accountingSituation);
     }
   }

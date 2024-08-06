@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,7 +36,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -85,21 +85,17 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   public List<ABCAnalysisClass> initABCClasses() {
     List<ABCAnalysisClass> abcAnalysisClassList = new ArrayList<>();
 
-    abcAnalysisClassList.add(
-        createAbcClass("A", 0, BigDecimal.valueOf(80), BigDecimal.valueOf(20)));
-    abcAnalysisClassList.add(
-        createAbcClass("B", 1, BigDecimal.valueOf(15), BigDecimal.valueOf(30)));
-    abcAnalysisClassList.add(createAbcClass("C", 2, BigDecimal.valueOf(5), BigDecimal.valueOf(50)));
+    abcAnalysisClassList.add(createAbcClass("A", BigDecimal.valueOf(80), BigDecimal.valueOf(20)));
+    abcAnalysisClassList.add(createAbcClass("B", BigDecimal.valueOf(15), BigDecimal.valueOf(30)));
+    abcAnalysisClassList.add(createAbcClass("C", BigDecimal.valueOf(5), BigDecimal.valueOf(50)));
 
     return abcAnalysisClassList;
   }
 
-  protected ABCAnalysisClass createAbcClass(
-      String name, Integer sequence, BigDecimal worth, BigDecimal qty) {
+  protected ABCAnalysisClass createAbcClass(String name, BigDecimal worth, BigDecimal qty) {
     ABCAnalysisClass abcAnalysisClass = new ABCAnalysisClass();
 
     abcAnalysisClass.setName(name);
-    abcAnalysisClass.setSequence(sequence);
     abcAnalysisClass.setWorth(worth);
     abcAnalysisClass.setQty(qty);
 
@@ -202,7 +198,8 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     Query<Product> productQuery =
         productRepository
             .all()
-            .filter("self.id IN (" + StringTool.getIdListString(getProductSet(abcAnalysis)) + ")");
+            .filter(
+                "self.id IN (" + StringHelper.getIdListString(getProductSet(abcAnalysis)) + ")");
 
     while (!(productList = productQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       abcAnalysis = abcAnalysisRepository.find(abcAnalysis.getId());
@@ -364,7 +361,8 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     }
 
     abcAnalysis.setAbcAnalysisSeq(
-        sequenceService.getSequenceNumber(sequence, ABCAnalysis.class, "abcAnalysisSeq"));
+        sequenceService.getSequenceNumber(
+            sequence, ABCAnalysis.class, "abcAnalysisSeq", abcAnalysis));
   }
 
   @Override

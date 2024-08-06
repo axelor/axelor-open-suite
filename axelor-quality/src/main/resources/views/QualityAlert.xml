@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="quality-alert-grid" title="Quality alerts"
     model="com.axelor.apps.quality.db.QualityAlert">
@@ -70,9 +70,11 @@
     <field name="responsible"/>
     <template>
             <![CDATA[
-            <h4>{{fullName}}</h4>
-            <div class="card-body">{{team.name}}</div>
-            <div class="card-body">{{responsible.name}}</div>
+            <>
+	            <strong>{fullName}</strong>
+	            <Box>{team.name}</Box>
+	            <Box>{responsible.name}</Box>
+            </>
     		]]>
     </template>
   </kanban>
@@ -102,10 +104,10 @@
 
   <search-filters name="quality-alert-filters"
     model="com.axelor.apps.quality.db.QualityAlert" title="Quality alert filters">
-    <filter title="My alerts">
+    <filter name="quality-alert-filters-my-alerts" title="My alerts">
       <domain>self.responsible.user.id = :_userId</domain>
     </filter>
-    <filter title="My team alerts">
+    <filter name="quality-alert-filters-my-team-alerts" title="My team alerts">
       <domain>self.team.id = :_myActiveTeamId</domain>
     </filter>
   </search-filters>

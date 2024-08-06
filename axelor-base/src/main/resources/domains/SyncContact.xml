@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="SyncContact">
     <string name="name" required="true" title="Name"/>
-    <string name="cid" title="Client ID" required="true"/>
+    <string name="clientId" title="Client ID" required="true"/>
     <string name="googleApiKey" title="Google api key" required="true"/>
     <boolean name="updateContactField" title="Update contact field"/>
     <one-to-many name="syncContactHistoricList"

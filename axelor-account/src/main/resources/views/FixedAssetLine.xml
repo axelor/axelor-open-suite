@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="fixed-asset-line-grid" title="Fixed asset lines"
     model="com.axelor.apps.account.db.FixedAssetLine" orderBy="depreciationDate">
     <field name="depreciationDate"/>
-    <field name="depreciationBase"/>
-    <field name="depreciation"/>
-    <field name="cumulativeDepreciation"/>
-    <field name="accountingValue"/>
-    <field name="correctedAccountingValue"/>
-    <field name="impairmentValue"/>
+    <field name="depreciationBase" x-scale="$currencyNumberOfDecimals"/>
+    <field name="depreciation" x-scale="$currencyNumberOfDecimals"/>
+    <field name="cumulativeDepreciation" x-scale="$currencyNumberOfDecimals"/>
+    <field name="accountingValue" x-scale="$currencyNumberOfDecimals"/>
+    <field name="correctedAccountingValue" x-scale="$currencyNumberOfDecimals"/>
+    <field name="impairmentValue" x-scale="$currencyNumberOfDecimals"/>
     <field name="statusSelect"/>
     <field name="fixedAsset.statusSelect" hidden="true"/>
     <field name="fiscalFixedAsset.statusSelect" hidden="true"/>
@@ -19,15 +19,16 @@
     <button name="realizeBtn" title="Realize" icon="fa-check-circle"
       readonlyIf="($get('fixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('fiscalFixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('ifrsFixedAsset.statusSelect') &lt; 2) || statusSelect == 2"
       onClick="save,action-fixed-asset-line-method-realize"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="fiscal-fixed-asset-line-grid" title="Fixed asset lines"
     model="com.axelor.apps.account.db.FixedAssetLine" orderBy="depreciationDate">
     <field name="depreciationDate"/>
-    <field name="depreciationBase"/>
-    <field name="depreciation"/>
-    <field name="cumulativeDepreciation"/>
-    <field name="accountingValue"/>
+    <field name="depreciationBase" x-scale="$currencyNumberOfDecimals"/>
+    <field name="depreciation" x-scale="$currencyNumberOfDecimals"/>
+    <field name="cumulativeDepreciation" x-scale="$currencyNumberOfDecimals"/>
+    <field name="accountingValue" x-scale="$currencyNumberOfDecimals"/>
     <field name="statusSelect"/>
     <field name="fixedAsset.statusSelect" hidden="true"/>
     <field name="fiscalFixedAsset.statusSelect" hidden="true"/>
@@ -35,6 +36,7 @@
     <button name="realizeBtn" title="Realize" icon="fa-check-circle"
       readonlyIf="(($get('fixedAsset.statusSelect') == null || $get('fixedAsset.statusSelect') &lt; 2) &amp;&amp; ($get('fiscalFixedAsset.statusSelect') == null || $get('fiscalFixedAsset.statusSelect') &lt; 2) &amp;&amp; ($get('ifrsFixedAsset.statusSelect') == null || $get('ifrsFixedAsset.statusSelect') &lt; 2 )) || statusSelect == 2"
       onClick="save,action-fixed-asset-line-method-realize"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="fixed-asset-line-form" title="Fixed asset line"
@@ -55,11 +57,11 @@
       </panel>
       <panel name="mainPanel" colSpan="12">
         <field name="depreciationDate"/>
-        <field name="depreciationBase"/>
-        <field name="depreciation"/>
-        <field name="cumulativeDepreciation"/>
-        <field name="residualValue"/>
-        <field name="accountingValue"/>
+        <field name="depreciationBase" x-scale="$currencyNumberOfDecimals"/>
+        <field name="depreciation" x-scale="$currencyNumberOfDecimals"/>
+        <field name="cumulativeDepreciation" x-scale="$currencyNumberOfDecimals"/>
+        <field name="residualValue" x-scale="$currencyNumberOfDecimals"/>
+        <field name="accountingValue" x-scale="$currencyNumberOfDecimals"/>
         <field name="depreciationAccountMove" showIf="statusSelect == 2 || isSimulated"
           form-view="move-form" grid-view="move-grid"/>
         <field name="isSimulated" readOnly="true" widget="boolean" colSpan="3"
@@ -67,13 +69,14 @@
         <field name="fixedAsset.statusSelect" hidden="true"/>
         <field name="fiscalFixedAsset.statusSelect" hidden="true"/>
         <field name="ifrsFixedAsset.statusSelect" hidden="true"/>
+        <field name="$currencyNumberOfDecimals" hidden="true"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="impairmentPanel" title="Impairment information"
-        showIf="typeSelect == 1 || typeSelect == 3">
-        <field name="correctedAccountingValue"/>
-        <field name="impairmentValue"/>
+        showIf="typeSelect == 1 || typeSelect == 3">
+        <field name="correctedAccountingValue" x-scale="$currencyNumberOfDecimals"/>
+        <field name="impairmentValue" x-scale="$currencyNumberOfDecimals"/>
         <field name="impairmentAccountMove" showIf="statusSelect == 2 || isSimulated"/>
       </panel>
     </panel-tabs>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -58,8 +59,11 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
         contractVersion != null ? contractVersion : contractLine.getContractVersion();
     this.contract = contract != null ? contract : this.contractVersion.getContract();
 
-    if (this.contractVersion == null && this.contract != null) {
-      this.contractVersion = this.contract.getCurrentContractVersion();
+    if (this.contract != null) {
+      this.isPurchase = this.contract.getTargetTypeSelect() == ContractRepository.SUPPLIER_CONTRACT;
+      if (this.contractVersion == null) {
+        this.contractVersion = this.contract.getCurrentContractVersion();
+      }
     }
 
     this.analyticMoveLineList = contractLine.getAnalyticMoveLineList();
@@ -134,6 +138,10 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
     }
 
     return this.fiscalPosition;
+  }
+
+  public Contract getContract() {
+    return this.contract;
   }
 
   @Override

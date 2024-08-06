@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -113,8 +113,11 @@ public class InvoiceTermListener {
     List<InvoiceTermPayment> linkedInvoiceTermPayment =
         Beans.get(InvoiceTermPaymentRepository.class)
             .all()
-            .filter("self.invoiceTerm = :invoiceTerm")
+            .filter(
+                "self.invoiceTerm = :invoiceTerm "
+                    + "AND (self.invoicePayment IS NULL OR self.invoicePayment.statusSelect = :statusValidated)")
             .bind("invoiceTerm", invoiceTerm)
+            .bind("statusValidated", InvoicePaymentRepository.STATUS_VALIDATED)
             .autoFlush(false)
             .fetch();
 

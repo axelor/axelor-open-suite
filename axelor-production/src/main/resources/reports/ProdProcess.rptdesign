@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -28,23 +28,6 @@
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
-        <scalar-parameter name="Locale" id="3740">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
         <scalar-parameter name="DBName" id="3946">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -178,7 +161,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -220,7 +203,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1393,11 +1376,11 @@ this.height=row["logo_height"];]]></method>
                                         </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>
-if(row._outer["outsourcing"] == 0 &amp;&amp; params["Locale"].value == 'en'){
+if(row._outer["outsourcing"] == 0 &amp;&amp; params["__locale"].value.substring(0, 2) == 'en'){
 	'No';
-} else if(row._outer["outsourcing"] == 0 &amp;&amp; params["Locale"].value == 'fr'){
+} else if(row._outer["outsourcing"] == 0 &amp;&amp; params["__locale"].value.substring(0, 2) == 'fr'){
 	'Non';
-} else if(row._outer["outsourcing"] != 0 &amp;&amp; params["Locale"].value == 'en'){
+} else if(row._outer["outsourcing"] != 0 &amp;&amp; params["__locale"].value.substring(0, 2) == 'en'){
  	'Yes';
 } else {
 	'Oui';
@@ -1473,11 +1456,11 @@ if(row._outer["outsourcing"] == 0 &amp;&amp; params["Locale"].value == 'en'){
                                         </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>
-if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 'en'){
+if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["__locale"].value.substring(0, 2) == 'en'){
 	'No';
-} else if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 'fr'){
+} else if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["__locale"].value.substring(0, 2) == 'fr'){
 	'Non';
-} else if(row._outer["isconsproonoperation"] != 0 &amp;&amp; params["Locale"].value == 'en'){
+} else if(row._outer["isconsproonoperation"] != 0 &amp;&amp; params["__locale"].value.substring(0, 2) == 'en'){
  	'Yes';
 } else {
 	'Oui';

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockLocationLineHistory;
 import java.time.LocalDateTime;
@@ -32,12 +33,11 @@ public interface StockLocationLineHistoryService {
    * @param date
    * @param origin
    * @return StockLocationLineHistory created.
+   * @throws AxelorException
    */
   StockLocationLineHistory saveHistory(
-      StockLocationLine stockLocationLine,
-      LocalDateTime dateTime,
-      String origin,
-      String typeSelect);
+      StockLocationLine stockLocationLine, LocalDateTime dateTime, String origin, String typeSelect)
+      throws AxelorException;
 
   List<StockLocationLineHistory> getStockLineHistoryLines(StockLocationLine stockLocationLine);
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -151,7 +151,11 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     if (sequence != null) {
       expense.setExpenseSeq(
           sequenceService.getSequenceNumber(
-              sequence, expense.getSentDateTime().toLocalDate(), Expense.class, "expenseSeq"));
+              sequence,
+              expense.getSentDateTime().toLocalDate(),
+              Expense.class,
+              "expenseSeq",
+              expense));
       if (expense.getExpenseSeq() != null) {
         return;
       }
@@ -229,18 +233,8 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     Account productAccount = accountConfigHRService.getExpenseTaxAccount(accountConfig);
 
     if (taxTotal.signum() != 0) {
-      Map<LocalDate, List<ExpenseLine>> expenseLinesByExpenseDate =
-          expenseLineList.stream().collect(Collectors.groupingBy(ExpenseLine::getExpenseDate));
-
       Map<LocalDate, BigDecimal> expenseLinesTotalTax =
-          expenseLinesByExpenseDate.entrySet().stream()
-              .collect(
-                  Collectors.toMap(
-                      Map.Entry::getKey,
-                      entry ->
-                          entry.getValue().stream()
-                              .map(ExpenseLine::getTotalTax)
-                              .reduce(BigDecimal.ZERO, BigDecimal::add)));
+          this.computeExpenseLinesTotalTax(expenseLineList);
 
       for (Map.Entry<LocalDate, BigDecimal> entry : expenseLinesTotalTax.entrySet()) {
         Currency currency = move.getCurrency();
@@ -251,7 +245,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
 
         BigDecimal amountConvertedInCompanyCurrency =
             currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-                entry.getValue(), currencyRate);
+                entry.getValue(), currencyRate, companyCurrency);
 
         moveLines.add(
             moveLineCreateService.createMoveLine(
@@ -292,10 +286,26 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
             expense.getFullName()));
 
     move.getMoveLineList().addAll(moveLines);
-
-    moveValidateService.accounting(move);
     move.setExpense(expense);
+    moveValidateService.accounting(move);
     return move;
+  }
+
+  protected Map<LocalDate, BigDecimal> computeExpenseLinesTotalTax(
+      List<ExpenseLine> expenseLineList) {
+    Map<LocalDate, List<ExpenseLine>> expenseLinesByExpenseDate =
+        expenseLineList.stream()
+            .filter(expenseLine -> expenseLine.getTotalTax().signum() != 0)
+            .collect(Collectors.groupingBy(ExpenseLine::getExpenseDate));
+
+    return expenseLinesByExpenseDate.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                entry ->
+                    entry.getValue().stream()
+                        .map(ExpenseLine::getTotalTax)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)));
   }
 
   /**
@@ -343,7 +353,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
 
     BigDecimal amountConvertedInCompanyCurrency =
         currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-            expenseLine.getUntaxedAmount(), currencyRate);
+            expenseLine.getUntaxedAmount(), currencyRate, companyCurrency);
 
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(

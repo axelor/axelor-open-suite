@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,16 +29,17 @@ import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentConditionService;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -46,6 +47,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -69,6 +71,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
   protected JournalRepository journalRepository;
   protected AccountConfigService accountConfigService;
   protected PaymentConditionService paymentConditionService;
+  protected CurrencyService currencyService;
 
   @Inject
   public MoveCreateFromInvoiceServiceImpl(
@@ -84,7 +87,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       MoveExcessPaymentService moveExcessPaymentService,
       AccountConfigService accountConfigService,
       JournalRepository journalRepository,
-      PaymentConditionService paymentConditionService) {
+      PaymentConditionService paymentConditionService,
+      CurrencyService currencyService) {
     this.appAccountService = appAccountService;
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
@@ -98,6 +102,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     this.accountConfigService = accountConfigService;
     this.journalRepository = journalRepository;
     this.paymentConditionService = paymentConditionService;
+    this.currencyService = currencyService;
   }
 
   /**
@@ -180,7 +185,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         move.setTradingName(invoice.getTradingName());
         paymentConditionService.checkPaymentCondition(invoice.getPaymentCondition());
         move.setPaymentCondition(invoice.getPaymentCondition());
-        move.setSubrogationPartner(invoice.getSubrogationPartner());
+        move.setThirdPartyPayerPartner(invoice.getThirdPartyPayerPartner());
 
         move.setDueDate(invoice.getDueDate());
 
@@ -327,7 +332,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
             moveCreateService.createMove(
                 journal,
                 company,
-                null,
+                invoice.getCurrency(),
                 partner,
                 invoice.getInvoiceDate(),
                 invoice.getInvoiceDate(),
@@ -343,15 +348,25 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
           BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit());
 
+          BigDecimal moveLineAmount =
+              moveToolService
+                  .getTotalCurrencyAmount(creditMoveLineList)
+                  .min(invoiceCustomerMoveLine.getCurrencyAmount());
+          LocalDate date = invoice.getInvoiceDate();
+
           // credit move line creation
           MoveLine creditMoveLine =
               moveLineCreateService.createMoveLine(
                   move,
                   partner,
                   account,
+                  moveLineAmount,
                   amount,
+                  currencyService.computeScaledExchangeRate(amount, moveLineAmount),
                   false,
-                  appAccountService.getTodayDate(company),
+                  date,
+                  date,
+                  date,
                   1,
                   origin,
                   null);
@@ -411,7 +426,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         moveCreateService.createMove(
             journal,
             company,
-            null,
+            invoice.getCurrency(),
             partner,
             invoice.getInvoiceDate(),
             invoice.getInvoiceDate(),
@@ -420,12 +435,18 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            null,
+            invoiceCustomerMoveLine.getDescription(),
             invoice.getCompanyBankDetails());
 
     if (oDmove != null) {
       BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
       BigDecimal amount = totalDebitAmount.min(invoiceCustomerMoveLine.getCredit());
+
+      BigDecimal moveLineAmount =
+          moveToolService
+              .getTotalCurrencyAmount(debitMoveLines)
+              .min(invoiceCustomerMoveLine.getCurrencyAmount().abs());
+      LocalDate date = invoice.getInvoiceDate();
 
       // debit move line creation
       MoveLine debitMoveLine =
@@ -433,9 +454,13 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               oDmove,
               partner,
               account,
+              moveLineAmount,
               amount,
+              currencyService.computeScaledExchangeRate(amount, moveLineAmount),
               true,
-              appAccountService.getTodayDate(company),
+              date,
+              date,
+              date,
               1,
               origin,
               null);
@@ -451,7 +476,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           company,
           null,
           account,
-          appAccountService.getTodayDate(company));
+          invoice.getInvoiceDate());
 
       moveValidateService.accounting(oDmove);
 

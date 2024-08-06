@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,35 +25,50 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.contract.service.ContractLineContextToolService;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineViewService;
+import com.axelor.apps.contract.service.ContractYearEndBonusService;
+import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
+import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class ContractLineController {
 
   protected Contract getContractFromContext(ActionRequest request) {
-    Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
+    Contract contract = ContextHelper.getContextParent(request.getContext(), Contract.class, 2);
 
-    if (ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1) == null) {
-      contract = ContextTool.getContextParent(request.getContext(), Contract.class, 1);
+    ContractVersion contractVersion =
+        ContextHelper.getContextParent(request.getContext(), ContractVersion.class, 1);
+    if (contractVersion == null) {
+      contract = ContextHelper.getContextParent(request.getContext(), Contract.class, 1);
+    } else if (contract == null) {
+      contract =
+          Optional.of(contractVersion)
+              .map(ContractVersion::getContract)
+              .orElse(contractVersion.getNextContract());
     }
 
     return contract;
   }
 
   protected ContractVersion getContractVersionFromContext(ActionRequest request) {
-    return ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1);
+    return ContextHelper.getContextParent(request.getContext(), ContractVersion.class, 1);
   }
 
   public void computeTotal(ActionRequest request, ActionResponse response) {
@@ -61,7 +76,8 @@ public class ContractLineController {
     ContractLineService contractLineService = Beans.get(ContractLineService.class);
 
     try {
-      contractLine = contractLineService.computeTotal(contractLine);
+      Contract contract = this.getContractFromContext(request);
+      contractLine = contractLineService.computeTotal(contractLine, contract);
       response.setValues(contractLine);
     } catch (Exception e) {
       response.setValues(contractLineService.reset(contractLine));
@@ -77,6 +93,8 @@ public class ContractLineController {
 
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
+      Beans.get(ContractLineRecordSetService.class)
+          .setCompanyExTaxTotal(analyticLineContractModel, contractLine);
 
       Beans.get(AnalyticLineModelService.class)
           .createAnalyticDistributionWithTemplate(analyticLineContractModel);
@@ -130,7 +148,8 @@ public class ContractLineController {
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
       Contract contract = this.getContractFromContext(request);
 
-      if (contract == null) {
+      if (contract == null
+          || Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
         return;
       }
 
@@ -151,6 +170,10 @@ public class ContractLineController {
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
 
+      if (Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
+        return;
+      }
+
       response.setValues(
           Beans.get(AnalyticGroupService.class)
               .getAnalyticAccountValueMap(
@@ -169,6 +192,10 @@ public class ContractLineController {
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+      if (Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
+        return;
+      }
 
       Beans.get(AnalyticAttrsSupplychainService.class)
           .addAnalyticDistributionPanelHiddenAttrs(analyticLineContractModel, attrsMap);
@@ -226,5 +253,44 @@ public class ContractLineController {
         "isToRevaluate",
         "hidden",
         Beans.get(ContractLineViewService.class).hideIsToRevaluate(contract, contractVersion));
+  }
+
+  public void setScaleAndPrecision(ActionRequest request, ActionResponse response) {
+    ContractLine contractLine = request.getContext().asType(ContractLine.class);
+
+    if (contractLine != null) {
+      Contract contract = this.getContractFromContext(request);
+
+      response.setAttrs(
+          Beans.get(ContractLineAttrsService.class).setScaleAndPrecision(contract, ""));
+    }
+  }
+
+  public void setProductRequired(ActionRequest request, ActionResponse response) {
+    Contract contract =
+        Beans.get(ContractLineContextToolService.class).getContract(request.getContext());
+    response.setAttr(
+        "product",
+        "required",
+        contract.getContractTypeSelect() == ContractRepository.TYPE_FRAMEWORK);
+  }
+
+  public void computeProductDomain(ActionRequest request, ActionResponse response) {
+    Contract contract =
+        Beans.get(ContractLineContextToolService.class).getContract(request.getContext());
+    response.setAttr(
+        "product", "domain", Beans.get(ContractLineService.class).computeProductDomain(contract));
+  }
+
+  public void emptyLine(ActionRequest request, ActionResponse response) {
+    ContractLine contractLine = request.getContext().asType(ContractLine.class);
+    if (contractLine.getTypeSelect() != ContractLineRepository.TYPE_NORMAL) {
+      Map<String, Object> newContractLine = Mapper.toMap(new ContractLine());
+      newContractLine.put("qty", BigDecimal.ZERO);
+      newContractLine.put("id", contractLine.getId());
+      newContractLine.put("version", contractLine.getVersion());
+      newContractLine.put("typeSelect", contractLine.getTypeSelect());
+      response.setValues(newContractLine);
+    }
   }
 }

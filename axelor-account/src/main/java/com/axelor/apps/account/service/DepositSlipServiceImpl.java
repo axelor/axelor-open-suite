@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,18 +30,19 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
-import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -64,18 +65,18 @@ public class DepositSlipServiceImpl implements DepositSlipService {
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected PaymentVoucherRepository paymentVoucherRepository;
   protected AccountConfigService accountConfigService;
-  protected BirtTemplateService birtTemplateService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
 
   @Inject
   public DepositSlipServiceImpl(
       InvoicePaymentRepository invoicePaymentRepository,
       PaymentVoucherRepository paymentVoucherRepository,
       AccountConfigService accountConfigService,
-      BirtTemplateService birtTemplateService) {
+      PrintingTemplatePrintService printingTemplatePrintService) {
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.paymentVoucherRepository = paymentVoucherRepository;
     this.accountConfigService = accountConfigService;
-    this.birtTemplateService = birtTemplateService;
+    this.printingTemplatePrintService = printingTemplatePrintService;
   }
 
   @Override
@@ -141,14 +142,13 @@ public class DepositSlipServiceImpl implements DepositSlipService {
 
     deleteExistingPublishDmsFile(depositSlip, filename);
 
-    BirtTemplate chequeDepositSlipBirtTemplate = getChequeDepositSlipBirtTemplate(depositSlip);
-    birtTemplateService.generate(
-        chequeDepositSlipBirtTemplate,
-        depositSlip,
-        Map.of("BankDetailsId", bankDetails.getId(), "ChequeDate", chequeDate),
-        filename,
-        true,
-        chequeDepositSlipBirtTemplate.getFormat());
+    PrintingTemplate chequeDepositSlipPrintTemplate =
+        getChequeDepositSlipPrintTemplate(depositSlip);
+    PrintingGenFactoryContext factoryContext = new PrintingGenFactoryContext(depositSlip);
+    factoryContext.setContext(
+        Map.of("BankDetailsId", bankDetails.getId(), "ChequeDate", chequeDate));
+    printingTemplatePrintService.getPrintLink(
+        chequeDepositSlipPrintTemplate, factoryContext, filename, true);
   }
 
   protected void deleteExistingPublishDmsFile(DepositSlip depositSlip, String filename) {
@@ -176,7 +176,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     return stringBuilder.toString();
   }
 
-  protected BirtTemplate getChequeDepositSlipBirtTemplate(DepositSlip depositSlip)
+  protected PrintingTemplate getChequeDepositSlipPrintTemplate(DepositSlip depositSlip)
       throws AxelorException {
     if (depositSlip.getPaymentModeTypeSelect() != PaymentModeRepository.TYPE_CHEQUE) {
       throw new AxelorException(
@@ -184,16 +184,16 @@ public class DepositSlipServiceImpl implements DepositSlipService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           AccountExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
     }
-    BirtTemplate chequeDepositSlipBirtTemplate =
+    PrintingTemplate chequeDepositSlipPrintTemplate =
         accountConfigService
             .getAccountConfig(depositSlip.getCompany())
-            .getChequeDepositSlipBirtTemplate();
-    if (ObjectUtils.isEmpty(chequeDepositSlipBirtTemplate)) {
+            .getChequeDepositSlipPrintTemplate();
+    if (ObjectUtils.isEmpty(chequeDepositSlipPrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
-    return chequeDepositSlipBirtTemplate;
+    return chequeDepositSlipPrintTemplate;
   }
 
   @Override
@@ -296,7 +296,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
   public List<Integer> getSelectedPaymentVoucherDueIdList(
       List<Map<String, Object>> paymentVoucherDueList) {
     return paymentVoucherDueList.stream()
-        .filter(o -> (Boolean) o.get("selected"))
+        .filter(o -> ObjectUtils.notEmpty(o.get("selected")) && (Boolean) o.get("selected"))
         .map(o -> (Integer) o.get("id"))
         .collect(Collectors.toList());
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -164,6 +164,8 @@ public final class StockExceptionMessage {
       "You must configure a default receipt stock location for the company %s" /*)*/;
   public static final String STOCK_CONFIG_PICKUP = /*$$(*/
       "You must configure a default pickup stock location for the company %s" /*)*/;
+  public static final String STOCK_CONFIG_VIRTUAL_OUTSOURCE_STOCK_LOCATION = /*$$(*/
+      "You must configure a default virtual outsource stock location for the company %s" /*)*/;
   public static final String PO_MISSING_DEFAULT_STOCK_LOCATION = /*$$(*/
       "Please add a quality control default stock location for company %s in the app stock configuration" /*)*/;
 
@@ -243,7 +245,8 @@ public final class StockExceptionMessage {
       "A cancel reason must be selected" /*)*/;
   public static final String CANCEL_REASON_BAD_TYPE = /*$$(*/
       "The type of cancel reason doesn't match with stock move" /*)*/;
-
+  public static final String STOCK_LOCATION_UNIT_NULL = /*$$(*/
+      "The unit is missing on a stock location line" /*)*/;;
   /*
    * Declaration of exchanges
    */
@@ -254,7 +257,9 @@ public final class StockExceptionMessage {
   public static final String DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_MISSING_IN_APP_STOCK = /*$$(*/
       "Please set an economic are in AppStock." /*)*/;
 
-  public static final String TRACK_NUMBER_WIZARD_TITLE = /*$$(*/ "Enter tracking numbers" /*)*/;
+  public static final String TRACK_NUMBER_WIZARD_TITLE_1 = /*$$(*/
+      "Create new tracking numbers" /*)*/;
+  public static final String TRACK_NUMBER_WIZARD_TITLE_2 = /*$$(*/ "Select tracking numbers" /*)*/;
   public static final String TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR = /*$$(*/
       "No Tracking Numbers Added" /*)*/;
 
@@ -277,4 +282,29 @@ public final class StockExceptionMessage {
       "Error: %s field is required and can not be null" /*)*/;
   public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATIONS_REQUIRED = /*$$(*/
       "Error: %s and %s fields are required and can not be null" /*)*/;
+
+  /** Stock move merging controller and service */
+  public static final String STOCK_MOVE_NO_LINE_SELECTED = /*$$(*/
+      "Please select at least 2 stock moves" /*)*/;
+
+  public static final String STOCK_MOVE_MERGE_ERROR = /*$$(*/
+      "Your merge doesn't respect this/these condition(s) : %s" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_COMPANY = /*$$(*/ "Same company" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_TRADING_NAME = /*$$(*/
+      "Same trading name" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_PARTNER = /*$$(*/ "Same partner" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_FROM_AND_TO_STOCK_LOCATION = /*$$(*/
+      "Same from stock location and to stock location" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_STATUS = /*$$(*/
+      "Status must be planned or draft" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_MANUF_ORDER = /*$$(*/ "Same manuf order" /*)*/;
+  public static final String STOCK_MOVE_DIFF_SHIPMENT_FIELDS = /*$$(*/
+      "Fields linked to the shipment are differents, the value of the oldest will be kept." /*)*/;
+
+  public static final String STOCK_MOVE_TRACKING_NUMBER_DIMENSION_NOT_COMPUTED = /*$$(*/
+      "No dimension could be computed, please make sure that you have the necessary field to compute at least one field" /*)*/;
+  public static final String STOCK_MOVE_TRACKING_NUMBER_DIMENSION_EXPECTED_DECIMAL_RESULT = /*$$(*/
+      "Expected BigDecimal as result during the computation of field %s, please fix the corresponding formula." /*)*/;
+  public static final String STOCK_MOVE_TRACKING_NUMBER_PARENT_MAXIMUM_ITERATION_REACHED = /*$$(*/
+      "Maximum iteration for looking tracking numbers parent has been reached. Please check any circular parent dependencies." /*)*/;
 }

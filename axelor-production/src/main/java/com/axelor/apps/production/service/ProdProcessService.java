@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,8 +30,10 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
@@ -102,6 +104,7 @@ public class ProdProcessService {
   public ProdProcess changeProdProcessListOutsourcing(ProdProcess prodProcess) {
     for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
       prodProcessLine.setOutsourcing(prodProcess.getOutsourcing());
+      prodProcessLine.setOutsourcable(false);
     }
     return prodProcess;
   }
@@ -169,5 +172,40 @@ public class ProdProcessService {
     } while (up != null && deep);
 
     return latestVersion;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public ProdProcess createCustomizedProdProcess(SaleOrderLine saleOrderLine) {
+    ProdProcess prodProcess = saleOrderLine.getProdProcess();
+    return createCustomizedProdProcess(prodProcess);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public ProdProcess createCustomizedProdProcess(ProdProcess prodProcess) {
+
+    if (prodProcess == null) {
+      return null;
+    }
+
+    long noOfPersonalizedProdProcess =
+        prodProcessRepo
+                .all()
+                .filter("self.product = :product AND self.isPersonalized = true")
+                .bind("product", prodProcess.getProduct())
+                .count()
+            + 1;
+    ProdProcess personalizedProdProcess = JPA.copy(prodProcess, true);
+    String name =
+        personalizedProdProcess.getName()
+            + " ("
+            + I18n.get(ProductionExceptionMessage.BOM_1)
+            + " "
+            + noOfPersonalizedProdProcess
+            + ")";
+    personalizedProdProcess.setName(name);
+    personalizedProdProcess.setFullName(name);
+    personalizedProdProcess.setIsPersonalized(true);
+
+    return prodProcessRepo.save(personalizedProdProcess);
   }
 }

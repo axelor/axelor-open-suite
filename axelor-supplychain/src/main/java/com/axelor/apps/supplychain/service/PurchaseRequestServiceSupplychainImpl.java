@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,18 +19,39 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServiceImpl {
 
-  @Inject StockLocationRepository stockLocationRepo;
+  protected AppSupplychainService appSupplychainService;
+
+  @Inject
+  public PurchaseRequestServiceSupplychainImpl(
+      PurchaseOrderService purchaseOrderService,
+      PurchaseOrderCreateService purchaseOrderCreateService,
+      PurchaseOrderLineService purchaseOrderLineService,
+      PurchaseOrderRepository purchaseOrderRepo,
+      AppBaseService appBaseService,
+      AppSupplychainService appSupplychainService) {
+    super(
+        purchaseOrderService,
+        purchaseOrderCreateService,
+        purchaseOrderLineService,
+        purchaseOrderRepo,
+        appBaseService);
+    this.appSupplychainService = appSupplychainService;
+  }
 
   @Override
   protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest)

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
@@ -52,6 +53,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
   protected HRConfigService hrConfigService;
   protected AppBaseService appBaseService;
   protected ExpenseProofFileService expenseProofFileService;
+  protected ExpenseLineToolService expenseLineToolService;
 
   @Inject
   public ExpenseLineCreateServiceImpl(
@@ -60,13 +62,15 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       KilometricService kilometricService,
       HRConfigService hrConfigService,
       AppBaseService appBaseService,
-      ExpenseProofFileService expenseProofFileService) {
+      ExpenseProofFileService expenseProofFileService,
+      ExpenseLineToolService expenseLineToolService) {
     this.expenseLineRepository = expenseLineRepository;
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
     this.hrConfigService = hrConfigService;
     this.appBaseService = appBaseService;
     this.expenseProofFileService = expenseProofFileService;
+    this.expenseLineToolService = expenseLineToolService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -81,7 +85,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       String comments,
       Employee employee,
       Currency currency,
-      Boolean toInvoice)
+      Boolean toInvoice,
+      ProjectTask projectTask)
       throws AxelorException {
 
     if (expenseProduct == null) {
@@ -91,8 +96,9 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     }
 
     ExpenseLine expenseLine =
-        createBasicExpenseLine(project, employee, expenseDate, comments, currency, toInvoice);
-    setGeneralExpenseLineInfo(
+        createBasicExpenseLine(
+            project, employee, expenseDate, comments, currency, toInvoice, projectTask);
+    expenseLineToolService.setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
     convertJustificationFileToPdf(expenseLine);
 
@@ -119,39 +125,23 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       Employee employee,
       Company company,
       Currency currency,
-      Boolean toInvoice)
+      Boolean toInvoice,
+      ProjectTask projectTask)
       throws AxelorException {
 
     checkKilometricLineRequiredValues(
         kilometricAllowParam, kilometricType, fromCity, toCity, company);
 
     ExpenseLine expenseLine =
-        createBasicExpenseLine(project, employee, expenseDate, comments, currency, toInvoice);
+        createBasicExpenseLine(
+            project, employee, expenseDate, comments, currency, toInvoice, projectTask);
     setKilometricExpenseLineInfo(
         kilometricAllowParam, kilometricType, fromCity, toCity, company, expenseLine);
 
-    computeDistance(distance, expenseLine);
-    computeAmount(employee, expenseLine);
+    expenseLineToolService.computeDistance(distance, expenseLine);
+    expenseLineToolService.computeAmount(employee, expenseLine);
 
     return expenseLineRepository.save(expenseLine);
-  }
-
-  protected void computeAmount(Employee employee, ExpenseLine expenseLine) throws AxelorException {
-    BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);
-    expenseLine.setTotalAmount(amount);
-    expenseLine.setUntaxedAmount(amount);
-  }
-
-  protected void computeDistance(BigDecimal distance, ExpenseLine expenseLine)
-      throws AxelorException {
-    if (distance == null) {
-      expenseLine.setDistance(BigDecimal.ZERO);
-    }
-
-    expenseLine.setDistance(distance);
-    if (appHumanResourceService.getAppExpense().getComputeDistanceWithWebService()) {
-      expenseLine.setDistance(kilometricService.computeDistance(expenseLine));
-    }
   }
 
   protected void checkKilometricLineRequiredValues(
@@ -186,60 +176,6 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     }
   }
 
-  protected void setGeneralExpenseLineInfo(
-      Product expenseProduct,
-      BigDecimal totalAmount,
-      BigDecimal totalTax,
-      MetaFile justificationMetaFile,
-      ExpenseLine expenseLine)
-      throws AxelorException {
-
-    checkExpenseProduct(expenseProduct);
-
-    expenseLine.setIsAloneMeal(expenseProduct.getDeductLunchVoucher());
-    expenseLine.setExpenseProduct(expenseProduct);
-    expenseLine.setJustificationMetaFile(justificationMetaFile);
-
-    setAmountAndTax(expenseProduct, totalAmount, totalTax, expenseLine);
-  }
-
-  protected void setAmountAndTax(
-      Product expenseProduct,
-      BigDecimal totalAmount,
-      BigDecimal totalTax,
-      ExpenseLine expenseLine) {
-    if (totalAmount != null) {
-      expenseLine.setTotalAmount(totalAmount);
-    }
-
-    if (totalTax != null) {
-      expenseLine.setTotalTax(totalTax);
-
-      if (totalAmount != null) {
-        expenseLine.setUntaxedAmount(totalAmount.subtract(totalTax));
-      }
-
-      if (expenseProduct.getBlockExpenseTax()) {
-        expenseLine.setTotalTax(BigDecimal.ZERO);
-        expenseLine.setUntaxedAmount(totalAmount);
-      }
-    }
-  }
-
-  protected void checkExpenseProduct(Product expenseProduct) throws AxelorException {
-    User user = AuthUtils.getUser();
-    if (user != null) {
-      Employee userEmployee = user.getEmployee();
-      if (userEmployee != null
-          && !userEmployee.getHrManager()
-          && expenseProduct.getUnavailableToUsers()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_EXPENSE_TYPE_NOT_ALLOWED));
-      }
-    }
-  }
-
   protected void setKilometricExpenseLineInfo(
       KilometricAllowParam kilometricAllowParam,
       Integer kilometricType,
@@ -262,7 +198,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       LocalDate expenseDate,
       String comments,
       Currency currency,
-      Boolean toInvoice)
+      Boolean toInvoice,
+      ProjectTask projectTask)
       throws AxelorException {
     ExpenseLine expenseLine = new ExpenseLine();
 
@@ -272,6 +209,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     expenseLine.setExpenseDate(expenseDate);
     expenseLine.setComments(comments);
     expenseLine.setTotalAmount(BigDecimal.ZERO);
+    expenseLine.setProjectTask(projectTask);
     return expenseLine;
   }
 

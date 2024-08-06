@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,7 +32,9 @@ import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppCrm;
 import com.axelor.studio.db.repo.AppRepository;
@@ -53,10 +55,19 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService,
+      AppSettingsStudioService appSettingsService,
+      MetaModuleRepository metaModuleRepo,
+      MetaFileRepository metaFileRepo,
       CompanyRepository companyRepo,
       CrmConfigRepository crmConfigRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+    super(
+        appRepo,
+        metaFiles,
+        appVersionService,
+        metaModelRepo,
+        appSettingsService,
+        metaModuleRepo,
+        metaFileRepo);
     this.companyRepo = companyRepo;
     this.crmConfigRepo = crmConfigRepo;
   }
@@ -192,18 +203,5 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
     }
 
     return opportunityDefaultStatus;
-  }
-
-  @Override
-  public PartnerStatus getPartnerDefaultStatus() throws AxelorException {
-    PartnerStatus partnerDefaultStatus = getAppCrm().getPartnerDefaultStatus();
-
-    if (partnerDefaultStatus == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(CrmExceptionMessage.CRM_DEFAULT_PARTNER_STATUS_MISSING));
-    }
-
-    return partnerDefaultStatus;
   }
 }

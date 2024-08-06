@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,65 +25,29 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
-import com.axelor.apps.production.db.WorkCenterGroup;
-import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class ProdProcessLineServiceImpl implements ProdProcessLineService {
 
-  protected ProdProcessLineRepository prodProcessLineRepo;
   protected WorkCenterService workCenterService;
 
   @Inject
-  public ProdProcessLineServiceImpl(
-      ProdProcessLineRepository prodProcessLineRepo, WorkCenterService workCenterService) {
-    this.prodProcessLineRepo = prodProcessLineRepo;
+  public ProdProcessLineServiceImpl(WorkCenterService workCenterService) {
     this.workCenterService = workCenterService;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void setWorkCenterGroup(ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup)
-      throws AxelorException {
-    prodProcessLine = copyWorkCenterGroup(prodProcessLine, workCenterGroup);
-    WorkCenter workCenter =
-        workCenterService.getMainWorkCenterFromGroup(prodProcessLine.getWorkCenterGroup());
-    prodProcessLine.setWorkCenter(workCenter);
-    prodProcessLine.setDurationPerCycle(
-        workCenterService.getMachineDurationFromWorkCenter(workCenter));
-    prodProcessLine.setHumanDuration(workCenterService.getHumanDurationFromWorkCenter(workCenter));
-    prodProcessLine.setMinCapacityPerCycle(
-        workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
-    prodProcessLine.setMaxCapacityPerCycle(
-        workCenterService.getMaxCapacityPerCycleFromWorkCenter(workCenter));
-  }
-
-  /**
-   * Create a work center group from a template. Since a template is also a work center group, we
-   * copy and set template field to false.
-   */
-  protected ProdProcessLine copyWorkCenterGroup(
-      ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup) {
-    WorkCenterGroup workCenterGroupCopy = JPA.copy(workCenterGroup, false);
-    workCenterGroupCopy.setWorkCenterGroupModel(workCenterGroup);
-    workCenterGroupCopy.setTemplate(false);
-    workCenterGroup.getWorkCenterSet().forEach((workCenterGroupCopy::addWorkCenterSetItem));
-
-    prodProcessLine.setWorkCenterGroup(workCenterGroupCopy);
-    return prodProcessLineRepo.save(prodProcessLine);
   }
 
   @Override
@@ -132,6 +96,38 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
     return totalDuration;
   }
 
+  @Override
+  public long computeLeadTimeDuration(ProdProcess prodProcess, BigDecimal qty)
+      throws AxelorException {
+
+    Map<Integer, Long> maxDurationPerPriority = new HashMap<>();
+    for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
+      Integer priority = prodProcessLine.getPriority();
+      Long duration = maxDurationPerPriority.get(priority);
+      Long computedDuration = this.computeEntireCycleDuration(null, prodProcessLine, qty);
+
+      if (duration == null || computedDuration > duration) {
+        maxDurationPerPriority.put(priority, computedDuration);
+      }
+    }
+
+    return maxDurationPerPriority.values().stream().mapToLong(l -> l).sum();
+  }
+
+  @Override
+  public Integer getNextPriority(ProdProcess prodProcess, Integer priority) {
+    if (priority == null
+        || prodProcess == null
+        || CollectionUtils.isEmpty(prodProcess.getProdProcessLineList())) {
+      return null;
+    }
+    return prodProcess.getProdProcessLineList().stream()
+        .filter(ppl -> ppl.getPriority() > priority)
+        .min(Comparator.comparingInt(ProdProcessLine::getPriority))
+        .map(ProdProcessLine::getPriority)
+        .orElse(null);
+  }
+
   protected Pair<Long, BigDecimal> getDurationNbCyclesPair(
       WorkCenter workCenter, ProdProcessLine prodProcessLine, BigDecimal qty)
       throws AxelorException {
@@ -167,12 +163,12 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
             I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
             workCenter.getName());
       }
-      duration += workCenter.getStartingDuration();
-      duration += workCenter.getEndingDuration();
+      duration += prodProcessLine.getStartingDuration();
+      duration += prodProcessLine.getEndingDuration();
       duration +=
           nbCycles
               .subtract(new BigDecimal(1))
-              .multiply(new BigDecimal(workCenter.getSetupDuration()))
+              .multiply(new BigDecimal(prodProcessLine.getSetupDuration()))
               .longValue();
     }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,8 +20,11 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.MoveTemplate;
+import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
@@ -31,19 +34,23 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.MassUpdateTool;
+import com.axelor.utils.helpers.MassUpdateHelper;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Singleton
 public class AccountController {
@@ -208,7 +215,7 @@ public class AccountController {
       List<Integer> selectedIds = (List<Integer>) selectedIdObj;
       final Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(metaModel);
       Integer recordsUpdated =
-          MassUpdateTool.update(modelClass, fieldName, statusSelect, selectedIds);
+          MassUpdateHelper.update(modelClass, fieldName, statusSelect, selectedIds);
       String message = null;
       if (recordsUpdated > 0) {
         message =
@@ -238,7 +245,7 @@ public class AccountController {
       String metaModel = (String) request.getContext().get("_metaModel");
       Integer statusSelect = (Integer) statusObj;
       final Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(metaModel);
-      Integer recordsUpdated = MassUpdateTool.update(modelClass, fieldName, statusSelect, null);
+      Integer recordsUpdated = MassUpdateHelper.update(modelClass, fieldName, statusSelect, null);
       String message = null;
       if (recordsUpdated > 0) {
         message =
@@ -296,5 +303,48 @@ public class AccountController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void setParentAccountDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      String domain =
+          "self.company.id = "
+              + Optional.ofNullable(account.getCompany()).map(Company::getId).orElse(null);
+      if (account.getId() != null) {
+        List<Long> allAccountsSubAccountIncluded =
+            Beans.get(AccountService.class)
+                .getAllAccountsSubAccountIncluded(List.of(account.getId()));
+        domain +=
+            " AND self.id NOT IN ("
+                + allAccountsSubAccountIncluded.stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(","))
+                + ")";
+      }
+      response.setAttr("parentAccount", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void viewMoveTemplates(ActionRequest request, ActionResponse response) {
+    Account account = request.getContext().asType(Account.class);
+
+    List<Long> moveTemplateIdList =
+        Beans.get(MoveTemplateLineRepository.class).findByAccount(account).fetch().stream()
+            .map(MoveTemplateLine::getMoveTemplate)
+            .map(MoveTemplate::getId)
+            .distinct()
+            .collect(Collectors.toList());
+
+    ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Move templates"));
+    actionViewBuilder.model(MoveTemplate.class.getName());
+    actionViewBuilder.add("grid", "move-template-grid");
+    actionViewBuilder.add("form", "move-template-form");
+    actionViewBuilder.domain("self.id IN (:moveTemplateIds)");
+    actionViewBuilder.context("moveTemplateIds", moveTemplateIdList);
+
+    response.setView(actionViewBuilder.map());
   }
 }

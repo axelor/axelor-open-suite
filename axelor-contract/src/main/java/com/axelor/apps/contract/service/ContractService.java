@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,13 +22,10 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.contract.db.ConsumptionLine;
 import com.axelor.apps.contract.db.Contract;
-import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractTemplate;
-import com.axelor.apps.contract.db.ContractVersion;
-import com.google.common.collect.Multimap;
+import com.axelor.apps.crm.db.Opportunity;
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public interface ContractService {
 
@@ -104,16 +101,6 @@ public interface ContractService {
   void close(Contract contract, LocalDate date) throws AxelorException;
 
   /**
-   * Invoicing the contract
-   *
-   * @param contract
-   * @throws AxelorException
-   */
-  Invoice invoicingContract(Contract contract) throws AxelorException;
-
-  Invoice invoicingContracts(List<Contract> contractList) throws AxelorException;
-
-  /**
    * Renew a contract
    *
    * @param contract
@@ -128,8 +115,6 @@ public interface ContractService {
    */
   Contract copyFromTemplate(Contract contract, ContractTemplate template) throws AxelorException;
 
-  Contract increaseInvoiceDates(Contract contract);
-
   /**
    * Check if contract is valid, throws exceptions instead.
    *
@@ -138,34 +123,18 @@ public interface ContractService {
    */
   void isValid(Contract contract) throws AxelorException;
 
-  /**
-   * Take each consumption line and convert it to contract line if a associate consumption contract
-   * line is present in contract.
-   *
-   * @param contract contain consumption and contract lines.
-   * @return Multimap of consumption lines successfully converted to contract lines.
-   */
-  Multimap<ContractLine, ConsumptionLine> mergeConsumptionLines(Contract contract)
-      throws AxelorException;
-
-  default List<ContractVersion> getVersions(Contract contract) {
-    List<ContractVersion> versions = contract.getVersionHistory();
-    if (versions == null) {
-      versions = new ArrayList<>();
-    }
-    if (contract.getCurrentContractVersion() != null) {
-      versions.add(contract.getCurrentContractVersion());
-    }
-    return versions;
-  }
-
-  default boolean isFullProrated(Contract contract) {
-    return contract.getCurrentContractVersion() != null
-        && (contract.getCurrentContractVersion().getIsTimeProratedInvoice()
-            && contract.getCurrentContractVersion().getIsVersionProratedInvoice());
-  }
-
   Contract getNextContract(Contract contract) throws AxelorException;
 
   void setInitialPriceOnContractLines(Contract contract);
+
+  boolean checkConsumptionLineQuantity(
+      Contract contract,
+      ConsumptionLine consumptionLine,
+      BigDecimal initQty,
+      Integer initProductId);
+
+  Contract generateContractFromOpportunity(
+      Opportunity opportunity, ContractTemplate contractTemplate) throws AxelorException;
+
+  Boolean contractsFromOpportunityAreGenerated(Long opportunityId);
 }

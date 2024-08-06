@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,6 +49,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -219,9 +220,18 @@ public class ImportMove {
 
       setMovePartner(move, moveLine);
 
-      if (values.get("Montantdevise") == null || "".equals(values.get("Montantdevise"))) {
+      if (values.get("Montantdevise") == null || values.get("Montantdevise").equals("")) {
         moveLine.setMove(move);
         moveLineToolService.setCurrencyAmount(moveLine);
+      } else {
+        String currencyAmountStr = values.get("Montantdevise").toString().replace(',', '.');
+        BigDecimal currencyAmount = (new BigDecimal(currencyAmountStr)).abs();
+
+        if (moveLine.getDebit().signum() > 0) {
+          moveLine.setCurrencyAmount(currencyAmount);
+        } else {
+          moveLine.setCurrencyAmount(currencyAmount.negate());
+        }
       }
     } catch (AxelorException e) {
       TraceBackService.trace(e);
@@ -243,7 +253,7 @@ public class ImportMove {
             .collect(Collectors.toList());
     if (CollectionUtils.isNotEmpty(partnerList)) {
       if (partnerList.size() == 1) {
-        move.setPartner(moveLine.getPartner());
+        move.setPartner(partnerList.stream().findFirst().orElse(null));
       }
 
       if (partnerList.size() > 1) {

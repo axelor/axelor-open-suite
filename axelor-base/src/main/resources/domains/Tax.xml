@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="Tax" cacheable="true">
 
     <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" required="true" unique="true"/>
+    <string name="code" title="Code" required="true" unique="true" namecolumn="true"/>
     <many-to-one name="activeTaxLine" ref="com.axelor.apps.account.db.TaxLine"
       title="Tax active version"/>
 
     <one-to-many name="taxLineList" ref="com.axelor.apps.account.db.TaxLine"
       mappedBy="tax" title="Tax versions history"/>
+    <many-to-one name="taxType" ref="com.axelor.apps.account.db.TaxType"
+      title="Tax type" required="true"/>
 
     <unique-constraint columns="code,name"/>
 

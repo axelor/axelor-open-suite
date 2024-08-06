@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,7 +35,6 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableCustomerLineRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableRepository;
@@ -51,6 +50,8 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -58,6 +59,7 @@ import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -105,6 +107,8 @@ public class IrrecoverableService {
   protected IrrecoverableRepository irrecoverableRepo;
 
   protected AppAccountService appAccountService;
+  protected CurrencyService currencyService;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public IrrecoverableService(
@@ -125,7 +129,9 @@ public class IrrecoverableService {
       IrrecoverableCustomerLineRepository irrecoverableCustomerLineRepo,
       InvoiceRepository invoiceRepo,
       ManagementObjectRepository managementObjectRepo,
-      IrrecoverableRepository irrecoverableRepo) {
+      IrrecoverableRepository irrecoverableRepo,
+      CurrencyService currencyService,
+      MoveLineToolService moveLineToolService) {
 
     this.sequenceService = sequenceService;
     this.moveToolService = moveToolService;
@@ -146,6 +152,8 @@ public class IrrecoverableService {
     this.irrecoverableRepo = irrecoverableRepo;
 
     this.appAccountService = appAccountService;
+    this.currencyService = currencyService;
+    this.moveLineToolService = moveLineToolService;
   }
 
   /**
@@ -161,18 +169,15 @@ public class IrrecoverableService {
     Company company = irrecoverable.getCompany();
 
     this.testCompanyField(company);
-
-    if (irrecoverable.getName() == null) {
-      irrecoverable.setName(this.getSequence(company));
-    }
-
     irrecoverable.setInvoiceSet(new HashSet<Invoice>());
     irrecoverable.getInvoiceSet().addAll(this.getInvoiceList(company));
     irrecoverable.getInvoiceSet().addAll(this.getRejectInvoiceList(company));
 
     irrecoverable.setPaymentScheduleLineSet(new HashSet<PaymentScheduleLine>());
     irrecoverable.getPaymentScheduleLineSet().addAll(this.getPaymentScheduleLineList(company));
-
+    if (irrecoverable.getName() == null) {
+      irrecoverable.setName(this.getSequence(company, irrecoverable));
+    }
     irrecoverableRepo.save(irrecoverable);
   }
 
@@ -821,16 +826,15 @@ public class IrrecoverableService {
    * @return the remaining invoice rate
    */
   public BigDecimal getProrataRate(Invoice invoice, boolean isInvoiceReject) {
-    BigDecimal prorataRate = null;
+    BigDecimal prorataRate =
+        currencyService.computeScaledExchangeRate(
+            invoice.getCompanyInTaxTotalRemaining(), invoice.getCompanyInTaxTotal());
+
     if (isInvoiceReject) {
       prorataRate =
-          (invoice.getRejectMoveLine().getAmountRemaining().abs())
-              .divide(invoice.getCompanyInTaxTotal(), 6, RoundingMode.HALF_UP);
-    } else {
-      prorataRate =
-          invoice
-              .getCompanyInTaxTotalRemaining()
-              .divide(invoice.getCompanyInTaxTotal(), 6, RoundingMode.HALF_UP);
+          currencyService.computeScaledExchangeRate(
+              invoice.getRejectMoveLine().getAmountRemaining().abs(),
+              invoice.getCompanyInTaxTotal());
     }
 
     log.debug("Prorata rate for the invoice {} : {}", invoice.getInvoiceId(), prorataRate);
@@ -927,9 +931,11 @@ public class IrrecoverableService {
         }
       } else {
         amount =
-            invoiceMoveLine.getCredit().multiply(prorataRate).setScale(2, RoundingMode.HALF_UP);
-        if (AccountTypeRepository.TYPE_TAX.equals(
-            invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+            invoiceMoveLine
+                .getCredit()
+                .multiply(prorataRate)
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        if (moveLineToolService.isMoveLineTaxAccount(invoiceMoveLine)) {
           if (invoiceMoveLine.getVatSystemSelect() == null
               || invoiceMoveLine.getVatSystemSelect() == 0) {
             throw new AxelorException(
@@ -943,7 +949,7 @@ public class IrrecoverableService {
                   invoiceMoveLine.getAccount(),
                   amount,
                   true,
-                  invoiceMoveLine.getTaxLine(),
+                  invoiceMoveLine.getTaxLineSet(),
                   appAccountService.getTodayDate(company),
                   seq,
                   originStr,
@@ -960,7 +966,7 @@ public class IrrecoverableService {
                   accountConfig.getIrrecoverableAccount(),
                   amount,
                   true,
-                  invoiceMoveLine.getTaxLine(),
+                  invoiceMoveLine.getTaxLineSet(),
                   appAccountService.getTodayDate(company),
                   seq,
                   originStr,
@@ -1084,6 +1090,7 @@ public class IrrecoverableService {
             tax,
             company,
             move.getJournal(),
+            accountConfig.getIrrecoverableAccount(),
             moveLine.getAccount().getVatSystemSelect(),
             false,
             move.getFunctionalOriginSelect());
@@ -1099,6 +1106,7 @@ public class IrrecoverableService {
             3,
             moveLine.getMove().getOrigin() + ":" + irrecoverableName,
             moveLine.getDescription());
+    moveLineToolService.setIsNonDeductibleTax(creditMoveLine2, tax);
     move.getMoveLineList().add(creditMoveLine2);
 
     return move;
@@ -1141,11 +1149,11 @@ public class IrrecoverableService {
     accountConfigService.getIrrecoverableStandardRateTax(accountConfig);
   }
 
-  public String getSequence(Company company) throws AxelorException {
+  public String getSequence(Company company, Irrecoverable irrecoverable) throws AxelorException {
 
     String seq =
         sequenceService.getSequenceNumber(
-            SequenceRepository.IRRECOVERABLE, company, Irrecoverable.class, "name");
+            SequenceRepository.IRRECOVERABLE, company, Irrecoverable.class, "name", irrecoverable);
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

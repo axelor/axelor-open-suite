@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="cheque-rejection-grid" title="Cheque Rejections"
     model="com.axelor.apps.account.db.ChequeRejection">
@@ -127,10 +127,10 @@
     model="com.axelor.apps.account.db.ChequeRejection" title="Cheque rejection filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <filter title="Recent rejects">
+    <filter name="cheque-rejection-filters-recent-rejects" title="Recent rejects">
       <domain>self.rejectionDate &gt;= :_newDate1</domain>
     </filter>
-    <filter title="Rejects over past 30 days">
+    <filter name="cheque-rejection-filters-past-rejects" title="Rejects over past 30 days">
       <domain>self.rejectionDate &gt;= :_newDate2</domain>
     </filter>
   </search-filters>

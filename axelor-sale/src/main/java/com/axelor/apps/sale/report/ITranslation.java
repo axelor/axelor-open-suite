@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -82,4 +82,9 @@ public interface ITranslation {
 
   public static final String SALES_ORDER_PRODUCT_SEQUENCE = /*$$(*/
       "SaleOrder.productSequence"; /*)*/
+
+  public static final String SALES_ORDER_TYPE = /*$$(*/ "SaleOrder.type"; /*)*/;
+  public static final String SALES_ORDER_TAXES = /*$$(*/ "SaleOrder.taxes"; /*)*/
+  public static final String SALES_ORDER_TAX_CODE = /*$$(*/ "SaleOrder.taxCode"; /*)*/;
+  public static final String SALES_ORDER_TOTAL_TAXES = /*$$(*/ "SaleOrder.totalTaxes"; /*)*/;
 }

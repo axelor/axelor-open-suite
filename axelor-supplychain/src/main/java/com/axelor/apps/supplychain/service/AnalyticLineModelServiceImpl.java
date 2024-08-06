@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
@@ -56,6 +57,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   protected AnalyticToolService analyticToolService;
   protected SaleConfigService saleConfigService;
   protected PurchaseConfigService purchaseConfigService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public AnalyticLineModelServiceImpl(
@@ -65,7 +67,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
       AccountManagementAccountService accountManagementAccountService,
       AnalyticToolService analyticToolService,
       SaleConfigService saleConfigService,
-      PurchaseConfigService purchaseConfigService) {
+      PurchaseConfigService purchaseConfigService,
+      CurrencyScaleService currencyScaleService) {
     this.appBaseService = appBaseService;
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
@@ -73,6 +76,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     this.analyticToolService = analyticToolService;
     this.saleConfigService = saleConfigService;
     this.purchaseConfigService = purchaseConfigService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -115,9 +119,12 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
     AnalyticMoveLine analyticMoveLine =
         analyticMoveLineService.computeAnalytic(company, analyticAccount);
+    analyticMoveLineService.setAnalyticCurrency(company, analyticMoveLine);
 
     analyticMoveLine.setDate(appBaseService.getTodayDate(company));
-    analyticMoveLine.setAmount(analyticLineModel.getExTaxTotal());
+    analyticMoveLine.setAmount(
+        currencyScaleService.getScaledValue(
+            analyticMoveLine, analyticLineModel.getCompanyExTaxTotal()));
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
 
     return analyticMoveLine;
@@ -189,7 +196,10 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
-            analyticMoveLine, analyticLineModel.getCompanyExTaxTotal(), date);
+            analyticMoveLine,
+            currencyScaleService.getScaledValue(
+                analyticMoveLine, analyticLineModel.getCompanyExTaxTotal()),
+            date);
       }
     }
 
@@ -206,7 +216,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             analyticLineModel.getAnalyticDistributionTemplate(),
-            analyticLineModel.getExTaxTotal(),
+            currencyScaleService.getCompanyScaledValue(
+                analyticLineModel.getCompany(), analyticLineModel.getCompanyExTaxTotal()),
             AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
             appBaseService.getTodayDate(this.getCompany(analyticLineModel)));
 

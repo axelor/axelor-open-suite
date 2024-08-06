@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,9 +24,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.PurchaseRequestLine;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.auth.AuthUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -37,13 +35,25 @@ import java.util.stream.Collectors;
 
 public class PurchaseRequestServiceImpl implements PurchaseRequestService {
 
-  @Inject private PurchaseRequestRepository purchaseRequestRepo;
-  @Inject private PurchaseOrderService purchaseOrderService;
-  @Inject private PurchaseOrderLineService purchaseOrderLineService;
-  @Inject private PurchaseOrderRepository purchaseOrderRepo;
-  @Inject private PurchaseOrderLineRepository purchaseOrderLineRepo;
-  @Inject private AppBaseService appBaseService;
-  @Inject private PurchaseRequestWorkflowService purchaseRequestWorkflowService;
+  protected PurchaseOrderService purchaseOrderService;
+  protected PurchaseOrderCreateService purchaseOrderCreateService;
+  protected PurchaseOrderLineService purchaseOrderLineService;
+  protected PurchaseOrderRepository purchaseOrderRepo;
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public PurchaseRequestServiceImpl(
+      PurchaseOrderService purchaseOrderService,
+      PurchaseOrderCreateService purchaseOrderCreateService,
+      PurchaseOrderLineService purchaseOrderLineService,
+      PurchaseOrderRepository purchaseOrderRepo,
+      AppBaseService appBaseService) {
+    this.purchaseOrderService = purchaseOrderService;
+    this.purchaseOrderCreateService = purchaseOrderCreateService;
+    this.purchaseOrderLineService = purchaseOrderLineService;
+    this.purchaseOrderRepo = purchaseOrderRepo;
+    this.appBaseService = appBaseService;
+  }
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
@@ -82,22 +92,22 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
   protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest)
       throws AxelorException {
     return purchaseOrderRepo.save(
-        purchaseOrderService.createPurchaseOrder(
+        purchaseOrderCreateService.createPurchaseOrder(
             AuthUtils.getUser(),
             purchaseRequest.getCompany(),
             null,
-            purchaseRequest.getSupplierUser().getCurrency(),
+            purchaseRequest.getSupplierPartner().getCurrency(),
             null,
             null,
             null,
             appBaseService.getTodayDate(purchaseRequest.getCompany()),
             null,
-            purchaseRequest.getSupplierUser(),
+            purchaseRequest.getSupplierPartner(),
             null));
   }
 
   protected String getPurchaseOrderGroupBySupplierKey(PurchaseRequest purchaseRequest) {
-    return purchaseRequest.getSupplierUser().getId().toString();
+    return purchaseRequest.getSupplierPartner().getId().toString();
   }
 
   protected void generatePoLineListFromPurchaseRequest(

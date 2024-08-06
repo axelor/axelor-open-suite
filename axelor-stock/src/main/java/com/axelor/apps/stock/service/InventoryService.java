@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -54,8 +54,8 @@ import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.StringHTMLListBuilder;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -72,7 +72,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -83,6 +82,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -200,7 +200,7 @@ public class InventoryService {
 
     String ref =
         sequenceService.getSequenceNumber(
-            SequenceRepository.INVENTORY, company, Inventory.class, "inventorySeq");
+            SequenceRepository.INVENTORY, company, Inventory.class, "inventorySeq", company);
     if (ref == null)
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -215,16 +215,12 @@ public class InventoryService {
     HashMap<String, InventoryLine> inventoryLineMap = this.getInventoryLines(inventory);
 
     Path filePath = MetaFiles.getPath(inventory.getImportFile());
-    List<String[]> data = this.getDatas(filePath);
+    List<CSVRecord> data = this.getDatas(filePath);
 
-    List<String> headers = Arrays.asList(data.get(0));
     inventory.clearInventoryLineList();
 
-    data.remove(0); /* Skip headers */
-
-    for (String[] line : data) {
-      inventory.addInventoryLineListItem(
-          createInventoryLine(inventory, inventoryLineMap, headers, line));
+    for (CSVRecord line : data) {
+      inventory.addInventoryLineListItem(createInventoryLine(inventory, inventoryLineMap, line));
     }
 
     inventoryRepo.save(inventory);
@@ -233,12 +229,9 @@ public class InventoryService {
   }
 
   protected InventoryLine createInventoryLine(
-      Inventory inventory,
-      HashMap<String, InventoryLine> inventoryLineMap,
-      List<String> headers,
-      String[] line)
+      Inventory inventory, HashMap<String, InventoryLine> inventoryLineMap, CSVRecord line)
       throws AxelorException {
-    if (line.length < 6) {
+    if (line.size() < 6) {
       throw new AxelorException(
           new Throwable(I18n.get(StockExceptionMessage.INVENTORY_3_LINE_LENGHT)),
           inventory,
@@ -246,18 +239,18 @@ public class InventoryService {
           I18n.get(StockExceptionMessage.INVENTORY_3));
     }
 
-    String code = line[headers.indexOf(PRODUCT_CODE)].replace("\"", "");
-    String rack = line[headers.indexOf(RACK)].replace("\"", "");
-    String trackingNumberSeq = line[headers.indexOf(TRACKING_NUMBER)].replace("\"", "");
-    String description = line[headers.indexOf(DESCRIPTION)].replace("\"", "");
-    String stockLocationName = line[headers.indexOf(STOCK_LOCATION)].replace("\"", "");
+    String code = line.get(PRODUCT_CODE).replace("\"", "");
+    String rack = line.get(RACK).replace("\"", "");
+    String trackingNumberSeq = line.get(TRACKING_NUMBER).replace("\"", "");
+    String description = line.get(DESCRIPTION).replace("\"", "");
+    String stockLocationName = line.get(STOCK_LOCATION).replace("\"", "");
     StockLocation stockLocation = null;
     if (stockLocationName != null) {
       stockLocation = stockLocationRepository.findByName(stockLocationName);
     }
     String key = code + trackingNumberSeq + stockLocationName;
-    BigDecimal realQty = getRealQty(inventory, headers, line);
-    BigDecimal currentQty = getCurrentQty(inventory, headers, line);
+    BigDecimal realQty = getRealQty(inventory, line);
+    BigDecimal currentQty = getCurrentQty(inventory, line);
     Product product = getProduct(inventory, code);
 
     if (product == null
@@ -290,9 +283,6 @@ public class InventoryService {
     InventoryLine inventoryLineResult = inventoryLineRepository.copy(inventoryLine, true);
     inventoryLineResult.setRealQty(realQty);
     inventoryLineResult.setDescription(description);
-    if (inventoryLineResult.getTrackingNumber() != null) {
-      inventoryLineResult.getTrackingNumber().setCounter(realQty);
-    }
     inventoryLineService.compute(inventoryLineResult, inventoryLineResult.getInventory());
     return inventoryLineResult;
   }
@@ -343,11 +333,10 @@ public class InventoryService {
     }
   }
 
-  protected BigDecimal getCurrentQty(Inventory inventory, List<String> headers, String[] line)
-      throws AxelorException {
+  protected BigDecimal getCurrentQty(Inventory inventory, CSVRecord line) throws AxelorException {
     int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
     try {
-      return new BigDecimal(line[headers.indexOf(CURRENT_QUANTITY)].replace("\"", ""))
+      return new BigDecimal(line.get(CURRENT_QUANTITY).replace("\"", ""))
           .setScale(qtyScale, RoundingMode.HALF_UP);
     } catch (NumberFormatException e) {
       throw new AxelorException(
@@ -358,13 +347,11 @@ public class InventoryService {
     }
   }
 
-  protected BigDecimal getRealQty(Inventory inventory, List<String> headers, String[] line)
-      throws AxelorException {
+  protected BigDecimal getRealQty(Inventory inventory, CSVRecord line) throws AxelorException {
     int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
     try {
-      if (!StringUtils.isBlank(line[headers.indexOf(REAL_QUANTITY)])) {
-        return new BigDecimal(line[headers.indexOf(REAL_QUANTITY)])
-            .setScale(qtyScale, RoundingMode.HALF_UP);
+      if (!StringUtils.isBlank(line.get(REAL_QUANTITY))) {
+        return new BigDecimal(line.get(REAL_QUANTITY)).setScale(qtyScale, RoundingMode.HALF_UP);
       }
 
     } catch (NumberFormatException e) {
@@ -377,12 +364,12 @@ public class InventoryService {
     return null;
   }
 
-  public List<String[]> getDatas(Path filePath) throws AxelorException {
+  public List<CSVRecord> getDatas(Path filePath) throws AxelorException {
 
-    List<String[]> data = null;
+    List<CSVRecord> data;
     char separator = ';';
     try {
-      data = CsvTool.cSVFileReader(filePath.toString(), separator);
+      data = CsvHelper.csvFileReader(filePath.toString(), separator);
     } catch (Exception e) {
       throw new AxelorException(
           e.getCause(),
@@ -436,7 +423,6 @@ public class InventoryService {
         trackingNumber = new TrackingNumber();
         trackingNumber.setTrackingNumberSeq(sequence);
         trackingNumber.setProduct(product);
-        trackingNumber.setCounter(realQty);
       }
     }
 
@@ -743,13 +729,12 @@ public class InventoryService {
       diff = diff.negate();
     }
     if (diff.signum() > 0) {
-      BigDecimal avgPrice;
+
       StockLocationLine stockLocationLine =
           stockLocationLineService.getStockLocationLine(toStockLocation, product);
-      if (stockLocationLine != null) {
-        avgPrice = stockLocationLine.getAvgPrice();
-      } else {
-        avgPrice = BigDecimal.ZERO;
+      BigDecimal unitPrice = getAvgPrice(stockLocationLine);
+      if (!inventoryLineService.isPresentInStockLocation(inventoryLine)) {
+        unitPrice = inventoryLine.getPrice();
       }
 
       StockMoveLine stockMoveLine =
@@ -758,8 +743,8 @@ public class InventoryService {
               product.getName(),
               product.getDescription(),
               diff,
-              avgPrice,
-              avgPrice,
+              unitPrice,
+              unitPrice,
               product.getUnit(),
               stockMove,
               StockMoveLineService.TYPE_NULL,
@@ -779,6 +764,16 @@ public class InventoryService {
         stockMoveLine.setTrackingNumber(trackingNumber);
       }
     }
+  }
+
+  protected BigDecimal getAvgPrice(StockLocationLine stockLocationLine) {
+    BigDecimal avgPrice;
+    if (stockLocationLine != null) {
+      avgPrice = stockLocationLine.getAvgPrice();
+    } else {
+      avgPrice = BigDecimal.ZERO;
+    }
+    return avgPrice;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -1010,7 +1005,7 @@ public class InventoryService {
       LAST_INVENTORY_DATE,
       STOCK_LOCATION
     };
-    CsvTool.csvWriter(file.getParent(), file.getName(), separator.charAt(0), '"', headers, list);
+    CsvHelper.csvWriter(file.getParent(), file.getName(), separator.charAt(0), '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
       return Beans.get(MetaFiles.class).upload(is, fileName + ".csv");
@@ -1061,7 +1056,7 @@ public class InventoryService {
       }
     }
 
-    StringHTMLListBuilder stringHTMLListInventoryLine = new StringHTMLListBuilder();
+    StringHtmlListBuilder stringHTMLListInventoryLine = new StringHtmlListBuilder();
     inventoryLinesWithMissingStockLocation.stream()
         .limit(INVENTORY_LINE_WITHOUT_STOCK_LOCATION_DISPLAY_LIMIT)
         .forEach(

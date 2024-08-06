@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,8 +22,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceJournalService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -46,6 +47,7 @@ public class ValidateState extends WorkflowInvoice {
   protected InvoiceService invoiceService;
   protected AppAccountService appAccountService;
   protected AccountingSituationService accountingSituationService;
+  protected InvoiceJournalService invoiceJournalService;
 
   @Inject
   public ValidateState(
@@ -55,7 +57,8 @@ public class ValidateState extends WorkflowInvoice {
       AppBaseService appBaseService,
       InvoiceService invoiceService,
       AppAccountService appAccountService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      InvoiceJournalService invoiceJournalService) {
     this.userService = userService;
     this.blockingService = blockingService;
     this.workflowValidationService = workflowValidationService;
@@ -63,6 +66,7 @@ public class ValidateState extends WorkflowInvoice {
     this.invoiceService = invoiceService;
     this.appAccountService = appAccountService;
     this.accountingSituationService = accountingSituationService;
+    this.invoiceJournalService = invoiceJournalService;
   }
 
   public void init(Invoice invoice) {
@@ -108,7 +112,7 @@ public class ValidateState extends WorkflowInvoice {
     setPartnerAccount();
 
     if (invoice.getJournal() == null) {
-      invoice.setJournal(invoiceService.getJournal(invoice));
+      invoice.setJournal(invoiceJournalService.getJournal(invoice));
     }
 
     workflowValidationService.afterValidation(invoice);
@@ -118,11 +122,7 @@ public class ValidateState extends WorkflowInvoice {
     if (invoice.getPartnerAccount() == null) {
       invoice.setPartnerAccount(accountingSituationService.getPartnerAccount(invoice, false));
     }
-    if (invoice.getPartnerAccount() != null
-        && !invoice.getPartnerAccount().getUseForPartnerBalance()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_ACCOUNT));
-    }
+
+    InvoiceToolService.checkUseForPartnerBalanceAndReconcileOk(invoice);
   }
 }

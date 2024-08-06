@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.CALCULATION_SCALE;
-import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.RETURNED_SCALE;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
@@ -28,7 +27,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -52,6 +51,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
   protected AppBaseService appBaseService;
+  protected FixedAssetLineToolService fixedAssetLineToolService;
 
   protected abstract LocalDate computeStartDepreciationDate(FixedAsset fixedAsset);
 
@@ -88,9 +88,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   @Inject
   protected AbstractFixedAssetLineComputationServiceImpl(
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      FixedAssetLineToolService fixedAssetLineToolService) {
     this.fixedAssetFailOverControlService = fixedAssetFailOverControlService;
     this.appBaseService = appBaseService;
+    this.fixedAssetLineToolService = fixedAssetLineToolService;
   }
 
   @Override
@@ -111,8 +113,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
         fixedAsset,
         depreciationDate,
         depreciation,
-        cumulativeDepreciation,
-        accountingValue,
+        fixedAssetLineToolService.getCompanyScaledValue(cumulativeDepreciation, fixedAsset),
+        fixedAssetLineToolService.getCompanyScaledValue(accountingValue, fixedAsset),
         depreciationBase,
         getTypeSelect(),
         FixedAssetLineRepository.STATUS_PLANNED);
@@ -129,7 +131,9 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     BigDecimal accountingValue = BigDecimal.ZERO;
     if (!isAlreadyDepreciated(fixedAsset)) {
       depreciation = computeInitialDepreciation(fixedAsset, depreciationBase);
-      accountingValue = depreciationBase.subtract(depreciation);
+      accountingValue =
+          fixedAssetLineToolService.getCompanyScaledValue(
+              depreciationBase, depreciation, fixedAsset, BigDecimal::subtract);
     }
 
     FixedAssetLine line =
@@ -145,7 +149,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
       if (isAlreadyDepreciated(fixedAsset)
-          || line.getDepreciationBase().equals(getAlreadyDepreciatedAmount(fixedAsset))) {
+          || fixedAssetLineToolService.equals(
+              line.getDepreciationBase(), getAlreadyDepreciatedAmount(fixedAsset), fixedAsset)) {
 
         // Instead of producing 0 line, we will produce one line with the depreciation of the
         // current year
@@ -164,10 +169,16 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
                   getTypeSelect(),
                   FixedAssetLineRepository.STATUS_REALIZED));
         } else {
+          LocalDate depreciationEndDate = getFailOverDepreciationEndDate(fixedAsset);
+          if (depreciationEndDate == null) {
+            depreciationEndDate =
+                LocalDateHelper.plusMonths(
+                    fixedAsset.getFirstDepreciationDate(), getDurationInMonth(fixedAsset));
+          }
           return Optional.ofNullable(
               createFixedAssetLine(
                   fixedAsset,
-                  getFailOverDepreciationEndDate(fixedAsset),
+                  depreciationEndDate,
                   BigDecimal.ZERO,
                   depreciationBase,
                   BigDecimal.ZERO,
@@ -177,13 +188,22 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
         }
       }
       line.setCumulativeDepreciation(
-          line.getCumulativeDepreciation().add(getAlreadyDepreciatedAmount(fixedAsset)));
+          fixedAssetLineToolService.getCompanyScaledValue(
+              line.getCumulativeDepreciation(),
+              getAlreadyDepreciatedAmount(fixedAsset),
+              fixedAsset,
+              BigDecimal::add));
       if (getComputationMethodSelect(fixedAsset)
           .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
         line.setAccountingValue(
-            line.getAccountingValue().subtract(getAlreadyDepreciatedAmount(fixedAsset)));
+            fixedAssetLineToolService.getCompanyScaledValue(
+                line.getAccountingValue(),
+                getAlreadyDepreciatedAmount(fixedAsset),
+                fixedAsset,
+                BigDecimal::subtract));
       }
-      if (line.getDepreciationBase().equals(getAlreadyDepreciatedAmount(fixedAsset))) {
+      if (fixedAssetLineToolService.equals(
+          line.getDepreciationBase(), getAlreadyDepreciatedAmount(fixedAsset), fixedAsset)) {
         return Optional.empty();
       }
     }
@@ -193,39 +213,45 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   protected boolean isAlreadyDepreciated(FixedAsset fixedAsset) {
 
-    return getNumberOfDepreciation(fixedAsset).equals(getNumberOfPastDepreciation(fixedAsset));
+    return fixedAssetLineToolService.equals(
+        getNumberOfDepreciation(fixedAsset), getNumberOfPastDepreciation(fixedAsset), fixedAsset);
   }
 
   @Override
-  public void multiplyLineBy(FixedAssetLine line, BigDecimal prorata) {
+  public void multiplyLineBy(FixedAssetLine line, BigDecimal prorata) throws AxelorException {
+    FixedAsset fixedAsset = line.getFixedAsset();
     line.setDepreciationBase(
-        prorata
-            .multiply(line.getDepreciationBase())
-            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getDepreciationBase(), prorata, fixedAsset, BigDecimal::multiply));
     line.setDepreciation(
-        prorata.multiply(line.getDepreciation()).setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getDepreciation(), prorata, fixedAsset, BigDecimal::multiply));
     line.setCumulativeDepreciation(
-        prorata
-            .multiply(line.getCumulativeDepreciation())
-            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getCumulativeDepreciation(), prorata, fixedAsset, BigDecimal::multiply));
     line.setAccountingValue(
-        prorata.multiply(line.getAccountingValue()).setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getAccountingValue(), prorata, fixedAsset, BigDecimal::multiply));
     line.setCorrectedAccountingValue(
-        prorata
-            .multiply(line.getCorrectedAccountingValue())
-            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getCorrectedAccountingValue(), prorata, fixedAsset, BigDecimal::multiply));
     line.setImpairmentValue(
-        prorata.multiply(line.getImpairmentValue()).setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getImpairmentValue(), prorata, fixedAsset, BigDecimal::multiply));
   }
 
   @Override
-  public void multiplyLinesBy(List<FixedAssetLine> fixedAssetLineList, BigDecimal prorata) {
+  public void multiplyLinesBy(List<FixedAssetLine> fixedAssetLineList, BigDecimal prorata)
+      throws AxelorException {
     if (fixedAssetLineList != null) {
-      fixedAssetLineList.forEach(line -> multiplyLineBy(line, prorata));
+      for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
+        multiplyLineBy(fixedAssetLine, prorata);
+      }
     }
   }
 
-  protected BigDecimal computeInitialDepreciation(FixedAsset fixedAsset, BigDecimal baseValue) {
+  protected BigDecimal computeInitialDepreciation(FixedAsset fixedAsset, BigDecimal baseValue)
+      throws AxelorException {
     // Theses cases is for when user want to depreciate in one year.
     // This case is if list is not empty when calling this method
     if (getFixedAssetLineList(fixedAsset) != null
@@ -235,7 +261,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
           && getComputationMethodSelect(fixedAsset)
               .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
-        return baseValue.subtract(getAlreadyDepreciatedAmount(fixedAsset));
+        return fixedAssetLineToolService.getCompanyScaledValue(
+            baseValue, getAlreadyDepreciatedAmount(fixedAsset), fixedAsset, BigDecimal::subtract);
       }
       return baseValue;
     }
@@ -244,7 +271,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
             .subtract(numberOfDepreciationDone(fixedAsset))
             .equals(BigDecimal.ONE)
         && !fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
-      return baseValue.subtract(getAlreadyDepreciatedAmount(fixedAsset));
+      return fixedAssetLineToolService.getCompanyScaledValue(
+          baseValue, getAlreadyDepreciatedAmount(fixedAsset), fixedAsset, BigDecimal::subtract);
     }
     if (getComputationMethodSelect(fixedAsset) != null
         && getComputationMethodSelect(fixedAsset)
@@ -258,8 +286,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   protected BigDecimal computeInitialLinearDepreciation(
       FixedAsset fixedAsset, BigDecimal baseValue) {
-    return computeInitialDepreciationNumerator(baseValue, fixedAsset)
-        .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
+    return fixedAssetLineToolService.getCompanyScaledValue(
+        computeInitialDepreciationNumerator(baseValue, fixedAsset), fixedAsset);
   }
 
   protected BigDecimal computeDepreciationNumerator(
@@ -422,27 +450,32 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   protected BigDecimal computeInitialDegressiveDepreciation(
-      FixedAsset fixedAsset, BigDecimal baseValue) {
+      FixedAsset fixedAsset, BigDecimal baseValue) throws AxelorException {
     BigDecimal ddRate = getDegressiveCoef(fixedAsset);
-    return computeInitialDepreciationNumerator(baseValue, fixedAsset)
-        .multiply(ddRate)
-        .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
+    return fixedAssetLineToolService.getCompanyScaledValue(
+        computeInitialDepreciationNumerator(baseValue, fixedAsset),
+        ddRate,
+        fixedAsset,
+        BigDecimal::multiply);
   }
 
   protected BigDecimal computeInitialDepreciationNumerator(
       BigDecimal baseValue, FixedAsset fixedAsset) {
     BigDecimal prorataTemporis = this.computeProrataTemporis(fixedAsset);
-    return computeDepreciationNumerator(baseValue, getNumberOfDepreciation(fixedAsset))
-        .multiply(prorataTemporis);
+    return fixedAssetLineToolService.getCompanyScaledValue(
+        computeDepreciationNumerator(baseValue, getNumberOfDepreciation(fixedAsset)),
+        prorataTemporis,
+        fixedAsset,
+        BigDecimal::multiply);
   }
 
   protected BigDecimal computeLinearDepreciation(FixedAsset fixedAsset, BigDecimal baseValue) {
-    return computeDepreciationNumerator(baseValue, getNumberOfDepreciation(fixedAsset))
-        .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
+    return fixedAssetLineToolService.getCompanyScaledValue(
+        computeDepreciationNumerator(baseValue, getNumberOfDepreciation(fixedAsset)), fixedAsset);
   }
 
   protected BigDecimal computeOnGoingDegressiveDepreciation(
-      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
+      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) throws AxelorException {
     BigDecimal previousAccountingValue = getAccountingValue(previousFixedAssetLine);
     BigDecimal degressiveDepreciation =
         computeDegressiveDepreciation(previousAccountingValue, fixedAsset);
@@ -450,15 +483,15 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     BigDecimal remainingNumberOfDepreciation =
         getNumberOfDepreciation(fixedAsset).subtract(numberOfDepreciationDone(fixedAsset));
     BigDecimal linearDepreciation =
-        previousAccountingValue.divide(
-            remainingNumberOfDepreciation, RETURNED_SCALE, RoundingMode.HALF_UP);
+        fixedAssetLineToolService.getCompanyDivideScaledValue(
+            previousAccountingValue, remainingNumberOfDepreciation, fixedAsset);
     BigDecimal depreciation;
     if (fixedAsset.getGrossValue().signum() > 0) {
       depreciation = degressiveDepreciation.max(linearDepreciation);
     } else {
       depreciation = degressiveDepreciation.min(linearDepreciation);
     }
-    return depreciation;
+    return fixedAssetLineToolService.getCompanyScaledValue(depreciation, fixedAsset);
   }
 
   protected BigDecimal numberOfDepreciationDone(FixedAsset fixedAsset) {
@@ -478,9 +511,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   protected BigDecimal computeDegressiveDepreciation(BigDecimal baseValue, FixedAsset fixedAsset) {
     BigDecimal ddRate = getDegressiveCoef(fixedAsset);
-    return computeDepreciationNumerator(baseValue, getNumberOfDepreciation(fixedAsset))
-        .multiply(ddRate)
-        .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
+    return fixedAssetLineToolService.getCompanyScaledValue(
+        computeDepreciationNumerator(baseValue, getNumberOfDepreciation(fixedAsset)),
+        ddRate,
+        fixedAsset,
+        BigDecimal::multiply);
   }
 
   protected long countNotCorrectedPlannedLines(List<FixedAssetLine> fixedAssetLineList) {
@@ -504,7 +539,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       depreciationDate = computeLastProrataDepreciationDate(fixedAsset, previousFixedAssetLine);
     } else {
       depreciationDate =
-          DateTool.plusMonths(
+          LocalDateHelper.plusMonths(
               previousFixedAssetLine.getDepreciationDate(), getPeriodicityInMonth(fixedAsset));
     }
 
@@ -512,7 +547,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   protected BigDecimal computeDepreciation(
-      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, BigDecimal baseValue) {
+      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, BigDecimal baseValue)
+      throws AxelorException {
     BigDecimal depreciation;
     BigDecimal previousAccountingValue = getAccountingValue(previousFixedAssetLine);
     // If we are at the last line, we depreciate the remaining amount
@@ -530,25 +566,28 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       depreciation = computeLinearDepreciation(fixedAsset, baseValue);
     }
     if (fixedAsset.getGrossValue().signum() > 0) {
-      if (BigDecimal.ZERO.compareTo(previousAccountingValue.subtract(depreciation)) > 0) {
+      if (fixedAssetLineToolService.isGreaterThan(
+          depreciation, previousAccountingValue, fixedAsset)) {
         depreciation = previousAccountingValue;
       }
     } else {
-      if (BigDecimal.ZERO.compareTo(previousAccountingValue.subtract(depreciation)) < 0) {
+      if (fixedAssetLineToolService.isGreaterThan(
+          previousAccountingValue, depreciation, fixedAsset)) {
         depreciation = previousAccountingValue;
       }
     }
-    return depreciation;
+    return fixedAssetLineToolService.getCompanyScaledValue(depreciation, fixedAsset);
   }
 
   protected BigDecimal computeDepreciationBase(
-      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
+      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) throws AxelorException {
 
     if (getComputationMethodSelect(fixedAsset)
         .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       return getAccountingValue(previousFixedAssetLine);
     }
-    return previousFixedAssetLine.getDepreciationBase();
+    return fixedAssetLineToolService.getCompanyScaledValue(
+        previousFixedAssetLine.getDepreciationBase(), fixedAsset);
   }
 
   protected LocalDate computeLastProrataDepreciationDate(
@@ -558,25 +597,27 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
         fixedAsset.getFirstServiceDate() == null
             ? fixedAsset.getAcquisitionDate()
             : fixedAsset.getFirstServiceDate();
-    LocalDate d = DateTool.plusMonths(firstServiceDate, getDurationInMonth(fixedAsset));
+    LocalDate d = LocalDateHelper.plusMonths(firstServiceDate, getDurationInMonth(fixedAsset));
     if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
         getComputationMethodSelect(fixedAsset))) {
-      d = DateTool.minusMonths(d, getPeriodicityInMonth(fixedAsset));
+      d = LocalDateHelper.minusMonths(d, getPeriodicityInMonth(fixedAsset));
     } else {
       d =
-          DateTool.plusMonths(
+          LocalDateHelper.plusMonths(
               previousFixedAssetLine.getDepreciationDate(), getPeriodicityInMonth(fixedAsset));
     }
     return d;
   }
 
-  protected BigDecimal getAccountingValue(FixedAssetLine fixedAssetLine) {
+  protected BigDecimal getAccountingValue(FixedAssetLine fixedAssetLine) throws AxelorException {
     if (fixedAssetLine == null) {
       return BigDecimal.ZERO;
     }
-    return fixedAssetLine.getCorrectedAccountingValue().signum() != 0
-        ? fixedAssetLine.getCorrectedAccountingValue()
-        : fixedAssetLine.getAccountingValue();
+    return fixedAssetLineToolService.getCompanyScaledValue(
+        (fixedAssetLine.getCorrectedAccountingValue().signum() != 0
+            ? fixedAssetLine.getCorrectedAccountingValue()
+            : fixedAssetLine.getAccountingValue()),
+        fixedAssetLine);
   }
 
   protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {

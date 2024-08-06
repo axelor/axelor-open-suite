@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="FixedAssetDerogatoryLine" cacheable="true">
     <date name="depreciationDate" title="Depreciation date"/>
-    <decimal name="depreciationAmount" title="Depreciation Amount"/>
-    <decimal name="derogatoryAmount" title="Derogatory Amount"/>
-    <decimal name="derogatoryBalanceAmount" title="Derogatory Balance Amount"/>
-    <decimal name="derogatoryDepreciationAmount" title="Derogatory Depreciation Amount"/>
-    <decimal name="fiscalDepreciationAmount" title="Fiscal Depreciation Amount"/>
-    <decimal name="incomeDepreciationAmount" title="Income Depreciation Amount"/>
+    <decimal name="depreciationAmount" title="Depreciation Amount" precision="20" scale="3"/>
+    <decimal name="derogatoryAmount" title="Derogatory Amount" precision="20" scale="3"/>
+    <decimal name="derogatoryBalanceAmount" title="Derogatory Balance Amount" precision="20"
+      scale="3"/>
+    <decimal name="derogatoryDepreciationAmount" title="Derogatory Depreciation Amount"
+      precision="20" scale="3"/>
+    <decimal name="fiscalDepreciationAmount" title="Fiscal Depreciation Amount"
+      precision="20" scale="3"/>
+    <decimal name="incomeDepreciationAmount" title="Income Depreciation Amount"
+      precision="20" scale="3"/>
     <many-to-one ref="com.axelor.apps.account.db.Move" name="derogatoryDepreciationMove"
       title="Derogatory Depreciation Move"/>
     <many-to-one ref="com.axelor.apps.account.db.FixedAsset" name="fixedAsset"

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,12 @@ import java.util.List;
 public interface AppBaseService extends AppService {
 
   public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
+
+  // Used to scale exchange rates according to domain definition
+  public static final int DEFAULT_EXCHANGE_RATE_SCALE = 6;
+
+  // Used to scale inverse exchange rate (1 / exchangeRate)
+  public static final int DEFAULT_EXCHANGE_RATE_REVERSION_SCALE = 8;
 
   public static final int DEFAULT_TRACKING_MONTHS_PERSISTENCE = 1;
 
@@ -72,7 +78,7 @@ public interface AppBaseService extends AppService {
 
   public int getGlobalTrackingLogPersistence();
 
-  public String getDefaultPartnerLanguageCode();
+  public String getDefaultPartnerLocale();
 
   // Conversion de devise
 
@@ -93,8 +99,6 @@ public interface AppBaseService extends AppService {
    * @param manageMultiBanks the new value for the manageMultiBanks boolean
    */
   void setManageMultiBanks(boolean manageMultiBanks);
-
-  String getCustomStyle();
 
   /**
    * Get process timeout value. If the value is inferior or equal to 0, we return the default value

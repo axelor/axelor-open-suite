@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,13 +27,13 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
+import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -42,14 +42,12 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -68,7 +66,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   protected MoveValidateService moveValidateService;
   protected MoveControlService moveControlService;
   protected AppAccountService appAccountService;
-  protected PeriodServiceAccount periodServiceAccount;
+  protected PeriodCheckService periodCheckService;
   protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
 
   @Inject
@@ -79,7 +77,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       MoveValidateService moveValidateService,
       MoveControlService moveControlService,
       AppAccountService appAccountService,
-      PeriodServiceAccount periodServiceAccount,
+      PeriodCheckService periodCheckService,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
     this.periodService = periodService;
     this.moveLineToolService = moveLineToolService;
@@ -87,7 +85,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     this.moveValidateService = moveValidateService;
     this.moveControlService = moveControlService;
     this.appAccountService = appAccountService;
-    this.periodServiceAccount = periodServiceAccount;
+    this.periodCheckService = periodCheckService;
     this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
@@ -146,7 +144,8 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     String newMoveDescription =
         newMoveLine.getMoveDescription() != null ? newMoveLine.getMoveDescription() : "";
     if (!newMoveDescription.equals(moveLine.getMoveDescription())) {
-      if (moveLine.getMoveDescription().equals(moveLine.getDescription())) {
+      if (moveLine.getMoveDescription() == null
+          || moveLine.getMoveDescription().equals(moveLine.getDescription())) {
         moveLine.setDescription(newMoveDescription);
       }
       moveLine.setMoveDescription(newMoveDescription);
@@ -247,7 +246,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
           true,
           temporaryMoveNumber);
       return true;
-    } else if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(
+    } else if (!periodCheckService.isAuthorizedToAccountOnPeriod(
         move.getPeriod(), AuthUtils.getUser())) {
       this.setMassEntryErrorMessage(
           move, I18n.get(AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED), true, temporaryMoveNumber);
@@ -261,12 +260,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     boolean errorAdded = false;
 
     for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-      if (BigDecimal.ZERO
-          .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS)
-          .equals(
-              moveLine
-                  .getCurrencyRate()
-                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP))) {
+      if (moveLine.getCurrencyRate().signum() == 0) {
         this.setFieldsErrorListMessage(moveLine, "currencyRate");
         if (!errorAdded) {
           errorAdded = true;

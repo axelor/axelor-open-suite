@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractRepository;
+import com.axelor.apps.contract.service.ContractInvoicingService;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
@@ -32,8 +33,11 @@ public class BatchContractFactoryTerminate extends BatchContractFactory {
 
   @Inject
   public BatchContractFactoryTerminate(
-      ContractRepository repository, ContractService service, AppBaseService baseService) {
-    super(repository, service, baseService);
+      ContractRepository repository,
+      ContractService service,
+      ContractInvoicingService invoicingService,
+      AppBaseService baseService) {
+    super(repository, service, invoicingService, baseService);
   }
 
   @Override

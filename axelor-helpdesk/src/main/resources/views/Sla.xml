@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <grid name="sla-grid" title="All SLA" model="com.axelor.apps.helpdesk.db.Sla">
     <field name="name"/>
     <field name="team"/>
     <field name="ticketType"/>
-    <field name="reachStageSelect"/>
+    <field name="reachStageTicketStatus"/>
     <field name="prioritySelect"/>
   </grid>
 
@@ -24,14 +24,15 @@
       </panel>
 
       <panel name="targetPanel" title="Target" colSpan="12">
-        <field name="reachStageSelect"/>
+        <field name="reachStageTicketStatus"/>
         <field name="reachIn" title="Reach in">
-          <viewer>
-					<![CDATA[
-						<span>{{record.days}} <b>days</b></span><br />
-						<span>{{record.hours}} <b>hours</b></span>
-					]]>
-          </viewer>
+          <viewer><![CDATA[
+          <>
+              <span>{days} <b>{_t('days')}</b></span> <Box/>
+              <span>{hours} <b>{_t('hours')}</b></span>
+          </>
+
+          ]]></viewer>
           <editor>
             <field name="days" colSpan="3"/>
             <field name="hours" colSpan="3"/>

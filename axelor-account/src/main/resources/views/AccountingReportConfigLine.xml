@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid title="Config lines" name="accounting-report-config-line-grid"
     model="com.axelor.apps.account.db.AccountingReportConfigLine" canMove="true" orderBy="sequence">
@@ -96,13 +96,17 @@
         <field name="$helpCode" title="Account code" readonly="true">
           <viewer depends="typeSelect,ruleTypeSelect">
             <![CDATA[
-						<p ng-show="record.typeSelect == 5 || record.ruleTypeSelect == 2">
-							<span x-translate>The account code field allows to add every account whose code will fulfill the given regular expression.</span><br>
-							<span x-translate>This regular expression must use SQL syntax. The most useful terms are :</span><br>
-							<span x-translate>_ to match any character (only one)</span><br>
-							<span x-translate>% to match any character (one or more)</span><br>
-							<span x-translate>, to separate multiple expressions with an "OR" logic</span><br>
-						</p>
+						<>
+						    {(typeSelect == 5 || ruleTypeSelect == 2) &&
+						    	<p>
+						    		<span>{_t('The account code field allows to add every account whose code will fulfill the given regular expression.')}</span> <Box/>
+						    		<span>{_t('This regular expression must use SQL syntax. The most useful terms are :')}</span> <Box/>
+						    		<span>{_t('_ to match any character (only one)')}</span> <Box/>
+						    		<span>{_t('% to match any character (one or more)')}</span> <Box/>
+						    		<span>{_t(', to separate multiple expressions with an "OR" logic')}</span>
+						    	</p>
+						    }
+						</>
 					]]>
           </viewer>
         </field>
@@ -113,8 +117,9 @@
             requiredIf="ruleTypeSelect == 2" selection-in="[1,2,3,5,6]"/>
         </panel>
         <field name="negateValue" colSpan="6" showIf="[1,2,6].includes(resultSelect)"/>
-        <field name="accountCode"/>
-        <field name="analyticAccountCode" showIf="ruleTypeSelect == 2"/>
+        <field name="accountCode" widget="code-editor" x-code-syntax="sql"/>
+        <field name="analyticAccountCode" showIf="ruleTypeSelect == 2" widget="code-editor"
+          x-code-syntax="sql"/>
         <panel-related name="accountingReportConfigLineAccountTypeSetPanel"
           field="accountTypeSet" canNew="false" canEdit="false" form-view="account-type-form"
           grid-view="account-type-grid"/>
@@ -132,12 +137,16 @@
         <field name="$helpRule" title="Rule" readonly="true">
           <viewer depends="ruleTypeSelect">
             <![CDATA[
-						<p ng-show="record.ruleTypeSelect == 3">
-							<span x-translate>This state allows to create a custom rule to be shown in the report.</span><br>
-							<span x-translate>Any Groovy expression can be written and the computed result will be displayed, but there must be only one line.</span><br>
-							<span x-translate>A previous result can be used with its code, but it can only be elements of the same type.</span><br>
-							<span x-translate>Priority will define which rule to use when computation encounters multiple ones.</span>
-						</p>
+						<>
+							{ruleTypeSelect == 3 &&
+								<p>
+									<span>{_t('This state allows to create a custom rule to be shown in the report.')}</span> <Box/>
+									<span>{_t('Any Groovy expression can be written and the computed result will be displayed, but there must be only one line.')}</span> <Box/>
+									<span>{_t('A previous result can be used with its code, but it can only be elements of the same type.')}</span> <Box/>
+									<span>{_t('Priority will define which rule to use when computation encounters multiple ones.')}</span> <Box/>
+								</p>
+							}
+						</>
 					]]>
           </viewer>
         </field>
@@ -158,6 +167,10 @@
             showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2 &amp;&amp; !$legacy">
             <field name="computePreviousYear" hideIf="computeOtherPeriod"/>
             <field name="computeOtherPeriod" hideIf="computePreviousYear"/>
+          </panel>
+          <panel name="lineConfigPanel" colSpan="12"
+            showIf="reportType != null &amp;&amp; !$legacy">
+            <field name="hideDetailedLinesWithoutMoves" showIf="detailBySelect > 0"/>
           </panel>
           <field name="groupsWithoutColumn" colSpan="6"
             showIf="reportTypeColumn != null &amp;&amp; typeSelect != 5 &amp;&amp; !$legacy"/>

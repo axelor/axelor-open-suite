@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -29,6 +30,7 @@ import com.google.inject.Inject;
 public class TimesheetTimerHRRepository extends TSTimerRepository {
 
   @Inject private TimesheetTimerService tsTimerService;
+  @Inject private TimesheetLineService timesheetLineService;
 
   @Override
   public TSTimer save(TSTimer tsTimer) {
@@ -53,10 +55,17 @@ public class TimesheetTimerHRRepository extends TSTimerRepository {
 
     timesheetLine.setProject(tsTimer.getProject());
     timesheetLine.setProduct(tsTimer.getProduct());
+    timesheetLine.setProjectTask(tsTimer.getProjectTask());
     timesheetLine.setHoursDuration(
         tsTimerService.convertSecondDurationInHours(tsTimer.getDuration()));
     timesheetLine.setComments(tsTimer.getComments());
 
     Beans.get(TimesheetLineRepository.class).save(timesheetLine);
+  }
+
+  @Override
+  public void remove(TSTimer tsTimer) {
+    timesheetLineService.resetTimesheetLineTimer(tsTimer);
+    super.remove(tsTimer);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,8 +20,17 @@ package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
+import com.axelor.apps.crm.service.OpportunitySequenceService;
+import com.axelor.apps.crm.service.app.AppCrmService;
+import com.google.inject.Inject;
 
 public class OpportunitySaleRepository extends OpportunityManagementRepository {
+
+  @Inject
+  public OpportunitySaleRepository(
+      AppCrmService appCrmService, OpportunitySequenceService opportunitySequenceService) {
+    super(appCrmService, opportunitySequenceService);
+  }
 
   public Opportunity copy(Opportunity entity, boolean deep) {
     Opportunity copy = super.copy(entity, deep);

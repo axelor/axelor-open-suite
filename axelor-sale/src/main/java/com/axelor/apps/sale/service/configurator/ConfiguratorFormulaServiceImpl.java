@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
-import com.axelor.utils.MetaTool;
+import com.axelor.utils.helpers.MetaHelper;
 
 public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaService {
 
@@ -47,8 +47,8 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
     MetaJsonField metaJsonField = formula.getMetaJsonField();
     if (metaJsonField != null) {
       wantedTypeName =
-          MetaTool.getWantedClassName(
-              metaJsonField, MetaTool.jsonTypeToType(metaJsonField.getType()));
+          MetaHelper.getWantedClassName(
+              metaJsonField, MetaHelper.jsonTypeToType(metaJsonField.getType()));
     } else {
       wantedTypeName = formula.getMetaField().getTypeName();
     }

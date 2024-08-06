@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -17,6 +17,11 @@
     <string name="description" title="Description" large="true"/>
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
       mappedBy="baseBatch" title="Batchs"/>
+
+    <!-- COUNTRY ADDRESS BATCH -->
+    <many-to-many name="countrySet" title="Countries"
+      ref="com.axelor.apps.base.db.Country"/>
+    <boolean name="allCountries" title="All Countries"/>
 
     <!-- CALENDAR BATCH -->
     <integer name="synchronizationDuration" min="0" title="Synchronization duration (week)"/>
@@ -35,6 +40,7 @@
 		<![CDATA[
 		public static final int ACTION_SYNCHRONIZE_CALENDARS = 2;
 		public static final int ACTION_PASSWORD_CHANGE = 3;
+		public static final int ACTION_COUNTRY_RECOMPUTE_ADDRESS = 4;
 
 		public static final int PASSWORD_CHANGE_ACTION_GENERATE = 1;
 		public static final int PASSWORD_CHANGE_ACTION_FORCE_UPDATE = 2;

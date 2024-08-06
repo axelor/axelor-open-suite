@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,7 +27,7 @@ import DragIcon from '@material-ui/icons/DragIndicator';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
-import { getStatus, getCompletedStatus, translate } from '../../utils';
+import { getStatus, translate } from '../../utils';
 import { updateTask } from '../../Services/api';
 import { useTaskEditor } from '../list/Context';
 import ConfirmationDialog from '../../Components/ConfirmationDialog';
@@ -116,7 +116,7 @@ export function Card({ record, onEdit, newSubtaskId, setNewSubtaskId, isFullScre
       if (isCompleted) {
         status = record.statusBeforeComplete;
       } else {
-        status = getCompletedStatus(selectedProject);
+        status = selectedProject?.completedTaskStatus;
       }
       setState(state => ({
         ...state,

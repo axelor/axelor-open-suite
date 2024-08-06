@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -60,7 +60,8 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
    * @throws NullPointerException if fixedAsset is null
    */
   @Override
-  public void generateAndComputeFixedAssetDerogatoryLines(FixedAsset fixedAsset) {
+  public void generateAndComputeFixedAssetDerogatoryLines(FixedAsset fixedAsset)
+      throws AxelorException {
     Objects.requireNonNull(fixedAsset);
     if (fixedAsset
         .getDepreciationPlanSelect()

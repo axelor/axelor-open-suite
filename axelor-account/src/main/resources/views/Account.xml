@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="account-grid" title="Accounting.Accounts"
     model="com.axelor.apps.account.db.Account">
@@ -17,7 +17,7 @@
     <field name="parentAccount" form-view="account-form" grid-view="account-grid"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="defaultTax" hidden="true"/>
+    <field name="defaultTaxSet" hidden="true"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -81,6 +81,9 @@
         <panel-dashlet name="viewMoveLineReconcileGroupPanel" colSpan="12"
           title="General" hideIf="$popup() || !reconcileOk" height="450"
           action="action-account-view-show-move-lines" canSearch="true"/>
+        <panel-dashlet name="relatedMoveTemplatePanel" title="Move templates"
+          colSpan="12" height="450" hideIf="!id || accountType.technicalTypeSelect == 'view'"
+          action="action-account-view-move-templates" canSearch="true"/>
       </panel>
       <panel name="settingsPanel" title="Account.settings">
         <field name="accountType" required="true" form-view="account-type-form"
@@ -95,7 +98,8 @@
           readonlyIf="parentAccount != null &amp;&amp; accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"
           form-view="company-form" grid-view="company-grid"/>
         <field name="parentAccount" onChange="action-account-validate"
-          domain="self.company = :company" form-view="account-form" grid-view="account-grid"
+          onSelect="action-account-method-set-parent-account-domain" form-view="account-form"
+          grid-view="account-grid"
           readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"
@@ -113,7 +117,8 @@
             onChange="action-group-account-is-tax-authorized-onchange"/>
           <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
             widget="boolean-switch" onChange="action-account-validate-check-move-tax-required"/>
-          <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
+          <field name="defaultTaxSet" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
+            widget="TagSelect"/>
           <field name="vatSystemSelect" colSpan="4"
             showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"/>
         </panel>
@@ -509,6 +514,14 @@
   <action-method name="action-account-method-wizard-reconcile-line">
     <call class="com.axelor.apps.account.web.AccountController"
       method="setAmountRemainingReconciliableMoveLines"/>
+  </action-method>
+
+  <action-method name="action-account-method-set-parent-account-domain">
+    <call class="com.axelor.apps.account.web.AccountController" method="setParentAccountDomain"/>
+  </action-method>
+
+  <action-method name="action-account-view-move-templates">
+    <call class="com.axelor.apps.account.web.AccountController" method="viewMoveTemplates"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,14 +26,14 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.service.ArchivingToolService;
+import com.axelor.utils.service.ArchivingService;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -46,9 +46,9 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
 
   protected MoveLineRepository moveLineRepo;
 
-  protected ArchivingToolService archivingToolService;
+  protected ArchivingService archivingService;
 
-  protected ReconcileService reconcileService;
+  protected UnreconcileService unReconcileService;
 
   protected AccountingSituationService accountingSituationService;
 
@@ -58,14 +58,14 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   public MoveRemoveServiceImpl(
       MoveRepository moveRepo,
       MoveLineRepository moveLineRepo,
-      ArchivingToolService archivingToolService,
-      ReconcileService reconcileService,
+      ArchivingService archivingService,
+      UnreconcileService unReconcileService,
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService) {
     this.moveRepo = moveRepo;
     this.moveLineRepo = moveLineRepo;
-    this.archivingToolService = archivingToolService;
-    this.reconcileService = reconcileService;
+    this.archivingService = archivingService;
+    this.unReconcileService = unReconcileService;
     this.accountingSituationService = accountingSituationService;
     this.accountCustomerService = accountCustomerService;
   }
@@ -99,12 +99,12 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
     for (MoveLine moveLine : move.getMoveLineList()) {
       for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
         if (reconcile.getStatusSelect() != ReconcileRepository.STATUS_CANCELED) {
-          reconcileService.unreconcile(reconcile);
+          unReconcileService.unreconcile(reconcile);
         }
       }
       for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
         if (reconcile.getStatusSelect() != ReconcileRepository.STATUS_CANCELED) {
-          reconcileService.unreconcile(reconcile);
+          unReconcileService.unreconcile(reconcile);
         }
       }
     }
@@ -127,11 +127,10 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   @Override
   public void checkMoveBeforeRemove(Move move) throws Exception {
     String errorMessage = "";
-    Map<String, String> objectsLinkToMoveMap =
-        archivingToolService.getObjectLinkTo(move, move.getId());
+    Map<String, String> objectsLinkToMoveMap = archivingService.getObjectLinkTo(move, move.getId());
     String moveModelError = null;
     for (Map.Entry<String, String> entry : objectsLinkToMoveMap.entrySet()) {
-      String modelName = I18n.get(archivingToolService.getModelTitle(entry.getKey()));
+      String modelName = I18n.get(archivingService.getModelTitle(entry.getKey()));
       if (!entry.getKey().equals("MoveLine")) {
         if (moveModelError == null) {
           moveModelError = modelName;
@@ -168,12 +167,10 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   protected String checkMoveLineBeforeRemove(MoveLine moveLine) throws AxelorException {
     String errorMessage = "";
     Map<String, String> objectsLinkToMoveLineMap =
-        archivingToolService.getObjectLinkTo(moveLine, moveLine.getId());
+        archivingService.getObjectLinkTo(moveLine, moveLine.getId());
     for (Map.Entry<String, String> entry : objectsLinkToMoveLineMap.entrySet()) {
       String modelName = entry.getKey();
-      List<String> modelsToIgnore =
-          Lists.newArrayList(
-              "Move", "Reconcile", "InvoiceTerm", "AnalyticMoveLine", "TaxPaymentMoveLine");
+      List<String> modelsToIgnore = getModelsToIgnoreList();
       if (!modelsToIgnore.contains(modelName)
           && moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
         errorMessage +=
@@ -192,6 +189,12 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
       }
     }
     return errorMessage;
+  }
+
+  @Override
+  public List<String> getModelsToIgnoreList() {
+    return Lists.newArrayList(
+        "Move", "Reconcile", "InvoiceTerm", "AnalyticMoveLine", "TaxPaymentMoveLine");
   }
 
   @Override
@@ -216,6 +219,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
         if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
             || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
           this.deleteMove(move);
+          JPA.flush();
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
           this.archiveDaybookMove(move);
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {

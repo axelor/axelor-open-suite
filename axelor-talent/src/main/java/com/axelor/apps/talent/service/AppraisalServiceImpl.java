@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,6 @@ package com.axelor.apps.talent.service;
 
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
-import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.talent.db.Appraisal;
 import com.axelor.apps.talent.db.repo.AppraisalRepository;
 import com.axelor.auth.db.User;
@@ -125,9 +124,6 @@ public class AppraisalServiceImpl implements AppraisalService {
 
     for (Employee employee :
         employees.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
-      if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-        continue;
-      }
       Appraisal appraisal = appraisalRepo.copy(appraisalTemplate, false);
       appraisal.setEmployee(employee);
       if (appraisal.getCompany() == null) {

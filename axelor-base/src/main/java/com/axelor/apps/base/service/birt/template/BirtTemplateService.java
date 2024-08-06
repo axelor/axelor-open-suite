@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,15 +39,9 @@ public interface BirtTemplateService {
       String format)
       throws AxelorException;
 
-  File generateBirtTemplateFile(BirtTemplate template, Model model, String outputName)
-      throws AxelorException;
-
-  File generateBirtTemplateFile(
-      BirtTemplate template, Model model, String outputName, Boolean toAttach, String format)
-      throws AxelorException;
-
   File generateBirtTemplateFile(
       BirtTemplate template,
+      Model model,
       Map<String, Object> context,
       String outputName,
       Boolean toAttach,

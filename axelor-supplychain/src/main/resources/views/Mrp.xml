@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MRP">
+    <toolbar>
+      <button name="printBtn" hideIf="true" onClick=""/>
+    </toolbar>
     <hilite if="statusSelect == 1" strong="true" color="warning"/>
     <hilite if="statusSelect == 2" strong="true" color="success"/>
     <field name="name"/>
@@ -19,6 +22,10 @@
 
   <form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="MRP" width="large"
     onLoad="action-attrs-mrp-generate-all-proposals" onNew="action-mrp-record-onnew">
+    <toolbar>
+      <button name="printBtn" title="Print" onClick="save,action-method-print-template"
+        showIf="statusSelect == 2"/>
+    </toolbar>
     <menubar>
       <menu title="Tools" showTitle="true" icon="fa-wrench">
         <item name="runCalculationItem" title="Run calculation" showIf="statusSelect != 1"
@@ -29,19 +36,17 @@
         <item action="save,action-method-mrp-undo-manual-changes" title="Undo manual changes"
           name="undoManualChangesItem"/>
       </menu>
-      <menu title="Reports" showTitle="true" icon="fa-files-o">
-        <item name="printWeeksOrListItem" title="Print" action="save,action-method-print-birt"
-          showIf="statusSelect == 2"/>
-      </menu>
     </menubar>
 
     <panel name="infoPanel">
       <field name="mrpSeq" showTitle="false" colSpan="12">
         <viewer depends="mrpSeq,mrpTypeSelect"><![CDATA[
-					<h3>
-						<span ng-show="record.mrpSeq && record.mrpTypeSelect == 1" x-translate>MRP</span>
-						{{record.mrpSeq}}
-					</h3>
+					<>
+						<h3>
+							{mrpSeq && mrpTypeSelect == 1 && <span> {_t('MRP')} </span>}
+							{mrpSeq}
+						</h3>
+					</>
 				]]></viewer>
       </field>
     </panel>

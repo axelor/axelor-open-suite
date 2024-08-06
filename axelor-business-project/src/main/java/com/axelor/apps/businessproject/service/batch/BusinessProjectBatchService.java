@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -68,6 +68,10 @@ public class BusinessProjectBatchService extends AbstractBatchService {
         batch = backuptoProjectHistory(businessProjectBatch);
         break;
 
+      case BusinessProjectBatchRepository.ACTION_TRANSITION_BETWEEN_PAID_STATUS:
+        batch = transitionBetweenPaidStatus(businessProjectBatch);
+        break;
+
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -92,6 +96,10 @@ public class BusinessProjectBatchService extends AbstractBatchService {
 
   protected Batch backuptoProjectHistory(BusinessProjectBatch businessProjectBatch) {
     return Beans.get(BatchBackupToProjectHistoryService.class).run(businessProjectBatch);
+  }
+
+  protected Batch transitionBetweenPaidStatus(BusinessProjectBatch businessProjectBatch) {
+    return Beans.get(BatchTransitionBetweenPaidStatusService.class).run(businessProjectBatch);
   }
 
   @SuppressWarnings("unchecked")

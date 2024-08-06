@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,9 +23,14 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceViewService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.SaleOrderMergingResult;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
@@ -37,6 +42,7 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -53,6 +59,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Singleton
 public class StockMoveInvoiceController {
@@ -72,29 +80,85 @@ public class StockMoveInvoiceController {
             Beans.get(StockMoveRepository.class)
                 .find(Long.parseLong(request.getContext().get("_id").toString()));
         stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
-        Invoice invoice =
-            Beans.get(StockMoveInvoiceService.class)
-                .createInvoice(stockMove, operationSelect, stockMoveLineListContext);
+        Invoice invoice = null;
 
+        StockMoveInvoiceService stockMoveInvoiceService = Beans.get(StockMoveInvoiceService.class);
+        Map<Long, BigDecimal> qtyToInvoiceMap =
+            stockMoveInvoiceService.getQtyToInvoiceMap(operationSelect, stockMoveLineListContext);
+        Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
+
+        if (ObjectUtils.notEmpty(saleOrderSet)) {
+          SaleOrderMergingResult result =
+              Beans.get(SaleOrderMergingService.class)
+                  .simulateMergeSaleOrders(new ArrayList<>(saleOrderSet));
+          if (result.isConfirmationNeeded()) {
+            ActionViewBuilder confirmView =
+                Beans.get(SaleOrderMergingViewService.class)
+                    .buildConfirmView(result, "saleOrderToMerge", new ArrayList<>(saleOrderSet));
+            confirmView.context("stockMoveId", stockMove.getId());
+            confirmView.context("qtyToInvoiceMap", qtyToInvoiceMap);
+            confirmView.context("fromStockMove", true);
+
+            response.setView(confirmView.map());
+            return;
+          }
+          invoice =
+              stockMoveInvoiceService.createInvoiceFromSaleOrder(
+                  stockMove, result.getSaleOrder(), qtyToInvoiceMap);
+        } else if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
+          invoice =
+              stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
+                  stockMove, stockMove.getPurchaseOrderSet().iterator().next(), qtyToInvoiceMap);
+        } else {
+          invoice =
+              stockMoveInvoiceService.createInvoiceFromOrderlessStockMove(
+                  stockMove, qtyToInvoiceMap);
+        }
         if (invoice != null) {
-          // Open the generated invoice in a new tab
-          response.setView(
-              ActionView.define(I18n.get(ITranslation.INVOICE))
-                  .model(Invoice.class.getName())
-                  .add("grid", InvoiceViewService.computeInvoiceGridName(invoice))
-                  .add("form", "invoice-form")
-                  .param("search-filters", InvoiceViewService.computeInvoiceFilterName(invoice))
-                  .param("forceEdit", "true")
-                  .context("_showRecord", String.valueOf(invoice.getId()))
-                  .context("_operationTypeSelect", invoice.getOperationTypeSelect())
-                  .context(
-                      "todayDate",
-                      Beans.get(AppSupplychainService.class).getTodayDate(stockMove.getCompany()))
-                  .map());
-          response.setCanClose(true);
+          response.setView(getResponseView(invoice, stockMove));
         } else {
           response.setError(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_NO_LINES_TO_INVOICE));
         }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings({"unchecked"})
+  public void generateInvoiceFromPopUp(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      StockMove stockMove =
+          Beans.get(StockMoveRepository.class)
+              .find(Long.parseLong(request.getContext().get("stockMoveId").toString()));
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      Invoice invoice = null;
+      Map<Long, BigDecimal> qtyToInvoiceMap = null;
+
+      if (request.getContext().get("qtyToInvoiceMap") != null) {
+        qtyToInvoiceMap =
+            ((Map<String, Object>) request.getContext().get("qtyToInvoiceMap"))
+                .entrySet().stream()
+                    .collect(
+                        Collectors.toMap(
+                            k -> Long.parseLong(k.getKey()),
+                            v -> new BigDecimal(v.getValue().toString())));
+      }
+      if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
+        SaleOrderMergingResult result =
+            Beans.get(SaleOrderMergingService.class)
+                .simulateMergeSaleOrdersWithContext(
+                    new ArrayList<>(stockMove.getSaleOrderSet()), context);
+        invoice =
+            Beans.get(StockMoveInvoiceService.class)
+                .createInvoiceFromSaleOrder(stockMove, result.getSaleOrder(), qtyToInvoiceMap);
+      }
+      if (invoice != null) {
+        response.setCanClose(true);
+        response.setView(getResponseView(invoice, stockMove));
+      } else {
+        response.setError(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_NO_LINES_TO_INVOICE));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -581,6 +645,7 @@ public class StockMoveInvoiceController {
                   && supplyChainConfig.getActivateIncStockMovePartialInvoicing())
               || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
                   && supplyChainConfig.getActivateOutStockMovePartialInvoicing());
+      Invoice invoice = null;
 
       if (isPartialInvoicingActivated && !stockMoveLines.isEmpty()) {
         // open wizard view for partial invoicing
@@ -596,22 +661,34 @@ public class StockMoveInvoiceController {
                 .context("_id", stockMove.getId())
                 .map());
       } else if (!stockMoveLines.isEmpty()) {
-        // invoice everything if config is disabled.
-        Invoice invoice =
-            stockMoveInvoiceService.createInvoice(stockMove, StockMoveRepository.INVOICE_ALL, null);
+
+        Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
+        if (ObjectUtils.notEmpty(saleOrderSet)) {
+          SaleOrderMergingResult result =
+              Beans.get(SaleOrderMergingService.class)
+                  .simulateMergeSaleOrders(new ArrayList<>(saleOrderSet));
+          if (result.isConfirmationNeeded()) {
+            ActionViewBuilder confirmView =
+                Beans.get(SaleOrderMergingViewService.class)
+                    .buildConfirmView(result, "saleOrderToMerge", new ArrayList<>(saleOrderSet));
+            confirmView.context("stockMoveId", stockMove.getId());
+            confirmView.context("fromStockMove", true);
+
+            response.setView(confirmView.map());
+            return;
+          }
+          invoice =
+              stockMoveInvoiceService.createInvoiceFromSaleOrder(
+                  stockMove, result.getSaleOrder(), null);
+        } else if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
+          invoice =
+              stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
+                  stockMove, stockMove.getPurchaseOrderSet().iterator().next(), null);
+        } else {
+          invoice = stockMoveInvoiceService.createInvoiceFromOrderlessStockMove(stockMove, null);
+        }
         if (invoice != null) {
-          response.setView(
-              ActionView.define(I18n.get(ITranslation.INVOICE))
-                  .model(Invoice.class.getName())
-                  .add("grid", InvoiceViewService.computeInvoiceGridName(invoice))
-                  .add("form", "invoice-form")
-                  .param("search-filters", InvoiceViewService.computeInvoiceFilterName(invoice))
-                  .param("forceEdit", "true")
-                  .context("_showRecord", String.valueOf(invoice.getId()))
-                  .context("_operationTypeSelect", invoice.getOperationTypeSelect())
-                  .context(
-                      "todayDate", Beans.get(AppSupplychainService.class).getTodayDate(company))
-                  .map());
+          response.setView(getResponseView(invoice, stockMove));
         }
       } else {
         response.setAlert(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_ERROR));
@@ -619,5 +696,21 @@ public class StockMoveInvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  protected Map<String, Object> getResponseView(Invoice invoice, StockMove stockMove)
+      throws AxelorException {
+    return ActionView.define(I18n.get(ITranslation.INVOICE))
+        .model(Invoice.class.getName())
+        .add("grid", InvoiceViewService.computeInvoiceGridName(invoice))
+        .add("form", "invoice-form")
+        .param("search-filters", InvoiceViewService.computeInvoiceFilterName(invoice))
+        .param("forceEdit", "true")
+        .context("_showRecord", String.valueOf(invoice.getId()))
+        .context("_operationTypeSelect", invoice.getOperationTypeSelect())
+        .context(
+            "todayDate",
+            Beans.get(AppSupplychainService.class).getTodayDate(stockMove.getCompany()))
+        .map();
   }
 }

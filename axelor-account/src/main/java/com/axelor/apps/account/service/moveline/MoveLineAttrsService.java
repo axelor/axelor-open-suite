@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -62,7 +62,13 @@ public interface MoveLineAttrsService {
 
   void changeFocus(Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 
-  void addSubrogationPartnerHidden(Move move, Map<String, Map<String, Object>> attrsMap);
+  void addThirdPartyPayerPartnerHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addTaxLineRequired(Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
+
+  void addCutOffPanelHidden(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
+
+  void addCutOffDatesRequired(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 }

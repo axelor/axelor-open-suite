@@ -78,21 +78,6 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="4050">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3818">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -138,60 +123,77 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">analytic_journal_id</property>
+                    <property name="alias">analytic_journal_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">analytic_journal_id</text-property>
                     <text-property name="heading">analytic_journal_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_journal_name</property>
+                    <property name="alias">analytic_journal_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_journal_name</text-property>
                     <text-property name="heading">analytic_journal_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_axis_id</property>
+                    <property name="alias">analytic_axis_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">analytic_axis_id</text-property>
                     <text-property name="heading">analytic_axis_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_axis_code</property>
+                    <property name="alias">analytic_axis_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_axis_code</text-property>
                     <text-property name="heading">analytic_axis_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_axis_name</property>
+                    <property name="alias">analytic_axis_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_axis_name</text-property>
                     <text-property name="heading">analytic_axis_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_account_id</property>
+                    <property name="alias">analytic_account_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">analytic_account_id</text-property>
                     <text-property name="heading">analytic_account_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_account_code</property>
+                    <property name="alias">analytic_account_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_account_code</text-property>
                     <text-property name="heading">analytic_account_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_account_name</property>
+                    <property name="alias">analytic_account_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_account_name</text-property>
                     <text-property name="heading">analytic_account_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">account_type_name</property>
+                    <property name="alias">account_type_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">account_type_name</text-property>
                     <text-property name="heading">account_type_name</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="alias">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">amount</property>
+                    <property name="alias">amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
                     <text-property name="heading">amount</text-property>
@@ -259,6 +261,11 @@
                     </structure>
                     <structure>
                         <property name="position">10</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
                         <property name="name">amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -332,6 +339,13 @@
                 </structure>
                 <structure>
                     <property name="position">10</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
@@ -342,6 +356,7 @@
 AnalyticAxis.id as analytic_axis_id, AnalyticAxis.code as analytic_axis_code, AnalyticAxis.name as analytic_axis_name,
 AnalyticAccount.id as analytic_account_id, AnalyticAccount.code as analytic_account_code, AnalyticAccount.name as analytic_account_name, 
 AccountType.name as account_type_name,
+Currency.number_of_decimals,
 SUM(AnalyticMoveLine.amount * sign(MoveLine.debit - MoveLine.credit)) as amount
 
 from public.account_accounting_report as AccountingReport 
@@ -353,7 +368,7 @@ left outer join public.account_analytic_account as AnalyticAccount on (AnalyticM
 left outer join public.account_analytic_axis as AnalyticAxis on (AnalyticMoveLine.analytic_axis = AnalyticAxis.id ) 
 left outer join public.account_analytic_journal as AnalyticJournal on (AnalyticMoveLine.analytic_journal = AnalyticJournal.id ) 
 left outer join public.account_account_type as AccountType on (AnalyticMoveLine.account_type  = AccountType.id )
-
+left outer join public.base_currency as Currency on (Currency.id = AnalyticMoveLine.currency)
 
 left outer join public.base_company as Company on (AccountingReport.company = Company.id) 
 
@@ -379,7 +394,8 @@ AND (AccountTypeSet.account_type_set IS NULL OR AccountTypeSet.account_type_set 
 AND (AnalyticAccountSet.analytic_account_set IS NULL OR AnalyticAccountSet.analytic_account_set = AnalyticAccount.id)
 AND (AnalyticAxisSet.analytic_axis_set IS NULL OR AnalyticAxisSet.analytic_axis_set = AnalyticAxis.id)
 
-group by AnalyticJournal.id, AnalyticAxis.id, AnalyticAccount.id, AccountType.id
+
+group by AnalyticJournal.id, AnalyticAxis.id, AnalyticAccount.id, AccountType.id, Currency.number_of_decimals
 order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountType.id]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -652,7 +668,7 @@ where AccountingReport.id = ? ]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">-1</property>
@@ -694,7 +710,7 @@ where AccountingReport.id = ? ]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1552,6 +1568,12 @@ this.height=row["logo_height"];]]></method>
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="4147">
@@ -2139,14 +2161,17 @@ this.height=row["logo_height"];]]></method>
                                     <cell id="4266">
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
-                                        <data id="4271">
+                                        <text id="4326">
                                             <property name="fontSize">9pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
-                                            <property name="resultSetColumn">TotalPerAnalyticJournal</property>
-                                        </data>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="borderBottomStyle">none</property>
+                                            <property name="borderLeftStyle">none</property>
+                                            <property name="borderRightStyle">none</property>
+                                            <property name="borderTopStyle">none</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["TotalPerAnalyticJournal"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="4267">
                                         <property name="borderRightStyle">solid</property>
@@ -2236,15 +2261,17 @@ this.height=row["logo_height"];]]></method>
                                     </cell>
                                     <cell id="4238">
                                         <property name="textAlign">right</property>
-                                        <data id="4248">
+                                        <text id="4325">
                                             <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
-                                            <property name="resultSetColumn">TotalPerAnalyticAxis</property>
-                                        </data>
+                                            <property name="borderBottomStyle">none</property>
+                                            <property name="borderLeftStyle">none</property>
+                                            <property name="borderRightStyle">none</property>
+                                            <property name="borderTopStyle">none</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["TotalPerAnalyticAxis"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="4244">
                                         <property name="borderRightStyle">solid</property>
@@ -2364,16 +2391,17 @@ this.height=row["logo_height"];]]></method>
                                     <cell id="4300">
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="4306">
+                                        <text id="4324">
                                             <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
+                                            <property name="borderBottomStyle">none</property>
+                                            <property name="borderLeftStyle">none</property>
+                                            <property name="borderRightStyle">none</property>
+                                            <property name="borderTopStyle">none</property>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">TotalPerAnalyticAccount</property>
-                                        </data>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["TotalPerAnalyticAccount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="4301">
                                         <property name="borderRightStyle">solid</property>
@@ -2440,15 +2468,23 @@ this.height=row["logo_height"];]]></method>
                                     </data>
                                 </cell>
                                 <cell id="4080">
-                                    <data id="4209">
+                                    <text id="4323">
                                         <property name="fontSize">9pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">amount</property>
-                                    </data>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["amount"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["amount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4243">
                                     <property name="borderRightStyle">solid</property>
@@ -2480,6 +2516,51 @@ this.height=row["logo_height"];]]></method>
                             </row>
                         </footer>
                     </table>
+                </cell>
+            </row>
+        </grid>
+        <grid id="4323">
+            <property name="marginTop">10pt</property>
+            <property name="dataSet">AnalyticMoveLineDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">row.__rownum != -1</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">account_type_name</property>
+                    <text-property name="displayName">account_type_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["account_type_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="4324"/>
+            <row id="4325">
+                <cell id="4326">
+                    <text id="4327">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReport.noEntry'
+</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
             </row>
         </grid>

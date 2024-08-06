@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,7 +36,7 @@ import com.axelor.apps.base.db.repo.FunctionRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SyncContactRepository;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
@@ -49,7 +49,7 @@ import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.repo.EmailAddressRepository;
 import com.axelor.rpc.Response;
-import com.axelor.utils.EmailTool;
+import com.axelor.utils.helpers.EmailHelper;
 import com.google.api.services.people.v1.model.Name;
 import com.google.api.services.people.v1.model.Organization;
 import com.google.api.services.people.v1.model.Person;
@@ -136,7 +136,7 @@ public class SyncContactService {
       return null;
     }
     SyncContactResponse response = new SyncContactResponse();
-    response.setClientid(syncContact.getCid());
+    response.setClientid(syncContact.getClientId());
     response.setKey(syncContact.getGoogleApiKey());
     response.setAuthFailed(I18n.get(SYNC_CONTACT_AUTH_FAILED));
     response.setImportSuccessful(I18n.get(SYNC_CONTACT_IMPORT_SUCCESSFUL));
@@ -237,7 +237,7 @@ public class SyncContactService {
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
     String seq =
         Beans.get(SequenceService.class)
-            .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
+            .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner);
     partner.setUser(userService.getUser());
     partner.setPartnerSeq(seq);
     partner.setIsContact(true);
@@ -262,7 +262,7 @@ public class SyncContactService {
             com.google.api.services.people.v1.model.EmailAddress.class,
             googlePerson.getEmailAddresses().get(0));
     if (Strings.isNullOrEmpty(googleEmail.getValue())
-        || !EmailTool.isValidEmailAddress(googleEmail.getValue())) {
+        || !EmailHelper.isValidEmailAddress(googleEmail.getValue())) {
       return;
     }
     if (partner.getEmailAddress() == null
@@ -311,7 +311,7 @@ public class SyncContactService {
     String query =
         "self.zip = '"
             + googleAddr.getPostalCode()
-            + "' AND self.addressL7Country.alpha2Code = '"
+            + "' AND self.country.alpha2Code = '"
             + googleAddr.getCountryCode()
             + "' AND self.addressL4 = '"
             + googleAddr.getStreetAddress()
@@ -359,7 +359,7 @@ public class SyncContactService {
     if (partnerCountry == null) {
       partnerCountry = createCountry(googleAddr.getCountry(), googleAddr.getCountryCode());
     }
-    partnerAddr.setAddressL7Country(partnerCountry);
+    partnerAddr.setCountry(partnerCountry);
     if (!Strings.isNullOrEmpty(googleAddr.getCity())) {
       City partnerCity = cityRepo.findByName(googleAddr.getCity());
       if (partnerCity == null) {

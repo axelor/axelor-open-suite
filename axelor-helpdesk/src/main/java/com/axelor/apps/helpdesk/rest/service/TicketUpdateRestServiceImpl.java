@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,8 @@ import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.apps.helpdesk.exceptions.HelpdeskExceptionMessage;
 import com.axelor.apps.helpdesk.service.TicketService;
+import com.axelor.apps.helpdesk.service.TicketStatusService;
+import com.axelor.apps.helpdesk.service.TicketWorkflowService;
 import com.axelor.apps.helpdesk.service.TimerTicketService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -37,15 +39,21 @@ public class TicketUpdateRestServiceImpl implements TicketUpdateRestService {
   protected TicketService ticketService;
   protected TimerTicketService timerTicketService;
   protected TicketRepository ticketRepository;
+  protected TicketStatusService ticketStatusService;
+  protected TicketWorkflowService ticketWorkflowService;
 
   @Inject
   public TicketUpdateRestServiceImpl(
       TicketService ticketService,
       TimerTicketService timerTicketService,
-      TicketRepository ticketRepository) {
+      TicketRepository ticketRepository,
+      TicketStatusService ticketStatusService,
+      TicketWorkflowService ticketWorkflowService) {
     this.ticketService = ticketService;
     this.timerTicketService = timerTicketService;
     this.ticketRepository = ticketRepository;
+    this.ticketStatusService = ticketStatusService;
+    this.ticketWorkflowService = ticketWorkflowService;
   }
 
   @Override
@@ -53,7 +61,7 @@ public class TicketUpdateRestServiceImpl implements TicketUpdateRestService {
   public Ticket updateTicketStatus(Ticket ticket, String targetStatus, LocalDateTime dateTime)
       throws AxelorException {
 
-    if (ticket.getStatusSelect() == TicketRepository.STATUS_NEW) {
+    if (ticketStatusService.isNewTicket(ticket)) {
       if (Objects.equals(targetStatus, TicketUpdateRestService.TICKET_START_STATUS)) {
         return handleStart(ticket, dateTime);
       } else {
@@ -63,7 +71,7 @@ public class TicketUpdateRestServiceImpl implements TicketUpdateRestService {
       }
     }
 
-    if (ticket.getStatusSelect() == TicketRepository.STATUS_IN_PROGRESS) {
+    if (ticketStatusService.isInProgressTicket(ticket)) {
       if (Objects.equals(targetStatus, TicketUpdateRestService.TICKET_START_STATUS)) {
         return handleStart(ticket, dateTime);
       } else if (Objects.equals(targetStatus, TicketUpdateRestService.TICKET_PAUSE_STATUS)) {
@@ -81,7 +89,7 @@ public class TicketUpdateRestServiceImpl implements TicketUpdateRestService {
       }
     }
 
-    if (ticket.getStatusSelect() == TicketRepository.STATUS_RESOLVED) {
+    if (ticketStatusService.isResolvedTicket(ticket)) {
       if (Objects.equals(targetStatus, TicketUpdateRestService.TICKET_CLOSE_STATUS)) {
         return handleClose(ticket, dateTime);
       } else {
@@ -101,7 +109,7 @@ public class TicketUpdateRestServiceImpl implements TicketUpdateRestService {
     timerTicketService.start(ticket, startDateT);
     ticket.setTimerState(true);
 
-    if (ticket.getStatusSelect() == TicketRepository.STATUS_NEW) {
+    if (ticketStatusService.isNewTicket(ticket)) {
       ticket.setStartDateT(startDateT);
 
       if (ticket.getDuration() != null && ticket.getDuration() != 0) {
@@ -111,7 +119,7 @@ public class TicketUpdateRestServiceImpl implements TicketUpdateRestService {
         ticket.setDuration(ticketService.computeDuration(ticket));
       }
 
-      ticket.setStatusSelect(TicketRepository.STATUS_IN_PROGRESS);
+      ticketWorkflowService.startTicket(ticket);
     }
 
     return ticketRepository.save(ticket);
@@ -150,7 +158,7 @@ public class TicketUpdateRestServiceImpl implements TicketUpdateRestService {
       ticket.setStartDateT(ticketService.computeStartDate(ticket));
     }
 
-    ticket.setStatusSelect(TicketRepository.STATUS_RESOLVED);
+    ticketWorkflowService.resolveTicket(ticket);
     ticket.setProgressSelect(100);
 
     return ticketRepository.save(ticket);
@@ -166,7 +174,7 @@ public class TicketUpdateRestServiceImpl implements TicketUpdateRestService {
           BigDecimal.valueOf(timerTicketService.compute(ticket).toMinutes() / 60F));
     }
 
-    ticket.setStatusSelect(TicketRepository.STATUS_CLOSED);
+    ticketWorkflowService.closeTicket(ticket);
 
     return ticketRepository.save(ticket);
   }

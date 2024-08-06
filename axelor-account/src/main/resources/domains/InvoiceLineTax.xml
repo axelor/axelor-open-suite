@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="InvoiceLineTax">
 
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
-    <decimal name="exTaxBase" scale="2" precision="20" title="Base W.T."/>
-    <decimal name="taxTotal" scale="2" precision="20" title="Amount Tax"/>
-    <decimal name="inTaxTotal" scale="2" precision="20" title="Amount A.T.I."/>
-    <decimal name="companyExTaxBase" scale="2" precision="20"
+    <decimal name="exTaxBase" scale="3" precision="20" title="Base W.T."/>
+    <decimal name="taxTotal" scale="3" precision="20" title="Amount Tax"/>
+    <decimal name="inTaxTotal" scale="3" precision="20" title="Amount A.T.I."/>
+    <decimal name="companyExTaxBase" scale="3" precision="20"
       title="Base W.T. in Acc. currency." hidden="true"/>
-    <decimal name="companyTaxTotal" scale="2" precision="20"
+    <decimal name="companyTaxTotal" scale="3" precision="20"
       title="Amount Tax in Acc. currency" hidden="true"/>
-    <decimal name="companyInTaxTotal" scale="2" precision="20"
+    <decimal name="companyInTaxTotal" scale="3" precision="20"
       title="Amount A.T.I. in Acc. currency" hidden="true"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <boolean name="reverseCharged"/>
-    <decimal name="subTotalExcludingFixedAssets"/>
-    <decimal name="subTotalOfFixedAssets"/>
-    <decimal name="companySubTotalExcludingFixedAssets"/>
-    <decimal name="companySubTotalOfFixedAssets"/>
     <integer name="vatSystemSelect" title="VAT System"
       selection="iaccount.vat.system.invoice.line.tax.select" default="0"/>
+    <decimal name="coefficient" title="Coefficient" scale="12" precision="20" default="1"
+      min="0" max="1" nullable="true"/>
+    <many-to-one name="taxType" ref="com.axelor.apps.account.db.TaxType"
+      title="Tax type"/>
+    <many-to-one name="imputedAccount" title="Imputed account"
+      ref="com.axelor.apps.account.db.Account"/>
   </entity>
 
 </domain-models>

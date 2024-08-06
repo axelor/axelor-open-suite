@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="stock-config-grid" title="Stock configurations"
     model="com.axelor.apps.stock.db.StockConfig">
@@ -46,11 +46,11 @@
         <field name="qualityControlDefaultStockLocation"
           domain="self.company = :company and self.typeSelect != 3" colSpan="4"
           form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="wasteStockLocation"
+        <field name="componentDefaultStockLocation"
           domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
           colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
           if-module="axelor-production" if="__config__.app.isApp('production')"/>
-        <field name="componentDefaultStockLocation"
+        <field name="residualProductsDefaultStockLocation"
           domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
           colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
           if-module="axelor-production" if="__config__.app.isApp('production')"/>
@@ -66,6 +66,10 @@
           domain="self.isOutsourcingLocation = true AND self.typeSelect != 3 AND self.company = :company"
           colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
           if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
+        <field name="wasteStockLocation"
+          domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
+          colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
+          if-module="axelor-production" if="__config__.app.isApp('production')"/>
         <field name="isWithReturnSurplus" widget="boolean-switch" colSpan="4"/>
         <field name="isWithBackorder" widget="boolean-switch" colSpan="4"/>
       </panel>
@@ -74,7 +78,8 @@
       <field name="stockRuleMessageTemplate"/>
     </panel>
     <panel name="stockLocationValuePanel" title="Stock location value">
-      <field name="stockValuationTypeSelect"/>
+      <field name="stockValuationTypeSelect"
+        onChange="action-stock-config-record-set-stock-move-printing-settings"/>
       <field name="inventoryValuationTypeSelect"/>
       <field name="percentToleranceForWapChange"/>
     </panel>
@@ -97,6 +102,14 @@
       <field name="realStockMoveAutomaticMail"/>
       <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail"
         showIf="realStockMoveAutomaticMail" form-view="template-form" grid-view="template-grid"/>
+    </panel>
+
+    <panel name="supplierArrivalCancellationPanel">
+      <field name="supplierArrivalCancellationAutomaticMail"/>
+      <field name="supplierArrivalCancellationMessageTemplate"
+        requiredIf="supplierArrivalCancellationAutomaticMail"
+        showIf="supplierArrivalCancellationAutomaticMail" form-view="template-form"
+        grid-view="template-grid"/>
     </panel>
 
     <panel name="logisticalFormPanel">
@@ -128,10 +141,10 @@
       <field name="displayPriceOnPrinting" widget="boolean-switch"/>
     </panel>
     <panel name="printingsPanel" title="Printings" colSpan="12">
-      <field name="pickingStockMoveBirtTemplate"/>
-      <field name="conformityCertificateBirtTemplate"/>
-      <field name="inventoryBirtTemplate"/>
-      <field name="stockLocationBirtTemplate"/>
+      <field name="pickingStockMovePrintTemplate"/>
+      <field name="conformityCertificatePrintTemplate"/>
+      <field name="inventoryPrintTemplate"/>
+      <field name="stockLocationPrintTemplate"/>
     </panel>
 
     <panel-mail name="mailPanel">
@@ -179,5 +192,15 @@
     <attribute name="domain" for="pickupDefaultStockLocation"
       expr="eval: &quot; self.company = :company and self.typeSelect != 3 &quot;"/>
   </action-attrs>
+
+  <action-record name="action-stock-config-record-set-stock-move-printing-settings"
+    model="com.axelor.apps.stock.db.StockConfig">
+    <field name="isDisplaySaleValueInPrinting" expr="eval: stockValuationTypeSelect == 3"/>
+    <field name="isDisplayAccountingValueInPrinting"
+      expr="eval: stockValuationTypeSelect == 2"/>
+    <field name="isDisplayAgPriceInPrinting"
+      expr="eval: stockValuationTypeSelect == 1 || stockValuationTypeSelect == 5"/>
+    <field name="isDisplayPurchaseValueInPrinting" expr="eval: stockValuationTypeSelect == 4"/>
+  </action-record>
 
 </object-views>

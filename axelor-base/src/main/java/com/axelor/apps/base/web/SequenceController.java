@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -61,6 +61,11 @@ public class SequenceController {
     response.setValue("fullName", fullName);
   }
 
+  public void verifyPattern(ActionRequest request, ActionResponse response) throws AxelorException {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    Beans.get(SequenceService.class).verifyPattern(sequence);
+  }
+
   public void updateSequenceVersionsMonthly(ActionRequest request, ActionResponse response) {
     try {
       Sequence sequence = request.getContext().asType(Sequence.class);
@@ -98,7 +103,9 @@ public class SequenceController {
     try {
       Sequence sequence = request.getContext().asType(Sequence.class);
       sequence = EntityHelper.getEntity(sequence);
-      Beans.get(SequenceService.class).checkSequenceLengthValidity(sequence);
+      if (!sequence.getPrefixGroovyOk() || !sequence.getSuffixGroovyOk()) {
+        Beans.get(SequenceService.class).checkSequenceLengthValidity(sequence);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

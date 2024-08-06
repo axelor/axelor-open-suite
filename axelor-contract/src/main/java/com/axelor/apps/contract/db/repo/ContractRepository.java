@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,19 +27,37 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.service.ContractLineService;
-import com.axelor.apps.contract.service.ContractVersionServiceImpl;
+import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ContractRepository extends AbstractContractRepository {
+
+  protected ContractLineService contractLineService;
+  protected ContractVersionService contractVersionService;
+  protected SequenceService sequenceService;
+  protected ContractVersionRepository contractVersionRepository;
+
+  @Inject
+  public ContractRepository(
+      ContractLineService contractLineService,
+      ContractVersionService contractVersionService,
+      SequenceService sequenceService,
+      ContractVersionRepository contractVersionRepository) {
+    this.contractLineService = contractLineService;
+    this.contractVersionService = contractVersionService;
+    this.sequenceService = sequenceService;
+    this.contractLineService = contractLineService;
+  }
+
   @Override
   public Contract save(Contract contract) {
     try {
-      ContractLineService contractLineService = Beans.get(ContractLineService.class);
       if (contract.getContractId() == null) {
-        contract.setContractId(computeSeq(contract.getCompany(), contract.getTargetTypeSelect()));
+        contract.setContractId(
+            computeSeq(contract.getCompany(), contract.getTargetTypeSelect(), contract));
       }
 
       ContractVersion currentContractVersion = contract.getCurrentContractVersion();
@@ -51,11 +69,10 @@ public class ContractRepository extends AbstractContractRepository {
             contract.getCurrentContractVersion().getContractLineList())) {
           for (ContractLine contractLine :
               contract.getCurrentContractVersion().getContractLineList()) {
-            contractLineService.computeTotal(contractLine);
+            contractLineService.computeTotal(contractLine, contract);
           }
         }
-        Beans.get(ContractVersionServiceImpl.class)
-            .computeTotals(contract.getCurrentContractVersion());
+        contractVersionService.computeTotals(contract.getCurrentContractVersion());
       }
 
       return super.save(contract);
@@ -65,15 +82,15 @@ public class ContractRepository extends AbstractContractRepository {
     }
   }
 
-  public String computeSeq(Company company, int type) {
+  public String computeSeq(Company company, int type, Contract contract) {
     try {
       String seq =
-          Beans.get(SequenceService.class)
-              .getSequenceNumber(
-                  type == 1 ? CUSTOMER_CONTRACT_SEQUENCE : SUPPLIER_CONTRACT_SEQUENCE,
-                  company,
-                  Contract.class,
-                  "contractId");
+          sequenceService.getSequenceNumber(
+              type == 1 ? CUSTOMER_CONTRACT_SEQUENCE : SUPPLIER_CONTRACT_SEQUENCE,
+              company,
+              Contract.class,
+              "contractId",
+              contract);
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -90,10 +107,12 @@ public class ContractRepository extends AbstractContractRepository {
   @Override
   public Contract copy(Contract entity, boolean deep) {
     Contract contract = super.copy(entity, deep);
-    ContractVersion version = Beans.get(ContractVersionRepository.class).copy(entity);
+    ContractVersion version = contractVersionRepository.copy(entity);
     contract.setNextRevaluationDate(null);
     contract.setLastRevaluationDate(null);
     contract.setCurrentContractVersion(version);
+    contract.setContractId(null);
+    contract.setVersionHistory(null);
     return contract;
   }
 }

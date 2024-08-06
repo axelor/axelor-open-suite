@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 package com.axelor.apps.talent.service;
 
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.talent.db.Training;
 import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;
 import java.util.ArrayList;
@@ -33,13 +32,7 @@ public interface TrainingRegisterService {
 
   public void cancel(TrainingRegister trainingRegister);
 
-  public Training updateTrainingRating(Training training, Long excludeId);
-
-  public TrainingSession updateSessionRating(TrainingSession trainingSession, Long excludeId);
-
   public void updateEventCalendar(TrainingRegister trainingRegister);
-
-  public String computeFullName(TrainingRegister trainingRegister);
 
   public String massTrainingRegisterCreation(
       ArrayList<LinkedHashMap<String, Object>> employeeList, TrainingSession trainingSession);

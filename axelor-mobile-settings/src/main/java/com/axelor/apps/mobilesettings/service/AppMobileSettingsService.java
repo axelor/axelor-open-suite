@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,8 @@ package com.axelor.apps.mobilesettings.service;
 import com.axelor.studio.db.AppMobileSettings;
 
 public interface AppMobileSettingsService {
+
+  public AppMobileSettings getAppMobileSettings();
 
   public void updateAllMobileConfig(AppMobileSettings appMobileSettings);
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,7 +41,7 @@ import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Batch;
@@ -55,15 +55,15 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
@@ -72,7 +72,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   protected PaymentScheduleService paymentScheduleService;
 
   protected BankOrderCreateService bankOrderCreateService;
-  protected BankOrderService bankOrderService;
+  protected BankOrderValidationService bankOrderValidationService;
   protected BankOrderLineService bankOrderLineService;
   protected BankOrderMergeService bankOrderMergeService;
 
@@ -89,7 +89,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
       InvoicePaymentValidateService invoicePaymentValidateService,
       PaymentScheduleService paymentScheduleService,
       BankOrderCreateService bankOrderCreateService,
-      BankOrderService bankOrderService,
+      BankOrderValidationService bankOrderValidationService,
       BankOrderLineService bankOrderLineService,
       BankOrderMergeService bankOrderMergeService,
       ReconcileRepository reconcileRepo,
@@ -103,7 +103,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
     this.paymentScheduleService = paymentScheduleService;
 
     this.bankOrderCreateService = bankOrderCreateService;
-    this.bankOrderService = bankOrderService;
+    this.bankOrderValidationService = bankOrderValidationService;
     this.bankOrderLineService = bankOrderLineService;
     this.bankOrderMergeService = bankOrderMergeService;
 
@@ -210,8 +210,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   protected void createBankOrders(Batch batch, Reconcile reconcile)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
-    for (InvoicePayment invoicePayment :
-        invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch()) {
+    for (InvoicePayment invoicePayment : invoicePaymentRepo.findByReconcile(reconcile).fetch()) {
       if (invoicePayment.getBankOrder() != null) {
         continue;
       }
@@ -312,7 +311,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
 
     bankOrder = bankOrderRepo.find(bankOrder.getId());
     bankOrder = bankOrderRepo.save(bankOrder);
-    bankOrderService.confirm(bankOrder);
+    bankOrderValidationService.confirm(bankOrder);
 
     batch = batchRepo.find(batch.getId());
     batch.setBankOrder(bankOrder);

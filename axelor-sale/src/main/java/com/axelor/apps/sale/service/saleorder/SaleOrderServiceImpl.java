@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -67,6 +67,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrderMarginService saleOrderMarginService;
   protected SaleConfigService saleConfigService;
+  protected SaleOrderLineCreateService saleOrderLineCreateService;
 
   @Inject
   public SaleOrderServiceImpl(
@@ -76,7 +77,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrderRepository saleOrderRepo,
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
-      SaleConfigService saleConfigService) {
+      SaleConfigService saleConfigService,
+      SaleOrderLineCreateService saleOrderLineCreateService) {
     this.saleOrderLineService = saleOrderLineService;
     this.appBaseService = appBaseService;
     this.saleOrderLineRepo = saleOrderLineRepo;
@@ -84,6 +86,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleConfigService = saleConfigService;
+    this.saleOrderLineCreateService = saleOrderLineCreateService;
   }
 
   @Override
@@ -210,7 +213,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         continue;
       }
       soLine =
-          saleOrderLineService.createSaleOrderLine(
+          saleOrderLineCreateService.createSaleOrderLine(
               packLine, saleOrder, packQty, conversionRate, ++sequence);
       if (soLine != null) {
         soLine.setSaleOrder(saleOrder);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -77,21 +77,6 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="4050">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3818">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -159,7 +144,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">-1</property>
@@ -201,7 +186,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -322,6 +307,12 @@ WHERE AccountingReport.id = ?]]></xml-property>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceDS" id="4052">
             <list-property name="columnHints">
                 <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">count_purchase_0</property>
                     <property name="alias">count_purchase_0</property>
                     <property name="analysis">measure</property>
@@ -356,8 +347,10 @@ WHERE AccountingReport.id = ?]]></xml-property>
                     <text-property name="heading">count_purchase_1</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">count_purchase_total</property>
+                    <property name="columnName">purchase_total</property>
                     <property name="analysis">measure</property>
+                    <text-property name="displayName">purchase_total</text-property>
+                    <text-property name="heading">purchase_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">count_sale_0</property>
@@ -718,311 +711,316 @@ WHERE AccountingReport.id = ?]]></xml-property>
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
                         <property name="name">count_purchase_0</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">2</property>
+                        <property name="position">3</property>
                         <property name="name">count_purchase_30</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">3</property>
+                        <property name="position">4</property>
                         <property name="name">count_purchase_60</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">4</property>
+                        <property name="position">5</property>
                         <property name="name">count_purchase_90</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">6</property>
                         <property name="name">count_purchase_91</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">7</property>
                         <property name="name">count_purchase_1</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
-                        <property name="name">count_purchase_total</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
                         <property name="position">8</property>
-                        <property name="name">count_sale_0</property>
+                        <property name="name">purchase_total</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
-                        <property name="name">count_sale_30</property>
+                        <property name="name">count_sale_0</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">10</property>
-                        <property name="name">count_sale_60</property>
+                        <property name="name">count_sale_30</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">11</property>
-                        <property name="name">count_sale_90</property>
+                        <property name="name">count_sale_60</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">12</property>
-                        <property name="name">count_sale_91</property>
+                        <property name="name">count_sale_90</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">13</property>
-                        <property name="name">count_sale_1</property>
+                        <property name="name">count_sale_91</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">14</property>
-                        <property name="name">purchase_total_0</property>
+                        <property name="name">count_sale_1</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">15</property>
-                        <property name="name">purchase_total_30</property>
+                        <property name="name">purchase_total_0</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">16</property>
-                        <property name="name">purchase_total_60</property>
+                        <property name="name">purchase_total_30</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">17</property>
-                        <property name="name">purchase_total_90</property>
+                        <property name="name">purchase_total_60</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">18</property>
-                        <property name="name">purchase_total_91</property>
+                        <property name="name">purchase_total_90</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">19</property>
-                        <property name="name">purchase_total_1</property>
+                        <property name="name">purchase_total_91</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">20</property>
-                        <property name="name">sale_total_0</property>
+                        <property name="name">purchase_total_1</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">21</property>
-                        <property name="name">sale_total_30</property>
+                        <property name="name">sale_total_0</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">22</property>
-                        <property name="name">sale_total_60</property>
+                        <property name="name">sale_total_30</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">23</property>
-                        <property name="name">sale_total_90</property>
+                        <property name="name">sale_total_60</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">24</property>
-                        <property name="name">sale_total_91</property>
+                        <property name="name">sale_total_90</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">25</property>
-                        <property name="name">sale_total_1</property>
+                        <property name="name">sale_total_91</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">26</property>
-                        <property name="name">sale_total</property>
+                        <property name="name">sale_total_1</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">27</property>
-                        <property name="name">count_purchase_doubtful_0</property>
+                        <property name="name">sale_total</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">28</property>
-                        <property name="name">count_purchase_doubtful_30</property>
+                        <property name="name">count_purchase_doubtful_0</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">29</property>
-                        <property name="name">count_purchase_doubtful_60</property>
+                        <property name="name">count_purchase_doubtful_30</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">30</property>
-                        <property name="name">count_purchase_doubtful_90</property>
+                        <property name="name">count_purchase_doubtful_60</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">31</property>
-                        <property name="name">count_purchase_doubtful_91</property>
+                        <property name="name">count_purchase_doubtful_90</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">32</property>
-                        <property name="name">count_purchase_doubtful_1</property>
+                        <property name="name">count_purchase_doubtful_91</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">33</property>
-                        <property name="name">purchase_total_doubtful_0</property>
+                        <property name="name">count_purchase_doubtful_1</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">34</property>
-                        <property name="name">purchase_total_doubtful_30</property>
+                        <property name="name">purchase_total_doubtful_0</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">35</property>
-                        <property name="name">purchase_total_doubtful_60</property>
+                        <property name="name">purchase_total_doubtful_30</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">36</property>
-                        <property name="name">purchase_total_doubtful_90</property>
+                        <property name="name">purchase_total_doubtful_60</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">37</property>
-                        <property name="name">purchase_total_doubtful_91</property>
+                        <property name="name">purchase_total_doubtful_90</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">38</property>
-                        <property name="name">purchase_total_doubtful_1</property>
+                        <property name="name">purchase_total_doubtful_91</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">39</property>
-                        <property name="name">count_sale_doubtful_0</property>
+                        <property name="name">purchase_total_doubtful_1</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">40</property>
-                        <property name="name">count_sale_doubtful_30</property>
+                        <property name="name">count_sale_doubtful_0</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">41</property>
-                        <property name="name">count_sale_doubtful_60</property>
+                        <property name="name">count_sale_doubtful_30</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">42</property>
-                        <property name="name">count_sale_doubtful_90</property>
+                        <property name="name">count_sale_doubtful_60</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">43</property>
-                        <property name="name">count_sale_doubtful_91</property>
+                        <property name="name">count_sale_doubtful_90</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">44</property>
-                        <property name="name">count_sale_doubtful_1</property>
+                        <property name="name">count_sale_doubtful_91</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">45</property>
-                        <property name="name">sale_total_doubtful_0</property>
+                        <property name="name">count_sale_doubtful_1</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">46</property>
-                        <property name="name">sale_total_doubtful_30</property>
+                        <property name="name">sale_total_doubtful_0</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">47</property>
-                        <property name="name">sale_total_doubtful_60</property>
+                        <property name="name">sale_total_doubtful_30</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">48</property>
-                        <property name="name">sale_total_doubtful_90</property>
+                        <property name="name">sale_total_doubtful_60</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">49</property>
-                        <property name="name">sale_total_doubtful_91</property>
+                        <property name="name">sale_total_doubtful_90</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">50</property>
-                        <property name="name">sale_total_doubtful_1</property>
+                        <property name="name">sale_total_doubtful_91</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">51</property>
-                        <property name="name">purchase_percentage_0</property>
+                        <property name="name">sale_total_doubtful_1</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">52</property>
-                        <property name="name">purchase_percentage_30</property>
+                        <property name="name">purchase_percentage_0</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">53</property>
-                        <property name="name">purchase_percentage_60</property>
+                        <property name="name">purchase_percentage_30</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">54</property>
-                        <property name="name">purchase_percentage_90</property>
+                        <property name="name">purchase_percentage_60</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">55</property>
-                        <property name="name">purchase_percentage_91</property>
+                        <property name="name">purchase_percentage_90</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">56</property>
-                        <property name="name">purchase_percentage_1</property>
+                        <property name="name">purchase_percentage_91</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">57</property>
-                        <property name="name">sale_percentage_0</property>
+                        <property name="name">purchase_percentage_1</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">58</property>
-                        <property name="name">sale_percentage_30</property>
+                        <property name="name">sale_percentage_0</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">59</property>
-                        <property name="name">sale_percentage_60</property>
+                        <property name="name">sale_percentage_30</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">60</property>
-                        <property name="name">sale_percentage_90</property>
+                        <property name="name">sale_percentage_60</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">61</property>
-                        <property name="name">sale_percentage_91</property>
+                        <property name="name">sale_percentage_90</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">62</property>
+                        <property name="name">sale_percentage_91</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">63</property>
                         <property name="name">sale_percentage_1</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1032,437 +1030,444 @@ WHERE AccountingReport.id = ?]]></xml-property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
-                    <property name="name">count_purchase_0</property>
-                    <property name="nativeName">count_purchase_0</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">count_purchase_30</property>
-                    <property name="nativeName">count_purchase_30</property>
+                    <property name="name">count_purchase_0</property>
+                    <property name="nativeName">count_purchase_0</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">count_purchase_60</property>
-                    <property name="nativeName">count_purchase_60</property>
+                    <property name="name">count_purchase_30</property>
+                    <property name="nativeName">count_purchase_30</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">count_purchase_90</property>
-                    <property name="nativeName">count_purchase_90</property>
+                    <property name="name">count_purchase_60</property>
+                    <property name="nativeName">count_purchase_60</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">count_purchase_91</property>
-                    <property name="nativeName">count_purchase_91</property>
+                    <property name="name">count_purchase_90</property>
+                    <property name="nativeName">count_purchase_90</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">count_purchase_1</property>
-                    <property name="nativeName">count_purchase_1</property>
+                    <property name="name">count_purchase_91</property>
+                    <property name="nativeName">count_purchase_91</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">count_purchase_total</property>
-                    <property name="nativeName">count_purchase_total</property>
+                    <property name="name">count_purchase_1</property>
+                    <property name="nativeName">count_purchase_1</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">count_sale_0</property>
-                    <property name="nativeName">count_sale_0</property>
+                    <property name="name">purchase_total</property>
+                    <property name="nativeName">purchase_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">count_sale_30</property>
-                    <property name="nativeName">count_sale_30</property>
+                    <property name="name">count_sale_0</property>
+                    <property name="nativeName">count_sale_0</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
-                    <property name="name">count_sale_60</property>
-                    <property name="nativeName">count_sale_60</property>
+                    <property name="name">count_sale_30</property>
+                    <property name="nativeName">count_sale_30</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
-                    <property name="name">count_sale_90</property>
-                    <property name="nativeName">count_sale_90</property>
+                    <property name="name">count_sale_60</property>
+                    <property name="nativeName">count_sale_60</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
-                    <property name="name">count_sale_91</property>
-                    <property name="nativeName">count_sale_91</property>
+                    <property name="name">count_sale_90</property>
+                    <property name="nativeName">count_sale_90</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">count_sale_1</property>
-                    <property name="nativeName">count_sale_1</property>
+                    <property name="name">count_sale_91</property>
+                    <property name="nativeName">count_sale_91</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
-                    <property name="name">purchase_total_0</property>
-                    <property name="nativeName">purchase_total_0</property>
+                    <property name="name">count_sale_1</property>
+                    <property name="nativeName">count_sale_1</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">purchase_total_30</property>
-                    <property name="nativeName">purchase_total_30</property>
+                    <property name="name">purchase_total_0</property>
+                    <property name="nativeName">purchase_total_0</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
-                    <property name="name">purchase_total_60</property>
-                    <property name="nativeName">purchase_total_60</property>
+                    <property name="name">purchase_total_30</property>
+                    <property name="nativeName">purchase_total_30</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
-                    <property name="name">purchase_total_90</property>
-                    <property name="nativeName">purchase_total_90</property>
+                    <property name="name">purchase_total_60</property>
+                    <property name="nativeName">purchase_total_60</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
-                    <property name="name">purchase_total_91</property>
-                    <property name="nativeName">purchase_total_91</property>
+                    <property name="name">purchase_total_90</property>
+                    <property name="nativeName">purchase_total_90</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
-                    <property name="name">purchase_total_1</property>
-                    <property name="nativeName">purchase_total_1</property>
+                    <property name="name">purchase_total_91</property>
+                    <property name="nativeName">purchase_total_91</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
-                    <property name="name">sale_total_0</property>
-                    <property name="nativeName">sale_total_0</property>
+                    <property name="name">purchase_total_1</property>
+                    <property name="nativeName">purchase_total_1</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
-                    <property name="name">sale_total_30</property>
-                    <property name="nativeName">sale_total_30</property>
+                    <property name="name">sale_total_0</property>
+                    <property name="nativeName">sale_total_0</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">22</property>
-                    <property name="name">sale_total_60</property>
-                    <property name="nativeName">sale_total_60</property>
+                    <property name="name">sale_total_30</property>
+                    <property name="nativeName">sale_total_30</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">23</property>
-                    <property name="name">sale_total_90</property>
-                    <property name="nativeName">sale_total_90</property>
+                    <property name="name">sale_total_60</property>
+                    <property name="nativeName">sale_total_60</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">24</property>
-                    <property name="name">sale_total_91</property>
-                    <property name="nativeName">sale_total_91</property>
+                    <property name="name">sale_total_90</property>
+                    <property name="nativeName">sale_total_90</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">25</property>
-                    <property name="name">sale_total_1</property>
-                    <property name="nativeName">sale_total_1</property>
+                    <property name="name">sale_total_91</property>
+                    <property name="nativeName">sale_total_91</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">26</property>
-                    <property name="name">sale_total</property>
-                    <property name="nativeName">sale_total</property>
+                    <property name="name">sale_total_1</property>
+                    <property name="nativeName">sale_total_1</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">27</property>
-                    <property name="name">count_purchase_doubtful_0</property>
-                    <property name="nativeName">count_purchase_doubtful_0</property>
+                    <property name="name">sale_total</property>
+                    <property name="nativeName">sale_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">28</property>
-                    <property name="name">count_purchase_doubtful_30</property>
-                    <property name="nativeName">count_purchase_doubtful_30</property>
+                    <property name="name">count_purchase_doubtful_0</property>
+                    <property name="nativeName">count_purchase_doubtful_0</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">29</property>
-                    <property name="name">count_purchase_doubtful_60</property>
-                    <property name="nativeName">count_purchase_doubtful_60</property>
+                    <property name="name">count_purchase_doubtful_30</property>
+                    <property name="nativeName">count_purchase_doubtful_30</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">30</property>
-                    <property name="name">count_purchase_doubtful_90</property>
-                    <property name="nativeName">count_purchase_doubtful_90</property>
+                    <property name="name">count_purchase_doubtful_60</property>
+                    <property name="nativeName">count_purchase_doubtful_60</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">31</property>
-                    <property name="name">count_purchase_doubtful_91</property>
-                    <property name="nativeName">count_purchase_doubtful_91</property>
+                    <property name="name">count_purchase_doubtful_90</property>
+                    <property name="nativeName">count_purchase_doubtful_90</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">32</property>
-                    <property name="name">count_purchase_doubtful_1</property>
-                    <property name="nativeName">count_purchase_doubtful_1</property>
+                    <property name="name">count_purchase_doubtful_91</property>
+                    <property name="nativeName">count_purchase_doubtful_91</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">33</property>
-                    <property name="name">purchase_total_doubtful_0</property>
-                    <property name="nativeName">purchase_total_doubtful_0</property>
+                    <property name="name">count_purchase_doubtful_1</property>
+                    <property name="nativeName">count_purchase_doubtful_1</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">34</property>
-                    <property name="name">purchase_total_doubtful_30</property>
-                    <property name="nativeName">purchase_total_doubtful_30</property>
+                    <property name="name">purchase_total_doubtful_0</property>
+                    <property name="nativeName">purchase_total_doubtful_0</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">35</property>
-                    <property name="name">purchase_total_doubtful_60</property>
-                    <property name="nativeName">purchase_total_doubtful_60</property>
+                    <property name="name">purchase_total_doubtful_30</property>
+                    <property name="nativeName">purchase_total_doubtful_30</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">36</property>
-                    <property name="name">purchase_total_doubtful_90</property>
-                    <property name="nativeName">purchase_total_doubtful_90</property>
+                    <property name="name">purchase_total_doubtful_60</property>
+                    <property name="nativeName">purchase_total_doubtful_60</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">37</property>
-                    <property name="name">purchase_total_doubtful_91</property>
-                    <property name="nativeName">purchase_total_doubtful_91</property>
+                    <property name="name">purchase_total_doubtful_90</property>
+                    <property name="nativeName">purchase_total_doubtful_90</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">38</property>
-                    <property name="name">purchase_total_doubtful_1</property>
-                    <property name="nativeName">purchase_total_doubtful_1</property>
+                    <property name="name">purchase_total_doubtful_91</property>
+                    <property name="nativeName">purchase_total_doubtful_91</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">39</property>
-                    <property name="name">count_sale_doubtful_0</property>
-                    <property name="nativeName">count_sale_doubtful_0</property>
+                    <property name="name">purchase_total_doubtful_1</property>
+                    <property name="nativeName">purchase_total_doubtful_1</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">40</property>
-                    <property name="name">count_sale_doubtful_30</property>
-                    <property name="nativeName">count_sale_doubtful_30</property>
+                    <property name="name">count_sale_doubtful_0</property>
+                    <property name="nativeName">count_sale_doubtful_0</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">41</property>
-                    <property name="name">count_sale_doubtful_60</property>
-                    <property name="nativeName">count_sale_doubtful_60</property>
+                    <property name="name">count_sale_doubtful_30</property>
+                    <property name="nativeName">count_sale_doubtful_30</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">42</property>
-                    <property name="name">count_sale_doubtful_90</property>
-                    <property name="nativeName">count_sale_doubtful_90</property>
+                    <property name="name">count_sale_doubtful_60</property>
+                    <property name="nativeName">count_sale_doubtful_60</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">43</property>
-                    <property name="name">count_sale_doubtful_91</property>
-                    <property name="nativeName">count_sale_doubtful_91</property>
+                    <property name="name">count_sale_doubtful_90</property>
+                    <property name="nativeName">count_sale_doubtful_90</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">44</property>
-                    <property name="name">count_sale_doubtful_1</property>
-                    <property name="nativeName">count_sale_doubtful_1</property>
+                    <property name="name">count_sale_doubtful_91</property>
+                    <property name="nativeName">count_sale_doubtful_91</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">45</property>
-                    <property name="name">sale_total_doubtful_0</property>
-                    <property name="nativeName">sale_total_doubtful_0</property>
+                    <property name="name">count_sale_doubtful_1</property>
+                    <property name="nativeName">count_sale_doubtful_1</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">46</property>
-                    <property name="name">sale_total_doubtful_30</property>
-                    <property name="nativeName">sale_total_doubtful_30</property>
+                    <property name="name">sale_total_doubtful_0</property>
+                    <property name="nativeName">sale_total_doubtful_0</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">47</property>
-                    <property name="name">sale_total_doubtful_60</property>
-                    <property name="nativeName">sale_total_doubtful_60</property>
+                    <property name="name">sale_total_doubtful_30</property>
+                    <property name="nativeName">sale_total_doubtful_30</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">48</property>
-                    <property name="name">sale_total_doubtful_90</property>
-                    <property name="nativeName">sale_total_doubtful_90</property>
+                    <property name="name">sale_total_doubtful_60</property>
+                    <property name="nativeName">sale_total_doubtful_60</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">49</property>
-                    <property name="name">sale_total_doubtful_91</property>
-                    <property name="nativeName">sale_total_doubtful_91</property>
+                    <property name="name">sale_total_doubtful_90</property>
+                    <property name="nativeName">sale_total_doubtful_90</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">50</property>
-                    <property name="name">sale_total_doubtful_1</property>
-                    <property name="nativeName">sale_total_doubtful_1</property>
+                    <property name="name">sale_total_doubtful_91</property>
+                    <property name="nativeName">sale_total_doubtful_91</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">51</property>
-                    <property name="name">purchase_percentage_0</property>
-                    <property name="nativeName">purchase_percentage_0</property>
+                    <property name="name">sale_total_doubtful_1</property>
+                    <property name="nativeName">sale_total_doubtful_1</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">52</property>
-                    <property name="name">purchase_percentage_30</property>
-                    <property name="nativeName">purchase_percentage_30</property>
+                    <property name="name">purchase_percentage_0</property>
+                    <property name="nativeName">purchase_percentage_0</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">53</property>
-                    <property name="name">purchase_percentage_60</property>
-                    <property name="nativeName">purchase_percentage_60</property>
+                    <property name="name">purchase_percentage_30</property>
+                    <property name="nativeName">purchase_percentage_30</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">54</property>
-                    <property name="name">purchase_percentage_90</property>
-                    <property name="nativeName">purchase_percentage_90</property>
+                    <property name="name">purchase_percentage_60</property>
+                    <property name="nativeName">purchase_percentage_60</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">55</property>
-                    <property name="name">purchase_percentage_91</property>
-                    <property name="nativeName">purchase_percentage_91</property>
+                    <property name="name">purchase_percentage_90</property>
+                    <property name="nativeName">purchase_percentage_90</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">56</property>
-                    <property name="name">purchase_percentage_1</property>
-                    <property name="nativeName">purchase_percentage_1</property>
+                    <property name="name">purchase_percentage_91</property>
+                    <property name="nativeName">purchase_percentage_91</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">57</property>
-                    <property name="name">sale_percentage_0</property>
-                    <property name="nativeName">sale_percentage_0</property>
+                    <property name="name">purchase_percentage_1</property>
+                    <property name="nativeName">purchase_percentage_1</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">58</property>
-                    <property name="name">sale_percentage_30</property>
-                    <property name="nativeName">sale_percentage_30</property>
+                    <property name="name">sale_percentage_0</property>
+                    <property name="nativeName">sale_percentage_0</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">59</property>
-                    <property name="name">sale_percentage_60</property>
-                    <property name="nativeName">sale_percentage_60</property>
+                    <property name="name">sale_percentage_30</property>
+                    <property name="nativeName">sale_percentage_30</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">60</property>
-                    <property name="name">sale_percentage_90</property>
-                    <property name="nativeName">sale_percentage_90</property>
+                    <property name="name">sale_percentage_60</property>
+                    <property name="nativeName">sale_percentage_60</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">61</property>
-                    <property name="name">sale_percentage_91</property>
-                    <property name="nativeName">sale_percentage_91</property>
+                    <property name="name">sale_percentage_90</property>
+                    <property name="nativeName">sale_percentage_90</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">62</property>
+                    <property name="name">sale_percentage_91</property>
+                    <property name="nativeName">sale_percentage_91</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">63</property>
                     <property name="name">sale_percentage_1</property>
                     <property name="nativeName">sale_percentage_1</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT data.*,round((cast(data.purchase_total_0 as decimal)/NULLIF(data.purchase_total,0)) * 100,2) as purchase_percentage_0,
@@ -1478,7 +1483,8 @@ round((cast(data.sale_total_90 as decimal)/NULLIF(data.sale_total,0)) * 100,2) a
 round((cast(data.sale_total_91 as decimal)/NULLIF(data.sale_total,0)) * 100,2) as sale_percentage_91,
 round((cast(data.sale_total_1 as decimal)/NULLIF(data.sale_total,0)) * 100,2) as sale_percentage_1
 FROM(
-SELECT count(*) filter (where Invoice.due_date >= AccountingReport.date_to AND Invoice.operation_type_select = 1 AND Invoice.doubtful_customer_ok = false AND
+SELECT Currency.number_of_decimals,
+count(*) filter (where Invoice.due_date >= AccountingReport.date_to AND Invoice.operation_type_select = 1 AND Invoice.doubtful_customer_ok = false AND
 (Invoice.amount_remaining > 0 OR Invoice.in_tax_total > (SELECT COALESCE(SUM(amount), 0) from account_invoice_payment where invoice = Invoice.id AND payment_date >= AccountingReport.date_from AND payment_date <= AccountingReport.date_to))) AS count_purchase_0,
 count(*) filter (where Invoice.due_date between AccountingReport.date_to -30 AND AccountingReport.date_to -1 AND Invoice.operation_type_select = 1 AND Invoice.doubtful_customer_ok = false AND
 (Invoice.amount_remaining > 0 OR Invoice.in_tax_total > (SELECT COALESCE(SUM(amount), 0) from account_invoice_payment where invoice = Invoice.id AND payment_date >= AccountingReport.date_from AND payment_date <= AccountingReport.date_to))) AS count_purchase_30,
@@ -1581,6 +1587,7 @@ sum(company_ex_tax_total) filter (where Invoice.due_date < AccountingReport.date
 FROM account_accounting_report as AccountingReport
 LEFT JOIN account_invoice as Invoice on (AccountingReport.id = ?)
 LEFT JOIN base_company as Company on (Invoice.company = Company.id)
+LEFT JOIN base_currency as Currency on (Company.currency = Currency.id)
 LEFT JOIN account_move as Move on (Move.id = Invoice.move)
 LEFT JOIN base_period as Period on (Move.period = Period.id)
 WHERE Invoice.status_select = 3 AND
@@ -1588,7 +1595,8 @@ WHERE Invoice.status_select = 3 AND
 (AccountingReport.date_from IS NULL OR Invoice.invoice_date >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR Invoice.invoice_date <= AccountingReport.date_to) AND
 (Move.company = AccountingReport.company) AND
-(AccountingReport.period IS NULL OR AccountingReport.period = Move.period)) as data]]></xml-property>
+(AccountingReport.period IS NULL OR AccountingReport.period = Move.period)
+GROUP BY Currency.number_of_decimals) as data]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -2951,7 +2959,33 @@ WHERE Invoice.status_select = 3 AND
                                 <expression name="expression" type="javascript">dataSetRow["count_sale_doubtful_91"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">purchase_total</property>
+                                <text-property name="displayName">purchase_total</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["purchase_total"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sale_total</property>
+                                <text-property name="displayName">sale_total</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["sale_total"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
                         </list-property>
+                        <method name="onRender"><![CDATA[if(row["count_purchase_0"] > 0 || row["count_purchase_1"] > 0 || row["count_purchase_30"] > 0 || row["count_purchase_60"] > 0 || row["count_purchase_90"] > 0 || row["count_purchase_91"] > 0 || 
+row["count_purchase_doubtful_0"] > 0 || row["count_purchase_doubtful_1"] > 0 || row["count_purchase_doubtful_30"] > 0 || row["count_purchase_doubtful_60"] > 0 || row["count_purchase_doubtful_90"] > 0 || row["count_purchase_doubtful_91"] > 0 || 
+row["count_sale_0"] > 0 || row["count_sale_1"] > 0 || row["count_sale_30"] > 0 || row["count_sale_60"] > 0 || row["count_sale_90"] > 0 || row["count_sale_91"] > 0 || 
+row["count_sale_doubtful_0"] >0 || row["count_sale_doubtful_1"] > 0 || row["count_sale_doubtful_30"] > 0 || row["count_sale_doubtful_60"] > 0 || row["count_sale_doubtful_90"] > 0 || row["count_sale_doubtful_91"] > 0)
+{
+	vars["PositiveValues"]++;
+}
+]]></method>
                         <column id="4054">
                             <property name="width">14%</property>
                         </column>
@@ -3000,7 +3034,7 @@ WHERE Invoice.status_select = 3 AND
                                     </list-property>
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<VALUE-OF>
-if(params["Locale"].value == 'fr') {
+if(params["__locale"].value.substring(0, 2) == 'fr') {
 java.lang.String.format(row["translation"],Formatter.format(row._outer._outer["dateTo"], "dd-MM-yyyy"))
 }
 else{
@@ -3065,7 +3099,7 @@ java.lang.String.format(row["translation"],row._outer._outer["dateTo"])
                                     </list-property>
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
-if(params["Locale"].value == 'fr') {
+if(params["__locale"].value.substring(0, 2) == 'fr') {
 java.lang.String.format(row["translation"],Formatter.format(row._outer._outer["dateTo"], "dd-MM-yyyy"))
 }
 else{
@@ -3110,7 +3144,7 @@ java.lang.String.format(row["translation"],row._outer._outer["dateTo"])
                                     </list-property>
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
-if(params["Locale"].value == 'fr') {
+if(params["__locale"].value.substring(0, 2) == 'fr') {
 java.lang.String.format(row["translation"],Formatter.format(row._outer._outer["dateTo"], "dd-MM-yyyy"))
 }
 else{
@@ -3878,8 +3912,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4335">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["purchase_total_0"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["purchase_total_0"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_0"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4140">
@@ -3892,8 +3932,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4337">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["purchase_total_30"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["purchase_total_30"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_30"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4141">
@@ -3906,8 +3952,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4339">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["purchase_total_60"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["purchase_total_60"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_60"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4142">
@@ -3920,8 +3972,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4341">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["purchase_total_90"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["purchase_total_90"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_90"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4143">
@@ -3934,8 +3992,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4343">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["purchase_total_91"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["purchase_total_91"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_91"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4144">
@@ -3948,8 +4012,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4345">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["purchase_total_1"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["purchase_total_1"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4145">
@@ -3962,8 +4032,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4349">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["sale_total_0"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["sale_total_0"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_0"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4146">
@@ -3976,8 +4052,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4351">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["sale_total_30"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["sale_total_30"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_30"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4147">
@@ -3990,8 +4072,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4352">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["sale_total_60"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["sale_total_60"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_60"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4148">
@@ -4004,8 +4092,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4353">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["sale_total_90"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["sale_total_90"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_90"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4149">
@@ -4018,8 +4112,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4354">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["sale_total_91"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["sale_total_91"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_91"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4150">
@@ -4032,8 +4132,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4355">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["sale_total_1"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["sale_total_1"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -4721,8 +4827,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4392">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["purchase_total_doubtful_0"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["purchase_total_doubtful_0"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_doubtful_0"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4224">
@@ -4735,8 +4847,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4393">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["purchase_total_doubtful_30"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["purchase_total_doubtful_30"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_doubtful_30"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4225">
@@ -4749,8 +4867,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4394">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["purchase_total_doubtful_60"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["purchase_total_doubtful_60"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_doubtful_60"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4226">
@@ -4763,8 +4887,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4395">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["purchase_total_doubtful_90"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["purchase_total_doubtful_90"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_doubtful_90"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4227">
@@ -4777,8 +4907,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4396">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["purchase_total_doubtful_91"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["purchase_total_doubtful_91"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_doubtful_91"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4228">
@@ -4791,8 +4927,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4397">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["purchase_total_doubtful_1"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["purchase_total_doubtful_1"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_doubtful_1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4229">
@@ -4805,8 +4947,15 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4363">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["sale_total_doubtful_0"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["sale_total_doubtful_0"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_doubtful_0"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4230">
@@ -4819,8 +4968,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4364">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["sale_total_doubtful_30"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["sale_total_doubtful_30"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_doubtful_30"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4231">
@@ -4833,8 +4988,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4365">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["sale_total_doubtful_60"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["sale_total_doubtful_60"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_doubtful_60"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4232">
@@ -4847,8 +5008,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4366">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["sale_total_doubtful_90"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["sale_total_doubtful_90"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_doubtful_90"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4233">
@@ -4861,8 +5028,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4367">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["sale_total_doubtful_91"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["sale_total_doubtful_91"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_doubtful_91"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4234">
@@ -4875,8 +5048,14 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <text id="4368">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["sale_total_doubtful_1"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["sale_total_doubtful_1"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_doubtful_1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -5072,5 +5251,40 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                 </cell>
             </row>
         </grid>
+        <text id="4412">
+            <property name="marginTop">10pt</property>
+            <property name="dataSet">TranslateDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">vars["PositiveValues"] > 0</expression>
+                </structure>
+            </list-property>
+            <list-property name="paramBindings">
+                <structure>
+                    <property name="paramName">param_1</property>
+                    <simple-property-list name="expression">
+                        <value type="javascript">'AccountingReport.noEntry'
+</value>
+                    </simple-property-list>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">translation</property>
+                    <text-property name="displayName">translation</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <property name="contentType">html</property>
+            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+        </text>
     </body>
+    <property name="pageVariables">
+        <variable-element name="PositiveValues">
+            <expression name="value" type="javascript">0</expression>
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

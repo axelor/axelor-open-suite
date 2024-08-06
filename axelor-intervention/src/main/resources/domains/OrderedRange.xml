@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="OrderedRange">
+    <integer name="sequence" title="Sequence" readonly="true"/>
+    <many-to-one name="interventionTypeEquipment" title="Intervention type"
+      ref="com.axelor.apps.intervention.db.InterventionType"/>
+    <many-to-one name="interventionTypeHeader" title="Intervention type"
+      ref="com.axelor.apps.intervention.db.InterventionType"/>
+    <many-to-one name="interventionTypeFooter" title="Intervention type"
+      ref="com.axelor.apps.intervention.db.InterventionType"/>
+    <many-to-one name="rangeVal" title="Range"
+      ref="com.axelor.apps.intervention.db.Range"/>
+  </entity>
+
+</domain-models>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -18,7 +18,7 @@
     <many-to-one name="supplierPurchaseJournal" ref="com.axelor.apps.account.db.Journal"
       title="Supplier Purchase Journal"/>
     <many-to-one name="supplierCreditNoteJournal"
-      ref="com.axelor.apps.account.db.Journal" title="Supplier Credit Note Journal"/>
+      ref="com.axelor.apps.account.db.Journal" title="Supplier Credit note Journal"/>
     <many-to-one name="rejectJournal" ref="com.axelor.apps.account.db.Journal"
       title="Rejects journal"/>
     <many-to-one name="accountClearanceJournal" ref="com.axelor.apps.account.db.Journal"
@@ -180,12 +180,17 @@
     <boolean name="fixedAssetCatReqOnInvoice"
       title="Fixed asset category required on invoices"/>
     <boolean name="isPrintInvoicesInCompanyLanguage"
-      title="Print invoices in company language" default="true"/>
+      title="Print invoices in company localization" default="true"/>
+    <boolean name="isInvoiceCoefficientEnabled" title="Enable coefficient in invoice line"/>
 
-    <!-- Account chart template -->
-    <many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart"
-      title="Account chart"/>
+    <!-- Accounting config template -->
+    <many-to-one name="accountingConfigTemplate"
+      ref="com.axelor.apps.account.db.AccountingConfigTemplate"
+      title="Accounting configurations template"/>
     <boolean name="hasChartImported" title="Chart imported"/>
+    <boolean name="isImportAccountChartOnly" title="Import account chart only"/>
+    <boolean name="hasAccountingConfigTemplateImported"
+      title="Accounting configurations imported"/>
     <integer name="invoiceInAtiSelect" title="Invoice ATI/WT" selection="base.in.ati.select"
       default="1"/>
 
@@ -196,11 +201,11 @@
     <many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence"
       title="Customer invoices sequence"/>
     <many-to-one name="custRefSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="Customer refunds sequence"/>
+      title="Customer credit notes sequence"/>
     <many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence"
       title="Supplier invoices sequence"/>
     <many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="Supplier refunds sequence"/>
+      title="Supplier credit notes sequence"/>
 
     <!--Product -->
 
@@ -245,7 +250,7 @@
       ref="com.axelor.message.db.Template"/>
 
     <boolean name="isManagePassedForPayment" title="Passed for payment"/>
-    <boolean name="isManagePFPInRefund" title="Manage PFP on supplier refunds"/>
+    <boolean name="isManagePFPInRefund" title="Manage PFP on supplier credit notes"/>
     <boolean name="isManageDaybookInPFP" title="Show daybook moves in PFP menu"
       help="If this field is activated, daybook moves will been selected too in accounting PFP menu"/>
 
@@ -290,10 +295,6 @@
       ref="com.axelor.apps.account.db.Account" title="Purchase financial discount account"/>
     <many-to-one name="saleFinancialDiscountAccount"
       ref="com.axelor.apps.account.db.Account" title="Sale financial discount account"/>
-    <many-to-one name="purchFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax"
-      title="Purchase financial discount tax"/>
-    <many-to-one name="saleFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax"
-      title="Sale financial discount tax"/>
 
     <!-- Holdback accounts -->
     <many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account"
@@ -336,12 +337,14 @@
     <decimal name="allowedTaxGap" title="Allowed tax gap" default="0.00" initParam="true"
       help="Field allowing a tax gap during the accounting of a move. Its value specifies the tolerance applied during the tax values control and the move balance control."/>
 
-    <many-to-one name="invoiceBirtTemplate" title="Invoice template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="purchaseInvoicesDetailsBirtTemplate"
-      title="Purchase invoices details template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="chequeDepositSlipBirtTemplate"
-      title="Cheque deposit slip template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="invoicePrintTemplate" title="Invoice template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="purchaseInvoicesDetailsPrintTemplate"
+      title="Purchase invoices details template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="chequeDepositSlipPrintTemplate"
+      title="Cheque deposit slip template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="saleInvoicesDetailsPrintTemplate"
+      title="Sale invoices details template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
     <finder-method name="findByCompany" using="company"/>
 
@@ -464,8 +467,11 @@
       <field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>
       <field name="isPrintInvoicesInCompanyLanguage" on="UPDATE"/>
 
-      <field name="accountChart" on="UPDATE"/>
+      <field name="accountingConfigTemplate" on="UPDATE"/>
       <field name="hasChartImported" on="UPDATE"/>
+      <field name="hasAccountingConfigTemplateImported" on="UPDATE"/>
+      <field name="isImportAccountChartOnly" on="UPDATE"/>
+
       <field name="invoiceInAtiSelect" on="UPDATE"/>
 
       <field name="accountingDaybook" on="UPDATE"/>
@@ -517,8 +523,6 @@
 
       <field name="purchFinancialDiscountAccount" on="UPDATE"/>
       <field name="saleFinancialDiscountAccount" on="UPDATE"/>
-      <field name="purchFinancialDiscountTax" on="UPDATE"/>
-      <field name="saleFinancialDiscountTax" on="UPDATE"/>
 
       <field name="holdBackCustomerAccount" on="UPDATE"/>
       <field name="holdBackSupplierAccount" on="UPDATE"/>
@@ -539,9 +543,10 @@
 
       <field name="retrieveDaybookMovesInPaymentSession" on="UPDATE"/>
 
-      <field name="invoiceBirtTemplate" on="UPDATE"/>
-      <field name="purchaseInvoicesDetailsBirtTemplate" on="UPDATE"/>
-      <field name="chequeDepositSlipBirtTemplate" on="UPDATE"/>
+      <field name="invoicePrintTemplate" on="UPDATE"/>
+      <field name="purchaseInvoicesDetailsPrintTemplate" on="UPDATE"/>
+      <field name="chequeDepositSlipPrintTemplate" on="UPDATE"/>
+      <field name="saleInvoicesDetailsPrintTemplate" on="UPDATE"/>
     </track>
 
   </entity>

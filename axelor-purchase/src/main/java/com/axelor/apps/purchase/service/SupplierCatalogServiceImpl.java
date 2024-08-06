@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,7 +36,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SupplierCatalogServiceImpl implements SupplierCatalogService {
 
@@ -189,7 +190,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       Company company,
       Currency currency,
       LocalDate localDate,
-      TaxLine taxLine,
+      Set<TaxLine> taxLineSet,
       boolean resultInAti)
       throws AxelorException {
     BigDecimal purchasePrice = new BigDecimal(0);
@@ -212,7 +213,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
         (inAti == resultInAti)
             ? purchasePrice
             : taxService.convertUnitPrice(
-                inAti, taxLine, purchasePrice, AppBaseService.COMPUTATION_SCALING);
+                inAti, taxLineSet, purchasePrice, AppBaseService.COMPUTATION_SCALING);
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(purchaseCurrency, currency, price, localDate)
@@ -234,11 +235,17 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   public BigDecimal getMinQty(Product product, Partner supplierPartner, Company company)
       throws AxelorException {
     SupplierCatalog supplierCatalog = getSupplierCatalog(product, supplierPartner, company);
-    return supplierCatalog != null ? supplierCatalog.getMinQty() : BigDecimal.ONE;
+    return supplierCatalog != null ? supplierCatalog.getMinQty() : null;
+  }
+
+  protected BigDecimal getMaxQty(Product product, Partner supplierPartner, Company company)
+      throws AxelorException {
+    SupplierCatalog supplierCatalog = getSupplierCatalog(product, supplierPartner, company);
+    return supplierCatalog != null ? supplierCatalog.getMaxQty() : null;
   }
 
   @Override
-  public void checkMinQty(
+  public boolean checkMinQty(
       Product product,
       Partner supplierPartner,
       Company company,
@@ -248,25 +255,62 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       throws AxelorException {
 
     BigDecimal minQty = this.getMinQty(product, supplierPartner, company);
+    boolean isBreakMinQtyLimit = minQty != null && qty.compareTo(minQty) < 0;
+    setQtyLimitMessage(
+        isBreakMinQtyLimit,
+        request,
+        response,
+        PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY,
+        minQty);
+    return isBreakMinQtyLimit;
+  }
 
-    if (qty.compareTo(minQty) < 0) {
-      String msg =
+  @Override
+  public boolean checkMaxQty(
+      Product product,
+      Partner supplierPartner,
+      Company company,
+      BigDecimal qty,
+      ActionRequest request,
+      ActionResponse response)
+      throws AxelorException {
+
+    BigDecimal maxQty = this.getMaxQty(product, supplierPartner, company);
+    boolean isBreakMaxQtyLimit =
+        maxQty != null && maxQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(maxQty) > 0;
+    setQtyLimitMessage(
+        isBreakMaxQtyLimit,
+        request,
+        response,
+        PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MAX_QTY,
+        maxQty);
+    return isBreakMaxQtyLimit;
+  }
+
+  protected void setQtyLimitMessage(
+      boolean isBreakQtyLimit,
+      ActionRequest request,
+      ActionResponse response,
+      String exceptionMessage,
+      BigDecimal limitQty) {
+    if (isBreakQtyLimit) {
+      String message =
           String.format(
-              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY),
-              minQty.setScale(
+              I18n.get(exceptionMessage),
+              limitQty.setScale(
                   appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
 
       if (request.getAction().endsWith("onchange")) {
-        response.setInfo(msg);
+        response.setInfo(message);
       }
 
-      String title = ContextTool.formatLabel(msg, ContextTool.SPAN_CLASS_WARNING, 75);
+      String title = ContextHelper.formatLabel(message, ContextHelper.SPAN_CLASS_WARNING, 75);
 
-      response.setAttr("minQtyNotRespectedLabel", "title", title);
-      response.setAttr("minQtyNotRespectedLabel", "hidden", false);
+      response.setAttr("qtyLimitNotRespectedLabel", "title", title);
+      response.setAttr("qtyLimitNotRespectedLabel", "hidden", false);
 
     } else {
-      response.setAttr("minQtyNotRespectedLabel", "hidden", true);
+      response.setAttr("qtyLimitNotRespectedLabel", "hidden", true);
     }
   }
 }
