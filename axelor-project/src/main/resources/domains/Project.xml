@@ -80,7 +80,8 @@
     <many-to-many name="siteSet" title="Sites" ref="com.axelor.apps.base.db.Site"/>
 
     <!-- Configuration fields -->
-    <boolean name="isShowStatus" title="Status?" default="true"/>
+    <integer name="taskStatusManagementSelect" title="Task status management" default="1"
+      selection="task.project.status.management.select"/>
     <many-to-many name="projectTaskStatusSet"
       ref="com.axelor.apps.project.db.TaskStatus" title="Type of authorized status"/>
     <boolean name="isShowPriority" title="Priorities?" default="true"/>
@@ -121,6 +122,16 @@
 
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>
+
+    <extra-code><![CDATA[
+
+      	// STATUS MANAGEMENT
+      	public static final int TASK_STATUS_MANAGEMENT_NONE = 1;
+      	public static final int TASK_STATUS_MANAGEMENT_PROJECT = 2;
+      	public static final int TASK_STATUS_MANAGEMENT_APP = 3;
+
+    ]]></extra-code>
+
   </entity>
 
   <enum name="GenProjTypePerOrderLine">

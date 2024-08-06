@@ -13,8 +13,6 @@
         showIf="resourceManagement"/>
       <field name="isEnableSignature" widget="boolean-switch"/>
       <field name="isEnablePerProjectTaskSequence" widget="boolean-switch"/>
-      <field name="defaultTaskStatusSet" widget="TagSelect"
-        onChange="action-app-project-record-reset-completed-task-status"/>
       <field name="defaultPrioritySet" widget="TagSelect"/>
       <field name="selectAutoProgressOnProjectTask"/>
       <field name="fullNameGroovyFormula"/>
@@ -34,6 +32,8 @@
     </panel>
 
     <panel name="taskStatusMgtPanel" title="Task status management">
+      <field name="defaultTaskStatusSet" widget="TagSelect"
+        onChange="action-app-project-record-reset-completed-task-status"/>
       <field name="completedTaskStatus" grid-view="task-status-grid"
         form-view="task-status-form"
         onSelect="action-app-project-attrs-set-completed-task-status-domain"/>
@@ -55,7 +55,10 @@
 
   <action-attrs name="action-app-project-attrs-set-completed-task-status-domain">
     <attribute name="domain" for="completedTaskStatus"
-      expr="eval: 'self.isCompleted = true AND self.id IN (' + defaultTaskStatusSet?.collect{ it.id }?.join(',') + ')'"/>
+      expr="eval: 'self.isCompleted = true AND self.id IN (' + defaultTaskStatusSet?.collect{ it.id }?.join(',') + ')'"
+      if="defaultTaskStatusSet?.collect{it.id}?.size &gt; 0"/>
+    <attribute name="domain" for="completedTaskStatus" expr="eval: 'self.id = 0'"
+      if="defaultTaskStatusSet?.collect{it.id}?.size == 0"/>
   </action-attrs>
 
   <action-record name="action-app-project-record-reset-completed-task-status"
