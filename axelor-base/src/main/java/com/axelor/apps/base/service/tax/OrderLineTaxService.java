@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.base.interfaces.PricedOrder;
 import com.axelor.apps.base.interfaces.PricedOrderLine;
+import java.math.BigDecimal;
 import java.util.Set;
 
 public interface OrderLineTaxService {
@@ -40,4 +41,6 @@ public interface OrderLineTaxService {
       PricedOrderLine pricedOrderLine, boolean customerSpecificNote, Set<String> specificNotes);
 
   boolean isManageByAmount(OrderLineTax orderLineTax);
+
+  BigDecimal computeInTaxTotal(OrderLineTax orderLineTax, Currency currency);
 }

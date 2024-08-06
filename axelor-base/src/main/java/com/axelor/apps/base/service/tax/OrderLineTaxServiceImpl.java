@@ -109,4 +109,14 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
         .map(Tax::getManageByAmount)
         .orElse(false);
   }
+
+  @Override
+  public BigDecimal computeInTaxTotal(OrderLineTax orderLineTax, Currency currency) {
+    int currencyScale = currencyScaleService.getCurrencyScale(currency);
+    if (orderLineTax.getTaxTotal().signum() <= 0) {
+      return currencyScaleService.getScaledValue(orderLineTax.getExTaxBase(), currencyScale);
+    }
+    return currencyScaleService.getScaledValue(
+        orderLineTax.getExTaxBase().add(orderLineTax.getTaxTotal()), currencyScale);
+  }
 }

@@ -506,7 +506,8 @@
       <panel name="taxPanel" title="Tax" readonlyIf="statusSelect != 1">
         <panel-related name="saleOrderLineTaxListPanel" colSpan="12"
           field="saleOrderLineTaxList" form-view="sale-order-line-tax-form"
-          grid-view="sale-order-line-tax-grid" canRemove="false" canNew="false"/>
+          grid-view="sale-order-line-tax-grid" canRemove="false" canNew="false"
+          onChange="action-sale-order-method-compute"/>
       </panel>
       <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain"
         name="deliveryInformationPanel" title="Delivery" colSpan="12">

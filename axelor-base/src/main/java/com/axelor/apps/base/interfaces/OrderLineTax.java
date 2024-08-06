@@ -28,6 +28,8 @@ public interface OrderLineTax {
 
   BigDecimal getTaxTotal();
 
+  BigDecimal getInTaxTotal();
+
   void setTaxTotal(BigDecimal taxTotal);
 
   void setPercentageTaxTotal(BigDecimal percentageTaxTotal);
