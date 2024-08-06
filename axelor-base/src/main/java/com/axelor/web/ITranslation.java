@@ -54,4 +54,6 @@ public interface ITranslation {
       "All MetaModel seem to be existing."; /*)*/
 
   public static final String PRINTING_TEMPLATE_PRINT_BTN = /*$$(*/ "Print"; /*)*/
+  public static final String PRODUCT_PRICE_INFORMATION = /*$$(*/
+      "Price product fetch was successful"; /*)*/
 }

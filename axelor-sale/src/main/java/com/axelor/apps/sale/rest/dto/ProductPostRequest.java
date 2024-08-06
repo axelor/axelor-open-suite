@@ -10,53 +10,56 @@ import javax.validation.constraints.NotNull;
 
 public class ProductPostRequest extends RequestPostStructure {
 
-    @NotNull
-    @Min(0)
-    private Long productId;
-    private Long companyId;
+  @NotNull
+  @Min(0)
+  private Long productId;
 
-    private Long partnerId;
+  private Long companyId;
 
-    public Long getProductId() {
-        return productId;
-    }
+  private Long partnerId;
 
-    public void setProductId(Long productId) {
-        this.productId= productId;
-    }
-    public Long getCompanyId() {
-        return companyId;
-    }
+  public Long getProductId() {
+    return productId;
+  }
 
-    public void setCompanyId(Long companyId) {
-        this.companyId= companyId;
-    }
+  public void setProductId(Long productId) {
+    this.productId = productId;
+  }
 
-    public Long getPartnerId() {
-        return partnerId;
-    }
+  public Long getCompanyId() {
+    return companyId;
+  }
 
-    public void setPartner(Long partnerId) {
-        this.partnerId = partnerId;
-    }
+  public void setCompanyId(Long companyId) {
+    this.companyId = companyId;
+  }
 
-    public Product fetchProduct() {
-        if (productId== null || productId == 0L) {
-            return null;
-        }
-        return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
-    }
-    public Company fetchCompany() {
-        if (companyId== null || companyId == 0L) {
-            return null;
-        }
-        return ObjectFinder.find(Company.class, companyId, ObjectFinder.NO_VERSION);
-    }
+  public Long getPartnerId() {
+    return partnerId;
+  }
 
-    public Partner fetchPartner() {
-        if (partnerId == null || partnerId == 0L) {
-            return null;
-        }
-        return ObjectFinder.find(Partner.class, partnerId, ObjectFinder.NO_VERSION);
+  public void setPartner(Long partnerId) {
+    this.partnerId = partnerId;
+  }
+
+  public Product fetchProduct() {
+    if (productId == null || productId == 0L) {
+      return null;
     }
+    return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
+  }
+
+  public Company fetchCompany() {
+    if (companyId == null || companyId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(Company.class, companyId, ObjectFinder.NO_VERSION);
+  }
+
+  public Partner fetchPartner() {
+    if (partnerId == null || partnerId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(Partner.class, partnerId, ObjectFinder.NO_VERSION);
+  }
 }

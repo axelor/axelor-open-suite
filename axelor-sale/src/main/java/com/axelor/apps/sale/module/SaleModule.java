@@ -54,6 +54,8 @@ import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
 import com.axelor.apps.sale.service.PricingGroupSaleServiceImpl;
 import com.axelor.apps.sale.service.ProductCategorySaleService;
 import com.axelor.apps.sale.service.ProductCategoryServiceSaleImpl;
+import com.axelor.apps.sale.service.ProductRestService;
+import com.axelor.apps.sale.service.ProductRestServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderGeneratorService;
 import com.axelor.apps.sale.service.SaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -264,5 +266,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderGeneratorService.class).to(SaleOrderGeneratorServiceImpl.class);
     bind(CartInitValueService.class).to(CartInitValueServiceImpl.class);
     bind(CartService.class).to(CartServiceImpl.class);
+    bind(ProductRestService.class).to(ProductRestServiceImpl.class);
   }
 }
