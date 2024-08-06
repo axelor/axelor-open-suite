@@ -20,14 +20,13 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Cart;
+import com.axelor.apps.sale.db.CartLine;
 
-public interface CartService {
+public interface CartLineService {
 
-  Cart getCurrentCart();
+  CartLine getCartLine(Cart cart, Product product);
 
-  void emptyCart(Cart cart);
+  CartLine createCartLine(Cart cart, Product product);
 
-  void addToCart(Product product);
-
-  Cart createCart();
+  void updateCartLine(CartLine cartLine);
 }

@@ -16,18 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.base.service.observer;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.sale.db.Cart;
+import com.axelor.apps.base.service.event.ProductPopulate;
+import com.axelor.event.Event;
+import com.google.inject.Inject;
 
-public interface CartService {
+public class ProductFireServiceImpl implements ProductFireService {
 
-  Cart getCurrentCart();
+  protected Event<ProductPopulate> productPopulateEvent;
 
-  void emptyCart(Cart cart);
+  @Inject
+  public ProductFireServiceImpl(Event<ProductPopulate> productPopulateEvent) {
+    this.productPopulateEvent = productPopulateEvent;
+  }
 
-  void addToCart(Product product);
-
-  Cart createCart();
+  public boolean getIsCartManagementEnabled() {
+    ProductPopulate productPopulate = new ProductPopulate();
+    productPopulateEvent.fire(productPopulate);
+    return productPopulate.getIsCartManagementEnabled();
+  }
 }
