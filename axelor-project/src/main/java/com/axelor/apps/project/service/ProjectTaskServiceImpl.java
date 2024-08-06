@@ -29,9 +29,11 @@ import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.studio.db.AppProject;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -50,6 +52,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected FrequencyService frequencyService;
   protected AppBaseService appBaseService;
   protected ProjectRepository projectRepository;
+  protected AppProjectService appProjectService;
 
   private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
@@ -59,12 +62,14 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       FrequencyRepository frequencyRepo,
       FrequencyService frequencyService,
       AppBaseService appBaseService,
-      ProjectRepository projectRepository) {
+      ProjectRepository projectRepository,
+      AppProjectService appProjectService) {
     this.projectTaskRepo = projectTaskRepo;
     this.frequencyRepo = frequencyRepo;
     this.frequencyService = frequencyService;
     this.appBaseService = appBaseService;
     this.projectRepository = projectRepository;
+    this.appProjectService = appProjectService;
   }
 
   @Override
@@ -264,5 +269,17 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     projectTask.setPriority(parentTask.getPriority());
     projectTask.setProjectTaskTagSet(parentTask.getProjectTaskTagSet());
     projectTask.setAssignedTo(parentTask.getAssignedTo());
+  }
+
+  @Override
+  public void changeProgress(ProjectTask projectTask) {
+    AppProject appProject = appProjectService.getAppProject();
+    if (appProject == null || projectTask == null) {
+      return;
+    }
+
+    if (appProject.getSelectAutoProgressOnProjectTask() && projectTask.getStatus() != null) {
+      projectTask.setProgress(projectTask.getStatus().getDefaultProgress());
+    }
   }
 }

@@ -5,14 +5,28 @@
 
   <grid name="cart-line-grid" title="Cart lines" model="com.axelor.apps.sale.db.CartLine"
     editable="true">
-    <field name="product"/>
+    <field name="product" form-view="product-form" grid-view="product-grid"
+      domain="self.parentProduct IS NULL"/>
+    <field name="product.code"/>
+    <field name="product.salePrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="qty"/>
+    <field name="variantProduct" form-view="product-form"
+      grid-view="product-product-variant-grid" domain="self.parentProduct = :product"
+      if="__config__.app.getApp('base')?.getManageProductVariants()"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <form name="cart-line-form" title="Cart line" model="com.axelor.apps.sale.db.CartLine">
     <panel name="mainPanel">
-      <field name="product" form-view="product-form" grid-view="product-grid"/>
+      <field name="product" form-view="product-form" grid-view="product-grid"
+        domain="self.parentProduct IS NULL"/>
+      <field name="product.code"/>
+      <field name="product.salePrice" x-scale="$nbDecimalDigitForUnitPrice"/>
       <field name="qty"/>
+      <field name="variantProduct" form-view="product-form"
+        grid-view="product-product-variant-grid" domain="self.parentProduct = :product"
+        if="__config__.app.getApp('base')?.getManageProductVariants()"/>
+      <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     </panel>
   </form>
 

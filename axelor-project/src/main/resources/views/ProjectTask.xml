@@ -28,8 +28,7 @@
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
-      <button name="doneBtn" icon="fa-check"
-        onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
+      <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
         showIf="project.isShowStatus"/>
     </toolbar>
     <menubar>
@@ -47,7 +46,8 @@
     <panel name="mainPanel" colSpan="12">
       <panel name="statusPanel" stacked="true" colSpan="6">
         <field name="status" widget="NavSelect" showTitle="false"
-          showIf="project.isShowStatus" x-order="sequence"/>
+          showIf="project.isShowStatus" x-order="sequence"
+          onChange="action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
       </panel>
       <panel name="viewerTagsPanel" colSpan="4">
@@ -247,6 +247,21 @@
           <field name="$_totalTimerDuration" type="decimal" readonly="true"
             title="Total duration (Hours)" colSpan="12"/>
         </panel>
+      </panel>
+      <panel name="linkTaskPanel" title="Manage relations">
+        <field name="$projectTaskLinkType" title="Project task link type" type="Many-to-one"
+          target="com.axelor.apps.project.db.ProjectTaskLinkType" colSpan="3"
+          onSelect="action-project-task-method-set-link-type-domain"/>
+        <field name="$projectTask" title="Project task to link" type="Many-to-one"
+          target="com.axelor.apps.project.db.ProjectTask" colSpan="3"
+          onSelect="action-project-task-method-set-task-domain"/>
+        <field name="$projectTask.project" colSpan="3" readonly="true" type="Many-to-one"
+          target="com.axelor.apps.project.db.Project"/>
+        <button name="generateNewLink" readonlyIf="!$projectTaskLinkType || !$projectTask"
+          title="Generate a new link" onClick="save, action-project-task-method-generate-new-link"
+          colSpan="3"/>
+        <panel-related field="projectTaskLinkList" colSpan="12" readonly="true"
+          grid-view="project-task-link-grid" form-view="project-task-link-form"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
@@ -475,6 +490,26 @@
       if="__config__.app.isApp('business-project')"/>
   </action-group>
 
+  <action-method name="action-project-task-method-set-link-type-domain">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="setLinkTypeDomain"/>
+  </action-method>
+
+
+  <action-method name="action-project-task-method-set-task-domain">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="setTaskDomain"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-generate-new-link">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="generateNewLink"/>
+  </action-method>
+
+  <action-group name="action-project-task-group-click-done">
+    <action name="action-project-task-validate-finish-status"/>
+    <action name="action-project-task-record-change-status"/>
+    <action name="action-project-task-method-auto-change-progress"/>
+    <action name="save"/>
+  </action-group>
+
   <action-view name="action-project-task-view-task" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="form" name="project-task-form"/>
@@ -677,6 +712,10 @@
 
   <action-method name="action-project-task-method-defaults-from-parent-task">
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="fillSubtask"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-auto-change-progress">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="changeProgress"/>
   </action-method>
 
   <action-group name="action-project-task-group-project-category-onchange">

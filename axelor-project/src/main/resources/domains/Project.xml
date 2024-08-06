@@ -115,6 +115,10 @@
       help="Activates a calendar view with tasks of the project categorized by user, accessible via the Tools menu."/>
     <many-to-one name="completedTaskStatus" title="Completed task status"
       ref="com.axelor.apps.project.db.TaskStatus"/>
+
+    <many-to-many name="projectTaskLinkTypeSet"
+      ref="com.axelor.apps.project.db.ProjectTaskLinkType" title="Project task relation types"/>
+
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>
   </entity>

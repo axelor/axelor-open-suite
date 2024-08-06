@@ -16,6 +16,7 @@
       <field name="defaultTaskStatusSet" widget="TagSelect"
         onChange="action-app-project-record-reset-completed-task-status"/>
       <field name="defaultPrioritySet" widget="TagSelect"/>
+      <field name="selectAutoProgressOnProjectTask"/>
       <field name="fullNameGroovyFormula"/>
       <panel title="Custom fields" name="customFieldConfigPanel" colSpan="12">
         <panel-related field="taskCustomFieldsList" colSpan="6"

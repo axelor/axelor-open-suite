@@ -54,4 +54,6 @@ public interface ProjectTaskService {
   public String getTaskLink(String value);
 
   public void fillSubtask(ProjectTask projectTask);
+
+  void changeProgress(ProjectTask projectTask);
 }
