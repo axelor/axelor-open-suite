@@ -368,7 +368,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                 companyCurrency,
                 invoicePaymentCurrency,
                 invoiceTerm.getInvoice().getInvoiceDate(),
-                paymentDate);
+                paymentDate,
+                companyPaidAmount.compareTo(invoiceTerm.getCompanyAmountRemaining()) == 0);
       }
 
       return currencyScaleService.getCompanyScaledValue(
@@ -450,12 +451,18 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       Currency companyCurrency,
       Currency invoicePaymentCurrency,
       LocalDate invoiceDate,
-      LocalDate paymentDate)
+      LocalDate paymentDate,
+      boolean isTotalInvoiceTermPayment)
       throws AxelorException {
     if (currencyService.isCurrencyRateLower(
         invoiceDate, paymentDate, companyCurrency, invoicePaymentCurrency)) {
       return currencyService.getCurrencyConversionRate(
           companyCurrency, invoicePaymentCurrency, paymentDate);
+    }
+
+    if (isTotalInvoiceTermPayment) {
+      return currencyService.getCurrencyConversionRate(
+          invoicePaymentCurrency, companyCurrency, paymentDate);
     }
 
     return currencyService.getCurrencyConversionRate(

@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -48,17 +49,20 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected InvoiceTermToolService invoiceTermToolService;
   protected MoveLineToolService moveLineToolService;
+  protected CurrencyService currencyService;
 
   @Inject
   public ReconcileCheckServiceImpl(
       CurrencyScaleService currencyScaleService,
       InvoiceTermPfpService invoiceTermPfpService,
       InvoiceTermToolService invoiceTermToolService,
-      MoveLineToolService moveLineToolService) {
+      MoveLineToolService moveLineToolService,
+      CurrencyService currencyService) {
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.invoiceTermToolService = invoiceTermToolService;
     this.moveLineToolService = moveLineToolService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -105,16 +109,8 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    if (currencyScaleService.isGreaterThan(
-            reconcile.getAmount(),
-            creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()),
-            creditMoveLine,
-            false)
-        || currencyScaleService.isGreaterThan(
-            reconcile.getAmount(),
-            debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()),
-            debitMoveLine,
-            false)) {
+    if (this.checkMoveLineAmount(reconcile, creditMoveLine, false)
+        || this.checkMoveLineAmount(reconcile, debitMoveLine, true)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.RECONCILE_5)
@@ -206,5 +202,24 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
     return ObjectUtils.isEmpty(it.getTaxLineSet())
         && moveLineToolService.isMoveLineTaxAccount(it)
         && it.getAccount().getIsTaxAuthorizedOnMoveLine();
+  }
+
+  protected boolean checkMoveLineAmount(Reconcile reconcile, MoveLine moveLine, boolean isDebit)
+      throws AxelorException {
+    BigDecimal moveLineAmount = isDebit ? moveLine.getDebit() : moveLine.getCredit();
+
+    if (currencyScaleService.isGreaterThan(
+        reconcile.getAmount(),
+        moveLineAmount.subtract(moveLine.getAmountPaid()),
+        moveLine,
+        false)) {
+      return currencyService.isSameCurrencyRate(
+          moveLine.getDate(),
+          reconcile.getEffectiveDate(),
+          moveLine.getCurrency(),
+          reconcile.getCompany().getCurrency());
+    }
+
+    return false;
   }
 }
