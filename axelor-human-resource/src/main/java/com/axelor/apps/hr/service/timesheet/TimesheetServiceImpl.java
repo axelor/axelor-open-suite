@@ -28,9 +28,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-/**
- * @author axelor
- */
+/** @author axelor */
 public class TimesheetServiceImpl implements TimesheetService {
   protected TimesheetLineService timesheetLineService;
 

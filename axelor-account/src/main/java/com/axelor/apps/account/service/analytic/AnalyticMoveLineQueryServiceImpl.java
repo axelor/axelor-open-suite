@@ -138,11 +138,8 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
   protected String getAndQuery(
       String query, List<AnalyticMoveLineQueryParameter> searchAnalyticMoveLineQueryParameterList) {
     Map<MoveLine, List<AnalyticMoveLine>> analyticMoveLineList =
-        Beans.get(AnalyticMoveLineRepository.class)
-            .all()
-            .filter("self.moveLine is not null")
-            .fetch()
-            .stream()
+        Beans.get(AnalyticMoveLineRepository.class).all().filter("self.moveLine is not null")
+            .fetch().stream()
             .collect(Collectors.groupingBy(AnalyticMoveLine::getMoveLine, Collectors.toList()));
 
     Map<AnalyticAxis, Set<AnalyticAccount>> paramMap =

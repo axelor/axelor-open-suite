@@ -473,23 +473,17 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     List<Unit> units = new ArrayList<>();
     units.add(unit);
     units.addAll(
-        unitConversionRepository
-            .all()
+        unitConversionRepository.all()
             .filter("self.entitySelect = :entitySelect AND self.startUnit = :startUnit")
-            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT)
-            .bind("startUnit", unit)
-            .fetch()
-            .stream()
+            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT).bind("startUnit", unit)
+            .fetch().stream()
             .map(UnitConversion::getEndUnit)
             .collect(Collectors.toList()));
     units.addAll(
-        unitConversionRepository
-            .all()
+        unitConversionRepository.all()
             .filter("self.entitySelect = :entitySelect AND self.endUnit = :endUnit")
-            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT)
-            .bind("endUnit", unit)
-            .fetch()
-            .stream()
+            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT).bind("endUnit", unit)
+            .fetch().stream()
             .map(UnitConversion::getStartUnit)
             .collect(Collectors.toList()));
     return units;

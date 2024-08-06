@@ -64,13 +64,9 @@ public class AccountingReportToolServiceImpl implements AccountingReportToolServ
             isCustom ? "=" : "<>");
 
     Stream<AccountingReportType> accountingReportTypeStream =
-        accountingReportTypeRepository
-            .all()
-            .filter(queryStr)
+        accountingReportTypeRepository.all().filter(queryStr)
             .bind("reportType", AccountingReportTypeRepository.REPORT)
-            .bind("typeCustom", AccountingReportRepository.REPORT_CUSTOM_STATE)
-            .fetch()
-            .stream();
+            .bind("typeCustom", AccountingReportRepository.REPORT_CUSTOM_STATE).fetch().stream();
 
     if (isCustom) {
       accountingReportTypeStream =

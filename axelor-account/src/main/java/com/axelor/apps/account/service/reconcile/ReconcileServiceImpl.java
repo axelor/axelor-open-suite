@@ -360,9 +360,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         debitMoveLine, creditMoveLine, canBeZeroBalanceOk, updateInvoicePayments, null);
   }
 
-  /**
-   * @param reconcile
-   */
+  /** @param reconcile */
   protected void updatePaymentMoveLineDistribution(Reconcile reconcile) {
     // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
     // type purchase)
