@@ -26,7 +26,7 @@
     <panel name="selectPanel" colSpan="12" title="Select an existing project task link type">
       <field name="$linkType" title="Opposite project task link type" requiredIf="!$name"
         type="Many-to-one" target="com.axelor.apps.project.db.ProjectTaskLinkType"
-        domain="self.oppositeLinkType IS NULL"/>
+        onSelect="action-link-type-method-link-type-onselect"/>
       <button showIf="$linkType" name="selectOppositeBtn"
         title="Select an opposite link type"
         onClick="action-project-task-link-type-method-select-opposite"/>
@@ -56,6 +56,11 @@
   <action-method name="action-project-task-link-type-method-empty-opposite">
     <call class="com.axelor.apps.project.web.ProjectTaskLinkTypeController"
       method="emptyOppositeLinkType"/>
+  </action-method>
+
+  <action-method name="action-link-type-method-link-type-onselect">
+    <call class="com.axelor.apps.project.web.ProjectTaskLinkTypeController"
+      method="linkTypeDomain"/>
   </action-method>
 
   <action-view name="action-project-task-link-type-view-manage-opposite"

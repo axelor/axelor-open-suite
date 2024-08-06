@@ -23,7 +23,7 @@ public class ProjectTaskLinkTypeController {
     if (!ObjectUtils.isEmpty(request.getContext().get("name"))) {
       name = request.getContext().get("name").toString();
       Beans.get(ProjectTaskLinkTypeService.class)
-          .manageOppositeLinkType(projectTaskLinkType, name, oppositeProjectTaskLinkType);
+          .generateOppositeLinkType(projectTaskLinkType, name);
 
       response.setCanClose(true);
     }
@@ -44,7 +44,7 @@ public class ProjectTaskLinkTypeController {
               .find(Long.parseLong(oppositeMap.get("id").toString()));
 
       Beans.get(ProjectTaskLinkTypeService.class)
-          .manageOppositeLinkType(projectTaskLinkType, "", oppositeProjectTaskLinkType);
+          .selectOppositeLinkType(projectTaskLinkType, oppositeProjectTaskLinkType);
 
       response.setCanClose(true);
     }
@@ -60,6 +60,21 @@ public class ProjectTaskLinkTypeController {
       Beans.get(ProjectTaskLinkTypeService.class).emptyOppositeLinkType(projectTaskLinkType);
 
       response.setCanClose(true);
+    }
+  }
+
+  @ErrorException
+  public void linkTypeDomain(ActionRequest request, ActionResponse response) {
+    ProjectTaskLinkType projectTaskLinkType =
+        Beans.get(ProjectTaskLinkTypeRepository.class)
+            .find(Long.parseLong(request.getContext().get("_id").toString()));
+
+    if (projectTaskLinkType != null) {
+      response.setAttr(
+          "$linkType",
+          "domain",
+          String.format(
+              "self.oppositeLinkType IS NULL AND self.id != %s", projectTaskLinkType.getId()));
     }
   }
 }

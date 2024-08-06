@@ -17,30 +17,37 @@ public class ProjectTaskLinkTypeServiceImpl implements ProjectTaskLinkTypeServic
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
-  public void manageOppositeLinkType(
-      ProjectTaskLinkType projectTaskLinkType, String name, ProjectTaskLinkType opposite) {
-    if (projectTaskLinkType == null) {
+  public void generateOppositeLinkType(ProjectTaskLinkType projectTaskLinkType, String name) {
+    if (projectTaskLinkType == null || StringUtils.isEmpty(name)) {
       return;
     }
 
-    if (!StringUtils.isEmpty(name)) {
-      opposite = new ProjectTaskLinkType();
-      opposite.setName(name);
+    ProjectTaskLinkType opposite = new ProjectTaskLinkType();
+    opposite.setName(name);
+
+    manageOppositeLinkTypes(projectTaskLinkType, opposite);
+  }
+
+  @Override
+  public void selectOppositeLinkType(
+      ProjectTaskLinkType projectTaskLinkType, ProjectTaskLinkType opposite) {
+    if (projectTaskLinkType == null || opposite == null) {
+      return;
     }
 
-    if (opposite != null) {
-      opposite.setOppositeLinkType(projectTaskLinkType);
-      opposite = projectTaskLinkTypeRepository.save(opposite);
+    manageOppositeLinkTypes(projectTaskLinkType, opposite);
+  }
 
-      if (projectTaskLinkType.getOppositeLinkType() != null) {
-        ProjectTaskLinkType oldOppositeLinkType = projectTaskLinkType.getOppositeLinkType();
-        oldOppositeLinkType.setOppositeLinkType(null);
-        projectTaskLinkTypeRepository.save(oldOppositeLinkType);
-      }
-      projectTaskLinkType.setOppositeLinkType(opposite);
-      projectTaskLinkTypeRepository.save(projectTaskLinkType);
-    }
+  @Transactional(rollbackOn = Exception.class)
+  protected void manageOppositeLinkTypes(
+      ProjectTaskLinkType projectTaskLinkType, ProjectTaskLinkType opposite) {
+    opposite.setOppositeLinkType(projectTaskLinkType);
+    opposite = projectTaskLinkTypeRepository.save(opposite);
+
+    emptyOppositeLinkType(projectTaskLinkType);
+
+    projectTaskLinkType.setOppositeLinkType(opposite);
+    projectTaskLinkTypeRepository.save(projectTaskLinkType);
   }
 
   @Override
