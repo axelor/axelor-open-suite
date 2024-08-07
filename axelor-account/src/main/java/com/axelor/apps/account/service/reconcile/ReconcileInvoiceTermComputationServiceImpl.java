@@ -164,13 +164,16 @@ public class ReconcileInvoiceTermComputationServiceImpl
         BigDecimal invoicePaymentAmount = amount;
         if (!reconcileCheckService.isCompanyCurrency(reconcile, null, otherMove)) {
           invoicePaymentAmount = this.getTotal(moveLine, otherMoveLine, amount, true);
-          amount = this.getTotal(moveLine, otherMoveLine, amount, false);
         }
 
         invoicePayment =
             invoicePaymentCreateService.createInvoicePayment(
                 invoice, invoicePaymentAmount, otherMove);
         invoicePayment.setReconcile(reconcile);
+      }
+
+      if (!reconcileCheckService.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
+        amount = this.getTotal(moveLine, otherMoveLine, amount, false);
       }
     } else if (!reconcileCheckService.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
       amount = this.getTotal(moveLine, otherMoveLine, amount, false);
