@@ -276,7 +276,8 @@
     model="com.axelor.apps.project.db.Project">
     <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
       <field name="taskStatusManagementSelect" widget="RadioSelect"
-        onChange="action-project-record-status-reset-values"/>
+        onChange="action-project-record-status-reset-values"
+        readonlyIf="projectTaskList.length &gt; 0"/>
       <spacer/>
       <field name="projectTaskStatusSet" widget="TagSelect"
         showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2"
@@ -313,6 +314,7 @@
       <field name="isShowCalendarPerSection" colSpan="4" widget="inline-checkbox"
         showIf="isShowSection"/>
       <field name="isShowCalendarPerUser" colSpan="4" widget="inline-checkbox"/>
+      <field name="projectTaskList" hidden="true"/>
     </panel>
   </form>
 

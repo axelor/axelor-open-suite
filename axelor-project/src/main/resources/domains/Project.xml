@@ -80,8 +80,9 @@
     <many-to-many name="siteSet" title="Sites" ref="com.axelor.apps.base.db.Site"/>
 
     <!-- Configuration fields -->
-    <integer name="taskStatusManagementSelect" title="Task status management" default="1"
-      selection="task.project.status.management.select"/>
+    <integer name="taskStatusManagementSelect" title="Task status management" default="2"
+      selection="task.project.status.management.select"
+      help="The status of project tasks is defined by the selection chosen. The priority of the statuses displayed is first determined by the project, then by the project's application configuration. Once a task is linked to the project, the selection can no longer be modified."/>
     <many-to-many name="projectTaskStatusSet"
       ref="com.axelor.apps.project.db.TaskStatus" title="Type of authorized status"/>
     <boolean name="isShowPriority" title="Priorities?" default="true"/>

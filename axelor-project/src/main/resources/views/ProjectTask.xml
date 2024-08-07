@@ -684,23 +684,6 @@
     <field name="assignedTo" expr="eval: __user__"/>
   </action-record>
 
-  <action-record name="action-project-task-record-status-in-progress"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <field name="status" expr="in-progress"/>
-  </action-record>
-
-  <action-record name="action-project-task-record-status-closed"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <field name="statusBeforeComplete" expr="eval: status"/>
-    <field name="status" expr="closed"/>
-  </action-record>
-
-  <action-record name="action-project-task-record-status-canceled"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <field name="statusBeforeComplete" expr="eval: status"/>
-    <field name="status" expr="canceled"/>
-  </action-record>
-
   <action-record name="action-project-task-record-product-selected"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="quantity" expr="1"/>
