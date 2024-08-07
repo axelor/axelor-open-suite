@@ -18,11 +18,17 @@
  */
 package com.axelor.apps.project.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.ErrorException;
+import com.axelor.apps.project.db.TaskStatus;
+import com.axelor.apps.project.service.ProjectTaskToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppProject;
 import com.google.inject.Singleton;
+import java.util.Set;
 
 @Singleton
 public class AppProjectController {
@@ -31,5 +37,18 @@ public class AppProjectController {
     Beans.get(AppProjectService.class).generateProjectConfigurations();
 
     response.setReload(true);
+  }
+
+  @ErrorException
+  public void manageCompletedTaskStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AppProject appProject = request.getContext().asType(AppProject.class);
+
+    Set<TaskStatus> taskStatusSet = appProject.getDefaultTaskStatusSet();
+    TaskStatus completedTaskStatus =
+        Beans.get(ProjectTaskToolService.class)
+            .getCompletedTaskStatus(appProject.getCompletedTaskStatus(), taskStatusSet);
+
+    response.setValue("completedTaskStatus", completedTaskStatus);
   }
 }

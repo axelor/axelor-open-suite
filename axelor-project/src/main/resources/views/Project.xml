@@ -276,15 +276,15 @@
     model="com.axelor.apps.project.db.Project">
     <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
       <field name="taskStatusManagementSelect" widget="RadioSelect"
-        onChange="action-project-record-status-reset-values"
-        readonlyIf="projectTaskList.length &gt; 0"/>
-      <spacer/>
+        readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
+        onChange="action-project-record-manage-task-status-set"/>
       <field name="projectTaskStatusSet" widget="TagSelect"
-        showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2"
-        onChange="action-project-record-reset-completed-task-status"/>
+        showIf="taskStatusManagementSelect != 1" requiredIf="taskStatusManagementSelect == 2"
+        readonlyIf="taskStatusManagementSelect == 3"
+        onChange="action-project-method-manage-completed-task-status"/>
       <field name="completedTaskStatus" grid-view="task-status-grid"
-        form-view="task-status-form" showIf="taskStatusManagementSelect == 2"
-        requiredIf="taskStatusManagementSelect == 2"
+        form-view="task-status-form" showIf="taskStatusManagementSelect != 1"
+        requiredIf="taskStatusManagementSelect == 2" readonlyIf="taskStatusManagementSelect == 3"
         onSelect="action-project-attrs-set-completed-task-status-domain"/>
       <field name="isShowPriority" colSpan="4" widget="inline-checkbox"
         onChange="action-project-record-priority-reset-values"/>
@@ -558,20 +558,6 @@
       expr="eval: __config__.app.getApp('project')?.completedTaskStatus"/>
   </action-record>
 
-  <action-record name="action-project-record-status-reset-values"
-    model="com.axelor.apps.project.db.Project">
-    <field name="isShowKanbanPerStatus,isShowCalendarPerStatus, isShowCalendarPerSection"
-      expr="eval: false" if="taskStatusManagementSelect != 2"/>
-    <field name="projectTaskStatusSet" expr="eval: null" if="taskStatusManagementSelect != 2"/>
-    <field name="completedTaskStatus" expr="eval: null" if="taskStatusManagementSelect != 2"/>
-  </action-record>
-
-  <action-record name="action-project-record-reset-completed-task-status"
-    model="com.axelor.apps.project.db.Project">
-    <field name="completedTaskStatus" expr="eval: null"
-      if="!projectTaskStatusSet || !projectTaskStatusSet.contains(completedTaskStatus)"/>
-  </action-record>
-
   <action-record name="action-project-record-priority-reset-values"
     model="com.axelor.apps.project.db.Project">
     <field name="projectTaskPrioritySet" expr="eval: null" if="!isShowPriority"/>
@@ -598,6 +584,18 @@
     model="com.axelor.apps.project.db.Project">
     <field name="projectStatus"
       expr="eval: __config__.app.getApp('project')?.canceledProjectStatus"/>
+  </action-record>
+
+  <action-record name="action-project-record-manage-task-status-set"
+    model="com.axelor.apps.project.db.Project">
+    <field name="projectTaskStatusSet"
+      expr="eval: __config__.app.getApp('project')?.getDefaultTaskStatusSet()"
+      if="taskStatusManagementSelect != 1"/>
+    <field name="completedTaskStatus"
+      expr="eval: __config__.app.getApp('project')?.completedTaskStatus"
+      if="taskStatusManagementSelect != 1"/>
+    <field name="projectTaskStatusSet,completedTaskStatus" expr="eval: null"
+      if="taskStatusManagementSelect == 1"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -633,6 +631,11 @@
 
   <action-method name="action-project-method-import-members">
     <call class="com.axelor.apps.project.web.ProjectController" method="importMembers"/>
+  </action-method>
+
+  <action-method name="action-project-method-manage-completed-task-status">
+    <call class="com.axelor.apps.project.web.ProjectController"
+      method="manageCompletedTaskStatus"/>
   </action-method>
 
   <!-- ACTION VIEW -->

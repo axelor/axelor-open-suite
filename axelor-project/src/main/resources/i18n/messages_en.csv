@@ -419,6 +419,7 @@
 "This option is used to activate the automatic allocation of progress to project tasks. If it is enabled, the progress field will be available in the task statuses and will generate the progress when these change. The percentage defined by default in the statuses will apply to all tasks.",,,
 "This resource is already booked for this period",,,
 "This task is deleted",,,
+"This task status will be used to define which status is flagged as completed for tasks.",,,
 "This will determine the unit used for project-wide reporting. If there are tasks using another unit, conversions will be made using 'Number of hours in a day' value.",,,
 "Ticker number",,,
 "Ticket",,,

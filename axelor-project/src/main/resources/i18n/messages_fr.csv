@@ -419,6 +419,7 @@
 "This option is used to activate the automatic allocation of progress to project tasks. If it is enabled, the progress field will be available in the task statuses and will generate the progress when these change. The percentage defined by default in the statuses will apply to all tasks.","Cette option permet d'activer l'attribution automatique de la progression aux tâches du projet. Si elle est activée, le champ d'avancement sera disponible dans les statuts des tâches et changera la progression lorsque ceux-ci changeront. Le pourcentage défini par défaut dans les statuts sera applicable à l’ensemble des tâches.",,
 "This resource is already booked for this period","La ressource est déjà réservée pour cette période",,
 "This task is deleted","Cette tâche a été supprimée",,
+"This task status will be used to define which status is flagged as completed for tasks.","Ce statut de tâche sera utilisé pour définir quel statut est marqué comme terminé pour les tâches.",,
 "This will determine the unit used for project-wide reporting. If there are tasks using another unit, conversions will be made using 'Number of hours in a day' value.","Ceci déterminera l'unité utilisée pour le reporting global projet. Si des tâches utilisent une autre unité, des conversions seront faites en utilisant la valeur du champ 'Nombre d'heures par jour'.",,
 "Ticker number","N° Ticket",,
 "Ticket",,,

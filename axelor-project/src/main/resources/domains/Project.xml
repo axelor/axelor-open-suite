@@ -80,7 +80,7 @@
     <many-to-many name="siteSet" title="Sites" ref="com.axelor.apps.base.db.Site"/>
 
     <!-- Configuration fields -->
-    <integer name="taskStatusManagementSelect" title="Task status management" default="2"
+    <integer name="taskStatusManagementSelect" title="Task status management" default="3"
       selection="task.project.status.management.select"
       help="The status of project tasks is defined by the selection chosen. The priority of the statuses displayed is first determined by the project, then by the project's application configuration. Once a task is linked to the project, the selection can no longer be modified."/>
     <many-to-many name="projectTaskStatusSet"
@@ -116,7 +116,8 @@
     <boolean name="isShowCalendarPerUser" title="Enable calendar view per user"
       help="Activates a calendar view with tasks of the project categorized by user, accessible via the Tools menu."/>
     <many-to-one name="completedTaskStatus" title="Completed task status"
-      ref="com.axelor.apps.project.db.TaskStatus"/>
+      ref="com.axelor.apps.project.db.TaskStatus"
+      help="This task status will be used to define which status is flagged as completed for tasks."/>
 
     <many-to-many name="projectTaskLinkTypeSet"
       ref="com.axelor.apps.project.db.ProjectTaskLinkType" title="Project task relation types"/>
