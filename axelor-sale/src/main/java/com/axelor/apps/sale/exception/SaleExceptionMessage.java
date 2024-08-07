@@ -130,4 +130,7 @@ public final class SaleExceptionMessage {
       "The total amount of quotation is zero. Do you want to proceed ?" /*)*/;
   public static final String CLIENT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS = /*$$(*/
       "The client provided is not a customer of the given company: %s." /*)*/;
+
+      public static final String PRODUCT_IS_NULL = /*$$(*/
+      "Product should not be null" /*)*/;
 }

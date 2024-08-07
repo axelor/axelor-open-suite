@@ -1,6 +1,7 @@
 package com.axelor.apps.sale.rest.dto;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.ResponseStructure;
 
@@ -17,6 +18,14 @@ public class CurrencyResponse extends ResponseStructure {
     this.code = company.getCurrency().getCode();
     this.name = company.getCurrency().getName();
     this.symbol = company.getCurrency().getSymbol();
+  }
+
+  public CurrencyResponse(Product product) {
+    super(ObjectFinder.NO_VERSION);
+    this.currencyId = product.getSaleCurrency().getId();
+    this.code = product.getSaleCurrency().getCode();
+    this.name = product.getSaleCurrency().getName();
+    this.symbol = product.getSaleCurrency().getSymbol();
   }
 
   public Long getCurrencyId() {
