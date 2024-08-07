@@ -1,5 +1,6 @@
 package com.axelor.apps.sale.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -17,6 +18,7 @@ import com.axelor.utils.api.SecurityCheck;
 import com.axelor.web.ITranslation;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
+import java.util.Objects;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -35,7 +37,7 @@ public class ProductRestController {
   @Path("/")
   @POST
   @HttpExceptionHandler
-  public Response getProductPrice(ProductPostRequest requestBody) throws JSONException {
+  public Response getProductPrice(ProductPostRequest requestBody) throws JSONException, AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck()
         .createAccess(Product.class)
@@ -45,13 +47,15 @@ public class ProductRestController {
     Product product = requestBody.fetchProduct();
     Partner partner = requestBody.fetchPartner();
     Company company = requestBody.fetchCompany();
+    CurrencyResponse currencyResponse =
+        (!Objects.isNull(company)) ? new CurrencyResponse(company) : new CurrencyResponse(product);
 
-    CurrencyResponse currencyResponse = new CurrencyResponse(company);
     List<PriceResponse> prices =
         Beans.get(ProductRestService.class).fetchProductPrice(product, partner, company);
+
     return ResponseConstructor.build(
         Response.Status.OK,
-            String.format( I18n.get(ITranslation.PRODUCT_PRICE_INFORMATION),product.getId()),
+        String.format(I18n.get(ITranslation.PRODUCT_PRICE_INFORMATION), product.getId()),
         new ProductResponse(requestBody.getProductId(), prices, currencyResponse));
   }
 }

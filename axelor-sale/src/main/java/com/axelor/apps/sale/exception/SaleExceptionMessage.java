@@ -139,6 +139,9 @@ public final class SaleExceptionMessage {
   public static final String SALE_ORDER_NOT_DRAFT = /*$$(*/
       "You can only add a line to a draft sale order." /*)*/;
 
+      public static final String PRODUCT_IS_NULL = /*$$(*/
+      "Product should not be null" /*)*/;
+
   public static final String PRODUCT_ADDED_TO_CART = /*$$(*/
       "%s has been added to your cart." /*)*/;
 
