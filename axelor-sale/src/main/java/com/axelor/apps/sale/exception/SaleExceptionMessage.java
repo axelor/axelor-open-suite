@@ -133,7 +133,9 @@ public final class SaleExceptionMessage {
       "You can not choose this product for this order: %s" /*)*/;
 
   public static final String EITHER_PRODUCT_OR_SALE_ORDER_ARE_NULL = /*$$(*/
-      "Either the sale order or the product is null. " /*)*/;
+      "Either the sale order or the product is null." /*)*/;
   public static final String CLIENT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS = /*$$(*/
       "The client provided is not a customer of the given company: %s." /*)*/;
+  public static final String SALE_ORDER_NOT_DRAFT = /*$$(*/
+      "You can only add a line to a draft sale order." /*)*/;
 }

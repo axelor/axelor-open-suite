@@ -79,11 +79,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
   @Override
   public SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product)
       throws AxelorException {
-    if (saleOrder == null || product == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(SaleExceptionMessage.EITHER_PRODUCT_OR_SALE_ORDER_ARE_NULL));
-    }
+    checkSaleOrderAndProduct(saleOrder, product);
     SaleOrderLine saleOrderLine = new SaleOrderLine();
     saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine);
     checkProduct(saleOrder, saleOrderLine, product);
@@ -97,6 +93,20 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     saleOrderRepository.save(saleOrder);
 
     return saleOrderLine;
+  }
+
+  protected void checkSaleOrderAndProduct(SaleOrder saleOrder, Product product)
+      throws AxelorException {
+    if (saleOrder == null || product == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(SaleExceptionMessage.EITHER_PRODUCT_OR_SALE_ORDER_ARE_NULL));
+    }
+    if (saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.SALE_ORDER_NOT_DRAFT));
+    }
   }
 
   protected void checkProduct(SaleOrder saleOrder, SaleOrderLine saleOrderLine, Product product)
