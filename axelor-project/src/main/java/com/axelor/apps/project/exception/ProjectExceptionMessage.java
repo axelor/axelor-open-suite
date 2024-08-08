@@ -72,4 +72,10 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS = /*$$(*/
       "Please configure the completed task status in the project config panel." /*)*/;
+
+  public static final String CATEGORY_COMPLETED_TASK_STATUS_MISSING_WITH_DEFAULT_STATUS = /*$$(*/
+      "Your completed task status is configure by category but the project task category or it completed task status is empty, do you want to use this one : %s ? Else you need to configure the project task category config field." /*)*/;
+
+  public static final String CATEGORY_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS = /*$$(*/
+      "Please configure the completed task status of the project task category." /*)*/;
 }
