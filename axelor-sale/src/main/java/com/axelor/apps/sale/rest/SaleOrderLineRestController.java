@@ -31,6 +31,7 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import java.math.BigDecimal;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -57,8 +58,10 @@ public class SaleOrderLineRestController {
         Beans.get(SaleOrderLineGeneratorService.class);
     Product product = requestBody.fetchProduct();
     SaleOrder saleOrder = requestBody.fetchsaleOrder();
+    BigDecimal quantity = requestBody.getQuantity();
+    String comment = requestBody.getComment();
     SaleOrderLine saleOrderLine =
-        saleorderLineCreateService.createSaleOrderLine(saleOrder, product);
+        saleorderLineCreateService.createSaleOrderLine(saleOrder, product, quantity, comment);
 
     return ResponseConstructor.buildCreateResponse(
         saleOrderLine, new SaleOrderLineResponse(saleOrderLine));

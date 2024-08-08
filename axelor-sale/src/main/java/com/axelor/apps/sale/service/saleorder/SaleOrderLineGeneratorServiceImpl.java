@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -35,6 +36,7 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGeneratorService {
   protected SaleOrderLineInitValueService saleOrderLineInitValueService;
@@ -49,6 +51,8 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
   protected SaleOrderOnLineChangeService saleOrderOnLineChangeService;
   protected AppBaseService appBaseService;
 
+  protected ProductMultipleQtyService productMultipleQtyService;
+
   @Inject
   public SaleOrderLineGeneratorServiceImpl(
       SaleOrderLineInitValueService saleOrderLineInitValueService,
@@ -61,7 +65,8 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       ProductRepository productRepository,
       SaleOrderService saleOrderService,
       AppBaseService appBaseService,
-      SaleOrderOnLineChangeService saleOrderOnLineChangeService) {
+      SaleOrderOnLineChangeService saleOrderOnLineChangeService,
+      ProductMultipleQtyService productMultipleQtyService) {
     this.saleOrderLineInitValueService = saleOrderLineInitValueService;
     this.saleOrderLineProductService = saleOrderLineProductService;
     this.saleOrderLineRepository = saleOrderLineRepository;
@@ -73,20 +78,26 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     this.saleOrderService = saleOrderService;
     this.saleOrderOnLineChangeService = saleOrderOnLineChangeService;
     this.appBaseService = appBaseService;
+    this.productMultipleQtyService = productMultipleQtyService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product)
-      throws AxelorException {
+  public SaleOrderLine createSaleOrderLine(
+      SaleOrder saleOrder, Product product, BigDecimal qty, String comment) throws AxelorException {
     checkSaleOrderAndProduct(saleOrder, product);
     SaleOrderLine saleOrderLine = new SaleOrderLine();
     saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine);
     checkProduct(saleOrder, saleOrderLine, product);
     saleOrderLine.setProduct(product);
+    checkMultipleQty(product, qty);
+    saleOrderLine.setQty(qty);
     saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
     saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+
+    saleOrderLine.setLineProductionComment(comment);
     saleOrderLineRepository.save(saleOrderLine);
+
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderOnLineChangeService.handleComplementaryProducts(saleOrder);
@@ -122,6 +133,21 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.PRODUCT_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS),
           product.getName());
+    }
+  }
+
+  protected void checkMultipleQty(Product product, BigDecimal qty) throws AxelorException {
+    if (!product.getSaleProductMultipleQtyList().isEmpty() && qty == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(SaleExceptionMessage.NO_QUANTITY_PROVIDED));
+    }
+    if (!productMultipleQtyService.checkMultipleQty(qty, product.getSaleProductMultipleQtyList())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(
+              I18n.get(SaleExceptionMessage.QUANTITY_NOT_MULTIPLE),
+              product.getSaleProductMultipleQtyList().toString()));
     }
   }
 }
