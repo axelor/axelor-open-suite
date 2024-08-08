@@ -19,7 +19,7 @@
       ref="com.axelor.apps.stock.db.StockLocation" title="Common source location"/>
     <many-to-one name="commonToStockLocation"
       ref="com.axelor.apps.stock.db.StockLocation" title="Common destination location"/>
-    <one-to-many name="productToMoveList"
+    <one-to-many name="massStockMoveNeedList"
       ref="com.axelor.apps.stock.db.MassStockMoveNeed" title="Products to move"
       mappedBy="massStockMove"/>
     <integer name="statusSelect" selection="stock.mass.stock.move.status.select"

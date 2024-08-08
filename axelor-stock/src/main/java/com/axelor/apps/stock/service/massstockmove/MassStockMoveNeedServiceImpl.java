@@ -37,7 +37,7 @@ public class MassStockMoveNeedServiceImpl implements MassStockMoveNeedService {
         var massStockMoveNeed =
             this.createMassStockMoveNeed(
                 massStockMove, stockMoveLine.getProduct(), stockMoveLine.getRealQty());
-        massStockMove.addProductToMoveListItem(massStockMoveNeed);
+        massStockMove.addMassStockMoveNeedListItem(massStockMoveNeed);
       }
     }
   }
