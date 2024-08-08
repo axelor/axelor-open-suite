@@ -28,10 +28,11 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskLinkType;
 import com.axelor.apps.project.db.TaskStatus;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskLinkTypeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskService;
-import com.axelor.apps.project.service.ProjectToolService;
+import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TimerProjectTaskService;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
 import com.axelor.common.ObjectUtils;
@@ -205,7 +206,7 @@ public class ProjectTaskController {
     Project project = projectTask.getProject();
 
     Optional<TaskStatus> completedStatus =
-        Beans.get(ProjectToolService.class).getCompletedTaskStatus(project);
+        Beans.get(TaskStatusToolService.class).getCompletedTaskStatus(project, projectTask);
 
     if (completedStatus.isPresent()) {
       response.setValue("statusBeforeComplete", projectTask.getStatus());
@@ -218,7 +219,8 @@ public class ProjectTaskController {
       throws AxelorException {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
     Project project = projectTask.getProject();
-    String warning = Beans.get(ProjectToolService.class).checkCompletedTaskStatus(project);
+    String warning =
+        Beans.get(TaskStatusToolService.class).checkCompletedTaskStatus(project, projectTask);
 
     if (!StringUtils.isEmpty(warning)) {
       response.setAlert(warning);
@@ -229,7 +231,9 @@ public class ProjectTaskController {
   public void manageStatus(ActionRequest request, ActionResponse response) throws AxelorException {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
     Project project = projectTask.getProject();
-    Set<TaskStatus> taskStatusSet = Beans.get(ProjectToolService.class).getTaskStatusSet(project);
+
+    Set<TaskStatus> taskStatusSet =
+        Beans.get(TaskStatusToolService.class).getTaskStatusSet(project, projectTask);
 
     if (!ObjectUtils.isEmpty(taskStatusSet)) {
       response.setAttr(
@@ -241,6 +245,22 @@ public class ProjectTaskController {
               .collect(Collectors.joining(",")));
     } else {
       response.setAttr("statusPanel", "hidden", true);
+    }
+  }
+
+  @ErrorException
+  public void changeStatusDependingCategory(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    Project project = projectTask.getProject();
+
+    if (project != null
+        && project.getTaskStatusManagementSelect()
+            == ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY
+        && projectTask.getProjectTaskCategory() != null) {
+      response.setValue(
+          "status", Beans.get(ProjectTaskService.class).getStatus(project, projectTask));
+      manageStatus(request, response);
     }
   }
 }
