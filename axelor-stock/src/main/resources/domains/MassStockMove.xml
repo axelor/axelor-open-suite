@@ -14,6 +14,13 @@
       title="Picked products" mappedBy="massStockMove"/>
     <one-to-many name="storedProductList" ref="com.axelor.apps.stock.db.StoredProduct"
       title="Stored products" mappedBy="massStockMove"/>
+    <many-to-one name="commonFromStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Common source location"/>
+    <many-to-one name="commonToStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Common destination location"/>
+    <one-to-many name="massStockMoveNeedList"
+      ref="com.axelor.apps.stock.db.MassStockMoveNeed" title="Products to move"
+      mappedBy="massStockMove"/>
   </entity>
 
 

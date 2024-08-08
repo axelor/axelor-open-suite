@@ -328,4 +328,7 @@ public final class StockExceptionMessage {
 
   public static final String STOCK_MOVE_MASS_ALREADY_STORED_PRODUCT = /*$$(*/
       "The product %s have already been stored" /*)*/;
+
+  public static final String LOCATIONS_ARE_EMPTY = /*$$(*/
+      "Source and destination locations are empty" /*)*/;
 }
