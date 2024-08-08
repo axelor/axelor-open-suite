@@ -8,6 +8,7 @@ import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,9 +30,9 @@ public class SaleOrderLineInitValueSupplychainServiceImpl
   }
 
   @Override
-  public Map<String, Object> onNewInitValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException {
-    Map<String, Object> values = super.onNewInitValues(saleOrder, saleOrderLine);
+  public Map<String, Object> onNewInitValues(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal qty) throws AxelorException {
+    Map<String, Object> values = super.onNewInitValues(saleOrder, saleOrderLine, qty);
     AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
     if (appSupplychain.getManageStockReservation()) {
       values.putAll(saleOrderLineServiceSupplyChain.updateRequestedReservedQty(saleOrderLine));
@@ -51,7 +52,7 @@ public class SaleOrderLineInitValueSupplychainServiceImpl
 
   @Override
   public Map<String, Object> onNewEditableInitValues(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal qty) {
     Map<String, Object> values = new HashMap<>();
     return values;
   }

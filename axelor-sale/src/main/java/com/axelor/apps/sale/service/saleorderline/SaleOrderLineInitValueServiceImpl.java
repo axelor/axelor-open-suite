@@ -15,11 +15,11 @@ public class SaleOrderLineInitValueServiceImpl implements SaleOrderLineInitValue
   public SaleOrderLineInitValueServiceImpl() {}
 
   @Override
-  public Map<String, Object> onNewInitValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException {
+  public Map<String, Object> onNewInitValues(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal qty) throws AxelorException {
     Map<String, Object> values = new HashMap<>();
     values.putAll(fillEstimatedDate(saleOrder, saleOrderLine));
-    values.putAll(initQty(saleOrderLine));
+    values.putAll(initQty(saleOrderLine, qty));
     return values;
   }
 
@@ -32,10 +32,10 @@ public class SaleOrderLineInitValueServiceImpl implements SaleOrderLineInitValue
 
   @Override
   public Map<String, Object> onNewEditableInitValues(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal qty) {
     Map<String, Object> values = new HashMap<>();
     values.putAll(fillEstimatedDate(saleOrder, saleOrderLine));
-    values.putAll(initQty(saleOrderLine));
+    values.putAll(initQty(saleOrderLine, qty));
     return values;
   }
 
@@ -48,9 +48,9 @@ public class SaleOrderLineInitValueServiceImpl implements SaleOrderLineInitValue
     return values;
   }
 
-  protected Map<String, Object> initQty(SaleOrderLine saleOrderLine) {
+  protected Map<String, Object> initQty(SaleOrderLine saleOrderLine, BigDecimal qty) {
     Map<String, Object> values = new HashMap<>();
-    saleOrderLine.setQty(BigDecimal.ONE);
+    saleOrderLine.setQty(qty);
     values.put("qty", saleOrderLine.getQty());
     return values;
   }

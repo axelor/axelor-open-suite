@@ -138,4 +138,7 @@ public final class SaleExceptionMessage {
       "The client provided is not a customer of the given company: %s." /*)*/;
   public static final String SALE_ORDER_NOT_DRAFT = /*$$(*/
       "You can only add a line to a draft sale order." /*)*/;
+
+  public static final String MISSING_PRODUCT_VARIANTS = /*$$(*/
+      "Please select product variant for following product(s) :" /*)*/;
 }

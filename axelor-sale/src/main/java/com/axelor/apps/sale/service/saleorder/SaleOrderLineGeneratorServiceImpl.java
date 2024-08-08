@@ -35,6 +35,7 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGeneratorService {
   protected SaleOrderLineInitValueService saleOrderLineInitValueService;
@@ -77,11 +78,11 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product)
+  public SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product, BigDecimal qty)
       throws AxelorException {
     checkSaleOrderAndProduct(saleOrder, product);
     SaleOrderLine saleOrderLine = new SaleOrderLine();
-    saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine);
+    saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine, qty);
     checkProduct(saleOrder, saleOrderLine, product);
     saleOrderLine.setProduct(product);
     saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);

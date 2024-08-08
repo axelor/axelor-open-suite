@@ -14,6 +14,8 @@
     <toolbar>
       <button name="emptyCartBtn" title="Empty cart"
         onClick="save,action-cart-method-empty-cart"/>
+      <button name="createSaleOrderBtn" title="Create the sale order"
+        onClick="save,action-method-cart-create-sale-order"/>
     </toolbar>
 
     <panel name="mainPanel">
@@ -31,6 +33,10 @@
 
   <action-method name="action-cart-method-empty-cart">
     <call class="com.axelor.apps.sale.web.CartController" method="emptyCart"/>
+  </action-method>
+
+  <action-method name="action-method-cart-create-sale-order">
+    <call class="com.axelor.apps.sale.web.CartController" method="createSaleOrder"/>
   </action-method>
 
 </object-views>

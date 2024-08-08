@@ -9,6 +9,7 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticSe
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineInitValueSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,17 +25,17 @@ public class SaleOrderLineInitValueProjectServiceImpl
   }
 
   @Override
-  public Map<String, Object> onNewInitValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException {
-    Map<String, Object> values = super.onNewInitValues(saleOrder, saleOrderLine);
+  public Map<String, Object> onNewInitValues(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal qty) throws AxelorException {
+    Map<String, Object> values = super.onNewInitValues(saleOrder, saleOrderLine, qty);
     values.putAll(fillProject(saleOrder, saleOrderLine));
     return values;
   }
 
   @Override
   public Map<String, Object> onNewEditableInitValues(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-    Map<String, Object> values = super.onNewEditableInitValues(saleOrder, saleOrderLine);
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal qty) {
+    Map<String, Object> values = super.onNewEditableInitValues(saleOrder, saleOrderLine, qty);
     values.putAll(fillProject(saleOrder, saleOrderLine));
     return values;
   }
