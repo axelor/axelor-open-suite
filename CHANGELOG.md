@@ -1,3 +1,15 @@
+## [8.0.12] (2024-08-08)
+
+### Fixes
+#### Account
+
+* AccountingBatch : fixed reconcile by balanced move mode in auto move lettering batch
+* AccountingBatch : fixed auto move lettering batch due to negative credit move line amount remaining
+
+#### Bank Payment
+
+* BankOrder : fixed manual multi currency bank order's move generation
+
 ## [8.0.11] (2024-07-25)
 
 ### Fixes
@@ -960,6 +972,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.12]: https://github.com/axelor/axelor-open-suite/compare/v8.0.11...v8.0.12
 [8.0.11]: https://github.com/axelor/axelor-open-suite/compare/v8.0.10...v8.0.11
 [8.0.10]: https://github.com/axelor/axelor-open-suite/compare/v8.0.9...v8.0.10
 [8.0.9]: https://github.com/axelor/axelor-open-suite/compare/v8.0.8...v8.0.9
