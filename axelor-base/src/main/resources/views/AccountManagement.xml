@@ -83,6 +83,7 @@
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false"/>
         <field name="purchaseTaxSet" form-view="tax-form" grid-view="tax-grid" canEdit="false"
+          onChange="action-account-management-method-check-taxes-not-only-non-deductible-taxes"
           widget="TagSelect"/>
       </panel>
 
@@ -104,6 +105,7 @@
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false"/>
         <field name="saleTaxSet" form-view="tax-form" grid-view="tax-grid" canEdit="false"
+          onChange="action-account-management-method-check-taxes-not-only-non-deductible-taxes"
           widget="TagSelect"/>
       </panel>
 
@@ -298,11 +300,16 @@
       if="__self__ == null &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.Tax'"/>
     <attribute name="value" for="paymentMode" expr="eval:__parent__"
       if="__self__ == null &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.PaymentMode'"/>
-
   </action-attrs>
 
   <action-group name="action-account-management-group-type-select-onchange">
     <action name="action-account-management-attrs-display-product-fields"/>
     <action name="action-account-management-attrs-display-tax-panel"/>
   </action-group>
+
+  <action-method
+    name="action-account-management-method-check-taxes-not-only-non-deductible-taxes">
+    <call class="com.axelor.apps.account.web.AccountManagementController"
+      method="checkTaxesNotOnlyNonDeductibleTaxes"/>
+  </action-method>
 </object-views>

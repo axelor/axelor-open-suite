@@ -22,12 +22,15 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TaxAccountService {
 
@@ -93,5 +96,42 @@ public class TaxAccountService {
       return accountManagementAccountService.getSaleVatRegulationAccount(
           accountManagement, tax, company);
     }
+  }
+
+  /**
+   * TaxLines contain taxes, this method reuses checkTaxesNotOnlyNonDeductibleTaxes(Set<Tax> taxes)
+   *
+   * @param taxLines
+   * @return
+   */
+  public boolean checkTaxLinesNotOnlyNonDeductibleTaxes(Set<TaxLine> taxLines) {
+    if (taxLines == null || taxLines.isEmpty()) {
+      return true;
+    }
+    Set<Tax> taxes = new HashSet<>();
+    for (TaxLine taxLine : taxLines) {
+      taxes.add(taxLine.getTax());
+    }
+    return checkTaxesNotOnlyNonDeductibleTaxes(taxes);
+  }
+
+  public boolean checkTaxesNotOnlyNonDeductibleTaxes(Set<Tax> taxes) {
+    if (taxes == null || taxes.isEmpty()) {
+      return true;
+    }
+    int countDeductibleTaxes = 0;
+    int countNonDeductibleTaxes = 0;
+    for (Tax tax : taxes) {
+      Boolean isNonDeductibleTax = tax.getIsNonDeductibleTax();
+      if (isNonDeductibleTax) {
+        countNonDeductibleTaxes++;
+      } else {
+        countDeductibleTaxes++;
+      }
+    }
+    if (countDeductibleTaxes == 0 && countNonDeductibleTaxes > 0) {
+      return false;
+    }
+    return true;
   }
 }

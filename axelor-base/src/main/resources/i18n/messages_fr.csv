@@ -1402,6 +1402,7 @@
 "No pricing scale used for this record","Pas de barème utilisé pour cet enregistrement",,
 "No tax found for product %s","Aucune taxe trouvée pour le produit %s",,
 "No view configured for model %s.","Aucune vue paramétrée pour le modèle %s.",,
+"Non deductible tax",,,
 "Non-negotiable price list","Liste de prix non négociable",,
 "Non-unique key","Clé non unique",,
 "None","Aucun",,

@@ -121,7 +121,7 @@
           <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
         </panel>
         <field name="taxLineSet" canEdit="false"
-          onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
+          onChange="action-invoice-method-check-invoice-lines-not-only-non-deductible-taxes,action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           grid-view="tax-line-grid" form-view="tax-line-form"
           domain="self.endDate = null or self.endDate &gt; :__date__" widget="TagSelect"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
@@ -747,6 +747,13 @@
     <view type="form" name="project-task-form"/>
     <domain>:id IN self.invoiceLineSet.id</domain>
   </action-view>
+
+  <action-method
+    name="action-invoice-method-check-invoice-lines-not-only-non-deductible-taxes">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="checkTaxLinesNotOnlyNonDeductibleTaxes"/>
+  </action-method>
+
 
   <search-filters name="invoice-line-filters"
     model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line filters">

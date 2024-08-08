@@ -26,7 +26,6 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.collect.Sets;
-import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -35,28 +34,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
-@Singleton
 public class TaxService {
-
-  /**
-   * Fonction permettant de récupérer le taux de TVA d'une TVA
-   *
-   * @param tax Une TVA
-   * @return Le taux de TVA
-   * @throws AxelorException
-   */
   public BigDecimal getTaxRate(Tax tax, LocalDate localDate) throws AxelorException {
 
     return this.getTaxLine(tax, localDate).getValue();
   }
 
-  /**
-   * Fonction permettant de récupérer le taux de TVA d'une TVA
-   *
-   * @param tax Une TVA
-   * @return Le taux de TVA
-   * @throws AxelorException
-   */
   public TaxLine getTaxLine(Tax tax, LocalDate localDate) throws AxelorException {
 
     if (tax == null) {
@@ -90,13 +73,6 @@ public class TaxService {
         tax.getName());
   }
 
-  /**
-   * Fonction permettant de récupérer le taux de TVA d'une TVA
-   *
-   * @param taxSet Une TVA
-   * @return Le taux de TVA
-   * @throws AxelorException
-   */
   public Set<TaxLine> getTaxLineSet(Set<Tax> taxSet, LocalDate localDate) throws AxelorException {
 
     if (CollectionUtils.isEmpty(taxSet)) {
@@ -168,6 +144,10 @@ public class TaxService {
     }
     return taxLineSet.stream()
         .filter(Objects::nonNull)
+        .filter(
+            taxLine ->
+                taxLine.getTax() == null
+                    || (taxLine.getTax() != null && !taxLine.getTax().getIsNonDeductibleTax()))
         .map(TaxLine::getValue)
         .filter(Objects::nonNull)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
