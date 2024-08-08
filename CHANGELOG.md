@@ -1,3 +1,10 @@
+## [6.5.39] (2024-08-08)
+
+### Fixes
+#### Bank Payment
+
+* BankOrder : fixed manual multi currency bank order's move generation
+
 ## [6.5.38] (2024-07-25)
 
 ### Fixes
@@ -1494,6 +1501,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.39]: https://github.com/axelor/axelor-open-suite/compare/v6.5.38...v6.5.39
 [6.5.38]: https://github.com/axelor/axelor-open-suite/compare/v6.5.37...v6.5.38
 [6.5.37]: https://github.com/axelor/axelor-open-suite/compare/v6.5.36...v6.5.37
 [6.5.36]: https://github.com/axelor/axelor-open-suite/compare/v6.5.35...v6.5.36
