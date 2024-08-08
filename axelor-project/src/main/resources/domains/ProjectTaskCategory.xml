@@ -7,6 +7,11 @@
 
   <entity name="ProjectTaskCategory">
     <string name="name" title="Name" required="true"/>
+    <many-to-many name="projectTaskStatusSet"
+      ref="com.axelor.apps.project.db.TaskStatus" title="Type of authorized status"/>
+    <many-to-one name="completedTaskStatus" title="Completed task status"
+      ref="com.axelor.apps.project.db.TaskStatus"
+      help="This task status will be used to define which status is flagged as completed for tasks."/>
   </entity>
 
 </domain-models>

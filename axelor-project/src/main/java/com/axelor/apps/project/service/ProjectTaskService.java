@@ -44,7 +44,7 @@ public interface ProjectTaskService {
   public ProjectTask create(String subject, Project project, User assignedTo);
 
   @CallMethod
-  public TaskStatus getStatus(Project project);
+  public TaskStatus getStatus(Project project, ProjectTask projectTask);
 
   @CallMethod
   public ProjectPriority getPriority(Project project);

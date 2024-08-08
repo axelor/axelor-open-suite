@@ -12,7 +12,8 @@
   </grid>
 
   <form title="Category" name="project-task-category-form"
-    model="com.axelor.apps.project.db.ProjectTaskCategory">
+    model="com.axelor.apps.project.db.ProjectTaskCategory"
+    onNew="action-project-task-category-record-status-new">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="defaultProduct"
@@ -21,8 +22,43 @@
         if-module="axelor-business-project"/>
       <field name="defaultInvoicingType" if="__config__.app.isApp('business-project')"
         if-module="axelor-business-project" validIf="$number(defaultInvoicingType) > 0"/>
+      <spacer/>
+      <field name="projectTaskStatusSet" widget="TagSelect"
+        requiredIf="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
+        if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
+        onChange="action-project-task-category-method-manage-completed-task-status"/>
+      <field name="completedTaskStatus"
+        requiredIf="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
+        form-view="task-status-form" grid-view="task-status-grid"
+        if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
+        onSelect="action-project-task-category-attrs-set-completed-task-status-domain"/>
     </panel>
   </form>
+
+  <action-attrs
+    name="action-project-task-category-attrs-set-completed-task-status-domain">
+    <attribute name="domain" for="completedTaskStatus"
+      expr="eval: 'self.isCompleted = true AND self.id IN (' + projectTaskStatusSet?.collect{ it.id }?.join(',') + ')'"
+      if="projectTaskStatusSet?.collect{it.id}?.size &gt; 0"/>
+    <attribute name="domain" for="completedTaskStatus" expr="eval: 'self.id = 0'"
+      if="projectTaskStatusSet?.collect{it.id}?.size == 0"/>
+  </action-attrs>
+
+  <action-record name="action-project-task-category-record-status-new"
+    model="com.axelor.apps.project.db.ProjectTaskCategory">
+    <field name="projectTaskStatusSet"
+      expr="eval: __config__.app.getApp('project')?.getDefaultTaskStatusSet()"
+      if="__config__.app.getApp('project')?.getEnableStatusManagementByTaskCategory()"/>
+    <field name="completedTaskStatus"
+      expr="eval: __config__.app.getApp('project')?.getCompletedTaskStatus()"
+      if="__config__.app.getApp('project')?.getEnableStatusManagementByTaskCategory()"/>
+  </action-record>
+
+  <action-method
+    name="action-project-task-category-method-manage-completed-task-status">
+    <call class="com.axelor.apps.project.web.ProjectTaskCategoryController"
+      method="manageCompletedTaskStatus"/>
+  </action-method>
 
   <search-filters name="project-task-category-filters"
     model="com.axelor.apps.project.db.ProjectTaskCategory" title="Project task category filters">
