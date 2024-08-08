@@ -1,3 +1,15 @@
+## [7.2.19] (2024-08-08)
+
+### Fixes
+#### Account
+
+* AccountingBatch : fixed reconcile by balanced move mode in auto move lettering batch
+* AccountingBatch : fixed auto move lettering batch due to negative credit move line amount remaining
+
+#### Bank Payment
+
+* BankOrder : fixed manual multi currency bank order's move generation
+
 ## [7.2.18] (2024-07-25)
 
 ### Fixes
@@ -1097,6 +1109,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.19]: https://github.com/axelor/axelor-open-suite/compare/v7.2.18...v7.2.19
 [7.2.18]: https://github.com/axelor/axelor-open-suite/compare/v7.2.17...v7.2.18
 [7.2.17]: https://github.com/axelor/axelor-open-suite/compare/v7.2.16...v7.2.17
 [7.2.16]: https://github.com/axelor/axelor-open-suite/compare/v7.2.15...v7.2.16
