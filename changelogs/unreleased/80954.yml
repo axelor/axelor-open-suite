@@ -1,3 +1,0 @@
----
-title: "AccountingBatch : fixed auto move lettering batch due to negative credit move line amount remaining"
-module: axelor-account
