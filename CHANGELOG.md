@@ -1,3 +1,10 @@
+## [7.1.27] (2024-08-08)
+
+### Fixes
+#### Bank Payment
+
+* BankOrder : fixed manual multi currency bank order's move generation
+
 ## [7.1.26] (2024-07-25)
 
 ### Fixes
@@ -1322,6 +1329,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.27]: https://github.com/axelor/axelor-open-suite/compare/v7.1.26...v7.1.27
 [7.1.26]: https://github.com/axelor/axelor-open-suite/compare/v7.1.25...v7.1.26
 [7.1.25]: https://github.com/axelor/axelor-open-suite/compare/v7.1.24...v7.1.25
 [7.1.24]: https://github.com/axelor/axelor-open-suite/compare/v7.1.23...v7.1.24
