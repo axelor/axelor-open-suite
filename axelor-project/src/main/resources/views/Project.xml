@@ -40,9 +40,11 @@
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
-          action="save,action-project-method-my-open-tasks" showIf="id &amp;&amp; isShowStatus"/>
+          action="save,action-project-method-my-open-tasks"
+          showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
         <item name="tasksCreatedByMe" title="Tasks created by me"
-          action="save,action-project-method-my-tasks" showIf="id &amp;&amp; isShowStatus"/>
+          action="save,action-project-method-my-tasks"
+          showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
         <item name="allOpenTasks" title="All open tasks"
           action="save,action-project-method-all-open-tasks" showIf="id"/>
         <item name="allTasks" title="All tasks" action="save,action-project-method-all-tasks"
@@ -273,13 +275,17 @@
   <form name="incl-fields-to-display-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
     <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
-      <field name="isShowStatus" widget="inline-checkbox"
-        onChange="action-project-record-status-reset-values"/>
+      <field name="taskStatusManagementSelect" widget="RadioSelect"
+        readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
+        onChange="action-project-record-manage-task-status-set"/>
+      <field name="projectTaskStatusSet" widget="TagSelect"
+        showIf="taskStatusManagementSelect != 1" requiredIf="taskStatusManagementSelect == 2"
+        readonlyIf="taskStatusManagementSelect == 3"
+        onChange="action-project-method-manage-completed-task-status"/>
       <field name="completedTaskStatus" grid-view="task-status-grid"
-        form-view="task-status-form" showIf="isShowStatus" requiredIf="isShowStatus"
+        form-view="task-status-form" showIf="taskStatusManagementSelect != 1"
+        requiredIf="taskStatusManagementSelect == 2" readonlyIf="taskStatusManagementSelect == 3"
         onSelect="action-project-attrs-set-completed-task-status-domain"/>
-      <field name="projectTaskStatusSet" widget="TagSelect" colSpan="12" showIf="isShowStatus"
-        requiredIf="isShowStatus" onChange="action-project-record-reset-completed-task-status"/>
       <field name="isShowPriority" colSpan="4" widget="inline-checkbox"
         onChange="action-project-record-priority-reset-values"/>
       <field name="projectTaskPrioritySet" widget="TagSelect" colSpan="12"
@@ -301,13 +307,14 @@
       <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowGantt" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowKanbanPerStatus" colSpan="4" widget="inline-checkbox"
-        showIf="isShowStatus"/>
+        showIf="taskStatusManagementSelect != 1"/>
       <field name="isShowKanbanPerSection" colSpan="4" widget="inline-checkbox"
         showIf="isShowSection"/>
       <field name="isShowCalendarPerStatus" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowCalendarPerSection" colSpan="4" widget="inline-checkbox"
         showIf="isShowSection"/>
       <field name="isShowCalendarPerUser" colSpan="4" widget="inline-checkbox"/>
+      <field name="projectTaskList" hidden="true"/>
     </panel>
   </form>
 
@@ -500,7 +507,10 @@
 
   <action-attrs name="action-project-attrs-set-completed-task-status-domain">
     <attribute name="domain" for="completedTaskStatus"
-      expr="eval: 'self.isCompleted = true AND self.id IN (' + projectTaskStatusSet?.collect{ it.id }?.join(',') + ')'"/>
+      expr="eval: 'self.isCompleted = true AND self.id IN (' + projectTaskStatusSet?.collect{ it.id }?.join(',') + ')'"
+      if="projectTaskStatusSet?.collect{it.id}?.size &gt; 0"/>
+    <attribute name="domain" for="completedTaskStatus" expr="eval: 'self.id = 0'"
+      if="projectTaskStatusSet?.collect{it.id}?.size == 0"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-parent-project-domain"
@@ -548,20 +558,6 @@
       expr="eval: __config__.app.getApp('project')?.completedTaskStatus"/>
   </action-record>
 
-  <action-record name="action-project-record-status-reset-values"
-    model="com.axelor.apps.project.db.Project">
-    <field name="isShowKanbanPerStatus,isShowCalendarPerStatus, isShowCalendarPerSection"
-      expr="eval: false" if="!isShowStatus"/>
-    <field name="projectTaskStatusSet" expr="eval: null" if="!isShowStatus"/>
-    <field name="completedTaskStatus" expr="eval: null" if="!isShowStatus"/>
-  </action-record>
-
-  <action-record name="action-project-record-reset-completed-task-status"
-    model="com.axelor.apps.project.db.Project">
-    <field name="completedTaskStatus" expr="eval: null"
-      if="!projectTaskStatusSet || !projectTaskStatusSet.contains(completedTaskStatus)"/>
-  </action-record>
-
   <action-record name="action-project-record-priority-reset-values"
     model="com.axelor.apps.project.db.Project">
     <field name="projectTaskPrioritySet" expr="eval: null" if="!isShowPriority"/>
@@ -588,6 +584,18 @@
     model="com.axelor.apps.project.db.Project">
     <field name="projectStatus"
       expr="eval: __config__.app.getApp('project')?.canceledProjectStatus"/>
+  </action-record>
+
+  <action-record name="action-project-record-manage-task-status-set"
+    model="com.axelor.apps.project.db.Project">
+    <field name="projectTaskStatusSet"
+      expr="eval: __config__.app.getApp('project')?.getDefaultTaskStatusSet()"
+      if="taskStatusManagementSelect != 1"/>
+    <field name="completedTaskStatus"
+      expr="eval: __config__.app.getApp('project')?.completedTaskStatus"
+      if="taskStatusManagementSelect != 1"/>
+    <field name="projectTaskStatusSet,completedTaskStatus" expr="eval: null"
+      if="taskStatusManagementSelect == 1"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -623,6 +631,11 @@
 
   <action-method name="action-project-method-import-members">
     <call class="com.axelor.apps.project.web.ProjectController" method="importMembers"/>
+  </action-method>
+
+  <action-method name="action-project-method-manage-completed-task-status">
+    <call class="com.axelor.apps.project.web.ProjectController"
+      method="manageCompletedTaskStatus"/>
   </action-method>
 
   <!-- ACTION VIEW -->
