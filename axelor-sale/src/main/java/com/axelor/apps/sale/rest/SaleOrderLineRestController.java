@@ -59,9 +59,8 @@ public class SaleOrderLineRestController {
     Product product = requestBody.fetchProduct();
     SaleOrder saleOrder = requestBody.fetchsaleOrder();
     BigDecimal quantity = requestBody.getQuantity();
-    String comment = requestBody.getComment();
     SaleOrderLine saleOrderLine =
-        saleorderLineCreateService.createSaleOrderLine(saleOrder, product, quantity, comment);
+        saleorderLineCreateService.createSaleOrderLine(saleOrder, product, quantity);
 
     return ResponseConstructor.buildCreateResponse(
         saleOrderLine, new SaleOrderLineResponse(saleOrderLine));

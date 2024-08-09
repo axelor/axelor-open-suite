@@ -37,6 +37,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.stream.Collectors;
 
 public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGeneratorService {
   protected SaleOrderLineInitValueService saleOrderLineInitValueService;
@@ -83,19 +84,18 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public SaleOrderLine createSaleOrderLine(
-      SaleOrder saleOrder, Product product, BigDecimal qty, String comment) throws AxelorException {
+  public SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product, BigDecimal qty)
+      throws AxelorException {
     checkSaleOrderAndProduct(saleOrder, product);
     SaleOrderLine saleOrderLine = new SaleOrderLine();
     saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine);
     checkProduct(saleOrder, saleOrderLine, product);
     saleOrderLine.setProduct(product);
-    checkMultipleQty(product, qty);
+    checkMultipleQty(product, qty, saleOrderLine);
     saleOrderLine.setQty(qty);
     saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
     saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
 
-    saleOrderLine.setLineProductionComment(comment);
     saleOrderLineRepository.save(saleOrderLine);
 
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
@@ -136,7 +136,8 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     }
   }
 
-  protected void checkMultipleQty(Product product, BigDecimal qty) throws AxelorException {
+  protected void checkMultipleQty(Product product, BigDecimal qty, SaleOrderLine saleOrderLine)
+      throws AxelorException {
     if (!product.getSaleProductMultipleQtyList().isEmpty() && qty == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
@@ -147,7 +148,14 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           String.format(
               I18n.get(SaleExceptionMessage.QUANTITY_NOT_MULTIPLE),
-              product.getSaleProductMultipleQtyList().toString()));
+              product.getSaleProductMultipleQtyList().stream()
+                  .map(
+                      productMultipleQty ->
+                          productMultipleQty
+                              .getMultipleQty()
+                              .setScale(appBaseService.getNbDecimalDigitForQty()))
+                  .collect(Collectors.toList())
+                  .toString()));
     }
   }
 }

@@ -629,6 +629,8 @@
 "This Year To Date","Année N",,
 "This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.","Cette configuration permet d'activer une liste éditable sur les lignes de devis / commandes clients, permettant d'ajouter et de compléter rapidement des lignes de devis depuis la vue liste.",,
 "This configuration enables you to recalculate line prices using a quotation. The recalculation will take into account pricing, if any, then the partner's price lists.","Cette configuration permet de recalculer les prix des lignes à partir d'un devis. Le recalcul prendra en compte les barèmes, s'il y en a, puis les listes de prix du tiers.",,
+"This product comes in multiple quantities, so a specific quantity should be provided.","Ce produit est disponible en plusieurs quantités, il est donc nécessaire de spécifier une quantité précise.",,
+"This product comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s.","Ce produit est disponible en plusieurs quantités, donc la quantité fournie doit être un multiple d'au moins une de la liste %s.",,
 "This sale order is completed.","Cette commande est terminée",,
 "This script has errors, please see server logs for more details.","Le script a des erreurs, veuillez consulter les logs pour plus de détails.",,
 "This script returned value is of type %s, it should return a value of type %s instead.","Ce script a renvoyé une valeur de type %s alors qu'il doit renvoyer une valeur de type %s.",,
