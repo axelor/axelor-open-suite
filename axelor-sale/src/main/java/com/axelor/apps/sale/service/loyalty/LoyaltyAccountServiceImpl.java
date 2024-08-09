@@ -2,13 +2,38 @@ package com.axelor.apps.sale.service.loyalty;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.sale.db.LoyaltyAccount;
+import com.axelor.apps.sale.db.repo.LoyaltyAccountRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.google.inject.Inject;
 import java.util.Optional;
 
 public class LoyaltyAccountServiceImpl implements LoyaltyAccountService {
 
+  protected final AppSaleService appSaleService;
+
+  @Inject
+  public LoyaltyAccountServiceImpl(AppSaleService appSaleService) {
+    this.appSaleService = appSaleService;
+  }
+
   @Override
-  public Optional<LoyaltyAccount> getLoyaltyAccount(Partner partner, Company company) {
+  public Optional<LoyaltyAccount> getLoyaltyAccount(
+      Partner partner, Company company, TradingName tradingName) {
+    switch (appSaleService.getAppSale().getLoyaltyAccountsManagement()) {
+      case LoyaltyAccountRepository.LOYALTY_ACCOUNT_MANAGED_ON_COMPANY:
+        return getLoyaltyAccount(partner, company);
+      case LoyaltyAccountRepository.LOYALTY_ACCOUNT_MANAGED_ON_TRADING_NAME:
+        return getLoyaltyAccount(partner, tradingName);
+      case LoyaltyAccountRepository.LOYALTY_ACCOUNT_MANAGED_ON_PARTNER:
+        return getLoyaltyAccount(partner);
+      default:
+        return Optional.empty();
+    }
+  }
+
+  protected Optional<LoyaltyAccount> getLoyaltyAccount(Partner partner, Company company) {
     Optional<LoyaltyAccount> loyaltyAccount = Optional.empty();
     if (partner != null && company != null) {
       loyaltyAccount =
@@ -17,5 +42,22 @@ public class LoyaltyAccountServiceImpl implements LoyaltyAccountService {
               .findFirst();
     }
     return loyaltyAccount;
+  }
+
+  protected Optional<LoyaltyAccount> getLoyaltyAccount(Partner partner, TradingName tradingName) {
+    Optional<LoyaltyAccount> loyaltyAccount = Optional.empty();
+    if (partner != null && tradingName != null) {
+      loyaltyAccount =
+          partner.getLoyaltyAccountList().stream()
+              .filter(account -> tradingName.equals(account.getTradingName()))
+              .findFirst();
+    }
+    return loyaltyAccount;
+  }
+
+  protected Optional<LoyaltyAccount> getLoyaltyAccount(Partner partner) {
+    return Optional.ofNullable(partner)
+        .map(Partner::getLoyaltyAccountList)
+        .map(account -> account.get(0));
   }
 }
