@@ -2,6 +2,7 @@ package com.axelor.apps.sale.service.loyalty;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.sale.db.LoyaltyAccount;
 import com.axelor.apps.sale.db.repo.LoyaltyAccountRepository;
 import com.google.inject.Inject;
@@ -27,9 +28,9 @@ public class LoyaltyAccountPointsManagementServiceImpl
 
   @Override
   public void incrementLoyaltyPointsFromAmount(
-      Partner partner, Company company, BigDecimal amount) {
+      Partner partner, Company company, TradingName tradingName, BigDecimal amount) {
     Optional<LoyaltyAccount> loyaltyAccount =
-        loyaltyAccountService.getLoyaltyAccount(partner, company);
+        loyaltyAccountService.getLoyaltyAccount(partner, company, tradingName);
     BigDecimal earnedPoints = pointsEarningComputation(amount);
     loyaltyAccount.ifPresent(account -> updatePoints(account, earnedPoints));
   }
