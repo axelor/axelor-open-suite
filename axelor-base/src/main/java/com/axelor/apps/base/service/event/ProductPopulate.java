@@ -16,18 +16,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.base.service.event;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.sale.db.Cart;
+public class ProductPopulate {
 
-public interface CartService {
+  private boolean isCartManagementEnabled;
 
-  Cart getCurrentCart();
+  public boolean getIsCartManagementEnabled() {
+    return isCartManagementEnabled;
+  }
 
-  void emptyCart(Cart cart);
-
-  void addToCart(Product product);
-
-  Cart createCart();
+  public void setIsCartManagementEnabled(boolean isCartManagementEnabled) {
+    this.isCartManagementEnabled = isCartManagementEnabled;
+  }
 }

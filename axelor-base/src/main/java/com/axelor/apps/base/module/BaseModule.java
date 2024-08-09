@@ -207,6 +207,8 @@ import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
+import com.axelor.apps.base.service.observer.ProductFireService;
+import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewServiceImpl;
@@ -470,5 +472,6 @@ public class BaseModule extends AxelorModule {
     bind(UserPermissionResponseComputeService.class)
         .to(UserPermissionResponseComputeServiceImpl.class);
     bind(PrintingTemplateComputeNameService.class).to(PrintingTemplateComputeNameServiceImpl.class);
+    bind(ProductFireService.class).to(ProductFireServiceImpl.class);
   }
 }

@@ -51,7 +51,7 @@ public class ProductStockRepository extends ProductBaseRepository {
       productStockRepositoryPopulate.fillFromStockWizard(json, context);
     }
 
-    return json;
+    return super.populate(json, context);
   }
 
   @Override
