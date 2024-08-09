@@ -48,7 +48,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -403,7 +402,7 @@ public class PaymentServiceImpl implements PaymentService {
       Query q =
           JPA.em()
               .createQuery(
-                  "select new map(ml.account, SUM(ml.amountRemaining)) FROM MoveLine as ml "
+                  "select new map(ml.account, SUM((ml.amountRemaining / ml.currencyRate))) FROM MoveLine as ml "
                       + "WHERE ml in ?1 group by ml.account");
       q.setParameter(1, creditMoveLines);
 
@@ -412,34 +411,26 @@ public class PaymentServiceImpl implements PaymentService {
       for (Map<Account, BigDecimal> map : allMap) {
         Account accountMap = (Account) map.values().toArray()[0];
         BigDecimal amountMap = (BigDecimal) map.values().toArray()[1];
-        BigDecimal amountDebit = amountMap.abs().min(remainingPaidAmount2);
-        if (amountDebit.compareTo(BigDecimal.ZERO) > 0) {
-          BigDecimal currencyRate;
+        BigDecimal amount =
+            amountMap.abs().setScale(2, RoundingMode.HALF_UP).min(remainingPaidAmount2);
+        if (amount.compareTo(BigDecimal.ZERO) > 0) {
+          BigDecimal currencyRate =
+              currencyService.getCurrencyConversionRate(move.getCurrency(), company.getCurrency());
 
-          Optional<MoveLine> optionalMoveLine =
-              creditMoveLines.stream().filter(ml -> accountMap.equals(ml.getAccount())).findFirst();
-
-          if (optionalMoveLine.isPresent()) {
-            currencyRate = optionalMoveLine.get().getCurrencyRate();
-          } else {
-            currencyRate =
-                currencyService.getCurrencyConversionRate(
-                    move.getCurrency(), company.getCurrency());
-          }
-
-          BigDecimal moveLineAmount = amountDebit;
+          BigDecimal moveLineAmount = amount;
           if (currencyRate.signum() > 0) {
             moveLineAmount =
-                moveLineAmount.divide(
-                    currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+                amount
+                    .multiply(currencyRate)
+                    .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
           }
           MoveLine debitMoveLine =
               moveLineCreateService.createMoveLine(
                   move,
                   partner,
                   accountMap,
+                  amount,
                   moveLineAmount,
-                  amountDebit,
                   currencyRate,
                   true,
                   date,
@@ -458,11 +449,12 @@ public class PaymentServiceImpl implements PaymentService {
               i--;
 
               // Afin de pouvoir arrêter si il n'y a plus rien à payer
-              if (amountDebit.compareTo(BigDecimal.ZERO) <= 0) {
+              if (moveLineAmount.compareTo(BigDecimal.ZERO) <= 0) {
                 break;
               }
 
-              BigDecimal amountToPay = amountDebit.min(creditMoveLine.getAmountRemaining().abs());
+              BigDecimal amountToPay =
+                  moveLineAmount.min(creditMoveLine.getAmountRemaining().abs());
               BigDecimal prorata =
                   amountToPay.divide(
                       creditMoveLine.getAmountRemaining().abs(),
@@ -485,7 +477,7 @@ public class PaymentServiceImpl implements PaymentService {
 
               if (reconcile != null) {
                 remainingPaidAmount2 = remainingPaidAmount2.subtract(amountToPay);
-                amountDebit = amountDebit.subtract(amountToPay);
+                moveLineAmount = moveLineAmount.subtract(amountToPay);
                 reconcileList.add(reconcile);
               }
             }
