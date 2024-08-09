@@ -68,7 +68,8 @@ public class SaleOrderLineController {
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class).getOnNewDummies(saleOrderLine, saleOrder));
     saleOrderLineMap.putAll(
-        Beans.get(SaleOrderLineInitValueService.class).onNewInitValues(saleOrder, saleOrderLine));
+        Beans.get(SaleOrderLineInitValueService.class)
+            .onNewInitValues(saleOrder, saleOrderLine, BigDecimal.ONE));
     response.setValues(saleOrderLineMap);
   }
 
@@ -99,7 +100,7 @@ public class SaleOrderLineController {
             .getOnNewEditableDummies(saleOrderLine, saleOrder));
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineInitValueService.class)
-            .onNewEditableInitValues(saleOrder, saleOrderLine));
+            .onNewEditableInitValues(saleOrder, saleOrderLine, BigDecimal.ONE));
     response.setValues(saleOrderLineMap);
   }
 

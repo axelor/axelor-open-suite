@@ -20,6 +20,7 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Cart;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.CartRepository;
 import com.axelor.apps.sale.service.CartInitValueService;
 import com.axelor.apps.sale.service.CartService;
@@ -71,6 +72,22 @@ public class CartController {
       cart = Beans.get(CartRepository.class).find(cart.getId());
       Beans.get(CartService.class).emptyCart(cart);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createSaleOrder(ActionRequest request, ActionResponse response) {
+    try {
+      Cart cart = request.getContext().asType(Cart.class);
+      cart = Beans.get(CartRepository.class).find(cart.getId());
+      SaleOrder saleOrder = Beans.get(CartService.class).createSaleOrder(cart);
+      response.setView(
+          ActionView.define(I18n.get("Sale order"))
+              .model(SaleOrder.class.getName())
+              .add("form", "sale-order-form")
+              .context("_showRecord", String.valueOf(saleOrder.getId()))
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
