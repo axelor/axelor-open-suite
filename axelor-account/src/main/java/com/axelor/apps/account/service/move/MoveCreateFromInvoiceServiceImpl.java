@@ -375,7 +375,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           // Use of excess payment
           paymentService.useExcessPaymentWithAmountConsolidated(
               creditMoveLineList,
-              amount,
+              moveLineAmount,
               move,
               2,
               partner,
