@@ -106,7 +106,6 @@
       <panel-include view="incl-member-panel-form"/>
       <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
         if="__config__.app.isApp('employee')"/>
-      <panel-include view="incl-holdback-panel-form"/>
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
       <panel-include view="incl-resource-booking-panel-form"
@@ -225,15 +224,6 @@
       <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
         x-show-bars="true" action="action-project-dashlet-project-planning-time" colSpan="12"
         canSearch="true"/>
-    </panel>
-  </form>
-
-  <form name="incl-holdback-panel-form" title="Project"
-    model="com.axelor.apps.project.db.Project">
-    <panel title="HoldBacks" name="projectHoldBacksPanel">
-      <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"
-        title="HoldBacks lines" colSpan="12" form-view="project-hold-back-line-form"
-        grid-view="project-hold-back-line-grid" editable="true"/>
     </panel>
   </form>
 

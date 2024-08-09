@@ -30,9 +30,6 @@
     <one-to-many name="taskCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField"
       title="Task fields" orphanRemoval="true"/>
 
-    <one-to-many name="projectHoldBackLineList"
-      ref="com.axelor.apps.project.db.ProjectHoldBackLine"/>
-
     <string name="code" title="Code" unique="true"/>
     <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
     <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner"
