@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
+import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -33,6 +34,27 @@ public class SaleOrderLinePostRequest extends RequestPostStructure {
   @NotNull
   @Min(0)
   private Long saleOrderId;
+
+  @Min(0)
+  private BigDecimal quantity;
+
+  private String Comment;
+
+  public String getComment() {
+    return Comment;
+  }
+
+  public void setComment(String comment) {
+    Comment = comment;
+  }
+
+  public BigDecimal getQuantity() {
+    return quantity;
+  }
+
+  public void setQuantity(BigDecimal quantity) {
+    this.quantity = quantity;
+  }
 
   public Long getSaleOrderId() {
     return saleOrderId;
