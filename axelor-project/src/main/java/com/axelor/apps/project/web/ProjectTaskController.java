@@ -204,12 +204,12 @@ public class ProjectTaskController {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
     Project project = projectTask.getProject();
 
-    TaskStatus completedStatus =
+    Optional<TaskStatus> completedStatus =
         Beans.get(ProjectToolService.class).getCompletedTaskStatus(project);
 
-    if (completedStatus != null) {
+    if (completedStatus.isPresent()) {
       response.setValue("statusBeforeComplete", projectTask.getStatus());
-      response.setValue("status", completedStatus);
+      response.setValue("status", completedStatus.get());
     }
   }
 

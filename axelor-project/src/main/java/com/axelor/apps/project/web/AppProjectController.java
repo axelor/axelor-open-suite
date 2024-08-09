@@ -28,6 +28,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppProject;
 import com.google.inject.Singleton;
+import java.util.Optional;
 import java.util.Set;
 
 @Singleton
@@ -45,10 +46,10 @@ public class AppProjectController {
     AppProject appProject = request.getContext().asType(AppProject.class);
 
     Set<TaskStatus> taskStatusSet = appProject.getDefaultTaskStatusSet();
-    TaskStatus completedTaskStatus =
+    Optional<TaskStatus> completedTaskStatus =
         Beans.get(ProjectTaskToolService.class)
             .getCompletedTaskStatus(appProject.getCompletedTaskStatus(), taskStatusSet);
 
-    response.setValue("completedTaskStatus", completedTaskStatus);
+    response.setValue("completedTaskStatus", completedTaskStatus.orElse(null));
   }
 }

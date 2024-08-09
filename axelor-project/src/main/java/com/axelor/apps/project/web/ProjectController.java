@@ -35,6 +35,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @Singleton
@@ -134,10 +135,10 @@ public class ProjectController {
     Project project = request.getContext().asType(Project.class);
 
     Set<TaskStatus> taskStatusSet = project.getProjectTaskStatusSet();
-    TaskStatus completedTaskStatus =
+    Optional<TaskStatus> completedTaskStatus =
         Beans.get(ProjectTaskToolService.class)
             .getCompletedTaskStatus(project.getCompletedTaskStatus(), taskStatusSet);
 
-    response.setValue("completedTaskStatus", completedTaskStatus);
+    response.setValue("completedTaskStatus", completedTaskStatus.orElse(null));
   }
 }

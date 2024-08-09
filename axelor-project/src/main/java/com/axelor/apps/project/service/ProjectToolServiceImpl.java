@@ -9,6 +9,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppProject;
 import com.google.inject.Inject;
+import java.util.Optional;
 import java.util.Set;
 
 public class ProjectToolServiceImpl implements ProjectToolService {
@@ -21,22 +22,20 @@ public class ProjectToolServiceImpl implements ProjectToolService {
   }
 
   @Override
-  public TaskStatus getCompletedTaskStatus(Project project) {
+  public Optional<TaskStatus> getCompletedTaskStatus(Project project) {
     if (project == null
         || project.getTaskStatusManagementSelect()
             == ProjectRepository.TASK_STATUS_MANAGEMENT_NONE) {
-      return null;
+      return Optional.empty();
     }
 
     if (project.getTaskStatusManagementSelect() == ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT
         && project.getCompletedTaskStatus() != null) {
-      return project.getCompletedTaskStatus();
+      return Optional.ofNullable(project.getCompletedTaskStatus());
     }
-    AppProject appProject = appProjectService.getAppProject();
-    if (appProject != null) {
-      return appProject.getCompletedTaskStatus();
-    }
-    return null;
+
+    return Optional.ofNullable(appProjectService.getAppProject())
+        .map(AppProject::getCompletedTaskStatus);
   }
 
   @Override
@@ -68,12 +67,12 @@ public class ProjectToolServiceImpl implements ProjectToolService {
 
     if (project.getTaskStatusManagementSelect() == ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT
         && project.getCompletedTaskStatus() == null) {
-      TaskStatus taskStatus = getCompletedTaskStatus(project);
-      if (taskStatus != null) {
+      Optional<TaskStatus> taskStatus = getCompletedTaskStatus(project);
+      if (taskStatus.isPresent()) {
         return String.format(
             I18n.get(
                 ProjectExceptionMessage.PROJECT_COMPLETED_TASK_STATUS_MISSING_WITH_DEFAULT_STATUS),
-            I18n.get(taskStatus.getName()));
+            I18n.get(taskStatus.get().getName()));
       } else {
         return I18n.get(
             ProjectExceptionMessage.PROJECT_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS);
