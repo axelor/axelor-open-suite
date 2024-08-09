@@ -150,7 +150,7 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
       // Dans la devise de la facture
       orderLineTaxService.computeTax(saleOrderLineTax, currency);
       SaleOrderLineTax oldSaleOrderLineTax =
-          isMapValueAlreadyInSaleOrderLineTaxList(saleOrderLineTax, currentSaleOrderLineTaxList);
+          getExistingSaleOrderLineTax(saleOrderLineTax, currentSaleOrderLineTaxList);
       if (oldSaleOrderLineTax == null) {
         saleOrderLineTaxList.add(saleOrderLineTax);
         LOG.debug(
@@ -184,7 +184,7 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
     return saleOrderLineTaxList;
   }
 
-  protected SaleOrderLineTax isMapValueAlreadyInSaleOrderLineTaxList(
+  protected SaleOrderLineTax getExistingSaleOrderLineTax(
       SaleOrderLineTax saleOrderLineTax, List<SaleOrderLineTax> saleOrderLineTaxList) {
     if (ObjectUtils.isEmpty(saleOrderLineTaxList) || saleOrderLineTax == null) {
       return null;
