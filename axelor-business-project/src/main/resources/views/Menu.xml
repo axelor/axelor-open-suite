@@ -52,11 +52,11 @@
   </action-view>
 
   <!-- HOLDBACK -->
-  <menuitem name="project-project-hold-back" parent="project-configurations"
+  <menuitem name="business-project-project-hold-back" parent="project-configurations"
     if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-    title="HoldBacks" action="project.root.project.hold.back.all" order="1400"/>
+    title="HoldBacks" action="business.project.root.project.hold.back.all" order="1400"/>
 
-  <action-view name="project.root.project.hold.back.all" title="HoldBacks"
+  <action-view name="business.project.root.project.hold.back.all" title="HoldBacks"
     model="com.axelor.apps.businessproject.db.ProjectHoldBack">
     <view type="grid" name="project-hold-back-grid"/>
     <view type="form" name="project-hold-back-form"/>
