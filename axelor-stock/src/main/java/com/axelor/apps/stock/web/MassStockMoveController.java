@@ -11,6 +11,7 @@ import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancel
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveNeedService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordService;
+import com.axelor.apps.stock.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -131,6 +132,8 @@ public class MassStockMoveController {
               .stream().map(id -> Long.valueOf((int) id)).collect(Collectors.toList());
       Beans.get(MassStockMoveNeedService.class)
           .createMassStockMoveNeedFromStockMoveLinesId(massStockMove, (List) stockMoveLinesIdList);
+      response.setInfo(I18n.get(ITranslation.MASS_STOCK_MOVE_NEED_CREATED));
+      response.setCanClose(true);
     }
   }
 }
