@@ -18,20 +18,34 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductMultipleQty;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public ProductMultipleQtyServiceImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
 
   public boolean checkMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties) {
 
@@ -112,5 +126,29 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
             I18n.get("Quantity should be a multiple of %s"),
             this.toStringMultipleQty(productMultipleQties));
     return message;
+  }
+
+  @Override
+  public void checkMultipleQty(Product product, BigDecimal qty) throws AxelorException {
+    List<ProductMultipleQty> productMultipleQtyList = product.getSaleProductMultipleQtyList();
+    if (CollectionUtils.isNotEmpty(productMultipleQtyList) && qty == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(BaseExceptionMessage.NO_QUANTITY_PROVIDED));
+    }
+    if (!checkMultipleQty(qty, productMultipleQtyList)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(
+              I18n.get(BaseExceptionMessage.QUANTITY_NOT_MULTIPLE),
+              product.getSaleProductMultipleQtyList().stream()
+                  .map(
+                      productMultipleQty ->
+                          productMultipleQty
+                              .getMultipleQty()
+                              .setScale(appBaseService.getNbDecimalDigitForQty()))
+                  .collect(Collectors.toList())
+                  .toString()));
+    }
   }
 }

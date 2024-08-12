@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -37,7 +38,9 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGeneratorService {
   protected SaleOrderLineInitValueService saleOrderLineInitValueService;
@@ -91,7 +94,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine);
     checkProduct(saleOrder, saleOrderLine, product);
     saleOrderLine.setProduct(product);
-    checkMultipleQty(product, qty, saleOrderLine);
+    productMultipleQtyService.checkMultipleQty(product, qty);
     saleOrderLine.setQty(qty);
     saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
     saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
@@ -136,14 +139,14 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     }
   }
 
-  protected void checkMultipleQty(Product product, BigDecimal qty, SaleOrderLine saleOrderLine)
-      throws AxelorException {
-    if (!product.getSaleProductMultipleQtyList().isEmpty() && qty == null) {
+  protected void checkMultipleQty(Product product, BigDecimal qty) throws AxelorException {
+    List<ProductMultipleQty> productMultipleQtyList = product.getSaleProductMultipleQtyList();
+    if (CollectionUtils.isNotEmpty(productMultipleQtyList) && qty == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(SaleExceptionMessage.NO_QUANTITY_PROVIDED));
     }
-    if (!productMultipleQtyService.checkMultipleQty(qty, product.getSaleProductMultipleQtyList())) {
+    if (!productMultipleQtyService.checkMultipleQty(qty, productMultipleQtyList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           String.format(

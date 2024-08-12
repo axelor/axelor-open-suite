@@ -38,16 +38,6 @@ public class SaleOrderLinePostRequest extends RequestPostStructure {
   @Min(0)
   private BigDecimal quantity;
 
-  private String Comment;
-
-  public String getComment() {
-    return Comment;
-  }
-
-  public void setComment(String comment) {
-    Comment = comment;
-  }
-
   public BigDecimal getQuantity() {
     return quantity;
   }
