@@ -1438,6 +1438,7 @@
 "Old email",,,
 "Old job title",,,
 "Old phone number",,,
+"Only one non-deductible tax is configured. A non deductible tax should always be paired with at least one other deductible tax.",,,
 "Only the users for which the password has not been updated since this number of days will be taken into account.",,,
 "Open employee form",,,
 "Open period",,,

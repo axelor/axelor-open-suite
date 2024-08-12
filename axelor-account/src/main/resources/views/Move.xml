@@ -822,6 +822,10 @@
     <call class="com.axelor.apps.account.web.MoveController" method="onSelectJournal"/>
   </action-method>
 
+  <!-- <action-method name="action-account-move-method-move-line-list-onchange-first"> -->
+  <!-- <call class="com.axelor.apps.account.web.MoveController" method="testOnChangeMoveLine"/> -->
+  <!-- </action-method> -->
+
   <!-- ACTION VIEW -->
 
   <action-view name="action-move-view-open-generate-reverse-wizard"

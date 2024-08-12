@@ -143,6 +143,8 @@
 "Not received","Non reçue",,
 "OR","OU",,
 "Ongoing Purchase orders","Commandes fournisseurs en cours",,
+"Only one non-deductible tax is configured on the product/account %s. A non deductible tax should always be paired with at least one other deductible tax.","Seulement une taxe non déductible est configurée sur le produit/compte %s. Une taxe non déductible doit toujours être associée à au moins une autre taxe déductible.",,
+"Only one non-deductible tax is configured. A non deductible tax should always be paired with at least one other deductible tax.","Seulement une taxe non déductible est configurée. Une taxe non déductible doit toujours être associée à au moins une autre taxe déductible.",,
 "Order Date","Date de commande",,
 "Order history","Historique des commandes",,
 "Ordered","Commandé",,

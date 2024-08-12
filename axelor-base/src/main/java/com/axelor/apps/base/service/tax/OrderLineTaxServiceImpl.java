@@ -62,24 +62,59 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
     }
   }
 
+  /**
+   * compute each OrderLineTax
+   *
+   * @param orderLineTax
+   * @param currency
+   * @param sumOfAllDeductibleRateValue
+   * @param sumOfAllNonDeductibleRateValue
+   */
   @Override
-  public void computeTax(OrderLineTax orderLineTax, Currency currency) {
+  public void computeTax(
+      OrderLineTax orderLineTax,
+      Currency currency,
+      BigDecimal sumOfAllDeductibleRateValue,
+      BigDecimal sumOfAllNonDeductibleRateValue) {
     BigDecimal exTaxBase = orderLineTax.getExTaxBase().abs();
     BigDecimal taxTotal = BigDecimal.ZERO;
     int currencyScale = currencyScaleService.getCurrencyScale(currency);
+    Boolean isNonDeductibleTax = orderLineTax.getTaxLine().getTax().getIsNonDeductibleTax();
+    BigDecimal originalTaxRateValue = orderLineTax.getTaxLine().getValue();
+    BigDecimal adjustedTaxValue = BigDecimal.ZERO;
+    if (isNonDeductibleTax) {
+      // non-deductible part
+      // formula:
+      // sum of all original normal tax rate * non-deductible tax rate
 
-    if (orderLineTax.getTaxLine() != null) {
-      taxTotal =
-          exTaxBase.multiply(
-              orderLineTax
-                  .getTaxLine()
-                  .getValue()
-                  .divide(
-                      new BigDecimal(100),
-                      AppBaseService.COMPUTATION_SCALING,
-                      RoundingMode.HALF_UP));
-      orderLineTax.setTaxTotal(currencyScaleService.getScaledValue(taxTotal, currencyScale));
+      adjustedTaxValue =
+          sumOfAllDeductibleRateValue
+              .divide(
+                  BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
+              .multiply(originalTaxRateValue)
+              .divide(
+                  BigDecimal.valueOf(100),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
+    } else {
+      // deductible part
+      // formula:
+      // sum of all original normal tax rate * ( 1 - All non-deductible tax rate)
+      adjustedTaxValue =
+          originalTaxRateValue
+              .divide(
+                  BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
+              .multiply(
+                  BigDecimal.ONE.subtract(
+                      sumOfAllNonDeductibleRateValue.divide(
+                          BigDecimal.valueOf(100),
+                          AppBaseService.COMPUTATION_SCALING,
+                          RoundingMode.HALF_UP)));
     }
+
+    taxTotal = exTaxBase.multiply(adjustedTaxValue);
+    orderLineTax.setTaxTotal(currencyScaleService.getScaledValue(taxTotal, currencyScale));
+
     orderLineTax.setInTaxTotal(
         currencyScaleService.getScaledValue(exTaxBase.add(taxTotal), currencyScale));
   }

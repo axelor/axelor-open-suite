@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -70,7 +71,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       TaxService taxService,
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      TaxLineRepository taxLineRepository) {
     super(
         currencyService,
         priceListService,
@@ -84,7 +86,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         taxService,
         internationalService,
         invoiceLineAttrsService,
-        currencyScaleService);
+        currencyScaleService,
+        taxLineRepository);
     this.supplierCatalogService = supplierCatalogService;
   }
 

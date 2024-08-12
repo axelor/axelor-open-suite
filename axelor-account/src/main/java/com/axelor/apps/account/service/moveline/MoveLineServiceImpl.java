@@ -23,10 +23,12 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -88,6 +90,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected MoveLineTaxService moveLineTaxService;
   protected CurrencyScaleService currencyScaleService;
   protected AccountingBatchRepository accountingBatchRepo;
+  protected TaxLineRepository taxLineRepository;
 
   @Inject
   public MoveLineServiceImpl(
@@ -101,7 +104,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       AccountingCutOffService cutOffService,
       MoveLineTaxService moveLineTaxService,
       CurrencyScaleService currencyScaleService,
-      AccountingBatchRepository accountingBatchRepo) {
+      AccountingBatchRepository accountingBatchRepo,
+      TaxLineRepository taxLineRepository) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -113,6 +117,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineTaxService = moveLineTaxService;
     this.currencyScaleService = currencyScaleService;
     this.accountingBatchRepo = accountingBatchRepo;
+    this.taxLineRepository = taxLineRepository;
   }
 
   @Override
@@ -463,5 +468,27 @@ public class MoveLineServiceImpl implements MoveLineService {
       moveLineList.add(moveLine);
     }
     return moveLineList;
+  }
+
+  @Override
+  public String computeMoveLineTaxLineSetDomain(int functionalOriginSelect, String dateString) {
+    String[] split = dateString.split("-");
+    LocalDate date =
+        LocalDate.of(
+            Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+
+    String domain = "(self.endDate > :date OR self.endDate IS NULL) ";
+    if (functionalOriginSelect == 3) {
+      domain += " AND self.tax.isNonDeductibleTax = false ";
+    }
+    List<TaxLine> taxLines = taxLineRepository.all().filter(domain).bind("date", date).fetch();
+    StringBuilder sb = new StringBuilder();
+    sb.append("self.id in (");
+    for (TaxLine taxLine : taxLines) {
+      sb.append(taxLine.getId() + ",");
+    }
+    sb.deleteCharAt(sb.length() - 1);
+    sb.append(")");
+    return sb.toString();
   }
 }

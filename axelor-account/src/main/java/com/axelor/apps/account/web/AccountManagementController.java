@@ -4,9 +4,9 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -19,7 +19,7 @@ public class AccountManagementController {
       throws AxelorException {
     String sourceFieldName = (String) request.getContext().get("_source");
     AccountManagement accountManagement = request.getContext().asType(AccountManagement.class);
-    TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
+    TaxService taxService = Beans.get(TaxService.class);
     Account account;
     Set<Tax> taxes;
     if ("purchaseTaxSet".equals(sourceFieldName)) {
@@ -32,7 +32,7 @@ public class AccountManagementController {
       taxes = accountManagement.getSaleTaxSet();
     }
 
-    boolean checkResult = taxAccountService.checkTaxesNotOnlyNonDeductibleTaxes(taxes);
+    boolean checkResult = taxService.checkTaxesNotOnlyNonDeductibleTaxes(taxes);
     if (!checkResult) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,

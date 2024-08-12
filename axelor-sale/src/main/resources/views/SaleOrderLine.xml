@@ -292,8 +292,8 @@
           <field name="taxLineSet" canEdit="false" colSpan="6"
             readonlyIf="$isReadOnly !== false || deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
             onChange="action-sale-order-line-method-tax-line-onchange"
-            domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
-            form-view="tax-line-form" widget="TagSelect"/>
+            domain="(self.endDate = null or self.endDate &gt; :__date__) AND self.tax.isNonDeductibleTax = false"
+            grid-view="tax-line-grid" form-view="tax-line-form" widget="TagSelect"/>
           <field name="exTaxTotal" readonly="true" colSpan="3"
             x-scale="$currency.numberOfDecimals"/>
           <field name="inTaxTotal" readonly="true" colSpan="3"

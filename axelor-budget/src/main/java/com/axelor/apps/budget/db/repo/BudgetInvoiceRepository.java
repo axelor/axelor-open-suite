@@ -20,6 +20,7 @@ package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.service.invoice.InvoiceValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
@@ -34,8 +35,10 @@ import org.apache.commons.collections.CollectionUtils;
 public class BudgetInvoiceRepository extends InvoiceProjectRepository {
 
   @Inject
-  public BudgetInvoiceRepository(AppBusinessProjectService appBusinessProjectService) {
-    super(appBusinessProjectService);
+  public BudgetInvoiceRepository(
+      AppBusinessProjectService appBusinessProjectService,
+      InvoiceValidationService invoiceValidationService) {
+    super(appBusinessProjectService, invoiceValidationService);
   }
 
   @Override

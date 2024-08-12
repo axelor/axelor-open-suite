@@ -1438,6 +1438,7 @@
 "Old email","Ancien email",,
 "Old job title","Ancienne fonction",,
 "Old phone number","Ancien n° de téléphone",,
+"Only one non-deductible tax is configured. A non deductible tax should always be paired with at least one other deductible tax.","Seulement une taxe non déductible est configurée. Une taxe non déductible doit toujours être associée à au moins une autre taxe déductible.",,
 "Only the users for which the password has not been updated since this number of days will be taken into account.","Seuls les utilisateurs dont le mot de passe n'a pas été mis à jour depuis ce nombre de jours seront pris en compte.",,
 "Open employee form","Ouvrir la fiche employé",,
 "Open period","Ouvrir période",,

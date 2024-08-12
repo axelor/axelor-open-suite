@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.service.invoice.InvoiceValidationService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.ProjectTask;
@@ -34,7 +35,10 @@ public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
   protected AppBusinessProjectService appBusinessProjectService;
 
   @Inject
-  public InvoiceProjectRepository(AppBusinessProjectService appBusinessProjectService) {
+  public InvoiceProjectRepository(
+      AppBusinessProjectService appBusinessProjectService,
+      InvoiceValidationService invoiceValidationService) {
+    super(invoiceValidationService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 

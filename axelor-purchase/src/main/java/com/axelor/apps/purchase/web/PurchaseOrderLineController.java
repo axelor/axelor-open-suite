@@ -19,11 +19,13 @@
 package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -34,10 +36,12 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -46,6 +50,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -456,6 +461,36 @@ public class PurchaseOrderLineController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkTaxLinesNotOnlyNonDeductibleTaxes(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    TaxService taxService = Beans.get(TaxService.class);
+
+    try {
+      taxService.checkTaxLinesNotOnlyNonDeductibleTaxes(purchaseOrderLine.getTaxLineSet());
+    } catch (AxelorException e) {
+      String productFullName =
+          Optional.of(purchaseOrderLine)
+              .map(PurchaseOrderLine::getProduct)
+              .map(Product::getFullName)
+              .orElse(null);
+      if (productFullName != null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                PurchaseExceptionMessage
+                    .PURCHASE_ORDER_LINE_TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR1),
+            productFullName);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                PurchaseExceptionMessage
+                    .PURCHASE_ORDER_LINE_TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR2));
+      }
     }
   }
 }

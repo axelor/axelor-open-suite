@@ -19,13 +19,14 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 public interface MoveLineTaxService {
 
@@ -62,5 +63,5 @@ public interface MoveLineTaxService {
 
   boolean isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect);
 
-  BigDecimal getAdjustedTotalTaxRateInPercentage(List<InvoiceLineTax> invoiceLineTaxes);
+  BigDecimal getAdjustedTotalTaxRateInPercentage(Set<TaxLine> taxLineSet);
 }

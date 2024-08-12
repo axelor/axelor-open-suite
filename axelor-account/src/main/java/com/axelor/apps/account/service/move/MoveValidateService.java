@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.db.Query;
@@ -79,4 +80,6 @@ public interface MoveValidateService {
   void checkTaxAmount(Move move) throws AxelorException;
 
   void checkJournalPermissions(Move move) throws AxelorException;
+
+  void checkNonOnlyNonDeTaxes(List<MoveLine> moveLineList) throws AxelorException;
 }

@@ -91,14 +91,16 @@ public class TaxInvoiceLine extends TaxGenerator {
     List<InvoiceLineTax> updatedInvoiceLineTaxList =
         new ArrayList<>(invoice.getInvoiceLineTaxList());
     invoice.getInvoiceLineTaxList().clear();
-
+    List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<>();
     if (invoiceLines != null && !invoiceLines.isEmpty()) {
 
       LOG.debug("Creation of lines with taxes for the invoices lines");
 
       for (InvoiceLine invoiceLine : invoiceLines) {
-        // map is updated with created invoice line taxes
+        map.clear();
         createInvoiceLineTaxes(invoiceLine, map);
+        invoiceLineTaxList =
+            finalizeInvoiceLineTaxes(invoiceLineTaxList, map, updatedInvoiceLineTaxList);
       }
     }
 
@@ -118,13 +120,7 @@ public class TaxInvoiceLine extends TaxGenerator {
     } else {
       invoice.setSpecificNotes(invoice.getPartner().getSpecificTaxNote());
     }
-    map = adjustTaxAmountBasedOnNonDeductibleTax(map);
-    return finalizeInvoiceLineTaxes(map, updatedInvoiceLineTaxList);
-  }
-
-  protected Map<TaxConfiguration, InvoiceLineTax> adjustTaxAmountBasedOnNonDeductibleTax(
-      Map<TaxConfiguration, InvoiceLineTax> map) {
-    return map;
+    return invoiceLineTaxList;
   }
 
   protected void createInvoiceLineTaxes(
@@ -267,8 +263,10 @@ public class TaxInvoiceLine extends TaxGenerator {
   }
 
   protected List<InvoiceLineTax> finalizeInvoiceLineTaxes(
-      Map<TaxConfiguration, InvoiceLineTax> map, List<InvoiceLineTax> updatedInvoiceLineTaxList) {
-    List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<>();
+      List<InvoiceLineTax> invoiceLineTaxList,
+      Map<TaxConfiguration, InvoiceLineTax> map,
+      List<InvoiceLineTax> updatedInvoiceLineTaxList) {
+
     // need to check how many non-deductible taxes are there and recompute the taxRate for each kind
     // tax.
     Collection<InvoiceLineTax> invoiceLineTaxes = map.values();

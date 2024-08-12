@@ -32,6 +32,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,12 +83,13 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
     if (CollectionUtils.isNotEmpty(purchaseOrderLineList)) {
       LOG.debug("Creation of tax lines for purchase order lines.");
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+        map.clear();
         getOrCreateLines(
             purchaseOrder, purchaseOrderLine, map, customerSpecificNote, specificNotes);
+        computeAndAddTaxToList(map, purchaseOrderLineTaxList, purchaseOrder.getCurrency());
       }
     }
 
-    computeAndAddTaxToList(map, purchaseOrderLineTaxList, purchaseOrder.getCurrency());
     orderLineTaxService.setSpecificNotes(
         customerSpecificNote,
         purchaseOrder,
@@ -174,9 +176,28 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       Map<TaxLine, PurchaseOrderLineTax> map,
       List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
       Currency currency) {
+
+    BigDecimal sumOfAllDeductibleRateValue = BigDecimal.ZERO;
+    BigDecimal sumOfAllNonDeductibleRateValue = BigDecimal.ZERO;
+    for (PurchaseOrderLineTax purchaseOrderLineTax : map.values()) {
+      Boolean isNonDeductibleTax =
+          purchaseOrderLineTax.getTaxLine().getTax().getIsNonDeductibleTax();
+      if (isNonDeductibleTax) {
+        BigDecimal nonDeductibleRateValue = purchaseOrderLineTax.getTaxLine().getValue();
+        sumOfAllNonDeductibleRateValue = sumOfAllNonDeductibleRateValue.add(nonDeductibleRateValue);
+      } else {
+        // Deductible rate
+        BigDecimal deductibleRateValue = purchaseOrderLineTax.getTaxLine().getValue();
+        sumOfAllDeductibleRateValue = sumOfAllDeductibleRateValue.add(deductibleRateValue);
+      }
+    }
     for (PurchaseOrderLineTax purchaseOrderLineTax : map.values()) {
       // Dans la devise de la commande
-      orderLineTaxService.computeTax(purchaseOrderLineTax, currency);
+      orderLineTaxService.computeTax(
+          purchaseOrderLineTax,
+          currency,
+          sumOfAllDeductibleRateValue,
+          sumOfAllNonDeductibleRateValue);
       purchaseOrderLineTaxList.add(purchaseOrderLineTax);
 
       LOG.debug(

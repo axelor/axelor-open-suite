@@ -23,6 +23,14 @@ public final class PurchaseExceptionMessage {
   private PurchaseExceptionMessage() {}
 
   public static final String PURCHASE_ORDER_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
+
+  public static final String
+      PURCHASE_ORDER_LINE_TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR1 = /*$$(*/
+          "Only one non-deductible tax is configured on the product/account %s. A non deductible tax should always be paired with at least one other deductible tax." /*)*/;
+
+  public static final String
+      PURCHASE_ORDER_LINE_TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR2 = /*$$(*/
+          "Only one non-deductible tax is configured. A non deductible tax should always be paired with at least one other deductible tax." /*)*/;
   public static final String PURCHASE_ORDER_LINE_MIN_QTY = /*$$(*/
       "The minimum order quantity of %s to the supplier is not respected. Unit price might be different than the supplier catalog one." /*)*/;
   public static final String PURCHASE_ORDER_LINE_MAX_QTY = /*$$(*/

@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -77,6 +78,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected AccountConfigService accountConfigService;
   protected InvoiceLineAnalyticService invoiceLineAnalyticService;
   protected TaxService taxService;
+  protected TaxLineRepository taxLineRepository;
   protected InternationalService internationalService;
   protected InvoiceLineAttrsService invoiceLineAttrsService;
   protected CurrencyScaleService currencyScaleService;
@@ -95,7 +97,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       TaxService taxService,
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      TaxLineRepository taxLineRepository) {
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
@@ -109,6 +112,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.internationalService = internationalService;
     this.invoiceLineAttrsService = invoiceLineAttrsService;
     this.currencyScaleService = currencyScaleService;
+    this.taxLineRepository = taxLineRepository;
   }
 
   @Override
@@ -754,5 +758,23 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     invoiceLineAttrsService.addCoefficientScale(invoice, attrsMap, "");
 
     return attrsMap;
+  }
+
+  @Override
+  public String computeInvoiceLineTaxLineSetDomain(int operationTypeSelect) {
+    LocalDate todayDate = LocalDate.now();
+    String domain = "(self.endDate > :date OR self.endDate IS NULL) ";
+    if (operationTypeSelect == 3 || operationTypeSelect == 4) {
+      domain += " AND self.tax.isNonDeductibleTax = false ";
+    }
+    List<TaxLine> taxLines = taxLineRepository.all().filter(domain).bind("date", todayDate).fetch();
+    StringBuilder sb = new StringBuilder();
+    sb.append("self.id in (");
+    for (TaxLine taxLine : taxLines) {
+      sb.append(taxLine.getId() + ",");
+    }
+    sb.deleteCharAt(sb.length() - 1);
+    sb.append(")");
+    return sb.toString();
   }
 }

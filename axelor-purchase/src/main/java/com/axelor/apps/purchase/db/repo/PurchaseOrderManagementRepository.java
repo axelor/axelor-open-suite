@@ -26,6 +26,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
+import com.axelor.apps.purchase.service.PurchaseOrderValidationService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
@@ -35,11 +36,16 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
   protected AppBaseService appBaseService;
   protected PurchaseOrderSequenceService purchaseOrderSequenceService;
 
+  protected PurchaseOrderValidationService purchaseOrderValidationService;
+
   @Inject
   public PurchaseOrderManagementRepository(
-      AppBaseService appBaseService, PurchaseOrderSequenceService purchaseOrderSequenceService) {
+      AppBaseService appBaseService,
+      PurchaseOrderSequenceService purchaseOrderSequenceService,
+      PurchaseOrderValidationService purchaseOrderValidationService) {
     this.appBaseService = appBaseService;
     this.purchaseOrderSequenceService = purchaseOrderSequenceService;
+    this.purchaseOrderValidationService = purchaseOrderValidationService;
   }
 
   @Override
@@ -67,6 +73,7 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
   public PurchaseOrder save(PurchaseOrder purchaseOrder) {
 
     try {
+      purchaseOrderValidationService.checkNotOnlyNonDeductibleTaxes(purchaseOrder);
       purchaseOrder = super.save(purchaseOrder);
       purchaseOrderSequenceService.setDraftSequence(purchaseOrder);
       return purchaseOrder;

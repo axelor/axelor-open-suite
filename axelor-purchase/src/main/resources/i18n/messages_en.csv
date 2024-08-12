@@ -143,6 +143,8 @@
 "Not received",,,
 "OR",,,
 "Ongoing Purchase orders",,,
+"Only one non-deductible tax is configured on the product/account %s. A non deductible tax should always be paired with at least one other deductible tax.",,,
+"Only one non-deductible tax is configured. A non deductible tax should always be paired with at least one other deductible tax.",,,
 "Order Date",,,
 "Order history",,,
 "Ordered",,,

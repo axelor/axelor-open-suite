@@ -29,6 +29,7 @@ import com.google.common.collect.Sets;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -171,5 +172,46 @@ public class TaxService {
       return Sets.newHashSet();
     }
     return taxLineSet.stream().map(TaxLine::getTax).collect(Collectors.toSet());
+  }
+
+  /**
+   * TaxLines contain taxes, this method reuses checkTaxesNotOnlyNonDeductibleTaxes(Set<Tax> taxes)
+   *
+   * @param taxLines
+   * @return
+   */
+  public void checkTaxLinesNotOnlyNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
+    if (taxLines == null || taxLines.isEmpty()) {
+      return;
+    }
+    Set<Tax> taxes = new HashSet<>();
+    for (TaxLine taxLine : taxLines) {
+      taxes.add(taxLine.getTax());
+    }
+    if (!checkTaxesNotOnlyNonDeductibleTaxes(taxes)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR));
+    }
+  }
+
+  public boolean checkTaxesNotOnlyNonDeductibleTaxes(Set<Tax> taxes) {
+    if (taxes == null || taxes.isEmpty()) {
+      return true;
+    }
+    int countDeductibleTaxes = 0;
+    int countNonDeductibleTaxes = 0;
+    for (Tax tax : taxes) {
+      Boolean isNonDeductibleTax = tax.getIsNonDeductibleTax();
+      if (isNonDeductibleTax) {
+        countNonDeductibleTaxes++;
+      } else {
+        countDeductibleTaxes++;
+      }
+    }
+    if (countDeductibleTaxes == 0 && countNonDeductibleTaxes > 0) {
+      return false;
+    }
+    return true;
   }
 }

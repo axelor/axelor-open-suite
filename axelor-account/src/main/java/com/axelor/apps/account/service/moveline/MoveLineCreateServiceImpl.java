@@ -676,7 +676,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       TaxLine taxLine,
       String accountType,
       Account newAccount,
-      boolean percentMoveTemplate)
+      boolean percentMoveTemplate,
+      BigDecimal sumOfAllDeductibleRateValue,
+      BigDecimal sumOfAllNonDeductibleRateValue)
       throws AxelorException {
     BigDecimal debit = moveLine.getDebit();
     BigDecimal credit = moveLine.getCredit();
@@ -758,7 +760,41 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 move.getJournal(), move.getOrigin(), move.getDescription())));
     moveLineToolService.setDecimals(newOrUpdatedMoveLine, move);
 
-    BigDecimal taxLineValue = taxLine.getValue();
+    Boolean isNonDeductibleTax = taxLine.getTax().getIsNonDeductibleTax();
+    BigDecimal originalTaxRateValue = taxLine.getValue();
+    BigDecimal adjustedTaxValue = BigDecimal.ZERO;
+    if (isNonDeductibleTax) {
+      // non-deductible part
+      // formula:
+      // sum of all original normal tax rate * non-deductible tax rate
+
+      adjustedTaxValue =
+          sumOfAllDeductibleRateValue
+              .divide(
+                  BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
+              .multiply(originalTaxRateValue)
+              .divide(
+                  BigDecimal.valueOf(100),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
+    } else {
+      // deductible part
+      // formula:
+      // sum of all original normal tax rate * ( 1 - All non-deductible tax rate)
+      adjustedTaxValue =
+          originalTaxRateValue
+              .divide(
+                  BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
+              .multiply(
+                  BigDecimal.ONE.subtract(
+                      sumOfAllNonDeductibleRateValue.divide(
+                          BigDecimal.valueOf(100),
+                          AppBaseService.COMPUTATION_SCALING,
+                          RoundingMode.HALF_UP)));
+    }
+
+    // e.g.:40.00
+    //    BigDecimal taxLineValue = taxLine.getValue();
 
     if (percentMoveTemplate) {
       debit = sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_PAYABLE);
@@ -767,10 +803,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     int scale = currencyScaleService.getCompanyScale(move);
-    BigDecimal newMoveLineDebit =
-        debit.multiply(taxLineValue).divide(BigDecimal.valueOf(100), scale, RoundingMode.HALF_UP);
-    BigDecimal newMoveLineCredit =
-        credit.multiply(taxLineValue).divide(BigDecimal.valueOf(100), scale, RoundingMode.HALF_UP);
+    BigDecimal newMoveLineDebit = debit.multiply(adjustedTaxValue);
+    BigDecimal newMoveLineCredit = credit.multiply(adjustedTaxValue);
 
     this.setTaxLineAmount(newMoveLineDebit, newMoveLineCredit, newOrUpdatedMoveLine);
 

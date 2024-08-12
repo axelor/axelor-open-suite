@@ -371,6 +371,8 @@
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-taxline-onchange">
+    <action
+      name="action-purchase-order-line-method-check-order-lines-not-only-non-deductible-taxes"/>
     <action name="action-purchase-order-line-method-get-tax-equiv"/>
     <action name="action-purchase-order-line-method-convert-tax"/>
     <action name="action-purchase-order-line-method-compute"/>
@@ -611,6 +613,12 @@
     if-module="axelor-supplychain">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
       method="computeAnalyticDistribution" if="__config__.app.isApp('supplychain')"/>
+  </action-method>
+
+  <action-method
+    name="action-purchase-order-line-method-check-order-lines-not-only-non-deductible-taxes">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"
+      method="checkTaxLinesNotOnlyNonDeductibleTaxes"/>
   </action-method>
 
   <action-record name="action-purchase-order-line-record-init-dummy-fields"

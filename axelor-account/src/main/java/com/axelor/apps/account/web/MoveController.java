@@ -940,4 +940,34 @@ public class MoveController {
 
     response.setView(actionViewBuilder.map());
   }
+
+  //  public void testOnChangeMoveLine(ActionRequest request, ActionResponse response)
+  //      throws AxelorException {
+  //    Move move = request.getContext().asType(Move.class);
+  //    List<MoveLine> moveLineList = move.getMoveLineList();
+  //    if (moveLineList == null) {
+  //      return;
+  //    }
+  //    for (MoveLine moveLine : moveLineList) {
+  //      Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
+  //      if (taxLineSet == null || taxLineSet.isEmpty()) {
+  //        continue;
+  //      } else {
+  //        int countNonDeTax = 0;
+  //        int countDeTax = 0;
+  //        for (TaxLine taxLine : taxLineSet) {
+  //          Boolean isNonDeductibleTax = taxLine.getTax().getIsNonDeductibleTax();
+  //          if (isNonDeductibleTax) {
+  //            countNonDeTax++;
+  //          } else {
+  //            countDeTax++;
+  //          }
+  //        }
+  //        if (countDeTax == 0 && countNonDeTax > 0) {
+  //          throw new AxelorException(
+  //              TraceBackRepository.CATEGORY_INCONSISTENCY, "Non De tax error.");
+  //        }
+  //      }
+  //    }
+  //  }
 }

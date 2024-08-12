@@ -660,4 +660,7 @@ public final class BaseExceptionMessage {
 
   public static final String PRINTING_TEMPLATE_SCRIPT_ERROR = /*$$(*/
       "Error when computing the printing filename, using template %s: %s" /*)*/;
+
+  public static final String TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR = /*$$(*/
+      "Only one non-deductible tax is configured. A non deductible tax should always be paired with at least one other deductible tax." /*)*/;
 }

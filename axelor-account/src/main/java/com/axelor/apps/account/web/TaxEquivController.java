@@ -3,9 +3,9 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -16,7 +16,7 @@ public class TaxEquivController {
   public void checkTaxesNotOnlyNonDeductibleTaxes(ActionRequest request, ActionResponse response)
       throws AxelorException {
     String sourceFieldName = (String) request.getContext().get("_source");
-    TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
+    TaxService taxService = Beans.get(TaxService.class);
     TaxEquiv taxEquiv = request.getContext().asType(TaxEquiv.class);
     Set<Tax> taxes;
     if ("fromTaxSet".equals(sourceFieldName)) {
@@ -27,7 +27,7 @@ public class TaxEquivController {
       // "reverseChargeTaxSet"
       taxes = taxEquiv.getReverseChargeTaxSet();
     }
-    boolean checkResult = taxAccountService.checkTaxesNotOnlyNonDeductibleTaxes(taxes);
+    boolean checkResult = taxService.checkTaxesNotOnlyNonDeductibleTaxes(taxes);
     if (!checkResult) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,

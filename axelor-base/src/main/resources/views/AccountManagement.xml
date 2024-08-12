@@ -105,7 +105,7 @@
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false"/>
         <field name="saleTaxSet" form-view="tax-form" grid-view="tax-grid" canEdit="false"
-          onChange="action-account-management-method-check-taxes-not-only-non-deductible-taxes"
+          onSelect="action-account-management-attr-set-domain-exclude-non-deductible-tax-on-select"
           widget="TagSelect"/>
       </panel>
 
@@ -312,4 +312,10 @@
     <call class="com.axelor.apps.account.web.AccountManagementController"
       method="checkTaxesNotOnlyNonDeductibleTaxes"/>
   </action-method>
+
+  <action-attrs
+    name="action-account-management-attr-set-domain-exclude-non-deductible-tax-on-select">
+    <attribute for="saleTaxSet" name="domain"
+      expr="eval: &quot; self.isNonDeductibleTax = false &quot;"/>
+  </action-attrs>
 </object-views>

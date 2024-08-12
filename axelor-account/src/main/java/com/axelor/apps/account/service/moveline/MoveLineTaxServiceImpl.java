@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountType;
-import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -321,17 +320,41 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         continue;
       }
 
-      if (CollectionUtils.isNotEmpty(taxLineSet))
+      if (CollectionUtils.isNotEmpty(taxLineSet)) {
+        BigDecimal sumOfAllDeductibleRateValue = BigDecimal.ZERO;
+        BigDecimal sumOfAllNonDeductibleRateValue = BigDecimal.ZERO;
+        for (TaxLine taxLine : taxLineSet) {
+          Boolean isNonDeductibleTax = taxLine.getTax().getIsNonDeductibleTax();
+          if (isNonDeductibleTax) {
+            BigDecimal nonDeductibleRateValue = taxLine.getValue();
+            sumOfAllNonDeductibleRateValue =
+                sumOfAllNonDeductibleRateValue.add(nonDeductibleRateValue);
+          } else {
+            // Deductible rate
+            BigDecimal deductibleRateValue = taxLine.getValue();
+            sumOfAllDeductibleRateValue = sumOfAllDeductibleRateValue.add(deductibleRateValue);
+          }
+        }
         for (TaxLine taxLine : taxLineSet) {
           if (taxLine != null && taxLine.getValue().signum() != 0) {
             String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
 
             if (this.isGenerateMoveLineForAutoTax(moveLine)) {
               moveLineCreateService.createMoveLineForAutoTax(
-                  move, map, newMap, moveLine, taxLine, accountType, account, percentMoveTemplate);
+                  move,
+                  map,
+                  newMap,
+                  moveLine,
+                  taxLine,
+                  accountType,
+                  account,
+                  percentMoveTemplate,
+                  sumOfAllDeductibleRateValue,
+                  sumOfAllNonDeductibleRateValue);
             }
           }
         }
+      }
     }
 
     moveLineList.addAll(newMap.values());
@@ -431,17 +454,17 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   }
 
   @Override
-  public BigDecimal getAdjustedTotalTaxRateInPercentage(List<InvoiceLineTax> invoiceLineTaxes) {
+  public BigDecimal getAdjustedTotalTaxRateInPercentage(Set<TaxLine> taxLineSet) {
     BigDecimal sumOfAllDeductibleRateValue = BigDecimal.ZERO;
     BigDecimal sumOfAllNonDeductibleRateValue = BigDecimal.ZERO;
-    for (InvoiceLineTax invoiceLineTax : invoiceLineTaxes) {
-      Boolean isNonDeductibleTax = invoiceLineTax.getTaxLine().getTax().getIsNonDeductibleTax();
+    for (TaxLine taxLine : taxLineSet) {
+      Boolean isNonDeductibleTax = taxLine.getTax().getIsNonDeductibleTax();
       if (isNonDeductibleTax) {
-        BigDecimal nonDeductibleRateValue = invoiceLineTax.getTaxLine().getValue();
+        BigDecimal nonDeductibleRateValue = taxLine.getValue();
         sumOfAllNonDeductibleRateValue = sumOfAllNonDeductibleRateValue.add(nonDeductibleRateValue);
       } else {
         // Deductible rate
-        BigDecimal deductibleRateValue = invoiceLineTax.getTaxLine().getValue();
+        BigDecimal deductibleRateValue = taxLine.getValue();
         sumOfAllDeductibleRateValue = sumOfAllDeductibleRateValue.add(deductibleRateValue);
       }
     }

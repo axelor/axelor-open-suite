@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -84,6 +83,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -927,10 +927,12 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
 
-    List<InvoiceLineTax> invoiceLineTaxList =
-        moveLine.getMove().getInvoice().getInvoiceLineTaxList();
+    //    List<InvoiceLineTax> invoiceLineTaxList =
+    //        moveLine.getMove().getInvoice().getInvoiceLineTaxList();
+    Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
+
     BigDecimal adjustedTotalTaxRateInPercentage =
-        moveLineTaxService.getAdjustedTotalTaxRateInPercentage(invoiceLineTaxList);
+        moveLineTaxService.getAdjustedTotalTaxRateInPercentage(taxLineSet);
 
     return lineTotal
         .multiply(adjustedTotalTaxRateInPercentage)
@@ -994,6 +996,32 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.MOVE_LINE_DESCRIPTION_MISSING));
+    }
+  }
+
+  @Override
+  public void checkNonOnlyNonDeTaxes(List<MoveLine> moveLineList) throws AxelorException {
+    if (moveLineList == null) {
+      return;
+    }
+    for (MoveLine moveLine : moveLineList) {
+      Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
+      try {
+        taxService.checkTaxLinesNotOnlyNonDeductibleTaxes(taxLineSet);
+      } catch (AxelorException e) {
+        String accountLabel =
+            Optional.of(moveLine).map(MoveLine::getAccount).map(Account::getLabel).orElse(null);
+        if (accountLabel != null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR1),
+              accountLabel);
+        } else {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR2));
+        }
+      }
     }
   }
 }

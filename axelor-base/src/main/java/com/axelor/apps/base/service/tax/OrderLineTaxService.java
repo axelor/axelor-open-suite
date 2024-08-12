@@ -22,13 +22,18 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.base.interfaces.PricedOrder;
 import com.axelor.apps.base.interfaces.PricedOrderLine;
+import java.math.BigDecimal;
 import java.util.Set;
 
 public interface OrderLineTaxService {
 
   boolean isCustomerSpecificNote(PricedOrder pricedOrder);
 
-  void computeTax(OrderLineTax orderLineTax, Currency currency);
+  void computeTax(
+      OrderLineTax orderLineTax,
+      Currency currency,
+      BigDecimal sumOfAllDeductibleRateValue,
+      BigDecimal sumOfAllNonDeductibleRateValue);
 
   void setSpecificNotes(
       boolean customerSpecificNote,

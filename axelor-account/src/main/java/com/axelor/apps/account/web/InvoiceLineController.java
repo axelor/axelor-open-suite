@@ -32,7 +32,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountService;
-import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
@@ -614,10 +613,10 @@ public class InvoiceLineController {
   public void checkTaxLinesNotOnlyNonDeductibleTaxes(ActionRequest request, ActionResponse response)
       throws AxelorException {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-    TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
-    boolean checkResult =
-        taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(invoiceLine.getTaxLineSet());
-    if (!checkResult) {
+    TaxService taxService = Beans.get(TaxService.class);
+    try {
+      taxService.checkTaxLinesNotOnlyNonDeductibleTaxes(invoiceLine.getTaxLineSet());
+    } catch (AxelorException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR1),
@@ -631,5 +630,20 @@ public class InvoiceLineController {
                   .map(Account::getLabel)
                   .orElse(null));
     }
+  }
+
+  public void computeTaxLineSetDomainOnSelect(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
+    Object operationTypeSelectObj = _parent.get("operationTypeSelect");
+    int operationTypeSelect;
+    if (operationTypeSelectObj != null) {
+      operationTypeSelect = (Integer) operationTypeSelectObj;
+    } else {
+      operationTypeSelect = -1;
+    }
+    String domainString =
+        Beans.get(InvoiceLineService.class).computeInvoiceLineTaxLineSetDomain(operationTypeSelect);
+    response.setAttr("taxLineSet", "domain", domainString);
   }
 }

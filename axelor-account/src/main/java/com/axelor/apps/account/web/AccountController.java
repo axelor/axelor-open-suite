@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
-import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -39,6 +38,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
@@ -355,8 +355,8 @@ public class AccountController {
       throws AxelorException {
     Account account = request.getContext().asType(Account.class);
     Set<Tax> defaultTaxSet = account.getDefaultTaxSet();
-    TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
-    boolean checkResult = taxAccountService.checkTaxesNotOnlyNonDeductibleTaxes(defaultTaxSet);
+    TaxService taxService = Beans.get(TaxService.class);
+    boolean checkResult = taxService.checkTaxesNotOnlyNonDeductibleTaxes(defaultTaxSet);
     if (!checkResult) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
