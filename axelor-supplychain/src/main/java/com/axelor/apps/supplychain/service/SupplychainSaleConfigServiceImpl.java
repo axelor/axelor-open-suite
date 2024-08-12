@@ -18,31 +18,24 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.service.config.SaleConfigServiceImpl;
-import com.google.inject.Inject;
+import com.axelor.db.JPA;
 import com.google.inject.persist.Transactional;
-import java.util.List;
+import javax.persistence.Query;
 
 public class SupplychainSaleConfigServiceImpl extends SaleConfigServiceImpl
     implements SupplychainSaleConfigService {
 
-  @Inject private AccountingSituationRepository accountingSituationRepo;
-
   @Transactional
   public void updateCustomerCredit(SaleConfig saleConfig) {
+    Query update =
+        JPA.em()
+            .createQuery(
+                "UPDATE AccountingSituation self SET self.acceptedCredit = :acceptedCredit WHERE self.company = :company AND self.partner.id IN (SELECT partner.id FROM Partner partner WHERE partner.isContact IS FALSE AND partner.isCustomer IS TRUE)");
 
-    List<AccountingSituation> accountingSituationList =
-        accountingSituationRepo
-            .all()
-            .filter("self.partner.isContact = false and self.partner.isCustomer = true")
-            .fetch();
-
-    for (AccountingSituation accountingSituation : accountingSituationList) {
-      accountingSituation.setAcceptedCredit(saleConfig.getAcceptedCredit());
-      accountingSituationRepo.save(accountingSituation);
-    }
+    update.setParameter("acceptedCredit", saleConfig.getAcceptedCredit());
+    update.setParameter("company", saleConfig.getCompany());
+    update.executeUpdate();
   }
 }
