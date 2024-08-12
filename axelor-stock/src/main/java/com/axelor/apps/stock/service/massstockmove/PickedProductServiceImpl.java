@@ -31,7 +31,7 @@ public class PickedProductServiceImpl implements PickedProductService {
       MassStockMove massStockMove, Product product, StockLocation stockLocation, BigDecimal qty) {
 
     var pickedProduct = new PickedProduct();
-    pickedProduct.setMassStockMove(massStockMove);
+    massStockMove.addPickedProductListItem(pickedProduct);
     pickedProduct.setPickedProduct(product);
     pickedProduct.setFromStockLocation(stockLocation);
     pickedProduct.setPickedQty(qty);
