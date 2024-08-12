@@ -343,5 +343,4 @@ public final class StockExceptionMessage {
 
   public static final String LOCATIONS_ARE_EMPTY = /*$$(*/
       "Source and destination locations are empty" /*)*/;
-
 }
