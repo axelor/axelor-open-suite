@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="loyalty-account-history-line-grid" title="History"
+    model="com.axelor.apps.sale.db.LoyaltyAccountHistoryLine" canEdit="false">
+    <hilite if="remainingPoints == 0" color="danger"/>
+    <hilite if="remainingPoints != pointsBalance" color="warning"/>
+    <field name="pointsBalance" x-scale="0"/>
+    <field name="acquisitionDateTime"/>
+    <field name="useDateTime"/>
+    <field name="remainingPoints" hidden="true"/>
+  </grid>
+
+  <form name="loyalty-account-history-line-form" title="Loyalty account history line"
+    model="com.axelor.apps.sale.db.LoyaltyAccountHistoryLine">
+    <panel name="mainPanel" colSpan="12">
+      <field name="pointsBalance" x-scale="0"/>
+      <field name="remainingPoints" x-scale="0"/>
+      <field name="acquisitionDateTime"/>
+      <field name="useDateTime"/>
+      <field name="saleOrder" colSpan="12"/>
+    </panel>
+  </form>
+
+</object-views>

@@ -843,8 +843,7 @@ public class SaleOrderController {
     }
 
     Beans.get(LoyaltyAccountPointsManagementService.class)
-        .incrementLoyaltyPointsFromAmount(
-            clientPartner, saleOrder.getCompany(), saleOrder.getExTaxTotal());
+        .incrementLoyaltyPointsFromAmount(saleOrder);
   }
 
   public void reloadMethod(ActionRequest request, ActionResponse response) {
