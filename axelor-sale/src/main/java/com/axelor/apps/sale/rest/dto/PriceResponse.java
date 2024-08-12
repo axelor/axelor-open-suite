@@ -1,15 +1,12 @@
 package com.axelor.apps.sale.rest.dto;
 
-import com.axelor.utils.api.ObjectFinder;
-import com.axelor.utils.api.ResponseStructure;
 import java.math.BigDecimal;
 
-public class PriceResponse extends ResponseStructure {
+public class PriceResponse {
   protected String type;
   protected BigDecimal price;
 
   public PriceResponse(String type, BigDecimal price) {
-    super(ObjectFinder.NO_VERSION);
     this.type = type;
     this.price = price;
   }

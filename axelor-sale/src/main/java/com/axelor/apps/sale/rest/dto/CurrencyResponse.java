@@ -1,31 +1,19 @@
 package com.axelor.apps.sale.rest.dto;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
-import com.axelor.utils.api.ObjectFinder;
-import com.axelor.utils.api.ResponseStructure;
+import com.axelor.apps.base.db.Currency;
 
-public class CurrencyResponse extends ResponseStructure {
+public class CurrencyResponse {
   private Long currencyId;
   private String code;
   private String name;
 
   private String symbol;
 
-  public CurrencyResponse(Company company) {
-    super(ObjectFinder.NO_VERSION);
-    this.currencyId = company.getCurrency().getId();
-    this.code = company.getCurrency().getCode();
-    this.name = company.getCurrency().getName();
-    this.symbol = company.getCurrency().getSymbol();
-  }
-
-  public CurrencyResponse(Product product) {
-    super(ObjectFinder.NO_VERSION);
-    this.currencyId = product.getSaleCurrency().getId();
-    this.code = product.getSaleCurrency().getCode();
-    this.name = product.getSaleCurrency().getName();
-    this.symbol = product.getSaleCurrency().getSymbol();
+  public CurrencyResponse(Currency currency) {
+    this.currencyId = currency.getId();
+    this.code = currency.getCode();
+    this.name = currency.getName();
+    this.symbol = currency.getSymbol();
   }
 
   public Long getCurrencyId() {

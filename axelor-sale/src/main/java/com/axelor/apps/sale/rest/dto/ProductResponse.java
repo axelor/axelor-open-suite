@@ -18,19 +18,16 @@
  */
 package com.axelor.apps.sale.rest.dto;
 
-import com.axelor.utils.api.ObjectFinder;
-import com.axelor.utils.api.ResponseStructure;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductResponse extends ResponseStructure {
+public class ProductResponse {
 
   protected Long productId;
   protected List<PriceResponse> prices;
   protected CurrencyResponse currency;
 
   public ProductResponse(Long productId, List<PriceResponse> prices, CurrencyResponse currency) {
-    super(ObjectFinder.NO_VERSION);
     this.productId = productId;
     this.prices = new ArrayList<>(prices);
     this.currency = currency;

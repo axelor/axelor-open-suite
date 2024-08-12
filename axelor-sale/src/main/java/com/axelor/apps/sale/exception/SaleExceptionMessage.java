@@ -139,6 +139,17 @@ public final class SaleExceptionMessage {
   public static final String SALE_ORDER_NOT_DRAFT = /*$$(*/
       "You can only add a line to a draft sale order." /*)*/;
 
+  public static final String PRODUCT_IS_NULL = /*$$(*/ "Product should not be null" /*)*/;
+
+  public static final String NO_PRODUCT_TAX = /*$$(*/ "No tax is set for this product: %s" /*)*/;
+
+  public static final String NO_TAX_LINE = /*$$(*/ "There is no tax line for this tax: %s" /*)*/;
+
+  public static final String PRODUCT_CURRENCY_IS_NULL = /*$$(*/
+      "This product currency is empty: %s" /*)*/;
+
+  public static final String NO_PRODUCT_FAMILY =
+      /*$$(*/ "No product family is set for this product: %s" /*)*/;
       public static final String PRODUCT_IS_NULL = /*$$(*/
       "Product should not be null" /*)*/;
 
