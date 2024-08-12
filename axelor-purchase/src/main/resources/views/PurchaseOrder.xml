@@ -220,10 +220,11 @@
           canMove="true" orderBy="sequence" height="30"/>
         <field name="notes" colSpan="12" x-lite="true" widget="html"/>
       </panel>
-      <panel name="taxPanel" title="Tax" colSpan="12">
-        <panel-related name="purchaseOrderLineTaxListPanel"
-          field="purchaseOrderLineTaxList" readonly="true" title="Tax Lines" colSpan="12"
-          grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
+      <panel name="taxPanel" title="Tax" colSpan="12" readonlyIf="statusSelect != 1">
+        <panel-related name="purchaseOrderLineTaxListPanel" canRemove="false"
+          canNew="false" field="purchaseOrderLineTaxList" title="Tax Lines" colSpan="12"
+          grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"
+          onChange="action-purchase-order-method-compute"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" colSpan="12">
         <field name="estimatedReceiptDate" colSpan="3"

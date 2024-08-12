@@ -37,8 +37,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +77,10 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       throws AxelorException {
 
     List<PurchaseOrderLineTax> purchaseOrderLineTaxList = new ArrayList<>();
+    List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList = new ArrayList<>();
+    currentPurchaseOrderLineTaxList.addAll(purchaseOrder.getPurchaseOrderLineTaxList());
+    purchaseOrder.clearPurchaseOrderLineTaxList();
+
     Map<TaxLine, PurchaseOrderLineTax> map = new HashMap<>();
     Set<String> specificNotes = new HashSet<>();
     boolean customerSpecificNote = orderLineTaxService.isCustomerSpecificNote(purchaseOrder);
@@ -87,7 +93,11 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       }
     }
 
-    computeAndAddTaxToList(map, purchaseOrderLineTaxList, purchaseOrder.getCurrency());
+    computeAndAddTaxToList(
+        map,
+        purchaseOrderLineTaxList,
+        purchaseOrder.getCurrency(),
+        currentPurchaseOrderLineTaxList);
     orderLineTaxService.setSpecificNotes(
         customerSpecificNote,
         purchaseOrder,
@@ -173,16 +183,66 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
   protected void computeAndAddTaxToList(
       Map<TaxLine, PurchaseOrderLineTax> map,
       List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
-      Currency currency) {
+      Currency currency,
+      List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList) {
     for (PurchaseOrderLineTax purchaseOrderLineTax : map.values()) {
       // Dans la devise de la commande
       orderLineTaxService.computeTax(purchaseOrderLineTax, currency);
-      purchaseOrderLineTaxList.add(purchaseOrderLineTax);
+      PurchaseOrderLineTax oldPurchaseOrderLineTax =
+          getExistingPurchaseOrderLineTax(purchaseOrderLineTax, currentPurchaseOrderLineTaxList);
+      if (oldPurchaseOrderLineTax == null) {
+        purchaseOrderLineTaxList.add(purchaseOrderLineTax);
 
-      LOG.debug(
-          "Tax line : Tax total => {}, Total W.T. => {}",
-          purchaseOrderLineTax.getTaxTotal(),
-          purchaseOrderLineTax.getInTaxTotal());
+        LOG.debug(
+            "Tax line : Tax total => {}, Total W.T. => {}",
+            purchaseOrderLineTax.getTaxTotal(),
+            purchaseOrderLineTax.getInTaxTotal());
+      } else {
+        purchaseOrderLineTaxList.add(oldPurchaseOrderLineTax);
+      }
     }
+  }
+
+  @Override
+  public List<PurchaseOrderLineTax> getUpdatedPurchaseOrderLineTax(PurchaseOrder purchaseOrder) {
+    List<PurchaseOrderLineTax> purchaseOrderLineTaxList = new ArrayList<>();
+
+    if (ObjectUtils.isEmpty(purchaseOrder.getPurchaseOrderLineTaxList())) {
+      return purchaseOrderLineTaxList;
+    }
+
+    purchaseOrderLineTaxList.addAll(
+        purchaseOrder.getPurchaseOrderLineTaxList().stream()
+            .filter(
+                purchaseOrderLineTax ->
+                    orderLineTaxService.isManageByAmount(purchaseOrderLineTax)
+                        && purchaseOrderLineTax
+                                .getTaxTotal()
+                                .compareTo(purchaseOrderLineTax.getPercentageTaxTotal())
+                            != 0)
+            .collect(Collectors.toList()));
+    return purchaseOrderLineTaxList;
+  }
+
+  protected PurchaseOrderLineTax getExistingPurchaseOrderLineTax(
+      PurchaseOrderLineTax purchaseOrderLineTax,
+      List<PurchaseOrderLineTax> purchaseOrderLineTaxList) {
+    if (ObjectUtils.isEmpty(purchaseOrderLineTaxList) || purchaseOrderLineTax == null) {
+      return null;
+    }
+
+    for (PurchaseOrderLineTax purchaseOrderLineTaxItem : purchaseOrderLineTaxList) {
+      if (Objects.equals(purchaseOrderLineTaxItem.getTaxLine(), purchaseOrderLineTax.getTaxLine())
+          && purchaseOrderLineTaxItem
+                  .getPercentageTaxTotal()
+                  .compareTo(purchaseOrderLineTax.getTaxTotal())
+              == 0
+          && purchaseOrderLineTaxItem.getExTaxBase().compareTo(purchaseOrderLineTax.getExTaxBase())
+              == 0) {
+        return purchaseOrderLineTaxItem;
+      }
+    }
+
+    return null;
   }
 }
