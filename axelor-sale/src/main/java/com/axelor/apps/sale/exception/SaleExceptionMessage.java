@@ -158,4 +158,7 @@ public final class SaleExceptionMessage {
 
   public static final String CONTACT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS = /*$$(*/
       "The contact provided is not a contact partner of the client." /*)*/;
+
+  public static final String ACCOUNT_MANAGEMENT_IS_NULL = /*$$(*/
+      "There is no account management for this product: %s" /*)*/;
 }
