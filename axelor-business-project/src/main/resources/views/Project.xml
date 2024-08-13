@@ -131,7 +131,7 @@
       <field name="description" colSpan="12" widget="html"/>
       <field name="siteSet" colSpan="12" grid-view="site-project-grid" form-view="site-form"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"
-        domain="self.isUsableOnProject = true"/>
+        domain="self.isUsableOnProject = true" canEdit="false"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -517,11 +517,11 @@
         if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
         <panel name="frameworkContractPanel" hidden="true"
           showIf="allowToGetPricesFromFrameworkContract" colSpan="12">
-          <field name="frameworkCustomerContractSet" colSpan="12"
+          <field name="frameworkCustomerContractSet" colSpan="12" canEdit="false"
             domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 1"/>
           <field name="defaultFrameworkCustomerContract"
             onSelect="action-project-attrs-set-default-customer-contract-domain"/>
-          <field name="frameworkSupplierContractSet" colSpan="12"
+          <field name="frameworkSupplierContractSet" colSpan="12" canEdit="false"
             domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 2"/>
           <field name="defaultFrameworkSupplierContract"
             onSelect="action-project-attrs-set-default-supplier-contract-domain"/>
