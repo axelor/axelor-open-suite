@@ -1,3 +1,3 @@
 ---
-title: "Stock API: improve requests permissions"
+title: "Stock API: fixed an issue where condition in permission were not evaluated correctly to read stocks and modify/create stock moves."
 module: axelor-stock
