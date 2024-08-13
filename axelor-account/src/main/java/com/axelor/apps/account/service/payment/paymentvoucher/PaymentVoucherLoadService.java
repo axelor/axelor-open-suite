@@ -32,7 +32,7 @@ import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PfpService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
@@ -62,9 +62,9 @@ public class PaymentVoucherLoadService {
   protected PayVoucherDueElementService payVoucherDueElementService;
   protected PayVoucherElementToPayService payVoucherElementToPayService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
-  protected InvoiceTermService invoiceTermService;
   protected PfpService pfpService;
   protected CurrencyScaleService currencyScaleService;
+  protected InvoiceTermFilterService invoiceTermFilterService;
 
   @Inject
   public PaymentVoucherLoadService(
@@ -74,18 +74,18 @@ public class PaymentVoucherLoadService {
       PayVoucherDueElementService payVoucherDueElementService,
       PayVoucherElementToPayService payVoucherElementToPayService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
-      InvoiceTermService invoiceTermService,
       PfpService pfpService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      InvoiceTermFilterService invoiceTermFilterService) {
     this.currencyService = currencyService;
     this.paymentVoucherToolService = paymentVoucherToolService;
     this.paymentVoucherRepository = paymentVoucherRepository;
     this.payVoucherDueElementService = payVoucherDueElementService;
     this.payVoucherElementToPayService = payVoucherElementToPayService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
-    this.invoiceTermService = invoiceTermService;
     this.pfpService = pfpService;
     this.currencyScaleService = currencyScaleService;
+    this.invoiceTermFilterService = invoiceTermFilterService;
   }
 
   /**
@@ -125,7 +125,7 @@ public class PaymentVoucherLoadService {
       query += " and self.moveLine.credit > 0 ";
     }
 
-    return invoiceTermService.filterNotAwaitingPayment(
+    return invoiceTermFilterService.filterNotAwaitingPayment(
         invoiceTermRepo
             .all()
             .filter(query)

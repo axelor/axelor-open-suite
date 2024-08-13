@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -19,12 +19,14 @@
       title="Amount A.T.I. in Acc. currency" hidden="true"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <boolean name="reverseCharged"/>
-    <decimal name="subTotalExcludingFixedAssets" scale="3" precision="20"/>
-    <decimal name="subTotalOfFixedAssets" scale="3" precision="20"/>
-    <decimal name="companySubTotalExcludingFixedAssets" scale="3" precision="20"/>
-    <decimal name="companySubTotalOfFixedAssets" scale="3" precision="20"/>
     <integer name="vatSystemSelect" title="VAT System"
       selection="iaccount.vat.system.invoice.line.tax.select" default="0"/>
+    <decimal name="coefficient" title="Coefficient" scale="12" precision="20" default="1"
+      min="0" max="1" nullable="true"/>
+    <many-to-one name="taxType" ref="com.axelor.apps.account.db.TaxType"
+      title="Tax type"/>
+    <many-to-one name="imputedAccount" title="Imputed account"
+      ref="com.axelor.apps.account.db.Account"/>
   </entity>
 
 </domain-models>

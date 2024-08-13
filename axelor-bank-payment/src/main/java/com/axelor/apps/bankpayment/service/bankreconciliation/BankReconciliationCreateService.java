@@ -21,6 +21,7 @@ package com.axelor.apps.bankpayment.service.bankreconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -39,16 +40,19 @@ public class BankReconciliationCreateService {
   protected BankReconciliationRepository bankReconciliationRepository;
   protected CompanyRepository companyRepository;
   protected BankReconciliationAccountService bankReconciliationAccountService;
+  protected BankStatementLineRepository bankStatementLineRepository;
 
   @Inject
   public BankReconciliationCreateService(
       BankReconciliationRepository bankReconciliationRepository,
       CompanyRepository companyRepository,
-      BankReconciliationAccountService bankReconciliationAccountService) {
+      BankReconciliationAccountService bankReconciliationAccountService,
+      BankStatementLineRepository bankStatementLineRepository) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.companyRepository = companyRepository;
     this.bankReconciliationAccountService = bankReconciliationAccountService;
+    this.bankStatementLineRepository = bankStatementLineRepository;
   }
 
   @Transactional(rollbackOn = {Exception.class})

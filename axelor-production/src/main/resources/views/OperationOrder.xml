@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <calendar name="operation-order-planned-calendar"
     model="com.axelor.apps.production.db.OperationOrder" eventStart="plannedStartDateT"
@@ -27,10 +27,6 @@
   <grid name="operation-order-group-grid" title="Operations"
     model="com.axelor.apps.production.db.OperationOrder" groupBy="manufOrder"
     orderBy="-manufOrder,priority" canNew="false">
-    <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-method-print-birt-list"/>
-    </toolbar>
     <field name="manufOrder" width="120" grid-view="manuf-order-grid"
       form-view="manuf-order-form"/>
     <field name="priority"/>
@@ -59,7 +55,8 @@
     <button name="cancelBtn" icon="fa-times-circle"
       onClick="action-operation-order-group-cancel,save"
       readonlyIf="statusSelect == 2 || statusSelect == 6"/>
-    <button name="printBtn" title="Print" icon="fa-print" onClick="action-method-print-birt"/>
+    <button name="printBtn" title="Print" icon="fa-print"
+      onClick="action-method-print-template"/>
   </grid>
 
 
@@ -94,7 +91,7 @@
       onClick="save,action-operation-order-group-cancel,save"
       readonlyIf="statusSelect == 2 || statusSelect == 6"/>
     <button name="printBtn" title="Print" icon="fa-print"
-      onClick="save,action-method-print-birt"/>
+      onClick="save,action-method-print-template"/>
   </grid>
 
 
@@ -105,10 +102,6 @@
     onSave="action-operation-order-name"
     onNew="action-operation-order-attrs-is-cons-pro-on-operation,action-operation-order-default-record"
     canNew="false">
-    <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-method-print-birt"/>
-    </toolbar>
     <panel name="mainPanel">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="12"/>
@@ -375,7 +368,7 @@
   </action-view>
 
   <search-filters name="operation-order-filters"
-    model="com.axelor.apps.production.db.OperationOrder" title="Operation order filters">
+    model="com.axelor.apps.production.db.OperationOrder" title="Manufacturing order filters">
     <field name="operationOrderDurationList" hidden="true"
       if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
     <field name="timesheetLineList" hidden="true"

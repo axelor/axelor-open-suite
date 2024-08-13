@@ -127,6 +127,8 @@ public class BatchContractRevaluate extends BatchStrategy {
     try {
       Contract newContract = contractService.getNextContract(contract);
       processContract(newContract, idsOk, idsReevaluated);
+      contractService.activeNextVersion(
+          newContract, appBaseService.getTodayDate(newContract.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(e, null, batch.getId());
       idsFail.add(contract);

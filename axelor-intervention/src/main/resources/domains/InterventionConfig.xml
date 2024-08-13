@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="InterventionConfig" cacheable="true">
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true" unique="true"/>
+
+    <boolean name="customerRequestCreationAutomaticMail"
+      title="Send email on customer request creation" default="false"/>
+    <many-to-one name="customerRequestCreationMessageTemplate" title="Message template"
+      ref="com.axelor.message.db.Template"/>
+
+    <boolean name="interventionPlanificationAutomaticMail"
+      title="Send email on intervention planification" default="false"/>
+    <many-to-one name="interventionPlanificationMessageTemplate"
+      title="Message template" ref="com.axelor.message.db.Template"/>
+
+    <boolean name="interventionRePlanificationAutomaticMail"
+      title="Send email on intervention re-planification" default="false"/>
+    <many-to-one name="interventionRePlanificationMessageTemplate"
+      title="Message template" ref="com.axelor.message.db.Template"/>
+
+    <boolean name="interventionValidationAutomaticMail"
+      title="Send email on intervention validation" default="false"/>
+    <many-to-one name="interventionValidationMessageTemplate" title="Message template"
+      ref="com.axelor.message.db.Template"/>
+
+    <track>
+      <field name="customerRequestCreationAutomaticMail"/>
+      <field name="customerRequestCreationMessageTemplate"/>
+      <field name="interventionPlanificationAutomaticMail"/>
+      <field name="interventionPlanificationMessageTemplate"/>
+      <field name="interventionRePlanificationAutomaticMail"/>
+      <field name="interventionRePlanificationMessageTemplate"/>
+      <field name="interventionValidationAutomaticMail"/>
+      <field name="interventionValidationMessageTemplate"/>
+    </track>
+  </entity>
+
+</domain-models>

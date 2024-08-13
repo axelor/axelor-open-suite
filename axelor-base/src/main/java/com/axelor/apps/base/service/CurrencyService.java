@@ -46,6 +46,8 @@ public interface CurrencyService {
       CurrencyConversionLine currentCcl, List<CurrencyConversionLine> currencyConversionLines)
       throws AxelorException;
 
+  BigDecimal computeScaledExchangeRate(BigDecimal amount1, BigDecimal amount2);
+
   boolean isSameCurrencyRate(
       LocalDate invoiceDate, LocalDate paymentDate, Currency startCurrency, Currency endCurrency)
       throws AxelorException;

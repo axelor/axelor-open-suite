@@ -1,0 +1,10 @@
+"importId";"name";"answerTypeSelect";"defaultTextValue";"checkboxName";"indicationText";"desiredUnit.importId"
+1;"YES/NO";"list";;;;
+2;"Compliant/Non compliant";"list";;;;
+3;"Date";"date";;;;
+4;"Signature";"signature";;;;
+5;"Picture";"picture";;;;
+6;"Satisfaction";"list";;;;
+7;"Text";"text";;;;
+8;"Numéric";"measure";;;;1
+9;"System state";"list";;;;

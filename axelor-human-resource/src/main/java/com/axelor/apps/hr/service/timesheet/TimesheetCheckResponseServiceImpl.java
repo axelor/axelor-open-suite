@@ -52,10 +52,34 @@ public class TimesheetCheckResponseServiceImpl implements TimesheetCheckResponse
     checkResponseLineList.add(checkFromDate(timesheet));
     checkResponseLineList.add(checkToDate(timesheet));
     checkDailyLimit(timesheet, checkResponseLineList);
+    checkTimesheetLinesDates(timesheet, checkResponseLineList);
     List<CheckResponseLine> filteredList =
         checkResponseLineList.stream().filter(Objects::nonNull).collect(Collectors.toList());
 
     return new CheckResponse(timesheet, filteredList);
+  }
+
+  protected void checkTimesheetLinesDates(
+      Timesheet timesheet, List<CheckResponseLine> checkResponseLineList) {
+    List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+    if (CollectionUtils.isEmpty(timesheetLineList)) {
+      return;
+    }
+    LocalDate fromDate = timesheet.getFromDate();
+    LocalDate toDate = timesheet.getToDate();
+    for (TimesheetLine timesheetLine : timesheetLineList) {
+      LocalDate date = timesheetLine.getDate();
+      if (date != null
+          && ((fromDate != null && date.isBefore(fromDate))
+              || (toDate != null && date.isAfter(toDate)))) {
+        checkResponseLineList.add(
+            new CheckResponseLine(
+                timesheetLine,
+                String.format(
+                    I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINE_INVALID_DATES), date),
+                CheckResponseLine.CHECK_TYPE_ERROR));
+      }
+    }
   }
 
   protected void checkDailyLimit(Timesheet timesheet, List<CheckResponseLine> checkResponseLineList)

@@ -21,30 +21,47 @@ package com.axelor.apps.base.service.tax;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.common.ObjectUtils;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Set;
 
 @Singleton
 public class FiscalPositionServiceImpl implements FiscalPositionService {
 
-  @Override
-  public Tax getTax(FiscalPosition fiscalPosition, Tax tax) {
-    TaxEquiv taxEquiv = getTaxEquiv(fiscalPosition, tax);
+  protected TaxService taxService;
 
-    return taxEquiv == null ? tax : taxEquiv.getToTax();
+  @Inject
+  public FiscalPositionServiceImpl(TaxService taxService) {
+    this.taxService = taxService;
   }
 
   @Override
-  public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Tax tax) {
-    if (fiscalPosition != null && fiscalPosition.getTaxEquivList() != null && tax != null) {
+  public Set<Tax> getTaxSet(FiscalPosition fiscalPosition, Set<Tax> taxSet) {
+    TaxEquiv taxEquiv = getTaxEquiv(fiscalPosition, taxSet);
+    return taxEquiv == null ? taxSet : taxEquiv.getToTaxSet();
+  }
+
+  @Override
+  public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Set<Tax> taxSet) {
+    if (fiscalPosition != null
+        && fiscalPosition.getTaxEquivList() != null
+        && ObjectUtils.notEmpty(taxSet)) {
       for (TaxEquiv taxEquiv : fiscalPosition.getTaxEquivList()) {
-        if (taxEquiv.getFromTax() != null
-            && taxEquiv.getFromTax().equals(tax)
-            && taxEquiv.getToTax() != null) {
+        if (ObjectUtils.notEmpty(taxEquiv.getFromTaxSet())
+            && taxEquiv.getFromTaxSet().equals(taxSet)
+            && ObjectUtils.notEmpty(taxEquiv.getToTaxSet())) {
           return taxEquiv;
         }
       }
     }
 
     return null;
+  }
+
+  @Override
+  public TaxEquiv getTaxEquivFromTaxLines(FiscalPosition fiscalPosition, Set<TaxLine> taxLineSet) {
+    return getTaxEquiv(fiscalPosition, taxService.getTaxSet(taxLineSet));
   }
 }

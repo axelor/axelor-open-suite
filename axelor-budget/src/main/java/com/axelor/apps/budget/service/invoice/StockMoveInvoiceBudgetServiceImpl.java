@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -35,7 +36,9 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
+import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.SaleOrderMergingServiceSupplyChain;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
@@ -51,6 +54,7 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
   protected AppBudgetService appBudgetService;
   protected InvoiceToolBudgetService invoiceToolBudgetService;
   protected BudgetInvoiceLineService budgetInvoiceLineService;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public StockMoveInvoiceBudgetServiceImpl(
@@ -65,10 +69,13 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
       SupplyChainConfigService supplyChainConfigService,
       AppSupplychainService appSupplychainService,
       AppStockService appStockService,
+      SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
+      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
       BudgetInvoiceService budgetInvoiceService,
       AppBudgetService appBudgetService,
       InvoiceToolBudgetService invoiceToolBudgetService,
-      BudgetInvoiceLineService budgetInvoiceLineService) {
+      BudgetInvoiceLineService budgetInvoiceLineService,
+      BudgetToolsService budgetToolsService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -80,11 +87,14 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
         invoiceLineRepository,
         supplyChainConfigService,
         appSupplychainService,
-        appStockService);
+        appStockService,
+        saleOrderMergingServiceSupplyChain,
+        purchaseOrderMergingSupplychainService);
     this.budgetInvoiceService = budgetInvoiceService;
     this.appBudgetService = appBudgetService;
     this.invoiceToolBudgetService = invoiceToolBudgetService;
     this.budgetInvoiceLineService = budgetInvoiceLineService;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -135,7 +145,9 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
                     RoundingMode.HALF_UP));
       }
 
-      budgetInvoiceLineService.computeBudgetDistributionSumAmount(invoiceLine, invoice);
+      invoiceLine.setBudgetRemainingAmountToAllocate(
+          budgetToolsService.getBudgetRemainingAmountToAllocate(
+              invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
     }
     return invoiceLine;
   }

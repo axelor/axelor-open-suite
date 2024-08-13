@@ -19,89 +19,21 @@
 package com.axelor.apps.budget.web;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.ResponseMessageType;
-import com.axelor.apps.base.db.AdvancedExport;
-import com.axelor.apps.base.db.repo.AdvancedExportRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.ErrorException;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
-import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
 import com.axelor.apps.budget.service.BudgetComputeHiddenDateService;
 import com.axelor.apps.budget.service.BudgetLevelService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import java.time.LocalDate;
-import java.util.Map;
 
 public class BudgetLevelController {
-
-  public void exportBudgetLevel(ActionRequest request, ActionResponse response) {
-
-    try {
-      Context context = request.getContext();
-      Long budgetLevelId = Long.valueOf(String.valueOf(context.get("_id")));
-      Object advancedExportBudgetObj = context.get("advancedExportBudget");
-      Object advancedExportPurchasedOrderLineObj = context.get("advancedExportPurchaseOrderLine");
-      if (budgetLevelId != null
-          && advancedExportBudgetObj != null
-          && advancedExportPurchasedOrderLineObj != null) {
-        BudgetLevel budgetLevel = Beans.get(BudgetLevelRepository.class).find(budgetLevelId);
-        AdvancedExport advancedExportBudget =
-            Beans.get(AdvancedExportRepository.class)
-                .find(
-                    Long.valueOf(
-                        String.valueOf(((Map<String, Object>) advancedExportBudgetObj).get("id"))));
-        AdvancedExport advancedExportPurchasedOrderLine =
-            Beans.get(AdvancedExportRepository.class)
-                .find(
-                    Long.valueOf(
-                        String.valueOf(
-                            ((Map<String, Object>) advancedExportPurchasedOrderLineObj)
-                                .get("id"))));
-        String language = AuthUtils.getUser().getLanguage();
-        if (language == null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get("Please select a language on user form."));
-        }
-        downloadExportFile(
-            response,
-            Beans.get(ExportGlobalBudgetLevelService.class)
-                .export(budgetLevel, advancedExportBudget, advancedExportPurchasedOrderLine));
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void downloadExportFile(ActionResponse response, MetaFile exportFile) {
-    if (exportFile != null) {
-      response.setView(
-          ActionView.define(I18n.get("Export file"))
-              .model(AdvancedExport.class.getName())
-              .add(
-                  "html",
-                  "ws/rest/com.axelor.meta.db.MetaFile/"
-                      + exportFile.getId()
-                      + "/content/download?v="
-                      + exportFile.getVersion())
-              .param("download", "true")
-              .map());
-    }
-  }
 
   @SuppressWarnings("unchecked")
   public void setDates(ActionRequest request, ActionResponse response) throws AxelorException {

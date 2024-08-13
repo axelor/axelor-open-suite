@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
+
+  <entity name="MobileShortcut">
+    <string name="name" title="Title" translatable="true" required="true"/>
+    <string name="iconName" title="Icon name" required="true"
+      help="Bootstrap icon name, see https://icons.getbootstrap.com/"/>
+    <many-to-one name="mobileScreen" title="Screen"
+      ref="com.axelor.apps.mobilesettings.db.MobileScreen"/>
+    <many-to-many name="authorizedRoleSet" title="Authorized roles"
+      ref="com.axelor.auth.db.Role"/>
+    <many-to-one name="appMobileSettings" title="App mobile settings"
+      ref="com.axelor.studio.db.AppMobileSettings"/>
+  </entity>
+
+</domain-models>

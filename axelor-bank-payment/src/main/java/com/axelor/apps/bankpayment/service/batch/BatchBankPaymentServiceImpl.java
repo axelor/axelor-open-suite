@@ -41,7 +41,7 @@ import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Batch;
@@ -72,7 +72,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   protected PaymentScheduleService paymentScheduleService;
 
   protected BankOrderCreateService bankOrderCreateService;
-  protected BankOrderService bankOrderService;
+  protected BankOrderValidationService bankOrderValidationService;
   protected BankOrderLineService bankOrderLineService;
   protected BankOrderMergeService bankOrderMergeService;
 
@@ -89,7 +89,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
       InvoicePaymentValidateService invoicePaymentValidateService,
       PaymentScheduleService paymentScheduleService,
       BankOrderCreateService bankOrderCreateService,
-      BankOrderService bankOrderService,
+      BankOrderValidationService bankOrderValidationService,
       BankOrderLineService bankOrderLineService,
       BankOrderMergeService bankOrderMergeService,
       ReconcileRepository reconcileRepo,
@@ -103,7 +103,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
     this.paymentScheduleService = paymentScheduleService;
 
     this.bankOrderCreateService = bankOrderCreateService;
-    this.bankOrderService = bankOrderService;
+    this.bankOrderValidationService = bankOrderValidationService;
     this.bankOrderLineService = bankOrderLineService;
     this.bankOrderMergeService = bankOrderMergeService;
 
@@ -311,7 +311,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
 
     bankOrder = bankOrderRepo.find(bankOrder.getId());
     bankOrder = bankOrderRepo.save(bankOrder);
-    bankOrderService.confirm(bankOrder);
+    bankOrderValidationService.confirm(bankOrder);
 
     batch = batchRepo.find(batch.getId());
     batch.setBankOrder(bankOrder);

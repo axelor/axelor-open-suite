@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="bank-card-grid" title="Bank cards" model="com.axelor.apps.hr.db.BankCard">
+    <field name="name"/>
+    <field name="employee"/>
+    <field name="bankDetails"/>
+  </grid>
+
+  <form name="bank-card-form" title="Bank card" model="com.axelor.apps.hr.db.BankCard">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="employee"/>
+      <field name="bankDetails" colSpan="12"/>
+    </panel>
+  </form>
+
+  <form name="bank-card-form-from-employee" title="Bank card"
+    model="com.axelor.apps.hr.db.BankCard">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="bankDetails" colSpan="12"/>
+    </panel>
+  </form>
+
+  <form name="bank-card-form-from-bank-details" title="Bank card"
+    model="com.axelor.apps.hr.db.BankCard">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="employee"/>
+    </panel>
+  </form>
+
+</object-views>

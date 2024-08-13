@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.move.attributes;
 
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.auth.db.User;
@@ -28,7 +29,7 @@ public interface MoveAttrsService {
 
   void addHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  void addFunctionalOriginSelectDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+  Map<String, Map<String, Object>> addFunctionalOriginSelectDomain(Journal journal);
 
   void addMoveLineListViewerHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 
@@ -39,6 +40,8 @@ public interface MoveAttrsService {
   void addPartnerBankDetailsDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addTradingNameDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addJournalDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addWizardDefault(LocalDate moveDate, Map<String, Map<String, Object>> attrsMap);
 

@@ -36,7 +36,7 @@ import com.axelor.apps.base.db.repo.FunctionRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SyncContactRepository;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
@@ -136,7 +136,7 @@ public class SyncContactService {
       return null;
     }
     SyncContactResponse response = new SyncContactResponse();
-    response.setClientid(syncContact.getCid());
+    response.setClientid(syncContact.getClientId());
     response.setKey(syncContact.getGoogleApiKey());
     response.setAuthFailed(I18n.get(SYNC_CONTACT_AUTH_FAILED));
     response.setImportSuccessful(I18n.get(SYNC_CONTACT_IMPORT_SUCCESSFUL));
@@ -311,7 +311,7 @@ public class SyncContactService {
     String query =
         "self.zip = '"
             + googleAddr.getPostalCode()
-            + "' AND self.addressL7Country.alpha2Code = '"
+            + "' AND self.country.alpha2Code = '"
             + googleAddr.getCountryCode()
             + "' AND self.addressL4 = '"
             + googleAddr.getStreetAddress()
@@ -359,7 +359,7 @@ public class SyncContactService {
     if (partnerCountry == null) {
       partnerCountry = createCountry(googleAddr.getCountry(), googleAddr.getCountryCode());
     }
-    partnerAddr.setAddressL7Country(partnerCountry);
+    partnerAddr.setCountry(partnerCountry);
     if (!Strings.isNullOrEmpty(googleAddr.getCity())) {
       City partnerCity = cityRepo.findByName(googleAddr.getCity());
       if (partnerCity == null) {

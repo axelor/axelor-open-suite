@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -100,7 +100,7 @@
     <one-to-many name="dpaeList" title="DPAEs" ref="com.axelor.apps.hr.db.DPAE"
       mappedBy="employee"/>
     <one-to-many name="employeeFileList" title="Files"
-      ref="com.axelor.apps.hr.db.EmployeeFile" mappedBy="employee"/>
+      ref="com.axelor.apps.base.db.File" mappedBy="employee"/>
 
     <string name="maidenName" title="Maiden name"/>
     <string name="maritalName" title="Marital name"/>
@@ -127,6 +127,9 @@
 
     <one-to-many name="expenseLimitList" ref="com.axelor.apps.hr.db.ExpenseLimit"
       title="Expense limit list" mappedBy="employee"/>
+
+    <one-to-many name="bankCardList" ref="com.axelor.apps.hr.db.BankCard"
+      title="Bank cards" mappedBy="employee"/>
 
     <extra-code>
    		<![CDATA[

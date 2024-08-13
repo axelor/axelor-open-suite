@@ -216,7 +216,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
     Partner companyPartner = accountingExport.getCompany().getPartner();
     Address address = companyPartner.getMainAddress();
-    String alpha2code = address.getAddressL7Country().getAlpha2Code();
+    String alpha2code = address.getCountry().getAlpha2Code();
     String registrationCode = companyPartner.getRegistrationCode().replaceAll(" ", "");
     String siren = computeSiren(registrationCode, alpha2code);
     String nic = computeNic(registrationCode, alpha2code);
@@ -479,7 +479,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             + "LEFT OUTER JOIN pmvld.moveLine moveLine "
             + "LEFT OUTER JOIN pmvld.partner partner "
             + "LEFT OUTER JOIN partner.mainAddress address "
-            + "LEFT OUTER JOIN address.addressL7Country country "
+            + "LEFT OUTER JOIN address.country country "
             + "LEFT OUTER JOIN address.city city "
             + "LEFT OUTER JOIN moveLine.account account "
             + "LEFT OUTER JOIN account.serviceType serviceType "

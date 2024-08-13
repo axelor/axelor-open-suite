@@ -22,4 +22,6 @@ import com.axelor.apps.account.db.AccountingReport;
 
 public interface AccountingReportToolService {
   boolean isThereAlreadyDraftReportInPeriod(AccountingReport accountingReport);
+
+  String getAccountingReportTypeIds(AccountingReport accountingReport, boolean isCustom);
 }

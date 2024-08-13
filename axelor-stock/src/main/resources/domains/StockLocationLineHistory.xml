@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -19,6 +19,9 @@
       initParam="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"
       readonly="true" initParam="true"/>
+    <decimal name="salePrice" title="Sale price" initParam="true"/>
+    <decimal name="purchasePrice" title="Purchase price" initParam="true"/>
+    <decimal name="costPrice" title="Cost price" initParam="true"/>
     <extra-code><![CDATA[
       //origin
       public static final String ORIGIN_MANUAL_CORRECTION = "Manual correction";

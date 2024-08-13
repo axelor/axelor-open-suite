@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -20,6 +20,8 @@
     <one-to-many name="accountingReportConfigLineColumnList" title="Column rules"
       ref="com.axelor.apps.account.db.AccountingReportConfigLine" mappedBy="reportTypeColumn"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company"
+      title="Companies"/>
     <integer name="comparison" title="Comparison"
       selection="accounting.report.type.comparison.select"/>
     <integer name="noOfPeriods" title="Number of periods" default="1" min="1"/>
@@ -35,6 +37,10 @@
 		public static final int COMPARISON_PREVIOUS_YEAR = 2;
 		public static final int COMPARISON_SAME_PERIOD_ON_PREVIOUS_YEAR = 3;
 		public static final int COMPARISON_OTHER_PERIOD = 4;
+
+		// Report export type
+		public static final int REPORT = 1;
+		public static final int EXPORT = 2;
 
 	]]></extra-code>
 

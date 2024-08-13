@@ -436,7 +436,11 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     if (isPublicHoliday) {
       totalHours = totalHours.add(dailyWorkingHours);
     } else {
-      totalHours = totalHours.add(getLeaveHours(employee, date, dailyWorkingHours));
+      List<LeaveRequest> leavesList = leaveRequestService.getLeaves(employee, date);
+      totalHours =
+          totalHours.add(
+              leaveRequestComputeDurationService.computeTotalLeaveHours(
+                  date, dailyWorkingHours, leavesList));
     }
 
     return totalHours.setScale(2, RoundingMode.HALF_UP);
@@ -495,7 +499,11 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
           publicHolidayService.checkPublicHolidayDay(
               fromDate, employee.getPublicHolidayEventsPlanning());
       if (!isPublicHoliday) {
-        leaveHours = leaveHours.add(getLeaveHours(employee, fromDate, dailyWorkingHours));
+        List<LeaveRequest> leavesList = leaveRequestService.getLeaves(employee, fromDate);
+        leaveHours =
+            leaveHours.add(
+                leaveRequestComputeDurationService.computeTotalLeaveHours(
+                    fromDate, dailyWorkingHours, leavesList));
       }
       fromDate = fromDate.plusDays(1);
     } while (fromDate.until(toDate).getDays() > -1);

@@ -253,7 +253,7 @@ public class ImportMove {
             .collect(Collectors.toList());
     if (CollectionUtils.isNotEmpty(partnerList)) {
       if (partnerList.size() == 1) {
-        move.setPartner(moveLine.getPartner());
+        move.setPartner(partnerList.stream().findFirst().orElse(null));
       }
 
       if (partnerList.size() > 1) {

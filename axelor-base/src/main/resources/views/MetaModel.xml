@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="meta-model-grid" title="Models" model="com.axelor.meta.db.MetaModel"
     id="meta-model-extended-grid" extension="true" canNew="false" canEdit="false" canDelete="false"
@@ -11,6 +11,10 @@
         <toolbar>
           <button name="detailsBtn" title="METAMODEL.DETAILS"
             onClick="action-meta-model-view-details"/>
+          <button name="checkMetaFieldBtn" title="Check the MetaField"
+            onClick="action-app-method-check-meta-fields"/>
+          <button name="checkMetaModelBtn" title="Check the MetaModel"
+            onClick="action-app-method-check-meta-models"/>
         </toolbar>
       </insert>
     </extend>
@@ -22,4 +26,11 @@
     <view type="form" name="meta-field-form"/>
   </action-view>
 
+  <action-method name="action-app-method-check-meta-fields">
+    <call class="com.axelor.meta.web.MetaBaseController" method="checkMetaFields"/>
+  </action-method>
+
+  <action-method name="action-app-method-check-meta-models">
+    <call class="com.axelor.meta.web.MetaBaseController" method="checkMetaModels"/>
+  </action-method>
 </object-views>

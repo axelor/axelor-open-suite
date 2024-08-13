@@ -33,7 +33,7 @@ import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesService;
-import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderCreateSupplychainService;
 import com.axelor.apps.supplychain.service.StockRulesSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.message.db.repo.TemplateRepository;
@@ -57,7 +57,7 @@ public class StockRulesSupplychainServiceProductionImpl extends StockRulesSupply
       PurchaseOrderService purchaseOrderService,
       AppSupplychainService appSupplychainService,
       AppBaseService appBaseService,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService,
       PartnerPriceListService partnerPriceListService,
       ProductionOrderService productionOrderService) {
     super(
@@ -71,7 +71,7 @@ public class StockRulesSupplychainServiceProductionImpl extends StockRulesSupply
         purchaseOrderService,
         appSupplychainService,
         appBaseService,
-        purchaseOrderSupplychainService,
+        purchaseOrderCreateSupplychainService,
         partnerPriceListService);
     this.productionOrderService = productionOrderService;
   }

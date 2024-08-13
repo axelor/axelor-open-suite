@@ -32,16 +32,12 @@ public class AccountingReportController {
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     try {
       AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-      String domain =
+      response.setAttr(
+          "bankDetailsSet",
+          "domain",
           Beans.get(BankDetailsService.class)
               .getActiveCompanyBankDetails(
-                  accountingReport.getCompany(), accountingReport.getCurrency());
-      // if nothing was found for the domain, we set it at a default value.
-      if (domain.equals("")) {
-        response.setAttr("bankDetailsSet", "domain", "self.id IN (0)");
-      } else {
-        response.setAttr("bankDetailsSet", "domain", domain);
-      }
+                  accountingReport.getCompany(), accountingReport.getCurrency()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid id="hr-file-grid" title="Files" name="file-grid" model="com.axelor.apps.base.db.File"
+    extension="true">
+
+    <extend target="//field[@name='dmsFile']">
+      <insert position="after">
+        <field name="employee" if-module="axelor-human-resource"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <grid name="employee-file-grid" title="Files" model="com.axelor.apps.base.db.File"
+    edit-icon="true">
+    <field name="fileType"/>
+    <field name="metaFile"/>
+    <field name="recordDate"/>
+    <field name="expirationDate"/>
+    <field name="fileDescription"/>
+  </grid>
+
+  <form id="hr-file-form" title="File" name="file-form" model="com.axelor.apps.base.db.File"
+    extension="true">
+    <extend target="//field[@name='fileDescription']">
+      <insert position="before">
+        <field name="employee" if-module="axelor-human-resource" hidden="true"
+          showIf="_fileTypeSelect === 2" requiredIf="_fileTypeSelect === 2"/>
+      </insert>
+    </extend>
+
+    <extend target="/">
+      <attribute name="onNew" value="action-hr-group-onnew-file"/>
+    </extend>
+  </form>
+
+  <action-record name="action-hr-record-set-file-type-select"
+    model="com.axelor.apps.base.db.File">
+    <field name="fileTypeSelect" expr="eval: _fileTypeSelect"
+      if="_fileTypeSelect == 1  || _fileTypeSelect == 2"/>
+    <field name="fileTypeSelect" expr="eval: 1" if="_contractVersion != null"/>
+    <field name="fileTypeSelect" expr="eval: 2"
+      if="__parent__?._model == 'com.axelor.apps.hr.db.Employee'"/>
+  </action-record>
+
+  <action-record name="action-hr-file-record-set-contract-version"
+    model="com.axelor.apps.base.db.File">
+    <field name="contractVersion" expr="eval: _contractVersion" if="_fileTypeSelect != 1"/>
+  </action-record>
+
+  <action-group name="action-hr-group-onnew-file">
+    <action name="action-hr-record-set-file-type-select"/>
+    <action name="action-hr-file-record-set-contract-version"/>
+  </action-group>
+
+</object-views>

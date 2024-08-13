@@ -28,6 +28,8 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class PriceListController {
@@ -43,7 +45,11 @@ public class PriceListController {
     PriceList priceList = request.getContext().asType(PriceList.class);
     Integer typeSelect = priceList.getTypeSelect();
 
-    for (PriceListLine priceListLine : priceList.getPriceListLineList()) {
+    List<PriceListLine> priceListLineList = priceList.getPriceListLineList();
+    if (CollectionUtils.isEmpty(priceListLineList)) {
+      return;
+    }
+    for (PriceListLine priceListLine : priceListLineList) {
       Integer anomalySelect = priceListLine.getAnomalySelect();
       if (typeSelect == PriceListRepository.TYPE_SALE
           && (anomalySelect == PriceListLineRepository.ANOMALY_UNAVAILABLE_FOR_SALE

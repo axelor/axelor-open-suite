@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MovePfpService;
@@ -163,6 +164,8 @@ public class MoveManagementRepository extends MoveRepository {
       MoveValidateService moveValidateService = Beans.get(MoveValidateService.class);
 
       moveValidateService.checkMoveLinesPartner(move);
+      moveValidateService.checkJournalPermissions(move);
+
       if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
           || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
           || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
@@ -174,7 +177,7 @@ public class MoveManagementRepository extends MoveRepository {
 
       Beans.get(MoveSequenceService.class).setDraftSequence(move);
       MoveLineControlService moveLineControlService = Beans.get(MoveLineControlService.class);
-      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      InvoiceTermToolService invoiceTermToolService = Beans.get(InvoiceTermToolService.class);
 
       List<MoveLine> moveLineList = move.getMoveLineList();
       if (moveLineList != null) {
@@ -191,7 +194,8 @@ public class MoveManagementRepository extends MoveRepository {
 
           if (!moveLine.getAccount().getUseForPartnerBalance()
               && CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-            if (moveLine.getInvoiceTermList().stream().allMatch(invoiceTermService::isNotReadonly)
+            if (moveLine.getInvoiceTermList().stream()
+                    .allMatch(invoiceTermToolService::isNotReadonly)
                 && moveLine.getInvoiceTermList().stream().noneMatch(InvoiceTerm::getIsHoldBack)) {
               moveLine.clearInvoiceTermList();
             } else {
