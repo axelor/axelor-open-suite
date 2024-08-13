@@ -926,8 +926,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
 
-    //    List<InvoiceLineTax> invoiceLineTaxList =
-    //        moveLine.getMove().getInvoice().getInvoiceLineTaxList();
     Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
 
     BigDecimal adjustedTotalTaxRateInPercentage =

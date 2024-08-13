@@ -163,8 +163,6 @@ public class MoveManagementRepository extends MoveRepository {
     try {
       MoveValidateService moveValidateService = Beans.get(MoveValidateService.class);
 
-      //      moveValidateService.checkNotOnlyNonDeTaxes(move.getMoveLineList());
-
       moveValidateService.checkMoveLinesPartner(move);
       moveValidateService.checkJournalPermissions(move);
 

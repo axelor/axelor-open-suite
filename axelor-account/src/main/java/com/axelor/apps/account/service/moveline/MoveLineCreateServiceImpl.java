@@ -793,9 +793,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                           RoundingMode.HALF_UP)));
     }
 
-    // e.g.:40.00
-    //    BigDecimal taxLineValue = taxLine.getValue();
-
     if (percentMoveTemplate) {
       debit = sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_PAYABLE);
       credit =
