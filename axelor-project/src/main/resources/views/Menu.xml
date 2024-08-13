@@ -39,39 +39,6 @@
     <view-param name="search-filters" value="project-template-filters"/>
   </action-view>
 
-  <menuitem name="project-current-project" parent="menu-project-root"
-    title="Current projects" order="600"/>
-
-  <menuitem name="project-activity" title="Project Activities"
-    parent="project-current-project" action="project.activity" order="100"/>
-  <action-view name="project.activity" title="Project Activity"
-    model="com.axelor.utils.db.Wizard">
-    <view type="form" name="project-activity-dashboard-form"/>
-  </action-view>
-
-  <menuitem name="project-open-tasks" parent="project-current-project" title="Tasks"
-    order="200" action="all.open.project.tasks"/>
-  <action-method name="all.open.project.tasks">
-    <call class="com.axelor.apps.project.web.ProjectMenuController"
-      method="allOpenProjectTasks"/>
-  </action-method>
-
-  <menuitem name="project-wiki" parent="project-current-project" title="Wiki"
-    action="all.wiki" order="600"/>
-  <action-view name="all.wiki" title="Wikis ${_projectName}"
-    model="com.axelor.apps.project.db.Wiki">
-    <view type="grid" name="wiki-grid"/>
-    <view type="form" name="wiki-form"/>
-    <view-param name="details-view" value="true"/>
-    <view-param name="grid-width" value="25%"/>
-    <domain>self.project.id IN :_projectIds OR :_project is null</domain>
-    <context name="_project" expr="eval: __user__.contextProject"/>
-    <context name="_projectName"
-      expr="eval: __user__.contextProject ? ' (' + __user__.contextProject.name + ')' : ''"/>
-    <context name="_projectIds"
-      expr="call:com.axelor.apps.project.service.ProjectService:getContextProjectIds()"/>
-  </action-view>
-
   <menuitem name="project-reporting" parent="menu-project-root" order="800"
     title="Reportings" icon="fa-bar-chart"/>
 
@@ -89,7 +56,7 @@
 
   <menuitem name="project-reporting-project-dashboard" parent="project-reporting"
     order="300" title="Project dashboard" action="project.reporting.projects.dashboard"
-    if="__user__.contextProject"/>
+    if="__user__.activeProject"/>
   <action-view name="project.reporting.projects.dashboard" title="Project dashboard"
     model="com.axelor.utils.db.Wizard">
     <view type="form" name="project-dashboard-form"/>
@@ -133,7 +100,7 @@
     <view type="grid" name="topic-grid"/>
     <view type="form" name="topic-form"/>
     <context name="userId" expr="eval: __user__.id"/>
-    <context name="_project" expr="eval: __user__.contextProject"/>
+    <context name="_project" expr="eval: __user__.activeProject"/>
   </action-view>
 
   <menuitem name="project-configurations-project-status" parent="project-configurations"
@@ -223,5 +190,50 @@
     <view type="grid" name="project-task-link-type-grid"/>
     <view type="form" name="project-task-link-type-form"/>
   </action-view>
+
+  <!-- My project menu -->
+
+  <menuitem name="menu-my-project-root" order="-1400" title="My project" icon="list-task"
+    if="__config__.app.isApp('project') &amp;&amp; __user__?.activeProject"
+    icon-background="#3f6bb9"/>
+
+  <menuitem name="project-mine" parent="menu-my-project-root" order="100" title="Project"
+    action="project.mine"/>
+  <action-method name="project.mine">
+    <call class="com.axelor.apps.project.web.ProjectMenuController" method="myProjects"/>
+  </action-method>
+
+  <menuitem name="project-open-tasks" parent="menu-my-project-root" title="Tasks"
+    order="300" action="all.open.project.tasks"/>
+  <action-method name="all.open.project.tasks">
+    <call class="com.axelor.apps.project.web.ProjectMenuController"
+      method="allOpenProjectTasks"/>
+  </action-method>
+
+  <menuitem name="project-activity" title="Project Activities"
+    parent="menu-my-project-root" action="project.activity" order="400"/>
+  <action-view name="project.activity" title="Project Activity"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="project-activity-dashboard-form"/>
+  </action-view>
+
+  <menuitem name="project-wiki" parent="menu-my-project-root" title="Wiki"
+    action="all.wiki" order="700"/>
+  <action-view name="all.wiki" title="Wikis ${_projectName}"
+    model="com.axelor.apps.project.db.Wiki">
+    <view type="grid" name="wiki-grid"/>
+    <view type="form" name="wiki-form"/>
+    <view-param name="details-view" value="true"/>
+    <view-param name="grid-width" value="25%"/>
+    <domain>self.project.id IN :_projectIds OR :_project is null</domain>
+    <context name="_project" expr="eval: __user__.activeProject"/>
+    <context name="_projectName"
+      expr="eval: __user__.activeProject ? ' (' + __user__.activeProject.name + ')' : ''"/>
+    <context name="_projectIds"
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getActiveProjectIds()"/>
+  </action-view>
+
+  <menuitem name="project-my-reporting" parent="menu-my-project-root" order="1000"
+    title="Reporting" action="project.my.projects"/>
 
 </object-views>

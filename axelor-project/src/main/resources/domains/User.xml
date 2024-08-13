@@ -9,12 +9,12 @@
 
     <many-to-many name="projectSet" title="Projects"
       ref="com.axelor.apps.project.db.Project" mappedBy="membersUserSet"/>
-    <many-to-one name="contextProject" title="Context project"
+    <many-to-one name="activeProject" title="Active project"
       ref="com.axelor.apps.project.db.Project"/>
-    <boolean name="isIncludeSubContextProjects" title="Include sub context projects"/>
+    <boolean name="isIncludeSubContextProjects" title="Include sub projects"/>
 
     <track>
-      <field name="contextProject" on="UPDATE"/>
+      <field name="activeProject" on="UPDATE"/>
       <field name="isIncludeSubContextProjects" on="UPDATE"/>
     </track>
 

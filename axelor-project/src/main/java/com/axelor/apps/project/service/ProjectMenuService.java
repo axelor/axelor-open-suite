@@ -25,9 +25,9 @@ public interface ProjectMenuService {
 
   public Map<String, Object> getAllOpenProjectTasks();
 
-  public Map<String, Object> getAllOpenProjectTickets();
-
   public Map<String, Object> getAllProjects();
+
+  Map<String, Object> getMyProjects();
 
   public Map<String, Object> getAllProjectTasks();
 

@@ -32,16 +32,16 @@ public class ProjectMenuController {
     response.setView(Beans.get(ProjectMenuService.class).getAllOpenProjectTasks());
   }
 
-  public void allOpenProjectTickets(ActionRequest request, ActionResponse response) {
-    response.setView(Beans.get(ProjectMenuService.class).getAllOpenProjectTickets());
-  }
-
   public void allProjects(ActionRequest request, ActionResponse response) {
     response.setView(Beans.get(ProjectMenuService.class).getAllProjects());
   }
 
   public void allProjectTasks(ActionRequest request, ActionResponse response) {
     response.setView(Beans.get(ProjectMenuService.class).getAllProjectTasks());
+  }
+
+  public void myProjects(ActionRequest request, ActionResponse response) {
+    response.setView(Beans.get(ProjectMenuService.class).getMyProjects());
   }
 
   public void allProjectRelatedTasks(ActionRequest request, ActionResponse response) {

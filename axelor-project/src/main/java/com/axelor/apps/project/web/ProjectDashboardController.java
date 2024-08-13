@@ -30,7 +30,7 @@ import com.google.inject.Singleton;
 public class ProjectDashboardController {
 
   public void getData(ActionRequest request, ActionResponse response) {
-    Project project = AuthUtils.getUser().getContextProject();
+    Project project = AuthUtils.getUser().getActiveProject();
     if (project == null) {
       return;
     }

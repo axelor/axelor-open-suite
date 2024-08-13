@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businesssupport.service.web;
+package com.axelor.apps.businesssupport.web;
 
 import com.axelor.apps.project.service.ProjectActivityDashboardService;
 import com.axelor.inject.Beans;

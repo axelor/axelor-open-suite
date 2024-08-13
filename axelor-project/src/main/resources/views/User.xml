@@ -9,16 +9,16 @@
     <extend
       target="//panel[@name='stepUserPanel']/panel[@name='stepOverviewPanel']/field[@name='noHelp']">
       <insert position="after">
-        <field name="contextProject" domain=":__self__ member of self.membersUserSet"/>
-        <field name="isIncludeSubContextProjects" showIf="contextProject"/>
+        <field name="activeProject" domain=":__self__ member of self.membersUserSet"/>
+        <field name="isIncludeSubContextProjects" showIf="activeProject"/>
       </insert>
     </extend>
 
     <extend
       target="//panel[@name='mainUserPanel']/panel[@name='overviewPanel']/field[@name='noHelp']">
       <insert position="after">
-        <field name="contextProject" domain=":__self__ member of self.membersUserSet"/>
-        <field name="isIncludeSubContextProjects" showIf="contextProject"/>
+        <field name="activeProject" domain=":__self__ member of self.membersUserSet"/>
+        <field name="isIncludeSubContextProjects" showIf="activeProject"/>
       </insert>
     </extend>
 
@@ -29,8 +29,8 @@
 
     <extend target="//field[@name='change']">
       <insert position="after">
-        <field name="contextProject" domain=":__self__ member of self.membersUserSet"/>
-        <field name="isIncludeSubContextProjects" showIf="contextProject"/>
+        <field name="activeProject" domain=":__self__ member of self.membersUserSet"/>
+        <field name="isIncludeSubContextProjects" showIf="activeProject"/>
       </insert>
     </extend>
 

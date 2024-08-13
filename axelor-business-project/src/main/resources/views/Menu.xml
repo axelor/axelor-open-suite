@@ -51,4 +51,24 @@
     <view-param name="search-filters" value="business-project-batch-filters"/>
   </action-view>
 
+  <!-- My project menu -->
+
+  <menuitem name="business-project-mine" parent="menu-my-project-root" order="200"
+    title="Business projects" action="business.project.mine"
+    if="__config__.app.isApp('business-project')"/>
+
+  <action-method name="business.project.mine">
+    <call class="com.axelor.apps.businessproject.web.ProjectMenuController"
+      method="myBusinessProjects"/>
+  </action-method>
+
+  <menuitem name="business-project-my-invoicing-project" order="900"
+    parent="menu-my-project-root" title="Invoicing project"
+    action="business.project.invoicing.project.mine" if="__config__.app.isApp('business-project')"/>
+
+  <action-method name="business.project.invoicing.project.mine">
+    <call class="com.axelor.apps.businessproject.web.ProjectMenuController"
+      method="myInvoicingProjects"/>
+  </action-method>
+
 </object-views>

@@ -28,6 +28,8 @@ import com.axelor.apps.businesssupport.service.ProjectActivityDashboardBusinessS
 import com.axelor.apps.businesssupport.service.ProjectActivityDashboardServiceBusinessSupportImpl;
 import com.axelor.apps.businesssupport.service.ProjectCreateTaskServiceSupportImpl;
 import com.axelor.apps.businesssupport.service.ProjectDashboardBusinessSupportServiceImpl;
+import com.axelor.apps.businesssupport.service.ProjectMenuBusinessSupportService;
+import com.axelor.apps.businesssupport.service.ProjectMenuBusinessSupportServiceImpl;
 import com.axelor.apps.businesssupport.service.ProjectTaskBusinessSupportServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
 import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
@@ -48,5 +50,6 @@ public class BusinessSupportModule extends AxelorModule {
         .to(ProjectActivityDashboardServiceBusinessSupportImpl.class);
     bind(ProjectActivityDashboardBusinessSupportService.class)
         .to(ProjectActivityDashboardServiceBusinessSupportImpl.class);
+    bind(ProjectMenuBusinessSupportService.class).to(ProjectMenuBusinessSupportServiceImpl.class);
   }
 }

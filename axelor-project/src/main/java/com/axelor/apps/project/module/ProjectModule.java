@@ -32,6 +32,7 @@ import com.axelor.apps.project.db.repo.TaskTemplateRepository;
 import com.axelor.apps.project.db.repo.TeamProjectRepository;
 import com.axelor.apps.project.db.repo.WikiProjectRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
+import com.axelor.apps.project.quickmenu.ActiveProjectQuickMenuCreator;
 import com.axelor.apps.project.service.MetaJsonFieldProjectService;
 import com.axelor.apps.project.service.MetaJsonFieldProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectActivityDashboardService;
@@ -58,6 +59,8 @@ import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.apps.project.service.TaskTemplateServiceImpl;
 import com.axelor.apps.project.service.TimerProjectTaskService;
 import com.axelor.apps.project.service.TimerProjectTaskServiceImpl;
+import com.axelor.apps.project.service.UserProjectService;
+import com.axelor.apps.project.service.UserProjectServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.service.app.AppProjectServiceImpl;
 import com.axelor.apps.project.service.config.ProjectConfigService;
@@ -96,5 +99,7 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectTaskLinkTypeRepository.class).to(ProjectTaskLinkTypeManagementRepository.class);
     bind(ProjectToolService.class).to(ProjectToolServiceImpl.class);
     bind(ProjectTaskToolService.class).to(ProjectTaskToolServiceImpl.class);
+    bind(UserProjectService.class).to(UserProjectServiceImpl.class);
+    addQuickMenu(ActiveProjectQuickMenuCreator.class);
   }
 }
