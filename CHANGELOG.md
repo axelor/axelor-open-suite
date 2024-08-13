@@ -1,3 +1,20 @@
+## [8.1.4] (2024-08-08)
+
+### Fixes
+#### Base
+
+* Partner : fixed error on change of partner type.
+
+#### Account
+
+* AccountingBatch : fixed auto move lettering batch proposals
+* AccountingBatch : fixed reconcile by balanced move mode in auto move lettering batch
+* AccountingBatch : fixed auto move lettering batch due to negative credit move line amount remaining
+
+#### Bank Payment
+
+* BankOrder : fixed manual multi currency bank order's move generation
+
 ## [8.1.3] (2024-07-25)
 
 ### Fixes
@@ -391,6 +408,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.4]: https://github.com/axelor/axelor-open-suite/compare/v8.1.3...v8.1.4
 [8.1.3]: https://github.com/axelor/axelor-open-suite/compare/v8.1.2...v8.1.3
 [8.1.2]: https://github.com/axelor/axelor-open-suite/compare/v8.1.1...v8.1.2
 [8.1.1]: https://github.com/axelor/axelor-open-suite/compare/v8.1.0...v8.1.1

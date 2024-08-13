@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -34,8 +35,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +70,10 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
       SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) {
 
     List<SaleOrderLineTax> saleOrderLineTaxList = new ArrayList<>();
+    List<SaleOrderLineTax> currentSaleOrderLineTaxList = new ArrayList<>();
+    currentSaleOrderLineTaxList.addAll(saleOrder.getSaleOrderLineTaxList());
+    saleOrder.clearSaleOrderLineTaxList();
+
     Map<TaxLine, SaleOrderLineTax> map = new HashMap<>();
     Set<String> specificNotes = new HashSet<>();
     boolean customerSpecificNote = orderLineTaxService.isCustomerSpecificNote(saleOrder);
@@ -78,7 +85,8 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
       }
     }
 
-    computeAndAddTaxToList(map, saleOrderLineTaxList, saleOrder.getCurrency());
+    computeAndAddTaxToList(
+        map, saleOrderLineTaxList, saleOrder.getCurrency(), currentSaleOrderLineTaxList);
     orderLineTaxService.setSpecificNotes(
         customerSpecificNote,
         saleOrder,
@@ -137,7 +145,8 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
   protected void computeAndAddTaxToList(
       Map<TaxLine, SaleOrderLineTax> map,
       List<SaleOrderLineTax> saleOrderLineTaxList,
-      Currency currency) {
+      Currency currency,
+      List<SaleOrderLineTax> currentSaleOrderLineTaxList) {
     BigDecimal sumOfAllDeductibleRateValue = BigDecimal.ZERO;
     for (SaleOrderLineTax saleOrderLineTax : map.values()) {
       sumOfAllDeductibleRateValue =
@@ -147,11 +156,56 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
       // Dans la devise de la facture
       orderLineTaxService.computeTax(
           saleOrderLineTax, currency, sumOfAllDeductibleRateValue, BigDecimal.ZERO);
-      saleOrderLineTaxList.add(saleOrderLineTax);
-      LOG.debug(
-          "VAT line : VAT total => {}, W.T. total => {}",
-          saleOrderLineTax.getTaxTotal(),
-          saleOrderLineTax.getInTaxTotal());
+      SaleOrderLineTax oldSaleOrderLineTax =
+          getExistingSaleOrderLineTax(saleOrderLineTax, currentSaleOrderLineTaxList);
+      if (oldSaleOrderLineTax == null) {
+        saleOrderLineTaxList.add(saleOrderLineTax);
+        LOG.debug(
+            "VAT line : VAT total => {}, W.T. total => {}",
+            saleOrderLineTax.getTaxTotal(),
+            saleOrderLineTax.getInTaxTotal());
+      } else {
+        saleOrderLineTaxList.add(oldSaleOrderLineTax);
+      }
     }
+  }
+
+  @Override
+  public List<SaleOrderLineTax> getUpdatedSaleOrderLineTax(SaleOrder saleOrder) {
+    List<SaleOrderLineTax> saleOrderLineTaxList = new ArrayList<>();
+
+    if (ObjectUtils.isEmpty(saleOrder.getSaleOrderLineTaxList())) {
+      return saleOrderLineTaxList;
+    }
+
+    saleOrderLineTaxList.addAll(
+        saleOrder.getSaleOrderLineTaxList().stream()
+            .filter(
+                saleOrderLineTax ->
+                    orderLineTaxService.isManageByAmount(saleOrderLineTax)
+                        && saleOrderLineTax
+                                .getTaxTotal()
+                                .compareTo(saleOrderLineTax.getPercentageTaxTotal())
+                            != 0)
+            .collect(Collectors.toList()));
+    return saleOrderLineTaxList;
+  }
+
+  protected SaleOrderLineTax getExistingSaleOrderLineTax(
+      SaleOrderLineTax saleOrderLineTax, List<SaleOrderLineTax> saleOrderLineTaxList) {
+    if (ObjectUtils.isEmpty(saleOrderLineTaxList) || saleOrderLineTax == null) {
+      return null;
+    }
+
+    for (SaleOrderLineTax saleOrderLineTaxItem : saleOrderLineTaxList) {
+      if (Objects.equals(saleOrderLineTaxItem.getTaxLine(), saleOrderLineTax.getTaxLine())
+          && saleOrderLineTaxItem.getPercentageTaxTotal().compareTo(saleOrderLineTax.getTaxTotal())
+              == 0
+          && saleOrderLineTaxItem.getExTaxBase().compareTo(saleOrderLineTax.getExTaxBase()) == 0) {
+        return saleOrderLineTaxItem;
+      }
+    }
+
+    return null;
   }
 }

@@ -16,23 +16,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.interfaces;
+package com.axelor.apps.sale.service.saleorder;
 
-import com.axelor.apps.account.db.TaxLine;
-import java.math.BigDecimal;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 
-public interface OrderLineTax {
-  BigDecimal getExTaxBase();
-
-  TaxLine getTaxLine();
-
-  BigDecimal getTaxTotal();
-
-  BigDecimal getInTaxTotal();
-
-  void setTaxTotal(BigDecimal taxTotal);
-
-  void setPercentageTaxTotal(BigDecimal percentageTaxTotal);
-
-  void setInTaxTotal(BigDecimal inTaxTotal);
+public interface SaleOrderLineGeneratorService {
+  SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product) throws AxelorException;
 }

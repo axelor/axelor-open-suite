@@ -43,4 +43,8 @@ public interface OrderLineTaxService {
 
   void addTaxEquivSpecificNote(
       PricedOrderLine pricedOrderLine, boolean customerSpecificNote, Set<String> specificNotes);
+
+  boolean isManageByAmount(OrderLineTax orderLineTax);
+
+  BigDecimal computeInTaxTotal(OrderLineTax orderLineTax, Currency currency);
 }

@@ -15,9 +15,9 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
       <field name="taxType"/>
-      <field name="isNonDeductibleTax" widget="boolean-switch"
-        onChange="action-tax-attrs-display-purchase-accounts" if-module="axelor-account"
-        if="__config__.app.isApp('account')"/>
+      <field name="isNonDeductibleTax" widget="boolean-switch"/>
+      <field name="manageByAmount" widget="boolean-select" x-false-text="Manage by percentage"
+        x-true-text="Manage by amount" colSpan="3"/>
     </panel>
     <panel-tabs>
       <panel name="taxRateListPanel" title="Tax rate list">

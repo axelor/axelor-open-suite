@@ -29,7 +29,6 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
-import com.axelor.apps.purchase.service.PurchaseOrderValidationService;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -44,10 +43,8 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
 
   @Inject
   public PurchaseOrderManagementBudgetRepository(
-      AppBaseService appBaseService,
-      PurchaseOrderSequenceService purchaseOrderSequenceService,
-      PurchaseOrderValidationService purchaseOrderValidationService) {
-    super(appBaseService, purchaseOrderSequenceService, purchaseOrderValidationService);
+      AppBaseService appBaseService, PurchaseOrderSequenceService purchaseOrderSequenceService) {
+    super(appBaseService, purchaseOrderSequenceService);
   }
 
   @Override

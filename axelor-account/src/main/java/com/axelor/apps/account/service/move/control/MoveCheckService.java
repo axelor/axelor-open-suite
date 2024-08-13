@@ -19,7 +19,9 @@
 package com.axelor.apps.account.service.move.control;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
+import java.util.List;
 
 public interface MoveCheckService {
 
@@ -58,4 +60,6 @@ public interface MoveCheckService {
   String getPeriodAlert(Move move);
 
   boolean isRelatedToFixedAsset(Move move);
+
+  void checkNotOnlyNonDeTaxes(List<MoveLine> moveLineList) throws AxelorException;
 }

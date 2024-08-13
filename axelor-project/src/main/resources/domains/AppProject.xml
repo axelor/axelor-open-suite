@@ -29,7 +29,8 @@
     <many-to-one name="canceledProjectStatus" title="Canceled project status"
       ref="com.axelor.apps.project.db.ProjectStatus"/>
     <many-to-one name="completedTaskStatus" title="Completed task status"
-      ref="com.axelor.apps.project.db.TaskStatus"/>
+      ref="com.axelor.apps.project.db.TaskStatus"
+      help="This task status will be used to define which status is flagged as completed for tasks."/>
     <string name="fullNameGroovyFormula" title="Full name groovy formula"
       help="This formula allows you to define the composition of the fullName through a groovy formula"/>
 

@@ -53,6 +53,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected AppBaseService appBaseService;
   protected ProjectRepository projectRepository;
   protected AppProjectService appProjectService;
+  protected ProjectToolService projectToolService;
 
   private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
@@ -63,13 +64,15 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       FrequencyService frequencyService,
       AppBaseService appBaseService,
       ProjectRepository projectRepository,
-      AppProjectService appProjectService) {
+      AppProjectService appProjectService,
+      ProjectToolService projectToolService) {
     this.projectTaskRepo = projectTaskRepo;
     this.frequencyRepo = frequencyRepo;
     this.frequencyService = frequencyService;
     this.appBaseService = appBaseService;
     this.projectRepository = projectRepository;
     this.appProjectService = appProjectService;
+    this.projectToolService = projectToolService;
   }
 
   @Override
@@ -202,7 +205,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     }
 
     project = projectRepository.find(project.getId());
-    Set<TaskStatus> projectStatusSet = project.getProjectTaskStatusSet();
+    Set<TaskStatus> projectStatusSet = projectToolService.getTaskStatusSet(project);
 
     return ObjectUtils.isEmpty(projectStatusSet)
         ? null

@@ -136,6 +136,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   public void checkBeforeSave(Move move) throws AxelorException {
+    moveCheckService.checkNotOnlyNonDeTaxes(move.getMoveLineList());
     moveCheckService.checkDates(move);
     moveCheckService.checkPeriodPermission(move);
     moveCheckService.checkRemovedLines(move);

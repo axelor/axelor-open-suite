@@ -44,6 +44,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.InvoiceValidationService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -1379,6 +1380,17 @@ public class InvoiceController {
                 .context("_originDate", originDate)
                 .map());
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void checkInvoiceNotOnlyNonDeductibleTaxes(
+      ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    InvoiceValidationService invoiceValidationService = Beans.get(InvoiceValidationService.class);
+    try {
+      invoiceValidationService.checkNotOnlyNonDeductibleTaxes(invoice);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
