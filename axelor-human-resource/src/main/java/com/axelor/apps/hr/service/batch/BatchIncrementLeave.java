@@ -92,7 +92,7 @@ public class BatchIncrementLeave extends AbstractBatch {
   }
 
   protected Query<Employee> getEmployeeQuery(LeaveReason leaveReason) {
-    Query<Employee> query = employeeRepository.all();
+    Query<Employee> query = employeeRepository.all().order("id");
     if (CollectionUtils.isEmpty(leaveReason.getPlanningSet())) {
       return query;
     }

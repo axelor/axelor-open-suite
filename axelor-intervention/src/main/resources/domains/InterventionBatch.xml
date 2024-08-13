@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="InterventionBatch" cacheable="true">
+
+    <!-- HEADER -->
+    <string name="code" title="Code" namecolumn="true" unique="true"/>
+    <integer name="actionSelect" title="Action" required="true"
+      selection="intervention.batch.action.select"/>
+
+    <!-- OTHERS INFORMATIONS -->
+    <string name="description" title="Description" large="true"/>
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
+      mappedBy="interventionBatch" title="Batches"/>
+
+    <integer name="nextVisitDelay" title="Next visit delay (in months)" required="true"
+      help="Interventions will be generated if the date of the next visit is less than this delay."/>
+
+    <extra-code><![CDATA[
+        //ACTION SELECT
+	   	public static final int ACTION_SELECT_GENERATE_INTERVENTION_FOR_ACTIVE_CONTRACTS = 1;
+	]]></extra-code>
+  </entity>
+
+</domain-models>

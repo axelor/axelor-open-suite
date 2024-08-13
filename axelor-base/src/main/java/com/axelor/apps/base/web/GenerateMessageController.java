@@ -58,8 +58,9 @@ public class GenerateMessageController {
       domain =
           "self.metaModel.fullName = '"
               + model
-              + "' and self.isSystem != true and self.localization.id = "
-              + localization.getId();
+              + "' and self.isSystem != true and "
+              + localization.getId()
+              + " MEMBER OF self.localizationSet ";
     }
 
     response.setAttr("_xTemplate", "domain", domain);

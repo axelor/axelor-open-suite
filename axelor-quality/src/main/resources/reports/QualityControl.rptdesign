@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -34,23 +34,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="Locale" id="3740">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">true</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">en</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -407,7 +390,7 @@ where QualityControl.id = ?;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -2433,6 +2416,7 @@ this.height=row["logo_height"];]]></method>
                                     <property name="marginBottom">5pt</property>
                                     <property name="height">2.169583333333333cm</property>
                                     <property name="width">248px</property>
+                                    <expression name="altText">""</expression>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -2442,7 +2426,6 @@ this.height=row["logo_height"];]]></method>
                                     <property name="source">file</property>
                                     <property name="proportionalScale">true</property>
                                     <expression name="uri" type="javascript">params["AttachmentPath"].value + row["inspector_signature_path"]</expression>
-                                    <expression name="altText">""</expression>
                                 </image>
                             </cell>
                             <cell id="5852">
@@ -2464,6 +2447,7 @@ this.height=row["logo_height"];]]></method>
                                     <property name="marginBottom">5pt</property>
                                     <property name="height">2.169583333333333cm</property>
                                     <property name="width">248px</property>
+                                    <expression name="altText">""</expression>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -2473,7 +2457,6 @@ this.height=row["logo_height"];]]></method>
                                     <property name="source">file</property>
                                     <property name="proportionalScale">true</property>
                                     <expression name="uri" type="javascript">params["AttachmentPath"].value + row["customer_signature_path"]</expression>
-                                    <expression name="altText">""</expression>
                                 </image>
                             </cell>
                         </row>

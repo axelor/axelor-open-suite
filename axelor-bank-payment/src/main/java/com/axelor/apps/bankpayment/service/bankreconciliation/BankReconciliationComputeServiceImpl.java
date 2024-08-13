@@ -22,7 +22,7 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
-import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.ObjectUtils;
@@ -33,16 +33,16 @@ import java.math.BigDecimal;
 public class BankReconciliationComputeServiceImpl implements BankReconciliationComputeService {
 
   protected BankReconciliationRepository bankReconciliationRepository;
-  protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
+  protected BankStatementLineRepository bankStatementLineRepository;
   protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankReconciliationComputeServiceImpl(
       BankReconciliationRepository bankReconciliationRepository,
-      BankStatementLineAFB120Repository bankStatementLineAFB120Repository,
+      BankStatementLineRepository bankStatementLineRepository,
       CurrencyScaleService currencyScaleService) {
     this.bankReconciliationRepository = bankReconciliationRepository;
-    this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
+    this.bankStatementLineRepository = bankStatementLineRepository;
     this.currencyScaleService = currencyScaleService;
   }
 
@@ -84,12 +84,12 @@ public class BankReconciliationComputeServiceImpl implements BankReconciliationC
     BigDecimal startingBalance = BigDecimal.ZERO;
     if (ObjectUtils.isEmpty(previousBankReconciliation)) {
       BankStatementLine initialsBankStatementLine =
-          bankStatementLineAFB120Repository
+          bankStatementLineRepository
               .all()
               .filter(
                   "self.bankStatement = :bankStatement AND self.lineTypeSelect = :lineTypeSelect "
                       + "AND self.bankDetails = :bankDetails")
-              .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
+              .bind("lineTypeSelect", BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE)
               .bind("bankStatement", bankReconciliation.getBankStatement())
               .bind("bankDetails", bankDetails)
               .order("sequence")

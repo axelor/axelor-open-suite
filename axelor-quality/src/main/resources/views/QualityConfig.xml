@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="quality-config-grid" title="Quality configurations"
     model="com.axelor.apps.quality.db.QualityConfig">
@@ -15,15 +15,15 @@
       <field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
     </panel>
     <panel name="distributionInfoPanel">
-      <field name="qiActionDistributionBirtTemplate"
-        domain="self.metaModel.name = 'QIActionDistribution'" grid-view="birt-template-grid"
-        form-view="birt-template-form"/>
+      <field name="qiActionDistributionPrintTemplate"
+        domain="self.metaModel.name = 'QIActionDistribution'" grid-view="printing-template-grid"
+        form-view="printing-template-form"/>
       <field name="qiActionDistributionSequence"
         domain="self.codeSelect = 'qiActionDistribution' AND self.company = :company"
         grid-view="sequence-grid" form-view="sequence-form" canNew="true" canEdit="true"/>
-      <field name="qiDecisionDistributionBirtTemplate"
-        domain="self.metaModel.name = 'QIDecisionDistribution'" grid-view="birt-template-grid"
-        form-view="birt-template-form"/>
+      <field name="qiDecisionDistributionPrintTemplate"
+        domain="self.metaModel.name = 'QIDecisionDistribution'" grid-view="printing-template-grid"
+        form-view="printing-template-form"/>
       <field name="qiDecisionDistributionSequence" form-view="sequence-form"
         grid-view="sequence-grid" canNew="true" canEdit="true"
         domain="self.codeSelect = 'qiDecisionDistribution' AND self.company = :company"/>

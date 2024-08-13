@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="intervention-config-grid" title="Intervention configurations"
+    model="com.axelor.apps.intervention.db.InterventionConfig">
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </grid>
+
+  <form name="intervention-config-form" title="Intervention configuration"
+    model="com.axelor.apps.intervention.db.InterventionConfig" width="large"
+    onNew="action-intervention-config-record-default">
+    <panel name="mainPanel">
+      <field name="company" canEdit="false" form-view="company-form" colSpan="4"
+        grid-view="company-grid"/>
+    </panel>
+    <panel-tabs>
+      <panel name="interventionPanel" title="Intervention">
+
+        <separator title="Customer request" colSpan="12"/>
+        <field name="customerRequestCreationAutomaticMail" widget="BooleanSwitch"
+          onChange="action-intervention-config-attrs-boolean-changes"/>
+        <field name="customerRequestCreationMessageTemplate" hidden="true"
+          showIf="customerRequestCreationAutomaticMail"
+          requiredIf="customerRequestCreationAutomaticMail" canNew="true"
+          domain="self.metaModel.name = 'CustomerRequest'"/>
+
+        <separator title="Intervention" colSpan="12"/>
+        <field name="interventionPlanificationAutomaticMail" widget="BooleanSwitch"
+          onChange="action-intervention-config-attrs-boolean-changes"/>
+        <field name="interventionPlanificationMessageTemplate" hidden="true"
+          showIf="interventionPlanificationAutomaticMail"
+          requiredIf="interventionPlanificationAutomaticMail" canNew="true"
+          domain="self.metaModel.name = 'Intervention'"/>
+
+        <field name="interventionRePlanificationAutomaticMail" widget="BooleanSwitch"
+          onChange="action-intervention-config-attrs-boolean-changes"/>
+        <field name="interventionRePlanificationMessageTemplate" hidden="true"
+          showIf="interventionRePlanificationAutomaticMail"
+          requiredIf="interventionRePlanificationAutomaticMail" canNew="true"
+          domain="self.metaModel.name = 'Intervention'"/>
+
+        <field name="interventionValidationAutomaticMail" widget="BooleanSwitch" colSpan="4"
+          onChange="action-intervention-config-attrs-boolean-changes"/>
+        <field name="interventionValidationMessageTemplate" colSpan="4" hidden="true"
+          showIf="interventionValidationAutomaticMail"
+          requiredIf="interventionValidationAutomaticMail" canNew="true"
+          domain="self.metaModel.name = 'Intervention'"/>
+      </panel>
+    </panel-tabs>
+
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-record name="action-intervention-config-record-default"
+    model="com.axelor.apps.intervention.db.InterventionConfig">
+    <field name="company" expr="eval: _company" if="_company != null"/>
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="_company == null &amp;&amp; __user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+  </action-record>
+
+  <action-attrs name="action-intervention-config-attrs-boolean-changes">
+    <attribute for="customerRequestCreationMessageTemplate" name="value" expr="eval: null"
+      if="customerRequestCreationAutomaticMail != true"/>
+
+    <attribute for="interventionPlanificationMessageTemplate" name="value"
+      expr="eval: null" if="interventionPlanificationAutomaticMail != true"/>
+
+    <attribute for="interventionRePlanificationMessageTemplate" name="value"
+      expr="eval: null" if="interventionRePlanificationAutomaticMail != true"/>
+
+    <attribute for="interventionValidationMessageTemplate" name="value" expr="eval: null"
+      if="interventionValidationAutomaticMail != true"/>
+  </action-attrs>
+
+</object-views>

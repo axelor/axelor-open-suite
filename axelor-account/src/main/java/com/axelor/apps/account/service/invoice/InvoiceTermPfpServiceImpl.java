@@ -133,12 +133,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       return true;
     }
     return validateUser(invoiceTerm, currentUser)
-        && (ObjectUtils.notEmpty(invoiceTerm.getPfpValidatorUser())
-            && invoiceTerm
-                .getPfpValidatorUser()
-                .equals(
-                    invoiceTermService.getPfpValidatorUser(
-                        invoiceTerm.getPartner(), invoiceTerm.getCompany())))
+        && invoiceTermService.checkPfpValidatorUser(invoiceTerm)
         && !invoiceTerm.getIsPaid();
   }
 
@@ -500,5 +495,14 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     }
 
     return false;
+  }
+
+  @Override
+  public boolean isPfpValidatorUser(InvoiceTerm invoiceTerm, User user) {
+    return user != null
+        && (user.getIsSuperPfpUser()
+            || (invoiceTerm != null
+                && invoiceTerm.getPfpValidatorUser() != null
+                && user.equals(invoiceTerm.getPfpValidatorUser())));
   }
 }

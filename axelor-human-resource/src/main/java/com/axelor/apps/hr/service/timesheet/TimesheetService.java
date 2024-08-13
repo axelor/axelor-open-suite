@@ -32,6 +32,4 @@ public interface TimesheetService {
    * @return the updated timesheet
    */
   void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
-
-  public void prefillLines(Timesheet timesheet) throws AxelorException;
 }

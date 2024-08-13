@@ -151,7 +151,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         budgetDistributionService.linkBudgetDistributionWithParent(
             budgetDistribution, saleOrderLine);
       }
-      saleOrderLine.setBudgetDistributionSumAmount(saleOrderLine.getCompanyExTaxTotal());
+      saleOrderLine.setBudgetRemainingAmountToAllocate(BigDecimal.ZERO);
     }
   }
 
@@ -214,10 +214,15 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     for (InvoiceLine invoiceLine : invoiceLines) {
       if (saleOrderLine != null && saleOrderLine.getQty().signum() > 0) {
         invoiceLine.setBudget(saleOrderLine.getBudget());
+        invoiceLine.setBudgetRemainingAmountToAllocate(
+            saleOrderLine.getBudgetRemainingAmountToAllocate());
         invoiceToolBudgetService.copyBudgetDistributionList(
             saleOrderLine.getBudgetDistributionList(),
             invoiceLine,
             qtyToInvoice.divide(saleOrderLine.getQty(), RoundingMode.HALF_UP));
+        invoiceLine.setBudgetRemainingAmountToAllocate(
+            budgetToolsService.getBudgetRemainingAmountToAllocate(
+                invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
       }
     }
     return invoiceLines;
@@ -312,6 +317,9 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
           date,
           saleOrderLine.getCompanyExTaxTotal(),
           saleOrderLine);
+      saleOrderLine.setBudgetRemainingAmountToAllocate(
+          budgetToolsService.getBudgetRemainingAmountToAllocate(
+              saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));
       saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, true);
     }
   }

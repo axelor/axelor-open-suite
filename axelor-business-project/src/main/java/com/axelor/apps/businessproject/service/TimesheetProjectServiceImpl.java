@@ -21,10 +21,16 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class TimesheetProjectServiceImpl implements TimesheetProjectService {
   protected TimesheetLineService timesheetLineService;
+
+  @Inject
+  public TimesheetProjectServiceImpl(TimesheetLineService timesheetLineService) {
+    this.timesheetLineService = timesheetLineService;
+  }
 
   @Override
   public BigDecimal computeDurationForCustomer(TimesheetLine timesheetLine) throws AxelorException {

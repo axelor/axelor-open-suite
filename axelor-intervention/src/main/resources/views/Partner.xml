@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form id="intervention-partner-from" title="Partner" name="partner-form"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="//panel[@name='postalAddressesPanel']">
+      <insert position="before">
+        <panel name="LinkPanel" title="Link" showIf="isContact != true &amp;&amp; isCustomer"
+          colSpan="12">
+          <field name="tradingName" requiredIf="isContact != true &amp;&amp; isCustomer"
+            colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+        </panel>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='customerPanel']">
+      <insert position="after">
+        <panel title="Customer.Equipments" showIf="isCustomer"
+          if="__config__.app.isApp('intervention')">
+          <panel-dashlet title="Equipments"
+            action="action-intervention-view-equipments" colSpan="12"/>
+          <panel-dashlet title="Interventions"
+            action="action-intervention-view-interventions" colSpan="12"/>
+          <panel-related field="interventionNoteList" colSpan="12"
+            grid-view="intervention-note-grid" form-view="intervention-note-form"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-view name="action-intervention-view-equipments"
+    model="com.axelor.apps.intervention.db.Equipment" title="Equipments">
+    <view type="grid" name="equipment-partner-grid"/>
+    <view type="form" name="equipment-form"/>
+    <domain>self.partner = :id</domain>
+  </action-view>
+
+  <action-view name="action-intervention-view-interventions"
+    model="com.axelor.apps.intervention.db.Intervention" title="Interventions">
+    <view type="grid" name="intervention-partner-grid"/>
+    <view type="form" name="intervention-form"/>
+    <domain>self.deliveredPartner = :id</domain>
+  </action-view>
+
+</object-views>

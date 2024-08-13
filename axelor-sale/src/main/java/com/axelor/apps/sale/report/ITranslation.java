@@ -82,4 +82,9 @@ public interface ITranslation {
 
   public static final String SALES_ORDER_PRODUCT_SEQUENCE = /*$$(*/
       "SaleOrder.productSequence"; /*)*/
+
+  public static final String SALES_ORDER_TYPE = /*$$(*/ "SaleOrder.type"; /*)*/;
+  public static final String SALES_ORDER_TAXES = /*$$(*/ "SaleOrder.taxes"; /*)*/
+  public static final String SALES_ORDER_TAX_CODE = /*$$(*/ "SaleOrder.taxCode"; /*)*/;
+  public static final String SALES_ORDER_TOTAL_TAXES = /*$$(*/ "SaleOrder.totalTaxes"; /*)*/;
 }

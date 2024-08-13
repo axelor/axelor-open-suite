@@ -56,4 +56,6 @@ public interface MoveCheckService {
   void checkCurrencyAmountSum(Move move) throws AxelorException;
 
   String getPeriodAlert(Move move);
+
+  boolean isRelatedToFixedAsset(Move move);
 }

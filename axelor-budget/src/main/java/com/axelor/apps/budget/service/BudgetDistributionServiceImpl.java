@@ -289,7 +289,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       Company company,
       LocalDate date,
       String technicalTypeSelect,
-      Set<GlobalBudget> globalBudgetSet) {
+      Account account,
+      Set<GlobalBudget> globalBudgetSet)
+      throws AxelorException {
     String budget = "self.globalBudget";
     String query =
         String.format(
@@ -329,6 +331,10 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
                   GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
     } else {
       query = "self.id = 0";
+    }
+
+    if (account != null && budgetToolsService.checkBudgetKeyInConfig(company)) {
+      query = query.concat(String.format(" AND %d MEMBER OF self.accountSet ", account.getId()));
     }
 
     if (!ObjectUtils.isEmpty(globalBudgetSet)) {

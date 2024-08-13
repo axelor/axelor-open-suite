@@ -29,10 +29,11 @@ import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.AddressExportService;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressAttrsService;
+import com.axelor.apps.base.service.address.AddressExportService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
@@ -367,5 +368,14 @@ public class AddressController {
     Address address = request.getContext().asType(Address.class);
     Beans.get(AddressService.class).autocompleteAddress(address);
     response.setValues(address);
+  }
+
+  public void getAddressMetaField(ActionRequest request, ActionResponse response) {
+    Address address = request.getContext().asType(Address.class);
+
+    if (address.getCountry() != null) {
+      response.setAttrs(
+          Beans.get(AddressAttrsService.class).getCountryAddressMetaFieldOnChangeAttrsMap(address));
+    }
   }
 }

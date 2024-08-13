@@ -549,11 +549,6 @@ public final class BaseExceptionMessage {
   public static final String COMPANY_LOCALE_MISSING = /*$$(*/
       "Please fill locale for the company %s" /*)*/;
 
-  public static final String SWAGGER_DISABLED = /*$$(*/ "Swagger is not enabled." /*)*/;
-
-  public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
-      "Swagger is enabled but not resource packages is specified." /*)*/;
-
   public static final String FAKER_METHOD_DOES_NOT_EXIST = /*$$(*/
       "The method '%s' doesn't exist in the Faker API." /*)*/;
 
@@ -598,7 +593,7 @@ public final class BaseExceptionMessage {
   public static final String PRODUCT_MISSING_UNITS_TO_CONVERT = /*$$(*/
       "The product %s is missing stock unit or purchase unit to make the conversion of last purchase price." /*)*/;
 
-  public static final String BIRT_TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
+  public static final String TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
       "The configuration to print this model has not been found" /*)*/;
 
   public static final String SIGNING_PDF_ERROR = /*$$(*/ "Error while signing pdf : %s" /*)*/;
@@ -628,11 +623,14 @@ public final class BaseExceptionMessage {
 
   public static final String ADDRESS_TEMPLATE_ERROR = /*$$(*/
       "An error occurred while generating the address template: '%s'" /*)*/;
-  public static final String PRICING_BUTTON_ERROR = /*$$(*/
-      "There was an error while trying to add the pricing button : %s" /*)*/;
+
+  public static final String ADDRESS_FIELD_TEMPLATE_ERROR = /*$$(*/
+      "An error occurred while generating the address template: '%s' - '%s'" /*)*/;
 
   public static final String PRICING_UNAVAILABLE_FOR_THIS_CLASS = /*$$(*/
       "Pricing process unavailable for this class : %s" /*)*/;
+  public static final String REGISTRATION_CODE_EMPTY_FOR_COMPANIES = /*$$(*/
+      "Registration code is required for companies" /*)*/;
 
   /** Import Configuration */
   public static final String IMPORT_CONFIGURATION_ERROR_MESSAGE = /*$$(*/
@@ -649,4 +647,11 @@ public final class BaseExceptionMessage {
 
   public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_XML_MESSAGE = /*$$(*/
       "The data file should be only an XML or ZIP file." /*)*/;
+
+  public static final String MISSING_ADDRESS_FIELD = /*$$(*/ "Address Field is missing : %s" /*)*/;
+
+  public static final String FACTORY_NO_FOUND = /*$$(*/
+      "Factory not found this type of generator" /*)*/;
+
+  public static final String MISSING_BIRT_PARAMETER = /*$$(*/ "Missing %s parameter(s)" /*)*/;
 }

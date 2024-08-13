@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="sale-config-grid" title="Sale configurations"
     model="com.axelor.apps.sale.db.SaleConfig">
@@ -17,7 +17,7 @@
       <field name="saleOrderInAtiSelect"/>
       <field name="defaultValidityDuration" domain="self.applicationTypeSelect = 1"
         form-view="duration-form" grid-view="duration-grid" colSpan="4"/>
-      <field name="defaultHoldBackPercentage"/>
+      <field name="defaultProjectHoldBackPercentage"/>
     </panel>
     <panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain"
       if="__config__.app.isApp('supplychain')">
@@ -39,7 +39,7 @@
       <field name="saleOrderLegalNote" widget="html" x-lite="true" colSpan="12"/>
     </panel>
     <panel name="printingsPanel" title="Printings" colSpan="12">
-      <field name="saleOrderBirtTemplate"/>
+      <field name="saleOrderPrintTemplate"/>
     </panel>
     <panel name="analyticDistributionPanel" title="Analytic distribution"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()">

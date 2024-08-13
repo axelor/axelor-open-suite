@@ -20,8 +20,11 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -47,7 +50,7 @@ public class BankOrderController {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
       bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
       if (bankOrder != null) {
-        Beans.get(BankOrderService.class).confirm(bankOrder);
+        Beans.get(BankOrderValidationService.class).confirm(bankOrder);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -61,7 +64,7 @@ public class BankOrderController {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
       bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
       if (bankOrder != null) {
-        Beans.get(BankOrderService.class).realize(bankOrder);
+        Beans.get(BankOrderValidationService.class).realize(bankOrder);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -106,18 +109,16 @@ public class BankOrderController {
 
   public void setBankDetailDomain(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    String domain = Beans.get(BankOrderService.class).createDomainForBankDetails(bankOrder);
-    // if nothing was found for the domain, we set it at a default value.
-    if (domain.equals("")) {
-      response.setAttr("senderBankDetails", "domain", "self.id IN (0)");
-    } else {
-      response.setAttr("senderBankDetails", "domain", domain);
-    }
+    response.setAttr(
+        "senderBankDetails",
+        "domain",
+        Beans.get(BankOrderService.class).createDomainForBankDetails(bankOrder));
   }
 
   public void fillBankDetails(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    BankDetails bankDetails = Beans.get(BankOrderService.class).getDefaultBankDetails(bankOrder);
+    BankDetails bankDetails =
+        Beans.get(BankOrderCheckService.class).getDefaultBankDetails(bankOrder);
     response.setValue("senderBankDetails", bankDetails);
   }
 
@@ -161,7 +162,7 @@ public class BankOrderController {
     try {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
       bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
-      Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
+      Beans.get(BankOrderCancelService.class).cancelBankOrder(bankOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

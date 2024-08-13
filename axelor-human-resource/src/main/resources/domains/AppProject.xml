@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db"/>
+
+  <entity name="AppProject" cacheable="true">
+
+    <boolean name="enableEventCreation" title="Enable event creation"
+      help="This will attach an event to a project planning time"/>
+    <string name="eventSubjectGroovyFormula" title="Event subject groovy formula"
+      help="This will customize the event subject."/>
+  </entity>
+
+</domain-models>

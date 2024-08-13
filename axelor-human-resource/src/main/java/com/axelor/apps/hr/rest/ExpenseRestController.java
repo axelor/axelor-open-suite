@@ -20,6 +20,7 @@ package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.rest.dto.ExpensePostRequest;
 import com.axelor.apps.hr.rest.dto.ExpensePutRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseRefusalPutRequest;
@@ -39,9 +40,7 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import com.axelor.web.ITranslation;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -52,7 +51,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/expense")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -65,7 +63,7 @@ public class ExpenseRestController {
   @HttpExceptionHandler
   public Response createExpense(ExpensePostRequest requestBody) throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+    new SecurityCheck().createAccess(Expense.class).check();
 
     Expense expense =
         Beans.get(ExpenseCreateService.class)
@@ -88,7 +86,7 @@ public class ExpenseRestController {
   @POST
   @HttpExceptionHandler
   public Response quickCreateExpense() throws AxelorException {
-    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+    new SecurityCheck().createAccess(Expense.class).check();
 
     Expense expense = Beans.get(ExpenseCreateService.class).createExpense(AuthUtils.getUser());
 
@@ -105,7 +103,11 @@ public class ExpenseRestController {
       @PathParam("expenseId") Long expenseId, ExpensePutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+    Long[] lineIds = requestBody.getExpenseLineIdList().toArray(new Long[0]);
+    new SecurityCheck()
+        .writeAccess(Expense.class, expenseId)
+        .readAccess(ExpenseLine.class, lineIds)
+        .check();
 
     Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
     Beans.get(ExpenseToolService.class)
@@ -124,7 +126,7 @@ public class ExpenseRestController {
   public Response sendExpense(@PathParam("expenseId") Long expenseId, ExpensePutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+    new SecurityCheck().writeAccess(Expense.class, expenseId).check();
 
     Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
     Beans.get(ExpenseConfirmationService.class).confirm(expense);
@@ -143,7 +145,7 @@ public class ExpenseRestController {
       @PathParam("expenseId") Long expenseId, ExpensePutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+    new SecurityCheck().writeAccess(Expense.class, expenseId).check();
 
     Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
     Beans.get(ExpenseValidateService.class).validate(expense);
@@ -162,7 +164,7 @@ public class ExpenseRestController {
       @PathParam("expenseId") Long expenseId, ExpenseRefusalPutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+    new SecurityCheck().writeAccess(Expense.class, expenseId).check();
 
     Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
     Beans.get(ExpenseRefusalService.class)
@@ -179,7 +181,7 @@ public class ExpenseRestController {
   @GET
   @HttpExceptionHandler
   public Response checkExpense(@PathParam("expenseId") Long expenseId) throws AxelorException {
-    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+    new SecurityCheck().readAccess(Expense.class, expenseId).check();
     Expense expense = ObjectFinder.find(Expense.class, expenseId, ObjectFinder.NO_VERSION);
 
     return ResponseConstructor.build(

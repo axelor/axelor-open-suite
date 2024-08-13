@@ -33,14 +33,31 @@ public class PartnerLinkSupplychainServiceImpl extends PartnerLinkServiceImpl
   }
 
   @Override
-  public Partner getPartnerIfOnlyOne(Partner partner) {
+  public Partner getDefaultInvoicedPartner(Partner clientPartner) {
+
     List<Long> partnerIds =
-        getPartnerIds(partner, PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
-    partnerIds.remove(0L);
-    if (partnerIds.size() != 1) {
+        getPartnerIds(clientPartner, PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+    // If there is only one, then it is the default one
+    if (partnerIds.size() == 1) {
+      return partnerRepository.find(partnerIds.get(0));
+    } else if (partnerIds.isEmpty()) {
+      return clientPartner;
+    } else {
       return null;
     }
+  }
 
-    return partnerRepository.find(partnerIds.get(0));
+  @Override
+  public Partner getDefaultDeliveredPartner(Partner clientPartner) {
+    List<Long> partnerIds =
+        getPartnerIds(clientPartner, PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
+    // If there is only one, then it is the default one
+    if (partnerIds.size() == 1) {
+      return partnerRepository.find(partnerIds.get(0));
+    } else if (partnerIds.isEmpty()) {
+      return clientPartner;
+    } else {
+      return null;
+    }
   }
 }

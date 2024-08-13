@@ -3,14 +3,14 @@
 1010;"invoice";"Avoir client";"NUMBERS";"UPPERCASE";1;4;"AC%YY";;1;1
 1100;"invoice";"Facture d'achat";"NUMBERS";"UPPERCASE";1;4;"FF%YY";;1;1
 1110;"invoice";"Avoir fournisseur";"NUMBERS";"UPPERCASE";1;4;"AF%YY";;1;1
-2000;"move";"Ecriture Vente";"NUMBERS";"UPPERCASE";1;4;"EP_VTE%YY";;1;1
-2010;"move";"Ecriture avoir";"NUMBERS";"UPPERCASE";1;4;"EP_AVC%YY";;1;1
-2020;"move";"Ecriture Achat";"NUMBERS";"UPPERCASE";1;4;"EP_ACH%YY";;1;1
-2030;"move";"Ecriture avoir fournisseur";"NUMBERS";"UPPERCASE";1;4;"EP_AVF%YY";;1;1
-2040;"move";"Ecriture banque";"NUMBERS";"UPPERCASE";1;4;"EP_BNQ%YY";;1;1
-2100;"move";"Ecriture d'OD automatique";"NUMBERS";"UPPERCASE";1;4;"EODAUT%YY";;1;1
-2110;"move";"Ecriture d'OD manuelle";"NUMBERS";"UPPERCASE";1;4;"EODMAN%YY";;1;1
-2200;"move";"Ecriture des à nouveaux";"NUMBERS";"UPPERCASE";1;4;"EANOUV%YY%FM";;1;1
+2000;"move";"Ecriture Vente";"NUMBERS";"UPPERCASE";1;4;"VTE%YY";;1;1
+2010;"move";"Ecriture avoir";"NUMBERS";"UPPERCASE";1;4;"AVC%YY";;1;1
+2020;"move";"Ecriture Achat";"NUMBERS";"UPPERCASE";1;4;"ACH%YY";;1;1
+2030;"move";"Ecriture avoir fournisseur";"NUMBERS";"UPPERCASE";1;4;"AVF%YY";;1;1
+2040;"move";"Ecriture banque";"NUMBERS";"UPPERCASE";1;4;"BNQ%YY";;1;1
+2100;"move";"Ecriture d'OD automatique";"NUMBERS";"UPPERCASE";1;4;"ODA%YY";;1;1
+2110;"move";"Ecriture d'OD manuelle";"NUMBERS";"UPPERCASE";1;4;"ODM%YY";;1;1
+2200;"move";"Ecriture des à nouveaux";"NUMBERS";"UPPERCASE";1;4;"ANV%YY%FM";;1;1
 3000;"accountingReport";"Reporting comptable";"NUMBERS";"UPPERCASE";1;4;"REPCPT%YY";;1;1
 4000;"reconcile";"Réconciliation comptable";"NUMBERS";"UPPERCASE";1;4;"RECON%YY%M";;1;1
 4010;"reconcileGroupDraft";"Lettrage non définitif";"LETTERS";"LOWERCASE";1;4;;;1;0

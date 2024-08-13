@@ -19,10 +19,18 @@
 package com.axelor.apps.quality.db.repo;
 
 import com.axelor.apps.quality.db.ControlPlan;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.stream.Collectors;
 
 public class ControlPlanManagementRepository extends ControlPlanRepository {
+
+  protected ControlEntryPlanLineRepository controlEntryPlanLineRepository;
+
+  @Inject
+  public ControlPlanManagementRepository(
+      ControlEntryPlanLineRepository controlEntryPlanLineRepository) {
+    this.controlEntryPlanLineRepository = controlEntryPlanLineRepository;
+  }
 
   @Override
   public ControlPlan copy(ControlPlan entity, boolean deep) {
@@ -32,8 +40,6 @@ public class ControlPlanManagementRepository extends ControlPlanRepository {
     copy.clearControlPlanLinesList();
 
     if (entity.getControlPlanLinesList() != null) {
-      ControlEntryPlanLineRepository controlEntryPlanLineRepository =
-          Beans.get(ControlEntryPlanLineRepository.class);
       copy.setControlPlanLinesList(
           entity.getControlPlanLinesList().stream()
               .map(
