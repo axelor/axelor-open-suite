@@ -36,6 +36,8 @@
 
     <boolean name="selectAutoProgressOnProjectTask" title="Enable task progress by status"
       help="This option is used to activate the automatic allocation of progress to project tasks. If it is enabled, the progress field will be available in the task statuses and will generate the progress when these change. The percentage defined by default in the statuses will apply to all tasks."/>
+    <boolean name="enableStatusManagementByTaskCategory"
+      title="Enable status management by task category"/>
 
     <track>
       <field name="projectLabel" on="UPDATE"/>

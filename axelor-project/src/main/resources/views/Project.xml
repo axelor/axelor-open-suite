@@ -277,13 +277,14 @@
     <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
       <field name="taskStatusManagementSelect" widget="RadioSelect"
         readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
-        onChange="action-project-record-manage-task-status-set"/>
+        onChange="action-project-record-manage-task-status-set, action-project-record-activate-task-status-by-category"/>
       <field name="projectTaskStatusSet" widget="TagSelect"
-        showIf="taskStatusManagementSelect != 1" requiredIf="taskStatusManagementSelect == 2"
-        readonlyIf="taskStatusManagementSelect == 3"
+        showIf="taskStatusManagementSelect == 2 || taskStatusManagementSelect == 3"
+        requiredIf="taskStatusManagementSelect == 2" readonlyIf="taskStatusManagementSelect == 3"
         onChange="action-project-method-manage-completed-task-status"/>
       <field name="completedTaskStatus" grid-view="task-status-grid"
-        form-view="task-status-form" showIf="taskStatusManagementSelect != 1"
+        form-view="task-status-form"
+        showIf="taskStatusManagementSelect == 2 || taskStatusManagementSelect == 3"
         requiredIf="taskStatusManagementSelect == 2" readonlyIf="taskStatusManagementSelect == 3"
         onSelect="action-project-attrs-set-completed-task-status-domain"/>
       <field name="isShowPriority" colSpan="4" widget="inline-checkbox"
@@ -292,9 +293,9 @@
         showIf="isShowPriority" requiredIf="isShowPriority"/>
       <spacer colSpan="12" showIf="isShowPriority"/>
       <field name="isShowTaskCategory" colSpan="4" widget="inline-checkbox"
-        onChange="action-project-record-category-reset-values"/>
+        onChange="action-project-record-change-show-task-category, action-project-record-manage-task-status-set"/>
       <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect"
-        showIf="isShowTaskCategory"/>
+        showIf="isShowTaskCategory" requiredIf="taskStatusManagementSelect == 4"/>
       <field name="projectTaskLinkTypeSet" colSpan="12" widget="TagSelect" placeholder="All"/>
       <field name="isShowProgress" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
@@ -442,12 +443,14 @@
 
   <action-group name="action-project-on-load-group">
     <action name="action-project-attrs-on-new-load"/>
+    <action name="action-project-method-task-status-management-selection-in"/>
   </action-group>
 
   <action-group name="action-project-group-on-new-project">
     <action name="action-project-defaults"/>
     <action name="action-project-record-status-new"/>
     <action name="action-project-attrs-on-new-load"/>
+    <action name="action-project-method-task-status-management-selection-in"/>
   </action-group>
 
   <action-group name="action-project-group-finish-project">
@@ -563,9 +566,11 @@
     <field name="projectTaskPrioritySet" expr="eval: null" if="!isShowPriority"/>
   </action-record>
 
-  <action-record name="action-project-record-category-reset-values"
+  <action-record name="action-project-record-change-show-task-category"
     model="com.axelor.apps.project.db.Project">
     <field name="projectTaskCategorySet" expr="eval: null" if="!isShowTaskCategory"/>
+    <field name="taskStatusManagementSelect" expr="2"
+      if="!isShowTaskCategory &amp;&amp; taskStatusManagementSelect == 4"/>
   </action-record>
 
   <action-record name="action-project-record-section-reset-values"
@@ -590,12 +595,17 @@
     model="com.axelor.apps.project.db.Project">
     <field name="projectTaskStatusSet"
       expr="eval: __config__.app.getApp('project')?.getDefaultTaskStatusSet()"
-      if="taskStatusManagementSelect != 1"/>
+      if="taskStatusManagementSelect == 2 || taskStatusManagementSelect == 3"/>
     <field name="completedTaskStatus"
-      expr="eval: __config__.app.getApp('project')?.completedTaskStatus"
-      if="taskStatusManagementSelect != 1"/>
+      expr="eval: __config__.app.getApp('project')?.getCompletedTaskStatus()"
+      if="taskStatusManagementSelect == 2 || taskStatusManagementSelect == 3"/>
     <field name="projectTaskStatusSet,completedTaskStatus" expr="eval: null"
-      if="taskStatusManagementSelect == 1"/>
+      if="taskStatusManagementSelect == 1 || taskStatusManagementSelect == 4"/>
+  </action-record>
+
+  <action-record name="action-project-record-activate-task-status-by-category"
+    model="com.axelor.apps.project.db.Project">
+    <field name="isShowTaskCategory" expr="eval: true" if="taskStatusManagementSelect == 4"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -636,6 +646,11 @@
   <action-method name="action-project-method-manage-completed-task-status">
     <call class="com.axelor.apps.project.web.ProjectController"
       method="manageCompletedTaskStatus"/>
+  </action-method>
+
+  <action-method name="action-project-method-task-status-management-selection-in">
+    <call class="com.axelor.apps.project.web.ProjectController"
+      method="taskStatusManagementSelectionIn"/>
   </action-method>
 
   <!-- ACTION VIEW -->
