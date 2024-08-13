@@ -121,7 +121,7 @@ public class PricingComputer extends AbstractObservablePricing {
       throw new IllegalStateException("This instance has not been correctly initialized");
     }
     LOG.debug("Starting application of pricing {} with model {}", this.pricing, this.model);
-    notifyStarted();
+    notifyStarted(model);
     if (!applyPricing(this.pricing).isPresent()) {
       notifyFinished();
       return;

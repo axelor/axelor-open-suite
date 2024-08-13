@@ -9,8 +9,7 @@
       <insert position="after">
         <spacer colSpan="6"/>
         <panel name="billOfMaterialPanel" if="__config__.app.isApp('production')">
-          <field name="billOfMaterial"
-            onSelect="action-sale-order-line-attrs-bill-of-material-domain"
+          <field name="billOfMaterial" onSelect="action-sale-order-line-method-set-bom-domain"
             form-view="bill-of-material-form" grid-view="bill-of-material-grid" canEdit="true"
             colSpan="12"/>
           <button name="customizeBOMBtn" title="Customize BOM"
@@ -19,7 +18,7 @@
         </panel>
         <panel name="prodProcessPanel" if="__config__.app.isApp('production')">
           <field name="prodProcess"
-            onSelect="action-sale-order-line-attrs-prod-process-domain"
+            onSelect="action-sale-order-line-method-set-prod-process-domain"
             form-view="prod-process-form" grid-view="prod-process-grid" canEdit="true" colSpan="12"/>
           <button name="customizeProdProcessBtn" title="Customize production process"
             onClick="action-production-method-customize-prod-process"
@@ -34,8 +33,7 @@
     <extend target="//field[@name='supplierPartner']">
       <insert position="after">
         <panel name="billOfMaterialPanel" if="__config__.app.isApp('production')">
-          <field name="billOfMaterial"
-            onSelect="action-sale-order-line-attrs-bill-of-material-domain"
+          <field name="billOfMaterial" onSelect="action-sale-order-line-method-set-bom-domain"
             form-view="bill-of-material-form" grid-view="bill-of-material-grid" canEdit="true"
             colSpan="12"/>
           <button name="customizeBOMBtn" title="Customize BOM"
@@ -44,7 +42,7 @@
         </panel>
         <panel name="prodProcessPanel" if="__config__.app.isApp('production')">
           <field name="prodProcess"
-            onSelect="action-sale-order-line-attrs-prod-process-domain"
+            onSelect="action-sale-order-line-method-set-prod-process-domain"
             form-view="prod-process-form" grid-view="prod-process-grid" canEdit="true" colSpan="12"/>
           <button name="customizeProdProcessBtn" title="Customize production process"
             onClick="action-production-method-customize-prod-process"
@@ -62,6 +60,15 @@
   <action-method name="action-production-method-customize-prod-process">
     <call class="com.axelor.apps.production.web.SaleOrderLineController"
       method="createCustomizedProdProcess"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-set-bom-domain">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController" method="setBomDomain"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-set-prod-process-domain">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController"
+      method="setProdProcessDomain"/>
   </action-method>
 
 </object-views>

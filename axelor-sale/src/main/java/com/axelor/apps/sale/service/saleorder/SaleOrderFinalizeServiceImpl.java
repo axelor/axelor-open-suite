@@ -83,8 +83,7 @@ public class SaleOrderFinalizeServiceImpl implements SaleOrderFinalizeService {
       }
     }
 
-    if (saleOrder.getVersionNumber() == 1
-        && sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
+    if (sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
       saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany(), saleOrder));
     }
 

@@ -35,7 +35,8 @@
     model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-onnew"
     onLoad="action-project-task-group-timer-process" width="large">
     <panel name="mainPanel">
-      <panel name="statusPanel" showIf="project.isShowStatus" stacked="true" colSpan="12">
+      <panel name="statusPanel" showIf="project.taskStatusManagementSelect != 1"
+        stacked="true" colSpan="12">
         <field name="status" widget="NavSelect" showTitle="false" x-order="sequence"/>
         <field name="typeSelect" hidden="true"/>
       </panel>
@@ -78,7 +79,7 @@
           onSelect="action-project-task-attrs-parent-task-configurations"/>
         <field name="isOrderAccepted" hidden="true" showIf="typeSelect == 'ticket'"/>
         <field name="isOrderProposed" hidden="true"/>
-        <field name="project.isShowStatus" hidden="true"/>
+        <field name="project.taskStatusManagementSelect" hidden="true"/>
       </panel>
       <panel name="actionsPanel" colSpan="4">
         <button name="acceptOrderBtn" title="Accept Order" hidden="true"

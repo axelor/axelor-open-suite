@@ -33,8 +33,10 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class AdvancePaymentMoveLineCreateServiceImpl
     implements AdvancePaymentMoveLineCreateService {
@@ -52,8 +54,11 @@ public class AdvancePaymentMoveLineCreateServiceImpl
 
   @Override
   public void manageAdvancePaymentInvoiceTaxMoveLines(
-      Move move, MoveLine defaultMoveLine, BigDecimal prorata, LocalDate paymentDate)
-      throws AxelorException {
+      Move move,
+      MoveLine defaultMoveLine,
+      BigDecimal prorata,
+      LocalDate paymentDate,
+      Map<TaxConfiguration, Pair<BigDecimal, BigDecimal>> taxConfigurationAmountMap) {
     if (defaultMoveLine.getMove() == null
         || invoicePaymentRepository
                 .all()
@@ -82,12 +87,27 @@ public class AdvancePaymentMoveLineCreateServiceImpl
       return;
     }
 
-    int counter = move.getMoveLineList().size();
-
     for (MoveLine moveLine : taxMoveLineList) {
       TaxLine taxLine = moveLine.getTaxLineSet().iterator().next();
       TaxConfiguration taxConfiguration =
           new TaxConfiguration(taxLine, moveLine.getAccount(), moveLine.getVatSystemSelect());
+
+      BigDecimal moveLineAmount = moveLine.getCurrencyAmount().negate().multiply(prorata);
+      BigDecimal moveLineCompanyAmount =
+          moveLine.getDebit().max(moveLine.getCredit()).multiply(prorata);
+
+      if (taxConfigurationAmountMap.containsKey(taxConfiguration)) {
+        Pair<BigDecimal, BigDecimal> pairAmount = taxConfigurationAmountMap.get(taxConfiguration);
+        BigDecimal amount = pairAmount.getLeft().add(moveLineAmount);
+        BigDecimal currencyAmount = pairAmount.getRight().add(moveLineCompanyAmount);
+
+        taxConfigurationAmountMap.replace(taxConfiguration, Pair.of(amount, currencyAmount));
+      } else {
+        taxConfigurationAmountMap.put(
+            taxConfiguration, Pair.of(moveLineAmount, moveLineCompanyAmount));
+      }
+
+      /*
       counter++;
       MoveLine taxMoveLine =
           moveLineCreateService.createTaxMoveLine(
@@ -99,6 +119,37 @@ public class AdvancePaymentMoveLineCreateServiceImpl
               moveLine.getMove().getOrigin(),
               moveLine.getCurrencyAmount().negate().multiply(prorata),
               moveLine.getDebit().max(moveLine.getCredit()).multiply(prorata),
+              taxConfiguration);
+      move.addMoveLineListItem(taxMoveLine);*/
+    }
+  }
+
+  @Override
+  public void fillMoveWithTaxMoveLines(
+      Move move, Map<TaxConfiguration, Pair<BigDecimal, BigDecimal>> taxConfigurationAmountMap)
+      throws AxelorException {
+    if (taxConfigurationAmountMap.isEmpty()) {
+      return;
+    }
+
+    int counter = move.getMoveLineList().size();
+
+    for (Map.Entry<TaxConfiguration, Pair<BigDecimal, BigDecimal>> taxConfigurationAmountPairEntry :
+        taxConfigurationAmountMap.entrySet()) {
+      TaxConfiguration taxConfiguration = taxConfigurationAmountPairEntry.getKey();
+      Pair<BigDecimal, BigDecimal> pairAmount = taxConfigurationAmountPairEntry.getValue();
+
+      counter++;
+      MoveLine taxMoveLine =
+          moveLineCreateService.createTaxMoveLine(
+              move,
+              move.getPartner(),
+              pairAmount.getLeft().signum() > 0,
+              move.getDate(),
+              counter,
+              move.getOrigin(),
+              pairAmount.getLeft(),
+              pairAmount.getRight(),
               taxConfiguration);
       move.addMoveLineListItem(taxMoveLine);
     }

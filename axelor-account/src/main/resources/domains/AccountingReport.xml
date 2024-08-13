@@ -53,6 +53,10 @@
       default="false"/>
     <boolean name="displayOpeningAccountingMoves" title="Display opening accounting moves"
       default="true"/>
+    <many-to-many ref="com.axelor.apps.base.db.Tag" name="partnerTagSet"
+      title="Partners tags"/>
+    <many-to-many ref="com.axelor.apps.base.db.Tag" name="accountTagSet"
+      title="Accounts tags"/>
 
     <!--Report 7 : Partner genereal ledger -->
     <boolean name="displayOnlyNotCompletelyLetteredMoveLines"

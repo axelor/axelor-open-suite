@@ -38,6 +38,7 @@ import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.utils.StockLocationUtilsService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychain;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;

@@ -23,8 +23,7 @@ public class SaleOrderCheckServiceImpl implements SaleOrderCheckService {
   }
 
   @Override
-  public String finalizeCheckAlert(SaleOrder saleOrder) throws AxelorException {
-    checkSaleOrderLineList(saleOrder);
+  public String finalizeCheckAlert(SaleOrder saleOrder) {
     if (productSoldAtLoss(saleOrder)) {
       return I18n.get(SaleExceptionMessage.SALE_ORDER_FINALIZE_PRODUCT_SOLD_AT_LOSS);
     }
@@ -34,6 +33,19 @@ public class SaleOrderCheckServiceImpl implements SaleOrderCheckService {
     }
 
     return "";
+  }
+
+  @Override
+  public String confirmCheckAlert(SaleOrder saleOrder) throws AxelorException {
+    if (isTotalAmountZero(saleOrder)) {
+      return I18n.get(SaleExceptionMessage.SALE_ORDER_CONFIRM_TOTAL_AMOUNT_ZERO);
+    }
+    return "";
+  }
+
+  protected boolean isTotalAmountZero(SaleOrder saleOrder) {
+    return saleOrder.getExTaxTotal().signum() == 0
+        && CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList());
   }
 
   @Override

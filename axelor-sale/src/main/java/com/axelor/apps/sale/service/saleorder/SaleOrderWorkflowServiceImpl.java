@@ -20,11 +20,9 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -46,6 +44,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   protected AppSaleService appSaleService;
   protected AppCrmService appCrmService;
   protected UserService userService;
+  protected SaleOrderCheckService saleOrderCheckService;
 
   @Inject
   public SaleOrderWorkflowServiceImpl(
@@ -53,24 +52,14 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       AppCrmService appCrmService,
-      UserService userService) {
-
+      UserService userService,
+      SaleOrderCheckService saleOrderCheckService) {
     this.partnerRepo = partnerRepo;
     this.saleOrderRepo = saleOrderRepo;
     this.appSaleService = appSaleService;
     this.appCrmService = appCrmService;
     this.userService = userService;
-  }
-
-  @Override
-  @Transactional
-  public Partner validateCustomer(SaleOrder saleOrder) {
-
-    Partner clientPartner = partnerRepo.find(saleOrder.getClientPartner().getId());
-    clientPartner.setIsCustomer(true);
-    clientPartner.setIsProspect(false);
-
-    return partnerRepo.save(clientPartner);
+    this.saleOrderCheckService = saleOrderCheckService;
   }
 
   @Override
@@ -107,35 +96,6 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     } else {
       saleOrder.setCancelReasonStr(cancelReasonStr);
     }
-    saleOrderRepo.save(saleOrder);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
-    List<Integer> authorizedStatus = new ArrayList<>();
-    authorizedStatus.add(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
-    authorizedStatus.add(SaleOrderRepository.STATUS_ORDER_COMPLETED);
-    if (saleOrder.getStatusSelect() == null
-        || !authorizedStatus.contains(saleOrder.getStatusSelect())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(SaleExceptionMessage.SALE_ORDER_CONFIRM_WRONG_STATUS));
-    }
-
-    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
-    saleOrder.setConfirmationDateTime(appSaleService.getTodayDateTime().toLocalDateTime());
-    saleOrder.setConfirmedByUser(userService.getUser());
-
-    this.validateCustomer(saleOrder);
-
-    if (appSaleService.getAppSale().getCloseOpportunityUponSaleOrderConfirmation()) {
-      Opportunity opportunity = saleOrder.getOpportunity();
-      if (opportunity != null) {
-        opportunity.setOpportunityStatus(appCrmService.getClosedWinOpportunityStatus());
-      }
-    }
-
     saleOrderRepo.save(saleOrder);
   }
 

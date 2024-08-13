@@ -56,6 +56,8 @@ import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
+import com.axelor.apps.project.service.ProjectToolService;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.db.User;
@@ -98,13 +100,22 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       FrequencyService frequencyService,
       AppBaseService appBaseService,
       ProjectRepository projectRepository,
+      AppProjectService appProjectService,
+      ProjectToolService projectToolService,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
       AppBusinessProjectService appBusinessProjectService) {
-    super(projectTaskRepo, frequencyRepo, frequencyService, appBaseService, projectRepository);
+    super(
+        projectTaskRepo,
+        frequencyRepo,
+        frequencyService,
+        appBaseService,
+        projectRepository,
+        appProjectService,
+        projectToolService);
     this.priceListLineRepo = priceListLineRepo;
     this.priceListService = priceListService;
     this.partnerPriceListService = partnerPriceListService;

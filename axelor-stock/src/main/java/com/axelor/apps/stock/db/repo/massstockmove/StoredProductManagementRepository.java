@@ -1,5 +1,6 @@
 package com.axelor.apps.stock.db.repo.massstockmove;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
@@ -13,13 +14,16 @@ public class StoredProductManagementRepository extends StoredProductRepository {
 
   protected final MassStockMovableProductQuantityService massStockMovableProductQuantityService;
   protected final StoredProductLocationServiceImpl storedProductLocationService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public StoredProductManagementRepository(
       MassStockMovableProductQuantityService massStockMovableProductQuantityService,
-      StoredProductLocationServiceImpl storedProductLocationService) {
+      StoredProductLocationServiceImpl storedProductLocationService,
+      AppBaseService appBaseService) {
     this.massStockMovableProductQuantityService = massStockMovableProductQuantityService;
     this.storedProductLocationService = storedProductLocationService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -38,6 +42,7 @@ public class StoredProductManagementRepository extends StoredProductRepository {
             "currentQty",
             massStockMovableProductQuantityService.getCurrentAvailableQty(
                 storedProduct, sourceStockLocation));
+        json.put("nbDecimalQty", appBaseService.getNbDecimalDigitForQty());
       } catch (Exception e) {
         json.put("currentQty", BigDecimal.ZERO);
         TraceBackService.trace(e);

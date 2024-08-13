@@ -5,7 +5,7 @@
 
   <menuitem id="abs-menu-mail" name="menu-mail"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnterpriseCommunication()"
-    hidden="false" order="-2500" title="Messaging" icon="fa-users" icon-background="#84429f"/>
+    hidden="false" order="-2500" title="Messaging" icon="chat-dots" icon-background="#84429f"/>
 
   <menuitem title="Mailing lists" name="menu-mail-mailing-list" parent="menu-mail"
     order="-75"/>
@@ -31,7 +31,7 @@
 
   <menuitem id="abs-menu-dms" name="menu-dms"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getDocument()"
-    hidden="false" order="-2200" title="Documents" icon="fa-archive" icon-background="#3f6bb9"/>
+    hidden="false" order="-2200" title="Documents" icon="card-list" icon-background="#3f6bb9"/>
 
   <menuitem id="abs-menu-dms-config" name="menu-dms-config" title="Configuration"
     parent="menu-dms" order="-70" icon="fa-cog"/>
@@ -95,7 +95,7 @@
   </action-view>
 
   <menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100"
-    icon="fa-wrench" icon-background="#2fa042"/>
+    icon="wrench-adjustable-circle" icon-background="#2fa042"/>
 
   <menuitem name="admin-root-general" parent="admin-root" order="200"
     if="__config__.app.isApp('base')" title="General data"/>
@@ -1042,7 +1042,7 @@
     <view type="form" name="meta-permission-form"/>
   </action-view>
 
-  <menuitem name="admin-root" title="Application Config" order="-100" icon="fa-gear"
+  <menuitem name="admin-root" title="Application Config" order="-100" icon="sliders2"
     icon-background="#31b4a9"/>
 
   <menuitem id="admin-menu-admin-app-management" name="menu-admin-app-management"
@@ -1095,7 +1095,7 @@
   </action-view>
 
   <menuitem name="studio-app-root" id="base-studio-app-root" title="App" order="-250"
-    icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('studio')"/>
+    icon="pencil-square" icon-background="#9c27b0" if="__config__.app.isApp('studio')"/>
 
   <menuitem name="birt-print-conf" parent="admin-root" if="__config__.app.isApp('base')"
     title="BIRT printings" order="1000"/>

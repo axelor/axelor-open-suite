@@ -19,6 +19,18 @@
     <field name="clientPartner"/>
   </grid>
 
+  <form name="project-form" id="business-project-project-form" title="Project"
+    model="com.axelor.apps.project.db.Project" extension="true">
+    <extend target="//field[@name='isShowPhasesElements']">
+      <insert position="before">
+        <button name="convertProjectBtn" colSpan="12"
+          onClick="save,action-project-view-convert-project-wizard"
+          title="Convert into business project" showIf="!isBusinessProject"/>
+        <field name="isBusinessProject" hidden="true"/>
+      </insert>
+    </extend>
+  </form>
+
   <form name="business-project-form" title="Business project"
     model="com.axelor.apps.project.db.Project"
     onLoad="action-business-project-project-group-on-load"
@@ -27,9 +39,11 @@
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
-          action="save,action-project-method-my-open-tasks" showIf="id &amp;&amp; isShowStatus"/>
+          action="save,action-project-method-my-open-tasks"
+          showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
         <item name="tasksCreatedByMe" title="Tasks created by me"
-          action="save,action-project-method-my-tasks" showIf="id &amp;&amp; isShowStatus"/>
+          action="save,action-project-method-my-tasks"
+          showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
         <item name="allOpenTasks" title="All open tasks"
           action="save,action-project-method-all-open-tasks" showIf="id"/>
         <item name="allTasks" title="All tasks" action="save,action-project-method-all-tasks"
@@ -580,6 +594,21 @@
     </panel-mail>
   </form>
 
+  <form title="Convert into business project" name="project-business-project-wizard-form"
+    model="com.axelor.utils.db.Wizard">
+    <panel colSpan="12">
+      <field name="$company" title="Company" type="many-to-one"
+        target="com.axelor.apps.base.db.Company" required="true"/>
+      <field name="$clientPartner"
+        domain="self.isCustomer = true AND :company member of self.companySet"
+        title="Client partner" type="many-to-one" target="com.axelor.apps.base.db.Partner"
+        required="true"/>
+      <spacer colSpan="6"/>
+      <button name="convertBtn" title="Convert"
+        onClick="action-method-project-convert-project"/>
+    </panel>
+  </form>
+
   <action-group name="action-business-project-project-group-on-new">
     <action name="action-project-group-on-new-project"/>
     <action name="action-attrs-project-set-project-type"
@@ -612,6 +641,10 @@
 
   <action-method name="action-project-method-get-partner-data">
     <call class="com.axelor.apps.businessproject.web.ProjectController" method="getPartnerData"/>
+  </action-method>
+
+  <action-method name="action-method-project-convert-project">
+    <call class="com.axelor.apps.businessproject.web.ProjectController" method="convertProject"/>
   </action-method>
 
   <action-validate name="action-validate-unset-project">
@@ -700,6 +733,16 @@
     <view type="form" name="business-project-task-form"/>
     <domain>self.project.id = :_id AND self.parentTask = null</domain>
     <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-project-view-convert-project-wizard"
+    title="Convert into business project" model="com.axelor.apps.project.db.Project">
+    <view type="form" name="project-business-project-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_projectId" expr="eval: __this__.id"/>
   </action-view>
 
   <!-- Sales -->

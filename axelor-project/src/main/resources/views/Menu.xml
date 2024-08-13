@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
-  <menuitem name="menu-project-root" order="-1400" title="Project" icon="fa-tasks"
+  <menuitem name="menu-project-root" order="-1400" title="Project" icon="list-task"
     if="__config__.app.isApp('project')" icon-background="#3f6bb9"/>
 
   <menuitem name="menu-project-project-root" parent="menu-project-root" order="0"
@@ -215,6 +215,16 @@
     <view type="grid" name="site-grid"/>
     <view type="form" name="site-form"/>
     <context name="_isFromProject" expr="eval: true"/>
+  </action-view>
+
+  <menuitem name="project-project-task-link-type" parent="project-configurations"
+    title="Project task relation types" action="project.root.project.task.link.type.all"
+    order="1500"/>
+
+  <action-view name="project.root.project.task.link.type.all"
+    title="Project task relation types" model="com.axelor.apps.project.db.ProjectTaskLinkType">
+    <view type="grid" name="project-task-link-type-grid"/>
+    <view type="form" name="project-task-link-type-form"/>
   </action-view>
 
 </object-views>

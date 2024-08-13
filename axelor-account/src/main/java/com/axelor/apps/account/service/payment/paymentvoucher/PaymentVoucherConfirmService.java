@@ -297,11 +297,15 @@ public class PaymentVoucherConfirmService {
     Partner payerPartner = paymentVoucher.getPartner();
     PaymentMode paymentMode = paymentVoucher.getPaymentMode();
     Company company = paymentVoucher.getCompany();
-    BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
+    // use depositBankDetails if not null
+    BankDetails bankDetails =
+        paymentVoucher.getDepositBankDetails() != null
+            ? paymentVoucher.getDepositBankDetails()
+            : paymentVoucher.getCompanyBankDetails();
     Journal journal =
-        paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails, false);
+        paymentModeService.getPaymentModeJournal(paymentMode, company, bankDetails, false);
     Account paymentModeAccount =
-        paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails, false);
+        paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails, false);
 
     Move move =
         moveCreateService.createMoveWithPaymentVoucher(
@@ -316,7 +320,7 @@ public class PaymentVoucherConfirmService {
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             paymentVoucher.getRef(),
             journal.getDescriptionIdentificationOk() ? journal.getDescriptionModel() : null,
-            companyBankDetails);
+            bankDetails);
 
     move.setPaymentVoucher(paymentVoucher);
     move.setTradingName(paymentVoucher.getTradingName());

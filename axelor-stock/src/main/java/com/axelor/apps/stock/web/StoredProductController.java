@@ -5,8 +5,9 @@ import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancelService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
-import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeService;
 import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -58,7 +59,19 @@ public class StoredProductController {
             .map(sp -> Beans.get(StoredProductRepository.class).find(sp.getId()));
 
     if (storedProduct.isPresent()) {
-      Beans.get(MassStockMovableProductService.class).realize(storedProduct.get());
+      Beans.get(MassStockMovableProductRealizeService.class).realize(storedProduct.get());
+    }
+
+    response.setReload(true);
+  }
+
+  public void cancelStoring(ActionRequest request, ActionResponse response) throws AxelorException {
+    var storedProduct =
+        Optional.of(request.getContext().asType(StoredProduct.class))
+            .map(sp -> Beans.get(StoredProductRepository.class).find(sp.getId()));
+
+    if (storedProduct.isPresent()) {
+      Beans.get(MassStockMovableProductCancelService.class).cancel(storedProduct.get());
     }
 
     response.setReload(true);

@@ -21,21 +21,21 @@ package com.axelor.csv.script;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderFinalizeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.google.inject.Inject;
 import java.util.Map;
 
 public class FinalizeAndConfirmSaleOrder {
 
-  protected final SaleOrderWorkflowService saleOrderWorkflowService;
+  protected final SaleOrderConfirmService saleOrderConfirmService;
   protected final SaleOrderFinalizeService saleOrderFinalizeService;
 
   @Inject
   public FinalizeAndConfirmSaleOrder(
-      SaleOrderWorkflowService saleOrderWorkflowService,
+      SaleOrderConfirmService saleOrderConfirmService,
       SaleOrderFinalizeService saleOrderFinalizeService) {
-    this.saleOrderWorkflowService = saleOrderWorkflowService;
+    this.saleOrderConfirmService = saleOrderConfirmService;
     this.saleOrderFinalizeService = saleOrderFinalizeService;
   }
 
@@ -49,7 +49,7 @@ public class FinalizeAndConfirmSaleOrder {
     if (saleOrder.getStatusSelect().equals(SaleOrderRepository.STATUS_ORDER_CONFIRMED)) {
       saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
       saleOrderFinalizeService.finalizeQuotation(saleOrder);
-      saleOrderWorkflowService.confirmSaleOrder(saleOrder);
+      saleOrderConfirmService.confirmSaleOrder(saleOrder);
     }
     return saleOrder;
   }
