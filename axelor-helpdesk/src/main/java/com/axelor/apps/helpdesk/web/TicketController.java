@@ -28,6 +28,7 @@ import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.apps.helpdesk.exceptions.HelpdeskExceptionMessage;
+import com.axelor.apps.helpdesk.service.TicketAssignmentService;
 import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.apps.helpdesk.service.TicketStatusService;
 import com.axelor.apps.helpdesk.service.TicketWorkflowService;
@@ -63,7 +64,7 @@ public class TicketController {
       if (id == null && ids == null) {
         response.setAlert(I18n.get(HelpdeskExceptionMessage.SELECT_TICKETS));
       } else {
-        Beans.get(TicketService.class).assignToMeTicket(id, ids);
+        Beans.get(TicketAssignmentService.class).assignToMeTicket(id, ids);
         response.setReload(true);
       }
     } catch (Exception e) {

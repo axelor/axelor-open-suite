@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SupplierCatalogServiceImpl implements SupplierCatalogService {
 
@@ -189,7 +190,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       Company company,
       Currency currency,
       LocalDate localDate,
-      TaxLine taxLine,
+      Set<TaxLine> taxLineSet,
       boolean resultInAti)
       throws AxelorException {
     BigDecimal purchasePrice = new BigDecimal(0);
@@ -212,7 +213,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
         (inAti == resultInAti)
             ? purchasePrice
             : taxService.convertUnitPrice(
-                inAti, taxLine, purchasePrice, AppBaseService.COMPUTATION_SCALING);
+                inAti, taxLineSet, purchasePrice, AppBaseService.COMPUTATION_SCALING);
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(purchaseCurrency, currency, price, localDate)

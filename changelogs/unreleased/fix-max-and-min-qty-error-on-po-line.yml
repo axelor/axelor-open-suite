@@ -1,3 +1,0 @@
----
-title: "Purchase order line: Fixed maximum and minimum order quantity error when partner doesn't have supplier catalog lines."
-module: axelor-purchase

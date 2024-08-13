@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.hr.db.Timesheet;
@@ -93,12 +94,9 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     if (projectTask == null && project != null) {
       toInvoice = project.getIsInvoicingTimesheet();
     } else if (projectTask != null) {
-      toInvoice = projectTask.getToInvoice();
-      if (projectTask.getParentTask() != null) {
-        toInvoice =
-            projectTask.getParentTask().getInvoicingType()
-                == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT;
-      }
+      toInvoice =
+          projectTask.getToInvoice()
+              && projectTask.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT;
     } else {
       toInvoice = false;
     }
@@ -144,12 +142,8 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   public QueryBuilder<TimesheetLine> getTimesheetLineInvoicingFilter() {
     QueryBuilder<TimesheetLine> timespentQueryBuilder =
         QueryBuilder.of(TimesheetLine.class)
-            .add(
-                "((self.projectTask.parentTask.invoicingType = :_invoicingType "
-                    + "AND self.projectTask.parentTask.toInvoice = :_teamTaskToInvoice) "
-                    + " OR (self.projectTask.parentTask IS NULL "
-                    + "AND self.projectTask.invoicingType = :_invoicingType "
-                    + "AND self.projectTask.toInvoice = :_projectTaskToInvoice))")
+            .add("self.projectTask.invoicingType = :_invoicingType")
+            .add("self.projectTask.toInvoice = :_projectTaskToInvoice")
             .add("self.projectTask.project.isBusinessProject = :_isBusinessProject")
             .add("self.toInvoice = :_toInvoice")
             .bind("_invoicingType", ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT)
@@ -192,5 +186,14 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
             timesheetLine.getEmployee(),
             timesheetLine.getProject().getCompany(),
             timesheetLine.getDate());
+  }
+
+  @Override
+  public Product getDefaultProduct(TimesheetLine timesheetLine) {
+    if (timesheetLine.getProjectTask() != null
+        && timesheetLine.getProjectTask().getProduct() != null) {
+      return timesheetLine.getProjectTask().getProduct();
+    }
+    return timesheetLine.getEmployee().getProduct();
   }
 }

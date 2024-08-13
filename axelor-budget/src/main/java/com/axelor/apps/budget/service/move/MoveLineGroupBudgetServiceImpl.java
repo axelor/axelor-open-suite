@@ -38,9 +38,13 @@ import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentServ
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineRecordBankPaymentService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.google.inject.Inject;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,7 +72,9 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
       MoveLineCheckBankPaymentService moveLineCheckBankPaymentService,
       MoveLineRecordBankPaymentService moveLineRecordBankPaymentService,
       BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      FiscalPositionService fiscalPositionService,
+      TaxService taxService) {
     super(
         moveLineService,
         moveLineDefaultService,
@@ -85,7 +91,9 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
         moveCutOffService,
         moveLineFinancialDiscountService,
         moveLineCheckBankPaymentService,
-        moveLineRecordBankPaymentService);
+        moveLineRecordBankPaymentService,
+        fiscalPositionService,
+        taxService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
   }
@@ -126,6 +134,74 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     }
 
     return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getDebitOnChangeValuesMap(
+      MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException {
+
+    Map<String, Object> valuesMap = super.getDebitOnChangeValuesMap(moveLine, move, dueDate);
+
+    addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getCreditOnChangeValuesMap(
+      MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException {
+
+    Map<String, Object> valuesMap = super.getCreditOnChangeValuesMap(moveLine, move, dueDate);
+
+    addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getCurrencyAmountRateOnChangeValuesMap(
+      MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException {
+    Map<String, Object> valuesMap =
+        super.getCurrencyAmountRateOnChangeValuesMap(moveLine, move, dueDate);
+
+    addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getDebitCreditOnChangeValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap = super.getDebitCreditOnChangeValuesMap(moveLine, move);
+
+    addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getAccountOnChangeValuesMap(
+      MoveLine moveLine,
+      Move move,
+      LocalDate cutOffStartDate,
+      LocalDate cutOffEndDate,
+      LocalDate dueDate)
+      throws AxelorException {
+
+    Map<String, Object> valuesMap =
+        super.getAccountOnChangeValuesMap(moveLine, move, cutOffStartDate, cutOffEndDate, dueDate);
+    valuesMap.put("budget", null);
+    valuesMap.put("budgetDistributionList", new ArrayList<>());
+
+    return valuesMap;
+  }
+
+  protected void addBudgetRemainingAmountToAllocate(
+      Map<String, Object> valuesMap, MoveLine moveLine) {
+    valuesMap.put(
+        "budgetRemainingAmountToAllocate",
+        budgetToolsService.getBudgetRemainingAmountToAllocate(
+            moveLine.getBudgetDistributionList(), moveLine.getDebit().max(moveLine.getCredit())));
   }
 
   protected void addAttr(

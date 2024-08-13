@@ -19,12 +19,9 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.LostReason;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
@@ -64,31 +61,6 @@ public class OpportunityServiceImpl implements OpportunityService {
   @Transactional
   public void saveOpportunity(Opportunity opportunity) {
     opportunityRepo.save(opportunity);
-  }
-
-  @Override
-  public void setSequence(Opportunity opportunity) throws AxelorException {
-    Company company = opportunity.getCompany();
-    String seq =
-        Beans.get(SequenceService.class)
-            .getSequenceNumber(
-                SequenceRepository.OPPORTUNITY,
-                company,
-                Opportunity.class,
-                "opportunitySeq",
-                opportunity);
-    if (seq == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(CrmExceptionMessage.OPPORTUNITY_1),
-          company != null ? company.getName() : null);
-    }
-    opportunity.setOpportunitySeq(seq);
-  }
-
-  @Override
-  public OpportunityStatus getDefaultOpportunityStatus() throws AxelorException {
-    return appCrmService.getOpportunityDefaultStatus();
   }
 
   @Override

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -23,6 +23,8 @@
     <string name="fullName" namecolumn="true"></string>
     <boolean name="enableEditor" title="Allow updates via editor" nullable="true"/>
 
+    <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
+
     <many-to-one name="projectPlanningTime"
       ref="com.axelor.apps.project.db.ProjectPlanningTime"/>
 
@@ -30,6 +32,7 @@
       title="Task"/>
 
     <many-to-one name="timer" ref="com.axelor.apps.hr.db.TSTimer" title="Timer"/>
+    <boolean name="isAutomaticallyGenerated" title="Automatically generated"/>
 
     <unique-constraint
       columns="timesheet,project,product,date,enableEditor,projectTask"/>
@@ -37,6 +40,9 @@
     <track>
       <field name="duration"/>
     </track>
+
+    <entity-listener class="com.axelor.apps.hr.db.repo.TimesheetLineListener"/>
+
   </entity>
 
 </domain-models>

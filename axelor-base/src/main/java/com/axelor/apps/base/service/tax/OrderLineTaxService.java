@@ -28,9 +28,6 @@ public interface OrderLineTaxService {
 
   boolean isCustomerSpecificNote(PricedOrder pricedOrder);
 
-  void addTaxEquivSpecificNote(
-      PricedOrderLine pricedOrderLine, boolean customerSpecificNote, Set<String> specificNotes);
-
   void computeTax(OrderLineTax orderLineTax, Currency currency);
 
   void setSpecificNotes(
@@ -38,4 +35,7 @@ public interface OrderLineTaxService {
       PricedOrder pricedOrder,
       Set<String> specificNotes,
       String partnerNote);
+
+  void addTaxEquivSpecificNote(
+      PricedOrderLine pricedOrderLine, boolean customerSpecificNote, Set<String> specificNotes);
 }

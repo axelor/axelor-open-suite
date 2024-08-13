@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="purchase-order-grid" id="budget-purchase-order-grid" title="Purchase orders"
     model="com.axelor.apps.purchase.db.PurchaseOrder" extension="true">
@@ -111,7 +111,7 @@
     <action name="save"/>
     <action name="action-validate-budget-recompute-budget-distribution"/>
     <action name="action-method-budget-purchase-order-compute-budget-distribution"/>
-    <action name="action-method-budget-purchase-order-compute-budget-distribution-sum-amount"/>
+    <action name="action-method-budget-purchase-order-compute-budget-remaining-amount"/>
     <action name="save"/>
   </action-group>
 
@@ -203,9 +203,9 @@
   </action-method>
 
   <action-method
-    name="action-method-budget-purchase-order-compute-budget-distribution-sum-amount">
+    name="action-method-budget-purchase-order-compute-budget-remaining-amount">
     <call class="com.axelor.apps.budget.web.PurchaseOrderController"
-      method="computePurchaseOrderBudgetDistributionSumAmount"/>
+      method="computePurchaseOrderBudgetRemainingAmountToAllocate"/>
   </action-method>
 
   <action-method name="action-budget-purchase-order-method-fill-budget-str">

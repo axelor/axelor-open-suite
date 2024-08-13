@@ -297,10 +297,14 @@ public final class StockExceptionMessage {
       "Same from stock location and to stock location" /*)*/;
   public static final String STOCK_MOVE_MERGE_ERROR_STATUS = /*$$(*/
       "Status must be planned or draft" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_SALE_ORDER = /*$$(*/ "Same sale order" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_PURCHASE_ORDER = /*$$(*/
-      "Same purchase order" /*)*/;
   public static final String STOCK_MOVE_MERGE_ERROR_MANUF_ORDER = /*$$(*/ "Same manuf order" /*)*/;
   public static final String STOCK_MOVE_DIFF_SHIPMENT_FIELDS = /*$$(*/
       "Fields linked to the shipment are differents, the value of the oldest will be kept." /*)*/;
+
+  public static final String STOCK_MOVE_TRACKING_NUMBER_DIMENSION_NOT_COMPUTED = /*$$(*/
+      "No dimension could be computed, please make sure that you have the necessary field to compute at least one field" /*)*/;
+  public static final String STOCK_MOVE_TRACKING_NUMBER_DIMENSION_EXPECTED_DECIMAL_RESULT = /*$$(*/
+      "Expected BigDecimal as result during the computation of field %s, please fix the corresponding formula." /*)*/;
+  public static final String STOCK_MOVE_TRACKING_NUMBER_PARENT_MAXIMUM_ITERATION_REACHED = /*$$(*/
+      "Maximum iteration for looking tracking numbers parent has been reached. Please check any circular parent dependencies." /*)*/;
 }

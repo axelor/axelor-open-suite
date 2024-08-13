@@ -76,6 +76,12 @@ public class CurrencyServiceImpl implements CurrencyService {
 
   public BigDecimal getCurrencyConversionRate(
       Currency startCurrency, Currency endCurrency, LocalDate date) throws AxelorException {
+    return this.getCurrencyConversionRateAtDate(startCurrency, endCurrency, date)
+        .setScale(AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getCurrencyConversionRateAtDate(
+      Currency startCurrency, Currency endCurrency, LocalDate date) throws AxelorException {
 
     // If the start currency is different from end currency
     // So we convert the amount
@@ -116,7 +122,10 @@ public class CurrencyServiceImpl implements CurrencyService {
       }
 
       return isInverse
-          ? BigDecimal.ONE.divide(exchangeRate, 10, RoundingMode.HALF_UP)
+          ? BigDecimal.ONE.divide(
+              exchangeRate,
+              AppBaseService.DEFAULT_EXCHANGE_RATE_REVERSION_SCALE,
+              RoundingMode.HALF_UP)
           : exchangeRate;
     }
 
@@ -254,6 +263,13 @@ public class CurrencyServiceImpl implements CurrencyService {
             endCurrency.getCodeISO());
       }
     }
+  }
+
+  @Override
+  public BigDecimal computeScaledExchangeRate(BigDecimal amount1, BigDecimal amount2) {
+    return (amount1 == null || amount2 == null || amount2.signum() == 0)
+        ? BigDecimal.ZERO
+        : amount1.divide(amount2, AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE, RoundingMode.HALF_UP);
   }
 
   public boolean isSameCurrencyRate(

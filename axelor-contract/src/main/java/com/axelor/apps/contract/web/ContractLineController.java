@@ -25,19 +25,24 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.contract.service.ContractLineContextToolService;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineViewService;
+import com.axelor.apps.contract.service.ContractYearEndBonusService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -143,7 +148,8 @@ public class ContractLineController {
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
       Contract contract = this.getContractFromContext(request);
 
-      if (contract == null) {
+      if (contract == null
+          || Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
         return;
       }
 
@@ -164,6 +170,10 @@ public class ContractLineController {
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
 
+      if (Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
+        return;
+      }
+
       response.setValues(
           Beans.get(AnalyticGroupService.class)
               .getAnalyticAccountValueMap(
@@ -182,6 +192,10 @@ public class ContractLineController {
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+      if (Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
+        return;
+      }
 
       Beans.get(AnalyticAttrsSupplychainService.class)
           .addAnalyticDistributionPanelHiddenAttrs(analyticLineContractModel, attrsMap);
@@ -249,6 +263,34 @@ public class ContractLineController {
 
       response.setAttrs(
           Beans.get(ContractLineAttrsService.class).setScaleAndPrecision(contract, ""));
+    }
+  }
+
+  public void setProductRequired(ActionRequest request, ActionResponse response) {
+    Contract contract =
+        Beans.get(ContractLineContextToolService.class).getContract(request.getContext());
+    response.setAttr(
+        "product",
+        "required",
+        contract.getContractTypeSelect() == ContractRepository.TYPE_FRAMEWORK);
+  }
+
+  public void computeProductDomain(ActionRequest request, ActionResponse response) {
+    Contract contract =
+        Beans.get(ContractLineContextToolService.class).getContract(request.getContext());
+    response.setAttr(
+        "product", "domain", Beans.get(ContractLineService.class).computeProductDomain(contract));
+  }
+
+  public void emptyLine(ActionRequest request, ActionResponse response) {
+    ContractLine contractLine = request.getContext().asType(ContractLine.class);
+    if (contractLine.getTypeSelect() != ContractLineRepository.TYPE_NORMAL) {
+      Map<String, Object> newContractLine = Mapper.toMap(new ContractLine());
+      newContractLine.put("qty", BigDecimal.ZERO);
+      newContractLine.put("id", contractLine.getId());
+      newContractLine.put("version", contractLine.getVersion());
+      newContractLine.put("typeSelect", contractLine.getTypeSelect());
+      response.setValues(newContractLine);
     }
   }
 }

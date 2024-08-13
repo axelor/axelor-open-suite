@@ -31,7 +31,7 @@ public interface ITranslation {
       "Your time on this operation is paused. The status of the operation has not been updated as someone is still working on it." /*)*/;
 
   public static final String OPERATION_ORDER_WORKFLOW_NOT_SUPPORTED = /*$$(*/
-      "This workflow is not supported for operation order status." /*)*/;
+      "This workflow is not supported for manufacturing operation status." /*)*/;
 
   public static final String OPERATION_ORDER_DURATION_PAUSED_403 = /*$$(*/
       "Your time on this operation is paused. This operation cannot be stopped because other operators are still working on it. You can go to the web instance to force stop the operation." /*)*/;

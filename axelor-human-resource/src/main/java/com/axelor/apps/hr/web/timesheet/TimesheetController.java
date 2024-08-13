@@ -35,6 +35,7 @@ import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetDomainService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
@@ -78,7 +79,7 @@ public class TimesheetController {
   public void prefillLines(ActionRequest request, ActionResponse response) {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
-      Beans.get(TimesheetService.class).prefillLines(timesheet);
+      Beans.get(TimesheetLeaveService.class).prefillLines(timesheet);
       response.setValues(timesheet);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);

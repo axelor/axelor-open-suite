@@ -63,4 +63,6 @@ public interface InvoiceTermPfpService {
   void validatePfpValidatedAmount(
       MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, Company company)
       throws AxelorException;
+
+  boolean isPfpValidatorUser(InvoiceTerm invoiceTerm, User user);
 }

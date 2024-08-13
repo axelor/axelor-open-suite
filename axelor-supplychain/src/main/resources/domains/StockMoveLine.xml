@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -25,14 +25,6 @@
 
     <datetime name="reservationDateTime" readonly="true"/>
 
-    <finder-method name="findAllBySaleOrder"
-      using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"
-      filter="self.stockMove.saleOrder.id = :saleOrder.id"/>
-
-    <finder-method name="findAllBySaleOrderAndStatusSelect"
-      using="com.axelor.apps.sale.db.SaleOrder:saleOrder,Integer:statusSelect" all="true"
-      filter="self.stockMove.saleOrder.id = :saleOrder.id AND self.stockMove.statusSelect = :statusSelect"/>
-
 
     <finder-method name="findForDeclarationOfExchanges"
       using="LocalDate:fromDate,LocalDate:toDate,String:productTypeSelect,int:stockMoveTypeSelect,com.axelor.apps.base.db.Country:country,com.axelor.apps.base.db.Company:company "
@@ -43,12 +35,12 @@
 	        AND self.stockMove.typeSelect = :stockMoveTypeSelect
 	        AND self.stockMove.statusSelect = 3
 	        AND self.stockMove.company = :company
-	        AND (COALESCE(self.stockMove.fromAddress.addressL7Country, self.fromStockLocation.address.addressL7Country) = :country
-	        OR COALESCE(self.stockMove.toAddress.addressL7Country, self.toStockLocation.address.addressL7Country) = :country)
-	        AND COALESCE(self.stockMove.fromAddress.addressL7Country, self.fromStockLocation.address.addressL7Country)
-	        != COALESCE(self.stockMove.toAddress.addressL7Country, self.toStockLocation.address.addressL7Country)
-	        AND COALESCE(self.stockMove.fromAddress.addressL7Country.economicArea, self.stockMove.fromStockLocation.address.addressL7Country.economicArea)
-	        = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.toStockLocation.address.addressL7Country.economicArea)
+	        AND (COALESCE(self.stockMove.fromAddress.country, self.fromStockLocation.address.country) = :country
+	        OR COALESCE(self.stockMove.toAddress.country, self.toStockLocation.address.country) = :country)
+	        AND COALESCE(self.stockMove.fromAddress.country, self.fromStockLocation.address.country)
+	        != COALESCE(self.stockMove.toAddress.country, self.toStockLocation.address.country)
+	        AND COALESCE(self.stockMove.fromAddress.country.economicArea, self.stockMove.fromStockLocation.address.country.economicArea)
+	        = COALESCE(self.stockMove.toAddress.country.economicArea, self.toStockLocation.address.country.economicArea)
 	        AND ((self.saleOrderLine IS NULL AND self.purchaseOrderLine IS NULL)
 	          OR (self.saleOrderLine IS NOT NULL AND (self.saleOrderLine.saleOrder.taxNumber IS NULL OR self.saleOrderLine.saleOrder.taxNumber.includeInDEB = true))
 	          OR (self.purchaseOrderLine IS NOT NULL AND (self.purchaseOrderLine.purchaseOrder.taxNumber IS NULL OR self.purchaseOrderLine.purchaseOrder.taxNumber.includeInDEB = true)))"

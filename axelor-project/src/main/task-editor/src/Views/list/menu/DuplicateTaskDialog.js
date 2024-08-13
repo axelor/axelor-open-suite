@@ -57,7 +57,7 @@ export default function DuplicateTaskDialog({ open, handleClose, task, attachmen
     priority: false,
     status: false,
     taskDate: true,
-    progressSelect: false,
+    progress: false,
     projectTaskCategory: false,
   });
   const classes = useStyles();

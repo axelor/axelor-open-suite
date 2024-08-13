@@ -105,12 +105,19 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       JsonContext jsonIndicators,
       Long saleOrderId)
       throws AxelorException {
-    if (configurator.getConfiguratorCreator() == null) {
+    ConfiguratorCreator configuratorCreator = configurator.getConfiguratorCreator();
+    if (configuratorCreator == null) {
       return;
     }
-    List<MetaJsonField> indicators = configurator.getConfiguratorCreator().getIndicators();
+    List<MetaJsonField> indicators = configuratorCreator.getIndicators();
     addSpecialAttributeParentSaleOrderId(jsonAttributes, saleOrderId);
     indicators = filterIndicators(configurator, indicators);
+
+    List<MetaJsonField> attributes = configuratorCreator.getAttributes();
+    for (MetaJsonField metaJsonField : attributes) {
+      jsonAttributes.putIfAbsent(metaJsonField.getName(), metaJsonField.getDefaultValue());
+    }
+
     for (MetaJsonField indicator : indicators) {
       try {
         String indicatorName = indicator.getName();

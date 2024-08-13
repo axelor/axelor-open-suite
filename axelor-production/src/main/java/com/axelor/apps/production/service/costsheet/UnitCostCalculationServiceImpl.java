@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.costsheet;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
@@ -133,25 +134,22 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     Collections.sort(
         unitCostCalcLineList,
-        new Comparator<UnitCostCalcLine>() {
-          @Override
-          public int compare(
-              UnitCostCalcLine unitCostCalcLine1, UnitCostCalcLine unitCostCalcLine2) {
-            return unitCostCalcLine1
-                .getProduct()
-                .getCode()
-                .compareTo(unitCostCalcLine2.getProduct().getCode());
-          }
-        });
+        (line1, line2) -> line1.getProduct().getCode().compareTo(line2.getProduct().getCode()));
 
     for (UnitCostCalcLine unitCostCalcLine : unitCostCalcLineList) {
-      String[] item = new String[4];
-      item[0] =
-          unitCostCalcLine.getProduct() == null ? "" : unitCostCalcLine.getProduct().getCode();
-      item[1] =
-          unitCostCalcLine.getProduct() == null ? "" : unitCostCalcLine.getProduct().getName();
-      item[2] = unitCostCalcLine.getComputedCost().toString();
-      item[3] = unitCostCalcLine.getCostToApply().toString();
+      String[] item = new String[6];
+      Optional<Product> productOpt = Optional.ofNullable(unitCostCalcLine.getProduct());
+
+      item[0] = productOpt.map(Product::getCode).orElse("");
+      item[1] = productOpt.map(Product::getName).orElse("");
+      item[2] =
+          Optional.ofNullable(unitCostCalcLine.getCompany())
+              .map(Company::getCurrency)
+              .map(Currency::getName)
+              .orElse("");
+      item[3] = unitCostCalcLine.getPreviousCost().toString();
+      item[4] = unitCostCalcLine.getComputedCost().toString();
+      item[5] = unitCostCalcLine.getCostToApply().toString();
 
       list.add(item);
     }
@@ -163,6 +161,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     String[] headers = {
       I18n.get("Product_code"),
       I18n.get("Product_name"),
+      I18n.get("Company_currency"),
+      I18n.get("Previous_cost"),
       I18n.get("Computed_cost"),
       I18n.get("Cost_to_apply")
     };

@@ -27,7 +27,6 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
-import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetServiceImpl;
 import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -73,17 +72,17 @@ public class SaleOrderController {
     }
   }
 
-  public void computeSaleOrderBudgetDistributionSumAmount(
+  public void computeSaleOrderBudgetRemainingAmountToAllocate(
       ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
-        SaleOrderLineBudgetServiceImpl saleOrderLineBudgetServiceImpl =
-            Beans.get(SaleOrderLineBudgetServiceImpl.class);
+        BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          saleOrderLineBudgetServiceImpl.computeBudgetDistributionSumAmount(
-              saleOrderLine, saleOrder);
+          saleOrderLine.setBudgetRemainingAmountToAllocate(
+              budgetToolsService.getBudgetRemainingAmountToAllocate(
+                  saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));
         }
         response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
       }
@@ -104,7 +103,6 @@ public class SaleOrderController {
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
           saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, multiBudget);
         }
-        response.setReload(true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

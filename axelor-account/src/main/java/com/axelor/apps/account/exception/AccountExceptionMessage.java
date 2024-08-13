@@ -1054,7 +1054,12 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_2 = /*$$(*/ "Credit note created" /*)*/;
   public static final String INVOICE_3 = /*$$(*/ "Please select the invoice(s) to print." /*)*/;
-  public static final String INVOICE_4 = /*$$(*/ "Credit notes from invoice %s" /*)*/;
+  public static final String INVOICE_GENERATED_REFUND = /*$$(*/
+      "Credit notes from invoice %s" /*)*/;
+  public static final String INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT = /*$$(*/
+      "Credit notes from advance payment %s" /*)*/;
+  public static final String INVOICE_GENERATED_INVOICE_REFUND = /*$$(*/
+      "Invoice from credit notes %s" /*)*/;
 
   public static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
 
@@ -1236,7 +1241,10 @@ public final class AccountExceptionMessage {
       "%s : Error : You must configure a reported balance journal in the account configuration for the batch configurator %s" /*)*/;
 
   public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_4 = /*$$(*/
-      "In order to generate moves in simulated status, the configured reported balance journal must support simulated moves. To proceed, please disable option \"Simulate generated moves\" in the closure batch or update the configuration of journal %s." /*)*/;
+      "In order to generate moves in simulated status, the configured reported balance journal must support simulated moves. To proceed, please change the \"Generated moves status\" in the closure batch or update the configuration of journal %s." /*)*/;
+
+  public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_DAYBOOK = /*$$(*/
+      "In order to generate moves in daybook status, the configured reported balance journal must support daybook moves. To proceed, please change the \"Generated moves status\" in the closure batch or update the configuration of journal %s." /*)*/;
 
   public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_5 = /*$$(*/
       "%s : Error : You must configure a result profit account and a year opening account in the account configuration" /*)*/;
@@ -1464,6 +1472,9 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_TAX = /*$$(*/
       "Please select a sale financial discount tax in account config for company %s." /*)*/;
 
+  public static final String ACCOUNT_CONFIG_MISSING_BILL_OF_EXCHANGE_RECEIV_ACCOUNT = /*$$(*/
+      "Please select a bill of exchange receivable account in account config for company %s." /*)*/;
+
   public static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
       "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
 
@@ -1507,6 +1518,8 @@ public final class AccountExceptionMessage {
   public static final String
       ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
           "Please select a purchase account on payments for Tax: %s (company: %s)" /*)*/;
+  public static final String ACCOUNT_MANAGEMENT_PURCHASE_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a purchase account for non deductible Tax: %s (company: %s)" /*)*/;
 
   public static final String
       ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
@@ -1696,6 +1709,9 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNTING_CONFIGURATION_TEMPLATE_IMPORT_SUCCESS = /*$$(*/
       "The accounting configurations have been imported successfully for the company %s." /*)*/;
 
+  public static final String MOVE_USER_NOT_AUTHORIZED_ON_JOURNAL_ROLE_SET = /*$$(*/
+      "You are not authorized to save the move %s (check the %s journal's role config)." /*)*/;
+
   public static final String RECONCILE_PFP_AMOUNT_MISSING = /*$$(*/
       "The move %s can't be reconciled because the moveline %s doesn't have enough remaining amount validated by pfp" /*)*/;
 
@@ -1707,4 +1723,31 @@ public final class AccountExceptionMessage {
 
   public static final String FINANCIAL_DISCOUNT_NOT_COMPATIBLE_WITH_ADVANCE_PAYMENT_INVOICE =
       /*$$(*/ "Financial discount is not compatible with the advance payment invoice. Please unselect financial discount in order to continue." /*)*/;
+
+  public static final String CANNOT_BE_RECONCILED_WAITING_PAYMENT =
+      /*$$(*/ "The move line %s cannot be reconciled because of a pending payment." /*)*/;
+
+  public static final String CREATE_REFUND_BTN_CLASSIC_REFUND = /*$$(*/
+      "Generate credit note" /*)*/;
+  public static final String CREATE_REFUND_BTN_ADVANCE_PAYMENT_REFUND = /*$$(*/
+      "Generate advance payment invoice" /*)*/;
+  public static final String CREATE_REFUND_BTN_INVOICE = /*$$(*/ "Generate invoice" /*)*/;
+
+  public static final String REFUND_INVOICE_LIST_CLASSIC_REFUND = /*$$(*/ "Credit notes" /*)*/;
+  public static final String REFUND_INVOICE_LIST_ADVANCE_PAYMENT_REFUND = /*$$(*/
+      "Advance payments" /*)*/;
+  public static final String REFUND_INVOICE_LIST_INVOICE = /*$$(*/ "Invoices" /*)*/;
+
+  public static final String ORIGINAL_INVOICE_CLASSIC_REFUND = /*$$(*/ "Original credit note" /*)*/;
+  public static final String ORIGINAL_INVOICE_ADVANCE_PAYMENT_REFUND = /*$$(*/
+      "Original advance payment" /*)*/;
+  public static final String ORIGINAL_INVOICE_INVOICE = /*$$(*/ "Invoice of origin" /*)*/;
+  public static final String FISCAL_POSITION_DUPLICATE_FROM_TAX_SET = /*$$(*/
+      "Duplicate from tax found for this fiscal position." /*)*/;
+
+  public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_NOT_ACTIVATED = /*$$(*/
+      "Blocking customer with late payment issues is not activated for this company" /*)*/;
+
+  public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT = /*$$(*/
+      "Block customer with late payment issues batch's reporting :" /*)*/;
 }

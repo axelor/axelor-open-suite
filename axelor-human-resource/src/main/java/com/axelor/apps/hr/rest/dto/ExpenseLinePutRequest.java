@@ -25,6 +25,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
@@ -78,6 +79,8 @@ public class ExpenseLinePutRequest extends RequestStructure {
 
   @Min(0)
   private Long expenseId;
+
+  private Long projectTaskId;
 
   public Long getProjectId() {
     return projectId;
@@ -215,6 +218,14 @@ public class ExpenseLinePutRequest extends RequestStructure {
     this.expenseId = expenseId;
   }
 
+  public Long getProjectTaskId() {
+    return projectTaskId;
+  }
+
+  public void setProjectTaskId(Long projectTaskId) {
+    this.projectTaskId = projectTaskId;
+  }
+
   public Project fetchProject() {
     if (projectId == null || projectId == 0L) {
       return null;
@@ -270,5 +281,12 @@ public class ExpenseLinePutRequest extends RequestStructure {
       return null;
     }
     return ObjectFinder.find(Expense.class, expenseId, ObjectFinder.NO_VERSION);
+  }
+
+  public ProjectTask fetchProjectTask() {
+    if (projectTaskId == null || projectTaskId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
   }
 }
