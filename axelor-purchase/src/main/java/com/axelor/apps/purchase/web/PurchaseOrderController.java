@@ -21,7 +21,6 @@ package com.axelor.apps.purchase.web;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -42,7 +41,6 @@ import com.axelor.apps.purchase.service.PurchaseOrderDomainService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
-import com.axelor.apps.purchase.service.PurchaseOrderValidationService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
@@ -423,17 +421,5 @@ public class PurchaseOrderController {
             .param("forceEdit", "true")
             .context("_showRecord", copiePO.getId())
             .map());
-  }
-
-  public void checkPurchaseOrderNotOnlyNonDeductibleTaxes(
-      ActionRequest request, ActionResponse response) {
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    PurchaseOrderValidationService purchaseOrderValidationService =
-        Beans.get(PurchaseOrderValidationService.class);
-    try {
-      purchaseOrderValidationService.checkNotOnlyNonDeductibleTaxes(purchaseOrder);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
   }
 }

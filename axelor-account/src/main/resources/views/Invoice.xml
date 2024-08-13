@@ -1762,7 +1762,6 @@
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
-    <action name="action-invoice-method-check-not-only-non-deductible-taxes-on-invoice-line"/>
     <action name="action-validate-invoice-ckeck-duplicate-same-nbr-year-partner"/>
     <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-invoice-method-generate-invoice-terms"
@@ -2488,12 +2487,6 @@
     name="action-invoice-method-set-supplier-invoice-number-and-origin-date">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="setSupplierInvoiceNbAndOriginDate"/>
-  </action-method>
-
-  <action-method
-    name="action-invoice-method-check-not-only-non-deductible-taxes-on-invoice-line">
-    <call class="com.axelor.apps.account.web.InvoiceController"
-      method="checkInvoiceNotOnlyNonDeductibleTaxes"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"

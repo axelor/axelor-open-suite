@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -44,7 +43,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
@@ -61,7 +59,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -704,19 +701,5 @@ public class MoveLineController {
         moveLineService.computeMoveLineTaxLineSetDomain(functionalOriginSelect, dateString);
 
     response.setAttr("taxLineSet", "domain", domainString);
-  }
-
-  public void checkTaxLinesNotOnlyNonDeductibleTaxes(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    TaxService taxService = Beans.get(TaxService.class);
-    try {
-      taxService.checkTaxLinesNotOnlyNonDeductibleTaxes(moveLine.getTaxLineSet());
-    } catch (AxelorException e) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR1),
-          Optional.of(moveLine).map(MoveLine::getAccount).map(Account::getLabel).orElse(null));
-    }
   }
 }

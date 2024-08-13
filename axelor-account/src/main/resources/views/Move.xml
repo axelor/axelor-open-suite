@@ -558,6 +558,7 @@
   </action-group>
 
   <action-group name="action-move-group-generate-counterpart">
+    <action name="action-move-method-check-not-only-non-deductible-taxes"/>
     <action name="action-move-method-generate-counterpart"/>
     <action name="save" if="statusSelect != 4 &amp;&amp; statusSelect &gt;= 2"/>
   </action-group>
@@ -822,9 +823,10 @@
     <call class="com.axelor.apps.account.web.MoveController" method="onSelectJournal"/>
   </action-method>
 
-  <!-- <action-method name="action-account-move-method-move-line-list-onchange-first"> -->
-  <!-- <call class="com.axelor.apps.account.web.MoveController" method="testOnChangeMoveLine"/> -->
-  <!-- </action-method> -->
+  <action-method name="action-move-method-check-not-only-non-deductible-taxes">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="checkTaxLinesNotOnlyNonDeductibleTaxes"/>
+  </action-method>
 
   <!-- ACTION VIEW -->
 

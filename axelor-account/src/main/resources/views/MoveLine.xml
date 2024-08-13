@@ -161,9 +161,9 @@
     <field name="amountPaid" hidden="true"/>
     <field name="taxLineSet" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="(account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
-      onChange="action-move-line-method-check-move-lines-not-only-non-deductible-taxes,account-move-line-update-tax-equiv"
+      onChange="account-move-line-update-tax-equiv"
       onSelect="action-move-line-tax-line-set-method-set-tax-line-set-domain-on-select" width="80"
-      widget="TagSelect" validIf=""/>
+      widget="TagSelect"/>
     <field name="vatSystemSelect"
       readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt', 'tax'].includes(account.accountType.technicalTypeSelect))"
       width="80"/>
@@ -904,12 +904,6 @@
     name="action-move-line-tax-line-set-method-set-tax-line-set-domain-on-select">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="computeTaxLineSetDomainOnSelect"/>
-  </action-method>
-
-  <action-method
-    name="action-move-line-method-check-move-lines-not-only-non-deductible-taxes">
-    <call class="com.axelor.apps.account.web.MoveLineController"
-      method="checkTaxLinesNotOnlyNonDeductibleTaxes"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"

@@ -117,7 +117,6 @@
 
   <form name="purchase-order-form" title="Supplier RFQ/PO"
     model="com.axelor.apps.purchase.db.PurchaseOrder"
-    onSave="action-purchase-order-method-check-not-only-non-deductible-taxes-before-save"
     onLoad="action-group-purchase-order-on-load-actions"
     onNew="action-group-purchase-order-on-new-actions">
     <toolbar>
@@ -1064,12 +1063,6 @@
   <action-method name="action-purchase-order-method-separate-in-new-quotation">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
       method="separateInNewQuotation"/>
-  </action-method>
-
-  <action-method
-    name="action-purchase-order-method-check-not-only-non-deductible-taxes-before-save">
-    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
-      method="checkPurchaseOrderNotOnlyNonDeductibleTaxes"/>
   </action-method>
 
 </object-views>
