@@ -2189,6 +2189,8 @@
 "This partner is categorized as a factor due to existing records in the database. This category can't be removed.",,,
 "This partner is categorized as a supplier due to existing records in the database. This category can't be removed.",,,
 "This period is closed and you do not have the necessary permissions to create entries",,,
+"This product comes in multiple quantities, so please specify a quantity that is a multiple of at least one from the list %s.",,,
+"This product comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s.",,,
 "Thursday",,,
 "Thursdays",,,
 "Ticket",,,

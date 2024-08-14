@@ -138,10 +138,4 @@ public final class SaleExceptionMessage {
       "The client provided is not a customer of the given company: %s." /*)*/;
   public static final String SALE_ORDER_NOT_DRAFT = /*$$(*/
       "You can only add a line to a draft sale order." /*)*/;
-
-  public static final String NO_QUANTITY_PROVIDED = /*$$(*/
-      "This product comes in multiple quantities, so a specific quantity should be provided." /*)*/;
-
-  public static final String QUANTITY_NOT_MULTIPLE = /*$$(*/
-      "This product comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
 }

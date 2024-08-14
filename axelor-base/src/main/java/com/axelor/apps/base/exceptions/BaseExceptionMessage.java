@@ -662,7 +662,7 @@ public final class BaseExceptionMessage {
       "Error when computing the printing filename, using template %s: %s" /*)*/;
 
   public static final String NO_QUANTITY_PROVIDED = /*$$(*/
-      "This product comes in multiple quantities, so a specific quantity should be provided." /*)*/;
+      "This product comes in multiple quantities, so please specify a quantity that is a multiple of at least one from the list %s." /*)*/;
 
   public static final String QUANTITY_NOT_MULTIPLE = /*$$(*/
       "This product comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;

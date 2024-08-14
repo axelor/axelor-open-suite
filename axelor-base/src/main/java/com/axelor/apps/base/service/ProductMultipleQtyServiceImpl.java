@@ -131,24 +131,24 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
   @Override
   public void checkMultipleQty(Product product, BigDecimal qty) throws AxelorException {
     List<ProductMultipleQty> productMultipleQtyList = product.getSaleProductMultipleQtyList();
+    String quantityList =
+        product.getSaleProductMultipleQtyList().stream()
+            .map(
+                productMultipleQty ->
+                    productMultipleQty
+                        .getMultipleQty()
+                        .setScale(appBaseService.getNbDecimalDigitForQty()))
+            .collect(Collectors.toList())
+            .toString();
     if (CollectionUtils.isNotEmpty(productMultipleQtyList) && qty == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(BaseExceptionMessage.NO_QUANTITY_PROVIDED));
+          String.format(I18n.get(BaseExceptionMessage.NO_QUANTITY_PROVIDED), quantityList));
     }
     if (!checkMultipleQty(qty, productMultipleQtyList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          String.format(
-              I18n.get(BaseExceptionMessage.QUANTITY_NOT_MULTIPLE),
-              product.getSaleProductMultipleQtyList().stream()
-                  .map(
-                      productMultipleQty ->
-                          productMultipleQty
-                              .getMultipleQty()
-                              .setScale(appBaseService.getNbDecimalDigitForQty()))
-                  .collect(Collectors.toList())
-                  .toString()));
+          String.format(I18n.get(BaseExceptionMessage.QUANTITY_NOT_MULTIPLE), quantityList));
     }
   }
 }
