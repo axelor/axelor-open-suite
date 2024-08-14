@@ -180,7 +180,10 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     if (saleOrder.getSaleOrderLineTaxList() == null) {
       saleOrder.setSaleOrderLineTaxList(new ArrayList<SaleOrderLineTax>());
     } else {
-      saleOrder.getSaleOrderLineTaxList().clear();
+      List<SaleOrderLineTax> saleOrderLineTaxList = new ArrayList<>();
+      saleOrderLineTaxList.addAll(
+          saleOrderLineCreateTaxLineService.getUpdatedSaleOrderLineTax(saleOrder));
+      saleOrder.setSaleOrderLineTaxList(saleOrderLineTaxList);
     }
   }
 

@@ -39,9 +39,11 @@
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
-          action="save,action-project-method-my-open-tasks" showIf="id &amp;&amp; isShowStatus"/>
+          action="save,action-project-method-my-open-tasks"
+          showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
         <item name="tasksCreatedByMe" title="Tasks created by me"
-          action="save,action-project-method-my-tasks" showIf="id &amp;&amp; isShowStatus"/>
+          action="save,action-project-method-my-tasks"
+          showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
         <item name="allOpenTasks" title="All open tasks"
           action="save,action-project-method-all-open-tasks" showIf="id"/>
         <item name="allTasks" title="All tasks" action="save,action-project-method-all-tasks"
@@ -154,7 +156,7 @@
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
       <panel name="reportingPanel" title="Reporting" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project')" hidden="true">
+        if="__config__.app.isApp('business-project')">
         <panel title="Time follow-up" colSpan="12">
           <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
             showTitle="false" height="125"/>
@@ -380,9 +382,8 @@
           css="btn-custom" icon="fa-file-text-o"
           onClick="save,action-project-view-show-invoicing-projects"/>
         <panel name="analyticDistributionPanel" title="Analytics"
-          if-module="axelor-business-project"
-          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-          hidden="true" colSpan="12">
+          if-module="axelor-business-project" colSpan="12"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
           <help colSpan="12"><![CDATA[This analytic distribution template will be filled with partner or assigned user configuration according to Business Project module configuration.]]></help>
           <field name="analyticDistributionTemplate"
             grid-view="analytic-distribution-template-grid"
@@ -508,13 +509,13 @@
           if-module="axelor-human-resource"
           onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
         <spacer colSpan="3"/>
-        <field name="allowToGetPricesFromFrameworkContract" hidden="true"/>
+        <field name="allowToGetPricesFromFrameworkContract"/>
         <panel-include view="incl-fields-to-display-panel-form"/>
       </panel>
       <panel title="Contracts" name="contractPanel"
         if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-        <panel name="frameworkContractPanel" hidden="true"
-          showIf="allowToGetPricesFromFrameworkContract" colSpan="12">
+        <panel name="frameworkContractPanel" showIf="allowToGetPricesFromFrameworkContract"
+          colSpan="12">
           <field name="frameworkCustomerContractSet" colSpan="12"
             domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 1"/>
           <field name="defaultFrameworkCustomerContract"
