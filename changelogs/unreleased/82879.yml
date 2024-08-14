@@ -1,0 +1,3 @@
+---
+title: "Accounting report: Correct balance multiplication when selecting accounts with parent accounts"
+module: axelor-account
