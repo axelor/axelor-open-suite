@@ -27,6 +27,9 @@ public interface InvoiceLineTaxAttrsService {
 
   void addTaxTotalScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
 
+  void addPercentageTaxTotalScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
+
   void addInTaxTotalScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
 }

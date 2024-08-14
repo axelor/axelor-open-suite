@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="CartLine">
+
+    <many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
+    <integer name="qty" title="Quantity" min="1" default="1"/>
+    <many-to-one name="cart" title="Cart" ref="com.axelor.apps.sale.db.Cart"/>
+    <many-to-one name="variantProduct" title="Product variant"
+      ref="com.axelor.apps.base.db.Product"/>
+
+  </entity>
+
+</domain-models>

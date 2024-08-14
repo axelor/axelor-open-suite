@@ -6,13 +6,14 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.supplychain.service.SaleOrderLineViewSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainServiceImpl;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
   public SaleOrderLineViewProductionServiceImpl(
       AppBaseService appBaseService,
       AppSaleService appSaleService,
+      ProductMultipleQtyService productMultipleQtyService,
       AnalyticAttrsService analyticAttrsService,
       AnalyticAttrsSupplychainService analyticAttrsSupplychainService,
       AppSupplychainService appSupplychainService,
@@ -33,6 +35,7 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
     super(
         appBaseService,
         appSaleService,
+        productMultipleQtyService,
         analyticAttrsService,
         analyticAttrsSupplychainService,
         appSupplychainService,

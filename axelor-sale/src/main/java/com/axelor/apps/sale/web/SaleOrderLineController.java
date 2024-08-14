@@ -22,24 +22,27 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderContextHelper;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineComplementaryProductService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineDomainService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineDummyService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineMultipleQtyService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineOnChangeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLinePricingService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineProductService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineViewService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComplementaryProductService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDomainService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDummyService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineInitValueService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineMultipleQtyService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineViewService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -60,8 +63,13 @@ public class SaleOrderLineController {
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
     response.setAttrs(
         Beans.get(SaleOrderLineFireService.class).getOnNewAttrs(saleOrderLine, saleOrder));
-    response.setValues(
+
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class).getOnNewDummies(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineInitValueService.class).onNewInitValues(saleOrder, saleOrderLine));
+    response.setValues(saleOrderLineMap);
   }
 
   public void onLoad(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -70,18 +78,29 @@ public class SaleOrderLineController {
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
     response.setAttrs(
         Beans.get(SaleOrderLineFireService.class).getOnLoadAttrs(saleOrderLine, saleOrder));
-    response.setValues(
+
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class).getOnLoadDummies(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineInitValueService.class).onLoadInitValues(saleOrder, saleOrderLine));
+    response.setValues(saleOrderLineMap);
   }
 
   public void onNewEditable(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
     response.setAttrs(Beans.get(SaleOrderLineViewService.class).focusProduct());
-    response.setValues(
+
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class)
             .getOnNewEditableDummies(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineInitValueService.class)
+            .onNewEditableInitValues(saleOrder, saleOrderLine));
+    response.setValues(saleOrderLineMap);
   }
 
   public void computeSubMargin(ActionRequest request, ActionResponse response)
@@ -117,13 +136,17 @@ public class SaleOrderLineController {
             saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, saleOrderLine));
-        // Beans.get(SaleOrderLineCheckService.class).check(saleOrderLine); throws exception
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineDummyService.class)
                 .getOnProductChangeDummies(saleOrderLine, saleOrder));
+        saleOrderLineMap.putAll(
+            Beans.get(SaleOrderLineOnChangeService.class)
+                .productOnChange(saleOrderLine, saleOrder));
         response.setAttrs(
             Beans.get(SaleOrderLineViewService.class)
                 .getProductOnChangeAttrs(saleOrderLine, saleOrder));
+
+        Beans.get(SaleOrderLineCheckService.class).productOnChangeCheck(saleOrderLine, saleOrder);
 
         if (Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale()) {
           Optional<Pricing> defaultPricing =
@@ -193,13 +216,6 @@ public class SaleOrderLineController {
         Beans.get(SaleOrderLineOnChangeService.class).typeSelectOnChange(saleOrderLine));
   }
 
-  public void checkQty(ActionRequest request, ActionResponse response) {
-
-    Context context = request.getContext();
-    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    Beans.get(SaleOrderLineMultipleQtyService.class).checkMultipleQty(saleOrderLine, response);
-  }
-
   /**
    * Called from sale order line form view, on product selection. Call {@link
    * com.axelor.apps.sale.service.saleorder.SaleOrderLineDomainService#computeProductDomain(SaleOrderLine,
@@ -237,15 +253,26 @@ public class SaleOrderLineController {
     }
   }
 
+  @ErrorException
   public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
 
-    Map<String, Object> saleOrderLineMap =
-        Beans.get(SaleOrderLineOnChangeService.class).qtyOnChange(saleOrderLine, saleOrder);
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineOnChangeService.class).qtyOnChange(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(
+        Beans.get(SaleOrderLineDummyService.class).checkMultipleQty(saleOrderLine));
     response.setAttrs(
-        Beans.get(SaleOrderLineViewService.class).hidePriceDiscounted(saleOrder, saleOrderLine));
+        Beans.get(SaleOrderLineViewService.class).getQtyOnChangeAttrs(saleOrderLine, saleOrder));
+
+    String notifyMessage =
+        Beans.get(SaleOrderLineMultipleQtyService.class).getMultipleQtyErrorMessage(saleOrderLine);
+    if (StringUtils.notEmpty(notifyMessage)) {
+      response.setNotify(notifyMessage);
+    }
+
     response.setValues(saleOrderLineMap);
   }
 
@@ -299,5 +326,12 @@ public class SaleOrderLineController {
 
   public void setScaleForPriceAndQty(ActionRequest request, ActionResponse response) {
     response.setAttrs(Beans.get(SaleOrderLineViewService.class).getPriceAndQtyScale());
+  }
+
+  public void unitOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    Beans.get(SaleOrderLineCheckService.class).unitOnChangeCheck(saleOrderLine, saleOrder);
   }
 }

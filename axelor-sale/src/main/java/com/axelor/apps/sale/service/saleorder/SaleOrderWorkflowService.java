@@ -20,17 +20,12 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrder;
 
 public interface SaleOrderWorkflowService {
 
-  Partner validateCustomer(SaleOrder saleOrder);
-
   void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
       throws AxelorException;
-
-  void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
   void completeSaleOrder(SaleOrder saleOrder) throws AxelorException;
 }

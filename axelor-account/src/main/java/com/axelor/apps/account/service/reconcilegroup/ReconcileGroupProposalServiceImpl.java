@@ -141,6 +141,15 @@ public class ReconcileGroupProposalServiceImpl implements ReconcileGroupProposal
       reconcile.getCreditMoveLine().setReconcileGroup(null);
       reconcileRepository.remove(reconcile);
     }
+    List<MoveLine> moveLineList =
+        moveLineRepository
+            .all()
+            .filter("self.reconcileGroup.id = :reconcileGroupId")
+            .bind("reconcileGroupId", reconcileGroup.getId())
+            .fetch();
+    for (MoveLine moveLine : moveLineList) {
+      moveLine.setReconcileGroup(null);
+    }
     reconcileGroupRepository.remove(reconcileGroup);
   }
 }

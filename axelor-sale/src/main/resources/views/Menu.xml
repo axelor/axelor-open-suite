@@ -5,7 +5,7 @@
 
 
   <menuitem name="sc-root-sale" title="Sales" order="-1900"
-    if="__config__.app.isApp('sale')" icon="fa-line-chart" icon-background="#e0a83c"/>
+    if="__config__.app.isApp('sale')" icon="graph-up-arrow" icon-background="#e0a83c"/>
 
   <menuitem name="sc-root-sale-customers" parent="sc-root-sale" order="100"
     title="Customers" action="sc.root.sale.customers"/>
@@ -264,6 +264,17 @@
       self.configuratorCreator.authorizedGroupSet</domain>
     <context name="_group" expr="eval: __user__.group"/>
   </action-view>
+
+  <menuitem name="sale-conf-carts" parent="sc-root-sale-conf" order="1000" title="Carts"
+    if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"/>
+
+  <menuitem name="sale-conf-edit-cart" parent="sale-conf-carts" title="Cart"
+    action="sale.conf.edit.cart" if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
+    order="100"/>
+
+  <action-method name="sale.conf.edit.cart">
+    <call class="com.axelor.apps.sale.web.CartController" method="editCart"/>
+  </action-method>
 
   <!-- ADMINISTRATION -->
 

@@ -10,6 +10,7 @@
     <integer name="sequence" title="Sequence"/>
     <string name="name" translatable="true"/>
     <boolean name="isCompleted" title="Completed ?"/>
+    <decimal name="defaultProgress" title="Default progress" default="0" min="0" max="100"/>
 
     <finder-method name="getNotCompleted" using="" filter="self.isCompleted = false"/>
 

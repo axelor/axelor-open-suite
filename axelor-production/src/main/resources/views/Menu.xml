@@ -5,7 +5,7 @@
 
 
   <menuitem name="manufacturing-root" title="Manufacturing" order="-600"
-    if="__config__.app.isApp('production')" icon="fa-cogs" icon-background="#84429f"/>
+    if="__config__.app.isApp('production')" icon="gear-fill" icon-background="#84429f"/>
 
   <menuitem name="manufacturing-root-products" parent="manufacturing-root" order="100"
     title="Products" action="manufacturing.root.products"/>
