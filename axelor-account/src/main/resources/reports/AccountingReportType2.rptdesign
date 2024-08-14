@@ -400,7 +400,7 @@ Move.company = AccountingReport.company AND
         WHERE ah.id = Account.parent_account
     )
 )
-AND (ReportAccountTagSet.account_tag_set IS NULL OR AccountTagSet.account_account IN (Account.id, ParentAccount.id, ParentAccount2.id, ParentAccount3.id, ParentAccount4.id, ParentAccount5.id, ParentAccount6.id, ParentAccount6.parent_account))
+AND (ReportAccountTagSet.account_tag_set IS NULL OR AccountTagSet.account_account IN (SELECT ah.id FROM account_hierarchy ah))
 AND (ReportPartnerTagSet.partner_tag_set IS NULL OR PartnerTagSet.base_partner = MoveLine.partner)
 
 AND ((AccountingReport.exclude_view_account is true AND AccountType.technical_type_select != 'view') OR AccountingReport.exclude_view_account is false)
