@@ -143,6 +143,8 @@ import com.axelor.apps.base.service.ProductConversionService;
 import com.axelor.apps.base.service.ProductConversionServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
+import com.axelor.apps.base.service.ProductPriceService;
+import com.axelor.apps.base.service.ProductPriceServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.ProductUpdateService;
@@ -470,5 +472,6 @@ public class BaseModule extends AxelorModule {
     bind(UserPermissionResponseComputeService.class)
         .to(UserPermissionResponseComputeServiceImpl.class);
     bind(PrintingTemplateComputeNameService.class).to(PrintingTemplateComputeNameServiceImpl.class);
+    bind(ProductPriceService.class).to(ProductPriceServiceImpl.class);
   }
 }

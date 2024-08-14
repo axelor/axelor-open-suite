@@ -8,14 +8,13 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +26,7 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
   protected ProductCompanyService productCompanyService;
   protected TaxService taxService;
   protected AppSaleService appSaleService;
+  protected ProductPriceService productPriceService;
 
   @Inject
   public SaleOrderLinePriceServiceImpl(
@@ -34,12 +34,14 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
       CurrencyService currencyService,
       ProductCompanyService productCompanyService,
       TaxService taxService,
-      AppSaleService appSaleService) {
+      AppSaleService appSaleService,
+      ProductPriceService productPriceService) {
     this.currencyScaleService = currencyScaleService;
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
     this.taxService = taxService;
     this.appSaleService = appSaleService;
+    this.productPriceService = productPriceService;
   }
 
   @Override
@@ -142,30 +144,26 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
       boolean resultInAti)
       throws AxelorException {
     Product product = saleOrderLine.getProduct();
-
-    Boolean productInAti =
-        (Boolean) productCompanyService.get(product, "inAti", saleOrder.getCompany());
+    Company company = saleOrder.getCompany();
 
     // Consider price if already computed from pricing scale else get it from product
     BigDecimal productSalePrice = saleOrderLine.getPrice();
 
+    Map<String, Object> map = productPriceService.getSaleUnitPrice(product, company);
+    Currency fromCurrency = (Currency) map.get("currency");
+
     if (productSalePrice.compareTo(BigDecimal.ZERO) == 0) {
-      productSalePrice =
-          (BigDecimal) productCompanyService.get(product, "salePrice", saleOrder.getCompany());
+      productSalePrice = (BigDecimal) map.get("price");
     }
 
-    BigDecimal price =
-        (productInAti == resultInAti)
-            ? productSalePrice
-            : taxService.convertUnitPrice(
-                productInAti, taxLineSet, productSalePrice, AppBaseService.COMPUTATION_SCALING);
-
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(
-            (Currency) productCompanyService.get(product, "saleCurrency", saleOrder.getCompany()),
-            saleOrder.getCurrency(),
-            price,
-            saleOrder.getCreationDate())
-        .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    return productPriceService.getConvertedPrice(
+        company,
+        product,
+        taxLineSet,
+        resultInAti,
+        saleOrder.getCreationDate(),
+        productSalePrice,
+        fromCurrency,
+        saleOrder.getCurrency());
   }
 }

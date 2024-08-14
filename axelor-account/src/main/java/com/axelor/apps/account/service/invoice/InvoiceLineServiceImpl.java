@@ -46,6 +46,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
@@ -79,6 +80,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected InternationalService internationalService;
   protected InvoiceLineAttrsService invoiceLineAttrsService;
   protected CurrencyScaleService currencyScaleService;
+  protected ProductPriceService productPriceService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -94,7 +96,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       TaxService taxService,
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      ProductPriceService productPriceService) {
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
@@ -108,6 +111,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.internationalService = internationalService;
     this.invoiceLineAttrsService = invoiceLineAttrsService;
     this.currencyScaleService = currencyScaleService;
+    this.productPriceService = productPriceService;
   }
 
   @Override
@@ -160,35 +164,28 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       boolean resultInAti)
       throws AxelorException {
     Product product = invoiceLine.getProduct();
-
-    BigDecimal price = null;
+    Company company = invoice.getCompany();
+    BigDecimal price;
     Currency productCurrency;
-
+    Map<String, Object> priceMap;
     if (isPurchase) {
-      price =
-          (BigDecimal) productCompanyService.get(product, "purchasePrice", invoice.getCompany());
-      productCurrency =
-          (Currency) productCompanyService.get(product, "purchaseCurrency", invoice.getCompany());
+      priceMap = productPriceService.getPurchaseUnitPrice(product, company);
+      price = (BigDecimal) priceMap.get("price");
+      productCurrency = (Currency) priceMap.get("currency");
     } else {
-      price = (BigDecimal) productCompanyService.get(product, "salePrice", invoice.getCompany());
-      productCurrency =
-          (Currency) productCompanyService.get(product, "saleCurrency", invoice.getCompany());
+      priceMap = productPriceService.getSaleUnitPrice(product, company);
+      price = (BigDecimal) priceMap.get("price");
+      productCurrency = (Currency) priceMap.get("currency");
     }
-
-    if ((Boolean) productCompanyService.get(product, "inAti", invoice.getCompany())
-        != resultInAti) {
-      price =
-          taxService.convertUnitPrice(
-              (Boolean) productCompanyService.get(product, "inAti", invoice.getCompany()),
-              taxLineSet,
-              price,
-              AppBaseService.COMPUTATION_SCALING);
-    }
-
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(
-            productCurrency, invoice.getCurrency(), price, invoice.getInvoiceDate())
-        .setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    return productPriceService.getConvertedPrice(
+        company,
+        product,
+        taxLineSet,
+        resultInAti,
+        invoice.getInvoiceDate(),
+        price,
+        productCurrency,
+        invoice.getCurrency());
   }
 
   @Override
