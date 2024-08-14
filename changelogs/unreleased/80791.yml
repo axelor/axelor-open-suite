@@ -1,0 +1,3 @@
+---
+title: "Address: removed unused fields related to invoicing/delivery/default address in base address form."
+module: axelor-base
