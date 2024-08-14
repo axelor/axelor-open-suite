@@ -185,6 +185,12 @@
     <option value="1">Exempt</option>
   </selection>
 
+  <selection
+    name="bankpayment.bank.statement.line.camt.053.commission.exemption.index.select">
+    <option value="0">Not exempt</option>
+    <option value="1">Exempt</option>
+  </selection>
+
   <selection name="bankpayment.bank.statement.line.camt.053.line.type.select">
     <option value="1">Initial balance</option>
     <option value="2">Movement</option>

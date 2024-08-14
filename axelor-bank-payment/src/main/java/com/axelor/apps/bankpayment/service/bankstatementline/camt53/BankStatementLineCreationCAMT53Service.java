@@ -23,5 +23,6 @@ public interface BankStatementLineCreationCAMT53Service {
       InterbankCodeLine rejectInterbankCodeLine,
       String origin,
       String reference,
-      int lineType);
+      int lineType,
+      Integer commissionExemptionIndexSelect);
 }

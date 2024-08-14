@@ -8,6 +8,8 @@
   <entity name="BankStatementLineCAMT53" extends="BankStatementLine" persistable="true">
     <integer name="lineTypeSelect" title="Line type"
       selection="bankpayment.bank.statement.line.camt.053.line.type.select"/>
+    <integer name="commissionExemptionIndexSelect" title="Commission exemption index"
+      selection="bankpayment.bank.statement.line.camt.053.commission.exemption.index.select"/>
 
     <extra-code><![CDATA[
 		public static final int LINE_TYPE_INITIAL_BALANCE = 1;

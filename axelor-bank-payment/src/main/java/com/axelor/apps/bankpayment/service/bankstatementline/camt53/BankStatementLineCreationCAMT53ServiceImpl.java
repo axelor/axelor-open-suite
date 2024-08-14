@@ -39,7 +39,8 @@ public class BankStatementLineCreationCAMT53ServiceImpl
       InterbankCodeLine rejectInterbankCodeLine,
       String origin,
       String reference,
-      int lineType) {
+      int lineType,
+      Integer commissionExemptionIndexSelect) {
     BankStatementLine bankStatementLine =
         bankStatementLineCreationService.createBankStatementLine(
             bankStatement,
@@ -57,7 +58,7 @@ public class BankStatementLineCreationCAMT53ServiceImpl
             reference);
     BankStatementLineCAMT53 bankStatementLineCAMT53 =
         Mapper.toBean(BankStatementLineCAMT53.class, Mapper.toMap(bankStatementLine));
-
+    bankStatementLineCAMT53.setCommissionExemptionIndexSelect(commissionExemptionIndexSelect);
     bankStatementLineCAMT53.setLineTypeSelect(lineType);
 
     if (lineType != BankStatementLineCAMT53Repository.LINE_TYPE_MOVEMENT) {

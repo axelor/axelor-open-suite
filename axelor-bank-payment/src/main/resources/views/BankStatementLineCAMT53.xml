@@ -78,6 +78,7 @@
         form-view="interbank-code-line-form"/>
       <field name="origin"/>
       <field name="reference"/>
+      <field name="commissionExemptionIndexSelect"/>
       <field name="description" colSpan="12"/>
       <field name="$currencyNumberOfDecimals" hidden="true"/>
     </panel>
