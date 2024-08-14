@@ -26,7 +26,6 @@ import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.CashAccount
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.CashAccount20;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.CashBalance3;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.CreditDebitCode;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.CreditorReferenceInformation2;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.DateAndDateTimeChoice;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.DateTimePeriodDetails;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.Document;
@@ -41,7 +40,6 @@ import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.RemittanceI
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.ReportEntry2;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.ReturnReason5Choice;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.ReturnReasonInformation10;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.StructuredRemittanceInformation7;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.TransactionParty2;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.TransactionReferences2;
 import com.axelor.apps.base.AxelorException;
