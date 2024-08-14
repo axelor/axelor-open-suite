@@ -12,6 +12,9 @@
     <many-to-one name="completedTaskStatus" title="Completed task status"
       ref="com.axelor.apps.project.db.TaskStatus"
       help="This task status will be used to define which status is flagged as completed for tasks."/>
+    <one-to-many name="taskStatusProgressByCategoryList"
+      ref="com.axelor.apps.project.db.TaskStatusProgressByCategory" title="Progress by task status"
+      mappedBy="projectTaskCategory"/>
   </entity>
 
 </domain-models>

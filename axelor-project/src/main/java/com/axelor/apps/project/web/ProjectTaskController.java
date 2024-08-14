@@ -193,7 +193,7 @@ public class ProjectTaskController {
   public void changeProgress(ActionRequest request, ActionResponse response) {
     try {
       ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
-      Beans.get(ProjectTaskService.class).changeProgress(projectTask);
+      Beans.get(ProjectTaskService.class).changeProgress(projectTask, projectTask.getProject());
       response.setValue("progress", projectTask.getProgress());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
