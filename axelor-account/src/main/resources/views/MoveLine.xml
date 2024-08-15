@@ -160,12 +160,14 @@
     <field name="amountRemaining" hidden="true" width="80" x-scale="companyCurrencyDecimals"/>
     <field name="amountPaid" hidden="true"/>
     <field name="taxLineSet" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
-      requiredIf="(account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
+      requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
       onChange="account-move-line-update-tax-equiv"
       onSelect="action-move-line-tax-line-set-method-set-tax-line-set-domain-on-select" width="80"
       widget="TagSelect"/>
     <field name="vatSystemSelect"
-      readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt', 'tax'].includes(account.accountType.technicalTypeSelect))"
+      validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax'"
+      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine"
+      requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"
       width="80"/>
     <field name="account.useForPartnerBalance" hidden="true"/>
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
@@ -224,6 +226,7 @@
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="currencyDecimals" hidden="true"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
+    <field name="move.functionalOriginSelect" hidden="true"/>
   </grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"
