@@ -16,25 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.db.repo;
+package com.axelor.apps.sale.web;
 
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
-import java.util.Map;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.sale.db.CartLine;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 
-public class CartLineManagementRepository extends CartLineRepository {
+public class CartLineController {
 
-  protected AppBaseService appBaseService;
-
-  @Inject
-  public CartLineManagementRepository(AppBaseService appBaseService) {
-    this.appBaseService = appBaseService;
-  }
-
-  @Override
-  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    json.put("$nbDecimalDigitForUnitPrice", appBaseService.getNbDecimalDigitForUnitPrice());
-    json.put("$nbDecimalDigitForQty", appBaseService.getNbDecimalDigitForQty());
-    return super.populate(json, context);
+  public void setUnit(ActionRequest request, ActionResponse response) {
+    try {
+      CartLine cartLine = request.getContext().asType(CartLine.class);
+      response.setValue(
+          "unit", Beans.get(SaleOrderLineProductService.class).getSaleUnit(cartLine.getProduct()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
