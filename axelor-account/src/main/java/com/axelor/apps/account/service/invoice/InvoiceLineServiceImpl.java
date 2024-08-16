@@ -50,7 +50,9 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.studio.db.AppInvoice;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -767,14 +769,16 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     if (operationTypeSelect == 3 || operationTypeSelect == 4) {
       domain += " AND self.tax.isNonDeductibleTax = false ";
     }
-    List<TaxLine> taxLines = taxLineRepository.all().filter(domain).bind("date", todayDate).fetch();
-    StringBuilder sb = new StringBuilder();
-    sb.append("self.id in (");
-    for (TaxLine taxLine : taxLines) {
-      sb.append(taxLine.getId() + ",");
+
+    try {
+      List<Long> taxLineIds =
+          JPA.em()
+              .createQuery(" select self.id from TaxLine self where " + domain, Long.class)
+              .setParameter("date", todayDate)
+              .getResultList();
+      return "self.id in (" + Joiner.on(",").join(taxLineIds) + ")";
+    } catch (Exception e) {
+      return "self.id = -1";
     }
-    sb.deleteCharAt(sb.length() - 1);
-    sb.append(")");
-    return sb.toString();
   }
 }

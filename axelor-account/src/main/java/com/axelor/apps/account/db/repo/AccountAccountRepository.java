@@ -19,12 +19,15 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,9 +36,27 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class AccountAccountRepository extends AccountRepository {
 
+  protected TaxService taxService;
+
+  @Inject
+  public AccountAccountRepository(TaxService taxService) {
+    this.taxService = taxService;
+  }
+
   @Override
   public Account save(Account account) {
+    Set<Tax> defaultTaxSet = account.getDefaultTaxSet();
     try {
+      boolean result = taxService.checkTaxesNotOnlyNonDeductibleTaxes(defaultTaxSet);
+      if (!result) {
+        AxelorException axelorException =
+            new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR1),
+                account.getLabel());
+        throw new PersistenceException(axelorException.getMessage(), axelorException);
+      }
+
       if (account.getId() == null) {
         return super.save(account);
       }

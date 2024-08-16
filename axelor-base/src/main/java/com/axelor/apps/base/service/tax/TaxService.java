@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.collect.Sets;
@@ -213,5 +214,44 @@ public class TaxService {
       return false;
     }
     return true;
+  }
+
+  public BigDecimal computeAdjustedTaxValue(
+      Boolean isNonDeductibleTax,
+      BigDecimal originalTaxRateValue,
+      BigDecimal sumOfAllDeductibleRateValue,
+      BigDecimal sumOfAllNonDeductibleRateValue) {
+    BigDecimal adjustedTaxValue;
+    if (isNonDeductibleTax) {
+      // non-deductible part
+      // formula:
+      // sum of all original normal tax rate * non-deductible tax rate
+
+      adjustedTaxValue =
+          sumOfAllDeductibleRateValue
+              .divide(
+                  BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
+              .multiply(originalTaxRateValue)
+              .divide(
+                  BigDecimal.valueOf(100),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
+    } else {
+      // deductible part
+      // formula:
+      // sum of all original normal tax rate * ( 1 - All non-deductible tax rate)
+      adjustedTaxValue =
+          originalTaxRateValue
+              .divide(
+                  BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
+              .multiply(
+                  BigDecimal.ONE.subtract(
+                      sumOfAllNonDeductibleRateValue.divide(
+                          BigDecimal.valueOf(100),
+                          AppBaseService.COMPUTATION_SCALING,
+                          RoundingMode.HALF_UP)));
+    }
+
+    return adjustedTaxValue;
   }
 }

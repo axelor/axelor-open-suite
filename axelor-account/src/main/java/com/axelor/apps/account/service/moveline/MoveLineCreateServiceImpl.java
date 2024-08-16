@@ -57,6 +57,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
@@ -64,7 +65,6 @@ import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -762,36 +762,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     Boolean isNonDeductibleTax = taxLine.getTax().getIsNonDeductibleTax();
     BigDecimal originalTaxRateValue = taxLine.getValue();
-    BigDecimal adjustedTaxValue = BigDecimal.ZERO;
-    if (isNonDeductibleTax) {
-      // non-deductible part
-      // formula:
-      // sum of all original normal tax rate * non-deductible tax rate
-
-      adjustedTaxValue =
-          sumOfAllDeductibleRateValue
-              .divide(
-                  BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
-              .multiply(originalTaxRateValue)
-              .divide(
-                  BigDecimal.valueOf(100),
-                  AppBaseService.COMPUTATION_SCALING,
-                  RoundingMode.HALF_UP);
-    } else {
-      // deductible part
-      // formula:
-      // sum of all original normal tax rate * ( 1 - All non-deductible tax rate)
-      adjustedTaxValue =
-          originalTaxRateValue
-              .divide(
-                  BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
-              .multiply(
-                  BigDecimal.ONE.subtract(
-                      sumOfAllNonDeductibleRateValue.divide(
-                          BigDecimal.valueOf(100),
-                          AppBaseService.COMPUTATION_SCALING,
-                          RoundingMode.HALF_UP)));
-    }
+    BigDecimal adjustedTaxValue =
+        Beans.get(TaxService.class)
+            .computeAdjustedTaxValue(
+                isNonDeductibleTax,
+                originalTaxRateValue,
+                sumOfAllDeductibleRateValue,
+                sumOfAllNonDeductibleRateValue);
 
     if (percentMoveTemplate) {
       debit = sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_PAYABLE);

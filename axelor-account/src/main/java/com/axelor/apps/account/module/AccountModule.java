@@ -68,6 +68,7 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.db.repo.PeriodManagementRepository;
+import com.axelor.apps.account.db.repo.ProductFamilyAccountRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupAccountRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.db.repo.ReconcileManagementRepository;
@@ -426,6 +427,7 @@ import com.axelor.apps.account.util.TaxAccountToolServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.ProductFamilyRepository;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
@@ -947,5 +949,7 @@ public class AccountModule extends AxelorModule {
     bind(InvoicePfpValidateService.class).to(InvoicePfpValidateServiceImpl.class);
 
     bind(InvoiceValidationService.class).to(InvoiceValidationServiceImpl.class);
+
+    bind(ProductFamilyRepository.class).to(ProductFamilyAccountRepository.class);
   }
 }

@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -50,6 +49,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -481,14 +481,16 @@ public class MoveLineServiceImpl implements MoveLineService {
     if (functionalOriginSelect == 3) {
       domain += " AND self.tax.isNonDeductibleTax = false ";
     }
-    List<TaxLine> taxLines = taxLineRepository.all().filter(domain).bind("date", date).fetch();
-    StringBuilder sb = new StringBuilder();
-    sb.append("self.id in (");
-    for (TaxLine taxLine : taxLines) {
-      sb.append(taxLine.getId() + ",");
+
+    try {
+      List<Long> taxLineIds =
+          JPA.em()
+              .createQuery(" select self.id from TaxLine self where " + domain, Long.class)
+              .setParameter("date", date)
+              .getResultList();
+      return "self.id in (" + Joiner.on(",").join(taxLineIds) + ")";
+    } catch (Exception e) {
+      return "self.id = -1";
     }
-    sb.deleteCharAt(sb.length() - 1);
-    sb.append(")");
-    return sb.toString();
   }
 }

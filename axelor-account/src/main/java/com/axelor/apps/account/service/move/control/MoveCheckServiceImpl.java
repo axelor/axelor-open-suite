@@ -18,11 +18,9 @@
  */
 package com.axelor.apps.account.service.move.control;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -48,8 +46,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -298,31 +294,5 @@ public class MoveCheckServiceImpl implements MoveCheckService {
                 .bind("id", move.getId())
                 .count()
             > 0;
-  }
-
-  @Override
-  public void checkNotOnlyNonDeTaxes(List<MoveLine> moveLineList) throws AxelorException {
-    if (moveLineList == null) {
-      return;
-    }
-    for (MoveLine moveLine : moveLineList) {
-      Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
-      try {
-        taxService.checkTaxLinesNotOnlyNonDeductibleTaxes(taxLineSet);
-      } catch (AxelorException e) {
-        String accountLabel =
-            Optional.of(moveLine).map(MoveLine::getAccount).map(Account::getLabel).orElse(null);
-        if (accountLabel != null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR1),
-              accountLabel);
-        } else {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR2));
-        }
-      }
-    }
   }
 }
