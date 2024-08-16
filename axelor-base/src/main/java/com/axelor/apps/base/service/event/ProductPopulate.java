@@ -16,28 +16,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.db.repo;
+package com.axelor.apps.base.service.event;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductBaseRepository;
-import com.axelor.apps.stock.db.repo.product.ProductStockRepositorySave;
-import com.google.inject.Inject;
-import java.math.BigDecimal;
+import java.util.Map;
 
-public class ProductStockRepository extends ProductBaseRepository {
+public class ProductPopulate {
 
-  @Inject protected ProductStockRepositorySave productStockRepositorySave;
+  private final Map<String, Object> json;
+  private final Map<String, Object> context;
 
-  @Override
-  public Product save(Product product) {
-    productStockRepositorySave.addProductCompanies(product);
-    return super.save(product);
+  public ProductPopulate(Map<String, Object> json, Map<String, Object> context) {
+    this.json = json;
+    this.context = context;
   }
 
-  @Override
-  public Product copy(Product product, boolean deep) {
-    Product copy = super.copy(product, deep);
-    copy.setAvgPrice(BigDecimal.ZERO);
-    return copy;
+  public Map<String, Object> getJson() {
+    return json;
+  }
+
+  public Map<String, Object> getContext() {
+    return context;
   }
 }
