@@ -7,6 +7,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.repo.ProductFamilyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -36,6 +37,7 @@ public class ProductFamilyAccountRepository extends ProductFamilyRepository {
                 TraceBackRepository.CATEGORY_INCONSISTENCY,
                 I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR1),
                 accountManagement.getPurchaseAccount().getLabel());
+        TraceBackService.traceExceptionFromSaveMethod(axelorException);
         throw new PersistenceException(axelorException.getMessage(), axelorException);
       }
     }

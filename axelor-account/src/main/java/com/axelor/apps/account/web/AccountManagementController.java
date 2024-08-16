@@ -34,10 +34,16 @@ public class AccountManagementController {
 
     boolean checkResult = taxService.checkTaxesNotOnlyNonDeductibleTaxes(taxes);
     if (!checkResult) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR1),
-          Optional.of(account).map(Account::getLabel).orElse(null));
+      if (account != null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR1),
+            Optional.of(account).map(Account::getLabel).orElse(null));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR2));
+      }
     }
   }
 }

@@ -18,17 +18,25 @@
  */
 package com.axelor.apps.base.db.repo;
 
+import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.service.TranslationService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.PersistenceException;
 
 public class ProductBaseRepository extends ProductRepository {
@@ -41,8 +49,24 @@ public class ProductBaseRepository extends ProductRepository {
 
   @Inject protected BarcodeGeneratorService barcodeGeneratorService;
 
+  @Inject protected TaxService taxService;
+
   @Override
   public Product save(Product product) {
+    List<AccountManagement> accountManagementList = product.getAccountManagementList();
+    for (AccountManagement accountManagement : accountManagementList) {
+      Set<Tax> purchaseTaxSet = accountManagement.getPurchaseTaxSet();
+      boolean result = taxService.checkTaxesNotOnlyNonDeductibleTaxes(purchaseTaxSet);
+      if (!result) {
+        AxelorException axelorException =
+            new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(BaseExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR));
+        TraceBackService.traceExceptionFromSaveMethod(axelorException);
+        throw new PersistenceException(axelorException.getMessage(), axelorException);
+      }
+    }
+
     try {
       if (appBaseService.getAppBase().getGenerateProductSequence()
           && Strings.isNullOrEmpty(product.getCode())) {
