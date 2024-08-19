@@ -7,7 +7,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -51,10 +50,10 @@ public class LoyaltyAccountPointsManagementServiceImpl
   public void updatePoints(LoyaltyAccount loyaltyAccount, BigDecimal points, SaleOrder saleOrder) {
     Objects.requireNonNull(loyaltyAccount);
 
-    BigDecimal updatedBalance = loyaltyAccount.getPointsBalance().add(points);
-    loyaltyAccount.setPointsBalance(updatedBalance.setScale(0, RoundingMode.FLOOR));
+    BigDecimal updatedBalance = loyaltyAccount.getFuturePointsBalance().add(points);
+    loyaltyAccount.setFuturePointsBalance(updatedBalance.setScale(0, RoundingMode.FLOOR));
     loyaltyAccount.addHistoryLineListItem(
-        loyaltyAccountHistoryLineService.createHistoryLine(points, LocalDateTime.now(), saleOrder));
+        loyaltyAccountHistoryLineService.createHistoryLine(points, saleOrder));
     loyaltyAccountRepository.save(loyaltyAccount);
   }
 

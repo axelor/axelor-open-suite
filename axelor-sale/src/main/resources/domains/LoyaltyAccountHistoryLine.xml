@@ -9,6 +9,8 @@
 
     <decimal name="pointsBalance" title="Points balance" precision="20" scale="10"
       default="0"/>
+    <decimal name="futurePointsBalance" title="Future points balance" precision="20"
+      scale="10" default="0"/>
     <decimal name="remainingPoints" title="Remaining points" precision="20" scale="10"
       default="0"/>
     <datetime name="acquisitionDateTime" title="Date of acquisition"/>
