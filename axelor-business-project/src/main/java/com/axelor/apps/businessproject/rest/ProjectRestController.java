@@ -31,6 +31,8 @@ public class ProjectRestController {
     Project project = ObjectFinder.find(Project.class, projectId, ObjectFinder.NO_VERSION);
 
     return ResponseConstructor.build(
-        Response.Status.OK, Beans.get(ProjectRestService.class).getProjectReportingValues(project));
+        Response.Status.OK,
+        String.format("Reporting values for project with id %s.", projectId),
+        Beans.get(ProjectRestService.class).getProjectReportingValues(project));
   }
 }
