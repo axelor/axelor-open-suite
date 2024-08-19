@@ -35,7 +35,6 @@ import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsServic
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -165,9 +164,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       throws AxelorException {
     Product product = invoiceLine.getProduct();
     Company company = invoice.getCompany();
-    BigDecimal price;
-    Currency productCurrency;
-    Map<String, Object> priceMap;
+
     if (isPurchase) {
       return productPriceService.getPurchaseUnitPrice(
           company,

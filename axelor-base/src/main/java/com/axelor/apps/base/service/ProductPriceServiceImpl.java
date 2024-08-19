@@ -11,8 +11,6 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class ProductPriceServiceImpl implements ProductPriceService {
@@ -45,8 +43,6 @@ public class ProductPriceServiceImpl implements ProductPriceService {
       LocalDate localDate,
       Currency toCurrency)
       throws AxelorException {
-    Map<String, Object> map = new HashMap<>();
-
     BigDecimal price = (BigDecimal) productCompanyService.get(product, "salePrice", company);
     Currency currency = (Currency) productCompanyService.get(product, "saleCurrency", company);
     return getConvertedPrice(
@@ -62,7 +58,6 @@ public class ProductPriceServiceImpl implements ProductPriceService {
       LocalDate localDate,
       Currency toCurrency)
       throws AxelorException {
-
     BigDecimal price = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
     Currency currency = (Currency) productCompanyService.get(product, "purchaseCurrency", company);
     return getConvertedPrice(
