@@ -33,11 +33,12 @@
     </panel>
 
     <panel name="taskStatusMgtPanel" title="Task status management">
-      <field name="defaultTaskStatusSet" widget="TagSelect"
+      <field name="defaultTaskStatusSet" widget="TagSelect" colSpan="12"
         onChange="action-app-project-method-manage-completed-task-status"/>
       <field name="completedTaskStatus" grid-view="task-status-grid"
         form-view="task-status-form"
         onSelect="action-app-project-attrs-set-completed-task-status-domain"/>
+      <field name="enableStatusManagementByTaskCategory"/>
     </panel>
 
     <panel name="actionsPanel">
