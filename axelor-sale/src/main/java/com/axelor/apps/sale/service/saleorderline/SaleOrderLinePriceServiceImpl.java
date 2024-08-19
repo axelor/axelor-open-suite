@@ -149,11 +149,15 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
     // Consider price if already computed from pricing scale else get it from product
     BigDecimal productSalePrice = saleOrderLine.getPrice();
 
-    Map<String, Object> map = productPriceService.getSaleUnitPrice(product, company);
-    Currency fromCurrency = (Currency) map.get("currency");
-
+    Currency fromCurrency = (Currency) productCompanyService.get(product, "saleCurrency", company);
     if (productSalePrice.compareTo(BigDecimal.ZERO) == 0) {
-      productSalePrice = (BigDecimal) map.get("price");
+      return productPriceService.getSaleUnitPrice(
+          company,
+          product,
+          taxLineSet,
+          resultInAti,
+          saleOrder.getCreationDate(),
+          saleOrder.getCurrency());
     }
 
     return productPriceService.getConvertedPrice(

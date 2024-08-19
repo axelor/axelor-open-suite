@@ -37,27 +37,36 @@ public class ProductPriceServiceImpl implements ProductPriceService {
   }
 
   @Override
-  public Map<String, Object> getSaleUnitPrice(Product product, Company company)
+  public BigDecimal getSaleUnitPrice(
+      Company company,
+      Product product,
+      Set<TaxLine> taxLineSet,
+      boolean resultInAti,
+      LocalDate localDate,
+      Currency toCurrency)
       throws AxelorException {
     Map<String, Object> map = new HashMap<>();
 
     BigDecimal price = (BigDecimal) productCompanyService.get(product, "salePrice", company);
     Currency currency = (Currency) productCompanyService.get(product, "saleCurrency", company);
-    map.put("price", price);
-    map.put("currency", currency);
-    return map;
+    return getConvertedPrice(
+        company, product, taxLineSet, resultInAti, localDate, price, currency, toCurrency);
   }
 
   @Override
-  public Map<String, Object> getPurchaseUnitPrice(Product product, Company company)
+  public BigDecimal getPurchaseUnitPrice(
+      Company company,
+      Product product,
+      Set<TaxLine> taxLineSet,
+      boolean resultInAti,
+      LocalDate localDate,
+      Currency toCurrency)
       throws AxelorException {
-    Map<String, Object> map = new HashMap<>();
 
     BigDecimal price = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
     Currency currency = (Currency) productCompanyService.get(product, "purchaseCurrency", company);
-    map.put("price", price);
-    map.put("currency", currency);
-    return map;
+    return getConvertedPrice(
+        company, product, taxLineSet, resultInAti, localDate, price, currency, toCurrency);
   }
 
   @Override

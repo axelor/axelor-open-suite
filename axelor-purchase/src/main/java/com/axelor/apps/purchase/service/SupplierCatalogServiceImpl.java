@@ -206,9 +206,8 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       purchaseCurrency = supplierCatalog.getSupplierPartner().getCurrency();
     } else {
       if (product != null) {
-        Map<String, Object> priceMap = productPriceService.getPurchaseUnitPrice(product, company);
-        purchasePrice = (BigDecimal) priceMap.get("price");
-        purchaseCurrency = (Currency) priceMap.get("currency");
+        return productPriceService.getPurchaseUnitPrice(
+            company, product, taxLineSet, resultInAti, localDate, currency);
       }
     }
 

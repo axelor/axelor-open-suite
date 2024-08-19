@@ -169,23 +169,23 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     Currency productCurrency;
     Map<String, Object> priceMap;
     if (isPurchase) {
-      priceMap = productPriceService.getPurchaseUnitPrice(product, company);
-      price = (BigDecimal) priceMap.get("price");
-      productCurrency = (Currency) priceMap.get("currency");
+      return productPriceService.getPurchaseUnitPrice(
+          company,
+          product,
+          taxLineSet,
+          resultInAti,
+          invoice.getInvoiceDate(),
+          invoice.getCurrency());
+
     } else {
-      priceMap = productPriceService.getSaleUnitPrice(product, company);
-      price = (BigDecimal) priceMap.get("price");
-      productCurrency = (Currency) priceMap.get("currency");
+      return productPriceService.getSaleUnitPrice(
+          company,
+          product,
+          taxLineSet,
+          resultInAti,
+          invoice.getInvoiceDate(),
+          invoice.getCurrency());
     }
-    return productPriceService.getConvertedPrice(
-        company,
-        product,
-        taxLineSet,
-        resultInAti,
-        invoice.getInvoiceDate(),
-        price,
-        productCurrency,
-        invoice.getCurrency());
   }
 
   @Override
