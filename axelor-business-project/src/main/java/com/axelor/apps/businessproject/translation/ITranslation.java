@@ -23,4 +23,7 @@ public interface ITranslation {
   public static final String JOB_COSTING_APP_NAME = /*$$(*/ "value:Job costing"; /*)*/
 
   public static final String PROJECT_STATUS_CANCELED = /*$$(*/ "value:Canceled"; /*)*/
+
+  public static final String PROJECT_TASK_FOLLOW_UP_VALUES_TOO_HIGH = /*$$(*/
+      "These following tasks have follow-up percentages above 1000%% or remaining amount over 10000 %s. <br>" /*)*/;
 }
