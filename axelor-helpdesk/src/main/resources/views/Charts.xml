@@ -545,11 +545,11 @@
     <dataset type="jpql">
         <![CDATA[
 	        SELECT COUNT(self.id) * 100. / (SELECT COUNT(self2.id) FROM Ticket self2 WHERE self2.ticketType.id = :id) AS _percentage,
-	            CASE self.statusSelect WHEN 0 THEN 'New' WHEN 1 THEN 'In progress' WHEN 2 THEN 'Resolved' ELSE 'Closed' END AS _status
+	            self.ticketStatus.name AS _status
 	        FROM Ticket self
 	        WHERE self.ticketType = :id
-	        GROUP BY self.statusSelect
-	        ORDER BY self.statusSelect
+	        GROUP BY self.ticketStatus.name
+	        ORDER BY self.ticketStatus.name
         ]]>
     </dataset>
     <category key="_status" type="text" title="Status"/>
