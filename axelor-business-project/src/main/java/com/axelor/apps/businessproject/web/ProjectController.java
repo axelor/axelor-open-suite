@@ -147,7 +147,7 @@ public class ProjectController {
     projectBusinessService.computeProjectTotals(project);
     response.setNotify(
         String.format(
-                I18n.get(ITranslation.PROJECT_TASK_FOLLOW_UP_PERCENTAGE_ABOVE_1000),
+                I18n.get(ITranslation.PROJECT_TASK_FOLLOW_UP_VALUES_TOO_HIGH),
                 projectBusinessService.checkPercentagesOver1000OnTasks(project))
             + I18n.get(BusinessProjectExceptionMessage.PROJECT_UPDATE_TOTALS_SUCCESS));
     response.setReload(true);

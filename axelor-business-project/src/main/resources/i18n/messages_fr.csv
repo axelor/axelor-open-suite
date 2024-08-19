@@ -464,7 +464,7 @@
 "The storage unit of the product %s is not compatible with the configuration.","L'unité de stockage du produit %s n'est pas compatible avec la configuration.",,
 "The timesheet product defined on the employee is not available on contracts linked to the task.","Le produit pour les temps passés défini à l’employé n’est pas présent sur l’un des contrats associés à la tâche.",,
 "There is no customer for this project/task","Le projet/tâche sélectionné(e) ne contient pas de client",,
-"These following tasks have follow-up percentages above 1000%% %s. <br>","Les tâches suivantes ont des pourcentages supérieurs à 1000%% %s. <br>",,
+"These following tasks have follow-up percentages above 1000%% or remaining amount over 10000 %s. <br>","Les tâches suivantes ont des pourcentages supérieurs à 1000%% ou un reste à faire supérieur à 10000 %s. <br>",,
 "This analytic distribution template will be filled with partner or assigned user configuration according to Business Project module configuration.","Ce modèle de distribution analytique sera rempli avec la configuration du partenaire ou de l'utilisateur attribué en fonction de la configuration du module gestion à l'affaire.",,
 "This configuration allows you to group expenses by period on the project's invoice and to attach separate receipts for these expenses.","Cette configuration vous permet de grouper les frais par période sur la facture de l’affaire et de joindre les justificatifs séparés de ces frais",,
 "This configuration allows you to select the rule to be applied when closing a project. Stay focus on selection for more information.","La configuration permet de sélectionner la règle à appliquer lors de la fermeture du projet. Placez le curseur au dessus de la sélection pour plus d'informations.",,

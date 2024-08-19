@@ -799,7 +799,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         .filter(
             projectTask ->
                 projectTask.getPercentageOfProgress().compareTo(percentageLimit) == 0
-                    || projectTask.getPercentageOfConsumption().compareTo(percentageLimit) == 0)
+                    || projectTask.getPercentageOfConsumption().compareTo(percentageLimit) == 0
+                    || projectTask.getRemainingAmountToDo().compareTo(BigDecimal.valueOf(9999.99))
+                        == 0)
         .map(ProjectTask::getName)
         .collect(Collectors.toList())
         .toString();

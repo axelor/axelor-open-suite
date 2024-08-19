@@ -1,0 +1,3 @@
+---
+title: "Compute project totals: limit follow-up values (percentageOfProgress, percentageOfConsumption, remainingAmountToDo) to respect constraints."
+module: axelor-business-project
