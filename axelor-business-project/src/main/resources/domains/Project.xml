@@ -117,7 +117,7 @@
     <many-to-one name="defaultFrameworkSupplierContract"
       title="Default framework supplier contract" ref="com.axelor.apps.contract.db.Contract"/>
 
-    <one-to-many name="projectHoldBackLineList"
+    <one-to-many name="projectHoldBackLineList" mappedBy="project"
       ref="com.axelor.apps.businessproject.db.ProjectHoldBackLine"/>
 
     <!-- Analytic fields -->
