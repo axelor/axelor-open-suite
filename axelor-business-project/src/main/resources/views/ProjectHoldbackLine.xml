@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="project-hold-back-line-grid" title="HoldBacks"
-    model="com.axelor.apps.project.db.ProjectHoldBackLine">
+    model="com.axelor.apps.businessproject.db.ProjectHoldBackLine">
     <field name="projectHoldBack"
       onChange="action-project-hold-back-line-record-set-percentage"/>
     <field name="percentage"/>
@@ -12,7 +12,7 @@
   </grid>
 
   <form name="project-hold-back-line-form" title="HoldBack line"
-    model="com.axelor.apps.project.db.ProjectHoldBackLine">
+    model="com.axelor.apps.businessproject.db.ProjectHoldBackLine">
     <panel name="mainPanel">
       <field name="projectHoldBack"
         onChange="action-project-hold-back-line-record-set-percentage"/>
@@ -25,7 +25,7 @@
   </form>
 
   <action-record name="action-project-hold-back-line-record-set-percentage"
-    model="com.axelor.apps.project.db.ProjectHoldBackLine">
+    model="com.axelor.apps.businessproject.db.ProjectHoldBackLine">
     <field name="percentage" expr="eval: projectHoldBack.defaultPercentage"
       if="projectHoldBack"/>
   </action-record>
