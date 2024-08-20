@@ -25,9 +25,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.auth.db.User;
-import com.axelor.meta.CallMethod;
 import java.util.Map;
-import java.util.Set;
 
 public interface ProjectService {
   Project generateProject(
@@ -60,12 +58,4 @@ public interface ProjectService {
   public ProjectStatus getDefaultProjectStatus();
 
   boolean checkIfResourceBooked(Project project);
-
-  public void getChildProjectIds(Set<Long> projectIdsSet, Project project);
-
-  @CallMethod
-  public Set<Long> getContextProjectIds();
-
-  @CallMethod
-  public String getContextProjectIdsString();
 }

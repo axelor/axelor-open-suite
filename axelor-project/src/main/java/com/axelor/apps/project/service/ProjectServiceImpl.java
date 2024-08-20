@@ -52,7 +52,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ProjectServiceImpl implements ProjectService {
 
@@ -297,43 +296,5 @@ public class ProjectServiceImpl implements ProjectService {
                             && resourceBooking.getFromDate().compareTo(x.getToDate()) <= 0)
                         || (resourceBooking.getToDate().compareTo(x.getFromDate()) >= 0)
                             && resourceBooking.getToDate().compareTo(x.getToDate()) <= 0));
-  }
-
-  @Override
-  public void getChildProjectIds(Set<Long> projectIdsSet, Project project) {
-    if (projectIdsSet.contains(project.getId())) {
-      return;
-    }
-
-    projectIdsSet.add(project.getId());
-
-    for (Project childProject : project.getChildProjectList()) {
-      getChildProjectIds(projectIdsSet, childProject);
-    }
-  }
-
-  @Override
-  public Set<Long> getContextProjectIds() {
-    User currentUser = AuthUtils.getUser();
-    Project contextProject = currentUser.getContextProject();
-    Set<Long> projectIdsSet = new HashSet<>();
-    if (contextProject == null) {
-      projectIdsSet.add(0l);
-      return projectIdsSet;
-    }
-    if (!currentUser.getIsIncludeSubContextProjects()) {
-      projectIdsSet.add(contextProject.getId());
-      return projectIdsSet;
-    }
-    this.getChildProjectIds(projectIdsSet, contextProject);
-    return projectIdsSet;
-  }
-
-  @Override
-  public String getContextProjectIdsString() {
-    Set<Long> contextProjectIds = this.getContextProjectIds();
-    return contextProjectIds.contains(0l)
-        ? null
-        : contextProjectIds.stream().map(String::valueOf).collect(Collectors.joining(","));
   }
 }

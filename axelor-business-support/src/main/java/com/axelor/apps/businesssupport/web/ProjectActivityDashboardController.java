@@ -16,24 +16,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.web;
+package com.axelor.apps.businesssupport.web;
 
-import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.service.ProjectDashboardService;
-import com.axelor.auth.AuthUtils;
+import com.axelor.apps.project.service.ProjectActivityDashboardService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Singleton
-public class ProjectDashboardController {
+public class ProjectActivityDashboardController {
 
   public void getData(ActionRequest request, ActionResponse response) {
-    Project project = AuthUtils.getUser().getActiveProject();
-    if (project == null) {
-      return;
+    LocalDate annoucementDate =
+        LocalDate.parse(
+            request.getContext().get("announcementDate").toString(), DateTimeFormatter.ISO_DATE);
+    LocalDate toDate = annoucementDate.plusDays(30);
+    LocalDate todayDate = LocalDate.now();
+    if (todayDate.isBefore(toDate)) {
+      toDate = todayDate;
     }
-    response.setValues(Beans.get(ProjectDashboardService.class).getData(project));
+    response.setValues(
+        Beans.get(ProjectActivityDashboardService.class).getData(annoucementDate, toDate, null));
   }
 }

@@ -56,7 +56,7 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
   @Inject protected MailMessageRepository mailMessageRepo;
   @Inject protected ProjectTaskRepository projectTaskRepo;
   @Inject protected WikiRepository wikiRepo;
-  @Inject protected ProjectService projectService;
+  @Inject protected ProjectToolService projectToolService;
   @Inject protected ObjectMapper objectMapper;
   @Inject protected ProjectRepository projectRepo;
 
@@ -76,10 +76,10 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
 
     if (projectId != null) {
       project = projectRepo.find(projectId);
-      projectService.getChildProjectIds(projectIdSet, project);
+      projectToolService.getChildProjectIds(projectIdSet, project);
     } else {
-      project = AuthUtils.getUser().getContextProject();
-      projectIdSet = projectService.getContextProjectIds();
+      project = AuthUtils.getUser().getActiveProject();
+      projectIdSet = projectToolService.getActiveProjectIds();
     }
 
     for (MailMessage message : mailMessageList) {

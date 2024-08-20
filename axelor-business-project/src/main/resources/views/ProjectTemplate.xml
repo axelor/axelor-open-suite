@@ -32,7 +32,7 @@
 
     <extend target="//field[@name='projectTaskCategorySet']">
       <insert position="after">
-        <field name="projectFolderSet" colSpan="12" widget="TagSelect"
+        <field name="projectFolderSet" colSpan="12" widget="TagSelect" canEdit="false"
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
       </insert>
     </extend>
