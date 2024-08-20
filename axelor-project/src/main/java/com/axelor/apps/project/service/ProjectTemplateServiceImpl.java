@@ -27,10 +27,13 @@ import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.studio.db.AppProject;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.Inject;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class ProjectTemplateServiceImpl implements ProjectTemplateService {
@@ -79,7 +82,8 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
   @Override
   public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
       throws AxelorException {
-    if (appProjectService.getAppProject().getGenerateProjectSequence()) {
+
+    if (isWizardNeeded(projectTemplate)) {
       projectTemplate = projectTemplateRepo.find(projectTemplate.getId());
       Project project = projectService.createProjectFromTemplate(projectTemplate, null, null);
       return ActionView.define(I18n.get("Project"))
@@ -91,15 +95,40 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
           .map();
     }
 
-    return ActionView.define(I18n.get("Create project from this template"))
-        .model(Wizard.class.getName())
-        .add("form", "project-template-wizard-form")
-        .param("popup", "reload")
-        .param("show-toolbar", "false")
-        .param("show-confirm", "false")
-        .param("width", "large")
-        .param("popup-save", "false")
-        .context("_projectTemplate", projectTemplate)
-        .map();
+    Map<String, Object> contextMap = computeWizardContext(projectTemplate);
+    ActionView.ActionViewBuilder builder =
+        ActionView.define(I18n.get("Create project from this template"))
+            .model(Wizard.class.getName())
+            .add("form", "project-template-wizard-form")
+            .param("popup", "reload")
+            .param("show-toolbar", "false")
+            .param("show-confirm", "false")
+            .param("width", "large")
+            .param("popup-save", "false");
+
+    if (!ObjectUtils.isEmpty(contextMap)) {
+      for (Map.Entry<String, Object> contextItem : contextMap.entrySet()) {
+        builder.context(contextItem.getKey(), contextItem.getValue());
+      }
+    }
+
+    return builder.map();
+  }
+
+  @Override
+  public boolean isWizardNeeded(ProjectTemplate projectTemplate) {
+    return projectTemplate != null
+        && projectTemplate.getId() != null
+        && Optional.ofNullable(appProjectService.getAppProject())
+            .map(AppProject::getGenerateProjectSequence)
+            .orElse(false);
+  }
+
+  @Override
+  public Map<String, Object> computeWizardContext(ProjectTemplate projectTemplate) {
+    Map<String, Object> contextMap = new HashMap<>();
+    contextMap.put("_projectTemplate", projectTemplate);
+
+    return contextMap;
   }
 }
