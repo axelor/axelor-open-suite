@@ -43,7 +43,6 @@ public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
   protected List<QuickMenuItem> getItems() {
     User user = AuthUtils.getUser();
     Set<Project> projectSet = user.getProjectSet();
-    // __self__ member of self.membersUserSet
     List<QuickMenuItem> items = new ArrayList<>();
 
     if (projectSet == null || projectSet.size() <= 1) {

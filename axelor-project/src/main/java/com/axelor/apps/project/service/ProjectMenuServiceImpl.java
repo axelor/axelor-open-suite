@@ -78,26 +78,6 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
   }
 
   @Override
-  public Map<String, Object> getMyProjects() {
-    Project activeProject =
-        Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
-
-    ActionViewBuilder builder =
-        ActionView.define(I18n.get("Projects"))
-            .model(Project.class.getName())
-            .add("grid", "project-grid")
-            .add("form", "project-form")
-            .add("kanban", "project-kanban")
-            .domain(
-                "(self.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.membersUserSet")
-            .context("_project", activeProject)
-            .context("_projectIds", projectToolService.getActiveProjectIds())
-            .param("search-filters", "project-project-filters");
-
-    return builder.map();
-  }
-
-  @Override
   public Map<String, Object> getAllProjectTasks() {
     ActionViewBuilder builder =
         ActionView.define(I18n.get("Tasks"))

@@ -11,11 +11,11 @@
       ref="com.axelor.apps.project.db.Project" mappedBy="membersUserSet"/>
     <many-to-one name="activeProject" title="Active project"
       ref="com.axelor.apps.project.db.Project"/>
-    <boolean name="isIncludeSubContextProjects" title="Include sub projects"/>
+    <boolean name="isIncludeSubProjects" title="Include sub projects"/>
 
     <track>
       <field name="activeProject" on="UPDATE"/>
-      <field name="isIncludeSubContextProjects" on="UPDATE"/>
+      <field name="isIncludeSubProjects" on="UPDATE"/>
     </track>
 
   </entity>

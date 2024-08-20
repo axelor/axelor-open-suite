@@ -53,6 +53,11 @@
 
   <!-- My project menu -->
 
+  <action-method name="project.mine" id="businessproject.project.mine"
+    if-module="axelor-business-project">
+    <call class="com.axelor.apps.businessproject.web.ProjectMenuController" method="myProjects"/>
+  </action-method>
+
   <menuitem name="business-project-mine" parent="menu-my-project-root" order="200"
     title="Business projects" action="business.project.mine"
     if="__config__.app.isApp('business-project')"/>

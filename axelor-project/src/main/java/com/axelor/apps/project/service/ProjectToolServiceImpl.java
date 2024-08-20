@@ -34,7 +34,7 @@ public class ProjectToolServiceImpl implements ProjectToolService {
       projectIdsSet.add(0l);
       return projectIdsSet;
     }
-    if (!currentUser.getIsIncludeSubContextProjects()) {
+    if (!currentUser.getIsIncludeSubProjects()) {
       projectIdsSet.add(activateProject.getId());
       return projectIdsSet;
     }

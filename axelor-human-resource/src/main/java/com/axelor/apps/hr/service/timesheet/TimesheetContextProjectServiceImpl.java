@@ -52,7 +52,7 @@ public class TimesheetContextProjectServiceImpl implements TimesheetContextProje
         projectToolService.getChildProjectIds(projectIdsSet, timeSpentProject);
       }
     } else {
-      if (!currentUser.getIsIncludeSubContextProjects()) {
+      if (!currentUser.getIsIncludeSubProjects()) {
         projectIdsSet.add(contextProject.getId());
         return projectIdsSet;
       }
