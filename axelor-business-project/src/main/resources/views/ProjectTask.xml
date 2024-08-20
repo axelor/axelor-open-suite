@@ -383,7 +383,7 @@
 
   <action-group name="action-project-task-group-assigned-to-on-change">
     <action name="action-project-task-attrs-hide-time-spent-button"/>
-    <action name="action-project-task-group-set-product-and-update"/>
+    <action name="action-project-task-group-set-product-and-update" if="!saleOrderLine"/>
   </action-group>
 
   <action-method name="action-project-task-method-get-employee-product">

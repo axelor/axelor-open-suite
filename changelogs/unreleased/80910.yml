@@ -1,0 +1,3 @@
+---
+title: "Project task: fixed product changing on assignedTo when linked to a sale order line."
+module: "axelor-business-project"
