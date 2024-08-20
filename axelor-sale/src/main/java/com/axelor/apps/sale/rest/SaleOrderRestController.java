@@ -54,7 +54,11 @@ public class SaleOrderRestController {
 
     SaleOrder saleOrder =
         Beans.get(SaleOrderGeneratorService.class)
-            .createSaleOrder(requestBody.fetchClientPartner(), requestBody.fetchCompany());
+            .createSaleOrder(
+                requestBody.fetchClientPartner(),
+                requestBody.fetchCompany(),
+                requestBody.fetchContact(),
+                requestBody.fetchCurrency());
 
     return ResponseConstructor.buildCreateResponse(saleOrder, new SaleOrderResponse(saleOrder));
   }

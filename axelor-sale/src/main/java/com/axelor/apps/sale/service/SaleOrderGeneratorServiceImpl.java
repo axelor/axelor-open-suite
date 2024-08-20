@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -65,20 +66,27 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public SaleOrder createSaleOrder(Partner clientPartner, Company company)
+  public SaleOrder createSaleOrder(
+      Partner clientPartner, Company company, Partner contactPartner, Currency currency)
       throws AxelorException, JsonProcessingException {
     SaleOrder saleOrder = new SaleOrder();
     boolean isTemplate = false;
     saleOrderInitValueService.setIsTemplate(saleOrder, isTemplate);
     saleOrderInitValueService.getOnNewInitValues(saleOrder);
-    checkClientPartner(clientPartner, saleOrder);
-    saleOrder.setClientPartner(clientPartner);
     if (company != null) {
       saleOrder.setCompany(company);
       saleOrderOnChangeService.companyOnChange(saleOrder);
     }
+    checkClientPartner(clientPartner, saleOrder);
+    saleOrder.setClientPartner(clientPartner);
     saleOrderOnChangeService.partnerOnChange(saleOrder);
-
+    if (contactPartner != null) {
+      checkContact(clientPartner, contactPartner);
+      saleOrder.setContactPartner(contactPartner);
+    }
+    if (currency != null) {
+      saleOrder.setCurrency(currency);
+    }
     saleOrderRepository.save(saleOrder);
     return saleOrder;
   }
@@ -97,6 +105,15 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.CLIENT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS),
           company.getName());
+    }
+  }
+
+  protected void checkContact(Partner clientPartner, Partner contactPartner)
+      throws AxelorException {
+    if (!clientPartner.getContactPartnerSet().contains(contactPartner)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.CONTACT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS));
     }
   }
 }
