@@ -152,7 +152,11 @@
       <panel-include view="incl-member-panel-form"/>
       <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
         if="__config__.app.isApp('employee')"/>
-      <panel-include view="incl-holdback-panel-form"/>
+      <panel title="HoldBacks" name="projectHoldBacksPanel">
+        <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"
+          title="HoldBacks lines" colSpan="12" form-view="project-hold-back-line-form"
+          grid-view="project-hold-back-line-grid" editable="true"/>
+      </panel>
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
       <panel name="reportingPanel" title="Reporting" if-module="axelor-business-project"

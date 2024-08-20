@@ -194,16 +194,6 @@
     <view type="form" name="wiki-folder-form"/>
   </action-view>
 
-  <!-- HOLDBACK -->
-  <menuitem name="project-project-hold-back" parent="project-configurations"
-    title="HoldBacks" action="project.root.project.hold.back.all" order="1400"/>
-
-  <action-view name="project.root.project.hold.back.all" title="HoldBacks"
-    model="com.axelor.apps.project.db.ProjectHoldBack">
-    <view type="grid" name="project-hold-back-grid"/>
-    <view type="form" name="project-hold-back-form"/>
-  </action-view>
-
   <menuitem name="project-sites" parent="project-configurations" title="Sites"
     action="project.sites" order="110"
     if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
