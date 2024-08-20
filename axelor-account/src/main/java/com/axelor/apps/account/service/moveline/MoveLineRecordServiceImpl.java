@@ -171,7 +171,9 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   public void setDebitCredit(MoveLine moveLine) {
     BigDecimal currencyAmount = moveLine.getCurrencyAmount();
     BigDecimal currencyRate = moveLine.getCurrencyRate();
-    BigDecimal newCurrencyAmount = currencyAmount.multiply(currencyRate).abs();
+    BigDecimal newCurrencyAmount =
+        currencyScaleService.getCompanyScaledValue(
+            moveLine, currencyAmount.multiply(currencyRate).abs());
 
     if (currencyAmount.signum() < 0) {
       moveLine.setDebit(BigDecimal.ZERO);

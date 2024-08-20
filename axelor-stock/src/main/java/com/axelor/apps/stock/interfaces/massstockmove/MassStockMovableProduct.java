@@ -20,9 +20,9 @@ public interface MassStockMovableProduct {
 
   StockLocation getStockLocation();
 
-  BigDecimal getCurrentQty();
-
   BigDecimal getMovedQty();
+
+  void setMovedQty(BigDecimal movedQty);
 
   StockMoveLine getStockMoveLine();
 

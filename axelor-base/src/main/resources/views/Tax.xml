@@ -9,11 +9,14 @@
     <field name="name"/>
   </grid>
 
-  <form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" width="large">
+  <form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" width="large"
+    onLoad="action-base-attrs-set-tax-line-list-scale">
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
       <field name="taxType"/>
+      <field name="manageByAmount" widget="boolean-select" x-false-text="Manage by percentage"
+        x-true-text="Manage by amount" colSpan="3"/>
     </panel>
     <panel-tabs>
       <panel name="taxRateListPanel" title="Tax rate list">
@@ -30,6 +33,11 @@
     model="com.axelor.apps.account.db.Tax">
     <attribute name="domain" for="activeTaxLine"
       expr="eval: &quot; self.tax.id = ${__this__.id} &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-base-attrs-set-tax-line-list-scale">
+    <attribute name="scale" for="taxLineList.value"
+      expr="eval: __config__.app.getApp('base').getNbDecimalDigitForTaxRate()"/>
   </action-attrs>
 
   <search-filters name="tax-filters" model="com.axelor.apps.account.db.Tax"

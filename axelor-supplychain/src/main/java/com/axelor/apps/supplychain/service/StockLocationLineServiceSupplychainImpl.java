@@ -26,9 +26,9 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
@@ -53,14 +53,16 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       AppBaseService appBaseService,
       UnitConversionService unitConversionService,
       AppSupplychainService appSupplychainService,
-      StockLocationLineHistoryService stockLocationLineHistoryService) {
+      StockLocationLineHistoryService stockLocationLineHistoryService,
+      StockLocationLineFetchService stockLocationLineFetchService) {
     super(
         stockLocationLineRepo,
         stockRulesService,
         stockMoveLineRepository,
         appBaseService,
         unitConversionService,
-        stockLocationLineHistoryService);
+        stockLocationLineHistoryService,
+        stockLocationLineFetchService);
     this.appSupplychainService = appSupplychainService;
   }
 
@@ -73,7 +75,8 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
     if (appSupplychainService.isApp("supplychain")
         && appSupplychainService.getAppSupplychain().getManageStockReservation()
         && product.getStockManaged()) {
-      StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
+      StockLocationLine stockLocationLine =
+          stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
       if (stockLocationLine == null) {
         return;
       }
@@ -93,44 +96,6 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
             stockLocationLine.getProduct().getCode());
       }
     }
-  }
-
-  @Override
-  public BigDecimal getAvailableQty(StockLocation stockLocation, Product product) {
-
-    if (!appSupplychainService.isApp("supplychain")) {
-      return super.getAvailableQty(stockLocation, product);
-    }
-
-    StockLocationLine stockLocationLine = getStockLocationLine(stockLocation, product);
-    BigDecimal availableQty = BigDecimal.ZERO;
-    if (stockLocationLine != null) {
-      availableQty = stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
-    }
-    return availableQty;
-  }
-
-  @Override
-  public BigDecimal getTrackingNumberAvailableQty(
-      StockLocation stockLocation, TrackingNumber trackingNumber) {
-
-    if (!appSupplychainService.isApp("supplychain")
-        || !appSupplychainService.getAppSupplychain().getManageStockReservation()) {
-      return super.getTrackingNumberAvailableQty(stockLocation, trackingNumber);
-    }
-
-    StockLocationLine detailStockLocationLine =
-        getDetailLocationLine(stockLocation, trackingNumber.getProduct(), trackingNumber);
-
-    BigDecimal availableQty = BigDecimal.ZERO;
-
-    if (detailStockLocationLine != null) {
-      availableQty =
-          detailStockLocationLine
-              .getCurrentQty()
-              .subtract(detailStockLocationLine.getReservedQty());
-    }
-    return availableQty;
   }
 
   @Override

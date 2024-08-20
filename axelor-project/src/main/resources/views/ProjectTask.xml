@@ -28,9 +28,8 @@
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
-      <button name="doneBtn" icon="fa-check"
-        onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
-        showIf="project.isShowStatus"/>
+      <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
+        showIf="project.taskStatusManagementSelect != 1"/>
     </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
@@ -47,7 +46,8 @@
     <panel name="mainPanel" colSpan="12">
       <panel name="statusPanel" stacked="true" colSpan="6">
         <field name="status" widget="NavSelect" showTitle="false"
-          showIf="project.isShowStatus" x-order="sequence"/>
+          showIf="project.taskStatusManagementSelect != 1" x-order="sequence"
+          onChange="action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
       </panel>
       <panel name="viewerTagsPanel" colSpan="4">
@@ -136,8 +136,10 @@
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
         <panel name="categoryPanel" showIf="project.isShowTaskCategory" colSpan="4">
           <field name="projectTaskCategory" colSpan="12"
+            requiredIf="project.taskStatusManagementSelect == 4"
             onSelect="action-project-task-attrs-project-task-category-configurations"
             onChange="action-project-task-group-project-category-onchange"/>
+          <field name="project.taskStatusManagementSelect" hidden="true"/>
         </panel>
         <panel name="sectionPanel" showIf="project.isShowSection" colSpan="4">
           <field name="projectTaskSection" colSpan="12" form-view="project-task-section-form"
@@ -173,7 +175,7 @@
         <field name="description" colSpan="12" widget="html"/>
         <field name="project.isShowProgress" hidden="true"/>
         <field name="project.isShowSection" hidden="true"/>
-        <field name="project.isShowStatus" hidden="true"/>
+        <field name="project.taskStatusManagementSelect" hidden="true"/>
         <field name="project.isShowPriority" hidden="true"/>
         <field name="project.isShowTaskCategory" hidden="true"/>
       </panel>
@@ -247,6 +249,21 @@
           <field name="$_totalTimerDuration" type="decimal" readonly="true"
             title="Total duration (Hours)" colSpan="12"/>
         </panel>
+      </panel>
+      <panel name="linkTaskPanel" title="Manage relations">
+        <field name="$projectTaskLinkType" title="Project task link type" type="Many-to-one"
+          target="com.axelor.apps.project.db.ProjectTaskLinkType" colSpan="3"
+          onSelect="action-project-task-method-set-link-type-domain"/>
+        <field name="$projectTask" title="Project task to link" type="Many-to-one"
+          target="com.axelor.apps.project.db.ProjectTask" colSpan="3"
+          onSelect="action-project-task-method-set-task-domain"/>
+        <field name="$projectTask.project" colSpan="3" readonly="true" type="Many-to-one"
+          target="com.axelor.apps.project.db.Project"/>
+        <button name="generateNewLink" readonlyIf="!$projectTaskLinkType || !$projectTask"
+          title="Generate a new link" onClick="save, action-project-task-method-generate-new-link"
+          colSpan="3"/>
+        <panel-related field="projectTaskLinkList" colSpan="12" readonly="true"
+          grid-view="project-task-link-grid" form-view="project-task-link-form"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
@@ -439,14 +456,13 @@
     <action name="action-project-task-record-project-configurations" if="project != null"/>
     <action name="action-project-task-business-support-provider"
       if="__config__.app.isApp('business-support')"/>
-    <action name="action-project-task-attrs-project-filter-status"/>
+    <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
     <action name="action-project-task-attrs-onchange-invoice-type"/>
-    <action name="test" if="parentTask != null"/>
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">
-    <action name="action-project-task-attrs-project-filter-status" if="project?.isShowStatus"/>
+    <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-record-project-configurations"/>
     <action name="action-project-task-method-update-discount"
       if="__config__.app.isApp('business-project')"/>
@@ -474,6 +490,38 @@
   <action-group name="action-project-task-group-unit-price-onchange">
     <action name="action-project-task-method-compute"
       if="__config__.app.isApp('business-project')"/>
+  </action-group>
+
+  <action-method name="action-project-task-method-set-link-type-domain">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="setLinkTypeDomain"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-set-task-domain">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="setTaskDomain"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-generate-new-link">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="generateNewLink"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-change-status">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="changeStatus"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-validate-finish-status">
+    <call class="com.axelor.apps.project.web.ProjectTaskController"
+      method="validateCompletedStatus"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-set-status-selection-in">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="manageStatus"/>
+  </action-method>
+
+  <action-group name="action-project-task-group-click-done">
+    <action name="action-project-task-method-validate-finish-status"/>
+    <action name="action-project-task-method-change-status"/>
+    <action name="action-project-task-method-auto-change-progress"/>
+    <action name="save"/>
   </action-group>
 
   <action-view name="action-project-task-view-task" title="Tasks"
@@ -548,8 +596,8 @@
       expr="call: com.axelor.apps.project.service.ProjectTaskService:getPriority(project)"
       if="project?.isShowPriority"/>
     <field name="status"
-      expr="call: com.axelor.apps.project.service.ProjectTaskService:getStatus(project)"
-      if="project?.isShowStatus"/>
+      expr="call: com.axelor.apps.project.service.ProjectTaskService:getStatus(project, __this__)"
+      if="project?.taskStatusManagementSelect != 1"/>
   </action-record>
 
   <action-record name="action-project-task-defaults"
@@ -637,23 +685,6 @@
     <field name="assignedTo" expr="eval: __user__"/>
   </action-record>
 
-  <action-record name="action-project-task-record-status-in-progress"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <field name="status" expr="in-progress"/>
-  </action-record>
-
-  <action-record name="action-project-task-record-status-closed"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <field name="statusBeforeComplete" expr="eval: status"/>
-    <field name="status" expr="closed"/>
-  </action-record>
-
-  <action-record name="action-project-task-record-status-canceled"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <field name="statusBeforeComplete" expr="eval: status"/>
-    <field name="status" expr="canceled"/>
-  </action-record>
-
   <action-record name="action-project-task-record-product-selected"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="quantity" expr="1"/>
@@ -680,9 +711,19 @@
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="fillSubtask"/>
   </action-method>
 
+  <action-method name="action-project-task-method-auto-change-progress">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="changeProgress"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-change-statut-depending-category">
+    <call class="com.axelor.apps.project.web.ProjectTaskController"
+      method="changeStatusDependingCategory"/>
+  </action-method>
+
   <action-group name="action-project-task-group-project-category-onchange">
     <action name="action-project-task-method-onchange-category"
       if="__config__.app.isApp('business-project')"/>
+    <action name="action-project-task-method-change-statut-depending-category"/>
   </action-group>
 
   <action-attrs name="action-project-task-atts-priority-on-select">
@@ -707,7 +748,7 @@
   </action-attrs>
 
   <action-group name="action-project-task-group-timer-process">
-    <action name="action-project-task-attrs-project-filter-status" if="project?.isShowStatus"/>
+    <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-method-manage-timer-buttons"/>
     <action name="action-project-task-method-compute-total-timer-duration"/>
     <action name="action-project-task-attrs-scale-and-precision"
@@ -770,12 +811,6 @@
     <view type="form" name="project-task-form"/>
   </action-view>
 
-  <action-record name="action-project-task-record-change-status"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <field name="statusBeforeComplete" expr="eval: status"/>
-    <field name="status" expr="eval: project?.completedTaskStatus" if="project.isShowStatus"/>
-  </action-record>
-
   <action-view name="action-project-view-per-section-kanban" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="kanban" name="task-per-section-kanban"/>
@@ -811,14 +846,6 @@
     <context name="_project" expr="eval:__this__"/>
     <context name="_typeSelect" expr="eval: __repo__(ProjectTask).TYPE_TASK"/>
   </action-view>
-
-  <action-attrs name="action-project-task-attrs-project-filter-status">
-    <attribute name="selection-in" for="status"
-      expr="eval: project?.projectTaskStatusSet?.collect{it.id}?.join(',')"
-      if="project?.projectTaskStatusSet"/>
-    <attribute name="selection-in" for="status" expr="eval: [-1]"
-      if="!project?.projectTaskStatusSet"/>
-  </action-attrs>
 
   <action-attrs name="action-project-task-attrs-hide-time-spent-button">
     <attribute name="hidden" for="timeSpentBtn"

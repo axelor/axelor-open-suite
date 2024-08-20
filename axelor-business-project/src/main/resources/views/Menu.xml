@@ -10,7 +10,7 @@
   <action-view name="business.project.all" title="Business projects"
     model="com.axelor.apps.project.db.Project">
     <view type="grid" name="business-project-grid"/>
-    <view type="form" name="project-form"/>
+    <view type="form" name="business-project-form"/>
     <view type="calendar" name="project-calendar"/>
     <view-param name="search-filters" value="project-filters"/>
     <domain>self.isBusinessProject = true</domain>
@@ -49,6 +49,17 @@
     <view type="grid" name="business-project-batch-grid"/>
     <view type="form" name="business-project-batch-form"/>
     <view-param name="search-filters" value="business-project-batch-filters"/>
+  </action-view>
+
+  <!-- HOLDBACK -->
+  <menuitem name="business-project-project-hold-back" parent="project-configurations"
+    if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+    title="HoldBacks" action="business.project.root.project.hold.back.all" order="1400"/>
+
+  <action-view name="business.project.root.project.hold.back.all" title="HoldBacks"
+    model="com.axelor.apps.businessproject.db.ProjectHoldBack">
+    <view type="grid" name="project-hold-back-grid"/>
+    <view type="form" name="project-hold-back-form"/>
   </action-view>
 
 </object-views>

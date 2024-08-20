@@ -49,10 +49,14 @@
           form-view="user-form" grid-view="user-grid" hideIf="synchronize"/>
       </panel>
 
-      <panel title="Wiki" name="wikiPanel">
-        <panel-related name="wikiListPanel" field="wikiList" colSpan="12"
-          form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
+      <panel title="Invoicing" name="invoicingPanel" showIf="isBusinessProject"
+        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+        <field name="isInvoicingExpenses" colSpan="4"/>
+        <field name="isInvoicingPurchases" colSpan="4"/>
+        <field name="invoicingComment" colSpan="12"/>
       </panel>
+
+      <panel-include view="incl-wiki-panel-form"/>
 
       <panel title="Configurations" name="configurationsPanel">
         <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"

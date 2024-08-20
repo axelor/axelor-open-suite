@@ -216,8 +216,26 @@
   <input file="account_analyticJournal.csv" separator=";"
     type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId"/>
 
-  <input file="account_accountConfig.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId">
+  <input file="account_accountConfig_accounts.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountConfig">
+    <bind column="clearanceAccountSet" to="clearanceAccountSet"
+      search="self.code in :clearanceAccountSet" eval="clearanceAccountSet.split('\\|') as List"/>
+  </input>
+
+  <input file="account_accountConfig_journal.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true">
+  </input>
+
+  <input file="account_accountConfig_payments.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true">
+  </input>
+
+  <input file="account_accountConfig_invoicing.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true">
+  </input>
+
+  <input file="account_accountConfig_misc.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true">
     <bind column="temporaryClosureAuthorizedRoleList" to="temporaryClosureAuthorizedRoleList"
       search="self.name in :temporaryClosureAuthorizedRoleList"
       eval="temporaryClosureAuthorizedRoleList.split('\\|') as List"/>
@@ -227,8 +245,6 @@
     <bind column="closureAuthorizedRoleList" to="closureAuthorizedRoleList"
       search="self.name in :closureAuthorizedRoleList"
       eval="closureAuthorizedRoleList.split('\\|') as List"/>
-    <bind column="clearanceAccountSet" to="clearanceAccountSet"
-      search="self.code in :clearanceAccountSet" eval="clearanceAccountSet.split('\\|') as List"/>
   </input>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
@@ -367,6 +383,9 @@
     <bind to="accountConfig" column="accountConfig_importId"
       search="self.importId = :accountConfig_importId"/>
   </input>
+
+  <input file="meta_metaTranslation.csv" separator=";"
+    type="com.axelor.meta.db.MetaTranslation" search="self.key = :key AND self.language = :language"/>
 
   <input file="account_bankDetails.csv" separator=";" search="self.importId = :importId"
     update="true" type="com.axelor.apps.base.db.BankDetails">

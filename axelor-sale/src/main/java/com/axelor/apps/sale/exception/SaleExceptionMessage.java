@@ -116,4 +116,26 @@ public final class SaleExceptionMessage {
 
   public static final String SALE_ORDER_CANNOT_DELETE_COMFIRMED_ORDER = /*$$(*/
       "It is not possible to delete a confirmed order." /*)*/;
+
+  public static final String SALE_ORDER_FINALIZE_EMPTY_LIST = /*$$(*/
+      "Please enter at least one detail line." /*)*/;
+
+  public static final String SALE_ORDER_FINALIZE_PRODUCT_SOLD_AT_LOSS = /*$$(*/
+      "One product is sold at loss, are you sure you want to finalize the quotation ?" /*)*/;
+
+  public static final String SALE_ORDER_FINALIZE_PRICE_LIST_NOT_VALID = /*$$(*/
+      "The selected price list is no longer valid, do you still want to continue?" /*)*/;
+
+  public static final String SALE_ORDER_CONFIRM_TOTAL_AMOUNT_ZERO = /*$$(*/
+      "The total amount of quotation is zero. Do you want to proceed ?" /*)*/;
+
+  public static final String PRODUCT_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS = /*$$(*/
+      "You can not choose this product for this order: %s" /*)*/;
+
+  public static final String EITHER_PRODUCT_OR_SALE_ORDER_ARE_NULL = /*$$(*/
+      "Either the sale order or the product is null." /*)*/;
+  public static final String CLIENT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS = /*$$(*/
+      "The client provided is not a customer of the given company: %s." /*)*/;
+  public static final String SALE_ORDER_NOT_DRAFT = /*$$(*/
+      "You can only add a line to a draft sale order." /*)*/;
 }

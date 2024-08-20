@@ -20,20 +20,24 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.Map;
 
 public class BankReconciliationLineManagementRepository extends BankReconciliationLineRepository {
 
+  protected CurrencyScaleService currencyScaleService;
+
+  @Inject
+  public BankReconciliationLineManagementRepository(CurrencyScaleService currencyScaleService) {
+    this.currencyScaleService = currencyScaleService;
+  }
+
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     Long bankReconciliationLineId = (Long) json.get("id");
-    BankReconciliationLine bankReconciliationLine =
-        Beans.get(BankReconciliationLineRepository.class).find(bankReconciliationLineId);
+    BankReconciliationLine bankReconciliationLine = find(bankReconciliationLineId);
 
-    json.put(
-        "$currencyNumberOfDecimals",
-        Beans.get(CurrencyScaleService.class).getScale(bankReconciliationLine));
+    json.put("$currencyNumberOfDecimals", currencyScaleService.getScale(bankReconciliationLine));
 
     return super.populate(json, context);
   }

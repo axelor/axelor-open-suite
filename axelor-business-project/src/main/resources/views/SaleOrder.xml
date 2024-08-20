@@ -15,7 +15,7 @@
     extension="true">
     <extend target="/">
       <attribute name="onNew"
-        value="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"/>
+        value="action-sale-order-method-onnew,action-saleorder-record-template,action-sale-order-method-create-template"/>
     </extend>
   </form>
 

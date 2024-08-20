@@ -29,9 +29,11 @@ import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.studio.db.AppProject;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -50,6 +52,8 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected FrequencyService frequencyService;
   protected AppBaseService appBaseService;
   protected ProjectRepository projectRepository;
+  protected AppProjectService appProjectService;
+  protected TaskStatusToolService taskStatusToolService;
 
   private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
@@ -59,12 +63,16 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       FrequencyRepository frequencyRepo,
       FrequencyService frequencyService,
       AppBaseService appBaseService,
-      ProjectRepository projectRepository) {
+      ProjectRepository projectRepository,
+      AppProjectService appProjectService,
+      TaskStatusToolService taskStatusToolService) {
     this.projectTaskRepo = projectTaskRepo;
     this.frequencyRepo = frequencyRepo;
     this.frequencyService = frequencyService;
     this.appBaseService = appBaseService;
     this.projectRepository = projectRepository;
+    this.appProjectService = appProjectService;
+    this.taskStatusToolService = taskStatusToolService;
   }
 
   @Override
@@ -168,7 +176,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     task.setName(subject);
     task.setAssignedTo(assignedTo);
     task.setTaskDate(appBaseService.getTodayDate(null));
-    task.setStatus(getStatus(project));
+    task.setStatus(getStatus(project, task));
     task.setPriority(getPriority(project));
     project.addProjectTaskListItem(task);
     projectTaskRepo.save(task);
@@ -191,13 +199,13 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
-  public TaskStatus getStatus(Project project) {
+  public TaskStatus getStatus(Project project, ProjectTask projectTask) {
     if (project == null) {
       return null;
     }
 
     project = projectRepository.find(project.getId());
-    Set<TaskStatus> projectStatusSet = project.getProjectTaskStatusSet();
+    Set<TaskStatus> projectStatusSet = taskStatusToolService.getTaskStatusSet(project, projectTask);
 
     return ObjectUtils.isEmpty(projectStatusSet)
         ? null
@@ -264,5 +272,17 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     projectTask.setPriority(parentTask.getPriority());
     projectTask.setProjectTaskTagSet(parentTask.getProjectTaskTagSet());
     projectTask.setAssignedTo(parentTask.getAssignedTo());
+  }
+
+  @Override
+  public void changeProgress(ProjectTask projectTask) {
+    AppProject appProject = appProjectService.getAppProject();
+    if (appProject == null || projectTask == null) {
+      return;
+    }
+
+    if (appProject.getSelectAutoProgressOnProjectTask() && projectTask.getStatus() != null) {
+      projectTask.setProgress(projectTask.getStatus().getDefaultProgress());
+    }
   }
 }

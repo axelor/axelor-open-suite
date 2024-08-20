@@ -80,4 +80,11 @@ public interface InvoicePaymentToolService {
 
   @CallMethod
   boolean isPartialPayment(InvoicePayment invoicePayment);
+
+  BigDecimal computeCompanyAmount(
+      BigDecimal amountInCurrency,
+      Currency paymentCurrency,
+      Currency companyCurrency,
+      LocalDate paymentDate)
+      throws AxelorException;
 }

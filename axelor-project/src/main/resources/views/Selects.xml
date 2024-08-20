@@ -56,4 +56,10 @@
     <option value="ticket">Ticket</option>
   </selection>
 
+  <selection name="task.project.status.management.select">
+    <option value="1">No status management</option>
+    <option value="4">Manage by category</option>
+    <option value="2">Manage by project</option>
+    <option value="3">Manage by app project</option>
+  </selection>
 </object-views>
