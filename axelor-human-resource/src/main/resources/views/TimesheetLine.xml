@@ -96,7 +96,7 @@
     model="com.axelor.apps.hr.db.TimesheetLine" canNew="false">
     <toolbar>
       <button name="logTime" title="Log time" onClick="action-timesheet-line-log-time"
-        showIf="_showLogTime" if="__user__.contextProject"/>
+        showIf="_showLogTime" if="__user__.activeProject"/>
     </toolbar>
     <field name="timesheet.company"/>
     <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
@@ -534,7 +534,7 @@
   <action-view name="action-timesheet-line-log-time"
     model="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet Line Form">
     <view name="timesheet-line-timesheet-project-task-form" type="form"/>
-    <context name="_project" expr="eval: __user__.contextProject"/>
+    <context name="_project" expr="eval: __user__.activeProject"/>
     <context name="_user" expr="eval: __user__"/>
   </action-view>
 
