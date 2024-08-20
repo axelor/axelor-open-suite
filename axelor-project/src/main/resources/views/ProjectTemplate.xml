@@ -51,7 +51,7 @@
           canEdit="false"/>
         <field name="synchronize" colSpan="2" widget="boolean-switch"/>
         <field name="membersUserSet" colSpan="12" widget="TagSelect" canNew="false"
-          form-view="user-form" grid-view="user-grid" hideIf="synchronize"/>
+          form-view="user-form" grid-view="user-grid" hideIf="synchronize" canEdit="false"/>
       </panel>
 
       <panel title="Invoicing" name="invoicingPanel" showIf="isBusinessProject"
@@ -68,8 +68,8 @@
           name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
           domain="self.isActivity = true AND self.dtype = 'Product'"
           form-view="product-activity-form" grid-view="product-activity-grid"/>
-        <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect"/>
-        <field name="projectFolderSet" colSpan="12" widget="TagSelect"
+        <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect" canEdit="false"/>
+        <field name="projectFolderSet" colSpan="12" widget="TagSelect" canEdit="false"
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
           if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
