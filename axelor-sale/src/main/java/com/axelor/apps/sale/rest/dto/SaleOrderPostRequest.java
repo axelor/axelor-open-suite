@@ -8,13 +8,12 @@ import com.axelor.utils.api.RequestPostStructure;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-
-
 public class SaleOrderPostRequest extends RequestPostStructure {
 
   @NotNull
   @Min(0)
   private Long clientPartnerId;
+
   private Long companyId;
   private Long contactId;
   private Long currencyId;
@@ -71,11 +70,11 @@ public class SaleOrderPostRequest extends RequestPostStructure {
     }
     return ObjectFinder.find(Company.class, companyId, ObjectFinder.NO_VERSION);
   }
+
   public Currency fetchCurrency() {
     if (clientPartnerId == null || clientPartnerId == 0L) {
       return null;
     }
     return ObjectFinder.find(Currency.class, currencyId, ObjectFinder.NO_VERSION);
   }
-
 }

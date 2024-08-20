@@ -65,7 +65,7 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public SaleOrder createSaleOrder(Partner clientPartner)
+  public SaleOrder createSaleOrder(Partner clientPartner, Company company)
       throws AxelorException, JsonProcessingException {
     SaleOrder saleOrder = new SaleOrder();
     boolean isTemplate = false;
@@ -73,7 +73,12 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     saleOrderInitValueService.getOnNewInitValues(saleOrder);
     checkClientPartner(clientPartner, saleOrder);
     saleOrder.setClientPartner(clientPartner);
+    if (company != null) {
+      saleOrder.setCompany(company);
+      saleOrderOnChangeService.companyOnChange(saleOrder);
+    }
     saleOrderOnChangeService.partnerOnChange(saleOrder);
+
     saleOrderRepository.save(saleOrder);
     return saleOrder;
   }
