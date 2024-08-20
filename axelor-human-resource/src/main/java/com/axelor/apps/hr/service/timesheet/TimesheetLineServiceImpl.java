@@ -43,6 +43,7 @@ import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -260,8 +261,15 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   public Product getDefaultProduct(TimesheetLine timesheetLine) {
+    if (timesheetLine == null) {
+      return null;
+    }
+
     if (timesheetLine.getProduct() == null) {
-      return timesheetLine.getEmployee().getProduct();
+      return Optional.of(timesheetLine)
+          .map(TimesheetLine::getEmployee)
+          .map(Employee::getProduct)
+          .orElse(null);
     }
     return timesheetLine.getProduct();
   }

@@ -49,6 +49,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   protected TimesheetLineService timesheetLineService;
   protected TimesheetRepository timesheetRepository;
   protected TimesheetLineCreateService timesheetLineCreateService;
+  protected TimesheetDomainService timesheetDomainService;
 
   @Inject
   public TimesheetCreateServiceImpl(
@@ -56,12 +57,14 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
       ProjectRepository projectRepository,
       TimesheetLineService timesheetLineService,
       TimesheetRepository timesheetRepository,
-      TimesheetLineCreateService timesheetLineCreateService) {
+      TimesheetLineCreateService timesheetLineCreateService,
+      TimesheetDomainService timesheetDomainService) {
     this.userHrService = userHrService;
     this.projectRepository = projectRepository;
     this.timesheetLineService = timesheetLineService;
     this.timesheetRepository = timesheetRepository;
     this.timesheetLineCreateService = timesheetLineCreateService;
+    this.timesheetDomainService = timesheetDomainService;
   }
 
   @Transactional
@@ -146,5 +149,33 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
     }
 
     return lines;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public TimesheetLine getOrCreateTimesheet(TimesheetLine timesheetLine) {
+    Timesheet timesheet =
+        timesheetDomainService.getTimesheetQuery(timesheetLine).order("id").fetchOne();
+    if (timesheet == null) {
+      Timesheet lastTimesheet =
+          timesheetRepository
+              .all()
+              .filter(
+                  "self.employee = ?1 AND self.statusSelect != ?2 AND self.toDate is not null",
+                  timesheetLine.getEmployee(),
+                  TimesheetRepository.STATUS_CANCELED)
+              .order("-toDate")
+              .fetchOne();
+      timesheet =
+          createTimesheet(
+              timesheetLine.getEmployee(),
+              lastTimesheet != null && lastTimesheet.getToDate() != null
+                  ? lastTimesheet.getToDate().plusDays(1)
+                  : timesheetLine.getDate(),
+              null);
+      timesheet = timesheetRepository.save(timesheet);
+    }
+    timesheetLine.setTimesheet(timesheet);
+    return timesheetLine;
   }
 }
