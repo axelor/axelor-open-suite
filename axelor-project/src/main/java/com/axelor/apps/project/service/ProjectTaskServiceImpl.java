@@ -53,7 +53,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected AppBaseService appBaseService;
   protected ProjectRepository projectRepository;
   protected AppProjectService appProjectService;
-  protected ProjectToolService projectToolService;
+  protected TaskStatusToolService taskStatusToolService;
 
   private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
@@ -65,14 +65,14 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       AppBaseService appBaseService,
       ProjectRepository projectRepository,
       AppProjectService appProjectService,
-      ProjectToolService projectToolService) {
+      TaskStatusToolService taskStatusToolService) {
     this.projectTaskRepo = projectTaskRepo;
     this.frequencyRepo = frequencyRepo;
     this.frequencyService = frequencyService;
     this.appBaseService = appBaseService;
     this.projectRepository = projectRepository;
     this.appProjectService = appProjectService;
-    this.projectToolService = projectToolService;
+    this.taskStatusToolService = taskStatusToolService;
   }
 
   @Override
@@ -176,7 +176,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     task.setName(subject);
     task.setAssignedTo(assignedTo);
     task.setTaskDate(appBaseService.getTodayDate(null));
-    task.setStatus(getStatus(project));
+    task.setStatus(getStatus(project, task));
     task.setPriority(getPriority(project));
     project.addProjectTaskListItem(task);
     projectTaskRepo.save(task);
@@ -199,13 +199,13 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
-  public TaskStatus getStatus(Project project) {
+  public TaskStatus getStatus(Project project, ProjectTask projectTask) {
     if (project == null) {
       return null;
     }
 
     project = projectRepository.find(project.getId());
-    Set<TaskStatus> projectStatusSet = projectToolService.getTaskStatusSet(project);
+    Set<TaskStatus> projectStatusSet = taskStatusToolService.getTaskStatusSet(project, projectTask);
 
     return ObjectUtils.isEmpty(projectStatusSet)
         ? null

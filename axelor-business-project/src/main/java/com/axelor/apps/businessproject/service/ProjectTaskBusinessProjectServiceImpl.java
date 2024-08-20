@@ -56,7 +56,7 @@ import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
-import com.axelor.apps.project.service.ProjectToolService;
+import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -101,7 +101,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       AppBaseService appBaseService,
       ProjectRepository projectRepository,
       AppProjectService appProjectService,
-      ProjectToolService projectToolService,
+      TaskStatusToolService taskStatusToolService,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
@@ -115,7 +115,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         appBaseService,
         projectRepository,
         appProjectService,
-        projectToolService);
+        taskStatusToolService);
     this.priceListLineRepo = priceListLineRepo;
     this.priceListService = priceListService;
     this.partnerPriceListService = partnerPriceListService;

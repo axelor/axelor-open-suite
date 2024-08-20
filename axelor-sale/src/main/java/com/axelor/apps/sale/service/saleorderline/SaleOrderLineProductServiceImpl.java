@@ -76,7 +76,7 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
       saleOrderLine.setProductName(product.getName());
       saleOrderLineMap.put("productName", product.getName());
     }
-    saleOrderLine.setUnit(this.getSaleUnit(saleOrderLine));
+    saleOrderLine.setUnit(this.getSaleUnit(saleOrderLine.getProduct()));
     saleOrderLineMap.put("unit", saleOrderLine.getUnit());
     if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
       saleOrderLine.setDescription(saleOrderLine.getProduct().getDescription());
@@ -247,10 +247,13 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
   }
 
   @Override
-  public Unit getSaleUnit(SaleOrderLine saleOrderLine) {
-    Unit unit = saleOrderLine.getProduct().getSalesUnit();
+  public Unit getSaleUnit(Product product) {
+    if (product == null) {
+      return null;
+    }
+    Unit unit = product.getSalesUnit();
     if (unit == null) {
-      unit = saleOrderLine.getProduct().getUnit();
+      unit = product.getUnit();
     }
     return unit;
   }
