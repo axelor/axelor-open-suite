@@ -36,6 +36,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
@@ -430,8 +431,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     int moveLineId = moveLines.size() + 1;
 
     // Creation of product move lines for each invoice line
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-
+    for (InvoiceLine invoiceLine :
+        invoice.getInvoiceLineList().stream()
+            .filter(invoiceLine -> invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
+            .collect(Collectors.toList())) {
       BigDecimal companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
 
       if (companyExTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
