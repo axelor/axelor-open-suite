@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
@@ -25,9 +26,7 @@ import java.util.List;
 
 public interface ProductMultipleQtyService {
 
-  public boolean checkMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties);
-
-  public String toStringMultipleQty(List<ProductMultipleQty> productMultipleQties);
+  public boolean isMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties);
 
   public void checkMultipleQty(
       BigDecimal qty,
@@ -38,4 +37,7 @@ public interface ProductMultipleQtyService {
   String getMultipleQuantityErrorMessage(List<ProductMultipleQty> productMultipleQties);
 
   String getMultipleQtyTitle(List<ProductMultipleQty> productMultipleQties, boolean allowToForce);
+
+  void checkMultipleQty(List<ProductMultipleQty> productMultipleQtyList, BigDecimal qty)
+      throws AxelorException;
 }
