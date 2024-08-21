@@ -6,11 +6,15 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Set;
 
 public class ProductPriceServiceImpl implements ProductPriceService {
@@ -20,18 +24,32 @@ public class ProductPriceServiceImpl implements ProductPriceService {
   protected ProductCompanyService productCompanyService;
 
   protected TaxService taxService;
+  protected AccountManagementService accountManagementService;
 
   @Inject
   public ProductPriceServiceImpl(
       CurrencyService currencyService,
       ProductCompanyService productCompanyService,
       TaxService taxService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AccountManagementService accountManagementService) {
 
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
     this.appBaseService = appBaseService;
     this.taxService = taxService;
+    this.accountManagementService = accountManagementService;
+  }
+
+  @Override
+  public BigDecimal getSaleUnitPrice(Company company, Product product) throws AxelorException {
+    LocalDate localDate =
+        appBaseService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+    Set<TaxLine> taxLineSet =
+        accountManagementService.getTaxLineSet(localDate, product, company, null, false);
+    return getSaleUnitPrice(
+        company, product, taxLineSet, product.getInAti(), localDate, product.getSaleCurrency());
   }
 
   @Override
