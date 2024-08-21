@@ -120,7 +120,7 @@
       ref="com.axelor.apps.project.db.ProjectTaskLinkType" title="Project task relation types"/>
 
     <string name="customFieldManagementSelect" title="Custom fields management"
-      selection="project.custom.field.management.select"/>
+      selection="project.custom.field.management.select" default="app"/>
 
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>

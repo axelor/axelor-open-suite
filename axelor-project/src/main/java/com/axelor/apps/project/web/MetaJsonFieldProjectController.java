@@ -62,7 +62,6 @@ public class MetaJsonFieldProjectController {
 
     Map<String, Object> contextValues = new HashMap<>();
 
-    contextValues.put("modelField", "attrs");
     contextValues.put("model", modelName);
     contextValues.put("widgetAttrs", "{\"colSpan\":\"6\"}");
 

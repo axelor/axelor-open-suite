@@ -21,7 +21,6 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
-import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
@@ -61,16 +60,16 @@ public class MetaJsonFieldProjectServiceImpl implements MetaJsonFieldProjectServ
 
     // per project custom field
     String contextField = "";
-    String customFieldManagementSelect = "";
+    String modelField = "attrs";
 
     if (Project.class.getName().equals(parentContext.get("_model"))) {
       contextField = "project";
-      customFieldManagementSelect = ProjectRepository.CUSTOM_FIELD_MANAGEMENT_PROJECT;
+      modelField = "projectJson";
     } else if (ProjectTaskCategory.class.getName().equals(parentContext.get("_model"))) {
       contextField = "projectTaskCategory";
-      customFieldManagementSelect = ProjectRepository.CUSTOM_FIELD_MANAGEMENT_CATEGORY;
+      modelField = "categoryJson";
     } else if (AppProject.class.getName().equals(parentContext.get("_model"))) {
-      customFieldManagementSelect = ProjectRepository.CUSTOM_FIELD_MANAGEMENT_APP;
+      modelField = "appJson";
     }
 
     if (!StringUtils.isEmpty(contextField)) {
@@ -86,13 +85,7 @@ public class MetaJsonFieldProjectServiceImpl implements MetaJsonFieldProjectServ
       contextValues.put("contextFieldTitle", parentContext.get(targetName).toString());
     }
 
-    if (!StringUtils.isEmpty(customFieldManagementSelect)) {
-      contextValues.put(
-          "showIf",
-          String.format(
-              "$contains($record.project.customFieldManagementSelect, '%s')",
-              customFieldManagementSelect));
-    }
+    contextValues.put("modelField", modelField);
 
     return contextValues;
   }

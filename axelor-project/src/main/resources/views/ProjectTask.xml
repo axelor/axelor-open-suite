@@ -181,6 +181,27 @@
         <field name="project.isShowTaskCategory" hidden="true"/>
       </panel>
     </panel>
+    <panel name="customizedFieldsPanel" title="Customized fields" collapseIf="true"
+      canCollapse="true" colSpan="12">
+      <panel name="appJsonPanel" colSpan="12"
+        showIf="$contains(project.customFieldManagementSelect, 'app')" title="App customized fields">
+        <field name="appJson"/>
+      </panel>
+      <panel name="projectJsonPanel" colSpan="12"
+        showIf="$contains(project.customFieldManagementSelect, 'project')"
+        title="Project customized fields">
+        <field name="projectJson"/>
+      </panel>
+      <panel name="categoryJsonPanel" colSpan="12"
+        showIf="projectTaskCategory &amp;&amp; $contains(project.customFieldManagementSelect, 'category')"
+        title="Category customized fields">
+        <field name="categoryJson"/>
+      </panel>
+      <panel name="otherFieldsPanel" title="Other customized fields" colSpan="12">
+        <field name="attrs"/>
+      </panel>
+      <field name="project.customFieldManagementSelect" hidden="true"/>
+    </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="internalDescriptionPanel" title="Internal Description"
         if="__config__.app.isApp('business-support')" if-module="axelor-business-support">
@@ -267,10 +288,7 @@
           grid-view="project-task-link-grid" form-view="project-task-link-form"/>
       </panel>
     </panel-tabs>
-    <panel name="attrsPanel">
-      <field name="attrs" colSpan="12"/>
-      <field name="project.customFieldManagementSelect" hidden="true"/>
-    </panel>
+
     <panel-mail name="mailPanel">
       <mail-messages/>
       <mail-followers/>
