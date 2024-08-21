@@ -72,7 +72,7 @@ public class SaleOrderPostRequest extends RequestPostStructure {
   }
 
   public Currency fetchCurrency() {
-    if (clientPartnerId == null || clientPartnerId == 0L) {
+    if (currencyId == null || currencyId == 0L) {
       return null;
     }
     return ObjectFinder.find(Currency.class, currencyId, ObjectFinder.NO_VERSION);
