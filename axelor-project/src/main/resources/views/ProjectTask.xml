@@ -724,6 +724,7 @@
     <action name="action-project-task-method-onchange-category"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-method-change-statut-depending-category"/>
+    <action name="action-project-task-method-auto-change-progress"/>
   </action-group>
 
   <action-attrs name="action-project-task-atts-priority-on-select">

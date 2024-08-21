@@ -9,7 +9,7 @@
     <field name="taskStatus" readonly="true"/>
     <field name="isCustomized" onChange="action-progress-record-reset-progress"/>
     <field name="progress" onChange="action-progress-record-customize"/>
-    <field name="taskStatus.sequence"/>
+    <field name="taskStatus.sequence" hidden="true"/>
   </grid>
 
   <form name="task-status-progress-by-category-form" title="Progress by task status"

@@ -34,12 +34,12 @@
         if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
         onSelect="action-project-task-category-attrs-set-completed-task-status-domain"/>
     </panel>
-    <panel name="progressPanel">
+    <panel name="progressPanel"
+      if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask &amp;&amp; __config__.app.getApp('project')?.enableStatusManagementByTaskCategory">
       <label colSpan="12"
         title="There is a potential inconsistency between the progression values configured."
         name="inconsistencyLabel" css="label-danger" hidden="true"/>
       <panel-related field="taskStatusProgressByCategoryList" colSpan="12"
-        if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask &amp;&amp; __config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
         form-view="task-status-progress-by-category-form"
         grid-view="task-status-progress-by-category-grid" canNew="false" canRemove="false"
         onChange="action-project-task-category-method-validate-progress"/>
