@@ -34,6 +34,7 @@ public class CartLineManagementRepository extends CartLineRepository {
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     json.put("$nbDecimalDigitForUnitPrice", appBaseService.getNbDecimalDigitForUnitPrice());
+    json.put("$nbDecimalDigitForQty", appBaseService.getNbDecimalDigitForQty());
     return super.populate(json, context);
   }
 }
