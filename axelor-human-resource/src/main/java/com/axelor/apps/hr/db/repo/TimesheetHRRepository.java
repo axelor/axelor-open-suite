@@ -45,7 +45,8 @@ public class TimesheetHRRepository extends TimesheetRepository {
         Beans.get(TimesheetLineHRRepository.class).computeFullName(timesheetLine);
     }
 
-    timesheet.setPeriodTotal(Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet));
+    timesheet.setPeriodTotal(
+        Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet));
     return super.save(timesheet);
   }
 
