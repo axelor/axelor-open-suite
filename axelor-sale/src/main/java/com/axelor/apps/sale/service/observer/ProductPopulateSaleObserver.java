@@ -16,18 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.sale.service.observer;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.sale.db.Cart;
+import com.axelor.apps.base.service.event.ProductPopulate;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.event.Observes;
+import com.axelor.inject.Beans;
+import java.util.Map;
 
-public interface CartService {
+public class ProductPopulateSaleObserver {
 
-  Cart getCurrentCart();
-
-  void emptyCart(Cart cart);
-
-  void addToCart(Product product);
-
-  Cart createCart();
+  void populate(@Observes ProductPopulate event) {
+    Map<String, Object> json = event.getJson();
+    json.put(
+        "$isCartManagementEnabled",
+        Beans.get(AppSaleService.class).getAppSale().getIsCartManagementEnabled());
+  }
 }
