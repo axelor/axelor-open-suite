@@ -269,6 +269,7 @@
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
+      <field name="project.customFieldManagementSelect" hidden="true"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages/>

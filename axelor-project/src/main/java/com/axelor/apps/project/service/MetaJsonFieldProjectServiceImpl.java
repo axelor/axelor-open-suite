@@ -18,9 +18,18 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.rpc.Context;
+import com.axelor.studio.db.AppProject;
+import java.util.Map;
 
 public class MetaJsonFieldProjectServiceImpl implements MetaJsonFieldProjectService {
 
@@ -41,5 +50,50 @@ public class MetaJsonFieldProjectServiceImpl implements MetaJsonFieldProjectServ
     String fieldName = inflector.dasherize(jsonField.getName()).replace("-", ".");
 
     return String.format("project.%s.json.field.%s.type.select", model, fieldName);
+  }
+
+  @Override
+  public Map<String, Object> computeContextValues(
+      Map<String, Object> contextValues, Context parentContext) {
+    if (parentContext == null) {
+      return contextValues;
+    }
+
+    // per project custom field
+    String contextField = "";
+    String customFieldManagementSelect = "";
+
+    if (Project.class.getName().equals(parentContext.get("_model"))) {
+      contextField = "project";
+      customFieldManagementSelect = ProjectRepository.CUSTOM_FIELD_MANAGEMENT_PROJECT;
+    } else if (ProjectTaskCategory.class.getName().equals(parentContext.get("_model"))) {
+      contextField = "projectTaskCategory";
+      customFieldManagementSelect = ProjectRepository.CUSTOM_FIELD_MANAGEMENT_CATEGORY;
+    } else if (AppProject.class.getName().equals(parentContext.get("_model"))) {
+      customFieldManagementSelect = ProjectRepository.CUSTOM_FIELD_MANAGEMENT_APP;
+    }
+
+    if (!StringUtils.isEmpty(contextField)) {
+      final Mapper mapper = Mapper.of(ProjectTask.class);
+      final Property property = mapper.getProperty(contextField);
+      final String target = property == null ? null : property.getTarget().getName();
+      final String targetName = property == null ? null : property.getTargetName();
+
+      contextValues.put("contextField", contextField);
+      contextValues.put("contextFieldTarget", target);
+      contextValues.put("contextFieldTargetName", targetName);
+      contextValues.put("contextFieldValue", parentContext.get("id").toString());
+      contextValues.put("contextFieldTitle", parentContext.get(targetName).toString());
+    }
+
+    if (!StringUtils.isEmpty(customFieldManagementSelect)) {
+      contextValues.put(
+          "showIf",
+          String.format(
+              "$contains($record.project.customFieldManagementSelect, '%s')",
+              customFieldManagementSelect));
+    }
+
+    return contextValues;
   }
 }

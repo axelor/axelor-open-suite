@@ -23,8 +23,6 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.MetaJsonFieldProjectService;
 import com.axelor.common.StringUtils;
-import com.axelor.db.mapper.Mapper;
-import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;
@@ -35,6 +33,8 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ModelHelper;
 import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 public class MetaJsonFieldProjectController {
@@ -60,28 +60,17 @@ public class MetaJsonFieldProjectController {
       return;
     }
 
-    response.setValue("modelField", "attrs");
-    response.setValue("model", modelName);
-    response.setValue("widgetAttrs", "{\"colSpan\":\"6\"}");
+    Map<String, Object> contextValues = new HashMap<>();
+
+    contextValues.put("modelField", "attrs");
+    contextValues.put("model", modelName);
+    contextValues.put("widgetAttrs", "{\"colSpan\":\"6\"}");
 
     final Context context = request.getContext();
     final Context parentContext = context.getParent();
-    if (parentContext == null || !Project.class.getName().equals(parentContext.get("_model"))) {
-      return;
-    }
-
-    // per project custom field
-    final String contextField = "project";
-    final Mapper mapper = Mapper.of(ProjectTask.class);
-    final Property property = mapper.getProperty(contextField);
-    final String target = property == null ? null : property.getTarget().getName();
-    final String targetName = property == null ? null : property.getTargetName();
-
-    response.setValue("contextField", contextField);
-    response.setValue("contextFieldTarget", target);
-    response.setValue("contextFieldTargetName", targetName);
-    response.setValue("contextFieldValue", parentContext.get("id").toString());
-    response.setValue("contextFieldTitle", parentContext.get(targetName).toString());
+    response.setValues(
+        Beans.get(MetaJsonFieldProjectService.class)
+            .computeContextValues(contextValues, parentContext));
   }
 
   public void setSelection(ActionRequest request, ActionResponse response) {
