@@ -58,7 +58,7 @@ public class SaleOrderRestController {
                 requestBody.fetchClientPartner(),
                 requestBody.fetchCompany(),
                 requestBody.fetchContact(),
-                requestBody.fetchCurrency());
+                requestBody.fetchCurrency(),requestBody.getInAti());
 
     return ResponseConstructor.buildCreateResponse(saleOrder, new SaleOrderResponse(saleOrder));
   }

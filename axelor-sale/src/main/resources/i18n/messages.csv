@@ -647,6 +647,7 @@
 "The client Partner is required and must be the same for all sale orders",,,
 "The client provided is not a customer of the given company: %s.",,,
 "The company %s doesn't have any configured sequence for sale orders",,,
+"The company configuration doesn't allow you to manage the exclusion or inclusion of taxes.",,,
 "The company is required and must be the same for all sale orders",,,
 "The contact provided is not a contact partner of the client.",,,
 "The currency is required and must be the same for all sale orders",,,

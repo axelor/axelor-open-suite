@@ -67,7 +67,7 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public SaleOrder createSaleOrder(
-      Partner clientPartner, Company company, Partner contactPartner, Currency currency)
+      Partner clientPartner, Company company, Partner contactPartner, Currency currency, String inAti)
       throws AxelorException, JsonProcessingException {
     SaleOrder saleOrder = new SaleOrder();
     boolean isTemplate = false;
@@ -87,6 +87,9 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     if (currency != null) {
       saleOrder.setCurrency(currency);
     }
+      if (inAti != null) {
+          checkinAti(saleOrder, inAti);
+      }
     saleOrderRepository.save(saleOrder);
     return saleOrder;
   }
@@ -115,5 +118,17 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.CONTACT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS));
     }
+  }
+
+  protected void checkinAti(SaleOrder saleOrder, String inAti) throws AxelorException {
+    Boolean ati = Boolean.parseBoolean(inAti);
+    Company company = saleOrder.getCompany();
+    if (company.getSaleConfig().getSaleOrderInAtiSelect() == 1
+        || company.getSaleConfig().getSaleOrderInAtiSelect() == 2) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.ATI_CHANGE_NOT_ALLOWED));
+    }
+    saleOrder.setInAti(ati);
   }
 }

@@ -30,6 +30,8 @@ public class SaleOrderPostRequest extends RequestPostStructure {
     return currencyId;
   }
 
+  private String inAti;
+
   public Long getClientPartnerId() {
     return clientPartnerId;
   }
@@ -48,6 +50,14 @@ public class SaleOrderPostRequest extends RequestPostStructure {
 
   public void setClientPartnerId(Long clientPartnerId) {
     this.clientPartnerId = clientPartnerId;
+  }
+
+  public String getInAti() {
+    return inAti;
+  }
+
+  public void setInAti(String inAti) {
+    this.inAti = inAti;
   }
 
   public Partner fetchClientPartner() {
