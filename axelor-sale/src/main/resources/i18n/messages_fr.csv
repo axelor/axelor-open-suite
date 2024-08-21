@@ -1,6 +1,6 @@
 "key","message","comment","context"
 "%s : You must configure Sales module for company %s","%s : Veuillez configurer le module vente pour la société %s",,
-"%s x %s has been added to your cart.",,,
+"%s has been added to your cart.","%s a été ajouté au panier.",,
 "+",,,
 "A JavaScript boolean expression against the current form values.","Une expression booléenne JavaScript permettant de vérifier que la valeur saisie par l'utilisateur correspond aux attentes.",,
 "A cancel reason must be selected",,,

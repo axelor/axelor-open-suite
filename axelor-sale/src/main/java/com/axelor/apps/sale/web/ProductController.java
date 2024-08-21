@@ -26,7 +26,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.math.BigDecimal;
 
 public class ProductController {
 
@@ -35,10 +34,7 @@ public class ProductController {
       Product product = request.getContext().asType(Product.class);
       Beans.get(CartService.class).addToCart(product);
       response.setNotify(
-          String.format(
-              I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART),
-              product.getName(),
-              BigDecimal.ONE));
+          String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

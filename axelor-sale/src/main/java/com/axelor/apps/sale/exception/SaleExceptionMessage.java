@@ -140,5 +140,5 @@ public final class SaleExceptionMessage {
       "You can only add a line to a draft sale order." /*)*/;
 
   public static final String PRODUCT_ADDED_TO_CART = /*$$(*/
-      "%s x %s has been added to your cart." /*)*/;
+      "%s has been added to your cart." /*)*/;
 }
