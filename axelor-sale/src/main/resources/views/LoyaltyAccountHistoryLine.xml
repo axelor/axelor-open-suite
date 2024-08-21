@@ -5,24 +5,23 @@
 
   <grid name="loyalty-account-history-line-grid" title="History"
     model="com.axelor.apps.sale.db.LoyaltyAccountHistoryLine" canEdit="false">
-    <hilite if="remainingPoints == 0" color="danger"/>
-    <hilite if="pointsBalance == 0" color="info"/>
-    <hilite if="remainingPoints != pointsBalance" color="warning"/>
+    <hilite if="remainingPoints == 0 &amp;&amp; pointsAcquired" color="danger"/>
+    <hilite if="remainingPoints != pointsBalance &amp;&amp; pointsAcquired" color="warning"/>
     <field name="pointsBalance" x-scale="0"/>
-    <field name="futurePointsBalance" x-scale="0"/>
     <field name="saleOrder.confirmationDateTime" title="Purchase date"/>
+    <field name="pointsAcquired" width="100"/>
     <field name="acquisitionDateTime"/>
     <field name="useDateTime"/>
-    <field name="remainingPoints" hidden="true"/>
+    <field name="remainingPoints" x-scale="0" hidden="true"/>
   </grid>
 
   <form name="loyalty-account-history-line-form" title="Loyalty account history line"
     model="com.axelor.apps.sale.db.LoyaltyAccountHistoryLine">
     <panel name="mainPanel" colSpan="12">
-      <field name="pointsBalance" x-scale="0" colSpan="4"/>
-      <field name="futurePointsBalance" x-scale="0" colSpan="4"/>
-      <field name="remainingPoints" x-scale="0" colSpan="4"/>
-      <field name="acquisitionDateTime"/>
+      <field name="pointsBalance" x-scale="0"/>
+      <field name="remainingPoints" x-scale="0"/>
+      <field name="pointsAcquired" colSpan="1"/>
+      <field name="acquisitionDateTime" colSpan="5"/>
       <field name="useDateTime"/>
       <field name="saleOrder" colSpan="12"/>
     </panel>

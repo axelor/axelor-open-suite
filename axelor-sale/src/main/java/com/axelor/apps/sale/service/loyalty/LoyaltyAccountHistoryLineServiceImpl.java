@@ -18,8 +18,7 @@ public class LoyaltyAccountHistoryLineServiceImpl implements LoyaltyAccountHisto
   @Override
   public LoyaltyAccountHistoryLine createHistoryLine(BigDecimal points, SaleOrder saleOrder) {
     LoyaltyAccountHistoryLine historyLine = new LoyaltyAccountHistoryLine();
-    historyLine.setFuturePointsBalance(points);
-    historyLine.setRemainingPoints(points);
+    historyLine.setPointsBalance(points);
     historyLine.setSaleOrder(saleOrderRepository.find(saleOrder.getId()));
     return historyLine;
   }
