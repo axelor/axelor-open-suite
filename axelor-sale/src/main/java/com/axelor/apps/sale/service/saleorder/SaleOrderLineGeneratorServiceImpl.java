@@ -32,6 +32,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDomainService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineInitValueService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -50,6 +51,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
   protected SaleOrderService saleOrderService;
   protected SaleOrderOnLineChangeService saleOrderOnLineChangeService;
   protected AppSaleService appSaleService;
+  protected SaleOrderLineOnChangeService saleOrderLineOnChangeService;
 
   protected ProductMultipleQtyService productMultipleQtyService;
 
@@ -66,7 +68,8 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       SaleOrderService saleOrderService,
       AppSaleService appSaleService,
       SaleOrderOnLineChangeService saleOrderOnLineChangeService,
-      ProductMultipleQtyService productMultipleQtyService) {
+      ProductMultipleQtyService productMultipleQtyService,
+      SaleOrderLineOnChangeService saleOrderLineOnChangeService) {
     this.saleOrderLineInitValueService = saleOrderLineInitValueService;
     this.saleOrderLineProductService = saleOrderLineProductService;
     this.saleOrderLineRepository = saleOrderLineRepository;
@@ -79,6 +82,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     this.saleOrderOnLineChangeService = saleOrderOnLineChangeService;
     this.appSaleService = appSaleService;
     this.productMultipleQtyService = productMultipleQtyService;
+    this.saleOrderLineOnChangeService = saleOrderLineOnChangeService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -99,6 +103,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     saleOrderLine.setQty(qty);
     saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
     saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+    saleOrderLineOnChangeService.productOnChange(saleOrderLine, saleOrder);
 
     saleOrderLineRepository.save(saleOrderLine);
 
