@@ -98,7 +98,7 @@ public class SaleOrderLineDiscountServiceImpl implements SaleOrderLineDiscountSe
         }
       }
 
-      if (saleOrderLine.getProduct().getInAti() != saleOrder.getInAti()
+      if (!saleOrderLine.getProduct().getInAti().equals(saleOrder.getInAti())
           && (Integer) saleOrderLineMap.get("discountTypeSelect")
               != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
         saleOrderLine.setDiscountAmount(
@@ -152,6 +152,9 @@ public class SaleOrderLineDiscountServiceImpl implements SaleOrderLineDiscountSe
           discounts.put("discountTypeSelect", manualDiscountAmountType);
         }
       }
+    } else {
+      discounts.put("discountTypeSelect", saleOrderLine.getDiscountTypeSelect());
+      discounts.put("discountAmount", saleOrderLine.getDiscountAmount());
     }
 
     return discounts;
@@ -208,7 +211,7 @@ public class SaleOrderLineDiscountServiceImpl implements SaleOrderLineDiscountSe
     Map<String, Object> saleOrderLineMap = new HashMap<>();
 
     if (MapUtils.isNotEmpty(discounts)) {
-      if (saleOrderLine.getProduct().getInAti() != saleOrder.getInAti()
+      if (!saleOrderLine.getProduct().getInAti().equals(saleOrder.getInAti())
           && (Integer) discounts.get("discountTypeSelect")
               != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
         saleOrderLine.setDiscountAmount(
