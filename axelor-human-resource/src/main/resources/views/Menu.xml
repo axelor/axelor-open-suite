@@ -673,8 +673,8 @@
     <view-param name="show-toolbar" value="false"/>
   </action-view>
 
-  <menuitem name="project-spent-time" parent="project-current-project" title="Spent time"
-    order="300" action="project.spent.time"/>
+  <menuitem name="project-spent-time" parent="menu-my-project-root" title="Spent time"
+    order="500" action="project.spent.time"/>
   <action-view name="project.spent.time" title="Spent time"
     model="com.axelor.apps.hr.db.TimesheetLine">
     <view type="grid" name="timesheet-line-grid"/>
@@ -682,7 +682,7 @@
     <domain>self.project.id IN :_projectIds</domain>
     <context name="_showLogTime" expr="eval: true"/>
     <context name="_projectIds"
-      expr="call:com.axelor.apps.hr.service.timesheet.TimesheetContextProjectService:getContextProjectIds()"/>
+      expr="call:com.axelor.apps.hr.service.timesheet.TimesheetContextProjectService:getActiveProjectIds()"/>
   </action-view>
 
   <menuitem name="project-unit-conversion" parent="project-configurations"
