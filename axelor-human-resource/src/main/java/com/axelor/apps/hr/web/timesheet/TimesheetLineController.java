@@ -23,8 +23,8 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
-import com.axelor.apps.hr.service.timesheet.TimesheetDomainService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
+import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -33,7 +33,6 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
-import org.apache.commons.lang3.ObjectUtils;
 
 public class TimesheetLineController {
 
@@ -168,10 +167,8 @@ public class TimesheetLineController {
       }
 
       List<Timesheet> timesheetList =
-          Beans.get(TimesheetDomainService.class).getTimesheetQuery(timesheetLine).fetch();
-      if (!ObjectUtils.isEmpty(timesheetList)) {
-        idList = StringHelper.getIdListString(timesheetList);
-      }
+          Beans.get(TimesheetService.class).getTimesheetQuery(timesheetLine).fetch();
+      idList = StringHelper.getIdListString(timesheetList);
 
       response.setAttr("timesheet", "domain", "self.id IN (" + idList + ")");
     } catch (Exception e) {

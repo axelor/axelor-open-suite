@@ -49,7 +49,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   protected TimesheetLineService timesheetLineService;
   protected TimesheetRepository timesheetRepository;
   protected TimesheetLineCreateService timesheetLineCreateService;
-  protected TimesheetDomainService timesheetDomainService;
+  protected TimesheetService timesheetService;
 
   @Inject
   public TimesheetCreateServiceImpl(
@@ -58,13 +58,13 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
       TimesheetLineService timesheetLineService,
       TimesheetRepository timesheetRepository,
       TimesheetLineCreateService timesheetLineCreateService,
-      TimesheetDomainService timesheetDomainService) {
+      TimesheetService timesheetService) {
     this.userHrService = userHrService;
     this.projectRepository = projectRepository;
     this.timesheetLineService = timesheetLineService;
     this.timesheetRepository = timesheetRepository;
     this.timesheetLineCreateService = timesheetLineCreateService;
-    this.timesheetDomainService = timesheetDomainService;
+    this.timesheetService = timesheetService;
   }
 
   @Transactional
@@ -154,8 +154,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public TimesheetLine getOrCreateTimesheet(TimesheetLine timesheetLine) {
-    Timesheet timesheet =
-        timesheetDomainService.getTimesheetQuery(timesheetLine).order("id").fetchOne();
+    Timesheet timesheet = timesheetService.getTimesheetQuery(timesheetLine).order("id").fetchOne();
     if (timesheet == null) {
       Timesheet lastTimesheet =
           timesheetRepository

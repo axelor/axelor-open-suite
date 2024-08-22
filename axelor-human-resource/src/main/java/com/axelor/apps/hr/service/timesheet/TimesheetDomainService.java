@@ -19,10 +19,7 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.Timesheet;
-import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.auth.db.User;
-import com.axelor.db.Query;
 import com.axelor.meta.schema.actions.ActionView;
 
 public interface TimesheetDomainService {
@@ -32,6 +29,4 @@ public interface TimesheetDomainService {
 
   void createValidateDomainTimesheetLine(
       User user, Employee employee, ActionView.ActionViewBuilder actionView);
-
-  Query<Timesheet> getTimesheetQuery(TimesheetLine timesheetLine);
 }
