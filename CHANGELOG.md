@@ -1,3 +1,18 @@
+## [7.1.28] (2024-08-22)
+
+### Fixes
+#### Account
+
+* Fixed asset: removed disposal info during copy.
+
+#### Business Project
+
+* Project: prevented an error during project totals computation when spent time percentages were too high.
+
+#### Supply Chain
+
+* Supplychain config: fixed 'Update customer accepted credit' process updating the credit for all companies instead of the current one.
+
 ## [7.1.27] (2024-08-08)
 
 ### Fixes
@@ -1329,6 +1344,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.28]: https://github.com/axelor/axelor-open-suite/compare/v7.1.27...v7.1.28
 [7.1.27]: https://github.com/axelor/axelor-open-suite/compare/v7.1.26...v7.1.27
 [7.1.26]: https://github.com/axelor/axelor-open-suite/compare/v7.1.25...v7.1.26
 [7.1.25]: https://github.com/axelor/axelor-open-suite/compare/v7.1.24...v7.1.25
