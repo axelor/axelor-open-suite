@@ -1,3 +1,14 @@
+## [6.5.40] (2024-08-22)
+
+### Fixes
+#### Account
+
+* Fixed asset: removed disposal info during copy.
+
+#### Supply Chain
+
+* Supplychain config: fixed 'Update customer accepted credit' process updating the credit for all companies instead of the current one.
+
 ## [6.5.39] (2024-08-08)
 
 ### Fixes
@@ -1501,6 +1512,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.40]: https://github.com/axelor/axelor-open-suite/compare/v6.5.39...v6.5.40
 [6.5.39]: https://github.com/axelor/axelor-open-suite/compare/v6.5.38...v6.5.39
 [6.5.38]: https://github.com/axelor/axelor-open-suite/compare/v6.5.37...v6.5.38
 [6.5.37]: https://github.com/axelor/axelor-open-suite/compare/v6.5.36...v6.5.37
