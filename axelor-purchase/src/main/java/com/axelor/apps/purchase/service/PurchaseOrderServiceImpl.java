@@ -206,10 +206,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     if (purchaseOrder.getPurchaseOrderLineTaxList() == null) {
       purchaseOrder.setPurchaseOrderLineTaxList(new ArrayList<>());
     } else {
-      List<PurchaseOrderLineTax> purchaseOrderLineTaxList = new ArrayList<>();
-      purchaseOrderLineTaxList.addAll(
-          purchaseOrderLineTaxService.getUpdatedPurchaseOrderLineTax(purchaseOrder));
-      purchaseOrder.setPurchaseOrderLineTaxList(purchaseOrderLineTaxList);
+      List<PurchaseOrderLineTax> purchaseOrderLineTaxList =
+          purchaseOrderLineTaxService.getUpdatedPurchaseOrderLineTax(purchaseOrder);
+      purchaseOrder.getPurchaseOrderLineTaxList().clear();
+      purchaseOrder.getPurchaseOrderLineTaxList().addAll(purchaseOrderLineTaxList);
     }
   }
 
