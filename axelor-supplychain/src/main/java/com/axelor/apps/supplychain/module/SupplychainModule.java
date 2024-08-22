@@ -175,6 +175,8 @@ import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateServiceImpl;
 import com.axelor.apps.supplychain.service.StockCorrectionServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockHistoryServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.StockLocationCartService;
+import com.axelor.apps.supplychain.service.StockLocationCartServiceImpl;
 import com.axelor.apps.supplychain.service.StockLocationLineFetchServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockLocationLineReservationService;
 import com.axelor.apps.supplychain.service.StockLocationLineReservationServiceImpl;
@@ -453,5 +455,6 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderLineCheckSupplychainService.class)
         .to(SaleOrderLineCheckSupplychainServiceImpl.class);
     bind(SaleOrderLineCheckServiceImpl.class).to(SaleOrderLineCheckSupplychainServiceImpl.class);
+    bind(StockLocationCartService.class).to(StockLocationCartServiceImpl.class);
   }
 }
