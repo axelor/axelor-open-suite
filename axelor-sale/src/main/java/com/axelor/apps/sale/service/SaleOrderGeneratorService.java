@@ -28,6 +28,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public interface SaleOrderGeneratorService {
 
   SaleOrder createSaleOrder(
-      Partner clientPartner, Company company, Partner contactPartner, Currency currency, String inAti)
+      Partner clientPartner, Company company, Partner contactPartner, Currency currency, Boolean inAti)
       throws AxelorException, JsonProcessingException;
 }

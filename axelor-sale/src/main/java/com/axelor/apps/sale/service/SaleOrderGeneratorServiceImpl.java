@@ -26,9 +26,11 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeService;
@@ -40,12 +42,14 @@ import com.google.inject.persist.Transactional;
 public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService {
   protected SaleOrderRepository saleOrderRepository;
   protected AppSaleService appSaleService;
+  protected SaleConfigService saleConfigService;
   protected CompanyService companyService;
   protected SaleOrderInitValueService saleOrderInitValueService;
   protected SaleOrderOnChangeService saleOrderOnChangeService;
   protected SaleOrderDomainService saleOrderDomainService;
   protected PartnerRepository partnerRepository;
 
+  protected SaleConfigRepository saleConfigRepository;
   @Inject
   public SaleOrderGeneratorServiceImpl(
       SaleOrderRepository saleOrderRepository,
@@ -54,7 +58,8 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
       SaleOrderInitValueService saleOrderInitValueService,
       SaleOrderOnChangeService saleOrderOnChangeService,
       SaleOrderDomainService saleOrderDomainService,
-      PartnerRepository partnerRepository) {
+      PartnerRepository partnerRepository,SaleConfigService saleConfigService
+  ,SaleConfigRepository saleConfigRepository) {
     this.saleOrderRepository = saleOrderRepository;
     this.appSaleService = appSaleService;
     this.companyService = companyService;
@@ -62,12 +67,14 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     this.saleOrderOnChangeService = saleOrderOnChangeService;
     this.saleOrderDomainService = saleOrderDomainService;
     this.partnerRepository = partnerRepository;
+    this.saleConfigService=saleConfigService;
+   this.saleConfigRepository =saleConfigRepository;
   }
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public SaleOrder createSaleOrder(
-      Partner clientPartner, Company company, Partner contactPartner, Currency currency, String inAti)
+      Partner clientPartner, Company company, Partner contactPartner, Currency currency, Boolean inAti)
       throws AxelorException, JsonProcessingException {
     SaleOrder saleOrder = new SaleOrder();
     boolean isTemplate = false;
@@ -87,12 +94,12 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     if (currency != null) {
       saleOrder.setCurrency(currency);
     }
-      if (inAti != null) {
-          checkinAti(saleOrder, inAti);
-      }
+    setInAti(inAti, saleOrder);
     saleOrderRepository.save(saleOrder);
     return saleOrder;
   }
+
+
 
   protected void checkClientPartner(Partner clientPartner, SaleOrder saleOrder)
       throws AxelorException {
@@ -110,25 +117,30 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
           company.getName());
     }
   }
-
-  protected void checkContact(Partner clientPartner, Partner contactPartner)
-      throws AxelorException {
-    if (!clientPartner.getContactPartnerSet().contains(contactPartner)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(SaleExceptionMessage.CONTACT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS));
+    protected void checkContact(Partner clientPartner, Partner contactPartner)
+            throws AxelorException {
+        if (!clientPartner.getContactPartnerSet().contains(contactPartner)) {
+            throw new AxelorException(
+                    TraceBackRepository.CATEGORY_INCONSISTENCY,
+                    I18n.get(SaleExceptionMessage.CONTACT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS));
+        }
+    }
+  private void setInAti(Boolean inAti, SaleOrder saleOrder) throws AxelorException {
+    if (inAti != null) {
+      checkinAti(saleOrder);
+      saleOrder.setInAti(inAti);
     }
   }
 
-  protected void checkinAti(SaleOrder saleOrder, String inAti) throws AxelorException {
-    Boolean ati = Boolean.parseBoolean(inAti);
+  protected void checkinAti(SaleOrder saleOrder) throws AxelorException {
+
     Company company = saleOrder.getCompany();
-    if (company.getSaleConfig().getSaleOrderInAtiSelect() == 1
-        || company.getSaleConfig().getSaleOrderInAtiSelect() == 2) {
+    if (saleConfigService.getSaleConfig(company).getSaleOrderInAtiSelect() == 1
+        || saleConfigService.getSaleConfig(company).getSaleOrderInAtiSelect() == 2) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.ATI_CHANGE_NOT_ALLOWED));
     }
-    saleOrder.setInAti(ati);
+
   }
 }

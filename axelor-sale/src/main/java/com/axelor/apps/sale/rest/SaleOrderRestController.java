@@ -52,13 +52,15 @@ public class SaleOrderRestController {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().createAccess(SaleOrder.class).check();
 
+    Boolean inAti = Boolean.getBoolean( requestBody.getInAti());
+
     SaleOrder saleOrder =
         Beans.get(SaleOrderGeneratorService.class)
             .createSaleOrder(
                 requestBody.fetchClientPartner(),
                 requestBody.fetchCompany(),
                 requestBody.fetchContact(),
-                requestBody.fetchCurrency(),requestBody.getInAti());
+                requestBody.fetchCurrency(),inAti);
 
     return ResponseConstructor.buildCreateResponse(saleOrder, new SaleOrderResponse(saleOrder));
   }
