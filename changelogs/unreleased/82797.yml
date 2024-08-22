@@ -1,3 +1,0 @@
----
-title: "StockMove/Invoice: fixed technical error when invoicing a stock move line with a value of zero."
-module: axelor-budget

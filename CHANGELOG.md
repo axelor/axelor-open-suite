@@ -1,3 +1,38 @@
+## [8.0.13] (2024-08-22)
+
+### Fixes
+#### Account
+
+* Mass entry move line: increased width of the date columns.
+* Fixed asset: removed disposal info during copy.
+* Accounting report: fixed wrong amounts when selecting accounts with parent accounts.
+* Invoice: fixed unable to display invoice lines (grid view) when one or more invoices are selected.
+
+#### Budget
+
+* StockMove/Invoice: fixed technical error when invoicing a stock move line with a value of zero.
+
+#### Business Project
+
+* Project: prevented an error during project totals computation when spent time percentages were too high.
+
+#### Helpdesk
+
+* Ticket type: fixed 'Ticket per status' chart.
+
+#### Human Resource
+
+* Employee bonus management: fixed computation process when there is no user linked with employee.
+* Leave reason: fixed typo in french translation.
+
+#### Sale
+
+* Sale order line: take product application start date into account when selecting product.
+
+#### Supply Chain
+
+* Supplychain config: fixed 'Update customer accepted credit' process updating the credit for all companies instead of the current one.
+
 ## [8.0.12] (2024-08-08)
 
 ### Fixes
@@ -972,6 +1007,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.13]: https://github.com/axelor/axelor-open-suite/compare/v8.0.12...v8.0.13
 [8.0.12]: https://github.com/axelor/axelor-open-suite/compare/v8.0.11...v8.0.12
 [8.0.11]: https://github.com/axelor/axelor-open-suite/compare/v8.0.10...v8.0.11
 [8.0.10]: https://github.com/axelor/axelor-open-suite/compare/v8.0.9...v8.0.10
