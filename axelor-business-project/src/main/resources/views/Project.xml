@@ -142,7 +142,7 @@
           icon="fa-plus" onClick="save,action-project-add-ticket"
           if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
         <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-          icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
+          icon="fa-tasks" onClick="save,action-business-project-view-show-related-tasks"/>
         <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
           colSpan="12" action="action-view-show-business-project-task-tree"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
@@ -732,7 +732,7 @@
 
   <action-view name="action-view-show-business-project-task-tree"
     title="Project Task Tree" model="com.axelor.apps.project.db.ProjectTask">
-    <view type="tree" name="project-project-task-tree"/>
+    <view type="tree" name="business-project-project-task-tree"/>
     <view type="form" name="business-project-task-form"/>
     <domain>self.project.id = :_id AND self.parentTask = null</domain>
     <context name="_id" expr="eval: id"/>
@@ -1292,6 +1292,11 @@
   <action-method name="action-project-method-compute-project-totals">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="computeProjectTotals"/>
+  </action-method>
+
+  <action-method name="action-business-project-view-show-related-tasks">
+    <call class="com.axelor.apps.businessproject.web.ProjectMenuController"
+      method="allProjectRelatedTasks"/>
   </action-method>
 
   <action-group name="action-business-project-group-finish-project">

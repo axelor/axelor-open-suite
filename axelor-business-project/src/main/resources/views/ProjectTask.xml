@@ -423,7 +423,7 @@
     </panel-mail>
   </form>
 
-  <tree id="business-project-project-task-tree" name="project-project-task-tree" title="Task">
+  <tree name="business-project-project-task-tree" title="Task">
     <column name="name" type="string"/>
     <column name="taskDate" type="date"/>
     <column name="initial" type="decimal"/>
