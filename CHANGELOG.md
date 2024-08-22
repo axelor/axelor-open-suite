@@ -1,3 +1,22 @@
+## [7.2.20] (2024-08-22)
+
+### Fixes
+#### Account
+
+* Fixed asset: removed disposal info during copy.
+
+#### Business Project
+
+* Project: prevented an error during project totals computation when spent time percentages were too high.
+
+#### Human Resource
+
+* Employee bonus management: fixed computation process when there is no user linked with employee.
+
+#### Supply Chain
+
+* Supplychain config: fixed 'Update customer accepted credit' process updating the credit for all companies instead of the current one.
+
 ## [7.2.19] (2024-08-08)
 
 ### Fixes
@@ -1109,6 +1128,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.20]: https://github.com/axelor/axelor-open-suite/compare/v7.2.19...v7.2.20
 [7.2.19]: https://github.com/axelor/axelor-open-suite/compare/v7.2.18...v7.2.19
 [7.2.18]: https://github.com/axelor/axelor-open-suite/compare/v7.2.17...v7.2.18
 [7.2.17]: https://github.com/axelor/axelor-open-suite/compare/v7.2.16...v7.2.17
