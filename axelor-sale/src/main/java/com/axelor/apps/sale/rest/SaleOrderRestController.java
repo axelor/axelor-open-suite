@@ -52,7 +52,7 @@ public class SaleOrderRestController {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().createAccess(SaleOrder.class).check();
 
-    Boolean inAti = Boolean.getBoolean( requestBody.getInAti());
+    Boolean inAti = Boolean.getBoolean(requestBody.getInAti());
 
     SaleOrder saleOrder =
         Beans.get(SaleOrderGeneratorService.class)

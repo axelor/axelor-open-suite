@@ -50,6 +50,7 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   protected PartnerRepository partnerRepository;
 
   protected SaleConfigRepository saleConfigRepository;
+
   @Inject
   public SaleOrderGeneratorServiceImpl(
       SaleOrderRepository saleOrderRepository,
@@ -58,8 +59,9 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
       SaleOrderInitValueService saleOrderInitValueService,
       SaleOrderOnChangeService saleOrderOnChangeService,
       SaleOrderDomainService saleOrderDomainService,
-      PartnerRepository partnerRepository,SaleConfigService saleConfigService
-  ,SaleConfigRepository saleConfigRepository) {
+      PartnerRepository partnerRepository,
+      SaleConfigService saleConfigService,
+      SaleConfigRepository saleConfigRepository) {
     this.saleOrderRepository = saleOrderRepository;
     this.appSaleService = appSaleService;
     this.companyService = companyService;
@@ -67,8 +69,8 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     this.saleOrderOnChangeService = saleOrderOnChangeService;
     this.saleOrderDomainService = saleOrderDomainService;
     this.partnerRepository = partnerRepository;
-    this.saleConfigService=saleConfigService;
-   this.saleConfigRepository =saleConfigRepository;
+    this.saleConfigService = saleConfigService;
+    this.saleConfigRepository = saleConfigRepository;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -98,8 +100,6 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     saleOrderRepository.save(saleOrder);
     return saleOrder;
   }
-
-
 
   protected void checkClientPartner(Partner clientPartner, SaleOrder saleOrder)
       throws AxelorException {
@@ -135,12 +135,18 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   protected void checkinAti(SaleOrder saleOrder) throws AxelorException {
 
     Company company = saleOrder.getCompany();
-    if (saleConfigService.getSaleConfig(company).getSaleOrderInAtiSelect() == 1
-        || saleConfigService.getSaleConfig(company).getSaleOrderInAtiSelect() == 2) {
+
+    if (saleConfigRepository
+                .find(saleConfigService.getSaleConfig(company).getId())
+                .getSaleOrderInAtiSelect()
+            == 1
+        || saleConfigRepository
+                .find(saleConfigService.getSaleConfig(company).getId())
+                .getSaleOrderInAtiSelect()
+            == 2) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.ATI_CHANGE_NOT_ALLOWED));
     }
-
   }
 }
