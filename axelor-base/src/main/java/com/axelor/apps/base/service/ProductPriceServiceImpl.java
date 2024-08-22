@@ -8,13 +8,10 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.Set;
 
 public class ProductPriceServiceImpl implements ProductPriceService {
@@ -43,8 +40,7 @@ public class ProductPriceServiceImpl implements ProductPriceService {
 
   @Override
   public BigDecimal getSaleUnitPrice(Company company, Product product) throws AxelorException {
-    LocalDate todayDate =
-        appBaseService.getTodayDate(company);
+    LocalDate todayDate = appBaseService.getTodayDate(company);
     Set<TaxLine> taxLineSet =
         accountManagementService.getTaxLineSet(todayDate, product, company, null, false);
     Currency fromCurrency = (Currency) productCompanyService.get(product, "saleCurrency", company);
