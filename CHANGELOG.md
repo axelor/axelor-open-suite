@@ -1,3 +1,66 @@
+## [8.1.5] (2024-08-22)
+
+### Fixes
+#### Base
+
+* Address: removed unused fields related to invoicing/delivery/default address in base address form.
+
+#### Account
+
+* Mass entry move line: increased width of the date columns.
+* MoveLine: fixed tax management in form view
+* Fixed asset: removed disposal info during copy.
+* Accounting report: fixed wrong amounts when selecting accounts with parent accounts.
+* Invoice: fixed unable to display invoice lines (grid view) when one or more invoices are selected.
+
+#### Bank Payment
+
+* Bank statement: fixed name when loading bank statement lines.
+
+#### Budget
+
+* StockMove/Invoice: fixed technical error when invoicing a stock move line with a value of zero.
+
+#### Business Project
+
+* Project: prevented an error during project totals computation when spent time percentages were too high.
+* Project/Kanban: use the same controls as when you change the project status in kanban view.
+
+#### Contract
+
+* Contract: removed unused action.
+
+#### Helpdesk
+
+* Ticket type: fixed 'Ticket per status' chart.
+
+#### Human Resource
+
+* App Project: added missing french translation.
+* Employee bonus management: fixed computation process when there is no user linked with employee.
+* Project: added missing french translation in the planning tab.
+* Leave reason: fixed typo in french translation.
+
+#### Mobile Settings
+
+* Added missing english translation 'Order'.
+
+#### Sale
+
+* Sale order line: take product application start date into account when selecting product.
+* Sale config: fixed 'default holdback percentage' display.
+* Complementary product: removed field 'optional' from partner views.
+
+#### Stock
+
+* Stock config: fixed translation for 'Send email on supplier arrival cancellation'
+* Stock API: fixed an issue where condition in permission were not evaluated correctly to read stocks and modify/create stock moves.
+* Inventory API: fixed an issue where condition in permission were not evaluated correctly to update an inventory.
+
+#### Supply Chain
+
+* Supplychain config: fixed 'Update customer accepted credit' process updating the credit for all companies instead of the current one.
+
 ## [8.1.4] (2024-08-08)
 
 ### Fixes
@@ -408,6 +471,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.5]: https://github.com/axelor/axelor-open-suite/compare/v8.1.4...v8.1.5
 [8.1.4]: https://github.com/axelor/axelor-open-suite/compare/v8.1.3...v8.1.4
 [8.1.3]: https://github.com/axelor/axelor-open-suite/compare/v8.1.2...v8.1.3
 [8.1.2]: https://github.com/axelor/axelor-open-suite/compare/v8.1.1...v8.1.2
