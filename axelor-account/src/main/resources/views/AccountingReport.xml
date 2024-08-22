@@ -181,7 +181,7 @@
             showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports &amp;&amp; companySet.length &lt;= 1"/>
         </panel>
         <panel name="tagsPanel" title="Tags"
-          showIf="$contains([1,2,7,11], reportType.typeSelect)" colSpan="12">
+          showIf="$contains([1,2,3,4,5,6,7,10,11,13,14,17,18], reportType.typeSelect)" colSpan="12">
           <field name="partnerTagSet" widget="TagSelect" x-color-field="colorSelect"
             grid-view="tag-simplified-grid" form-view="tag-form"
             onSelect="action-accounting-report-attrs-set-partner-tag-domain"/>

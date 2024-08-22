@@ -172,6 +172,7 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <panel name="mainPanel" colSpan="12">
       <field name="projectTaskCategory" colSpan="4" showIf="project.isShowTaskCategory"
+        requiredIf="project.isShowTaskCategory &amp;&amp; project.taskStatusManagementSelect == 4"
         onSelect="action-project-task-attrs-project-task-category-configurations"
         onChange="action-project-task-group-project-category-onchange"/>
       <field name="projectTaskSection" colSpan="4" form-view="project-task-section-form"
@@ -198,6 +199,7 @@
       <field name="project.isShowStatus" hidden="true"/>
       <field name="project.isShowPriority" hidden="true"/>
       <field name="project.isShowTaskCategory" hidden="true"/>
+      <field name="project.taskStatusManagementSelect" hidden="true"/>
     </panel>
   </form>
 
@@ -402,8 +404,7 @@
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">
-    <action name="action-project-task-method-set-status-selection-in"
-      if="project?.taskStatusManagementSelect != 1"/>
+    <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-record-project-configurations"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
   </action-group>
@@ -510,7 +511,7 @@
       expr="call: com.axelor.apps.project.service.ProjectTaskService:getPriority(project)"
       if="project?.isShowPriority"/>
     <field name="status"
-      expr="call: com.axelor.apps.project.service.ProjectTaskService:getStatus(project)"
+      expr="call: com.axelor.apps.project.service.ProjectTaskService:getStatus(project, __this__)"
       if="project?.taskStatusManagementSelect != 1"/>
   </action-record>
 
@@ -595,8 +596,14 @@
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="changeProgress"/>
   </action-method>
 
+  <action-method name="action-project-task-method-change-statut-depending-category">
+    <call class="com.axelor.apps.project.web.ProjectTaskController"
+      method="changeStatusDependingCategory"/>
+  </action-method>
+
   <action-group name="action-project-task-group-project-category-onchange">
     <action name="action-project-task-method-onchange-category"/>
+    <action name="action-project-task-method-change-statut-depending-category"/>
   </action-group>
 
   <action-attrs name="action-project-task-atts-priority-on-select">
@@ -621,8 +628,7 @@
   </action-attrs>
 
   <action-group name="action-project-task-group-timer-process">
-    <action name="action-project-task-method-set-status-selection-in"
-      if="project?.taskStatusManagementSelect != 1"/>
+    <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-method-manage-timer-buttons"/>
     <action name="action-project-task-method-compute-total-timer-duration"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>

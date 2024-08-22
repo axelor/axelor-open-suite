@@ -32,8 +32,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppProject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -140,5 +144,23 @@ public class ProjectController {
             .getCompletedTaskStatus(project.getCompletedTaskStatus(), taskStatusSet);
 
     response.setValue("completedTaskStatus", completedTaskStatus.orElse(null));
+  }
+
+  @ErrorException
+  public void taskStatusManagementSelectionIn(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
+
+    List<Integer> taskStatusSelect = new ArrayList<>();
+    taskStatusSelect.addAll(
+        Arrays.asList(
+            ProjectRepository.TASK_STATUS_MANAGEMENT_NONE,
+            ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT,
+            ProjectRepository.TASK_STATUS_MANAGEMENT_APP));
+    if (appProject != null && appProject.getEnableStatusManagementByTaskCategory()) {
+      taskStatusSelect.add(ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY);
+    }
+
+    response.setAttr("taskStatusManagementSelect", "selection-in", taskStatusSelect);
   }
 }

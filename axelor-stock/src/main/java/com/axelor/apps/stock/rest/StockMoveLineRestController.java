@@ -19,7 +19,6 @@
 package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.rest.dto.StockMoveLinePutRequest;
 import com.axelor.apps.stock.rest.dto.StockMoveLineResponse;
@@ -58,7 +57,7 @@ public class StockMoveLineRestController {
       @PathParam("id") long stockMoveLineId, StockMoveLinePutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockMove.class).check();
+    new SecurityCheck().writeAccess(StockMoveLine.class, stockMoveLineId).check();
 
     StockMoveLine stockmoveLine =
         ObjectFinder.find(StockMoveLine.class, stockMoveLineId, requestBody.getVersion());
