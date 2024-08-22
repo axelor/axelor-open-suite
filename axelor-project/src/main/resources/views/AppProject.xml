@@ -17,7 +17,7 @@
       <field name="selectAutoProgressOnProjectTask"/>
       <field name="isActivateProjectChangeShortcut"/>
       <field name="fullNameGroovyFormula"/>
-      <panel title="Custom fields" name="customFieldConfigPanel" colSpan="12">
+      <panel title="Custom fields" name="customFieldConfigPanel" colSpan="12" showIf="id">
         <panel-related field="taskCustomFieldsList" colSpan="6"
           form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
         <panel-related field="projectCustomFieldsList" colSpan="6"

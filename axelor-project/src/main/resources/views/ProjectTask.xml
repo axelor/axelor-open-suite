@@ -185,20 +185,20 @@
       canCollapse="true" colSpan="12">
       <panel name="appJsonPanel" colSpan="12"
         showIf="$contains(project.customFieldManagementSelect, 'app')" title="App customized fields">
-        <field name="appJson"/>
+        <field name="appJson" colSpan="12"/>
       </panel>
       <panel name="projectJsonPanel" colSpan="12"
         showIf="$contains(project.customFieldManagementSelect, 'project')"
         title="Project customized fields">
-        <field name="projectJson"/>
+        <field name="projectJson" colSpan="12"/>
       </panel>
       <panel name="categoryJsonPanel" colSpan="12"
         showIf="projectTaskCategory &amp;&amp; $contains(project.customFieldManagementSelect, 'category')"
         title="Category customized fields">
-        <field name="categoryJson"/>
+        <field name="categoryJson" colSpan="12"/>
       </panel>
       <panel name="otherFieldsPanel" title="Other customized fields" colSpan="12">
-        <field name="attrs"/>
+        <field name="attrs" colSpan="12"/>
       </panel>
       <field name="project.customFieldManagementSelect" hidden="true"/>
     </panel>
