@@ -47,6 +47,8 @@ import com.axelor.apps.sale.service.AdvancePaymentService;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
 import com.axelor.apps.sale.service.CartInitValueService;
 import com.axelor.apps.sale.service.CartInitValueServiceImpl;
+import com.axelor.apps.sale.service.CartLineService;
+import com.axelor.apps.sale.service.CartLineServiceImpl;
 import com.axelor.apps.sale.service.CartService;
 import com.axelor.apps.sale.service.CartServiceImpl;
 import com.axelor.apps.sale.service.PackLineService;
@@ -74,10 +76,13 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.loyalty.LoyaltyAccountHistoryLineService;
+import com.axelor.apps.sale.service.loyalty.LoyaltyAccountHistoryLineServiceImpl;
 import com.axelor.apps.sale.service.loyalty.LoyaltyAccountPointsManagementService;
 import com.axelor.apps.sale.service.loyalty.LoyaltyAccountPointsManagementServiceImpl;
 import com.axelor.apps.sale.service.loyalty.LoyaltyAccountService;
 import com.axelor.apps.sale.service.loyalty.LoyaltyAccountServiceImpl;
+import com.axelor.apps.sale.service.observer.ProductPopulateSaleObserver;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireServiceImpl;
 import com.axelor.apps.sale.service.observer.SaleOrderLineObserver;
@@ -270,5 +275,8 @@ public class SaleModule extends AxelorModule {
     bind(CartInitValueService.class).to(CartInitValueServiceImpl.class);
     bind(CartService.class).to(CartServiceImpl.class);
     bind(CartLineRepository.class).to(CartLineManagementRepository.class);
+    bind(CartLineService.class).to(CartLineServiceImpl.class);
+    bind(ProductPopulateSaleObserver.class);
+    bind(LoyaltyAccountHistoryLineService.class).to(LoyaltyAccountHistoryLineServiceImpl.class);
   }
 }

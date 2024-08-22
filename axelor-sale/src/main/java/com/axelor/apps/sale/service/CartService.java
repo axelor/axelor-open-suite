@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Cart;
 
 public interface CartService {
@@ -25,4 +26,8 @@ public interface CartService {
   Cart getCurrentCart();
 
   void emptyCart(Cart cart);
+
+  void addToCart(Product product);
+
+  Cart createCart();
 }

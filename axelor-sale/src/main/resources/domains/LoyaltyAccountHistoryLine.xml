@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="LoyaltyAccountHistoryLine">
+
+    <decimal name="pointsBalance" title="Points balance" precision="20" scale="10"
+      default="0"/>
+    <decimal name="remainingPoints" title="Remaining points" precision="20" scale="10"
+      default="0"/>
+    <boolean name="pointsAcquired" title="Acquired"/>
+    <datetime name="acquisitionDateTime" title="Date of acquisition"/>
+    <datetime name="useDateTime" title="Date of use"/>
+    <many-to-one name="loyaltyAccount" title="Loyalty account"
+      ref="com.axelor.apps.sale.db.LoyaltyAccount"/>
+    <many-to-one name="saleOrder" title="Linked sale order"
+      ref="com.axelor.apps.sale.db.SaleOrder"/>
+
+  </entity>
+
+</domain-models>
