@@ -16,29 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businesssupport.service.web;
+package com.axelor.apps.sale.web;
 
-import com.axelor.apps.project.service.ProjectActivityDashboardService;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.sale.db.CartLine;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
-@Singleton
-public class ProjectActivityDashboardController {
+public class CartLineController {
 
-  public void getData(ActionRequest request, ActionResponse response) {
-    LocalDate annoucementDate =
-        LocalDate.parse(
-            request.getContext().get("announcementDate").toString(), DateTimeFormatter.ISO_DATE);
-    LocalDate toDate = annoucementDate.plusDays(30);
-    LocalDate todayDate = LocalDate.now();
-    if (todayDate.isBefore(toDate)) {
-      toDate = todayDate;
+  public void setUnit(ActionRequest request, ActionResponse response) {
+    try {
+      CartLine cartLine = request.getContext().asType(CartLine.class);
+      response.setValue(
+          "unit", Beans.get(SaleOrderLineProductService.class).getSaleUnit(cartLine.getProduct()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setValues(
-        Beans.get(ProjectActivityDashboardService.class).getData(annoucementDate, toDate, null));
   }
 }

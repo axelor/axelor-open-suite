@@ -36,7 +36,7 @@ public class SaleOrderLineMultipleQtyServiceImpl implements SaleOrderLineMultipl
     List<ProductMultipleQty> productMultipleQtyList = product.getSaleProductMultipleQtyList();
 
     if (appSaleService.getAppSale().getIsEditableGridEnabled()
-        && !productMultipleQtyService.checkMultipleQty(qty, productMultipleQtyList)) {
+        && !productMultipleQtyService.isMultipleQty(qty, productMultipleQtyList)) {
       return productMultipleQtyService.getMultipleQuantityErrorMessage(productMultipleQtyList);
     }
     return "";

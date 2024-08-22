@@ -1,6 +1,7 @@
 package com.axelor.apps.sale.service.saleorderline;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -32,5 +33,5 @@ public interface SaleOrderLineProductService {
   Map<String, Object> fillTaxInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 
-  Unit getSaleUnit(SaleOrderLine saleOrderLine);
+  Unit getSaleUnit(Product product);
 }
