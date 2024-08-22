@@ -12,8 +12,7 @@
     <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
   </grid>
 
-  <form onLoad="action-group-supplychain-salebatch-onload"
-    onNew="action-group-supplychain-salebatch-onnew" name="sale-batch-form" title="Sale Batch"
+  <form onNew="action-sale-batch-record-on-new" name="sale-batch-form" title="Sale Batch"
     model="com.axelor.apps.sale.db.SaleBatch" width="large">
     <panel name="mainPanel">
       <field name="actionSelect" onChange="action-sale-batch-attrs-action-select"/>
@@ -37,17 +36,6 @@
     </panel-tabs>
   </form>
 
-  <!-- ACTION GROUPs -->
-  <action-group name="action-group-supplychain-salebatch-onload">
-    <action name="action-sale-batch-attrs-action-select"/>
-    <action name="action-sale-batch-attrs-action-select"/>
-  </action-group>
-
-  <action-group name="action-group-supplychain-salebatch-onnew">
-    <action name="action-sale-batch-record-on-new"/>
-    <action name="action-sale-batch-attrs-action-select"/>
-  </action-group>
-
   <!-- ACTION RECORD -->
   <action-record name="action-sale-batch-record-on-new"
     model="com.axelor.apps.sale.db.SaleBatch">
@@ -67,14 +55,10 @@
 
   <!-- ACTION METHOD -->
   <action-method name="action-sale-batch-method-run-batch">
-    <call class="com.axelor.apps.supplychain.web.SaleBatchController" method="runBatch"/>
+    <call class="com.axelor.apps.sale.web.SaleBatchController" method="runBatch"/>
   </action-method>
 
   <!-- ACTION ATTRS -->
-  <action-attrs name="action-sale-batch-attrs-action-select">
-    <attribute name="hidden" expr="eval: actionSelect != 1" for="InvoicingPage"/>
-  </action-attrs>
-
   <search-filters name="sale-batch-filters" model="com.axelor.apps.sale.db.SaleBatch"
     title="Sale batch filters">
     <field name="company" hidden="true"
