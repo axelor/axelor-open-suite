@@ -139,10 +139,6 @@ public final class SaleExceptionMessage {
   public static final String SALE_ORDER_NOT_DRAFT = /*$$(*/
       "You can only add a line to a draft sale order." /*)*/;
 
-  public static final String NO_PRODUCT_TAX = /*$$(*/ "No tax is set for this product: %s" /*)*/;
-
-  public static final String NO_TAX_LINE = /*$$(*/ "There is no tax line for this tax: %s" /*)*/;
-
   public static final String PRODUCT_CURRENCY_IS_NULL = /*$$(*/
       "This product currency is empty: %s" /*)*/;
 
@@ -155,7 +151,4 @@ public final class SaleExceptionMessage {
 
   public static final String CONTACT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS = /*$$(*/
       "The contact provided is not a contact partner of the client." /*)*/;
-
-  public static final String ACCOUNT_MANAGEMENT_IS_NULL = /*$$(*/
-      "There is no account management for this product: %s" /*)*/;
 }

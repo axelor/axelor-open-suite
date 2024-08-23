@@ -34,12 +34,14 @@ import com.axelor.apps.sale.rest.dto.CurrencyResponse;
 import com.axelor.apps.sale.rest.dto.PriceResponse;
 import com.axelor.apps.sale.rest.dto.ProductResponse;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import wslite.json.JSONException;
+import java.util.Optional;
 
 public class ProductRestServiceImpl implements ProductRestService {
 
@@ -77,8 +79,8 @@ public class ProductRestServiceImpl implements ProductRestService {
     checkProduct(product);
     List<PriceResponse> priceList = new ArrayList<>();
 
-    BigDecimal priceWT = productPriceService.getSaleUnitPrice(company, product, false);
-    BigDecimal priceATI = productPriceService.getSaleUnitPrice(company, product, true);
+    BigDecimal priceWT = productPriceService.getSaleUnitPrice(company, product, false, partner);
+    BigDecimal priceATI = productPriceService.getSaleUnitPrice(company, product, true, partner);
 
     priceList.add(new PriceResponse("WT", priceWT));
     priceList.add(new PriceResponse("ATI", priceATI));
@@ -109,8 +111,11 @@ public class ProductRestServiceImpl implements ProductRestService {
 
   @Override
   public ProductResponse computeProductResponse(Company company, Product product, Partner partner)
-      throws AxelorException, JSONException {
+      throws AxelorException {
     CurrencyResponse currencyResponse = createCurrencyResponse(product, partner, company);
+    if (company == null) {
+      company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+    }
     List<PriceResponse> prices = fetchProductPrice(product, partner, company);
     return new ProductResponse(product.getId(), prices, currencyResponse);
   }

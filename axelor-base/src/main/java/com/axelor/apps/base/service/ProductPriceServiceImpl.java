@@ -1,12 +1,15 @@
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -16,7 +19,7 @@ import java.util.Set;
 
 public class ProductPriceServiceImpl implements ProductPriceService {
   protected AppBaseService appBaseService;
-
+  protected FiscalPositionService fiscalPositionService;
   protected CurrencyService currencyService;
   protected ProductCompanyService productCompanyService;
 
@@ -29,28 +32,39 @@ public class ProductPriceServiceImpl implements ProductPriceService {
       ProductCompanyService productCompanyService,
       TaxService taxService,
       AppBaseService appBaseService,
-      AccountManagementService accountManagementService) {
+      AccountManagementService accountManagementService,
+      FiscalPositionService fiscalPositionService) {
 
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
     this.appBaseService = appBaseService;
     this.taxService = taxService;
     this.accountManagementService = accountManagementService;
+    this.fiscalPositionService = fiscalPositionService;
   }
 
   @Override
   public BigDecimal getSaleUnitPrice(Company company, Product product) throws AxelorException {
-    return getSaleUnitPrice(company, product, product.getInAti());
+    return getSaleUnitPrice(company, product, product.getInAti(), null);
   }
 
   @Override
-  public BigDecimal getSaleUnitPrice(Company company, Product product, Boolean inAti)
-      throws AxelorException {
+  public BigDecimal getSaleUnitPrice(
+      Company company, Product product, Boolean inAti, Partner partner) throws AxelorException {
     LocalDate todayDate = appBaseService.getTodayDate(company);
+    Currency toCurrency = (Currency) productCompanyService.get(product, "saleCurrency", company);
+
+    FiscalPosition fiscalPosition = null;
+    if (partner != null) {
+      fiscalPosition = partner.getFiscalPosition();
+      if (partner.getCurrency() != null) {
+        toCurrency = partner.getCurrency();
+      }
+    }
     Set<TaxLine> taxLineSet =
-        accountManagementService.getTaxLineSet(todayDate, product, company, null, false);
-    Currency fromCurrency = (Currency) productCompanyService.get(product, "saleCurrency", company);
-    return getSaleUnitPrice(company, product, taxLineSet, inAti, todayDate, fromCurrency);
+        accountManagementService.getTaxLineSet(todayDate, product, company, fiscalPosition, false);
+
+    return getSaleUnitPrice(company, product, taxLineSet, inAti, todayDate, toCurrency);
   }
 
   @Override
