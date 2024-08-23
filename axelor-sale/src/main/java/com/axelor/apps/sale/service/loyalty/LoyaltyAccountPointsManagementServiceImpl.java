@@ -31,7 +31,7 @@ public class LoyaltyAccountPointsManagementServiceImpl
   public void incrementLoyaltyPointsFromAmount(SaleOrder saleOrder) {
     Optional<LoyaltyAccount> loyaltyAccount =
         loyaltyAccountService.getLoyaltyAccount(
-            saleOrder.getClientPartner(), saleOrder.getCompany());
+            saleOrder.getClientPartner(), saleOrder.getCompany(), saleOrder.getTradingName());
     BigDecimal earnedPoints = pointsEarningComputation(saleOrder.getExTaxTotal());
 
     if (earnedPoints.compareTo(BigDecimal.ZERO) != 0) {

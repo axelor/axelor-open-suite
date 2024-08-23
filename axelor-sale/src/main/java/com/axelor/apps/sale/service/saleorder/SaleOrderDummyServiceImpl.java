@@ -78,7 +78,7 @@ public class SaleOrderDummyServiceImpl implements SaleOrderDummyService {
     Map<String, Object> dummies = new HashMap<>();
     Optional<LoyaltyAccount> loyaltyAccount =
         loyaltyAccountService.getLoyaltyAccount(
-            saleOrder.getClientPartner(), saleOrder.getCompany());
+            saleOrder.getClientPartner(), saleOrder.getCompany(), saleOrder.getTradingName());
     dummies.put(
         "$loyaltyPoints",
         loyaltyAccount

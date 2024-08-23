@@ -33,6 +33,7 @@
       <field name="isEnableCalculationEntireQuotation" widget="boolean-switch"/>
       <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>
       <field name="enableLoyalty" widget="boolean-switch"/>
+      <field name="loyaltyAccountsManagement" showIf="enableLoyalty"/>
       <field name="isCartManagementEnabled" widget="boolean-switch"/>
     </panel>
     <panel name="actionsPanel">
@@ -66,6 +67,8 @@
     model="com.axelor.studio.db.AppSale">
     <attribute name="hidden" for="enableSalesProductByTradName"
       expr="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <attribute name="selection-in" for="loyaltyAccountsManagement" expr="[0, 1]"
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </action-attrs>
 
 </object-views>
