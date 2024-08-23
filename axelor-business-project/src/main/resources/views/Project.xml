@@ -540,10 +540,7 @@
         <panel-dashlet name="contractInvoicePanel" title="Invoices"
           action="action-project-dashlet-contract-invoices" colSpan="12"/>
       </panel>
-      <panel title="Custom fields" name="customFieldConfigPanel">
-        <panel-related field="taskCustomFieldsList" colSpan="12" showIf="id"
-          form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
-      </panel>
+      <panel-include view="incl-custom-fields-to-display-panel-form"/>
       <panel title="Activities" name="activityPanel"
         onTabSelect="action-project-activity-dashboard-method-on-new" showIf="id">
         <panel-include view="project-activity-dashboard-form"/>

@@ -22,7 +22,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import java.math.BigDecimal;
 
 public interface SaleOrderLineGeneratorService {
-  SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product) throws AxelorException;
+  SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product, BigDecimal quantity)
+      throws AxelorException;
 }

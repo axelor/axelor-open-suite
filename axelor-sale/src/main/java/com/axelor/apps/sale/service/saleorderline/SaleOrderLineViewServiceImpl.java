@@ -223,7 +223,7 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
         saleOrderLine.getProduct().getSaleProductMultipleQtyList();
     boolean allowToForce = product.getAllowToForceSaleQty();
     boolean isMultiple =
-        productMultipleQtyService.checkMultipleQty(saleOrderLine.getQty(), productMultipleQtyList);
+        productMultipleQtyService.isMultipleQty(saleOrderLine.getQty(), productMultipleQtyList);
 
     Map<String, Object> attrsMap = new HashMap<>();
     attrsMap.put(

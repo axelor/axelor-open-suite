@@ -42,4 +42,6 @@ public interface ProjectBusinessService extends ProjectService {
   Map<String, Object> processRequestToDisplayFinancialReporting(Long id) throws AxelorException;
 
   void transitionBetweenPaidStatus(Project project) throws AxelorException;
+
+  String checkPercentagesOver1000OnTasks(Project project);
 }

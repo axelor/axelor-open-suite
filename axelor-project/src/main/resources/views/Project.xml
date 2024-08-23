@@ -129,10 +129,7 @@
 
         <panel-include view="incl-fields-to-display-panel-form"/>
       </panel>
-      <panel title="Custom fields" name="customFieldConfigPanel">
-        <panel-related field="taskCustomFieldsList" colSpan="12" showIf="id"
-          form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
-      </panel>
+      <panel-include view="incl-custom-fields-to-display-panel-form"/>
       <panel title="Activities" name="activityPanel"
         onTabSelect="action-project-activity-dashboard-method-on-new" showIf="id">
         <panel-include view="project-activity-dashboard-form"/>
@@ -331,8 +328,20 @@
     </panel>
   </form>
 
+  <form name="incl-custom-fields-to-display-panel-form" title="Project"
+    model="com.axelor.apps.project.db.Project">
+    <panel title="Custom fields" name="customFieldConfigPanel">
+      <field name="customFieldManagementSelect" widget="MultiSelect" placeholder="None"
+        onChange="save"/>
+      <panel-related field="taskCustomFieldsList" colSpan="12"
+        showIf="$contains(customFieldManagementSelect, 'project')"
+        form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
+    </panel>
+  </form>
+
   <kanban columnBy="projectStatus" sequenceBy="orderByState" limit="10" name="project-kanban"
-    title="Projects" model="com.axelor.apps.project.db.Project">
+    title="Projects" model="com.axelor.apps.project.db.Project"
+    onMove="action-business-project-group-project-status-on-change">
     <field name="fullName"/>
     <field name="description"/>
     <field name="projectStatus"/>

@@ -22,19 +22,22 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDomainService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineInitValueService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGeneratorService {
   protected SaleOrderLineInitValueService saleOrderLineInitValueService;
@@ -47,7 +50,10 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
   protected SaleOrderLineDomainService saleOrderLineDomainService;
   protected SaleOrderService saleOrderService;
   protected SaleOrderOnLineChangeService saleOrderOnLineChangeService;
-  protected AppBaseService appBaseService;
+  protected AppSaleService appSaleService;
+  protected SaleOrderLineOnChangeService saleOrderLineOnChangeService;
+
+  protected ProductMultipleQtyService productMultipleQtyService;
 
   @Inject
   public SaleOrderLineGeneratorServiceImpl(
@@ -60,8 +66,10 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       SaleOrderLineDomainService saleOrderLineDomainService,
       ProductRepository productRepository,
       SaleOrderService saleOrderService,
-      AppBaseService appBaseService,
-      SaleOrderOnLineChangeService saleOrderOnLineChangeService) {
+      AppSaleService appSaleService,
+      SaleOrderOnLineChangeService saleOrderOnLineChangeService,
+      ProductMultipleQtyService productMultipleQtyService,
+      SaleOrderLineOnChangeService saleOrderLineOnChangeService) {
     this.saleOrderLineInitValueService = saleOrderLineInitValueService;
     this.saleOrderLineProductService = saleOrderLineProductService;
     this.saleOrderLineRepository = saleOrderLineRepository;
@@ -72,21 +80,33 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     this.productRepository = productRepository;
     this.saleOrderService = saleOrderService;
     this.saleOrderOnLineChangeService = saleOrderOnLineChangeService;
-    this.appBaseService = appBaseService;
+    this.appSaleService = appSaleService;
+    this.productMultipleQtyService = productMultipleQtyService;
+    this.saleOrderLineOnChangeService = saleOrderLineOnChangeService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product)
+  public SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product, BigDecimal qty)
       throws AxelorException {
     checkSaleOrderAndProduct(saleOrder, product);
     SaleOrderLine saleOrderLine = new SaleOrderLine();
     saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine);
     checkProduct(saleOrder, saleOrderLine, product);
     saleOrderLine.setProduct(product);
+    if (appSaleService.getAppSale().getManageMultipleSaleQuantity()) {
+      productMultipleQtyService.checkMultipleQty(product.getSaleProductMultipleQtyList(), qty);
+    }
+    if (qty == null) {
+      qty = BigDecimal.ONE;
+    }
+    saleOrderLine.setQty(qty);
     saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
     saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+    saleOrderLineOnChangeService.productOnChange(saleOrderLine, saleOrder);
+
     saleOrderLineRepository.save(saleOrderLine);
+
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderOnLineChangeService.handleComplementaryProducts(saleOrder);
@@ -115,7 +135,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     if (!productRepository
         .all()
         .filter(domain)
-        .bind("__date__", appBaseService.getTodayDate(saleOrder.getCompany()))
+        .bind("__date__", appSaleService.getTodayDate(saleOrder.getCompany()))
         .fetch()
         .contains(product)) {
       throw new AxelorException(

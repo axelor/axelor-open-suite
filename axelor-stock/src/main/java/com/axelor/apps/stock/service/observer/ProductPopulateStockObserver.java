@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.db.repo.product;
+package com.axelor.apps.stock.service.observer;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.event.ProductPopulate;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
@@ -26,24 +27,29 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.utils.StockLocationUtilsService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-public class ProductStockRepositoryPopulate {
+public class ProductPopulateStockObserver {
 
-  protected StockLocationLineFetchService stockLocationLineFetchService;
-  protected StockLocationUtilsService stockLocationUtilsService;
+  @SuppressWarnings("rawtypes")
+  void populate(@Observes ProductPopulate event) {
+    Map<String, Object> json = event.getJson();
+    Map<String, Object> context = event.getContext();
 
-  @Inject
-  public ProductStockRepositoryPopulate(
-      StockLocationLineFetchService stockLocationLineFetchService,
-      StockLocationUtilsService stockLocationUtilsService) {
-    this.stockLocationLineFetchService = stockLocationLineFetchService;
-    this.stockLocationUtilsService = stockLocationUtilsService;
+    if (Boolean.TRUE.equals(context.get("_xFillProductAvailableQty"))
+        || (context.get("_parent") != null
+            && Boolean.TRUE.equals(
+                ((Map) context.get("_parent")).get("_xFillProductAvailableQty")))) {
+      setAvailableQty(json, context);
+    }
+    if (context.containsKey("fromStockWizard")) {
+      fillFromStockWizard(json, context);
+    }
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
@@ -74,14 +80,16 @@ public class ProductStockRepositoryPopulate {
 
         if (stockLocation != null) {
           BigDecimal availableQty =
-              stockLocationLineFetchService.getAvailableQty(stockLocation, product);
+              Beans.get(StockLocationLineFetchService.class)
+                  .getAvailableQty(stockLocation, product);
 
           json.put("$availableQty", availableQty);
         }
       } else if (product.getParentProduct() != null) {
         json.put(
             "$availableQty",
-            stockLocationUtilsService.getRealQtyOfProductInStockLocations(productId, null, null));
+            Beans.get(StockLocationUtilsService.class)
+                .getRealQtyOfProductInStockLocations(productId, null, null));
       }
 
     } catch (Exception e) {

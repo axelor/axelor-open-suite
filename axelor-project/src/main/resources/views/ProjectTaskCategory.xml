@@ -32,6 +32,8 @@
         form-view="task-status-form" grid-view="task-status-grid"
         if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
         onSelect="action-project-task-category-attrs-set-completed-task-status-domain"/>
+      <panel-related field="taskCustomFieldsList" colSpan="12" showIf="id"
+        form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
     </panel>
   </form>
 

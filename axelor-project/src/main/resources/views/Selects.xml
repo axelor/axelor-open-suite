@@ -62,4 +62,10 @@
     <option value="2">Manage by project</option>
     <option value="3">Manage by app project</option>
   </selection>
+
+  <selection name="project.custom.field.management.select">
+    <option value="app">App project</option>
+    <option value="project">Project</option>
+    <option value="category">Category</option>
+  </selection>
 </object-views>
