@@ -77,7 +77,11 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public SaleOrder createSaleOrder(
-      Partner clientPartner, Company company, Partner contactPartner, Currency currency, Boolean inAti)
+      Partner clientPartner,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      Boolean inAti)
       throws AxelorException, JsonProcessingException {
     SaleOrder saleOrder = new SaleOrder();
     boolean isTemplate = false;
@@ -118,14 +122,16 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
           company.getName());
     }
   }
-    protected void checkContact(Partner clientPartner, Partner contactPartner)
-            throws AxelorException {
-        if (!clientPartner.getContactPartnerSet().contains(contactPartner)) {
-            throw new AxelorException(
-                    TraceBackRepository.CATEGORY_INCONSISTENCY,
-                    I18n.get(SaleExceptionMessage.CONTACT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS));
-        }
+
+  protected void checkContact(Partner clientPartner, Partner contactPartner)
+      throws AxelorException {
+    if (!clientPartner.getContactPartnerSet().contains(contactPartner)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.CONTACT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS));
     }
+  }
+
   protected void setInAti(Boolean inAti, SaleOrder saleOrder) throws AxelorException {
     if (inAti != null) {
       checkinAti(saleOrder);
