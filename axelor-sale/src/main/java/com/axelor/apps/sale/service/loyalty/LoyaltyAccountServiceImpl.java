@@ -68,12 +68,16 @@ public class LoyaltyAccountServiceImpl implements LoyaltyAccountService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public LoyaltyAccount acquirePoints(LoyaltyAccount loyaltyAccount, LocalDateTime limitDateTime) {
+  public LoyaltyAccount acquirePoints(LoyaltyAccount loyaltyAccount, Integer delay) {
     loyaltyAccount.getHistoryLineList().stream()
         .filter(
             historyLine ->
                 !historyLine.getPointsAcquired()
-                    && historyLine.getSaleOrder().getConfirmationDate().isAfter(limitDateTime))
+                    && historyLine
+                        .getSaleOrder()
+                        .getConfirmationDateTime()
+                        .plusDays(delay)
+                        .isBefore(LocalDateTime.now()))
         .forEach(
             historyLine -> {
               BigDecimal pointsBalance = historyLine.getPointsBalance();

@@ -7,10 +7,10 @@ import com.axelor.apps.sale.db.repo.LoyaltyAccountRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.loyalty.LoyaltyAccountService;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,20 +28,20 @@ public class BatchLoyaltyAccountEarnPoints extends BatchStrategy {
 
   @Override
   protected void process() {
-
-    List<LoyaltyAccount> loyaltyAccountList =
+    int offset = 0;
+    List<LoyaltyAccount> loyaltyAccountList;
+    Query<LoyaltyAccount> loyaltyAccountQuery =
         loyaltyAccountRepository
             .all()
-            .filter("self.pointsBalance != self.futurePointsBalance")
-            .fetch(FETCH_LIMIT);
-
-    while (!loyaltyAccountList.isEmpty()) {
+            .order("id")
+            .filter("self.pointsBalance != self.futurePointsBalance");
+    while (!(loyaltyAccountList = loyaltyAccountQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+      findBatch();
       for (LoyaltyAccount loyaltyAccount : loyaltyAccountList) {
+        ++offset;
         try {
           loyaltyAccountService.acquirePoints(
-              loyaltyAccount,
-              LocalDateTime.now()
-                  .plusDays(batch.getSaleBatch().getLoyaltyAccountPointsAcquiringDelay()));
+              loyaltyAccount, batch.getSaleBatch().getLoyaltyAccountPointsAcquiringDelay());
           updateLoyaltyAccount(loyaltyAccount);
         } catch (Exception e) {
           TraceBackService.trace(
@@ -56,8 +56,6 @@ public class BatchLoyaltyAccountEarnPoints extends BatchStrategy {
         }
       }
       JPA.clear();
-      loyaltyAccountList =
-          loyaltyAccountRepository.all().filter("self.pointsAcquired = false").fetch(FETCH_LIMIT);
     }
   }
 

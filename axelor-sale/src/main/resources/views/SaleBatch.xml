@@ -24,8 +24,12 @@
     <panel name="createdPanel">
       <field name="createdOn" title="Created on"/>
       <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
-      <button name="invoicingBatchBtn" title="Invoicing batch"
-        onClick="save,action-sale-batch-method-run-batch"/>
+      <panel name="loyaltyAccountPointsEarningPanel" colSpan="12" showIf="actionSelect == 2">
+        <button name="earnLoyaltyAccountPointsBtn"
+          title="Loyalty account points earning batch"
+          onClick="save,action-sale-batch-method-run-batch"/>
+        <field name="loyaltyAccountPointsAcquiringDelay"/>
+      </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="descriptionPanel" title="Description">
@@ -46,7 +50,7 @@
     <field name="createdOn"
       expr="eval:__config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
-    <field name="createdBy" expr="__user__"/>
+    <field name="createdBy" expr="eval:__user__"/>
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"

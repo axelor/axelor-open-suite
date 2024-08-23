@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form id="supply-chain-sale-batch-form" name="sale-batch-form" title="Sale Batch"
+    model="com.axelor.apps.sale.db.SaleBatch" extension="true" width="large">
+    <extend target="//field[@name='createdBy']">
+      <insert position="after">
+        <panel name="invoicingPanel" colSpan="12" showIf="actionSelect == 1">
+          <button name="invoicingBatchBtn" title="Invoicing batch"
+            onClick="save,action-sale-batch-method-run-batch"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>
