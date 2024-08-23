@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CompanyService;
+import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -125,7 +126,7 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
                     I18n.get(SaleExceptionMessage.CONTACT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS));
         }
     }
-  private void setInAti(Boolean inAti, SaleOrder saleOrder) throws AxelorException {
+  protected void setInAti(Boolean inAti, SaleOrder saleOrder) throws AxelorException {
     if (inAti != null) {
       checkinAti(saleOrder);
       saleOrder.setInAti(inAti);
@@ -134,16 +135,12 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
 
   protected void checkinAti(SaleOrder saleOrder) throws AxelorException {
 
-    Company company = saleOrder.getCompany();
+    SaleConfig saleConfig = saleConfigService.getSaleConfig(saleOrder.getCompany());
 
-    if (saleConfigRepository
-                .find(saleConfigService.getSaleConfig(company).getId())
-                .getSaleOrderInAtiSelect()
-            == 1
-        || saleConfigRepository
-                .find(saleConfigService.getSaleConfig(company).getId())
-                .getSaleOrderInAtiSelect()
-            == 2) {
+    int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
+
+    if (saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
+        || saleOrderInAtiSelect == SaleConfigRepository.SALE_WT_ALWAYS) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.ATI_CHANGE_NOT_ALLOWED));
