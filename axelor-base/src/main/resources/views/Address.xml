@@ -69,17 +69,18 @@
       <field name="isValidLatLong" hidden="true"/>
       <field name="formattedFullName" readonly="true" colSpan="12" height="4"/>
 
-      <panel if="__config__.app.getApp('base')?.getHasQasValidation()"
-        name="qasCertificationPanel" title="QAS certification" colSpan="12">
+      <panel name="certificationPanel" title="Certification" colSpan="12">
         <field name="certifiedOk" colSpan="4"/>
         <panel name="actionsPanel" colSpan="4">
           <button name="validateBtn" title="Validate"
             onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
           <button name="selectBtn" title="Choose"
             onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+          <field name="country.addressValidationApi" hidden="true"/>
         </panel>
         <panel-related name="pickListPanel" title="Pick list" colSpan="12"
-          field="pickList" grid-view="pick-list-entry-grid" form="pick-list-entry-form"/>
+          field="pickList" grid-view="pick-list-entry-grid" form="pick-list-entry-form"
+          showIf="country?.addressValidationApi == 2"/>
       </panel>
 
     </panel>
@@ -146,8 +147,7 @@
         </panel>
 
       </panel>
-      <panel name="qasCertificationPanel" title="QAS certification" colSpan="12"
-        if="__config__.app.getApp('base')?.getHasQasValidation()">
+      <panel name="certificationPanel" title="Certification" colSpan="12">
         <field name="certifiedOk" colSpan="4"/>
         <panel name="actionsPanel" colSpan="4">
           <button name="validateBtn" title="Validate"
@@ -156,7 +156,8 @@
             onClick="com.axelor.apps.base.web.AddressController:select,save"/>
         </panel>
         <panel-related name="pickListPanel" field="pickList" title="Pick list"
-          colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"/>
+          colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"
+          showIf="country?.addressValidationApi == 2"/>
       </panel>
     </panel>
   </form>
@@ -285,9 +286,5 @@
     <field name="street" hidden="true" if="!__config__.app.getApp('base')?.getStoreStreets()"/>
     <field name="streetName" hidden="true"
       if="__config__.app.getApp('base')?.getStoreStreets()"/>
-    <field name="certifiedOk" hidden="true"
-      if="!__config__.app.getApp('base')?.getHasQasValidation()"/>
-    <field name="pickList" hidden="true"
-      if="!__config__.app.getApp('base')?.getHasQasValidation()"/>
   </search-filters>
 </object-views>

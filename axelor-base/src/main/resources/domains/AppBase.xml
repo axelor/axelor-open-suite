@@ -42,8 +42,6 @@
       ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase"
       title="Currency conversion table"/>
 
-    <boolean name="hasQasValidation" title="Use QAS Validation"/>
-
     <integer name="productInAtiSelect" title="Products ATI/WT"
       selection="base.in.ati.select" default="1"/>
     <integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" min="0"
@@ -205,7 +203,6 @@
       <field name="mapApiSelect" on="UPDATE"/>
       <field name="googleMapsApiKey" on="UPDATE"/>
       <field name="currencyWsURL" on="UPDATE"/>
-      <field name="hasQasValidation" on="UPDATE"/>
       <field name="productInAtiSelect" on="UPDATE"/>
       <field name="nbDecimalDigitForUnitPrice" on="UPDATE"/>
       <field name="computeMethodDiscountSelect" on="UPDATE"/>

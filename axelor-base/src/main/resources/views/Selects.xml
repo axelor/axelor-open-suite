@@ -797,4 +797,10 @@
     <option value="2">EmployeeFile</option>
   </selection>
 
+  <selection name="base.country.address,validation.api.select">
+    <option value="0">Default</option>
+    <option value="1">Data.gouv.fr</option>
+    <option value="2">QAS</option>
+  </selection>
+
 </object-views>

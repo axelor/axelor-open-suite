@@ -100,7 +100,6 @@
           <field name="qasWsdlUrl"/>
           <button name="checkQasWsdlBtn" title="Test connection to QAS webservice"
             onClick="com.axelor.apps.base.web.AddressController:check"/>
-          <field name="hasQasValidation" widget="boolean-switch"/>
         </panel>
         <panel name="wsPanel" title="Webservices" colSpan="12">
           <field name="currencyWsURL" colSpan="6"

@@ -24,6 +24,9 @@
     <many-to-one name="citizenship" title="Citizenship"
       ref="com.axelor.apps.base.db.Citizenship"/>
 
+    <integer name="addressValidationApi" title="Address validation API"
+      selection="base.country.address,validation.api.select"/>
+
   </entity>
 
 </domain-models>
