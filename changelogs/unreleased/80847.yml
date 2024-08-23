@@ -1,0 +1,3 @@
+---
+title: "Accounting report: Fix amounts with currency decimal digits in accounting report 'Revenue and expenditure state'."
+module: axelor-account
