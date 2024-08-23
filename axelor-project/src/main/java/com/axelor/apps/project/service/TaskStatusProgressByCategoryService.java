@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface TaskStatusProgressByCategoryService {
-  @Transactional(rollbackOn = {Exception.class})
+
   void updateExistingProgressWithValue(
       List<TaskStatusProgressByCategory> taskStatusProgressByCategoryList, BigDecimal newProgress);
 }
