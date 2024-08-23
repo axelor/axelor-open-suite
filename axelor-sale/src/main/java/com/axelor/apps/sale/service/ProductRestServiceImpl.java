@@ -18,17 +18,14 @@
  */
 package com.axelor.apps.sale.service;
 
-import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CompanyService;
-import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
@@ -37,17 +34,11 @@ import com.axelor.apps.sale.rest.dto.CurrencyResponse;
 import com.axelor.apps.sale.rest.dto.PriceResponse;
 import com.axelor.apps.sale.rest.dto.ProductResponse;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import wslite.json.JSONException;
 
 public class ProductRestServiceImpl implements ProductRestService {
@@ -60,6 +51,7 @@ public class ProductRestServiceImpl implements ProductRestService {
   protected UserService userService;
   protected ProductRestService productRestService;
   protected AppBaseService appBaseService;
+  protected ProductPriceService productPriceService;
 
   @Inject
   public ProductRestServiceImpl(
@@ -68,13 +60,15 @@ public class ProductRestServiceImpl implements ProductRestService {
       PartnerRepository partnerRepository,
       UserService userService,
       ProductRestService productRestService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      ProductPriceService productPriceService) {
     this.appSaleService = appSaleService;
     this.companyService = companyService;
     this.userService = userService;
     this.partnerRepository = partnerRepository;
     this.productRestService = productRestService;
     this.appBaseService = appBaseService;
+    this.productPriceService = productPriceService;
   }
 
   @Override
@@ -82,60 +76,13 @@ public class ProductRestServiceImpl implements ProductRestService {
       throws AxelorException {
     checkProduct(product);
     List<PriceResponse> priceList = new ArrayList<>();
-    int nbrDecimalDigit = appSaleService.getNbDecimalDigitForUnitPrice();
-    BigDecimal priceWT =
-        priceInPartnerCurrency(product, partner, company).setScale(nbrDecimalDigit);
 
-    if (company == null) {
-      company = userService.getUser().getActiveCompany();
-    }
-    BigDecimal priceATI =
-        getProductPriceWithTax(product, company, partner)
-            .setScale(nbrDecimalDigit, RoundingMode.HALF_DOWN);
+    BigDecimal priceWT = productPriceService.getSaleUnitPrice(company, product, false);
+    BigDecimal priceATI = productPriceService.getSaleUnitPrice(company, product, true);
 
     priceList.add(new PriceResponse("WT", priceWT));
     priceList.add(new PriceResponse("ATI", priceATI));
     return priceList;
-  }
-
-  protected BigDecimal getProductPriceWithTax(Product product, Company company, Partner partner)
-      throws AxelorException {
-
-    if (product.getProductFamily() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          String.format(
-              I18n.get(SaleExceptionMessage.NO_PRODUCT_FAMILY), product.getId().toString()));
-    }
-
-    AccountManagement accountManagement =
-        product.getProductFamily().getAccountManagementList().stream()
-            .filter(accountManag -> accountManag.getCompany().equals(company))
-            .findFirst()
-            .orElse(null);
-
-    if (accountManagement == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          String.format(
-              I18n.get(SaleExceptionMessage.ACCOUNT_MANAGEMENT_IS_NULL),
-              product.getId().toString()));
-    }
-    if (accountManagement.getSaleTaxSet() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          String.format(I18n.get(SaleExceptionMessage.NO_PRODUCT_TAX), product.getId().toString()));
-    }
-
-    Tax tax = accountManagement.getSaleTaxSet().stream().findFirst().get();
-    if (tax.getActiveTaxLine() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          String.format(SaleExceptionMessage.NO_TAX_LINE, tax.getId().toString()));
-    }
-    BigDecimal taxValue = tax.getActiveTaxLine().getValue();
-    BigDecimal priceConverted = priceInPartnerCurrency(product, partner, company);
-    return priceConverted.add(priceConverted.multiply(taxValue.divide(BigDecimal.valueOf(100))));
   }
 
   protected void checkProduct(Product product) throws AxelorException {
@@ -166,30 +113,5 @@ public class ProductRestServiceImpl implements ProductRestService {
     CurrencyResponse currencyResponse = createCurrencyResponse(product, partner, company);
     List<PriceResponse> prices = fetchProductPrice(product, partner, company);
     return new ProductResponse(product.getId(), prices, currencyResponse);
-  }
-
-  protected BigDecimal priceInPartnerCurrency(Product product, Partner partner, Company company)
-      throws AxelorException {
-    if (product == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(SaleExceptionMessage.PRODUCT_IS_NULL));
-    }
-
-    BigDecimal price = product.getSalePrice();
-
-    Currency partnerCurrency = partner.getCurrency();
-
-    Currency productCurrency = product.getSaleCurrency();
-
-    Currency companyCurrency = company.getCurrency();
-
-    LocalDate localDate =
-        appBaseService.getTodayDate(
-            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
-    if (partnerCurrency == null)
-      return Beans.get(CurrencyService.class)
-          .getAmountCurrencyConvertedAtDate(productCurrency, companyCurrency, price, localDate);
-    return Beans.get(CurrencyService.class)
-        .getAmountCurrencyConvertedAtDate(productCurrency, partnerCurrency, price, localDate);
   }
 }

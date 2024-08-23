@@ -49,6 +49,16 @@ public class ProductPriceServiceImpl implements ProductPriceService {
   }
 
   @Override
+  public BigDecimal getSaleUnitPrice(Company company, Product product, Boolean inAti)
+      throws AxelorException {
+    LocalDate todayDate = appBaseService.getTodayDate(company);
+    Set<TaxLine> taxLineSet =
+        accountManagementService.getTaxLineSet(todayDate, product, company, null, false);
+    Currency fromCurrency = (Currency) productCompanyService.get(product, "saleCurrency", company);
+    return getSaleUnitPrice(company, product, taxLineSet, inAti, todayDate, fromCurrency);
+  }
+
+  @Override
   public BigDecimal getSaleUnitPrice(
       Company company,
       Product product,

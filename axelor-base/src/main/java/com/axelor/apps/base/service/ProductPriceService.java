@@ -12,6 +12,9 @@ import java.util.Set;
 public interface ProductPriceService {
   BigDecimal getSaleUnitPrice(Company company, Product product) throws AxelorException;
 
+  BigDecimal getSaleUnitPrice(Company company, Product product, Boolean inAti)
+      throws AxelorException;
+
   BigDecimal getSaleUnitPrice(
       Company company,
       Product product,
