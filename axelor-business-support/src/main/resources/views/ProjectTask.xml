@@ -5,6 +5,10 @@
 
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="business-support-version-project-task-grid" orderBy="-taskDate">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
@@ -17,6 +21,10 @@
 
   <grid name="project-task-client-grid" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask" edit-icon="true" orderBy="taskDate">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
@@ -34,6 +42,10 @@
   <form name="project-task-client-form" title="Ticket"
     model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-onnew"
     onLoad="action-project-task-group-timer-process" width="large">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history" showIf="project.isShowTimeSpent"
+        onClick="save,action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <panel name="mainPanel">
       <panel name="statusPanel" showIf="project.taskStatusManagementSelect != 1"
         stacked="true" colSpan="12">
