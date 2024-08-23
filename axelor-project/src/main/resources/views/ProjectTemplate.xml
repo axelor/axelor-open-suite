@@ -23,12 +23,7 @@
       <panel name="actionPanel" colSpan="6">
         <button name="createProjectBtn" icon="fa-copy"
           title="Create project from this template"
-          onClick="save,action-project-template-method-generate-project" hidden="true"
-          showIf="!isBusinessProject" colSpan="12"/>
-        <button name="createBusinessProjectBtn" icon="fa-copy"
-          title="Create business project from this template"
-          onClick="save,action-project-template-method-generate-project" hidden="true"
-          showIf="isBusinessProject" colSpan="12"/>
+          onClick="save,action-project-template-method-generate-project" colSpan="12"/>
       </panel>
     </panel>
 
@@ -69,19 +64,10 @@
           domain="self.isActivity = true AND self.dtype = 'Product'"
           form-view="product-activity-form" grid-view="product-activity-grid"/>
         <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect" canEdit="false"/>
-        <field name="projectFolderSet" colSpan="12" widget="TagSelect" canEdit="false"
-          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
           if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
       </panel>
     </panel-tabs>
-
-    <panel name="characteristicsPanel" title="Characteristics"
-      if="__config__.app.isApp('business-project')" if-module="axelor-business-project" colSpan="12"
-      sidebar="true" canCollapse="true">
-      <field name="isBusinessProject" colSpan="6" widget="boolean-switch"/>
-      <field name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6"/>
-    </panel>
 
     <panel name="followUpPanel" colSpan="12" title="Follow-up" sidebar="true"
       canCollapse="true">
@@ -98,14 +84,8 @@
     <panel name="mainPanel" colSpan="12">
       <panel name="infoPanel" colSpan="12">
         <field name="code" title="Code" type="string" required="true"/>
-        <field name="clientPartner" title="Customer" type="many-to-one"
-          target="com.axelor.apps.base.db.Partner" domain="self.isCustomer = true" required="true"/>
       </panel>
-      <button name="createBusinessProjectBtn"
-        title="Create business project from this template" colSpan="5" readonlyIf="!clientPartner"
-        onClick="action-project-template-method-generate-project-from-wizard"/>
-      <spacer name="createProjectBtnSpacer"/>
-      <button name="createProjectBtn" title="Create project from this template" colSpan="5"
+      <button name="createProjectBtn" title="Create project from this template" colSpan="12"
         readonlyIf="!code" onClick="action-project-template-method-generate-project-from-wizard"/>
     </panel>
   </form>
@@ -126,11 +106,8 @@
   </action-method>
 
   <action-attrs name="action-attrs-project-template-set-wizard-hidden">
-    <attribute name="hidden" expr="eval:!_businessProject" for="clientPartner"/>
     <attribute name="hidden"
       expr="eval:__config__.app.getApp('project')?.generateProjectSequence" for="code"/>
-    <attribute name="hidden" expr="eval:!_businessProject" for="createBusinessProjectBtn"/>
-    <attribute name="hidden" expr="eval:_businessProject" for="createProjectBtn"/>
   </action-attrs>
 
   <search-filters name="project-template-filters"

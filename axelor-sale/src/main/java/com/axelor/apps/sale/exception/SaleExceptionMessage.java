@@ -141,4 +141,7 @@ public final class SaleExceptionMessage {
 
   public static final String PRODUCT_ADDED_TO_CART = /*$$(*/
       "%s has been added to your cart." /*)*/;
+
+  public static final String CONTACT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS = /*$$(*/
+      "The contact provided is not a contact partner of the client." /*)*/;
 }
