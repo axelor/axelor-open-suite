@@ -1253,7 +1253,7 @@
 
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="validateBtn" title="Validate" showIf="statusSelect == 1"
-        onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
+        onClick="action-invoice-validate-invoice-lines-before-validate,action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
         onClick="action-invoice-group-ventilate-button"
@@ -1678,6 +1678,7 @@
   </action-group>
 
   <action-group name="action-invoice-group-before-ventilate">
+    <action name="action-invoice-validate-total-before-ventilate"/>
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-validate-check-pfp-validator-user"/>
     <action name="action-invoice-line-check-distribution-template-account"/>
@@ -1718,6 +1719,7 @@
   </action-group>
 
   <action-group name="action-invoice-group-before-validate">
+    <action name="action-invoice-validate-invoice-lines-before-validate"/>
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action
       name="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice"/>
@@ -2848,5 +2850,14 @@
     <action name="action-invoice-group-report-print"/>
     <action name="close"/>
   </action-group>
+
+  <action-validate name="action-invoice-validate-invoice-lines-before-validate">
+    <error message="Please enter at least one detail line." if="invoiceLineList?.isEmpty()"/>
+  </action-validate>
+
+  <action-validate name="action-invoice-validate-total-before-ventilate">
+    <alert message="The total amount of the invoice is zero. Do you want to proceed ?"
+      if="exTaxTotal == 0 &amp;&amp; !invoiceLineList?.isEmpty()"/>
+  </action-validate>
 
 </object-views>
