@@ -26,9 +26,11 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPriority;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
+import com.axelor.apps.project.db.TaskStatusProgressByCategory;
 import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -54,6 +56,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected ProjectRepository projectRepository;
   protected AppProjectService appProjectService;
   protected TaskStatusToolService taskStatusToolService;
+  protected TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository;
 
   private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
@@ -65,7 +68,8 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       AppBaseService appBaseService,
       ProjectRepository projectRepository,
       AppProjectService appProjectService,
-      TaskStatusToolService taskStatusToolService) {
+      TaskStatusToolService taskStatusToolService,
+      TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository) {
     this.projectTaskRepo = projectTaskRepo;
     this.frequencyRepo = frequencyRepo;
     this.frequencyService = frequencyService;
@@ -73,6 +77,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     this.projectRepository = projectRepository;
     this.appProjectService = appProjectService;
     this.taskStatusToolService = taskStatusToolService;
+    this.taskStatusProgressByCategoryRepository = taskStatusProgressByCategoryRepository;
   }
 
   @Override
@@ -275,14 +280,35 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
-  public void changeProgress(ProjectTask projectTask) {
-    AppProject appProject = appProjectService.getAppProject();
-    if (appProject == null || projectTask == null) {
+  public void changeProgress(ProjectTask projectTask, Project project) {
+    if (projectTask == null) {
       return;
     }
 
-    if (appProject.getSelectAutoProgressOnProjectTask() && projectTask.getStatus() != null) {
-      projectTask.setProgress(projectTask.getStatus().getDefaultProgress());
+    projectTask.setProgress(getNewProgress(projectTask, project));
+  }
+
+  protected BigDecimal getNewProgress(ProjectTask projectTask, Project project) {
+    AppProject appProject = appProjectService.getAppProject();
+    if (appProject != null
+        && appProject.getSelectAutoProgressOnProjectTask()
+        && projectTask.getStatus() != null) {
+      BigDecimal newProgress = projectTask.getStatus().getDefaultProgress();
+      if (appProject.getEnableStatusManagementByTaskCategory()
+          && project != null
+          && project.getEnableStatusProgressByCategory()
+          && projectTask.getProjectTaskCategory() != null) {
+        TaskStatusProgressByCategory taskStatusProgressByCategory =
+            taskStatusProgressByCategoryRepository.findByCategoryAndStatus(
+                projectTask.getProjectTaskCategory(), projectTask.getStatus());
+        if (taskStatusProgressByCategory != null) {
+          newProgress = taskStatusProgressByCategory.getProgress();
+        }
+      }
+
+      return newProgress;
     }
+
+    return projectTask.getProgress();
   }
 }

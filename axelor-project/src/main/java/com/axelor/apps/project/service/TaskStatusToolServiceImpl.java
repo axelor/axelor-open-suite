@@ -3,24 +3,36 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
+import com.axelor.apps.project.db.TaskStatusProgressByCategory;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.TaskStatusRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppProject;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 public class TaskStatusToolServiceImpl implements TaskStatusToolService {
 
   protected AppProjectService appProjectService;
+  protected TaskStatusProgressByCategoryService taskStatusProgressByCategoryService;
+  protected TaskStatusRepository taskStatusRepository;
 
   @Inject
-  public TaskStatusToolServiceImpl(AppProjectService appProjectService) {
+  public TaskStatusToolServiceImpl(
+      AppProjectService appProjectService,
+      TaskStatusProgressByCategoryService taskStatusProgressByCategoryService,
+      TaskStatusRepository taskStatusRepository) {
     this.appProjectService = appProjectService;
+    this.taskStatusProgressByCategoryService = taskStatusProgressByCategoryService;
+    this.taskStatusRepository = taskStatusRepository;
   }
 
   @Override
@@ -141,5 +153,34 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
     }
 
     return "";
+  }
+
+  @Override
+  public List<TaskStatusProgressByCategory> getUnmodifiedTaskStatusProgressByCategoryList(
+      TaskStatus taskStatus) {
+    AppProject appProject = appProjectService.getAppProject();
+    if (taskStatus == null
+        || taskStatus.getId() == null
+        || appProject == null
+        || !appProject.getEnableStatusManagementByTaskCategory()
+        || !appProject.getSelectAutoProgressOnProjectTask()) {
+      return new ArrayList<>();
+    }
+
+    taskStatus = taskStatusRepository.find(taskStatus.getId());
+    return Query.of(TaskStatusProgressByCategory.class)
+        .filter("self.taskStatus.id = :taskStatusId AND self.isCustomized = false")
+        .bind("taskStatusId", taskStatus.getId())
+        .fetch();
+  }
+
+  @Override
+  public void updateExistingProgressOnCategory(TaskStatus taskStatus) {
+    List<TaskStatusProgressByCategory> taskStatusProgressByCategoryList =
+        getUnmodifiedTaskStatusProgressByCategoryList(taskStatus);
+    if (!ObjectUtils.isEmpty(taskStatusProgressByCategoryList)) {
+      taskStatusProgressByCategoryService.updateExistingProgressWithValue(
+          taskStatusProgressByCategoryList, taskStatus.getDefaultProgress());
+    }
   }
 }

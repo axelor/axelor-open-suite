@@ -81,4 +81,7 @@ public final class ProjectExceptionMessage {
 
   public static final String CATEGORY_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS = /*$$(*/
       "Please configure the completed task status of the project task category." /*)*/;
+
+  public static final String TASK_STATUS_USED_ON_PROJECT_TASK_CATEGORY = /*$$(*/
+      "This task status is used on project task category for the auto progress process. Do you want to update all unmodified values with this one ?" /*)*/;
 }

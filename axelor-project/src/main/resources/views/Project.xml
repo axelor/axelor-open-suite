@@ -279,11 +279,15 @@
       <field name="projectTaskPrioritySet" widget="TagSelect" colSpan="12"
         showIf="isShowPriority" requiredIf="isShowPriority" canEdit="false"/>
       <spacer colSpan="12" showIf="isShowPriority"/>
-      <field name="isShowTaskCategory" colSpan="4" widget="inline-checkbox"
+      <field name="isShowTaskCategory" widget="inline-checkbox"
         onChange="action-project-record-change-show-task-category, action-project-record-manage-task-status-set"
         canEdit="false"/>
+      <field name="enableStatusProgressByCategory"
+        if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask"
+        showIf="isShowTaskCategory"/>
       <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect"
-        showIf="isShowTaskCategory" canEdit="false" requiredIf="taskStatusManagementSelect == 4"/>
+        showIf="isShowTaskCategory" canEdit="false"
+        requiredIf="taskStatusManagementSelect == 4 || enableStatusProgressByCategory"/>
       <field name="projectTaskLinkTypeSet" colSpan="12" widget="TagSelect" canEdit="false"
         placeholder="All"/>
       <field name="isShowProgress" colSpan="4" widget="inline-checkbox"/>

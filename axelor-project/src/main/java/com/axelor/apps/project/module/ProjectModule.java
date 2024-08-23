@@ -45,6 +45,8 @@ import com.axelor.apps.project.service.ProjectMenuService;
 import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.project.service.ProjectTaskCategoryService;
+import com.axelor.apps.project.service.ProjectTaskCategoryServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskToolService;
@@ -55,6 +57,8 @@ import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.apps.project.service.ProjectToolServiceImpl;
 import com.axelor.apps.project.service.ResourceBookingService;
 import com.axelor.apps.project.service.ResourceBookingServiceImpl;
+import com.axelor.apps.project.service.TaskStatusProgressByCategoryService;
+import com.axelor.apps.project.service.TaskStatusProgressByCategoryServiceImpl;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TaskStatusToolServiceImpl;
 import com.axelor.apps.project.service.TaskTemplateService;
@@ -101,6 +105,9 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectTaskLinkTypeRepository.class).to(ProjectTaskLinkTypeManagementRepository.class);
     bind(TaskStatusToolService.class).to(TaskStatusToolServiceImpl.class);
     bind(ProjectTaskToolService.class).to(ProjectTaskToolServiceImpl.class);
+    bind(ProjectTaskCategoryService.class).to(ProjectTaskCategoryServiceImpl.class);
+    bind(TaskStatusProgressByCategoryService.class)
+        .to(TaskStatusProgressByCategoryServiceImpl.class);
     bind(UserProjectService.class).to(UserProjectServiceImpl.class);
     addQuickMenu(ActiveProjectQuickMenuCreator.class);
     bind(ProjectToolService.class).to(ProjectToolServiceImpl.class);

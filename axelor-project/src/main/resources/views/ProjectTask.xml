@@ -136,7 +136,7 @@
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
         <panel name="categoryPanel" showIf="project.isShowTaskCategory" colSpan="4">
           <field name="projectTaskCategory" colSpan="12"
-            requiredIf="project.taskStatusManagementSelect == 4"
+            requiredIf="project.taskStatusManagementSelect == 4 || project.enableStatusProgressByCategory"
             onSelect="action-project-task-attrs-project-task-category-configurations"
             onChange="action-project-task-group-project-category-onchange"/>
           <field name="project.taskStatusManagementSelect" hidden="true"/>
@@ -744,6 +744,7 @@
     <action name="action-project-task-method-onchange-category"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-method-change-statut-depending-category"/>
+    <action name="action-project-task-method-auto-change-progress"/>
   </action-group>
 
   <action-attrs name="action-project-task-atts-priority-on-select">

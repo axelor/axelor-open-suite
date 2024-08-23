@@ -13,7 +13,8 @@
 
   <form title="Category" name="project-task-category-form"
     model="com.axelor.apps.project.db.ProjectTaskCategory"
-    onNew="action-project-task-category-record-status-new">
+    onNew="action-project-task-category-record-status-new,action-category-method-fill-progress-by-category"
+    onLoad="action-project-task-category-method-validate-progress">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="defaultProduct"
@@ -26,7 +27,7 @@
       <field name="projectTaskStatusSet" widget="TagSelect"
         requiredIf="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
         if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
-        onChange="action-project-task-category-method-manage-completed-task-status"/>
+        onChange="action-category-group-task-status-onchange,action-project-task-category-method-validate-progress"/>
       <field name="completedTaskStatus"
         requiredIf="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
         form-view="task-status-form" grid-view="task-status-grid"
@@ -35,7 +36,23 @@
       <panel-related field="taskCustomFieldsList" colSpan="12" showIf="id"
         form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
     </panel>
+    <panel name="progressPanel"
+      if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask &amp;&amp; __config__.app.getApp('project')?.enableStatusManagementByTaskCategory">
+      <label colSpan="12"
+        title="There is a potential inconsistency between the progression values configured."
+        name="inconsistencyLabel" css="label-danger" hidden="true"/>
+      <panel-related field="taskStatusProgressByCategoryList" colSpan="12"
+        form-view="task-status-progress-by-category-form"
+        grid-view="task-status-progress-by-category-grid" canNew="false" canRemove="false"
+        onChange="action-project-task-category-method-validate-progress"/>
+    </panel>
+
   </form>
+
+  <action-group name="action-category-group-task-status-onchange">
+    <action name="action-project-task-category-method-manage-completed-task-status"/>
+    <action name="action-category-method-fill-progress-by-category"/>
+  </action-group>
 
   <action-attrs
     name="action-project-task-category-attrs-set-completed-task-status-domain">
@@ -60,6 +77,16 @@
     name="action-project-task-category-method-manage-completed-task-status">
     <call class="com.axelor.apps.project.web.ProjectTaskCategoryController"
       method="manageCompletedTaskStatus"/>
+  </action-method>
+
+  <action-method name="action-category-method-fill-progress-by-category">
+    <call class="com.axelor.apps.project.web.ProjectTaskCategoryController"
+      method="fillProgressByCategory"/>
+  </action-method>
+
+  <action-method name="action-project-task-category-method-validate-progress">
+    <call class="com.axelor.apps.project.web.ProjectTaskCategoryController"
+      method="validateProgress"/>
   </action-method>
 
   <search-filters name="project-task-category-filters"
