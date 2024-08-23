@@ -25,6 +25,10 @@
 
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="business-project-project-task-grid" orderBy="-taskDate">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <field name="project"/>
     <field name="name"/>
     <field name="taskDate"/>
@@ -48,6 +52,10 @@
 
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="project-task-invoicing-project-grid" orderBy="-taskDate" groupBy="project">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <field name="project"/>
     <field name="name"/>
     <field name="taskDate"/>
