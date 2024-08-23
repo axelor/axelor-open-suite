@@ -21,12 +21,12 @@ public class ProjectTemplateBusinessServiceImpl extends ProjectTemplateServiceIm
   }
 
   @Override
-  public boolean isWizardNeeded(ProjectTemplate projectTemplate) {
+  protected boolean isWizardNeeded(ProjectTemplate projectTemplate) {
     return super.isWizardNeeded(projectTemplate) && !projectTemplate.getIsBusinessProject();
   }
 
   @Override
-  public Map<String, Object> computeWizardContext(ProjectTemplate projectTemplate) {
+  protected Map<String, Object> computeWizardContext(ProjectTemplate projectTemplate) {
     Map<String, Object> contextMap = super.computeWizardContext(projectTemplate);
     contextMap.put("_businessProject", projectTemplate.getIsBusinessProject());
 

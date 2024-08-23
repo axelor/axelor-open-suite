@@ -28,8 +28,4 @@ public interface ProjectTemplateService {
 
   public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
       throws AxelorException;
-
-  boolean isWizardNeeded(ProjectTemplate projectTemplate);
-
-  Map<String, Object> computeWizardContext(ProjectTemplate projectTemplate);
 }

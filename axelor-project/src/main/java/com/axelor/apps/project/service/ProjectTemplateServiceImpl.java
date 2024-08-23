@@ -115,8 +115,7 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
     return builder.map();
   }
 
-  @Override
-  public boolean isWizardNeeded(ProjectTemplate projectTemplate) {
+  protected boolean isWizardNeeded(ProjectTemplate projectTemplate) {
     return projectTemplate != null
         && projectTemplate.getId() != null
         && Optional.ofNullable(appProjectService.getAppProject())
@@ -124,8 +123,7 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
             .orElse(false);
   }
 
-  @Override
-  public Map<String, Object> computeWizardContext(ProjectTemplate projectTemplate) {
+  protected Map<String, Object> computeWizardContext(ProjectTemplate projectTemplate) {
     Map<String, Object> contextMap = new HashMap<>();
     contextMap.put("_projectTemplate", projectTemplate);
 
