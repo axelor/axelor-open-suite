@@ -11,7 +11,7 @@
     <many-to-one name="taskStatus" ref="com.axelor.apps.project.db.TaskStatus"
       title="Task status"/>
     <decimal name="progress" title="Progress" min="0" max="100"/>
-    <boolean name="isCustomized" title="Customized ?"/>
+    <boolean name="isCustomized" title="Customized"/>
 
     <finder-method name="findByCategoryAndStatus"
       using="projectTaskCategory,taskStatus"/>
