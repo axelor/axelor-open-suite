@@ -1,8 +1,7 @@
 package com.axelor.apps.sale.service.loyalty;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.LoyaltyAccount;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.LoyaltyAccountRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -16,22 +15,28 @@ public class LoyaltyAccountPointsManagementServiceImpl
 
   protected LoyaltyAccountRepository loyaltyAccountRepository;
   protected LoyaltyAccountService loyaltyAccountService;
+  protected LoyaltyAccountHistoryLineService loyaltyAccountHistoryLineService;
 
   @Inject
   public LoyaltyAccountPointsManagementServiceImpl(
       LoyaltyAccountRepository loyaltyAccountRepository,
-      LoyaltyAccountService loyaltyAccountService) {
+      LoyaltyAccountService loyaltyAccountService,
+      LoyaltyAccountHistoryLineService loyaltyAccountHistoryLineService) {
     this.loyaltyAccountRepository = loyaltyAccountRepository;
     this.loyaltyAccountService = loyaltyAccountService;
+    this.loyaltyAccountHistoryLineService = loyaltyAccountHistoryLineService;
   }
 
   @Override
-  public void incrementLoyaltyPointsFromAmount(
-      Partner partner, Company company, BigDecimal amount) {
+  public void incrementLoyaltyPointsFromAmount(SaleOrder saleOrder) {
     Optional<LoyaltyAccount> loyaltyAccount =
-        loyaltyAccountService.getLoyaltyAccount(partner, company);
-    BigDecimal earnedPoints = pointsEarningComputation(amount);
-    loyaltyAccount.ifPresent(account -> updatePoints(account, earnedPoints));
+        loyaltyAccountService.getLoyaltyAccount(
+            saleOrder.getClientPartner(), saleOrder.getCompany(), saleOrder.getTradingName());
+    BigDecimal earnedPoints = pointsEarningComputation(saleOrder.getExTaxTotal());
+
+    if (earnedPoints.compareTo(BigDecimal.ZERO) != 0) {
+      loyaltyAccount.ifPresent(account -> updatePoints(account, earnedPoints, saleOrder));
+    }
   }
 
   /**
@@ -42,11 +47,13 @@ public class LoyaltyAccountPointsManagementServiceImpl
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void updatePoints(LoyaltyAccount loyaltyAccount, BigDecimal points) {
+  public void updatePoints(LoyaltyAccount loyaltyAccount, BigDecimal points, SaleOrder saleOrder) {
     Objects.requireNonNull(loyaltyAccount);
 
-    BigDecimal updatedBalance = loyaltyAccount.getPointsBalance().add(points);
-    loyaltyAccount.setPointsBalance(updatedBalance.setScale(0, RoundingMode.FLOOR));
+    BigDecimal updatedBalance = loyaltyAccount.getFuturePointsBalance().add(points);
+    loyaltyAccount.setFuturePointsBalance(updatedBalance.setScale(0, RoundingMode.FLOOR));
+    loyaltyAccount.addHistoryLineListItem(
+        loyaltyAccountHistoryLineService.createHistoryLine(points, saleOrder));
     loyaltyAccountRepository.save(loyaltyAccount);
   }
 

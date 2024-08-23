@@ -136,7 +136,7 @@
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
         <panel name="categoryPanel" showIf="project.isShowTaskCategory" colSpan="4">
           <field name="projectTaskCategory" colSpan="12"
-            requiredIf="project.taskStatusManagementSelect == 4"
+            requiredIf="project.taskStatusManagementSelect == 4 || project.enableStatusProgressByCategory"
             onSelect="action-project-task-attrs-project-task-category-configurations"
             onChange="action-project-task-group-project-category-onchange"/>
           <field name="project.taskStatusManagementSelect" hidden="true"/>
@@ -163,7 +163,8 @@
           onChange="action-project-task-attrs-set-task-duration"/>
         <field name="taskDeadline" title="Task deadline" colSpan="4"/>
         <field name="projectTaskTagSet" widget="TagSelect" x-color-field="colorSelect"
-          form-view="project-task-tag-form" grid-view="project-task-tag-grid" colSpan="4"/>
+          canEdit="false" form-view="project-task-tag-form" grid-view="project-task-tag-grid"
+          colSpan="4"/>
         <field name="progress" onChange="action-project-task-group-progress-onchange"
           showIf="project.isShowProgress &amp;&amp; !$readonly()" colSpan="4" min="0"/>
         <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; !$readonly()"/>
@@ -179,6 +180,27 @@
         <field name="project.isShowPriority" hidden="true"/>
         <field name="project.isShowTaskCategory" hidden="true"/>
       </panel>
+    </panel>
+    <panel name="customizedFieldsPanel" title="Customized fields" collapseIf="true"
+      canCollapse="true" colSpan="12">
+      <panel name="appJsonPanel" colSpan="12"
+        showIf="$contains(project.customFieldManagementSelect, 'app')" title="App customized fields">
+        <field name="appJson" colSpan="12"/>
+      </panel>
+      <panel name="projectJsonPanel" colSpan="12"
+        showIf="$contains(project.customFieldManagementSelect, 'project')"
+        title="Project customized fields">
+        <field name="projectJson" colSpan="12"/>
+      </panel>
+      <panel name="categoryJsonPanel" colSpan="12"
+        showIf="projectTaskCategory &amp;&amp; $contains(project.customFieldManagementSelect, 'category')"
+        title="Category customized fields">
+        <field name="categoryJson" colSpan="12"/>
+      </panel>
+      <panel name="otherFieldsPanel" title="Other customized fields" colSpan="12">
+        <field name="attrs" colSpan="12"/>
+      </panel>
+      <field name="project.customFieldManagementSelect" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="internalDescriptionPanel" title="Internal Description"
@@ -266,9 +288,7 @@
           grid-view="project-task-link-grid" form-view="project-task-link-form"/>
       </panel>
     </panel-tabs>
-    <panel name="attrsPanel">
-      <field name="attrs" colSpan="12"/>
-    </panel>
+
     <panel-mail name="mailPanel">
       <mail-messages/>
       <mail-followers/>
@@ -724,6 +744,7 @@
     <action name="action-project-task-method-onchange-category"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-method-change-statut-depending-category"/>
+    <action name="action-project-task-method-auto-change-progress"/>
   </action-group>
 
   <action-attrs name="action-project-task-atts-priority-on-select">

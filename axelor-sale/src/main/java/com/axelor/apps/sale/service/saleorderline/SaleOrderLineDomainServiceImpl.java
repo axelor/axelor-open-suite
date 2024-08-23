@@ -23,6 +23,7 @@ public class SaleOrderLineDomainServiceImpl implements SaleOrderLineDomainServic
   public String computeProductDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     String domain =
         "self.isModel = false"
+            + " and (self.startDate = null or self.startDate <= :__date__)"
             + " and (self.endDate = null or self.endDate > :__date__)"
             + " and self.dtype = 'Product'";
 

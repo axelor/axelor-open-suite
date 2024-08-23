@@ -1,3 +1,0 @@
----
-title: "Supplychain config: fixed 'Update customer accepted credit' process updating the credit for all companies instead of the current one."
-module: axelor-supplychain

@@ -131,7 +131,7 @@
       <field name="description" colSpan="12" widget="html"/>
       <field name="siteSet" colSpan="12" grid-view="site-project-grid" form-view="site-form"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"
-        domain="self.isUsableOnProject = true"/>
+        domain="self.isUsableOnProject = true" canEdit="false"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -152,7 +152,11 @@
       <panel-include view="incl-member-panel-form"/>
       <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
         if="__config__.app.isApp('employee')"/>
-      <panel-include view="incl-holdback-panel-form"/>
+      <panel title="HoldBacks" name="projectHoldBacksPanel">
+        <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"
+          title="HoldBacks lines" colSpan="12" form-view="project-hold-back-line-form"
+          grid-view="project-hold-back-line-grid" editable="true"/>
+      </panel>
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
       <panel name="reportingPanel" title="Reporting" if-module="axelor-business-project"
@@ -516,11 +520,11 @@
         if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
         <panel name="frameworkContractPanel" showIf="allowToGetPricesFromFrameworkContract"
           colSpan="12">
-          <field name="frameworkCustomerContractSet" colSpan="12"
+          <field name="frameworkCustomerContractSet" colSpan="12" canEdit="false"
             domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 1"/>
           <field name="defaultFrameworkCustomerContract"
             onSelect="action-project-attrs-set-default-customer-contract-domain"/>
-          <field name="frameworkSupplierContractSet" colSpan="12"
+          <field name="frameworkSupplierContractSet" colSpan="12" canEdit="false"
             domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 2"/>
           <field name="defaultFrameworkSupplierContract"
             onSelect="action-project-attrs-set-default-supplier-contract-domain"/>
@@ -536,10 +540,7 @@
         <panel-dashlet name="contractInvoicePanel" title="Invoices"
           action="action-project-dashlet-contract-invoices" colSpan="12"/>
       </panel>
-      <panel title="Custom fields" name="customFieldConfigPanel">
-        <panel-related field="taskCustomFieldsList" colSpan="12" showIf="id"
-          form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
-      </panel>
+      <panel-include view="incl-custom-fields-to-display-panel-form"/>
       <panel title="Activities" name="activityPanel"
         onTabSelect="action-project-activity-dashboard-method-on-new" showIf="id">
         <panel-include view="project-activity-dashboard-form"/>

@@ -2197,6 +2197,8 @@
 "This partner is categorized as a factor due to existing records in the database. This category can't be removed.","Ce tiers est catégorisé comme Factor du fait des enregistrements existants en base de données. Cette catégorie ne peut être retirée.",,
 "This partner is categorized as a supplier due to existing records in the database. This category can't be removed.","Ce tiers est catégorisé comme Fournisseur du fait des enregistrements existants en base de données. Cette catégorie ne peut être retirée.",,
 "This period is closed and you do not have the necessary permissions to create entries","Cette période est clôturée. Vous n'êtes pas autorisé à créer de nouvelles écritures ou modifier une écriture existante sur cette période.",,
+"This product comes in multiple quantities, so please specify a quantity that is a multiple of at least one from the list %s.","Ce produit est disponible en plusieurs quantités. Veuillez donc spécifier une quantité qui soit un multiple d'au moins une des options de la liste %s.",,
+"This product comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s.","Ce produit est disponible en plusieurs quantités, donc la quantité fournie doit être un multiple d'au moins une de la liste %s.",,
 "Thursday","Jeudi",,
 "Thursdays","Jeudis",,
 "Ticket",,,
