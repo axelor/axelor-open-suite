@@ -32,10 +32,9 @@ import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
-import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.app.AppProjectService;
-import com.axelor.apps.project.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -43,7 +42,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.utils.db.Wizard;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -62,26 +60,25 @@ public class ProjectServiceImpl implements ProjectService {
   protected ProjectRepository projectRepository;
   protected ProjectStatusRepository projectStatusRepository;
   protected AppProjectService appProjectService;
-  protected ProjectTemplateRepository projTemplateRepo;
   protected ProjectCreateTaskService projectCreateTaskService;
+  protected WikiRepository wikiRepo;
+  protected ResourceBookingService resourceBookingService;
 
   @Inject
   public ProjectServiceImpl(
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
       AppProjectService appProjectService,
-      ProjectTemplateRepository projTemplateRepo,
-      ProjectCreateTaskService projectCreateTaskService) {
+      ProjectCreateTaskService projectCreateTaskService,
+      WikiRepository wikiRepo,
+      ResourceBookingService resourceBookingService) {
     this.projectRepository = projectRepository;
     this.projectStatusRepository = projectStatusRepository;
     this.appProjectService = appProjectService;
-    this.projTemplateRepo = projTemplateRepo;
     this.projectCreateTaskService = projectCreateTaskService;
+    this.wikiRepo = wikiRepo;
+    this.resourceBookingService = resourceBookingService;
   }
-
-  @Inject WikiRepository wikiRepo;
-  @Inject ProjectTaskService projectTaskService;
-  @Inject ResourceBookingService resourceBookingService;
 
   @Override
   public Project generateProject(
@@ -159,7 +156,8 @@ public class ProjectServiceImpl implements ProjectService {
       throws AxelorException {
     if (projectRepository.findByCode(projectCode) != null) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, ITranslation.PROJECT_CODE_ERROR);
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProjectExceptionMessage.PROJECT_CODE_ERROR));
     }
 
     Project project = generateProject(projectTemplate, projectCode, clientPartner);
@@ -207,36 +205,6 @@ public class ProjectServiceImpl implements ProjectService {
       context.forEach(builder::context);
     }
     return builder.map();
-  }
-
-  @Override
-  public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
-      throws AxelorException {
-    if (appProjectService.getAppProject().getGenerateProjectSequence()
-        && !projectTemplate.getIsBusinessProject()) {
-      projectTemplate = projTemplateRepo.find(projectTemplate.getId());
-      Project project =
-          Beans.get(ProjectService.class).createProjectFromTemplate(projectTemplate, null, null);
-      return ActionView.define(I18n.get("Project"))
-          .model(Project.class.getName())
-          .add("form", "project-form")
-          .add("grid", "project-grid")
-          .param("search-filters", "project-project-filters")
-          .context("_showRecord", project.getId())
-          .map();
-    }
-
-    return ActionView.define(I18n.get("Create project from this template"))
-        .model(Wizard.class.getName())
-        .add("form", "project-template-wizard-form")
-        .param("popup", "reload")
-        .param("show-toolbar", "false")
-        .param("show-confirm", "false")
-        .param("width", "large")
-        .param("popup-save", "false")
-        .context("_projectTemplate", projectTemplate)
-        .context("_businessProject", projectTemplate.getIsBusinessProject())
-        .map();
   }
 
   protected void setWikiItems(Project project, ProjectTemplate projectTemplate) {
