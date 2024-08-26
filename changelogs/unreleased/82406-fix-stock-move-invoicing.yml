@@ -1,0 +1,3 @@
+---
+title: "Invoicing: fixed internal reference on invoices generated from delivery stock move missing sale order reference."
+module: axelor-supplychain
