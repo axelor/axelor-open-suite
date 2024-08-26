@@ -109,8 +109,8 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    if (this.checkMoveLineAmount(reconcile, creditMoveLine, false)
-        || this.checkMoveLineAmount(reconcile, debitMoveLine, true)) {
+    if (this.checkMoveLineAmount(reconcile, creditMoveLine, debitMoveLine, false)
+        || this.checkMoveLineAmount(reconcile, debitMoveLine, creditMoveLine, true)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.RECONCILE_5)
@@ -204,18 +204,16 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
         && it.getAccount().getIsTaxAuthorizedOnMoveLine();
   }
 
-  protected boolean checkMoveLineAmount(Reconcile reconcile, MoveLine moveLine, boolean isDebit)
+  protected boolean checkMoveLineAmount(
+      Reconcile reconcile, MoveLine moveLine, MoveLine otherMoveLine, boolean isDebit)
       throws AxelorException {
     BigDecimal moveLineAmount = isDebit ? moveLine.getDebit() : moveLine.getCredit();
 
     if (currencyScaleService.isGreaterThan(
-        reconcile.getAmount(),
-        moveLineAmount.subtract(moveLine.getAmountPaid()),
-        moveLine,
-        false)) {
+        reconcile.getAmount(), moveLineAmount.subtract(moveLine.getAmountPaid()), moveLine, true)) {
       return currencyService.isSameCurrencyRate(
           moveLine.getDate(),
-          reconcile.getEffectiveDate(),
+          otherMoveLine.getDate(),
           moveLine.getCurrency(),
           reconcile.getCompany().getCurrency());
     }
