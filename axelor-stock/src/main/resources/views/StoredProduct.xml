@@ -6,14 +6,15 @@
   <grid name="stored-product-grid" title="Stored products"
     model="com.axelor.apps.stock.db.StoredProduct">
     <field name="storedProduct" onChange="action-stored-product-group-product-onchange"
-      required="true" onSelect="action-stored-product-method-stored-product-domain"/>
+      required="true" onSelect="action-stored-product-method-stored-product-domain"
+      readonlyIf="stockMoveLine"/>
     <field name="toStockLocation"
       onSelect="action-stored-product-method-set-domain-from-stock-location"
       onChange="action-stored-product-record-set-tracking-number,action-stored-product-method-set-current-qty"
-      required="true"/>
+      required="true" readonlyIf="stockMoveLine"/>
     <field name="trackingNumber" title="Tracking no."
       onSelect="action-stored-product-method-tracking-number-domain"
-      onChange="action-stored-product-method-set-current-qty"/>
+      onChange="action-stored-product-method-set-current-qty" readonlyIf="stockMoveLine"/>
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
       readonly="true"/>
     <field name="unit" readonly="true"/>
@@ -30,7 +31,7 @@
   <form name="stored-product-form" title="Stored products"
     model="com.axelor.apps.stock.db.StoredProduct" onNew="action-stored-product-group-onnew"
     onLoad="action-stored-product-method-set-current-qty" canDelete="false">
-    <panel name="mainPanel">
+    <panel name="mainPanel" readonlyIf="stockMoveLine">
       <field name="storedProduct" onChange="action-stored-product-group-product-onchange"
         onSelect="action-stored-product-method-stored-product-domain"/>
       <field name="toStockLocation"

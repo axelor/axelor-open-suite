@@ -6,17 +6,19 @@
   <grid name="picked-product-grid" title="Picked products"
     model="com.axelor.apps.stock.db.PickedProduct">
     <field name="pickedProduct" domain="self.productTypeSelect = 'storable'"
-      onChange="action-picked-product-group-product-onchange" required="true"/>
+      onChange="action-picked-product-group-product-onchange" required="true"
+      readonlyIf="stockMoveLine"/>
     <field name="fromStockLocation"
       onSelect="action-picked-product-method-set-domain-from-stock-location"
-      onChange="action-picked-product-record-set-tracking-number,action-picked-product-method-set-current-qty"/>
+      onChange="action-picked-product-record-set-tracking-number,action-picked-product-method-set-current-qty"
+      readonlyIf="stockMoveLine"/>
     <field name="trackingNumber" title="Tracking no."
       onSelect="action-picked-product-attrs-tracking-number-domain"
-      onChange="action-picked-product-method-set-current-qty"/>
+      onChange="action-picked-product-method-set-current-qty" readonlyIf="stockMoveLine"/>
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
       readonly="true"/>
     <field name="unit" readonly="true"/>
-    <field name="pickedQty" x-scale="nbDecimalQty"/>
+    <field name="pickedQty" x-scale="nbDecimalQty" readonlyIf="stockMoveLine"/>
     <button name="realizePickingBtn" title="Realize picking"
       onClick="save,action-picked-product-method-realize-picking" readonlyIf="stockMoveLine != null"
       icon="fa-play"/>
@@ -29,7 +31,7 @@
   <form name="picked-product-form" title="Picked products"
     model="com.axelor.apps.stock.db.PickedProduct" onNew="action-picked-product-group-onnew"
     onLoad="action-picked-product-method-set-current-qty" canDelete="false">
-    <panel name="mainPanel">
+    <panel name="mainPanel" readonlyIf="stockMoveLine">
       <field name="pickedProduct" domain="self.productTypeSelect = 'storable'"
         onChange="action-picked-product-group-product-onchange"/>
       <field name="fromStockLocation"
