@@ -41,6 +41,10 @@
         onClick="save,action-mass-stock-move-method-generate-picked-lines"/>
     </panel>
     <panel name="pickedProductPanel">
+      <button name="selectPickedProductFromStockLocationBtn"
+        title="Select products from location"
+        onClick="save,action-mass-stock-move-method-select-picked-product-from-stock-location"
+        help="Allows to add every product from the common stock location"/>
       <panel-related field="pickedProductList" grid-view="picked-product-grid"
         form-view="picked-product-form" colSpan="12" canNew="company != null" onChange="save"/>
       <button name="realizePickingBtn" title="Pick all / the rest"
@@ -95,6 +99,12 @@
   <action-method name="action-mass-stock-move-method-generate-picked-lines">
     <call class="com.axelor.apps.stock.web.MassStockMoveController"
       method="generatePickedLines"/>
+  </action-method>
+
+  <action-method
+    name="action-mass-stock-move-method-select-picked-product-from-stock-location">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController"
+      method="selectPickedProductFromStockLocation"/>
   </action-method>
 
 
