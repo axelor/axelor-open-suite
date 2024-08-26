@@ -275,9 +275,9 @@
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <domain>self.project.id IN :_projectIds</domain>
-    <context name="_project" expr="eval: __user__.contextProject"/>
+    <context name="_project" expr="eval: __user__.activeProject"/>
     <context name="_projectIds"
-      expr="call:com.axelor.apps.project.service.ProjectService:getContextProjectIds()"/>
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getActiveProjectIds()"/>
   </action-view>
 
   <action-view name="action-project-dashboard-view-per-user-calendar"
@@ -285,9 +285,9 @@
     <view type="calendar" name="project-task-per-user-calendar"/>
     <view type="form" name="project-task-form"/>
     <domain>self.project.id IN :_projectIds</domain>
-    <context name="_project" expr="eval: __user__.contextProject"/>
+    <context name="_project" expr="eval: __user__.activeProject"/>
     <context name="_projectIds"
-      expr="call:com.axelor.apps.project.service.ProjectService:getContextProjectIds()"/>
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getActiveProjectIds()"/>
   </action-view>
 
   <action-method name="action-project-dashboard-method-on-new">

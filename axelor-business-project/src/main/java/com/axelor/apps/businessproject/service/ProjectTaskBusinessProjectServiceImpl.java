@@ -55,7 +55,9 @@ import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
+import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -100,6 +102,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       AppBaseService appBaseService,
       ProjectRepository projectRepository,
       AppProjectService appProjectService,
+      TaskStatusToolService taskStatusToolService,
+      TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
@@ -112,7 +116,9 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         frequencyService,
         appBaseService,
         projectRepository,
-        appProjectService);
+        appProjectService,
+        taskStatusToolService,
+        taskStatusProgressByCategoryRepository);
     this.priceListLineRepo = priceListLineRepo;
     this.priceListService = priceListService;
     this.partnerPriceListService = partnerPriceListService;
@@ -652,6 +658,19 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             .getUpdatedTime()
             .subtract(projectTask.getSpentTime())
             .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+
+    BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
+    BigDecimal remainingLimit = BigDecimal.valueOf(9999.99);
+
+    if (percentageOfProgression.compareTo(percentageLimit) > 0) {
+      percentageOfProgression = percentageLimit;
+    }
+    if (percentageOfConsumption.compareTo(percentageLimit) > 0) {
+      percentageOfConsumption = percentageLimit;
+    }
+    if (remainingAmountToDo.compareTo(remainingLimit) > 0) {
+      remainingAmountToDo = remainingLimit;
+    }
 
     projectTask.setPercentageOfProgress(percentageOfProgression);
     projectTask.setPercentageOfConsumption(percentageOfConsumption);

@@ -60,6 +60,7 @@ public abstract class BankStatementImportAbstractService {
 
   @Transactional
   public void setBankStatementImported(BankStatement bankStatement) {
+    bankStatement.setName(bankStatementCreateService.computeName(bankStatement));
     bankStatement.setStatusSelect(BankStatementRepository.STATUS_IMPORTED);
     bankStatementRepository.save(bankStatement);
   }

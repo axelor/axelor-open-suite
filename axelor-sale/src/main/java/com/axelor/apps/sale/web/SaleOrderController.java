@@ -103,7 +103,12 @@ public class SaleOrderController {
 
   public void onNew(ActionRequest request, ActionResponse response) throws AxelorException {
     SaleOrder saleOrder = SaleOrderContextHelper.getSaleOrder(request.getContext());
-    boolean isTemplate = (boolean) request.getContext().get("_template");
+    boolean isTemplate = false;
+
+    if (request.getContext().get("_template") != null) {
+      isTemplate = (boolean) request.getContext().get("_template");
+    }
+
     SaleOrderInitValueService saleOrderInitValueService =
         Beans.get(SaleOrderInitValueService.class);
     Map<String, Object> saleOrderMap = new HashMap<>();
@@ -843,8 +848,7 @@ public class SaleOrderController {
     }
 
     Beans.get(LoyaltyAccountPointsManagementService.class)
-        .incrementLoyaltyPointsFromAmount(
-            clientPartner, saleOrder.getCompany(), saleOrder.getExTaxTotal());
+        .incrementLoyaltyPointsFromAmount(saleOrder);
   }
 
   public void reloadMethod(ActionRequest request, ActionResponse response) {

@@ -89,7 +89,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     if (appSaleService.getAppSale().getEnableLoyalty()) {
       Optional<LoyaltyAccount> loyaltyAccount =
           loyaltyAccountService.getLoyaltyAccount(
-              saleOrder.getClientPartner(), saleOrder.getCompany());
+              saleOrder.getClientPartner(), saleOrder.getCompany(), saleOrder.getTradingName());
       values.put(
           "$loyaltyPoints",
           loyaltyAccount

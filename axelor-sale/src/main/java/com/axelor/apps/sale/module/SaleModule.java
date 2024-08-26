@@ -47,6 +47,8 @@ import com.axelor.apps.sale.service.AdvancePaymentService;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
 import com.axelor.apps.sale.service.CartInitValueService;
 import com.axelor.apps.sale.service.CartInitValueServiceImpl;
+import com.axelor.apps.sale.service.CartLineService;
+import com.axelor.apps.sale.service.CartLineServiceImpl;
 import com.axelor.apps.sale.service.CartService;
 import com.axelor.apps.sale.service.CartServiceImpl;
 import com.axelor.apps.sale.service.PackLineService;
@@ -74,10 +76,13 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.loyalty.LoyaltyAccountHistoryLineService;
+import com.axelor.apps.sale.service.loyalty.LoyaltyAccountHistoryLineServiceImpl;
 import com.axelor.apps.sale.service.loyalty.LoyaltyAccountPointsManagementService;
 import com.axelor.apps.sale.service.loyalty.LoyaltyAccountPointsManagementServiceImpl;
 import com.axelor.apps.sale.service.loyalty.LoyaltyAccountService;
 import com.axelor.apps.sale.service.loyalty.LoyaltyAccountServiceImpl;
+import com.axelor.apps.sale.service.observer.ProductPopulateSaleObserver;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireServiceImpl;
 import com.axelor.apps.sale.service.observer.SaleOrderLineObserver;
@@ -105,6 +110,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderGroupService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGroupServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineGeneratorService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineGeneratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeService;
@@ -263,9 +270,13 @@ public class SaleModule extends AxelorModule {
     bind(LoyaltyAccountService.class).to(LoyaltyAccountServiceImpl.class);
     bind(LoyaltyAccountPointsManagementService.class)
         .to(LoyaltyAccountPointsManagementServiceImpl.class);
+    bind(SaleOrderLineGeneratorService.class).to(SaleOrderLineGeneratorServiceImpl.class);
     bind(SaleOrderGeneratorService.class).to(SaleOrderGeneratorServiceImpl.class);
     bind(CartInitValueService.class).to(CartInitValueServiceImpl.class);
     bind(CartService.class).to(CartServiceImpl.class);
     bind(CartLineRepository.class).to(CartLineManagementRepository.class);
+    bind(CartLineService.class).to(CartLineServiceImpl.class);
+    bind(ProductPopulateSaleObserver.class);
+    bind(LoyaltyAccountHistoryLineService.class).to(LoyaltyAccountHistoryLineServiceImpl.class);
   }
 }

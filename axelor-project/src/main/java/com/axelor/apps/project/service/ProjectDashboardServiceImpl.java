@@ -47,7 +47,7 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   @Inject protected ProjectRepository projectRepo;
   @Inject protected ProjectTaskRepository projectTaskRepo;
   @Inject protected ProjectTaskCategoryRepository taskCategoryRepo;
-  @Inject protected ProjectService projectService;
+  @Inject protected ProjectToolService projectToolService;
 
   @Override
   public Map<String, Object> getData(Project project) {
@@ -73,8 +73,8 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
             .all()
             .filter("self.typeSelect = :_typeSelect AND self.project.id IN :_projectIds")
             .bind("_typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .bind("_project", currentUser.getContextProject())
-            .bind("_projectIds", projectService.getContextProjectIds())
+            .bind("_project", currentUser.getActiveProject())
+            .bind("_projectIds", projectToolService.getActiveProjectIds())
             .fetch()
             .stream()
             .sorted(getTaskComparator())
@@ -121,7 +121,7 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
     Set<User> membersSet = new HashSet<>();
     projectRepo
         .all()
-        .filter("self.id IN ?1", projectService.getContextProjectIds())
+        .filter("self.id IN ?1", projectToolService.getActiveProjectIds())
         .fetch()
         .stream()
         .forEach(subProject -> membersSet.addAll(subProject.getMembersUserSet()));
@@ -129,7 +129,7 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   }
 
   protected List<Project> getSubprojects(Project project) {
-    Set<Long> contextProjectIds = projectService.getContextProjectIds();
+    Set<Long> contextProjectIds = projectToolService.getActiveProjectIds();
     contextProjectIds.remove(project.getId());
     if (contextProjectIds.isEmpty()) {
       return new ArrayList<>();
@@ -149,8 +149,8 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
             .domain(
                 "self.typeSelect = :typeSelect AND self.project.id IN :projectIds AND (self.projectTaskCategory = :taskCategory OR (self.projectTaskCategory is null AND :taskCategory is null))")
             .context("typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .context("_project", currentUser.getContextProject())
-            .context("projectIds", projectService.getContextProjectIds())
+            .context("_project", currentUser.getActiveProject())
+            .context("projectIds", projectToolService.getActiveProjectIds())
             .context("taskCategory", taskCategoryRepo.find(id))
             .param("search-filters", "project-task-filters")
             .map());
@@ -169,8 +169,8 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
             .domain(
                 "self.typeSelect = :typeSelect AND self.project.id IN :projectIds AND self.status.isCompleted = false AND (self.projectTaskCategory = :taskCategory OR (self.projectTaskCategory is null AND :taskCategory is null))")
             .context("typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .context("_project", currentUser.getContextProject())
-            .context("projectIds", projectService.getContextProjectIds())
+            .context("_project", currentUser.getActiveProject())
+            .context("projectIds", projectToolService.getActiveProjectIds())
             .context("taskCategory", taskCategoryRepo.find(id))
             .param("search-filters", "project-task-filters")
             .map());
@@ -189,8 +189,8 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
             .domain(
                 "self.typeSelect = :typeSelect AND self.project.id IN :projectIds AND self.status.isCompleted = true AND (self.projectTaskCategory = :taskCategory OR (self.projectTaskCategory is null AND :taskCategory is null))")
             .context("typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .context("_project", currentUser.getContextProject())
-            .context("projectIds", projectService.getContextProjectIds())
+            .context("_project", currentUser.getActiveProject())
+            .context("projectIds", projectToolService.getActiveProjectIds())
             .context("taskCategory", taskCategoryRepo.find(id))
             .param("search-filters", "project-task-filters")
             .map());

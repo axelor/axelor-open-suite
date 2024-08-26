@@ -33,6 +33,8 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
+import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -49,6 +51,8 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       AppBaseService appBaseService,
       ProjectRepository projectRepository,
       AppProjectService appProjectService,
+      TaskStatusToolService taskStatusToolService,
+      TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
@@ -62,6 +66,8 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
         appBaseService,
         projectRepository,
         appProjectService,
+        taskStatusToolService,
+        taskStatusProgressByCategoryRepository,
         priceListLineRepo,
         priceListService,
         partnerPriceListService,

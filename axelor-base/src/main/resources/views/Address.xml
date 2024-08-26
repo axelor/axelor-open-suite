@@ -45,12 +45,6 @@
           onChange="action-address-change-city" onSelect="action-address-attrs-update-domain-city"
           form-view="city-form" grid-view="city-grid"/>
         <field name="zip" colSpan="12" onChange="action-address-method-autocomplete-address"/>
-        <field name="isInvoicingAddr" title="Invoicing address"
-          showIf="$popup() &amp;&amp; id == null" type="boolean"/>
-        <field name="isDeliveryAddr" title="Delivery address"
-          showIf="$popup() &amp;&amp; id == null" type="boolean"/>
-        <field name="isDefault" title="Default" showIf="$popup() &amp;&amp; id == null"
-          type="boolean"/>
 
       </panel>
     </panel>
