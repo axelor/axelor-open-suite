@@ -4,6 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskStatus;
+import com.axelor.apps.project.service.ProjectTaskCategoryService;
 import com.axelor.apps.project.service.ProjectTaskToolService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -25,5 +26,28 @@ public class ProjectTaskCategoryController {
             .getCompletedTaskStatus(projectTaskCategory.getCompletedTaskStatus(), taskStatusSet);
 
     response.setValue("completedTaskStatus", completedTaskStatus.orElse(null));
+  }
+
+  @ErrorException
+  public void fillProgressByCategory(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTaskCategory projectTaskCategory =
+        request.getContext().asType(ProjectTaskCategory.class);
+
+    response.setValue(
+        "taskStatusProgressByCategoryList",
+        Beans.get(ProjectTaskCategoryService.class).getUpdatedProgressList(projectTaskCategory));
+  }
+
+  @ErrorException
+  public void validateProgress(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTaskCategory projectTaskCategory =
+        request.getContext().asType(ProjectTaskCategory.class);
+
+    response.setAttr(
+        "inconsistencyLabel",
+        "hidden",
+        Beans.get(ProjectTaskCategoryService.class).verifyProgressValues(projectTaskCategory));
   }
 }

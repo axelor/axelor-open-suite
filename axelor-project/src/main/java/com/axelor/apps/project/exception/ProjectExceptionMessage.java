@@ -64,6 +64,9 @@ public final class ProjectExceptionMessage {
   public static final String PROJECT_CONFIG_COMPLETED_PAID_PROJECT_STATUS_MISSING = /*$$(*/
       "Please set the completed paid project status in the project configuration." /*)*/;
 
+  public static final String PROJECT_CODE_ERROR =
+      /*$$(*/ "Project code is already used. Please provide unique code" /*)*/;
+
   public static final String LINK_TYPE_UNAVAILABLE_IN_PROJECT_CONFIG = /*$$(*/
       "Please configure the project %s with project task link type %s if you want to create this link." /*)*/;
 
@@ -78,4 +81,7 @@ public final class ProjectExceptionMessage {
 
   public static final String CATEGORY_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS = /*$$(*/
       "Please configure the completed task status of the project task category." /*)*/;
+
+  public static final String TASK_STATUS_USED_ON_PROJECT_TASK_CATEGORY = /*$$(*/
+      "This task status is used on project task category for the auto progress process. Do you want to update all unmodified values with this one ?" /*)*/;
 }

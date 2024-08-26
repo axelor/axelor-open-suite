@@ -9,6 +9,8 @@
 
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
+    <many-to-one name="tradingName" title="Trading name"
+      ref="com.axelor.apps.base.db.TradingName"/>
     <decimal name="pointsBalance" title="Points balance" precision="20" scale="10"
       default="0"/>
     <decimal name="futurePointsBalance" title="Future points balance" precision="20"
@@ -17,6 +19,15 @@
       ref="com.axelor.apps.sale.db.LoyaltyAccountHistoryLine" mappedBy="loyaltyAccount"/>
 
     <unique-constraint columns="partner,company"/>
+    <unique-constraint columns="partner,tradingName"/>
+
+    <extra-code>
+      <![CDATA[
+          public static final int LOYALTY_ACCOUNT_MANAGED_ON_COMPANY = 0;
+          public static final int LOYALTY_ACCOUNT_MANAGED_ON_PARTNER = 1;
+          public static final int LOYALTY_ACCOUNT_MANAGED_ON_TRADING_NAME = 2;
+        ]]>
+    </extra-code>
   </entity>
 
 </domain-models>

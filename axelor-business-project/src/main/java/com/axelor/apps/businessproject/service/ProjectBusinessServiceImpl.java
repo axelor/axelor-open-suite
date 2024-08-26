@@ -41,10 +41,11 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
-import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
+import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectCreateTaskService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.project.service.ResourceBookingService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -93,22 +94,24 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   public ProjectBusinessServiceImpl(
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
-      ProjectTemplateRepository projTemplateRepo,
       AppProjectService appProjectService,
+      ProjectCreateTaskService projectCreateTaskService,
+      WikiRepository wikiRepo,
+      ResourceBookingService resourceBookingService,
       PartnerService partnerService,
       AddressService addressService,
       AppBusinessProjectService appBusinessProjectService,
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService,
       AppBaseService appBaseService,
-      InvoiceRepository invoiceRepository,
-      ProjectCreateTaskService projectCreateTaskService) {
+      InvoiceRepository invoiceRepository) {
     super(
         projectRepository,
         projectStatusRepository,
         appProjectService,
-        projTemplateRepo,
-        projectCreateTaskService);
+        projectCreateTaskService,
+        wikiRepo,
+        resourceBookingService);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;
@@ -277,6 +280,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       ProjectTemplate projectTemplate, String projectCode, Partner clientPartner) {
     Project project = super.generateProject(projectTemplate, projectCode, clientPartner);
 
+    project.setCompany(projectTemplate.getCompany());
     if (projectTemplate.getIsBusinessProject()) {
       project.setCurrency(clientPartner.getCurrency());
       if (clientPartner.getPartnerAddressList() != null
@@ -294,9 +298,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.setIsInvoicingPurchases(projectTemplate.getIsInvoicingPurchases());
       project.setInvoicingComment(projectTemplate.getInvoicingComment());
       project.setIsBusinessProject(projectTemplate.getIsBusinessProject());
+
+      if (projectTemplate.getCompany() == null
+          && !ObjectUtils.isEmpty(clientPartner.getCompanySet())
+          && clientPartner.getCompanySet().size() == 1) {
+        project.setCompany(clientPartner.getCompanySet().iterator().next());
+      }
     }
     project.setProjectFolderSet(new HashSet<>(projectTemplate.getProjectFolderSet()));
-    project.setCompany(projectTemplate.getCompany());
 
     return project;
   }
@@ -825,5 +834,19 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       context.forEach(builder::context);
     }
     return builder.map();
+  }
+
+  public String checkPercentagesOver1000OnTasks(Project project) {
+    BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
+    return project.getProjectTaskList().stream()
+        .filter(
+            projectTask ->
+                projectTask.getPercentageOfProgress().compareTo(percentageLimit) == 0
+                    || projectTask.getPercentageOfConsumption().compareTo(percentageLimit) == 0
+                    || projectTask.getRemainingAmountToDo().compareTo(BigDecimal.valueOf(9999.99))
+                        == 0)
+        .map(ProjectTask::getName)
+        .collect(Collectors.toList())
+        .toString();
   }
 }

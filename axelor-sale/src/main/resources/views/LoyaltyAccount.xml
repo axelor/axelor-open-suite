@@ -6,13 +6,17 @@
   <grid name="loyalty-account-grid" title="Loyalty account"
     model="com.axelor.apps.sale.db.LoyaltyAccount">
     <field name="partner"/>
-    <field name="company"/>
+    <field name="company" if="__config__.app.getApp('sale')?.loyaltyAccountsManagement == 0"/>
+    <field name="tradingName"
+      if="__config__.app.getApp('sale')?.loyaltyAccountsManagement == 2"/>
     <field name="pointsBalance" x-scale="0"/>
   </grid>
 
   <grid name="loyalty-account-partner-grid" title="Loyalty account"
     model="com.axelor.apps.sale.db.LoyaltyAccount">
-    <field name="company"/>
+    <field name="company" if="__config__.app.getApp('sale')?.loyaltyAccountsManagement == 0"/>
+    <field name="tradingName"
+      if="__config__.app.getApp('sale')?.loyaltyAccountsManagement == 2"/>
     <field name="pointsBalance" x-scale="0"/>
   </grid>
 
@@ -20,7 +24,9 @@
     model="com.axelor.apps.sale.db.LoyaltyAccount">
     <panel name="mainPanel" colSpan="12">
       <field name="partner"/>
-      <field name="company"/>
+      <field name="company" if="__config__.app.getApp('sale')?.loyaltyAccountsManagement == 0"/>
+      <field name="tradingName"
+        if="__config__.app.getApp('sale')?.loyaltyAccountsManagement == 2"/>
       <field name="pointsBalance" x-scale="0"/>
       <field name="futurePointsBalance" x-scale="0"/>
     </panel>
@@ -31,7 +37,9 @@
   <form name="loyalty-account-partner-form" title="Loyalty account"
     model="com.axelor.apps.sale.db.LoyaltyAccount">
     <panel name="mainPanel" itemSpan="4" colSpan="12">
-      <field name="company"/>
+      <field name="company" if="__config__.app.getApp('sale')?.loyaltyAccountsManagement == 0"/>
+      <field name="tradingName"
+        if="__config__.app.getApp('sale')?.loyaltyAccountsManagement == 2"/>
       <field name="pointsBalance" readonly="true" x-scale="0"/>
       <field name="futurePointsBalance" readonly="true" x-scale="0"/>
     </panel>

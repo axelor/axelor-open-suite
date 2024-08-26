@@ -24,6 +24,9 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 import org.apache.commons.lang3.LocaleUtils;
 
@@ -44,5 +47,35 @@ public class LocalizationServiceImpl implements LocalizationService {
           I18n.get(BaseExceptionMessage.COMPANY_INVALID_LOCALE),
           localeStr);
     }
+  }
+
+  @Override
+  public String getNumberFormat(String localizationCode) {
+    Locale locale = LocaleService.computeLocaleByLocaleCode(localizationCode);
+    // Create a number formatter with the specified locale
+    NumberFormat usNumberFormatter = NumberFormat.getNumberInstance(locale);
+    // Get the pattern string for the number format
+    return ((java.text.DecimalFormat) usNumberFormatter).toLocalizedPattern();
+  }
+
+  @Override
+  public String getDateFormat(String localizationCode) {
+    Locale locale = LocaleService.computeLocaleByLocaleCode(localizationCode);
+    String dateFormatString =
+        ((SimpleDateFormat) DateFormat.getDateInstance(DateFormat.SHORT, locale)).toPattern();
+    return convertToFourDigitYear(dateFormatString);
+  }
+
+  /**
+   * For Java defined date format Strings, some have only one y, such as y-MM-dd. This method
+   * converts it to yyyy-MM-dd, to make it more readable for a user.
+   *
+   * @param dateFormatString the date format String that may have only one 'y'
+   */
+  protected String convertToFourDigitYear(String dateFormatString) {
+    if (dateFormatString.chars().filter(c -> c == 'y').count() == 1) {
+      dateFormatString = dateFormatString.replace("y", "yyyy");
+    }
+    return dateFormatString;
   }
 }

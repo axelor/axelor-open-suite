@@ -91,6 +91,27 @@
         <panel-include view="incl-characteristics-panel-form"/>
       </panel>
     </panel>
+    <panel name="customizedFieldsPanel" title="Customized fields" collapseIf="true"
+      canCollapse="true" colSpan="12">
+      <panel name="appJsonPanel" colSpan="12"
+        showIf="$contains(project.customFieldManagementSelect, 'app')" title="App customized fields">
+        <field name="appJson" colSpan="12"/>
+      </panel>
+      <panel name="projectJsonPanel" colSpan="12"
+        showIf="$contains(project.customFieldManagementSelect, 'project')"
+        title="Project customized fields">
+        <field name="projectJson" colSpan="12"/>
+      </panel>
+      <panel name="categoryJsonPanel" colSpan="12"
+        showIf="projectTaskCategory &amp;&amp; $contains(project.customFieldManagementSelect, 'category')"
+        title="Category customized fields">
+        <field name="categoryJson" colSpan="12"/>
+      </panel>
+      <panel name="otherFieldsPanel" title="Other customized fields" colSpan="12">
+        <field name="attrs" colSpan="12"/>
+      </panel>
+      <field name="project.customFieldManagementSelect" hidden="true"/>
+    </panel>
     <panel-tabs name="mainPanelTab">
 
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
@@ -159,9 +180,7 @@
       </panel>
       <panel-include view="incl-links-panel-form"/>
     </panel-tabs>
-    <panel name="attrsPanel">
-      <field name="attrs" colSpan="12"/>
-    </panel>
+
     <panel-mail name="mailPanel">
       <mail-messages/>
       <mail-followers/>
@@ -604,6 +623,7 @@
   <action-group name="action-project-task-group-project-category-onchange">
     <action name="action-project-task-method-onchange-category"/>
     <action name="action-project-task-method-change-statut-depending-category"/>
+    <action name="action-project-task-method-auto-change-progress"/>
   </action-group>
 
   <action-attrs name="action-project-task-atts-priority-on-select">
