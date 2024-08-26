@@ -43,6 +43,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class ProjectTaskReportingValuesComputingServiceImpl
     implements ProjectTaskReportingValuesComputingService {
@@ -143,7 +144,9 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    */
   protected BigDecimal getTaskSpentTime(ProjectTask projectTask) {
     List<TimesheetLine> timesheetLines = getValidatedTimesheetLinesForProjectTask(projectTask);
-    Unit timeUnit = projectTask.getTimeUnit();
+    Unit timeUnit =
+        Optional.ofNullable(projectTask.getTimeUnit())
+            .orElse(projectTask.getProject().getProjectTimeUnit());
     BigDecimal spentTime = BigDecimal.ZERO;
 
     for (TimesheetLine timeSheetLine : timesheetLines) {
