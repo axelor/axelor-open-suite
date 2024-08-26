@@ -1,3 +1,3 @@
 ---
-title: "Purchase Order Line : fixed budget panel readonly according purchase order's status"
+title: "Purchase order line: fixed an issue where budget panel was editable on a confirmed purchase order."
 module: axelor-budget
