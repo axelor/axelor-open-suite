@@ -5,6 +5,10 @@
 
   <form id="supply-chain-sale-batch-form" name="sale-batch-form" title="Sale Batch"
     model="com.axelor.apps.sale.db.SaleBatch" extension="true" width="large">
+    <extend target="/">
+      <attribute name="onNew" value="action-sale-batch-group-supply-chain-on-new"/>
+      <attribute name="onLoad" value="action-sale-batch-attrs-supply-chain-action-select"/>
+    </extend>
     <extend target="//field[@name='createdBy']">
       <insert position="after">
         <panel name="invoicingPanel" colSpan="12" showIf="actionSelect == 1">
@@ -14,5 +18,15 @@
       </insert>
     </extend>
   </form>
+
+  <action-attrs name="action-sale-batch-attrs-supply-chain-action-select">
+    <attribute for="actionSelect" name="selection-in" expr="[1]"
+      if="!__config__.app.getApp('sale')?.enableLoyalty"/>
+  </action-attrs>
+
+  <action-group name="action-sale-batch-group-supply-chain-on-new">
+    <action name="action-sale-batch-record-on-new"/>
+    <action name="action-sale-batch-attrs-supply-chain-action-select"/>
+  </action-group>
 
 </object-views>

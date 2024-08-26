@@ -5,6 +5,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.LoyaltyAccount;
 import com.axelor.apps.sale.db.repo.LoyaltyAccountRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.loyalty.LoyaltyAccountService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -21,9 +22,10 @@ public class BatchLoyaltyAccountEarnPoints extends BatchStrategy {
 
   @Inject
   protected BatchLoyaltyAccountEarnPoints(
+      AppSaleService appSaleService,
       LoyaltyAccountService loyaltyAccountService,
       LoyaltyAccountRepository loyaltyAccountRepository) {
-    super(loyaltyAccountService, loyaltyAccountRepository);
+    super(appSaleService, loyaltyAccountService, loyaltyAccountRepository);
   }
 
   @Override
@@ -41,7 +43,7 @@ public class BatchLoyaltyAccountEarnPoints extends BatchStrategy {
         ++offset;
         try {
           loyaltyAccountService.acquirePoints(
-              loyaltyAccount, batch.getSaleBatch().getLoyaltyAccountPointsAcquiringDelay());
+              loyaltyAccount, appSaleService.getAppSale().getLoyaltyAccountPointsAcquiringDelay());
           updateLoyaltyAccount(loyaltyAccount);
         } catch (Exception e) {
           TraceBackService.trace(

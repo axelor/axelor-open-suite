@@ -12,10 +12,11 @@
     <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
   </grid>
 
-  <form onNew="action-sale-batch-record-on-new" name="sale-batch-form" title="Sale Batch"
-    model="com.axelor.apps.sale.db.SaleBatch" width="large">
+  <form onNew="action-sale-batch-group-on-new" onLoad="action-sale-batch-attrs-action-select"
+    name="sale-batch-form" title="Sale Batch" model="com.axelor.apps.sale.db.SaleBatch"
+    width="large">
     <panel name="mainPanel">
-      <field name="actionSelect" onChange="action-sale-batch-attrs-action-select"/>
+      <field name="actionSelect" onSelect="action-sale-batch-attrs-action-select"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" widget="SuggestBox" form-view="company-form"
@@ -28,7 +29,6 @@
         <button name="earnLoyaltyAccountPointsBtn"
           title="Loyalty account points earning batch"
           onClick="save,action-sale-batch-method-run-batch"/>
-        <field name="loyaltyAccountPointsAcquiringDelay"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
@@ -63,6 +63,16 @@
   </action-method>
 
   <!-- ACTION ATTRS -->
+  <action-attrs name="action-sale-batch-attrs-action-select">
+    <attribute for="actionSelect" name="selection-in" expr="[]"
+      if="!__config__.app.getApp('sale')?.enableLoyalty"/>
+  </action-attrs>
+
+  <action-group name="action-sale-batch-group-on-new">
+    <action name="action-sale-batch-record-on-new"/>
+    <action name="action-sale-batch-attrs-action-select"/>
+  </action-group>
+
   <search-filters name="sale-batch-filters" model="com.axelor.apps.sale.db.SaleBatch"
     title="Sale batch filters">
     <field name="company" hidden="true"
