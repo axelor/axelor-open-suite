@@ -2,8 +2,10 @@ package com.axelor.apps.stock.service.massstockmove;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StoredProduct;
+import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 
 public class StoredProductProcessingRealizeServiceImpl
@@ -36,7 +38,13 @@ public class StoredProductProcessingRealizeServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void postRealize(StoredProduct movableProduct) throws AxelorException {
-    // Nothing
+    var massStockMove = movableProduct.getMassStockMove();
+
+    if (massStockMove.getStoredProductList().stream()
+        .allMatch(storedProduct -> storedProduct.getStockMoveLine() != null)) {
+      massStockMove.setStatusSelect(MassStockMoveRepository.STATUS_REALIZED);
+    }
   }
 }
