@@ -69,18 +69,17 @@
       <field name="isValidLatLong" hidden="true"/>
       <field name="formattedFullName" readonly="true" colSpan="12" height="4"/>
 
-      <panel name="certificationPanel" title="Certification" colSpan="12">
-        <field name="certifiedOk" colSpan="4"/>
-        <panel name="actionsPanel" colSpan="4">
-          <button name="validateBtn" title="Validate"
-            onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
-          <button name="selectBtn" title="Choose"
-            onClick="com.axelor.apps.base.web.AddressController:select,save"/>
-          <field name="country.addressValidationApi" hidden="true"/>
-        </panel>
-        <panel-related name="pickListPanel" title="Pick list" colSpan="12"
+      <panel name="certificationPanel" title="Certification" colSpan="12" itemSpan="12">
+        <field name="certifiedOk"/>
+        <button name="validateBtn" title="Validate"
+          onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
+        <panel-related name="pickListPanel" title="Pick list" readonly="true"
           field="pickList" grid-view="pick-list-entry-grid" form="pick-list-entry-form"
-          showIf="country?.addressValidationApi == 2"/>
+          showIf="country.addressValidationApi == 2 &amp;&amp; pickList &amp;&amp; pickList.length &gt; 0"/>
+        <button name="selectBtn" title="Choose"
+          showIf="country.addressValidationApi == 2 &amp;&amp; pickList &amp;&amp; pickList.length &gt; 0"
+          onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+        <field name="country.addressValidationApi" hidden="true"/>
       </panel>
 
     </panel>
@@ -147,17 +146,17 @@
         </panel>
 
       </panel>
-      <panel name="certificationPanel" title="Certification" colSpan="12">
-        <field name="certifiedOk" colSpan="4"/>
-        <panel name="actionsPanel" colSpan="4">
-          <button name="validateBtn" title="Validate"
-            onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
-          <button name="selectBtn" title="Choose"
-            onClick="com.axelor.apps.base.web.AddressController:select,save"/>
-        </panel>
-        <panel-related name="pickListPanel" field="pickList" title="Pick list"
-          colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"
-          showIf="country?.addressValidationApi == 2"/>
+      <panel name="certificationPanel" title="Certification" colSpan="12" itemSpan="12">
+        <field name="certifiedOk"/>
+        <button name="validateBtn" title="Validate"
+          onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
+        <panel-related name="pickListPanel" title="Pick list" readonly="true"
+          field="pickList" form="pick-list-entry-form" grid-view="pick-list-entry-grid"
+          showIf="country.addressValidationApi == 2 &amp;&amp; pickList &amp;&amp; pickList.length &gt; 0"/>
+        <button name="selectBtn" title="Choose"
+          showIf="country.addressValidationApi == 2 &amp;&amp; pickList &amp;&amp; pickList.length &gt; 0"
+          onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+        <field name="country.addressValidationApi" hidden="true"/>
       </panel>
     </panel>
   </form>
