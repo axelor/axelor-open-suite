@@ -105,7 +105,7 @@ public class MassStockMovableProductRealizeServiceImpl
               movableProduct.getTrackingNumber(),
               movableProduct.getMovedQty(),
               movableProduct.getMovedQty(),
-              movableProduct.getUnit(),
+              movableProduct.getProduct().getUnit(),
               StockMoveLineRepository.CONFORMITY_NONE,
               fromStockLocation,
               toStockLocation);
