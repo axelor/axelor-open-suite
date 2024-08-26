@@ -1,7 +1,6 @@
 package com.axelor.apps.stock.interfaces.massstockmove;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -27,6 +26,4 @@ public interface MassStockMovableProduct {
   StockMoveLine getStockMoveLine();
 
   void setStockMoveLine(StockMoveLine stockMoveLine);
-
-  Unit getUnit();
 }

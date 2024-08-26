@@ -16,7 +16,7 @@
       onChange="action-stored-product-method-set-current-qty"/>
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
       readonly="true"/>
-    <field name="unit" readonly="true"/>
+    <field name="storedProduct.unit" readonly="true"/>
     <field name="storedQty" x-scale="nbDecimalQty"/>
     <button name="realizeStoringBtn" title="Realize storing"
       onClick="save,action-stored-product-method-realize-storing" readonlyIf="stockMoveLine != null"
@@ -42,7 +42,7 @@
         onChange="action-stored-product-method-set-current-qty"/>
       <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
         readonly="true"/>
-      <field name="unit" readonly="true"/>
+      <field name="storedProduct.unit" readonly="true"/>
       <field name="storedQty" x-scale="nbDecimalQty"/>
       <field name="stockMoveLine" showIf="stockMoveLine != null"/>
       <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
@@ -66,16 +66,10 @@
   </action-method>
 
   <action-group name="action-stored-product-group-product-onchange">
-    <action name="action-stored-product-record-set-unit"/>
     <action name="action-stored-product-attrs-tracking-number-required"/>
     <action name="action-stored-product-record-set-tracking-number"/>
     <action name="action-stored-product-method-set-current-qty"/>
   </action-group>
-
-  <action-record name="action-stored-product-record-set-unit"
-    model="com.axelor.apps.stock.db.StoredProduct">
-    <field name="unit" expr="eval: storedProduct?.unit"/>
-  </action-record>
 
   <action-attrs name="action-stored-product-attrs-tracking-number-required">
     <attribute name="required" for="trackingNumber"

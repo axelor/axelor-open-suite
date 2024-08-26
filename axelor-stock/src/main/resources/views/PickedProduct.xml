@@ -15,7 +15,7 @@
       onChange="action-picked-product-method-set-current-qty"/>
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
       readonly="true"/>
-    <field name="unit" readonly="true"/>
+    <field name="pickedProduct.unit" readonly="true"/>
     <field name="pickedQty" x-scale="nbDecimalQty"/>
     <button name="realizePickingBtn" title="Realize picking"
       onClick="save,action-picked-product-method-realize-picking" readonlyIf="stockMoveLine != null"
@@ -40,7 +40,7 @@
         onChange="action-picked-product-method-set-current-qty"/>
       <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
         readonly="true"/>
-      <field name="unit" readonly="true"/>
+      <field name="pickedProduct.unit" readonly="true"/>
       <field name="pickedQty" x-scale="nbDecimalQty"/>
       <field name="stockMoveLine" showIf="stockMoveLine != null"/>
       <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
@@ -64,16 +64,10 @@
   </action-method>
 
   <action-group name="action-picked-product-group-product-onchange">
-    <action name="action-picked-product-record-set-unit"/>
     <action name="action-picked-product-attrs-tracking-number-required"/>
     <action name="action-picked-product-record-set-tracking-number"/>
     <action name="action-picked-product-method-set-current-qty"/>
   </action-group>
-
-  <action-record name="action-picked-product-record-set-unit"
-    model="com.axelor.apps.stock.db.PickedProduct">
-    <field name="unit" expr="eval: pickedProduct?.unit"/>
-  </action-record>
 
   <action-attrs name="action-picked-product-attrs-tracking-number-required">
     <attribute name="required" for="trackingNumber"
