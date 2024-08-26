@@ -469,6 +469,7 @@
 "AccountingReportType17.year",,,
 "AccountingReportType17.year_end_value",,,
 "AccountingReportType17.year_start_value",,,
+"AccountingReportType19.amount",,,
 "AccountingReportType19.company",,,
 "AccountingReportType19.created_on",,,
 "AccountingReportType19.currency",,,
