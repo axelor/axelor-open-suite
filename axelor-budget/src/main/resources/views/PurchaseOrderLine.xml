@@ -48,6 +48,7 @@
     <extend target="//panel[@name='analyticDistributionPanel']">
       <insert position="after">
         <panel name="budgetDistributionPanel" title="Budget"
+          readonlyIf="purchaseOrder &amp;&amp; purchaseOrder.statusSelect &gt;= 3"
           if="__config__.app.isApp('budget')" if-module="axelor-supplychain" colSpan="12">
           <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
@@ -91,6 +92,7 @@
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" showIf="account"
             onChange="action-group-budget-purchase-order-line-budget-distribution-onchange"/>
           <field name="$currencySymbol" hidden="true"/>
+          <field name="purchaseOrder.statusSelect" hidden="true"/>
         </panel>
       </insert>
     </extend>
