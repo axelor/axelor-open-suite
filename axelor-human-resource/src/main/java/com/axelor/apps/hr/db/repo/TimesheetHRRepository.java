@@ -21,6 +21,7 @@ package com.axelor.apps.hr.db.repo;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
+import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ public class TimesheetHRRepository extends TimesheetRepository {
       for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList())
         Beans.get(TimesheetLineHRRepository.class).computeFullName(timesheetLine);
     }
+
+    timesheet.setPeriodTotal(
+        Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet));
     return super.save(timesheet);
   }
 
