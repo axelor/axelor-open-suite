@@ -28,6 +28,7 @@ import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.ResourceBooking;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -42,6 +43,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.studio.db.AppProject;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -51,6 +53,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 public class ProjectServiceImpl implements ProjectService {
@@ -105,8 +109,17 @@ public class ProjectServiceImpl implements ProjectService {
     project.setClientPartner(clientPartner);
     project.setAssignedTo(assignedTo);
     project.setProjectStatus(getDefaultProjectStatus());
-    project.setProjectTaskStatusSet(
-        new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
+
+    if (parentProject != null) {
+      project.setTaskStatusManagementSelect(parentProject.getTaskStatusManagementSelect());
+      project.setProjectTaskStatusSet(new HashSet<>(parentProject.getTaskStatusManagementSelect()));
+    } else {
+      project.setTaskStatusManagementSelect(ProjectRepository.TASK_STATUS_MANAGEMENT_APP);
+      project.setProjectTaskStatusSet(
+          new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
+    }
+    manageTaskStatus(project, parentProject);
+
     project.setProjectTaskPrioritySet(
         new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
     project.setCompletedTaskStatus(appProjectService.getAppProject().getCompletedTaskStatus());
@@ -234,8 +247,21 @@ public class ProjectServiceImpl implements ProjectService {
     project.setImputable(projectTemplate.getImputable());
     project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
     project.setProjectStatus(getDefaultProjectStatus());
-    project.setProjectTaskStatusSet(
-        new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
+    if (projectTemplate != null) {
+      project.setTaskStatusManagementSelect(projectTemplate.getTaskStatusManagementSelect());
+    } else {
+      project.setTaskStatusManagementSelect(ProjectRepository.TASK_STATUS_MANAGEMENT_APP);
+    }
+    if (ProjectRepository.TASK_STATUS_MANAGEMENT_APP != project.getTaskStatusManagementSelect()) {
+      project.setProjectTaskStatusSet(
+          new HashSet<>(projectTemplate.getTaskStatusManagementSelect()));
+    } else {
+      project.setProjectTaskStatusSet(
+          new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
+    }
+
+    manageTaskStatus(project, projectTemplate);
+
     project.setProjectTaskPrioritySet(
         new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
     project.setCompletedTaskStatus(appProjectService.getAppProject().getCompletedTaskStatus());
@@ -296,5 +322,48 @@ public class ProjectServiceImpl implements ProjectService {
                             && resourceBooking.getFromDate().compareTo(x.getToDate()) <= 0)
                         || (resourceBooking.getToDate().compareTo(x.getFromDate()) >= 0)
                             && resourceBooking.getToDate().compareTo(x.getToDate()) <= 0));
+  }
+
+  protected void manageTaskStatus(Project project, ProjectTemplate projectTemplate) {
+    Set<TaskStatus> taskStatusSet =
+        Optional.ofNullable(projectTemplate)
+            .map(ProjectTemplate::getProjectTaskStatusSet)
+            .orElse(null);
+    Integer taskStatusManagement =
+        Optional.ofNullable(projectTemplate)
+            .map(ProjectTemplate::getTaskStatusManagementSelect)
+            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_APP);
+
+    initTaskStatus(project, taskStatusManagement, taskStatusSet);
+  }
+
+  protected void manageTaskStatus(Project project, Project parentProject) {
+    Set<TaskStatus> taskStatusSet =
+        Optional.ofNullable(parentProject).map(Project::getProjectTaskStatusSet).orElse(null);
+    Integer taskStatusManagement =
+        Optional.ofNullable(parentProject)
+            .map(Project::getTaskStatusManagementSelect)
+            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_APP);
+
+    initTaskStatus(project, taskStatusManagement, taskStatusSet);
+  }
+
+  protected void initTaskStatus(
+      Project project, Integer taskStatusManagement, Set<TaskStatus> taskStatusSet) {
+    project.setTaskStatusManagementSelect(taskStatusManagement);
+
+    switch (taskStatusManagement) {
+      case ProjectRepository.TASK_STATUS_MANAGEMENT_APP:
+        project.setProjectTaskStatusSet(
+            new HashSet<>(
+                Objects.requireNonNull(
+                    Optional.ofNullable(appProjectService.getAppProject())
+                        .map(AppProject::getDefaultTaskStatusSet)
+                        .orElse(null))));
+        break;
+      case ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT:
+        project.setProjectTaskStatusSet(new HashSet<>(taskStatusSet));
+        break;
+    }
   }
 }
