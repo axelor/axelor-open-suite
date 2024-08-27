@@ -21,11 +21,8 @@ package com.axelor.apps.base.service.address;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
-import java.io.IOException;
 
-public interface AddressExportService {
-
-  int export(String path) throws IOException;
+public interface AddressFetchService {
 
   Address getAddress(
       String room,
