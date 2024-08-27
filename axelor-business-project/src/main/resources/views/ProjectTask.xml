@@ -201,6 +201,7 @@
           showIf="invoicingType == 4"/>
         <field name="timeUnit" colSpan="4" readonlyIf="saleOrderLine || parentTask"
           onSelect="action-project-task-attrs-set-time-unit-domain"
+          onChange="action-project-task-method-update-budgeted-time"
           if="__config__.app.isApp('business-project')"/>
       </panel>
     </panel>
@@ -208,8 +209,9 @@
       <panel name="timeFollowUpPanel" title="Time follow-up"
         if="__config__.app.isApp('business-project')" showIf="timeUnit">
         <field name="soldTime" readonlyIf="saleOrderLine" hidden="true" showIf="!parentTask"
-          onChange="action-project-task-record-fill-updated-time" colSpan="3"/>
-        <field name="updatedTime" hidden="true" showIf="!parentTask" colSpan="3"/>
+          onChange="action-project-task-method-update-updated-time" colSpan="3"/>
+        <field name="updatedTime" showIf="!parentTask" colSpan="3"
+          onChange="action-project-task-method-update-quantity"/>
         <spacer/>
         <field name="plannedTime" readonly="true" colSpan="3"/>
         <field name="spentTime" readonly="true" colSpan="3"/>
@@ -265,15 +267,16 @@
             onChange="action-business-project-project-task-group-product-onchange"
             onSelect="action-project-task-attrs-set-product-domain" form-view="product-form"
             grid-view="product-grid" readonlyIf="saleOrderLine"/>
-          <field name="quantity" colSpan="3" onChange="action-project-task-group-qty-onchange"
-            readonlyIf="saleOrderLine"/>
+          <field name="quantity" colSpan="3"
+            onChange="action-project-task-method-update-financial-datas" readonlyIf="saleOrderLine"/>
           <field name="unitPrice" colSpan="3"
             onChange="action-project-task-group-unit-price-onchange"
             readonlyIf="saleOrderLine || frameworkCustomerContract"/>
           <field name="unitCost" colSpan="3"
             readonlyIf="saleOrderLine || frameworkSupplierContract"/>
           <field name="invoicingUnit" colSpan="3" domain="self.unitTypeSelect=3"
-            form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"/>
+            form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"
+            onChange="action-project-task-method-update-quantity"/>
           <field name="currency" colSpan="3" grid-view="currency-grid"
             form-view="currency-form" canEdit="false" readonlyIf="saleOrderLine"/>
           <field name="exTaxTotal" readonly="true" colSpan="3"/>
@@ -478,11 +481,6 @@
       method="updateToInvoice"/>
   </action-method>
 
-  <action-method name="action-project-task-method-update-discount">
-    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
-      method="updateDiscount"/>
-  </action-method>
-
   <action-method name="action-project-task-method-compute">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController" method="compute"/>
   </action-method>
@@ -497,6 +495,11 @@
       method="getProductData"/>
   </action-method>
 
+  <action-method name="action-project-task-method-update-budgeted-time">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="updateBudgetedTime"/>
+  </action-method>
+
   <action-method name="action-project-task-method-update-sold-time">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="updateSoldTime"/>
@@ -505,6 +508,16 @@
   <action-method name="action-project-task-method-update-updated-time">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="updateUpdatedTime"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-update-quantity">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="updateQuantity"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-update-financial-datas">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="updateFinancialDatas"/>
   </action-method>
 
   <action-attrs name="action-project-task-attrs-scale-and-precision">
@@ -549,7 +562,6 @@
 
   <action-group name="action-project-task-group-set-price-from-contract">
     <action name="action-project-task-method-get-contract-product"/>
-    <action name="action-project-task-method-update-discount"/>
     <action name="action-project-task-method-compute"/>
   </action-group>
 
@@ -568,8 +580,6 @@
 
   <action-group name="action-business-project-task-group-project-onchange">
     <action name="action-project-task-group-project-onchange"/>
-    <action name="action-project-task-method-update-discount"
-      if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-method-compute"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-attrs-onchange-invoice-type"/>
@@ -577,21 +587,12 @@
 
   <action-group name="action-project-task-group-product-onchange">
     <action name="action-project-task-record-product-selected"/>
-    <action name="action-project-task-method-update-discount"
-      if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-method-compute"
       if="__config__.app.isApp('business-project')"/>
   </action-group>
 
   <action-group name="action-business-project-project-task-group-on-load">
     <action name="action-project-task-group-timer-process"/>
-  </action-group>
-
-  <action-group name="action-project-task-group-qty-onchange">
-    <action name="action-project-task-method-update-discount"
-      if="__config__.app.isApp('business-project')"/>
-    <action name="action-project-task-method-compute"
-      if="__config__.app.isApp('business-project')"/>
   </action-group>
 
   <action-group name="action-project-task-group-unit-price-onchange">
@@ -617,12 +618,6 @@
     <attribute name="title" for="discountAmount"
       expr="eval: com.axelor.i18n.I18n.get('Discount amount')" if="discountTypeSelect == 2"/>
   </action-attrs>
-
-  <!-- fill updatedTime from soldTime -->
-  <action-record name="action-project-task-record-fill-updated-time"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <field name="updatedTime" expr="eval: soldTime" if="soldTime"/>
-  </action-record>
 
   <!-- fill timeUnit from parentTask -->
   <action-record name="action-project-task-record-get-parent-timeunit"

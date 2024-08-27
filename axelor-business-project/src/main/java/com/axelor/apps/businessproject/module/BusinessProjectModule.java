@@ -87,6 +87,8 @@ import com.axelor.apps.businessproject.service.TimesheetProjectInvoiceServiceImp
 import com.axelor.apps.businessproject.service.TimesheetProjectPPTServiceImpl;
 import com.axelor.apps.businessproject.service.TimesheetProjectService;
 import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
+import com.axelor.apps.businessproject.service.UnitProjectToolService;
+import com.axelor.apps.businessproject.service.UnitProjectToolServiceImpl;
 import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowValidationServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
@@ -105,8 +107,12 @@ import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProje
 import com.axelor.apps.businessproject.service.observer.SaleOrderLineProjectObserver;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateServiceImpl;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskRecordService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskRecordServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingServiceImpl;
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
@@ -223,5 +229,9 @@ public class BusinessProjectModule extends AxelorModule {
         .to(SaleOrderLineInitValueProjectServiceImpl.class);
     bind(BusinessProjectService.class).to(BusinessProjectServiceImpl.class);
     bind(ProjectRestService.class).to(ProjectRestServiceImpl.class);
+
+    bind(ProjectTaskGroupService.class).to(ProjectTaskGroupServiceImpl.class);
+    bind(UnitProjectToolService.class).to(UnitProjectToolServiceImpl.class);
+    bind(ProjectTaskRecordService.class).to(ProjectTaskRecordServiceImpl.class);
   }
 }
