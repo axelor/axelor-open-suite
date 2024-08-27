@@ -61,10 +61,6 @@ public class BatchLoyaltyAccountEarnPoints extends BatchStrategy {
     }
   }
 
-  /**
-   * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the
-   * entity in the persistent context. Warning : {@code batch} entity have to be saved before.
-   */
   @Override
   protected void stop() {
 

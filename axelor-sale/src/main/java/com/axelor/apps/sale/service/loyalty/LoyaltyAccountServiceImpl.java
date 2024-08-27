@@ -3,21 +3,23 @@ package com.axelor.apps.sale.service.loyalty;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.LoyaltyAccount;
 import com.axelor.apps.sale.db.repo.LoyaltyAccountRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class LoyaltyAccountServiceImpl implements LoyaltyAccountService {
 
+  protected final AppBaseService appBaseService;
   protected final AppSaleService appSaleService;
 
   @Inject
-  public LoyaltyAccountServiceImpl(AppSaleService appSaleService) {
+  public LoyaltyAccountServiceImpl(AppBaseService appBaseService, AppSaleService appSaleService) {
+    this.appBaseService = appBaseService;
     this.appSaleService = appSaleService;
   }
 
@@ -68,7 +70,7 @@ public class LoyaltyAccountServiceImpl implements LoyaltyAccountService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public LoyaltyAccount acquirePoints(LoyaltyAccount loyaltyAccount, Integer delay) {
+  public LoyaltyAccount acquirePoints(LoyaltyAccount loyaltyAccount, int delay) {
     loyaltyAccount.getHistoryLineList().stream()
         .filter(
             historyLine ->
@@ -77,12 +79,13 @@ public class LoyaltyAccountServiceImpl implements LoyaltyAccountService {
                         .getSaleOrder()
                         .getConfirmationDateTime()
                         .plusDays(delay)
-                        .isBefore(LocalDateTime.now()))
+                        .isBefore(appBaseService.getTodayDateTime().toLocalDateTime()))
         .forEach(
             historyLine -> {
               BigDecimal pointsBalance = historyLine.getPointsBalance();
               historyLine.setRemainingPoints(pointsBalance);
-              historyLine.setAcquisitionDateTime(LocalDateTime.now());
+              historyLine.setAcquisitionDateTime(
+                  appBaseService.getTodayDateTime().toLocalDateTime());
               historyLine.setPointsAcquired(true);
               loyaltyAccount.setPointsBalance(
                   loyaltyAccount.getPointsBalance().add(historyLine.getPointsBalance()));

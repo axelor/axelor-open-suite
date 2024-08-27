@@ -10,5 +10,5 @@ public interface LoyaltyAccountService {
   Optional<LoyaltyAccount> getLoyaltyAccount(
       Partner partner, Company company, TradingName tradingName);
 
-  LoyaltyAccount acquirePoints(LoyaltyAccount loyaltyAccount, Integer delay);
+  LoyaltyAccount acquirePoints(LoyaltyAccount loyaltyAccount, int delay);
 }
