@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service.batch;
+package com.axelor.apps.sale.service.batch;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
@@ -32,7 +32,12 @@ import com.google.inject.Inject;
 
 public class SaleBatchService extends AbstractBatchService {
 
-  @Inject private SaleBatchRepository saleBatchRepo;
+  protected final SaleBatchRepository saleBatchRepo;
+
+  @Inject
+  public SaleBatchService(SaleBatchRepository saleBatchRepo) {
+    this.saleBatchRepo = saleBatchRepo;
+  }
 
   @Override
   protected Class<? extends Model> getModelClass() {
@@ -43,8 +48,8 @@ public class SaleBatchService extends AbstractBatchService {
   public Batch run(Model batchModel) throws AxelorException {
     SaleBatch saleBatch = (SaleBatch) batchModel;
     switch (saleBatch.getActionSelect()) {
-      case SaleBatchRepository.ACTION_INVOICING:
-        return generateSubscriberInvoices(saleBatch);
+      case SaleBatchRepository.ACTION_EARN_LOYALTY_ACCOUNT_POINTS:
+        return earnLoyaltyAccountPoints(saleBatch);
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -54,8 +59,8 @@ public class SaleBatchService extends AbstractBatchService {
     }
   }
 
-  protected Batch generateSubscriberInvoices(SaleBatch saleBatch) {
-    return Beans.get(BatchInvoicing.class).run(saleBatch);
+  protected Batch earnLoyaltyAccountPoints(SaleBatch saleBatch) {
+    return Beans.get(BatchLoyaltyAccountEarnPoints.class).run(saleBatch);
   }
 
   /**

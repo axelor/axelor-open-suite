@@ -51,6 +51,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineSaleRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
 import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
+import com.axelor.apps.sale.service.batch.SaleBatchService;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
@@ -208,6 +209,7 @@ import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainServi
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain;
+import com.axelor.apps.supplychain.service.batch.SaleBatchSupplyChainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigServiceImpl;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesService;
@@ -456,5 +458,6 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineCheckSupplychainServiceImpl.class);
     bind(SaleOrderLineCheckServiceImpl.class).to(SaleOrderLineCheckSupplychainServiceImpl.class);
     bind(StockLocationCartService.class).to(StockLocationCartServiceImpl.class);
+    bind(SaleBatchService.class).to(SaleBatchSupplyChainService.class);
   }
 }
