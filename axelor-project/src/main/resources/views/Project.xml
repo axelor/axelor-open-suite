@@ -681,6 +681,7 @@
     <view type="gantt" name="project-task-gantt"/>
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
+    <view-param name="details-view" value="true"/>
     <domain>self.project.id IN (:_projectIds) OR self.project.parentProject.id IN (:_projectIds)</domain>
     <context name="_projectIds" expr="eval: projectSet.collect{it.id}"/>
   </action-view>
@@ -690,6 +691,7 @@
     <view type="gantt" name="user-task-gantt"/>
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
+    <view-param name="details-view" value="true"/>
     <domain>self.assignedTo.id IN (:_userIds) </domain>
     <context name="_userIds" expr="eval: userSet.collect{it.id}"/>
   </action-view>
@@ -698,6 +700,7 @@
     model="com.axelor.apps.project.db.ProjectTask" title="Task">
     <view name="project-task-form" type="form"/>
     <view name="project-task-grid" type="grid"/>
+    <view-param name="details-view" value="true"/>
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
@@ -713,6 +716,7 @@
     <view type="gantt" name="task-gantt"/>
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
+    <view-param name="details-view" value="true"/>
     <domain>self.project.id = :_id OR self.project.parentProject.id = :_id</domain>
     <context name="_project" expr="eval:__this__"/>
   </action-view>
@@ -752,6 +756,7 @@
     model="com.axelor.apps.project.db.ProjectTask" title="Task">
     <view name="project-task-form" type="form"/>
     <view name="project-task-grid" type="grid"/>
+    <view-param name="details-view" value="true"/>
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
