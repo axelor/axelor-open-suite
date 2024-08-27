@@ -695,7 +695,6 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
     }
   }
-
   /**
    * Called from sale order form view, on invoiced partner select. Call {@link
    * PartnerLinkService#computePartnerFilter}

@@ -110,7 +110,6 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     }
     return moveLines;
   }
-
   /**
    * Method that returns all credit move lines of a move that are not completely lettered
    *

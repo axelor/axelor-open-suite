@@ -229,7 +229,6 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     }
     return true;
   }
-
   /**
    * Method that may computes action "realize" on lines of fiscalFixedAssetLineList,
    * fixedAssetLineList and fixedAssetDerogatoryLineList that matches the same depreciation date. It

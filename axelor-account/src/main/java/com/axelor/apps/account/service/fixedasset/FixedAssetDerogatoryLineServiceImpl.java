@@ -326,7 +326,6 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
               });
     }
   }
-
   /**
    * {@inheritDoc}
    *

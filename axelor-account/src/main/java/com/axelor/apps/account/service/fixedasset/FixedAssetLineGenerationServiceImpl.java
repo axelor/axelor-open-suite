@@ -146,7 +146,6 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
       }
     }
   }
-
   /**
    * {@inheritDoc}
    *

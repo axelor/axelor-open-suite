@@ -202,7 +202,6 @@ public class OperationOrderController {
       response.setReload(true);
     }
   }
-
   /**
    * Called from operation order form, on consumed stock move line change.
    *
