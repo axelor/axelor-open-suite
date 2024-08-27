@@ -230,7 +230,8 @@
 
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
         if-module="axelor-human-resource" showIf="project.isShowPlanning">
-        <field name="budgetedTime" colSpan="4">
+        <field name="budgetedTime" colSpan="4"
+          onChange="action-project-task-method-update-sold-time">
           <viewer><![CDATA[
                    	<><span>{$fmt('budgetedTime')} </span><span>{_t('hours')}</span></>
        			]]></viewer>
@@ -494,6 +495,16 @@
   <action-method name="action-project-task-method-get-contract-product">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="getProductData"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-update-sold-time">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="updateSoldTime"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-update-updated-time">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="updateUpdatedTime"/>
   </action-method>
 
   <action-attrs name="action-project-task-attrs-scale-and-precision">
