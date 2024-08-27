@@ -3,8 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
-  <menuitem name="project-announcement" title="Announcement" order="400"
-    parent="project-current-project" action="project.announcement"
+  <menuitem name="project-announcement" title="Announcement" order="600"
+    parent="menu-my-project-root" action="project.announcement"
     if="__config__.app.isApp('business-support')"/>
 
   <action-view name="project.announcement" title="Announcement"
@@ -12,9 +12,9 @@
     <view type="grid" name="project-announcement-grid"/>
     <view type="form" name="project-announcement-form"/>
     <domain>self.project.id IN :_projectIds OR :_project is null</domain>
-    <context name="_project" expr="eval: __user__.contextProject"/>
+    <context name="_project" expr="eval: __user__.activeProject"/>
     <context name="_projectIds"
-      expr="call:com.axelor.apps.project.service.ProjectService:getContextProjectIds()"/>
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getActiveProjectIds()"/>
   </action-view>
 
   <menuitem title="Project.versions" name="project-versions"
@@ -28,7 +28,7 @@
   </action-view>
 
   <menuitem name="project-task-customer" title="Tickets" order="700"
-    parent="menu-project-root" if="__config__.app.isApp('business-support')" icon="fa-tasks"
+    parent="menu-project-root" if="__config__.app.isApp('business-support')" icon="clipboard-check"
     icon-background="#3f6bb9"/>
 
   <menuitem name="project-task-customer-my-task" title="My Tickets"
@@ -107,6 +107,17 @@
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
   </action-view>
+
+  <!-- My project menu -->
+
+  <menuitem name="project-task-ticket-mine" title="My tickets"
+    if="__config__.app.isApp('business-support')" parent="menu-my-project-root"
+    action="project.task.ticket.mine" order="800"/>
+
+  <action-method name="project.task.ticket.mine">
+    <call class="com.axelor.apps.businesssupport.web.ProjectMenuController"
+      method="myOpenProjectTickets"/>
+  </action-method>
 
 </object-views>
 

@@ -14,6 +14,7 @@
     <option value="app-quality">Quality</option>
     <option value="app-intervention">Intervention</option>
     <option value="app-sale">Sale</option>
+    <option value="app-project">Project</option>
   </selection>
 
   <selection name='trace.back.origin.select' id="trace.back.origin.select.mobilesettings">
@@ -25,6 +26,7 @@
     <option value="line">Line</option>
     <option value="pie">Pie</option>
     <option value="donut">Donut</option>
+    <option value="indicator">Chart.indicator</option>
   </selection>
 
   <selection name="mobilesettings.employee.timesheet.imputation.select">

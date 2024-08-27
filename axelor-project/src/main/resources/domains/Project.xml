@@ -30,9 +30,6 @@
     <one-to-many name="taskCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField"
       title="Task fields" orphanRemoval="true"/>
 
-    <one-to-many name="projectHoldBackLineList"
-      ref="com.axelor.apps.project.db.ProjectHoldBackLine"/>
-
     <string name="code" title="Code" unique="true"/>
     <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
     <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner"
@@ -80,7 +77,9 @@
     <many-to-many name="siteSet" title="Sites" ref="com.axelor.apps.base.db.Site"/>
 
     <!-- Configuration fields -->
-    <boolean name="isShowStatus" title="Status?" default="true"/>
+    <integer name="taskStatusManagementSelect" title="Task status management" default="3"
+      selection="task.project.status.management.select"
+      help="The status of project tasks will be defined by the selection chosen. The priority of the statuses displayed is determined first by the category, then by the project, then by the project's application configuration. Once a task is linked to the project, the selection can no longer be modified."/>
     <many-to-many name="projectTaskStatusSet"
       ref="com.axelor.apps.project.db.TaskStatus" title="Type of authorized status"/>
     <boolean name="isShowPriority" title="Priorities?" default="true"/>
@@ -114,9 +113,37 @@
     <boolean name="isShowCalendarPerUser" title="Enable calendar view per user"
       help="Activates a calendar view with tasks of the project categorized by user, accessible via the Tools menu."/>
     <many-to-one name="completedTaskStatus" title="Completed task status"
-      ref="com.axelor.apps.project.db.TaskStatus"/>
+      ref="com.axelor.apps.project.db.TaskStatus"
+      help="This task status will be used to define which status is flagged as completed for tasks."/>
+
+    <many-to-many name="projectTaskLinkTypeSet"
+      ref="com.axelor.apps.project.db.ProjectTaskLinkType" title="Project task relation types"/>
+
+    <string name="customFieldManagementSelect" title="Custom fields management"
+      selection="project.custom.field.management.select" default="app"/>
+
+    <boolean name="enableStatusProgressByCategory"
+      title="Enable status progress by category."
+      help="This option is used to activate the automatic allocation of progress to project tasks via project task category. If this option is enabled, the progress field will be available in the category view and the category will be updated using this data (or the data entered in the status if this is empty)."/>
+
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>
+
+    <extra-code><![CDATA[
+
+      	// STATUS MANAGEMENT
+      	public static final int TASK_STATUS_MANAGEMENT_NONE = 1;
+      	public static final int TASK_STATUS_MANAGEMENT_PROJECT = 2;
+      	public static final int TASK_STATUS_MANAGEMENT_APP = 3;
+      	public static final int TASK_STATUS_MANAGEMENT_CATEGORY = 4;
+
+      	// CUSTOM FIELD MANAGEMENT
+      	public static final String CUSTOM_FIELD_MANAGEMENT_APP = "app";
+      	public static final String CUSTOM_FIELD_MANAGEMENT_PROJECT = "project";
+      	public static final String CUSTOM_FIELD_MANAGEMENT_CATEGORY = "category";
+
+    ]]></extra-code>
+
   </entity>
 
   <enum name="GenProjTypePerOrderLine">

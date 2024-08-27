@@ -12,6 +12,8 @@
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <decimal name="exTaxBase" scale="3" precision="20" title="Base W.T."/>
     <decimal name="taxTotal" scale="3" precision="20" title="Amount Tax"/>
+    <decimal name="percentageTaxTotal" scale="3" precision="20"
+      title="Amount Tax (via percentages)"/>
     <decimal name="inTaxTotal" scale="3" precision="20" title="Amount A.T.I."/>
     <boolean name="reverseCharged"/>
     <many-to-one name="taxType" ref="com.axelor.apps.account.db.TaxType"

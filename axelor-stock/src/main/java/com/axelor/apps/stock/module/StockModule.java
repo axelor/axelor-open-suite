@@ -124,6 +124,7 @@ import com.axelor.apps.stock.service.massstockmove.PickedProductService;
 import com.axelor.apps.stock.service.massstockmove.PickedProductServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsService;
 import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsServiceImpl;
+import com.axelor.apps.stock.service.observer.ProductPopulateStockObserver;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
@@ -197,5 +198,6 @@ public class StockModule extends AxelorModule {
     bind(MassStockMovableProductCancelService.class)
         .to(MassStockMovableProductCancelServiceImpl.class);
     bind(MassStockMoveRepository.class).to(MassStockMoveManagementRepository.class);
+    bind(ProductPopulateStockObserver.class);
   }
 }
