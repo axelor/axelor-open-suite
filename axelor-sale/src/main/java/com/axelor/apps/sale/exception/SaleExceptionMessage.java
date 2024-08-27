@@ -157,4 +157,7 @@ public final class SaleExceptionMessage {
       "Loyalty account(s) processed" /*)*/;
   public static final String BATCH_LOYALTY_ACCOUNT_EARN_POINTS_3 = /*$$(*/
       "Bug occured for loyalty account with id {}" /*)*/;
+
+  public static final String MISSING_PRODUCT_VARIANTS = /*$$(*/
+      "Please select product variant for following product(s) :" /*)*/;
 }
