@@ -352,7 +352,8 @@
         <panel-related name="producedStockMoveLineListPanel"
           field="producedStockMoveLineList"
           onChange="action-manuf-order-group-on-change-produced-stock-move-line"
-          readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form"
+          readonlyIf="statusSelect == 6" colSpan="12"
+          form-view="stock-move-line-produced-production-form"
           grid-view="stock-move-line-produced-production-grid"/>
         <panel-related name="residualStockMoveLineListPanel"
           field="residualStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12"
