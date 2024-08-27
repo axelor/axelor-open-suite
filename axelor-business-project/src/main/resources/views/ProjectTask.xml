@@ -3,6 +3,26 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
+  <grid name="business-project-task-grid" title="Tasks"
+    model="com.axelor.apps.project.db.ProjectTask" edit-icon="true"
+    orderBy="-priority.technicalTypeSelect">
+    <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
+    <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
+    <field name="ticketNumber"/>
+    <field name="name"/>
+    <field name="project"/>
+    <field name="taskDate"/>
+    <field name="status"/>
+    <field name="priority"/>
+    <field name="projectTaskCategory"/>
+    <field name="targetVersion" if-module="axelor-business-support"
+      if="__config__.app.isApp('business-support')"/>
+    <field name="taskEndDate" hidden="true"/>
+    <field name="priority.technicalTypeSelect" hidden="true"/>
+    <field name="project.completedTaskStatus.id" hidden="true"/>
+  </grid>
+
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="business-project-project-task-grid" orderBy="-taskDate">
     <field name="project"/>
@@ -45,194 +65,365 @@
       onClick="action-team-task-method-update-to-invoice"/>
   </grid>
 
-  <form id="business-project-project-task-form" name="project-task-form" title="Task"
-    model="com.axelor.apps.project.db.ProjectTask" extension="true">
-    <extend target="/">
-      <attribute name="onNew" value="action-business-project-project-task-group-on-new"/>
-      <attribute name="onLoad" value="action-business-project-project-task-group-on-load"/>
-    </extend>
-    <extend target="//field[@name='parentTask']">
-      <attribute name="onChange" value="action-project-task-record-get-parent-timeunit"/>
-      <insert position="after">
-        <field name="frameworkCustomerContract" hidden="true"
-          onSelect="action-project-task-method-set-customer-contract-domain"
-          showIf="project.allowToGetPricesFromFrameworkContract"
-          onChange="action-project-task-group-set-price-from-contract"/>
-        <field name="frameworkSupplierContract" hidden="true"
-          onSelect="action-project-task-method-set-supplier-contract-domain"
-          showIf="project.allowToGetPricesFromFrameworkContract"
-          onChange="action-project-task-group-set-price-from-contract"/>
-      </insert>
-    </extend>
-    <extend target="//field[@name='assignedTo']">
-      <insert position="after">
-        <field name="project.allowToGetPricesFromFrameworkContract" hidden="true"/>
-      </insert>
-    </extend>
-    <extend target="//field[@name='assignedTo']">
-      <attribute name="onChange" value="action-project-task-group-assigned-to-on-change"/>
-      <insert position="after">
-        <field name="saleOrderLine" readonly="true" showIf="saleOrderLine"
-          form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
-      </insert>
-    </extend>
-    <extend target="//field[@name='description']">
-      <insert position="before">
+  <form name="business-project-task-form" title="Task"
+    model="com.axelor.apps.project.db.ProjectTask"
+    onNew="action-business-project-project-task-group-on-new"
+    onLoad="action-business-project-project-task-group-on-load" width="large">
+    <toolbar>
+      <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
+        onClick="action-project-task-record-assigned-yourself,save"/>
+      <button name="doneBtn" icon="fa-check"
+        onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
+        showIf="project.isShowStatus"/>
+    </toolbar>
+    <menubar>
+      <menu name="projectTaskMenu" title="Tools"
+        if="__config__.app.getApp('project')?.resourceManagement">
+        <item name="bookResourceItem" title="Book resource"
+          action="save,action-project-task-book-resource"/>
+      </menu>
+    </menubar>
+
+    <panel showIf="nextProjectTask">
+      <field name="doApplyToAllNextTasks" widget="InlineCheckbox" colSpan="12"/>
+    </panel>
+
+    <panel name="mainPanel" colSpan="12">
+      <panel name="statusPanel" stacked="true" colSpan="6">
+        <field name="status" widget="NavSelect" showTitle="false"
+          showIf="project.isShowStatus" x-order="sequence"/>
+        <field name="typeSelect" hidden="true"/>
+      </panel>
+      <panel name="viewerTagsPanel" colSpan="4">
+        <field name="$viewerTags" showTitle="false" readonly="true"
+          showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="12"
+          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
+          hidden="true">
+          <viewer>
+            <![CDATA[
+                   <>
+                       <Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
+                           {assignment == 1 && <Badge bg="danger">{_t('Task assigned to the client')}</Badge>}
+                           {assignment == 2 && !$provider && <Badge bg="success">{_t('Task assigned to the provider')}</Badge>}
+                           {assignment == 2 && $provider && <Badge bg="success">{_t('Task assigned to')} {$provider}</Badge>}
+                           {((!isOrderAccepted && invoicingType == 2 && exTaxTotal != 0) || (!isOrderAccepted && invoicingType == 1)) && <Badge bg="danger">{_t('Order Proposed')}</Badge>}
+                           {isOrderAccepted && <Badge bg="success">{_t('Order Accepted')}</Badge>}
+                       </Box>
+                   </>
+	        ]]>
+          </viewer>
+        </field>
+      </panel>
+      <button name="timeSpentBtn" title="Log time"
+        onClick="save,action-project-task-validate-check-employee,action-project-task-view-time-spent"
+        colSpan="2" hidden="true"/>
+      <field name="project.isShowTimeSpent" hidden="true"/>
+      <field name="$provider" hidden="true" type="string"/>
+      <panel name="projectDetailsPanel" colSpan="12">
+        <panel name="detailsPanel" colSpan="8">
+          <field name="fullName" showTitle="false" colSpan="12">
+            <viewer depends="name">
+              <![CDATA[
+							<>
+								<h3>
+									<span>{name}</span>
+								</h3>
+							</>
+						]]>
+            </viewer>
+            <editor>
+              <field name="name" title="Subject" colSpan="12" css="label-bold bold large"
+                required="true"/>
+            </editor>
+          </field>
+          <field name="ticketNumber"
+            if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
+          <field name="project" colSpan="6"
+            onChange="action-business-project-task-group-project-onchange"
+            domain="self.projectStatus.isCompleted = false" required="true"/>
+          <field name="parentTask" readonlyIf="project == null" colSpan="6"
+            onChange="action-project-task-record-get-parent-timeunit"
+            onSelect="action-project-task-attrs-project-parent-task-configurations"/>
+          <field name="frameworkCustomerContract" hidden="true"
+            onSelect="action-project-task-method-set-customer-contract-domain"
+            showIf="project.allowToGetPricesFromFrameworkContract"
+            onChange="action-project-task-group-set-price-from-contract"/>
+          <field name="frameworkSupplierContract" hidden="true"
+            onSelect="action-project-task-method-set-supplier-contract-domain"
+            showIf="project.allowToGetPricesFromFrameworkContract"
+            onChange="action-project-task-group-set-price-from-contract"/>
+          <field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false"
+            canView="false" canEdit="false"
+            onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true"
+            form-view="user-form" grid-view="user-grid"
+            onChange="action-project-task-group-assigned-to-on-change"/>
+          <field name="saleOrderLine" readonly="true" showIf="saleOrderLine"
+            form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
+          <field name="project.allowToGetPricesFromFrameworkContract" hidden="true"/>
+          <field name="site" onSelect="action-project-task-attrs-set-site-domain"
+            form-view="site-form" grid-view="site-grid"
+            if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+          <field name="customerReferral"
+            onSelect="action-project-task-attrs-customer-referral-domain" hidden="true"
+            showIf="typeSelect == 'ticket'" if="__config__.app.isApp('business-project')"/>
+          <field name="isPrivate" hidden="true" showIf="typeSelect == 'ticket'" colSpan="6"
+            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+          <field name="isOrderAccepted" colSpan="3" hidden="true"
+            showIf="typeSelect == 'ticket'" if-module="axelor-business-support"
+            if="__config__.app.isApp('business-support')"/>
+          <field name="isOrderProposed" hidden="true" colSpan="3"
+            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+        </panel>
+        <panel name="actionPanel" colSpan="4">
+          <button name="acceptOrderBtn" title="Accept Order" hidden="true"
+            hideIf="invoicingType != 1  || isOrderAccepted || typeSelect != 'ticket'"
+            onClick="action-project-task-attrs-onclick-order-accepted,save" colSpan="12"
+            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+          <button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider"
+            hidden="true" onClick="action-project-task-attrs-assginment-provider,save"
+            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
+            showIf="assignment == 1 &amp;&amp; typeSelect == 'ticket'"/>
+          <button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer"
+            hidden="true" onClick="action-project-task-attrs-assginment-customer,save"
+            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
+            showIf="assignment == 2 &amp;&amp; typeSelect == 'ticket'"/>
+        </panel>
+      </panel>
+      <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
+        <panel-include view="incl-characteristics-panel-form"/>
+        <field name="targetVersion" if-module="axelor-business-support"
+          if="__config__.app.isApp('business-support')" domain=":project member of self.projectSet"
+          colSpan="4" form-view="project-version-form" grid-view="project-version-grid"/>
+        <field name="assignment" hidden="true" showIf="typeSelect == 'ticket'"
+          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
+          colSpan="4"/>
+        <field name="invoicingProgress" readonly="true" colSpan="6"
+          showIf="invoicingType == 4"/>
         <field name="timeUnit" colSpan="4" readonlyIf="saleOrderLine || parentTask"
           onSelect="action-project-task-attrs-set-time-unit-domain"
           if="__config__.app.isApp('business-project')"/>
-      </insert>
-    </extend>
-    <extend target="//panel[@name='internalDescriptionPanel']">
-      <insert position="before">
-        <panel name="timeFollowUpPanel" title="Time follow-up"
-          if="__config__.app.isApp('business-project')" showIf="timeUnit">
-          <field name="soldTime" readonlyIf="saleOrderLine" hidden="true" showIf="!parentTask"
-            onChange="action-project-task-record-fill-updated-time" colSpan="3"/>
-          <field name="updatedTime" hidden="true" showIf="!parentTask" colSpan="3"/>
-          <spacer/>
-          <field name="plannedTime" readonly="true" colSpan="3"/>
-          <field name="spentTime" readonly="true" colSpan="3"/>
-          <panel name="reportingPanel" showIf="!parentTask" colSpan="12">
-            <panel-dashlet
-              action="action-project-task-view-percentage-progress-custom" colSpan="3"
-              showTitle="false" height="125"/>
-            <panel-dashlet
-              action="action-project-task-view-percentage-consumption-custom" colSpan="3"
-              showTitle="false" height="125"/>
-            <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
-              colSpan="3" showTitle="false" height="125"/>
-          </panel>
+      </panel>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="timeFollowUpPanel" title="Time follow-up"
+        if="__config__.app.isApp('business-project')" showIf="timeUnit">
+        <field name="soldTime" readonlyIf="saleOrderLine" hidden="true" showIf="!parentTask"
+          onChange="action-project-task-record-fill-updated-time" colSpan="3"/>
+        <field name="updatedTime" hidden="true" showIf="!parentTask" colSpan="3"/>
+        <spacer/>
+        <field name="plannedTime" readonly="true" colSpan="3"/>
+        <field name="spentTime" readonly="true" colSpan="3"/>
+        <panel name="reportingPanel" showIf="!parentTask" colSpan="12">
+          <panel-dashlet action="action-project-task-view-percentage-progress-custom"
+            colSpan="3" showTitle="false" height="125"/>
+          <panel-dashlet
+            action="action-project-task-view-percentage-consumption-custom" colSpan="3"
+            showTitle="false" height="125"/>
+          <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
+            colSpan="3" showTitle="false" height="125"/>
         </panel>
-      </insert>
-    </extend>
-    <extend target="//panel[@name='treeViewPanel']">
-      <insert position="after">
-        <panel name="purchasePanel" title="Purchase" colSpan="12"
-          if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
-          <button name="generatePurchaseOrderBtn" title="Generate Purchase Order"
-            onClick="action-project-task-method-generate-purchase-order"/>
-          <field name="purchaseOrderList" colSpan="12" canNew="false"/>
-          <field name="purchaseOrderLineList" colSpan="12" canNew="false"/>
-        </panel>
-        <panel name="financialDataPanel" title="Financial Data" colSpan="12"
-          if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
-          <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true">
-            <field name="product" colSpan="3" canEdit="false"
-              onChange="action-business-project-project-task-group-product-onchange"
-              onSelect="action-project-task-attrs-set-product-domain" form-view="product-form"
-              grid-view="product-grid" readonlyIf="saleOrderLine"/>
-            <field name="quantity" colSpan="3"
-              onChange="action-project-task-group-qty-onchange" readonlyIf="saleOrderLine"/>
-            <field name="unitPrice" colSpan="3"
-              onChange="action-project-task-group-unit-price-onchange"
-              readonlyIf="saleOrderLine || frameworkCustomerContract"/>
-            <field name="unitCost" colSpan="3"
-              readonlyIf="saleOrderLine || frameworkSupplierContract"/>
-            <field name="invoicingUnit" colSpan="3" domain="self.unitTypeSelect=3"
-              form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"/>
-            <field name="currency" colSpan="3" grid-view="currency-grid"
-              form-view="currency-form" canEdit="false" readonlyIf="saleOrderLine"/>
-            <field name="exTaxTotal" readonly="true" colSpan="3"/>
-            <field name="totalCosts" colSpan="3"/>
-            <field name="invoicingType" colSpan="3"
-              onChange="action-project-task-attrs-onchange-invoice-type"
-              readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length > 0"/>
-            <field name="toInvoice" colSpan="2" readonly="true"
-              if="__config__.app.getApp('business-project').automaticInvoicing"/>
-            <field name="toInvoice" colSpan="2" readonlyIf="invoiced"
-              if="!__config__.app.getApp('business-project').automaticInvoicing"/>
-            <field name="isPaid" showIf="project.invoicingSequenceSelect == 1" colSpan="2"/>
-            <field name="isTaskRefused" colSpan="2"/>
-            <field name="invoiced" hidden="true" showIf="id &amp;&amp; !($readonly())"
-              colSpan="1"/>
-            <field name="invoiced" hidden="true" showIf="id &amp;&amp; $readonly()"
-              showTitle="false" colSpan="1">
-              <viewer><![CDATA[
+      </panel>
+      <panel name="internalDescriptionPanel" title="Internal Description"
+        if="__config__.app.isApp('business-support')" if-module="axelor-business-support">
+        <field name="internalDescription" colSpan="12" widget="html"/>
+      </panel>
+
+      <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
+        if-module="axelor-human-resource" showIf="project.isShowPlanning">
+        <field name="budgetedTime" colSpan="4">
+          <viewer><![CDATA[
+                   	<><span>{$fmt('budgetedTime')} </span><span>{_t('hours')}</span></>
+       			]]></viewer>
+        </field>
+        <spacer name="budgetedTimeSpacer" colSpan="4"/>
+        <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
+          x-show-bars="false" action="action-project-task-dashlet-project-planning-time"
+          colSpan="12" canSearch="true"/>
+        <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
+        <field name="project.isShowPlanning" hidden="true"/>
+      </panel>
+      <panel name="treeViewPanel" title="Tree view" colSpan="12" showIf="id">
+        <panel-dashlet name="taskTreePanel" title="Task Tree" colSpan="12"
+          action="action-business-view-show-task-tree"/>
+        <panel-related name="finishToStartSetPanel" field="finishToStartSet"
+          colSpan="12">
+          <field name="name"/>
+        </panel-related>
+      </panel>
+      <panel name="purchasePanel" title="Purchase" colSpan="12"
+        if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
+        <button name="generatePurchaseOrderBtn" title="Generate Purchase Order"
+          onClick="action-project-task-method-generate-purchase-order"/>
+        <field name="purchaseOrderList" colSpan="12" canNew="false"/>
+        <field name="purchaseOrderLineList" colSpan="12" canNew="false"/>
+      </panel>
+      <panel name="financialDataPanel" title="Financial Data" colSpan="12"
+        if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
+        <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true">
+          <field name="product" colSpan="3" canEdit="false"
+            onChange="action-business-project-project-task-group-product-onchange"
+            onSelect="action-project-task-attrs-set-product-domain" form-view="product-form"
+            grid-view="product-grid" readonlyIf="saleOrderLine"/>
+          <field name="quantity" colSpan="3" onChange="action-project-task-group-qty-onchange"
+            readonlyIf="saleOrderLine"/>
+          <field name="unitPrice" colSpan="3"
+            onChange="action-project-task-group-unit-price-onchange"
+            readonlyIf="saleOrderLine || frameworkCustomerContract"/>
+          <field name="unitCost" colSpan="3"
+            readonlyIf="saleOrderLine || frameworkSupplierContract"/>
+          <field name="invoicingUnit" colSpan="3" domain="self.unitTypeSelect=3"
+            form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"/>
+          <field name="currency" colSpan="3" grid-view="currency-grid"
+            form-view="currency-form" canEdit="false" readonlyIf="saleOrderLine"/>
+          <field name="exTaxTotal" readonly="true" colSpan="3"/>
+          <field name="totalCosts" colSpan="3"/>
+          <field name="invoicingType" colSpan="3"
+            onChange="action-project-task-attrs-onchange-invoice-type"
+            readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length > 0"/>
+          <field name="toInvoice" colSpan="2" readonly="true"
+            if="__config__.app.getApp('business-project').automaticInvoicing"/>
+          <field name="toInvoice" colSpan="2" readonlyIf="invoiced"
+            if="!__config__.app.getApp('business-project').automaticInvoicing"/>
+          <field name="isPaid" showIf="project.invoicingSequenceSelect == 1" colSpan="2"/>
+          <field name="isTaskRefused" colSpan="2"/>
+          <field name="invoiced" hidden="true" showIf="id &amp;&amp; !($readonly())"
+            colSpan="1"/>
+          <field name="invoiced" hidden="true" showIf="id &amp;&amp; $readonly()"
+            showTitle="false" colSpan="1">
+            <viewer><![CDATA[
                      <>
                      	<Box d="flex" justifyContent="flex-end">
                      		<Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge>
                      	</Box>
                      </>
 					]]></viewer>
-            </field>
-            <panel name="discountPanel" readonly="true" colSpan="12"
-              hideIf="discountTypeSelect == 3 || discountTypeSelect == 0"
-              if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-              <field name="discountTypeSelect" colSpan="3"
-                onChange="action-project-task-attrs-discountamount-title"/>
-              <field name="discountAmount" colSpan="3"/>
-              <field name="priceDiscounted" colSpan="3"/>
-            </panel>
-            <field name="project.invoicingSequenceSelect" hidden="true"
-              if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-            <field name="invoiceLineSet" readonly="true" showIf="invoiceLineSet"
-              form-view="invoice-line-form" grid-view="invoice-line-grid" colSpan="12"/>
+          </field>
+          <panel name="discountPanel" readonly="true" colSpan="12"
+            hideIf="discountTypeSelect == 3 || discountTypeSelect == 0"
+            if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+            <field name="discountTypeSelect" colSpan="3"
+              onChange="action-project-task-attrs-discountamount-title"/>
+            <field name="discountAmount" colSpan="3"/>
+            <field name="priceDiscounted" colSpan="3"/>
           </panel>
+          <field name="project.invoicingSequenceSelect" hidden="true"
+            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+          <field name="invoiceLineSet" readonly="true" showIf="invoiceLineSet"
+            form-view="invoice-line-form" grid-view="invoice-line-grid" colSpan="12"/>
           <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
             width="120" widget="Image"/>
-          <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
-            <panel-dashlet action="action-project-task-view-turnover-custom"
-              colSpan="3" height="125"/>
-            <panel-dashlet action="action-project-task-view-initial-costs-custom"
-              colSpan="3" height="125"/>
-            <panel-dashlet action="action-project-task-view-initial-margin-custom"
-              colSpan="3" height="125"/>
-            <panel-dashlet action="action-project-task-view-initial-markup-custom"
-              colSpan="3" height="125"/>
-            <field name="turnover" hidden="true"/>
-            <field name="initialCosts" hidden="true"/>
-            <field name="initialMargin" hidden="true"/>
-            <field name="initialMarkup" hidden="true"/>
-          </panel>
-          <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
-            <panel-dashlet action="action-project-task-view-forecast-costs-custom"
-              colSpan="3" height="125"/>
-            <panel-dashlet action="action-project-task-view-forecast-margin-custom"
-              colSpan="3" hidden="true" showIf="!parentTask" height="125"/>
-            <panel-dashlet action="action-project-task-view-forecast-markup-custom"
-              colSpan="3" hidden="true" showIf="!parentTask" height="125"/>
-            <field name="forecastCosts" hidden="true"/>
-            <field name="forecastMargin" hidden="true"/>
-            <field name="forecastMarkup" hidden="true"/>
-          </panel>
-          <panel name="realPanel" title="ProjectTask.Real" colSpan="12" hidden="true"
-            showIf="!parentTask">
-            <panel-dashlet action="action-project-task-view-real-turnover-custom"
-              colSpan="3" showIf="timeUnit" height="125"/>
-            <panel-dashlet action="action-project-task-view-real-costs-custom"
-              colSpan="3" height="125"/>
-            <panel-dashlet action="action-project-task-view-real-margin-custom"
-              colSpan="3" height="125"/>
-            <panel-dashlet action="action-project-task-view-real-markup-custom"
-              colSpan="3" height="125"/>
-            <field name="realTurnover" hidden="true"/>
-            <field name="realCosts" hidden="true"/>
-            <field name="realMargin" hidden="true"/>
-            <field name="realMarkup" hidden="true"/>
-          </panel>
-          <panel name="realCostPanel" title="" colSpan="12" hidden="true" showIf="parentTask">
-            <panel-dashlet action="action-project-task-view-real-costs-custom"
-              title="Real costs" colSpan="3" height="125"/>
-            <field name="realCosts" hidden="true"/>
-          </panel>
-          <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
-            <panel-dashlet action="action-project-task-view-landing-costs-custom"
-              colSpan="3" height="125"/>
-            <panel-dashlet action="action-project-task-view-landing-margin-custom"
-              colSpan="3" height="125"/>
-            <panel-dashlet action="action-project-task-view-landing-markup-custom"
-              colSpan="3" height="125"/>
-            <field name="landingCosts" hidden="true"/>
-            <field name="landingMargin" hidden="true"/>
-            <field name="landingMarkup" hidden="true"/>
-          </panel>
         </panel>
-      </insert>
-    </extend>
+      </panel>
+      <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
+        <panel-dashlet action="action-project-task-view-turnover-custom" colSpan="3"
+          height="125"/>
+        <panel-dashlet action="action-project-task-view-initial-costs-custom"
+          colSpan="3" height="125"/>
+        <panel-dashlet action="action-project-task-view-initial-margin-custom"
+          colSpan="3" height="125"/>
+        <panel-dashlet action="action-project-task-view-initial-markup-custom"
+          colSpan="3" height="125"/>
+        <field name="turnover" hidden="true"/>
+        <field name="initialCosts" hidden="true"/>
+        <field name="initialMargin" hidden="true"/>
+        <field name="initialMarkup" hidden="true"/>
+      </panel>
+      <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
+        <panel-dashlet action="action-project-task-view-forecast-costs-custom"
+          colSpan="3" height="125"/>
+        <panel-dashlet action="action-project-task-view-forecast-margin-custom"
+          colSpan="3" hidden="true" showIf="!parentTask" height="125"/>
+        <panel-dashlet action="action-project-task-view-forecast-markup-custom"
+          colSpan="3" hidden="true" showIf="!parentTask" height="125"/>
+        <field name="forecastCosts" hidden="true"/>
+        <field name="forecastMargin" hidden="true"/>
+        <field name="forecastMarkup" hidden="true"/>
+      </panel>
+      <panel name="realPanel" title="ProjectTask.Real" colSpan="12" hidden="true"
+        showIf="!parentTask">
+        <panel-dashlet action="action-project-task-view-real-turnover-custom"
+          colSpan="3" showIf="timeUnit" height="125"/>
+        <panel-dashlet action="action-project-task-view-real-costs-custom" colSpan="3"
+          height="125"/>
+        <panel-dashlet action="action-project-task-view-real-margin-custom"
+          colSpan="3" height="125"/>
+        <panel-dashlet action="action-project-task-view-real-markup-custom"
+          colSpan="3" height="125"/>
+        <field name="realTurnover" hidden="true"/>
+        <field name="realCosts" hidden="true"/>
+        <field name="realMargin" hidden="true"/>
+        <field name="realMarkup" hidden="true"/>
+      </panel>
+      <panel name="realCostPanel" title="" colSpan="12" hidden="true" showIf="parentTask">
+        <panel-dashlet action="action-project-task-view-real-costs-custom"
+          title="Real costs" colSpan="3" height="125"/>
+        <field name="realCosts" hidden="true"/>
+      </panel>
+      <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
+        <panel-dashlet action="action-project-task-view-landing-costs-custom"
+          colSpan="3" height="125"/>
+        <panel-dashlet action="action-project-task-view-landing-margin-custom"
+          colSpan="3" height="125"/>
+        <panel-dashlet action="action-project-task-view-landing-markup-custom"
+          colSpan="3" height="125"/>
+        <field name="landingCosts" hidden="true"/>
+        <field name="landingMargin" hidden="true"/>
+        <field name="landingMarkup" hidden="true"/>
+      </panel>
+
+      <panel name="frequencyPanel" title="Frequency" showIf="project.isShowFrequency">
+        <field name="frequency"
+          onChange="action-project-task-record-set-date-or-frequency-changed" domain="1 &lt;&gt; 1"
+          canNew="true" grid-view="frequency-grid" form-view="frequency-form"/>
+        <field name="nextProjectTask" hidden="true" showIf="nextProjectTask"/>
+        <field name="isFirst" hidden="true"/>
+        <field name="doUpdateNextTasks" hidden="true"/>
+        <field name="hasDateOrFrequencyChanged" hidden="true"/>
+        <field name="project.isShowFrequency" hidden="true"/>
+      </panel>
+
+      <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
+        if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
+        <panel-dashlet name="validatedTimesheetLinesPanel"
+          action="action-project-task-dashlet-validated-timesheet-lines"
+          title="Validated Timesheet lines" colSpan="12" canSearch="true"
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
+        <panel-dashlet name="waitingTimesheetLinesPanel"
+          action="action-project-task-dashlet-waiting-timesheet-lines"
+          title="Waiting Timesheet lines" colSpan="12" canSearch="true"
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
+        <panel-dashlet name="allTimesheetLinesPanel"
+          action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
+          colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
+      </panel>
+
+      <panel name="timerPanel" title="Timer" showIf="id" hidden="true"
+        if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')">
+        <panel name="actionsPanel" title="Actions">
+          <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12"
+            hidden="true" onClick="action-project-task-method-start-timer"/>
+          <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="12" hidden="true"
+            onClick="action-project-task-method-stop-timer"/>
+          <button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="12"
+            hidden="true" onClick="action-project-task-method-cancel-timer"/>
+        </panel>
+        <panel name="durationPanel">
+          <field name="$_totalTimerDuration" type="decimal" readonly="true"
+            title="Total duration (Hours)" colSpan="12"/>
+        </panel>
+      </panel>
+      <panel-include view="incl-links-panel-form"/>
+    </panel-tabs>
+    <panel name="attrsPanel">
+      <field name="attrs" colSpan="12"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages/>
+      <mail-followers/>
+    </panel-mail>
   </form>
 
-  <tree id="business-project-project-task-tree" name="project-project-task-tree" title="Task">
+  <tree name="business-project-project-task-tree" title="Task">
     <column name="name" type="string"/>
     <column name="taskDate" type="date"/>
     <column name="initial" type="decimal"/>
@@ -245,7 +436,8 @@
     <column name="deleteTaskBtn" type="button"/>
     <column name="openTaskBtn" type="button"/>
     <node model="com.axelor.apps.project.db.ProjectTask"
-      onClick="action-project-task-view-task" domain="self.project.id = :_id" orderBy="taskDate">
+      onClick="action-business-project-task-view-task" domain="self.project.id = :_id"
+      orderBy="taskDate">
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
       <field name="initialMarkup" as="initial"/>
@@ -255,28 +447,28 @@
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
-        onClick="save, action-project-view-add-subtask"/>
+        onClick="save, action-business-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
         onClick="save, action-project-task-method-generate-purchase-order"/>
       <button name="deleteTaskBtn" icon="fa-times-circle"
         onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
       <button name="openTaskBtn" icon="fa-external-link"
-        onClick="action-project-task-open-task"/>
+        onClick="action-business-project-task-open-task"/>
     </node>
     <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask"
-      onClick="action-project-task-view-task" draggable="true" orderBy="taskDate">
+      onClick="action-business-project-task-view-task" draggable="true" orderBy="taskDate">
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
-        onClick="save, action-project-view-add-subtask"/>
+        onClick="save, action-business-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
         onClick="save, action-project-task-method-generate-purchase-order"/>
       <button name="deleteTaskBtn" icon="fa-times-circle"
         onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
       <button name="openTaskBtn" icon="fa-external-link"
-        onClick="action-project-task-open-task"/>
+        onClick="action-business-project-task-open-task"/>
     </node>
   </tree>
 
@@ -326,6 +518,24 @@
       if="frameworkCustomerContract &amp;&amp; frameworkSupplierContract"/>
   </action-attrs>
 
+  <action-attrs name="action-project-task-attrs-assginment-customer">
+    <attribute name="value" for="assignment" expr="eval: 1"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-assginment-provider">
+    <attribute name="value" for="assignment" expr="eval: 2"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-onchange-invoice-type">
+    <attribute name="value" for="toInvoice" expr="eval: true"
+      if="invoicingType == 1 || invoicingType == 2"/>
+    <attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType == 3"/>
+    <attribute name="value" for="isOrderProposed" expr="eval: true"
+      if="invoicingType == 1"/>
+    <attribute name="value" for="isOrderProposed" expr="eval: false"
+      if="invoicingType != 1"/>
+  </action-attrs>
+
   <action-group name="action-project-task-group-set-price-from-contract">
     <action name="action-project-task-method-get-contract-product"/>
     <action name="action-project-task-method-update-discount"/>
@@ -334,13 +544,48 @@
 
   <action-group name="action-business-project-project-task-group-on-new">
     <action name="action-project-task-group-onnew"/>
+    <action name="action-project-task-attrs-scale-and-precision"
+      if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-attrs-set-time-unit-default"/>
     <action name="action-project-task-attrs-set-framework-contracts"/>
     <action name="action-project-task-group-set-product-and-update"/>
+    <action name="action-project-task-business-support-provider"
+      if="__config__.app.isApp('business-support')"/>
+    <action name="action-project-task-attrs-onchange-invoice-type"
+      if="__config__.app.isApp('business-project')"/>
+  </action-group>
+
+  <action-group name="action-business-project-task-group-project-onchange">
+    <action name="action-project-task-group-project-onchange"/>
+    <action name="action-project-task-method-update-discount"
+      if="__config__.app.isApp('business-project')"/>
+    <action name="action-project-task-method-compute"
+      if="__config__.app.isApp('business-project')"/>
+    <action name="action-project-task-attrs-onchange-invoice-type"/>
+  </action-group>
+
+  <action-group name="action-project-task-group-product-onchange">
+    <action name="action-project-task-record-product-selected"/>
+    <action name="action-project-task-method-update-discount"
+      if="__config__.app.isApp('business-project')"/>
+    <action name="action-project-task-method-compute"
+      if="__config__.app.isApp('business-project')"/>
   </action-group>
 
   <action-group name="action-business-project-project-task-group-on-load">
     <action name="action-project-task-group-timer-process"/>
+  </action-group>
+
+  <action-group name="action-project-task-group-qty-onchange">
+    <action name="action-project-task-method-update-discount"
+      if="__config__.app.isApp('business-project')"/>
+    <action name="action-project-task-method-compute"
+      if="__config__.app.isApp('business-project')"/>
+  </action-group>
+
+  <action-group name="action-project-task-group-unit-price-onchange">
+    <action name="action-project-task-method-compute"
+      if="__config__.app.isApp('business-project')"/>
   </action-group>
 
   <!-- get timeUnit value from configuration -->
@@ -372,6 +617,26 @@
   <action-record name="action-project-task-record-get-parent-timeunit"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="timeUnit" expr="eval: parentTask?.timeUnit" if="parentTask"/>
+  </action-record>
+
+  <action-record name="action-project-task-record-product-selected"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="quantity" expr="1"/>
+    <field name="invoicingUnit"
+      expr="eval: (Unit) com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(product, 'salesUnit', project?.company) ?: (Unit) com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(product, 'unit', project?.company)"/>
+    <field name="unitPrice"
+      expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'salePrice', project.company)"/>
+    <field name="currency"
+      expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'saleCurrency', project.company)"/>
+    <field name="unitCost" expr="eval: product?.costPrice"/>
+    <field name="totalCosts" expr="eval: product?.costPrice"/>
+  </action-record>
+
+  <action-record name="action-project-task-business-support-provider"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="$provider"
+      expr="eval: __config__.app.getApp('business-support').providerCompany.name"
+      if="__config__.app.getApp('business-support').providerCompany"/>
   </action-record>
 
   <action-group name="action-business-project-project-task-group-product-onchange">
@@ -413,5 +678,41 @@
       method="getSupplierContractDomain"/>
   </action-method>
 
+  <action-view name="action-business-project-view-add-subtask"
+    model="com.axelor.apps.project.db.ProjectTask" title="Task">
+    <view name="business-project-task-form" type="form"/>
+    <view name="business-project-task-grid" type="grid"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_project" expr="eval:__this__.project"/>
+    <context name="_parentTask" expr="eval:__this__"/>
+    <context name="_typeSelect"
+      expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
+  </action-view>
+
+  <action-view name="action-business-project-task-open-task" title="Task"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="form" name="business-project-task-form"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-business-project-task-view-task" title="Tasks"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="form" name="business-project-task-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-business-view-show-task-tree" title="Task Tree"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="tree" name="task-tree"/>
+    <view type="form" name="business-project-task-form"/>
+    <domain>self.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
 
 </object-views>

@@ -170,8 +170,8 @@ public class ClientViewController {
           response.setView(
               ActionView.define(I18n.get("Tasks incompleted"))
                   .model(ProjectTask.class.getName())
-                  .add("grid", "project-task-grid")
-                  .add("form", "project-task-form")
+                  .add("grid", "business-project-task-grid")
+                  .add("form", "business-project-task-form")
                   .param("search-filters", "project-task-filters")
                   .domain(filter.getQuery())
                   .map());
@@ -194,8 +194,8 @@ public class ClientViewController {
           response.setView(
               ActionView.define(I18n.get("Tasks due"))
                   .model(ProjectTask.class.getName())
-                  .add("grid", "project-task-grid")
-                  .add("form", "project-task-form")
+                  .add("grid", "business-project-task-grid")
+                  .add("form", "business-project-task-form")
                   .param("search-filters", "project-task-filters")
                   .domain(filter.getQuery())
                   .map());
