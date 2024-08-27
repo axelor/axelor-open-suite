@@ -57,6 +57,7 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.studio.db.AppSupplychain;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
@@ -803,6 +804,38 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   }
 
   @Override
+  public Map<String, Object> getTaskView(
+      Project project, String title, String domain, Map<String, Object> context) {
+    String gridName = "project-task-grid";
+    String formName = "project-task-form";
+
+    if (project.getIsBusinessProject()) {
+      gridName = "business-project-task-grid";
+      formName = "business-project-task-form";
+    }
+
+    ActionView.ActionViewBuilder builder =
+        ActionView.define(I18n.get(title))
+            .model(ProjectTask.class.getName())
+            .add("grid", gridName)
+            .add("form", formName)
+            .domain(domain)
+            .param("details-view", "true");
+
+    if (project.getIsShowKanbanPerSection() && project.getIsShowCalendarPerSection()) {
+      builder.add("kanban", "task-per-section-kanban");
+      builder.add("calendar", "project-task-per-section-calendar");
+    } else {
+      builder.add("kanban", "project-task-kanban");
+      builder.add("calendar", "project-task-per-status-calendar");
+    }
+
+    if (ObjectUtils.notEmpty(context)) {
+      context.forEach(builder::context);
+    }
+    return builder.map();
+  }
+
   public String checkPercentagesOver1000OnTasks(Project project) {
     BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
     return project.getProjectTaskList().stream()

@@ -27,10 +27,6 @@
       precision="20" scale="3"/>
     <integer name="saleOrderTypeSelect" title="Type" required="true" default="1"
       selection="supplychain.sale.order.type.select"/>
-    <!-- Onglet échéancier -->
-    <one-to-many name="saleOrderScheduleLineList"
-      ref="com.axelor.apps.sale.db.SaleOrderScheduleLine" mappedBy="saleOrder"
-      title="Schedule line list"/>
     <one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable"
       title="Timetable" mappedBy="saleOrder" copy="false"/>
     <boolean name="interco" title="Interco"/>
