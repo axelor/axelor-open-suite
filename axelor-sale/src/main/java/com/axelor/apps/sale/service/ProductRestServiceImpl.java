@@ -73,10 +73,9 @@ public class ProductRestServiceImpl implements ProductRestService {
     this.productPriceService = productPriceService;
   }
 
-  @Override
-  public List<PriceResponse> fetchProductPrice(Product product, Partner partner, Company company)
+  protected List<PriceResponse> fetchProductPrice(Product product, Partner partner, Company company)
       throws AxelorException {
-    checkProduct(product);
+
     List<PriceResponse> priceList = new ArrayList<>();
 
     BigDecimal priceWT = productPriceService.getSaleUnitPrice(company, product, false, partner);
@@ -87,16 +86,8 @@ public class ProductRestServiceImpl implements ProductRestService {
     return priceList;
   }
 
-  protected void checkProduct(Product product) throws AxelorException {
-    if (product == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(SaleExceptionMessage.PRODUCT_IS_NULL));
-    }
-  }
-
-  @Override
-  public CurrencyResponse createCurrencyResponse(Product product, Partner partner, Company company)
-      throws AxelorException {
+  protected CurrencyResponse createCurrencyResponse(
+      Product product, Partner partner, Company company) throws AxelorException {
     if (partner != null && partner.getCurrency() != null)
       return new CurrencyResponse(partner.getCurrency());
     if (company != null && company.getCurrency() != null)

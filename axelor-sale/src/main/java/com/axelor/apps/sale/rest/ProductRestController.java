@@ -36,11 +36,7 @@ public class ProductRestController {
   public Response getProductPrice(ProductPostRequest requestBody)
       throws JSONException, AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck()
-        .readAccess(Product.class)
-        .readAccess(Partner.class)
-        .readAccess(Company.class)
-        .check();
+    new SecurityCheck().readAccess(Product.class, requestBody.getProductId()).check();
     Product product = requestBody.fetchProduct();
     Partner partner = requestBody.fetchPartner();
     Company company = requestBody.fetchCompany();
