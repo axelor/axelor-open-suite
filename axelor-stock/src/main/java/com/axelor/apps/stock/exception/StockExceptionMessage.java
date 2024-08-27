@@ -328,4 +328,7 @@ public final class StockExceptionMessage {
 
   public static final String STOCK_MOVE_MASS_ALREADY_STORED_PRODUCT = /*$$(*/
       "The product %s have already been stored" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_NO_SEQUENCE = /*$$(*/
+      "There's no configured sequence for mass stock move for the company %s" /*)*/;
 }

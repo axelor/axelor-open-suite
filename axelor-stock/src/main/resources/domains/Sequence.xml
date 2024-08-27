@@ -16,6 +16,7 @@
 		public static final String INCOMING = "inStockMove";
 		public static final String PRODUCT_TRACKING_NUMBER = "productTrackingNumber";
 		public static final String LOGISTICAL_FORM = "logisticalForm";
+		public static final String MASS_STOCK_MOVE = "massStockMove";
 
      ]]></extra-code>
 
