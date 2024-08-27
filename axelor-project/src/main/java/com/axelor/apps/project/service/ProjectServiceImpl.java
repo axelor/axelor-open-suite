@@ -110,14 +110,6 @@ public class ProjectServiceImpl implements ProjectService {
     project.setAssignedTo(assignedTo);
     project.setProjectStatus(getDefaultProjectStatus());
 
-    if (parentProject != null) {
-      project.setTaskStatusManagementSelect(parentProject.getTaskStatusManagementSelect());
-      project.setProjectTaskStatusSet(new HashSet<>(parentProject.getTaskStatusManagementSelect()));
-    } else {
-      project.setTaskStatusManagementSelect(ProjectRepository.TASK_STATUS_MANAGEMENT_APP);
-      project.setProjectTaskStatusSet(
-          new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
-    }
     manageTaskStatus(project, parentProject);
 
     project.setProjectTaskPrioritySet(
@@ -247,18 +239,6 @@ public class ProjectServiceImpl implements ProjectService {
     project.setImputable(projectTemplate.getImputable());
     project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
     project.setProjectStatus(getDefaultProjectStatus());
-    if (projectTemplate != null) {
-      project.setTaskStatusManagementSelect(projectTemplate.getTaskStatusManagementSelect());
-    } else {
-      project.setTaskStatusManagementSelect(ProjectRepository.TASK_STATUS_MANAGEMENT_APP);
-    }
-    if (ProjectRepository.TASK_STATUS_MANAGEMENT_APP != project.getTaskStatusManagementSelect()) {
-      project.setProjectTaskStatusSet(
-          new HashSet<>(projectTemplate.getTaskStatusManagementSelect()));
-    } else {
-      project.setProjectTaskStatusSet(
-          new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
-    }
 
     manageTaskStatus(project, projectTemplate);
 
