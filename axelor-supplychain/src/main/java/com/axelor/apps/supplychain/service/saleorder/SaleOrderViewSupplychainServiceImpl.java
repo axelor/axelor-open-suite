@@ -5,6 +5,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.utils.MapTools;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -37,16 +38,16 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
   public Map<String, Map<String, Object>> getOnNewAttrs(SaleOrder saleOrder)
       throws AxelorException {
     Map<String, Map<String, Object>> attrs = super.getOnNewAttrs(saleOrder);
-    attrs.putAll(hideAvailability(saleOrder));
-    attrs.putAll(hideAvailabilityLabel(saleOrder));
-    attrs.putAll(hideInterco(saleOrder));
+    MapTools.addMap(attrs, hideAvailability(saleOrder));
+    MapTools.addMap(attrs, hideAvailabilityLabel(saleOrder));
+    MapTools.addMap(attrs, hideInterco(saleOrder));
     return attrs;
   }
 
   @Override
   public Map<String, Map<String, Object>> getPartnerOnChangeAttrs(SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = super.getPartnerOnChangeAttrs(saleOrder);
-    attrs.putAll(hideInterco(saleOrder));
+    MapTools.addMap(attrs, hideInterco(saleOrder));
     return attrs;
   }
 
