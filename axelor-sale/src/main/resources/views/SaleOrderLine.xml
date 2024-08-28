@@ -20,6 +20,7 @@
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
       readonlyIf="!product || typeSelect != 0"/>
+    <field name="product" hidden="true"/>
     <field name="typeSelect" hidden="true"/>
     <field name="deliveryState" hidden="true" if="__config__.app.isApp('supplychain')"/>
     <field name="product.code" width="120"/>
