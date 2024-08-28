@@ -22,12 +22,16 @@ import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.CartService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -174,6 +178,18 @@ public class PurchaseOrderLineController {
       response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void addToCart(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+      Product product = purchaseOrderLine.getProduct();
+      Beans.get(CartService.class).addToCart(product);
+      response.setNotify(
+          String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

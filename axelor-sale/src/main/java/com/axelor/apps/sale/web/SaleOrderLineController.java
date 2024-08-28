@@ -20,6 +20,7 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Pricing;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -28,6 +29,7 @@ import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.CartService;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
@@ -333,5 +335,17 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
     Beans.get(SaleOrderLineCheckService.class).unitOnChangeCheck(saleOrderLine, saleOrder);
+  }
+
+  public void addToCart(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      Product product = saleOrderLine.getProduct();
+      Beans.get(CartService.class).addToCart(product);
+      response.setNotify(
+          String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -7,7 +7,7 @@
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
   <selection name="sale.batch.action.select">
-    <option value="1">Invoicing</option>
+    <option value="2">Earn loyalty account points</option>
   </selection>
 
   <selection name="sale.order.status.select">

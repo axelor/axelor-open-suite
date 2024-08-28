@@ -16,12 +16,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.payment.invoice.payment;
+package com.axelor.apps.sale.rest.dto;
 
-import com.axelor.apps.account.db.InvoicePayment;
+import java.util.ArrayList;
+import java.util.List;
 
-public interface InvoicePaymentFinancialDiscountService {
-  void computeFinancialDiscount(InvoicePayment invoicePayment);
+public class ProductResponse {
 
-  void computeFinancialDiscountFields(InvoicePayment invoicePayment);
+  protected Long productId;
+  protected List<PriceResponse> prices;
+  protected CurrencyResponse currency;
+
+  public ProductResponse(Long productId, List<PriceResponse> prices, CurrencyResponse currency) {
+    this.productId = productId;
+    this.prices = new ArrayList<>(prices);
+    this.currency = currency;
+  }
+
+  public Long getProductId() {
+    return productId;
+  }
+
+  public List<PriceResponse> getPrices() {
+    return prices;
+  }
+
+  public CurrencyResponse getCurrency() {
+    return currency;
+  }
 }

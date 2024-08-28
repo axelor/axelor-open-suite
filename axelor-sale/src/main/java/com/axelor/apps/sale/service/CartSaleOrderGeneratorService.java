@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.payment.invoice.payment;
+package com.axelor.apps.sale.service;
 
-import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.sale.db.Cart;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
-public interface InvoicePaymentFinancialDiscountService {
-  void computeFinancialDiscount(InvoicePayment invoicePayment);
+public interface CartSaleOrderGeneratorService {
 
-  void computeFinancialDiscountFields(InvoicePayment invoicePayment);
+  SaleOrder createSaleOrder(Cart cart) throws JsonProcessingException, AxelorException;
 }

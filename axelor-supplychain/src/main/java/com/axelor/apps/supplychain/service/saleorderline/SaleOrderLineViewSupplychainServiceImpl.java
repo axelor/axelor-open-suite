@@ -9,6 +9,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.utils.MapTools;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -57,12 +58,12 @@ public class SaleOrderLineViewSupplychainServiceImpl extends SaleOrderLineViewSe
   public Map<String, Map<String, Object>> getSupplychainOnNewAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs = super.getOnNewAttrs(saleOrderLine, saleOrder);
-    attrs.putAll(hideSupplychainPanels(saleOrder));
-    attrs.putAll(hideDeliveredQty(saleOrder));
-    attrs.putAll(hideAllocatedQtyBtn(saleOrder, saleOrderLine));
+    MapTools.addMap(attrs, hideSupplychainPanels(saleOrder));
+    MapTools.addMap(attrs, hideDeliveredQty(saleOrder));
+    MapTools.addMap(attrs, hideAllocatedQtyBtn(saleOrder, saleOrderLine));
     analyticAttrsService.addAnalyticAxisAttrs(saleOrder.getCompany(), null, attrs);
-    attrs.putAll(setAnalyticDistributionPanelHidden(saleOrder, saleOrderLine));
-    attrs.putAll(setReservedQtyReadonly(saleOrder));
+    MapTools.addMap(attrs, setAnalyticDistributionPanelHidden(saleOrder, saleOrderLine));
+    MapTools.addMap(attrs, setReservedQtyReadonly(saleOrder));
     return attrs;
   }
 
@@ -70,13 +71,13 @@ public class SaleOrderLineViewSupplychainServiceImpl extends SaleOrderLineViewSe
   public Map<String, Map<String, Object>> getSupplychainOnLoadAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs = super.getOnLoadAttrs(saleOrderLine, saleOrder);
-    attrs.putAll(hideSupplychainPanels(saleOrder));
-    attrs.putAll(hideDeliveredQty(saleOrder));
-    attrs.putAll(hideAllocatedQtyBtn(saleOrder, saleOrderLine));
-    attrs.putAll(hideReservedQty(saleOrder, saleOrderLine));
+    MapTools.addMap(attrs, hideSupplychainPanels(saleOrder));
+    MapTools.addMap(attrs, hideDeliveredQty(saleOrder));
+    MapTools.addMap(attrs, hideAllocatedQtyBtn(saleOrder, saleOrderLine));
+    MapTools.addMap(attrs, hideReservedQty(saleOrder, saleOrderLine));
     analyticAttrsService.addAnalyticAxisAttrs(saleOrder.getCompany(), null, attrs);
-    attrs.putAll(setAnalyticDistributionPanelHidden(saleOrder, saleOrderLine));
-    attrs.putAll(setReservedQtyReadonly(saleOrder));
+    MapTools.addMap(attrs, setAnalyticDistributionPanelHidden(saleOrder, saleOrderLine));
+    MapTools.addMap(attrs, setReservedQtyReadonly(saleOrder));
     return attrs;
   }
 
@@ -85,9 +86,9 @@ public class SaleOrderLineViewSupplychainServiceImpl extends SaleOrderLineViewSe
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs =
         super.getProductOnChangeAttrs(saleOrderLine, saleOrder);
-    attrs.putAll(hideDeliveryPanel(saleOrderLine));
+    MapTools.addMap(attrs, hideDeliveryPanel(saleOrderLine));
     analyticAttrsService.addAnalyticAxisAttrs(saleOrder.getCompany(), null, attrs);
-    attrs.putAll(setAnalyticDistributionPanelHidden(saleOrder, saleOrderLine));
+    MapTools.addMap(attrs, setAnalyticDistributionPanelHidden(saleOrder, saleOrderLine));
     return attrs;
   }
 

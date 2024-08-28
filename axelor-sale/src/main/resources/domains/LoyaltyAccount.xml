@@ -17,6 +17,7 @@
       scale="10" default="0"/>
     <one-to-many name="historyLineList" title="History"
       ref="com.axelor.apps.sale.db.LoyaltyAccountHistoryLine" mappedBy="loyaltyAccount"/>
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 
     <unique-constraint columns="partner,company"/>
     <unique-constraint columns="partner,tradingName"/>
