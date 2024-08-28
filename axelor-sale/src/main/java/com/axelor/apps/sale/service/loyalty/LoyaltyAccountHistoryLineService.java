@@ -6,4 +6,8 @@ import java.math.BigDecimal;
 
 public interface LoyaltyAccountHistoryLineService {
   LoyaltyAccountHistoryLine createHistoryLine(BigDecimal points, SaleOrder saleOrder);
+
+  void spendAllPoints(LoyaltyAccountHistoryLine historyLine);
+
+  BigDecimal spendPoints(LoyaltyAccountHistoryLine historyLine, BigDecimal points);
 }

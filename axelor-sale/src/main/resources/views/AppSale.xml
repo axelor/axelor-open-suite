@@ -32,10 +32,11 @@
         showIf="isEditableGridEnabled"/>
       <field name="isEnableCalculationEntireQuotation" widget="boolean-switch"/>
       <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>
-      <panel name="loyaltyAccountPanel" colSpan="12">
+      <panel name="loyaltyAccountPanel" colSpan="12" itemSpan="3">
         <field name="enableLoyalty" widget="boolean-switch"/>
-        <field name="loyaltyAccountsManagement" showIf="enableLoyalty" colSpan="3"/>
-        <field name="loyaltyAccountPointsAcquiringDelay" showIf="enableLoyalty" colSpan="3"/>
+        <field name="loyaltyAccountsManagement" showIf="enableLoyalty"/>
+        <field name="loyaltyAccountPointsAcquiringDelay" showIf="enableLoyalty"/>
+        <field name="loyaltyAccountPointsValidityPeriod" showIf="enableLoyalty"/>
       </panel>
       <field name="isCartManagementEnabled" widget="boolean-switch"/>
     </panel>

@@ -16,12 +16,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BatchLoyaltyAccountEarnPoints extends BatchStrategy {
+public class BatchLoyaltyAccountVerifyValidityPoints extends BatchStrategy {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
-  protected BatchLoyaltyAccountEarnPoints(
+  protected BatchLoyaltyAccountVerifyValidityPoints(
       AppSaleService appSaleService,
       LoyaltyAccountService loyaltyAccountService,
       LoyaltyAccountRepository loyaltyAccountRepository) {
@@ -32,18 +32,14 @@ public class BatchLoyaltyAccountEarnPoints extends BatchStrategy {
   protected void process() {
     int offset = 0;
     List<LoyaltyAccount> loyaltyAccountList;
-    Query<LoyaltyAccount> loyaltyAccountQuery =
-        loyaltyAccountRepository
-            .all()
-            .order("id")
-            .filter("self.pointsBalance != self.futurePointsBalance");
+    Query<LoyaltyAccount> loyaltyAccountQuery = loyaltyAccountRepository.all().order("id");
     while (!(loyaltyAccountList = loyaltyAccountQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       findBatch();
       for (LoyaltyAccount loyaltyAccount : loyaltyAccountList) {
         ++offset;
         try {
-          loyaltyAccountService.acquirePoints(
-              loyaltyAccount, appSaleService.getAppSale().getLoyaltyAccountPointsAcquiringDelay());
+          loyaltyAccountService.spendOutOfValidityPoints(
+              loyaltyAccount, appSaleService.getAppSale().getLoyaltyAccountPointsValidityPeriod());
           updateLoyaltyAccount(loyaltyAccount);
         } catch (Exception e) {
           TraceBackService.trace(

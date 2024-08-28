@@ -8,6 +8,7 @@
 
   <selection name="sale.batch.action.select">
     <option value="2">Earn loyalty account points</option>
+    <option value="3">Verify validity loyalty account points</option>
   </selection>
 
   <selection name="sale.order.status.select">

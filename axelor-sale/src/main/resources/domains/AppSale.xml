@@ -50,6 +50,8 @@
       selection="sale.app.sale.loyalty.account.type.select"/>
     <integer name="loyaltyAccountPointsAcquiringDelay" title="Points acquiring delay (days)"
       default="14"/>
+    <integer name="loyaltyAccountPointsValidityPeriod"
+      title="Points validity period (months)" default="24"/>
     <boolean name="isCartManagementEnabled" title="Enable cart management"/>
 
     <extra-code>

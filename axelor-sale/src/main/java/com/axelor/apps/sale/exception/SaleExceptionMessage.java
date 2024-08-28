@@ -151,10 +151,12 @@ public final class SaleExceptionMessage {
 
   public static final String CONTACT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS = /*$$(*/
       "The contact provided is not a contact partner of the client." /*)*/;
-  public static final String BATCH_LOYALTY_ACCOUNT_EARN_POINTS_1 = /*$$(*/
+
+  public static final String LOYALTY_ACCOUNT_NOT_ENOUGH_BALANCE_POINTS = /*$$(*/
+      "This loyalty account (id %s) does not have enough balance points." /*)*/;
+  public static final String BATCH_LOYALTY_ACCOUNT_1 = /*$$(*/
       "Loyalty account points earning report :" /*)*/;
-  public static final String BATCH_LOYALTY_ACCOUNT_EARN_POINTS_2 = /*$$(*/
-      "Loyalty account(s) processed" /*)*/;
-  public static final String BATCH_LOYALTY_ACCOUNT_EARN_POINTS_3 = /*$$(*/
+  public static final String BATCH_LOYALTY_ACCOUNT_2 = /*$$(*/ "Loyalty account(s) processed" /*)*/;
+  public static final String BATCH_LOYALTY_ACCOUNT_3 = /*$$(*/
       "Bug occured for loyalty account with id {}" /*)*/;
 }

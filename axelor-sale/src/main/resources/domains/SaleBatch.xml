@@ -22,6 +22,7 @@
       // ACTION
       public static final int ACTION_INVOICING = 1;
       public static final int ACTION_EARN_LOYALTY_ACCOUNT_POINTS = 2;
+      public static final int ACTION_VERIFY_VALIDITY_LOYALTY_ACCOUNT_POINTS = 3;
     ]]></extra-code>
   </entity>
 

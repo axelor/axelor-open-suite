@@ -30,6 +30,12 @@
           title="Loyalty account points earning batch"
           onClick="save,action-sale-batch-method-run-batch"/>
       </panel>
+      <panel name="loyaltyAccountPointsVerifyingValidityPanel" colSpan="12"
+        showIf="actionSelect == 3">
+        <button name="verifyValidityLoyaltyAccountPointsBtn"
+          title="Loyalty account points validity verifying batch"
+          onClick="save,action-sale-batch-method-run-batch"/>
+      </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="descriptionPanel" title="Description">

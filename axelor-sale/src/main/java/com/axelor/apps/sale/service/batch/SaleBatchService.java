@@ -50,6 +50,8 @@ public class SaleBatchService extends AbstractBatchService {
     switch (saleBatch.getActionSelect()) {
       case SaleBatchRepository.ACTION_EARN_LOYALTY_ACCOUNT_POINTS:
         return earnLoyaltyAccountPoints(saleBatch);
+      case SaleBatchRepository.ACTION_VERIFY_VALIDITY_LOYALTY_ACCOUNT_POINTS:
+        return verifyValidityLoyaltyAccountPoints(saleBatch);
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -61,6 +63,10 @@ public class SaleBatchService extends AbstractBatchService {
 
   protected Batch earnLoyaltyAccountPoints(SaleBatch saleBatch) {
     return Beans.get(BatchLoyaltyAccountEarnPoints.class).run(saleBatch);
+  }
+
+  protected Batch verifyValidityLoyaltyAccountPoints(SaleBatch saleBatch) {
+    return Beans.get(BatchLoyaltyAccountVerifyValidityPoints.class).run(saleBatch);
   }
 
   /**
