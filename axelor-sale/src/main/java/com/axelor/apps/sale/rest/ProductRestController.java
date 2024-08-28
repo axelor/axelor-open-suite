@@ -2,6 +2,7 @@ package com.axelor.apps.sale.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.rest.dto.ProductPostRequest;
@@ -40,8 +41,10 @@ public class ProductRestController {
     Product product = requestBody.fetchProduct();
     Partner partner = requestBody.fetchPartner();
     Company company = requestBody.fetchCompany();
+    Currency currency = requestBody.fetchCurrency();
     ProductResponse productResponse =
-        Beans.get(ProductRestService.class).computeProductResponse(company, product, partner);
+        Beans.get(ProductRestService.class)
+            .computeProductResponse(company, product, partner, currency);
     return ResponseConstructor.build(
         Response.Status.OK,
         String.format(I18n.get(ITranslation.PRODUCT_PRICE_INFORMATION), product.getId()),

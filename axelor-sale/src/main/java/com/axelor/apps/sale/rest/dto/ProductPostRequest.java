@@ -1,6 +1,7 @@
 package com.axelor.apps.sale.rest.dto;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.utils.api.ObjectFinder;
@@ -17,6 +18,19 @@ public class ProductPostRequest extends RequestPostStructure {
   private Long companyId;
 
   private Long partnerId;
+  private Long currencyId;
+
+  public void setPartnerId(Long partnerId) {
+    this.partnerId = partnerId;
+  }
+
+  public Long getCurrencyId() {
+    return currencyId;
+  }
+
+  public void setCurrencyId(Long currencyId) {
+    this.currencyId = currencyId;
+  }
 
   public Long getProductId() {
     return productId;
@@ -61,5 +75,12 @@ public class ProductPostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(Partner.class, partnerId, ObjectFinder.NO_VERSION);
+  }
+
+  public Currency fetchCurrency() {
+    if (currencyId == null || currencyId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(Currency.class, currencyId, ObjectFinder.NO_VERSION);
   }
 }
