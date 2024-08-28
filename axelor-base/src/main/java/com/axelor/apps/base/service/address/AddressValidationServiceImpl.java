@@ -61,29 +61,47 @@ public class AddressValidationServiceImpl implements AddressValidationService {
     if (parentNode == null || !parentNode.isArray() || parentNode.isEmpty()) {
       return false;
     }
-    /*
-    TODO: We need a further data mapping process to determine if an address is valid. For now we only check if the api returns some results.
-     */
-    return !parentNode.isEmpty();
+    for (JsonNode addressNode : parentNode) {
+      JsonNode displayName = addressNode.get("display_name");
+      if (displayName == null) {
+        return false;
+      }
+      boolean result =
+          checkIfAddressValid(
+              displayName.textValue(), address.getFormattedFullName().replace("\n", " "));
+      if (result) {
+        return true;
+      }
+    }
+    return false;
   }
 
   protected boolean isValidByDataGouvFr(JsonNode propertiesNode, String addressToBeValidated) {
-    JsonNode housenumberNode = propertiesNode.get("housenumber");
-    JsonNode streetNode = propertiesNode.get("street");
-    JsonNode postcodeNode = propertiesNode.get("postcode");
-    JsonNode cityNode = propertiesNode.get("city");
-    /*
-    TODO: For now, we check if the Address.formattedFullName contains the fields we get from json node.
-          Problem: for some address, though it has a housenumber in the query, but the results from api don't have the housenumber (housenumberNode == null), for now the method returns true for this case.
-     */
-    return (housenumberNode == null
-            || containsIgnoreCaseAndAccent(addressToBeValidated, housenumberNode.textValue()))
-        && (streetNode == null
-            || containsIgnoreCaseAndAccent(addressToBeValidated, streetNode.textValue()))
-        && (postcodeNode == null
-            || containsIgnoreCaseAndAccent(addressToBeValidated, postcodeNode.textValue()))
-        && (cityNode == null
-            || containsIgnoreCaseAndAccent(addressToBeValidated, cityNode.textValue()));
+    if (addressToBeValidated == null) {
+      return false;
+    }
+    JsonNode labelNode = propertiesNode.get("label");
+    if (labelNode == null) {
+      return false;
+    }
+    return checkIfAddressValid(
+        labelNode.textValue() + " France", addressToBeValidated.replace("\n", " "));
+  }
+
+  /**
+   * @param addressFoundByApi from data.gouv.fr, it is the "label". from nominatim, it is the
+   *     "display_name"
+   * @param addressToBeValidated
+   * @return
+   */
+  protected boolean checkIfAddressValid(String addressFoundByApi, String addressToBeValidated) {
+    String[] parts = addressToBeValidated.split(" ");
+    for (String part : parts) {
+      if (!containsIgnoreCaseAndAccent(addressFoundByApi, part)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   protected boolean containsIgnoreCaseAndAccent(String source, String target) {
