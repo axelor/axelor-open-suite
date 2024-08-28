@@ -7,6 +7,7 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class SaleOrderPostRequest extends RequestPostStructure {
 
@@ -17,6 +18,9 @@ public class SaleOrderPostRequest extends RequestPostStructure {
   private Long companyId;
   private Long contactId;
   private Long currencyId;
+
+  @Pattern(regexp = true + "|" + false, flags = Pattern.Flag.CASE_INSENSITIVE)
+  private String inAti;
 
   public Long getCompanyId() {
     return companyId;
@@ -29,8 +33,6 @@ public class SaleOrderPostRequest extends RequestPostStructure {
   public Long getCurrencyId() {
     return currencyId;
   }
-
-  private String inAti;
 
   public Long getClientPartnerId() {
     return clientPartnerId;
