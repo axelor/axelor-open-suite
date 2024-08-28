@@ -310,9 +310,6 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
             .map(InvoiceTermPayment::getCompanyPaidAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
-    if (maxAmount != null) {
-      companyPaymentAmount = companyPaymentAmount.min(maxAmount);
-    }
 
     companyPaymentAmount =
         companyPaymentAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount());
