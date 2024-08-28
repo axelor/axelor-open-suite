@@ -812,6 +812,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (project.getIsBusinessProject()) {
       gridName = "business-project-task-grid";
       formName = "business-project-task-form";
+      domain = domain.concat(" AND self.project.isBusinessProject = true");
+    } else {
+      domain = domain.concat(" AND self.project.isBusinessProject = false");
     }
 
     ActionView.ActionViewBuilder builder =
