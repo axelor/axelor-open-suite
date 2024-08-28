@@ -1,6 +1,7 @@
 package com.axelor.apps.businessproject.service.projecttask;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
 import com.axelor.apps.businessproject.service.UnitProjectToolService;
@@ -8,6 +9,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 
 public class ProjectTaskRecordServiceImpl implements ProjectTaskRecordService {
 
@@ -71,13 +73,15 @@ public class ProjectTaskRecordServiceImpl implements ProjectTaskRecordService {
         projectFrameworkContractService.getProductDataFromContract(projectTask);
     BigDecimal numberHoursADay =
         unitProjectToolService.getNumberHoursADay(projectTask.getProject());
+    Product product = projectTask.getProduct();
+    Unit productUnit = Optional.of(product).map(Product::getSalesUnit).orElse(product.getUnit());
 
     if (productDatas.get("unitPrice") != null) {
       projectTask.setUnitPrice(
           unitProjectToolService.getConvertedTime(
               (BigDecimal) productDatas.get("unitPrice"),
               projectTask.getInvoicingUnit(),
-              projectTask.getTimeUnit(),
+              productUnit,
               numberHoursADay));
     }
     if (productDatas.get("unitCost") != null) {
@@ -85,7 +89,7 @@ public class ProjectTaskRecordServiceImpl implements ProjectTaskRecordService {
           unitProjectToolService.getConvertedTime(
               (BigDecimal) productDatas.get("unitCost"),
               projectTask.getInvoicingUnit(),
-              projectTask.getTimeUnit(),
+              productUnit,
               numberHoursADay));
     }
   }

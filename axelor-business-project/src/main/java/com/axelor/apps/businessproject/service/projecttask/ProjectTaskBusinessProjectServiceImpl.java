@@ -247,8 +247,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     if (projectTask.getProduct() != null) {
       projectTask.setTotalCosts(
           projectTask
-              .getProduct()
-              .getCostPrice()
+              .getUnitCost()
               .multiply(projectTask.getQuantity())
               .setScale(2, RoundingMode.HALF_UP));
     }

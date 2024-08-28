@@ -201,7 +201,7 @@
           showIf="invoicingType == 4"/>
         <field name="timeUnit" colSpan="4" readonlyIf="saleOrderLine || parentTask"
           onSelect="action-project-task-attrs-set-time-unit-domain"
-          onChange="action-project-task-method-update-budgeted-time"
+          onChange="action-project-task-method-update-budgeted-time, save"
           if="__config__.app.isApp('business-project')"/>
       </panel>
     </panel>
