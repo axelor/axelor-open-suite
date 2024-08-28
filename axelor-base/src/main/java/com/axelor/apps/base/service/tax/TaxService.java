@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.collect.Sets;
@@ -30,6 +31,7 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -168,6 +170,10 @@ public class TaxService {
     }
     return taxLineSet.stream()
         .filter(Objects::nonNull)
+        .filter(
+            taxLine ->
+                taxLine.getTax() == null
+                    || (taxLine.getTax() != null && !taxLine.getTax().getIsNonDeductibleTax()))
         .map(TaxLine::getValue)
         .filter(Objects::nonNull)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -191,5 +197,85 @@ public class TaxService {
       return Sets.newHashSet();
     }
     return taxLineSet.stream().map(TaxLine::getTax).collect(Collectors.toSet());
+  }
+
+  /**
+   * TaxLines contain taxes, this method reuses checkTaxesNotOnlyNonDeductibleTaxes(Set<Tax> taxes)
+   *
+   * @param taxLines
+   * @return
+   */
+  public void checkTaxLinesNotOnlyNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
+    if (taxLines == null || taxLines.isEmpty()) {
+      return;
+    }
+    Set<Tax> taxes = new HashSet<>();
+    for (TaxLine taxLine : taxLines) {
+      taxes.add(taxLine.getTax());
+    }
+    if (!checkTaxesNotOnlyNonDeductibleTaxes(taxes)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR));
+    }
+  }
+
+  public boolean checkTaxesNotOnlyNonDeductibleTaxes(Set<Tax> taxes) {
+    if (taxes == null || taxes.isEmpty()) {
+      return true;
+    }
+    int countDeductibleTaxes = 0;
+    int countNonDeductibleTaxes = 0;
+    for (Tax tax : taxes) {
+      Boolean isNonDeductibleTax = tax.getIsNonDeductibleTax();
+      if (isNonDeductibleTax) {
+        countNonDeductibleTaxes++;
+      } else {
+        countDeductibleTaxes++;
+      }
+    }
+    if (countDeductibleTaxes == 0 && countNonDeductibleTaxes > 0) {
+      return false;
+    }
+    return true;
+  }
+
+  public BigDecimal computeAdjustedTaxValue(
+      Boolean isNonDeductibleTax,
+      BigDecimal originalTaxRateValue,
+      BigDecimal sumOfAllDeductibleRateValue,
+      BigDecimal sumOfAllNonDeductibleRateValue) {
+    BigDecimal adjustedTaxValue;
+    if (isNonDeductibleTax) {
+      // non-deductible part
+      // formula:
+      // sum of all original normal tax rate * non-deductible tax rate
+
+      adjustedTaxValue =
+          sumOfAllDeductibleRateValue
+              .divide(
+                  BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
+              .multiply(originalTaxRateValue)
+              .divide(
+                  BigDecimal.valueOf(100),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
+    } else {
+      // deductible part
+      // formula:
+      // sum of all original normal tax rate * ( 1 - All non-deductible tax rate)
+      adjustedTaxValue =
+          originalTaxRateValue
+              .divide(
+                  BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
+              .multiply(
+                  BigDecimal.ONE.subtract(
+                      sumOfAllNonDeductibleRateValue.divide(
+                          BigDecimal.valueOf(100),
+                          AppBaseService.COMPUTATION_SCALING,
+                          RoundingMode.HALF_UP)));
+    }
+
+    return adjustedTaxValue;
   }
 }

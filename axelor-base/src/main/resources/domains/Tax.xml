@@ -17,6 +17,7 @@
     <many-to-one name="taxType" ref="com.axelor.apps.account.db.TaxType"
       title="Tax type" required="true"/>
     <boolean name="manageByAmount" title="Tax amount management type"/>
+    <boolean name="isNonDeductibleTax" title="Non deductible tax"/>
 
     <unique-constraint columns="code,name"/>
 

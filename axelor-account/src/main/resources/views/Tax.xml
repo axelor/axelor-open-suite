@@ -8,13 +8,12 @@
     <extend target="/">
       <attribute name="onLoad" value="action-account-group-tax-on-load"/>
     </extend>
-    <extend target="//panel[@name='mainPanel']/field[@name='taxType']">
-      <insert position="after">
+    <extend target="//panel[@name='mainPanel']/field[@name='isNonDeductibleTax']">
+      <replace>
         <field name="isNonDeductibleTax" widget="boolean-switch"
           onChange="action-tax-attrs-display-purchase-accounts" if-module="axelor-account"
           if="__config__.app.isApp('account')" colSpan="3"/>
-
-      </insert>
+      </replace>
     </extend>
     <extend target="//panel-tabs">
       <insert position="inside">

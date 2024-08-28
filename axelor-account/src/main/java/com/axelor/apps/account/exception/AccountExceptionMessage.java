@@ -1758,4 +1758,10 @@ public final class AccountExceptionMessage {
 
   public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT = /*$$(*/
       "Block customer with late payment issues batch's reporting :" /*)*/;
+
+  public static final String TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR1 = /*$$(*/
+      "Only one non-deductible tax is configured on the product/account %s. A non deductible tax should always be paired with at least one other deductible tax." /*)*/;
+
+  public static final String TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR2 = /*$$(*/
+      "Only one non-deductible tax is configured. A non deductible tax should always be paired with at least one other deductible tax." /*)*/;
 }
