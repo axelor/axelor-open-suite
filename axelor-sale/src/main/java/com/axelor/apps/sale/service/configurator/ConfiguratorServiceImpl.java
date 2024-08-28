@@ -46,7 +46,6 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
@@ -84,7 +83,18 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected SaleOrderRepository saleOrderRepository;
 
   @Inject
-  public ConfiguratorServiceImpl(AppBaseService appBaseService, ConfiguratorFormulaService configuratorFormulaService, ProductRepository productRepository, SaleOrderLineRepository saleOrderLineRepository, SaleOrderComputeService saleOrderComputeService, MetaFieldRepository metaFieldRepository, ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService, SaleOrderLineProductService saleOrderLineProductService, SaleOrderLineComputeService saleOrderLineComputeService, SaleOrderLineGeneratorService saleOrderLineGeneratorService, SaleOrderRepository saleOrderRepository) {
+  public ConfiguratorServiceImpl(
+      AppBaseService appBaseService,
+      ConfiguratorFormulaService configuratorFormulaService,
+      ProductRepository productRepository,
+      SaleOrderLineRepository saleOrderLineRepository,
+      SaleOrderComputeService saleOrderComputeService,
+      MetaFieldRepository metaFieldRepository,
+      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService,
+      SaleOrderLineProductService saleOrderLineProductService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLineGeneratorService saleOrderLineGeneratorService,
+      SaleOrderRepository saleOrderRepository) {
     this.appBaseService = appBaseService;
     this.configuratorFormulaService = configuratorFormulaService;
     this.productRepository = productRepository;

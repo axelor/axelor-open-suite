@@ -47,8 +47,30 @@ import java.util.Optional;
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
   @Inject
-  public ConfiguratorServiceProductionImpl(AppBaseService appBaseService, ConfiguratorFormulaService configuratorFormulaService, ProductRepository productRepository, SaleOrderLineRepository saleOrderLineRepository, SaleOrderComputeService saleOrderComputeService, MetaFieldRepository metaFieldRepository, ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService, SaleOrderLineProductService saleOrderLineProductService, SaleOrderLineComputeService saleOrderLineComputeService, SaleOrderLineGeneratorService saleOrderLineGeneratorService, SaleOrderRepository saleOrderRepository) {
-    super(appBaseService, configuratorFormulaService, productRepository, saleOrderLineRepository, saleOrderComputeService, metaFieldRepository, configuratorMetaJsonFieldService, saleOrderLineProductService, saleOrderLineComputeService, saleOrderLineGeneratorService, saleOrderRepository);
+  public ConfiguratorServiceProductionImpl(
+      AppBaseService appBaseService,
+      ConfiguratorFormulaService configuratorFormulaService,
+      ProductRepository productRepository,
+      SaleOrderLineRepository saleOrderLineRepository,
+      SaleOrderComputeService saleOrderComputeService,
+      MetaFieldRepository metaFieldRepository,
+      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService,
+      SaleOrderLineProductService saleOrderLineProductService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLineGeneratorService saleOrderLineGeneratorService,
+      SaleOrderRepository saleOrderRepository) {
+    super(
+        appBaseService,
+        configuratorFormulaService,
+        productRepository,
+        saleOrderLineRepository,
+        saleOrderComputeService,
+        metaFieldRepository,
+        configuratorMetaJsonFieldService,
+        saleOrderLineProductService,
+        saleOrderLineComputeService,
+        saleOrderLineGeneratorService,
+        saleOrderRepository);
   }
 
   /**
