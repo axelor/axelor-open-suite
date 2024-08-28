@@ -37,6 +37,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineGeneratorService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
 import com.axelor.auth.AuthUtils;
@@ -79,17 +80,11 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService;
   protected SaleOrderLineProductService saleOrderLineProductService;
   protected SaleOrderLineComputeService saleOrderLineComputeService;
+  protected SaleOrderLineGeneratorService saleOrderLineGeneratorService;
+  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
-  public ConfiguratorServiceImpl(
-      AppBaseService appBaseService,
-      ConfiguratorFormulaService configuratorFormulaService,
-      ProductRepository productRepository,
-      SaleOrderLineRepository saleOrderLineRepository,
-      SaleOrderComputeService saleOrderComputeService,
-      MetaFieldRepository metaFieldRepository,
-      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService,
-      SaleOrderLineComputeService saleOrderLineComputeService) {
+  public ConfiguratorServiceImpl(AppBaseService appBaseService, ConfiguratorFormulaService configuratorFormulaService, ProductRepository productRepository, SaleOrderLineRepository saleOrderLineRepository, SaleOrderComputeService saleOrderComputeService, MetaFieldRepository metaFieldRepository, ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService, SaleOrderLineProductService saleOrderLineProductService, SaleOrderLineComputeService saleOrderLineComputeService, SaleOrderLineGeneratorService saleOrderLineGeneratorService, SaleOrderRepository saleOrderRepository) {
     this.appBaseService = appBaseService;
     this.configuratorFormulaService = configuratorFormulaService;
     this.productRepository = productRepository;
@@ -97,7 +92,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     this.saleOrderComputeService = saleOrderComputeService;
     this.metaFieldRepository = metaFieldRepository;
     this.configuratorMetaJsonFieldService = configuratorMetaJsonFieldService;
+    this.saleOrderLineProductService = saleOrderLineProductService;
     this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.saleOrderLineGeneratorService = saleOrderLineGeneratorService;
+    this.saleOrderRepository = saleOrderRepository;
   }
 
   @Override
@@ -259,14 +257,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     SaleOrderLine saleOrderLine;
     if (configurator.getConfiguratorCreator().getGenerateProduct()) {
       // generate sale order line from product
-      saleOrderLine = new SaleOrderLine();
-      saleOrderLine.setSaleOrder(saleOrder);
       generateProduct(configurator, jsonAttributes, jsonIndicators, saleOrder.getId());
-
-      saleOrderLine.setProduct(configurator.getProduct());
-      this.fillSaleOrderWithProduct(saleOrderLine);
-      saleOrderLineComputeService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
-
       String qtyFormula = configurator.getConfiguratorCreator().getQtyFormula();
       BigDecimal qty = BigDecimal.ONE;
       if (qtyFormula != null && !"".equals(qtyFormula)) {
@@ -275,14 +266,16 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
           qty = new BigDecimal(result.toString());
         }
       }
-      saleOrderLine.setQty(qty);
+
+      saleOrderLine =
+          saleOrderLineGeneratorService.createSaleOrderLine(
+              saleOrder, configurator.getProduct(), qty);
       saleOrderLineRepository.save(saleOrderLine);
     } else {
       generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     }
     saleOrderComputeService.computeSaleOrder(saleOrder);
-
-    Beans.get(SaleOrderRepository.class).save(saleOrder);
+    saleOrderRepository.save(saleOrder);
   }
 
   /**

@@ -29,11 +29,14 @@ import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineGeneratorService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
@@ -44,24 +47,8 @@ import java.util.Optional;
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
   @Inject
-  public ConfiguratorServiceProductionImpl(
-      AppBaseService appBaseService,
-      ConfiguratorFormulaService configuratorFormulaService,
-      ProductRepository productRepository,
-      SaleOrderLineRepository saleOrderLineRepository,
-      SaleOrderComputeService saleOrderComputeService,
-      MetaFieldRepository metaFieldRepository,
-      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService,
-      SaleOrderLineComputeService saleOrderLineComputeService) {
-    super(
-        appBaseService,
-        configuratorFormulaService,
-        productRepository,
-        saleOrderLineRepository,
-        saleOrderComputeService,
-        metaFieldRepository,
-        configuratorMetaJsonFieldService,
-        saleOrderLineComputeService);
+  public ConfiguratorServiceProductionImpl(AppBaseService appBaseService, ConfiguratorFormulaService configuratorFormulaService, ProductRepository productRepository, SaleOrderLineRepository saleOrderLineRepository, SaleOrderComputeService saleOrderComputeService, MetaFieldRepository metaFieldRepository, ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService, SaleOrderLineProductService saleOrderLineProductService, SaleOrderLineComputeService saleOrderLineComputeService, SaleOrderLineGeneratorService saleOrderLineGeneratorService, SaleOrderRepository saleOrderRepository) {
+    super(appBaseService, configuratorFormulaService, productRepository, saleOrderLineRepository, saleOrderComputeService, metaFieldRepository, configuratorMetaJsonFieldService, saleOrderLineProductService, saleOrderLineComputeService, saleOrderLineGeneratorService, saleOrderRepository);
   }
 
   /**
