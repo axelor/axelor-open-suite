@@ -8,6 +8,7 @@ import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsS
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancelService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeService;
+import com.axelor.apps.stock.service.massstockmove.PickedProductAttrsService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -59,5 +60,16 @@ public class PickedProductController {
         "currentQty",
         Beans.get(MassStockMovableProductQuantityService.class)
             .getCurrentAvailableQty(pickedProduct, pickedProduct.getFromStockLocation()));
+  }
+
+  public void setPickedProductDomain(ActionRequest request, ActionResponse response) {
+    var pickedProduct = request.getContext().asType(PickedProduct.class);
+
+    if (pickedProduct != null) {
+      response.setAttr(
+          "pickedProduct",
+          "domain",
+          Beans.get(PickedProductAttrsService.class).getPickedProductDomain(pickedProduct));
+    }
   }
 }

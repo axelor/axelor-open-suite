@@ -5,7 +5,7 @@
 
   <grid name="picked-product-grid" title="Picked products"
     model="com.axelor.apps.stock.db.PickedProduct">
-    <field name="pickedProduct" domain="self.productTypeSelect = 'storable'"
+    <field name="pickedProduct" onSelect="action-picked-product-method-set-picked-product-domain"
       onChange="action-picked-product-group-product-onchange" required="true"
       readonlyIf="stockMoveLine"/>
     <field name="fromStockLocation"
@@ -32,7 +32,7 @@
     model="com.axelor.apps.stock.db.PickedProduct" onNew="action-picked-product-group-onnew"
     onLoad="action-picked-product-method-set-current-qty" canDelete="false">
     <panel name="mainPanel" readonlyIf="stockMoveLine">
-      <field name="pickedProduct" domain="self.productTypeSelect = 'storable'"
+      <field name="pickedProduct" onSelect="action-picked-product-method-set-picked-product-domain"
         onChange="action-picked-product-group-product-onchange"/>
       <field name="fromStockLocation"
         onSelect="action-picked-product-method-set-domain-from-stock-location"
@@ -104,6 +104,11 @@
 
   <action-method name="action-picked-product-method-cancel-picking">
     <call class="com.axelor.apps.stock.web.PickedProductController" method="cancelPicking"/>
+  </action-method>
+
+  <action-method name="action-picked-product-method-set-picked-product-domain">
+    <call class="com.axelor.apps.stock.web.PickedProductController"
+      method="setPickedProductDomain"/>
   </action-method>
 
 
