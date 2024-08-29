@@ -50,7 +50,8 @@
       selection="sale.app.sale.loyalty.account.type.select"/>
     <integer name="loyaltyAccountPointsAcquiringDelay" title="Points acquiring delay (days)"
       default="14"/>
-    <boolean name="isCartManagementEnabled" title="Enable cart management"/>
+    <boolean name="isCartManagementEnabled" title="Enable cart management"
+      help="Allow the user to put products aside to generate an order at a later date."/>
 
     <extra-code>
       <![CDATA[

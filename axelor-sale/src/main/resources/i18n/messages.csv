@@ -38,6 +38,7 @@
 "Allocate all",,,
 "Allocated stock",,,
 "Allow pending order modification",,,
+"Allow the user to put products aside to generate an order at a later date.",,,
 "Amount",,,
 "Amount A.T.I.",,,
 "Amount Tax",,,
