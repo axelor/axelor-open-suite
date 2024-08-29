@@ -11,21 +11,21 @@ import java.util.Objects;
 
 public class ProjectTaskGroupServiceImpl implements ProjectTaskGroupService {
 
-  protected ProjectTaskRecordService projectTaskRecordService;
+  protected ProjectTaskComputeService projectTaskComputeService;
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
 
   @Inject
   public ProjectTaskGroupServiceImpl(
-      ProjectTaskRecordService projectTaskRecordService,
+      ProjectTaskComputeService projectTaskComputeService,
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
-    this.projectTaskRecordService = projectTaskRecordService;
+    this.projectTaskComputeService = projectTaskComputeService;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
   }
 
   @Override
   public Map<String, Object> updateBudgetedTime(ProjectTask projectTask, Unit oldTimeUnit)
       throws AxelorException {
-    projectTaskRecordService.computeBudgetedTime(projectTask, oldTimeUnit);
+    projectTaskComputeService.computeBudgetedTime(projectTask, oldTimeUnit);
 
     Map<String, Object> valuesMap = new HashMap<>(updateSoldTime(projectTask));
 
@@ -64,7 +64,7 @@ public class ProjectTaskGroupServiceImpl implements ProjectTaskGroupService {
 
   @Override
   public Map<String, Object> updateQuantity(ProjectTask projectTask) throws AxelorException {
-    projectTaskRecordService.computeQuantity(projectTask);
+    projectTaskComputeService.computeQuantity(projectTask);
 
     Map<String, Object> valuesMap = new HashMap<>(updateFinancialDatas(projectTask));
     valuesMap.put("quantity", projectTask.getQuantity());
@@ -75,7 +75,7 @@ public class ProjectTaskGroupServiceImpl implements ProjectTaskGroupService {
   @Override
   public Map<String, Object> updateFinancialDatas(ProjectTask projectTask) throws AxelorException {
     Map<String, Object> valuesMap = new HashMap<>();
-    projectTaskRecordService.computeFinancialDatas(projectTask);
+    projectTaskComputeService.computeFinancialDatas(projectTask);
     projectTaskBusinessProjectService.updateDiscount(projectTask);
     projectTaskBusinessProjectService.compute(projectTask);
 

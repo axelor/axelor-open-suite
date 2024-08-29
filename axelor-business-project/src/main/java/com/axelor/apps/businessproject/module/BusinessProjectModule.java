@@ -107,12 +107,12 @@ import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProje
 import com.axelor.apps.businessproject.service.observer.SaleOrderLineProjectObserver;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskComputeService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskComputeServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateServiceImpl;
-import com.axelor.apps.businessproject.service.projecttask.ProjectTaskRecordService;
-import com.axelor.apps.businessproject.service.projecttask.ProjectTaskRecordServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingServiceImpl;
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
@@ -232,6 +232,6 @@ public class BusinessProjectModule extends AxelorModule {
 
     bind(ProjectTaskGroupService.class).to(ProjectTaskGroupServiceImpl.class);
     bind(UnitProjectToolService.class).to(UnitProjectToolServiceImpl.class);
-    bind(ProjectTaskRecordService.class).to(ProjectTaskRecordServiceImpl.class);
+    bind(ProjectTaskComputeService.class).to(ProjectTaskComputeServiceImpl.class);
   }
 }

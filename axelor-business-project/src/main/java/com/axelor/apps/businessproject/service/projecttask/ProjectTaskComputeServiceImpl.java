@@ -11,13 +11,13 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 
-public class ProjectTaskRecordServiceImpl implements ProjectTaskRecordService {
+public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService {
 
   protected UnitProjectToolService unitProjectToolService;
   protected ProjectFrameworkContractService projectFrameworkContractService;
 
   @Inject
-  public ProjectTaskRecordServiceImpl(
+  public ProjectTaskComputeServiceImpl(
       UnitProjectToolService unitProjectToolService,
       ProjectFrameworkContractService projectFrameworkContractService) {
     this.unitProjectToolService = unitProjectToolService;

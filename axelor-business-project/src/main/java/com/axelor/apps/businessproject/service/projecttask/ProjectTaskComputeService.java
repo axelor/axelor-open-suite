@@ -4,7 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.project.db.ProjectTask;
 
-public interface ProjectTaskRecordService {
+public interface ProjectTaskComputeService {
   void computeBudgetedTime(ProjectTask projectTask, Unit oldTimeUnit) throws AxelorException;
 
   void computeQuantity(ProjectTask projectTask) throws AxelorException;
