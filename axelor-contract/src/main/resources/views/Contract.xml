@@ -81,16 +81,16 @@
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName"
           readonlyIf="(contractLineList &amp;&amp; contractLineList.length > 0) || statusSelect >= 2"
-          canEdit="false" domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          canEdit="false" domain="self.company = :company" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="3"
-          requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
-          hideIf="company.tradingNameSet == null || company.tradingNameSet.length == 0"
+          requiredIf="company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0"
+          hideIf="company.tradingNameList == null || company.tradingNameList.length == 0"
           hidden="true"/>
         <label name="tradingNameLabel"
           if="!(__config__.app.getApp('base')?.enableTradingNamesManagement)" colSpan="3"/>
         <field name="project" colSpan="8" domain="self.clientPartner=:partner" hidden="true"
           showIf="contractTypeSelect == 1"/>
-        <field name="company.tradingNameSet" hidden="true"/>
+        <field name="company.tradingNameList" hidden="true"/>
       </panel>
     </panel>
     <panel sidebar="true" name="actionPanel">
@@ -257,7 +257,7 @@
       <field name="note" showTitle="false"/>
     </panel>
     <panel-tabs name="mainPanelTab"
-      hideIf="!partner || ($enableTradingNamesManagement &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
+      hideIf="!partner || ($enableTradingNamesManagement &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0 &amp;&amp; tradingName == null)">
       <panel title="Content" name="contentPanel">
         <panel name="contractLineListPanel" hidden="true"
           showIf="isInvoicingManagement &amp;&amp; targetTypeSelect &lt;= 2" colSpan="12">

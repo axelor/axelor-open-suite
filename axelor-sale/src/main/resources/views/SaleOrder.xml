@@ -363,7 +363,7 @@
         </field>
       </panel>
       <field name="oneoffSale" colSpan="2"/>
-      <field name="company.tradingNameSet" hidden="true"/>
+      <field name="company.tradingNameList" hidden="true"/>
       <panel name="generalInfoPanel" colSpan="12">
         <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null"
           widget="SuggestBox" canEdit="false" onChange="action-sale-order-method-company-onchange"
@@ -373,10 +373,10 @@
           readonlyIf="(saleOrderLineList &amp;&amp; saleOrderLineList.length > 0) || statusSelect >= 2"
           canEdit="false"
           onChange="action-sale-method-printing-settings-default-values,action-sale-order-record-set-stock-location"
-          domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          domain="self.company = :company" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="3"
-          requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
-          hideIf="company.tradingNameSet == null || company.tradingNameSet.length == 0"
+          requiredIf="company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0"
+          hideIf="company.tradingNameList == null || company.tradingNameList.length == 0"
           hidden="true"/>
         <label name="tradingNameLabel"
           if="!(__config__.app.getApp('base')?.enableTradingNamesManagement)" colSpan="3"/>
@@ -465,7 +465,7 @@
     </panel>
 
     <panel-tabs name="mainPanelTab"
-      hideIf="clientPartner == null || ($enableTradingNamesManagement &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
+      hideIf="clientPartner == null || ($enableTradingNamesManagement &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0 &amp;&amp; tradingName == null)">
 
       <panel name="contentPanel" title="Content">
 

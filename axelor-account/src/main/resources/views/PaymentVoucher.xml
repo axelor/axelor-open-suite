@@ -391,7 +391,7 @@
 
   <action-attrs name="action-payment-voucher-set-trading-name-domain">
     <attribute name="domain" for="tradingName"
-      expr="eval: &quot;self.id IN (${company?.tradingNameSet?.collect{it.id}.join(',')})&quot;"/>
+      expr="eval: &quot;self.id IN (${company?.tradingNameList?.collect{it.id}.join(',')})&quot;"/>
   </action-attrs>
 
   <action-method name="action-method-payment-voucher-load-selected-lines">
