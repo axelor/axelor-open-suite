@@ -50,7 +50,8 @@
       selection="sale.app.sale.loyalty.account.type.select"
       help="Defines how loyalty accounts are managed. Either one account per partner for all companies and trading names, or one account per partner per company, or one account partner party per trading name."/>
     <integer name="loyaltyAccountPointsAcquiringDelay" title="Points acquiring delay (days)"
-      default="14" help="Use this setting to determine the number of days that must pass before loyalty points are credited to a partner’s account."/>
+      default="14"
+      help="Use this setting to determine the number of days that must pass before loyalty points are credited to a partner’s account."/>
     <boolean name="isCartManagementEnabled" title="Enable cart management"/>
 
     <extra-code>
