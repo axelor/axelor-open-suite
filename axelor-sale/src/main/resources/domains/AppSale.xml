@@ -47,9 +47,10 @@
       title="Enable discount on editable lines"/>
     <boolean name="enableLoyalty" title="Enable loyalty"/>
     <integer name="loyaltyAccountsManagement" title="Loyalty accounts managed on"
-      selection="sale.app.sale.loyalty.account.type.select"/>
+      selection="sale.app.sale.loyalty.account.type.select"
+      help="Defines how loyalty accounts are managed. Either one account per partner for all companies and trading names, or one account per partner per company, or one account partner party per trading name."/>
     <integer name="loyaltyAccountPointsAcquiringDelay" title="Points acquiring delay (days)"
-      default="14"/>
+      default="14" help="Use this setting to determine the number of days that must pass before loyalty points are credited to a partner’s account."/>
     <boolean name="isCartManagementEnabled" title="Enable cart management"/>
 
     <extra-code>
@@ -80,6 +81,8 @@
       <field name="isEnableCalculationEntireQuotation" on="UPDATE"/>
       <field name="considerZeroCost" on="UPDATE"/>
       <field name="isEditableGridEnabled" on="UPDATE"/>
+      <field name="loyaltyAccountsManagement" on="UPDATE"/>
+      <field name="loyaltyAccountPointsAcquiringDelay" on="UPDATE"/>
       <field name="isCartManagementEnabled" on="UPDATE"/>
     </track>
   </entity>

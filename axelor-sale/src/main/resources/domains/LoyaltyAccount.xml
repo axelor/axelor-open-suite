@@ -24,8 +24,8 @@
 
     <extra-code>
       <![CDATA[
-          public static final int LOYALTY_ACCOUNT_MANAGED_ON_COMPANY = 0;
-          public static final int LOYALTY_ACCOUNT_MANAGED_ON_PARTNER = 1;
+          public static final int LOYALTY_ACCOUNT_MANAGED_ON_PARTNER = 0;
+          public static final int LOYALTY_ACCOUNT_MANAGED_ON_COMPANY = 1;
           public static final int LOYALTY_ACCOUNT_MANAGED_ON_TRADING_NAME = 2;
         ]]>
     </extra-code>
