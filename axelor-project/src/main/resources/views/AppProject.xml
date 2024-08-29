@@ -4,7 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-project-config-form" title="App project"
-    model="com.axelor.studio.db.AppProject" canDelete="false" canNew="false" width="large">
+    model="com.axelor.studio.db.AppProject" canDelete="false" canNew="false" width="large"
+    onSave="action-app-project-group-onsave">
     <panel name="mainPanel">
       <field name="projectLabel"/>
       <field name="generateProjectSequence" widget="boolean-switch"/>
@@ -74,6 +75,11 @@
     <action name="action-project-method-generate-project-config"/>
   </action-group>
 
+  <action-group name="action-app-project-group-onsave">
+    <action name="action-app-project-method-check-changes-on-task-status"/>
+    <action name="action-app-project-method-update-project-task-status"/>
+  </action-group>
+
   <action-method name="action-project-method-generate-project-config">
     <call class="com.axelor.apps.project.web.AppProjectController"
       method="generateProjectConfigurations"/>
@@ -82,6 +88,16 @@
   <action-method name="action-app-project-method-manage-completed-task-status">
     <call class="com.axelor.apps.project.web.AppProjectController"
       method="manageCompletedTaskStatus"/>
+  </action-method>
+
+  <action-method name="action-app-project-method-check-changes-on-task-status">
+    <call class="com.axelor.apps.project.web.AppProjectController"
+      method="checkTaskStatusSetChanges"/>
+  </action-method>
+
+  <action-method name="action-app-project-method-update-project-task-status">
+    <call class="com.axelor.apps.project.web.AppProjectController"
+      method="updateProjectTaskStatus"/>
   </action-method>
 
 </object-views>

@@ -21,6 +21,7 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -28,6 +29,7 @@ import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectTaskToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.web.tool.ProjectTaskControllerTool;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -162,5 +164,26 @@ public class ProjectController {
     }
 
     response.setAttr("taskStatusManagementSelect", "selection-in", taskStatusSelect);
+  }
+
+  @ErrorException
+  public void checkTaskStatusSetChanges(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Project project = request.getContext().asType(Project.class);
+
+    List<ProjectTask> projectTaskList =
+        Beans.get(ProjectTaskToolService.class).getProjectTaskToUpdate(project);
+    ProjectTaskControllerTool.notifyProjectTaskChangeInConfig(projectTaskList, project, response);
+  }
+
+  @ErrorException
+  public void updateProjectTaskStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Project project = request.getContext().asType(Project.class);
+
+    List<ProjectTask> projectTaskList =
+        Beans.get(ProjectTaskToolService.class).getProjectTaskToUpdate(project);
+    ProjectTaskControllerTool.updateAllProjectTaskListStatus(
+        projectTaskList, null, project, null, response);
   }
 }

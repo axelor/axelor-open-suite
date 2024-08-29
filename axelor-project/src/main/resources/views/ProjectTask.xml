@@ -215,7 +215,6 @@
       <field name="description" colSpan="12" widget="html"/>
       <field name="project.isShowProgress" hidden="true"/>
       <field name="project.isShowSection" hidden="true"/>
-      <field name="project.isShowStatus" hidden="true"/>
       <field name="project.isShowPriority" hidden="true"/>
       <field name="project.isShowTaskCategory" hidden="true"/>
       <field name="project.taskStatusManagementSelect" hidden="true"/>

@@ -34,8 +34,7 @@
   <form name="business-project-form" title="Business project"
     model="com.axelor.apps.project.db.Project"
     onLoad="action-business-project-project-group-on-load"
-    onNew="action-business-project-project-group-on-new"
-    onSave="action-project-method-check-resource-availibility">
+    onNew="action-business-project-project-group-on-new" onSave="action-project-group-onsave">
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
