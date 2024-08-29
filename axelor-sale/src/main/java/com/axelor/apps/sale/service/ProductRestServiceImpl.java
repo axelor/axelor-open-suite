@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -73,13 +74,15 @@ public class ProductRestServiceImpl implements ProductRestService {
     this.productPriceService = productPriceService;
   }
 
-  protected List<PriceResponse> fetchProductPrice(Product product, Partner partner, Company company)
-      throws AxelorException {
+  protected List<PriceResponse> fetchProductPrice(
+      Product product, Partner partner, Company company, Currency currency) throws AxelorException {
 
     List<PriceResponse> priceList = new ArrayList<>();
 
-    BigDecimal priceWT = productPriceService.getSaleUnitPrice(company, product, false, partner);
-    BigDecimal priceATI = productPriceService.getSaleUnitPrice(company, product, true, partner);
+    BigDecimal priceWT =
+        productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
+    BigDecimal priceATI =
+        productPriceService.getSaleUnitPrice(company, product, true, partner, currency);
 
     priceList.add(new PriceResponse("WT", priceWT));
     priceList.add(new PriceResponse("ATI", priceATI));
@@ -87,11 +90,16 @@ public class ProductRestServiceImpl implements ProductRestService {
   }
 
   protected CurrencyResponse createCurrencyResponse(
-      Product product, Partner partner, Company company) throws AxelorException {
-    if (partner != null && partner.getCurrency() != null)
+      Product product, Partner partner, Company company, Currency currency) throws AxelorException {
+    if (currency != null) {
+      return new CurrencyResponse(currency);
+    }
+    if (partner != null && partner.getCurrency() != null) {
       return new CurrencyResponse(partner.getCurrency());
-    if (company != null && company.getCurrency() != null)
+    }
+    if (company != null && company.getCurrency() != null) {
       return new CurrencyResponse(company.getCurrency());
+    }
     if (product.getSaleCurrency() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
@@ -101,13 +109,13 @@ public class ProductRestServiceImpl implements ProductRestService {
   }
 
   @Override
-  public ProductResponse computeProductResponse(Company company, Product product, Partner partner)
-      throws AxelorException {
-    CurrencyResponse currencyResponse = createCurrencyResponse(product, partner, company);
+  public ProductResponse computeProductResponse(
+      Company company, Product product, Partner partner, Currency currency) throws AxelorException {
+    CurrencyResponse currencyResponse = createCurrencyResponse(product, partner, company, currency);
     if (company == null) {
       company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
     }
-    List<PriceResponse> prices = fetchProductPrice(product, partner, company);
+    List<PriceResponse> prices = fetchProductPrice(product, partner, company, currency);
     return new ProductResponse(product.getId(), prices, currencyResponse);
   }
 }
