@@ -292,12 +292,13 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
       Unit unitConversion = product.getUnit();
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
         BigDecimal productAvailableQty = stockLocationLine.getCurrentQty();
-        unitConversionService.convert(
-            stockLocationLine.getUnit(),
-            unitConversion,
-            productAvailableQty,
-            productAvailableQty.scale(),
-            product);
+        productAvailableQty =
+            unitConversionService.convert(
+                stockLocationLine.getUnit(),
+                unitConversion,
+                productAvailableQty,
+                productAvailableQty.scale(),
+                product);
         sumAvailableQty = sumAvailableQty.add(productAvailableQty);
       }
     }
