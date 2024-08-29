@@ -433,10 +433,9 @@
             </field>
             <field name="currentContractVersion" showTitle="false" colSpan="12"
               x-show-icons="false">
-              <editor x-viewer="true" x-show-on-new="true" x-show-titles="true"
-                onNew="action-record-contract-version-default-record">
+              <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                 <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"
-                  hidden="true" showIf="$contractTypeSelect == 1"/>
+                  hidden="true"/>
                 <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
                   <field name="invoicingDuration" domain="self.applicationTypeSelect = 2"
                     colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
@@ -444,7 +443,6 @@
                   <field name="isVersionProratedInvoice" hidden="true"
                     showIf="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                 </panel>
-                <field name="$contractTypeSelect" hidden="true"/>
               </editor>
             </field>
           </panel>
@@ -551,6 +549,7 @@
     <action name="action-contract-record-default"/>
     <action name="action-contract-attrs-partner-payment-config"/>
     <action name="action-contract-record-get-trading-names-management-config"/>
+    <action name="action-contract-attrs-hide-is-periodic-invoicing"/>
   </action-group>
 
   <action-group name="action-contract-group-on-load">
@@ -560,6 +559,7 @@
     <action name="action-contract-method-contract-line-list-on-change"/>
     <action name="action-contract-method-additional-contract-line-list-on-change"/>
     <action name="action-contract-record-get-trading-names-management-config"/>
+    <action name="action-contract-attrs-hide-is-periodic-invoicing"/>
   </action-group>
 
   <action-group name="action-contract-group-invoicing-management-change">
@@ -596,8 +596,12 @@
   <action-record name="action-record-contract-version-default-record"
     model="com.axelor.apps.contract.db.ContractVersion">
     <field name="statusSelect" expr="eval: 1"/>
-    <field name="$contractTypeSelect" expr="eval: __parent__?.contractTypeSelect"/>
   </action-record>
+
+  <action-attrs name="action-contract-attrs-hide-is-periodic-invoicing">
+    <attribute name="hidden" for="currentContractVersion.isPeriodicInvoicing"
+      expr="eval: contractTypeSelect != 1"/>
+  </action-attrs>
 
   <action-record model="com.axelor.apps.contract.db.Contract"
     name="action-contract-record-reset-booleans-config-sub-panel">
