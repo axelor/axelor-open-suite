@@ -5,8 +5,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.sale.rest.dto.ProductPostRequest;
 import com.axelor.apps.sale.rest.dto.ProductResponse;
-import com.axelor.apps.sale.rest.dto.ProductsPostRequest;
 import com.axelor.apps.sale.service.ProductRestService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -36,7 +36,7 @@ public class ProductRestController {
   @Path("/price")
   @POST
   @HttpExceptionHandler
-  public Response getProductsPrice(ProductsPostRequest requestBody)
+  public Response getProductsPrice(ProductPostRequest requestBody)
       throws JSONException, AxelorException {
     RequestValidator.validateBody(requestBody);
     for (Long productId : requestBody.getProductsId()) {
@@ -45,8 +45,10 @@ public class ProductRestController {
     List<Product> products = requestBody.fetchProducts();
     Partner partner = requestBody.fetchPartner();
     Company company = requestBody.fetchCompany();
+    Currency currency = requestBody.fetchCurrency();
     List<ProductResponse> productResponses =
-        Beans.get(ProductRestService.class).computeProductResponse(company, products, partner,currency);
+        Beans.get(ProductRestService.class)
+            .computeProductResponse(company, products, partner, currency);
     return ResponseConstructor.build(
         Response.Status.OK, I18n.get(ITranslation.PRODUCT_PRICE_INFORMATION), productResponses);
   }

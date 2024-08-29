@@ -110,10 +110,12 @@ public class ProductRestServiceImpl implements ProductRestService {
 
   @Override
   public List<ProductResponse> computeProductResponse(
-      Company company, List<Product> products, Partner partner, Currency currency) throws AxelorException {
+      Company company, List<Product> products, Partner partner, Currency currency)
+      throws AxelorException {
     List<ProductResponse> productResponses = new ArrayList<>();
     for (Product product : products) {
-      CurrencyResponse currencyResponse = createCurrencyResponse(product, partner, company, currency);
+      CurrencyResponse currencyResponse =
+          createCurrencyResponse(product, partner, company, currency);
       if (company == null) {
         company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
       }
