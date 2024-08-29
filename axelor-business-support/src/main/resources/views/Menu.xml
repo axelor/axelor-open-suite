@@ -12,9 +12,16 @@
     <view type="grid" name="project-announcement-grid"/>
     <view type="form" name="project-announcement-form"/>
     <domain>self.project.id IN :_projectIds OR :_project is null</domain>
-    <context name="_project" expr="eval: __user__.activeProject"/>
+    <context name="_project"
+      expr="eval: projectId ? __repo__(Project).find(projectId) : __user__.activeProject"/>
     <context name="_projectIds"
-      expr="call:com.axelor.apps.project.service.ProjectToolService:getActiveProjectIds()"/>
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getActiveProjectIds()"
+      if="!projectId"/>
+    <context name="_projectIds"
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getRelatedProjectIds(__repo__(Project).find(projectId))"
+      if="projectId"/>
+    <context name="_showRecord" expr="eval: announcementId" if="announcementId"/>
+
   </action-view>
 
   <menuitem title="Project.versions" name="project-versions"

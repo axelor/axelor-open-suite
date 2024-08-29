@@ -24,12 +24,8 @@ import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskCategoryRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
-import com.axelor.i18n.I18n;
-import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -52,6 +48,9 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   @Override
   public Map<String, Object> getData(Project project) {
     Map<String, Object> dataMap = new HashMap<>();
+    dataMap.put("$projectId", project.getId());
+    dataMap.put("$name", project.getFullName());
+
     if (StringUtils.notEmpty(project.getDescription())) {
       dataMap.put("$description", Jsoup.parse(project.getDescription()).text());
     }
@@ -64,7 +63,6 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   }
 
   protected List<Map<String, Object>> getIssueTrackingData(Project project) {
-    User currentUser = AuthUtils.getUser();
 
     List<Map<String, Object>> categoryList = new ArrayList<>();
 
@@ -73,8 +71,7 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
             .all()
             .filter("self.typeSelect = :_typeSelect AND self.project.id IN :_projectIds")
             .bind("_typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .bind("_project", currentUser.getActiveProject())
-            .bind("_projectIds", projectToolService.getActiveProjectIds())
+            .bind("_projectIds", projectToolService.getRelatedProjectIds(project))
             .fetch()
             .stream()
             .sorted(getTaskComparator())
@@ -92,6 +89,7 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
                     },
                     LinkedHashMap::new));
 
+    Map<String, Object> othersMap = null;
     for (Map.Entry<ProjectTaskCategory, List<ProjectTask>> entry : categoryTaskMap.entrySet()) {
       Map<String, Object> categoryMap = new HashMap<>();
       List<ProjectTask> projectTaskList = entry.getValue();
@@ -101,7 +99,7 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
           projectTaskList.stream().filter(task -> task.getStatus().getIsCompleted()).count();
 
       if (category == null) {
-        categoryMap.put("categoryId", 0);
+        categoryMap.put("categoryId", 0L);
         categoryMap.put("categoryName", "Others");
       } else {
         categoryMap.put("categoryId", category.getId());
@@ -110,8 +108,17 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
       categoryMap.put("open", totalCount - closedCount);
       categoryMap.put("closed", closedCount);
       categoryMap.put("total", totalCount);
+      categoryMap.put("projectId", project.getId());
 
-      categoryList.add(categoryMap);
+      if (category == null) {
+        othersMap = categoryMap;
+      } else {
+        categoryList.add(categoryMap);
+      }
+    }
+
+    if (othersMap != null) {
+      categoryList.add(othersMap);
     }
 
     return categoryList;
@@ -121,7 +128,7 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
     Set<User> membersSet = new HashSet<>();
     projectRepo
         .all()
-        .filter("self.id IN ?1", projectToolService.getActiveProjectIds())
+        .filter("self.id IN ?1", projectToolService.getRelatedProjectIds(project))
         .fetch()
         .stream()
         .forEach(subProject -> membersSet.addAll(subProject.getMembersUserSet()));
@@ -129,72 +136,12 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   }
 
   protected List<Project> getSubprojects(Project project) {
-    Set<Long> contextProjectIds = projectToolService.getActiveProjectIds();
+    Set<Long> contextProjectIds = projectToolService.getRelatedProjectIds(project);
     contextProjectIds.remove(project.getId());
     if (contextProjectIds.isEmpty()) {
       return new ArrayList<>();
     }
     return projectRepo.all().filter("self.id IN ?1", contextProjectIds).fetch();
-  }
-
-  @Override
-  public ActionResponse getTasksPerCategoryView(Long id) {
-    User currentUser = AuthUtils.getUser();
-    ActionResponse response = new ActionResponse();
-    response.setView(
-        ActionView.define(I18n.get("Project Tasks"))
-            .model(ProjectTask.class.getName())
-            .add("grid", "project-task-grid")
-            .add("form", "project-task-form")
-            .domain(
-                "self.typeSelect = :typeSelect AND self.project.id IN :projectIds AND (self.projectTaskCategory = :taskCategory OR (self.projectTaskCategory is null AND :taskCategory is null))")
-            .context("typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .context("_project", currentUser.getActiveProject())
-            .context("projectIds", projectToolService.getActiveProjectIds())
-            .context("taskCategory", taskCategoryRepo.find(id))
-            .param("search-filters", "project-task-filters")
-            .map());
-    return response;
-  }
-
-  @Override
-  public ActionResponse getTasksOpenedPerCategoryView(Long id) {
-    User currentUser = AuthUtils.getUser();
-    ActionResponse response = new ActionResponse();
-    response.setView(
-        ActionView.define(I18n.get("Project Tasks"))
-            .model(ProjectTask.class.getName())
-            .add("grid", "project-task-grid")
-            .add("form", "project-task-form")
-            .domain(
-                "self.typeSelect = :typeSelect AND self.project.id IN :projectIds AND self.status.isCompleted = false AND (self.projectTaskCategory = :taskCategory OR (self.projectTaskCategory is null AND :taskCategory is null))")
-            .context("typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .context("_project", currentUser.getActiveProject())
-            .context("projectIds", projectToolService.getActiveProjectIds())
-            .context("taskCategory", taskCategoryRepo.find(id))
-            .param("search-filters", "project-task-filters")
-            .map());
-    return response;
-  }
-
-  @Override
-  public ActionResponse getTasksClosedPerCategoryView(Long id) {
-    User currentUser = AuthUtils.getUser();
-    ActionResponse response = new ActionResponse();
-    response.setView(
-        ActionView.define(I18n.get("Project Tasks"))
-            .model(ProjectTask.class.getName())
-            .add("grid", "project-task-grid")
-            .add("form", "project-task-form")
-            .domain(
-                "self.typeSelect = :typeSelect AND self.project.id IN :projectIds AND self.status.isCompleted = true AND (self.projectTaskCategory = :taskCategory OR (self.projectTaskCategory is null AND :taskCategory is null))")
-            .context("typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .context("_project", currentUser.getActiveProject())
-            .context("projectIds", projectToolService.getActiveProjectIds())
-            .context("taskCategory", taskCategoryRepo.find(id))
-            .param("search-filters", "project-task-filters")
-            .map());
-    return response;
   }
 
   protected Comparator<ProjectTask> getTaskComparator() {

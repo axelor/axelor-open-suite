@@ -76,7 +76,7 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
 
     if (projectId != null) {
       project = projectRepo.find(projectId);
-      projectToolService.getChildProjectIds(projectIdSet, project);
+      projectIdSet = projectToolService.getRelatedProjectIds(project);
     } else {
       project = AuthUtils.getUser().getActiveProject();
       projectIdSet = projectToolService.getActiveProjectIds();

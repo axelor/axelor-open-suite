@@ -18,7 +18,7 @@ public class ProjectMenuBusinessServiceImpl extends ProjectMenuServiceImpl {
   }
 
   @Override
-  public Map<String, Object> getAllProjects() {
+  public Map<String, Object> getAllProjects(Long projectId) {
     ActionView.ActionViewBuilder builder =
         ActionView.define(I18n.get("Projects"))
             .model(Project.class.getName())
@@ -28,7 +28,11 @@ public class ProjectMenuBusinessServiceImpl extends ProjectMenuServiceImpl {
             .param("search-filters", "project-project-filters")
             .context("_fromBusinessProject", false)
             .domain("self.isBusinessProject = false");
+    ;
 
+    if (projectId != null) {
+      builder.context("_showRecord", projectId);
+    }
     return builder.map();
   }
 }

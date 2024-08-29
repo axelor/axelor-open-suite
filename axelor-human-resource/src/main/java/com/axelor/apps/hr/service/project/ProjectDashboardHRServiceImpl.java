@@ -48,7 +48,7 @@ public class ProjectDashboardHRServiceImpl extends ProjectDashboardServiceImpl {
     List<TimesheetLine> timesheetLineList =
         timsheetLineRepo
             .all()
-            .filter("self.project.id IN ?1", projectToolService.getActiveProjectIds())
+            .filter("self.project.id IN ?1", projectToolService.getRelatedProjectIds(project))
             .fetch();
     BigDecimal totalDuration = BigDecimal.ZERO;
     for (TimesheetLine timesheetLine : timesheetLineList) {

@@ -22,13 +22,11 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
 import java.util.Map;
-import java.util.Optional;
 
 public class ProjectMenuServiceImpl implements ProjectMenuService {
 
@@ -43,9 +41,10 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
   }
 
   @Override
-  public Map<String, Object> getAllOpenProjectTasks() {
-    Project activeProject =
-        Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
+  public Map<String, Object> getAllOpenProjectTasks(Project project) {
+    if (project == null) {
+      project = AuthUtils.getUser().getActiveProject();
+    }
 
     ActionViewBuilder builder =
         ActionView.define(I18n.get("Project Tasks"))
@@ -56,8 +55,8 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .domain(
                 "self.project.projectStatus.isCompleted = false AND self.typeSelect = :_typeSelect AND (self.project.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.project.membersUserSet")
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .context("_project", activeProject)
-            .context("_projectIds", projectToolService.getActiveProjectIds())
+            .context("_project", project)
+            .context("_projectIds", projectToolService.getRelatedProjectIds(project))
             .param("details-view", "true")
             .param("search-filters", "project-task-filters");
 
@@ -65,7 +64,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
   }
 
   @Override
-  public Map<String, Object> getAllProjects() {
+  public Map<String, Object> getAllProjects(Long projectId) {
     ActionViewBuilder builder =
         ActionView.define(I18n.get("Projects"))
             .model(Project.class.getName())
@@ -73,6 +72,10 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .add("form", "project-form")
             .add("kanban", "project-kanban")
             .param("search-filters", "project-project-filters");
+
+    if (projectId != null) {
+      builder.context("_showRecord", projectId);
+    }
 
     return builder.map();
   }

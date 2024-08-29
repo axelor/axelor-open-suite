@@ -18,22 +18,98 @@
  */
 package com.axelor.apps.project.web;
 
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskCategoryRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectDashboardService;
+import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.util.Optional;
 
 @Singleton
 public class ProjectDashboardController {
 
   public void getData(ActionRequest request, ActionResponse response) {
-    Project project = AuthUtils.getUser().getActiveProject();
+    Project project = getProject(request);
+
     if (project == null) {
       return;
     }
     response.setValues(Beans.get(ProjectDashboardService.class).getData(project));
+  }
+
+  @ErrorException
+  public void showTasksOpenedPerCategory(ActionRequest request, ActionResponse response) {
+    showTasks(request, response, "opened");
+  }
+
+  @ErrorException
+  public void showTasksClosedPerCategory(ActionRequest request, ActionResponse response) {
+    showTasks(request, response, "closed");
+  }
+
+  @ErrorException
+  public void showTasksPerCategory(ActionRequest request, ActionResponse response) {
+    showTasks(request, response, "all");
+  }
+
+  protected void showTasks(ActionRequest request, ActionResponse response, String status) {
+    Context context = request.getContext();
+    Project project = getProject(request);
+
+    String domain =
+        "self.typeSelect = :typeSelect AND self.project.id IN :projectIds "
+            + "AND (self.projectTaskCategory = :taskCategory "
+            + "OR (self.projectTaskCategory is null AND :taskCategory is null)) ";
+
+    if (status.equals("opened")) {
+      domain += "AND self.status.isCompleted = false ";
+
+    } else if (status.equals("closed")) {
+      domain += "AND self.status.isCompleted = true ";
+    }
+    ProjectTaskCategory projectTaskCategory =
+        Beans.get(ProjectTaskCategoryRepository.class)
+            .find(Long.valueOf(context.get("categoryId").toString()));
+
+    response.setView(
+        ActionView.define(I18n.get("Project Tasks"))
+            .model(ProjectTask.class.getName())
+            .add("grid", "project-task-grid")
+            .add("form", "project-task-form")
+            .domain(domain)
+            .context("typeSelect", ProjectTaskRepository.TYPE_TASK)
+            .context("_project", project)
+            .context(
+                "projectIds", Beans.get(ProjectToolService.class).getRelatedProjectIds(project))
+            .context("taskCategory", projectTaskCategory)
+            .param("search-filters", "project-task-filters")
+            .map());
+  }
+
+  protected Project getProject(ActionRequest request) {
+    Project project = null;
+    Long projectId =
+        Optional.ofNullable(request.getContext().get("_id"))
+            .map(Object::toString)
+            .map(Long::valueOf)
+            .orElse(0l);
+    project = Beans.get(ProjectRepository.class).find(projectId);
+    if (project == null) {
+      project = AuthUtils.getUser().getActiveProject();
+    }
+
+    return project;
   }
 }
