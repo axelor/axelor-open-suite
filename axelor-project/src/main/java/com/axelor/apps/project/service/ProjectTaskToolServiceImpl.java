@@ -81,21 +81,33 @@ public class ProjectTaskToolServiceImpl implements ProjectTaskToolService {
   public List<ProjectTask> getProjectTaskDependingStatus(
       TaskStatus taskStatus, Integer taskStatusManagementSelect, Long objectId) {
     StringBuilder filter = new StringBuilder();
-    filter.append("self.status = :taskStatus ");
-
     Map<String, Object> bindings = new HashMap<>();
+
+    filter.append("self.status = :taskStatus ");
     bindings.put("taskStatus", taskStatus);
 
     if (taskStatusManagementSelect != null) {
-      filter.append("AND self.project.taskStatusManagementSelect = :taskStatusManagementSelect ");
-      bindings.put("taskStatusManagementSelect", taskStatusManagementSelect);
 
       if (ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT == taskStatusManagementSelect) {
+
+        filter.append(
+            "AND (self.project.taskStatusManagementSelect = :taskStatusManagementSelect "
+                + "OR (self.project.taskStatusManagementSelect = :categoryTaskStatusManagementSelect AND self.projectTaskCategory IS NULL))");
+        bindings.put("taskStatusManagementSelect", taskStatusManagementSelect);
+        bindings.put(
+            "categoryTaskStatusManagementSelect",
+            ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY);
         filter.append("AND self.project.id = :id ");
         bindings.put("id", objectId);
-      } else if (ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY == taskStatusManagementSelect) {
-        filter.append("AND self.projectTaskCategory.id = :id ");
-        bindings.put("id", objectId);
+      } else {
+
+        filter.append("AND self.project.taskStatusManagementSelect = :taskStatusManagementSelect ");
+        bindings.put("taskStatusManagementSelect", taskStatusManagementSelect);
+
+        if (ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY == taskStatusManagementSelect) {
+          filter.append("AND self.projectTaskCategory.id = :id ");
+          bindings.put("id", objectId);
+        }
       }
     }
 
