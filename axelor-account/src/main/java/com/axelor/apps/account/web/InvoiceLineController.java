@@ -645,4 +645,14 @@ public class InvoiceLineController {
         Beans.get(InvoiceLineService.class).computeInvoiceLineTaxLineSetDomain(operationTypeSelect);
     response.setAttr("taxLineSet", "domain", domainString);
   }
+
+  public void checkSumOfNonDeductibleTaxes(ActionRequest request, ActionResponse response) {
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+    TaxService taxService = Beans.get(TaxService.class);
+    try {
+      taxService.checkSumOfNonDeductibleTaxes(invoiceLine.getTaxLineSet());
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

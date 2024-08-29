@@ -2158,6 +2158,7 @@
 "The sequence letter type can't be null.",,,
 "The sequence type '%s' is not handled.",,,
 "The start date cannot be later than the end date.",,,
+"The sum of non-deductible taxes should not exceed 100%.",,,
 "The tags below can be used as a prefix or a suffix",,,
 "The tags below can be used to specify the pattern",,,
 "The temporary closure of an accounting period will restrict operations on the journal of accounting entries. Do you want to continue ?",,,

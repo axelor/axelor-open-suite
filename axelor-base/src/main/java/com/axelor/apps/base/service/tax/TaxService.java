@@ -33,6 +33,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -277,5 +278,23 @@ public class TaxService {
     }
 
     return adjustedTaxValue;
+  }
+
+  public void checkSumOfNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
+    if (CollectionUtils.isEmpty(taxLines)) {
+      return;
+    }
+    BigDecimal sumOfNonDeTaxes = BigDecimal.ZERO;
+    for (TaxLine taxLine : taxLines) {
+      if (Boolean.TRUE.equals(
+          Optional.of(taxLine).map(TaxLine::getTax).map(Tax::getIsNonDeductibleTax).orElse(null))) {
+        sumOfNonDeTaxes = sumOfNonDeTaxes.add(taxLine.getValue());
+        if (sumOfNonDeTaxes.compareTo(BigDecimal.valueOf(100)) > 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              BaseExceptionMessage.SUM_OF_NON_DEDUCTIBLE_TAXES_EXCEEDS_ONE_HUNDRED);
+        }
+      }
+    }
   }
 }

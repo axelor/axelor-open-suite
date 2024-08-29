@@ -5,4 +5,6 @@ import com.axelor.apps.base.AxelorException;
 
 public interface InvoiceValidationService {
   void checkNotOnlyNonDeductibleTaxes(Invoice invoice) throws AxelorException;
+
+  void checkSumOfNonDeductibleTaxes(Invoice invoice) throws AxelorException;
 }

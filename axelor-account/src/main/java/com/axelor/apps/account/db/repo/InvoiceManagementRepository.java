@@ -56,6 +56,7 @@ public class InvoiceManagementRepository extends InvoiceRepository {
   public Invoice save(Invoice invoice) {
     try {
       invoiceValidationService.checkNotOnlyNonDeductibleTaxes(invoice);
+      invoiceValidationService.checkSumOfNonDeductibleTaxes(invoice);
       List<InvoicePayment> invoicePayments = invoice.getInvoicePaymentList();
       if (CollectionUtils.isNotEmpty(invoicePayments)) {
         LocalDate latestPaymentDate =

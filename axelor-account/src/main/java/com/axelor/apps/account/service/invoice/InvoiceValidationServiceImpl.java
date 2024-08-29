@@ -64,4 +64,16 @@ public class InvoiceValidationServiceImpl implements InvoiceValidationService {
       }
     }
   }
+
+  @Override
+  public void checkSumOfNonDeductibleTaxes(Invoice invoice) throws AxelorException {
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    if (CollectionUtils.isEmpty(invoiceLineList)) {
+      return;
+    }
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
+      taxService.checkSumOfNonDeductibleTaxes(taxLineSet);
+    }
+  }
 }
