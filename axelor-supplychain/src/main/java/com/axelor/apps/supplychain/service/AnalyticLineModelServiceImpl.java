@@ -164,7 +164,6 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     Product product = analyticLineModel.getProduct();
     return analyticToolService.isManageAnalytic(analyticLineModel.getCompany())
         && product != null
-        && product.getProductFamily() != null
         && accountManagementAccountService
             .getProductAccount(
                 product,
