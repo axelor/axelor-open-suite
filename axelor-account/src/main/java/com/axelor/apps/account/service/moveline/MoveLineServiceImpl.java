@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -48,6 +49,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -89,6 +91,8 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected CurrencyScaleService currencyScaleService;
   protected AccountingBatchRepository accountingBatchRepo;
 
+  protected TaxLineRepository taxLineRepository;
+
   @Inject
   public MoveLineServiceImpl(
       MoveLineRepository moveLineRepository,
@@ -101,7 +105,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       AccountingCutOffService cutOffService,
       MoveLineTaxService moveLineTaxService,
       CurrencyScaleService currencyScaleService,
-      AccountingBatchRepository accountingBatchRepo) {
+      AccountingBatchRepository accountingBatchRepo,
+      TaxLineRepository taxLineRepository) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -113,6 +118,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineTaxService = moveLineTaxService;
     this.currencyScaleService = currencyScaleService;
     this.accountingBatchRepo = accountingBatchRepo;
+    this.taxLineRepository = taxLineRepository;
   }
 
   @Override
@@ -463,5 +469,29 @@ public class MoveLineServiceImpl implements MoveLineService {
       moveLineList.add(moveLine);
     }
     return moveLineList;
+  }
+
+  @Override
+  public String computeMoveLineTaxLineSetDomain(int functionalOriginSelect, String dateString) {
+    String[] split = dateString.split("-");
+    LocalDate date =
+        LocalDate.of(
+            Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+
+    String domain = "(self.endDate > :date OR self.endDate IS NULL) ";
+    if (functionalOriginSelect == 3) {
+      domain += " AND self.tax.isNonDeductibleTax = false ";
+    }
+
+    try {
+      List<Long> taxLineIds =
+          JPA.em()
+              .createQuery(" select self.id from TaxLine self where " + domain, Long.class)
+              .setParameter("date", date)
+              .getResultList();
+      return "self.id in (" + Joiner.on(",").join(taxLineIds) + ")";
+    } catch (Exception e) {
+      return "self.id = -1";
+    }
   }
 }

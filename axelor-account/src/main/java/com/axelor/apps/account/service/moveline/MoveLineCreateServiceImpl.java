@@ -57,6 +57,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
@@ -64,7 +65,6 @@ import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -676,7 +676,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       TaxLine taxLine,
       String accountType,
       Account newAccount,
-      boolean percentMoveTemplate)
+      boolean percentMoveTemplate,
+      BigDecimal sumOfAllDeductibleRateValue,
+      BigDecimal sumOfAllNonDeductibleRateValue)
       throws AxelorException {
     BigDecimal debit = moveLine.getDebit();
     BigDecimal credit = moveLine.getCredit();
@@ -758,7 +760,15 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 move.getJournal(), move.getOrigin(), move.getDescription())));
     moveLineToolService.setDecimals(newOrUpdatedMoveLine, move);
 
-    BigDecimal taxLineValue = taxLine.getValue();
+    Boolean isNonDeductibleTax = taxLine.getTax().getIsNonDeductibleTax();
+    BigDecimal originalTaxRateValue = taxLine.getValue();
+    BigDecimal adjustedTaxValue =
+        Beans.get(TaxService.class)
+            .computeAdjustedTaxValue(
+                isNonDeductibleTax,
+                originalTaxRateValue,
+                sumOfAllDeductibleRateValue,
+                sumOfAllNonDeductibleRateValue);
 
     if (percentMoveTemplate) {
       debit = sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_PAYABLE);
@@ -767,10 +777,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     int scale = currencyScaleService.getCompanyScale(move);
-    BigDecimal newMoveLineDebit =
-        debit.multiply(taxLineValue).divide(BigDecimal.valueOf(100), scale, RoundingMode.HALF_UP);
-    BigDecimal newMoveLineCredit =
-        credit.multiply(taxLineValue).divide(BigDecimal.valueOf(100), scale, RoundingMode.HALF_UP);
+    BigDecimal newMoveLineDebit = debit.multiply(adjustedTaxValue);
+    BigDecimal newMoveLineCredit = credit.multiply(adjustedTaxValue);
 
     this.setTaxLineAmount(newMoveLineDebit, newMoveLineCredit, newOrUpdatedMoveLine);
 
