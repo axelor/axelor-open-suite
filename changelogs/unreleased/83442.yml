@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed an issue occurring when adding produced products."
+module: axelor-production
