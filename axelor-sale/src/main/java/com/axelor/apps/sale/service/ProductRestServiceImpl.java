@@ -91,11 +91,15 @@ public class ProductRestServiceImpl implements ProductRestService {
 
   protected CurrencyResponse createCurrencyResponse(
       Product product, Partner partner, Company company, Currency currency) throws AxelorException {
-    if (currency != null) return new CurrencyResponse(currency);
-    if (partner != null && partner.getCurrency() != null)
+    if (currency != null) {
+      return new CurrencyResponse(currency);
+    }
+    if (partner != null && partner.getCurrency() != null) {
       return new CurrencyResponse(partner.getCurrency());
-    if (company != null && company.getCurrency() != null)
+    }
+    if (company != null && company.getCurrency() != null) {
       return new CurrencyResponse(company.getCurrency());
+    }
     if (product.getSaleCurrency() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
