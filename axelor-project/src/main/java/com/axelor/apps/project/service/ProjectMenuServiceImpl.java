@@ -85,6 +85,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
+            .param("details-view", "true")
             .domain("self.typeSelect = :_typeSelect")
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
             .param("search-filters", "project-task-filters");
@@ -100,6 +101,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
+            .param("details-view", "true")
             .domain("self.typeSelect = :_typeSelect AND self.project.id = :_id")
             .context("_id", project.getId())
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)

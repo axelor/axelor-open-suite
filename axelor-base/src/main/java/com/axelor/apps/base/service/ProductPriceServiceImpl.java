@@ -51,15 +51,25 @@ public class ProductPriceServiceImpl implements ProductPriceService {
   @Override
   public BigDecimal getSaleUnitPrice(
       Company company, Product product, boolean inAti, Partner partner) throws AxelorException {
-    LocalDate todayDate = appBaseService.getTodayDate(company);
-    Currency toCurrency = (Currency) productCompanyService.get(product, "saleCurrency", company);
+    return getSaleUnitPrice(company, product, product.getInAti(), partner, null);
+  }
 
+  @Override
+  public BigDecimal getSaleUnitPrice(
+      Company company, Product product, boolean inAti, Partner partner, Currency currency)
+      throws AxelorException {
+    LocalDate todayDate = appBaseService.getTodayDate(company);
+
+    Currency toCurrency = (Currency) productCompanyService.get(product, "saleCurrency", company);
     FiscalPosition fiscalPosition = null;
     if (partner != null) {
       fiscalPosition = partner.getFiscalPosition();
       if (partner.getCurrency() != null) {
         toCurrency = partner.getCurrency();
       }
+    }
+    if (currency != null) {
+      toCurrency = currency;
     }
     Set<TaxLine> taxLineSet =
         accountManagementService.getTaxLineSet(todayDate, product, company, fiscalPosition, false);

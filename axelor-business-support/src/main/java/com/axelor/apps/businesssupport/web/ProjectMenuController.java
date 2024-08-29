@@ -25,6 +25,7 @@ public class ProjectMenuController {
             .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
+            .param("details-view", "true")
             .domain(
                 "self.project.projectStatus.isCompleted = false AND self.typeSelect = :_typeSelect AND (self.project.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.project.membersUserSet")
             .context("_typeSelect", ProjectTaskRepository.TYPE_TICKET)

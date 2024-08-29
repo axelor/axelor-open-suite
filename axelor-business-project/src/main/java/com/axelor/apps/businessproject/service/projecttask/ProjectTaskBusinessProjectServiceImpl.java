@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.service;
+package com.axelor.apps.businessproject.service.projecttask;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -247,8 +247,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     if (projectTask.getProduct() != null) {
       projectTask.setTotalCosts(
           projectTask
-              .getProduct()
-              .getCostPrice()
+              .getUnitCost()
               .multiply(projectTask.getQuantity())
               .setScale(2, RoundingMode.HALF_UP));
     }
