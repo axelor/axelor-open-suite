@@ -87,9 +87,7 @@ public class ProjectTaskToolServiceImpl implements ProjectTaskToolService {
     bindings.put("taskStatus", taskStatus);
 
     if (taskStatusManagementSelect != null) {
-
-      if (ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT == taskStatusManagementSelect) {
-
+      if (ProjectRepository.TASK_STATUS_MANAGEMENT_APP == taskStatusManagementSelect) {
         filter.append(
             "AND (self.project.taskStatusManagementSelect = :taskStatusManagementSelect "
                 + "OR (self.project.taskStatusManagementSelect = :categoryTaskStatusManagementSelect AND self.projectTaskCategory IS NULL))");
@@ -97,14 +95,15 @@ public class ProjectTaskToolServiceImpl implements ProjectTaskToolService {
         bindings.put(
             "categoryTaskStatusManagementSelect",
             ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY);
-        filter.append("AND self.project.id = :id ");
-        bindings.put("id", objectId);
       } else {
-
         filter.append("AND self.project.taskStatusManagementSelect = :taskStatusManagementSelect ");
         bindings.put("taskStatusManagementSelect", taskStatusManagementSelect);
 
-        if (ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY == taskStatusManagementSelect) {
+        if (ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT == taskStatusManagementSelect) {
+          filter.append("AND self.project.id = :id ");
+          bindings.put("id", objectId);
+        } else if (ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY
+            == taskStatusManagementSelect) {
           filter.append("AND self.projectTaskCategory.id = :id ");
           bindings.put("id", objectId);
         }
