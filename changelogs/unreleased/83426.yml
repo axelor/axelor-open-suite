@@ -1,0 +1,3 @@
+---
+title: "Product: fixed NPE when creating sale order line with a product having empty multiple qty list."
+module: axelor-base
