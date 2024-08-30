@@ -154,10 +154,7 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     for (MetaJsonField attribute : attributes) {
       String name = attribute.getName();
       if (name != null) {
-        name = name.replace("$AXELORTMP", "");
-        if (name.contains("_")) {
-          attribute.setName(name.substring(0, name.lastIndexOf('_')) + '_' + creator.getId());
-        }
+        attribute.setName(name.replace("$AXELORTMP", "") + '_' + creator.getId());
       }
       updateOtherFieldsInAttribute(creator, attribute);
       updateAttributeNameInFormulas(creator, name, attribute.getName());

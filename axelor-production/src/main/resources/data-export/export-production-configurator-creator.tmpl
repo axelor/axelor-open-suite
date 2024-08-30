@@ -278,6 +278,16 @@
 					}
 					configProdProcessLine += """</priorityFormula>
 					<defPriorityAsFormula>${cppl.defPriorityAsFormula}</defPriorityAsFormula>
+					<workCenterTypeSelect>"""
+					if (cppl.workCenterTypeSelect != null) {
+						configProdProcessLine += "${cppl.workCenterTypeSelect}"
+					}
+					configProdProcessLine += """</workCenterTypeSelect>
+					<workCenterGroup>"""
+					if (cppl.workCenterGroup?.id != null) {
+						configProdProcessLine += "${cppl.workCenterGroup?.id}"
+					}
+					configProdProcessLine += """</workCenterGroup>
 					<workCenter>"""
 					if (cppl.workCenter?.id != null) {
 						configProdProcessLine += "${cppl.workCenter?.id}"
