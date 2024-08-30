@@ -23,5 +23,5 @@ import java.util.Set;
 
 public interface TimesheetContextProjectService {
   @CallMethod
-  Set<Long> getContextProjectIds();
+  Set<Long> getActiveProjectIds();
 }

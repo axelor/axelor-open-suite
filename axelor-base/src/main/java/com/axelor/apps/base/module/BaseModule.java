@@ -143,6 +143,8 @@ import com.axelor.apps.base.service.ProductConversionService;
 import com.axelor.apps.base.service.ProductConversionServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
+import com.axelor.apps.base.service.ProductPriceService;
+import com.axelor.apps.base.service.ProductPriceServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.ProductUpdateService;
@@ -159,8 +161,8 @@ import com.axelor.apps.base.service.YearService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.address.AddressAttrsService;
 import com.axelor.apps.base.service.address.AddressAttrsServiceImpl;
-import com.axelor.apps.base.service.address.AddressExportService;
-import com.axelor.apps.base.service.address.AddressExportServiceImpl;
+import com.axelor.apps.base.service.address.AddressFetchService;
+import com.axelor.apps.base.service.address.AddressFetchServiceImpl;
 import com.axelor.apps.base.service.address.AddressMetaService;
 import com.axelor.apps.base.service.address.AddressMetaServiceImpl;
 import com.axelor.apps.base.service.address.AddressService;
@@ -207,6 +209,8 @@ import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
+import com.axelor.apps.base.service.observer.ProductFireService;
+import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewServiceImpl;
@@ -450,7 +454,7 @@ public class BaseModule extends AxelorModule {
     bind(AddressTemplateLineViewService.class).to(AddressTemplateLineViewServiceImpl.class);
     bind(AddressMetaService.class).to(AddressMetaServiceImpl.class);
     bind(AddressTemplateService.class).to(AddressTemplateServiceImpl.class);
-    bind(AddressExportService.class).to(AddressExportServiceImpl.class);
+    bind(AddressFetchService.class).to(AddressFetchServiceImpl.class);
     bind(ImportExportTranslationService.class).to(ImportExportTranslationServiceImpl.class);
     bind(ImportConfigurationService.class).to(ImportConfigurationServiceImpl.class);
     bind(LocalizationService.class).to(LocalizationServiceImpl.class);
@@ -470,5 +474,7 @@ public class BaseModule extends AxelorModule {
     bind(UserPermissionResponseComputeService.class)
         .to(UserPermissionResponseComputeServiceImpl.class);
     bind(PrintingTemplateComputeNameService.class).to(PrintingTemplateComputeNameServiceImpl.class);
+    bind(ProductFireService.class).to(ProductFireServiceImpl.class);
+    bind(ProductPriceService.class).to(ProductPriceServiceImpl.class);
   }
 }

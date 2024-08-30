@@ -3,82 +3,30 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
-  <grid name="sale-batch-grid" title="Sale batches" model="com.axelor.apps.sale.db.SaleBatch">
-    <field name="actionSelect"/>
-    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-    <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="createdOn"/>
-    <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
-  </grid>
-
-  <form onLoad="action-group-supplychain-salebatch-onload"
-    onNew="action-group-supplychain-salebatch-onnew" name="sale-batch-form" title="Sale Batch"
-    model="com.axelor.apps.sale.db.SaleBatch" width="large">
-    <panel name="mainPanel">
-      <field name="actionSelect" onChange="action-sale-batch-attrs-action-select"/>
-      <field name="code" x-bind="{{code|unaccent|uppercase}}"
-        onChange="action-base-batch-condition-check-unique-code"/>
-      <field name="company" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid"/>
-      <field name="fetchLimit"/>
-    </panel>
-    <panel name="createdPanel">
-      <field name="createdOn" title="Created on"/>
-      <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
-      <button name="invoicingBatchBtn" title="Invoicing batch"
-        onClick="save,action-sale-batch-method-run-batch"/>
-    </panel>
-    <panel-tabs name="mainPanelTab">
-      <panel name="descriptionPanel" title="Description">
-        <field name="description" showTitle="false" colSpan="12"/>
-      </panel>
-      <panel-related name="batchListPanel" field="batchList" colSpan="12"
-        form-view="batch-form" grid-view="batch-grid" readonly="true"/>
-    </panel-tabs>
+  <form id="supply-chain-sale-batch-form" name="sale-batch-form" title="Sale Batch"
+    model="com.axelor.apps.sale.db.SaleBatch" extension="true" width="large">
+    <extend target="/">
+      <attribute name="onNew" value="action-sale-batch-group-supply-chain-on-new"/>
+      <attribute name="onLoad" value="action-sale-batch-attrs-supply-chain-action-select"/>
+    </extend>
+    <extend target="//field[@name='createdBy']">
+      <insert position="after">
+        <panel name="invoicingPanel" colSpan="12" showIf="actionSelect == 1">
+          <button name="invoicingBatchBtn" title="Invoicing batch"
+            onClick="save,action-sale-batch-method-run-batch"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
-  <!-- ACTION GROUPs -->
-  <action-group name="action-group-supplychain-salebatch-onload">
-    <action name="action-sale-batch-attrs-action-select"/>
-    <action name="action-sale-batch-attrs-action-select"/>
-  </action-group>
-
-  <action-group name="action-group-supplychain-salebatch-onnew">
-    <action name="action-sale-batch-record-on-new"/>
-    <action name="action-sale-batch-attrs-action-select"/>
-  </action-group>
-
-  <!-- ACTION RECORD -->
-  <action-record name="action-sale-batch-record-on-new"
-    model="com.axelor.apps.sale.db.SaleBatch">
-    <field name="createdOn" expr="eval:__config__.app.getTodayDateTime(null)"/>
-    <field name="createdOn"
-      expr="eval:__config__.app.getTodayDateTime(__user__.activeCompany)"
-      if="__user__.activeCompany != null"/>
-    <field name="createdOn"
-      expr="eval:__config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
-    <field name="createdBy" expr="__user__"/>
-    <field name="company" expr="eval:__user__.activeCompany"
-      if="__user__.activeCompany != null"/>
-    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
-  </action-record>
-
-  <!-- ACTION METHOD -->
-  <action-method name="action-sale-batch-method-run-batch">
-    <call class="com.axelor.apps.supplychain.web.SaleBatchController" method="runBatch"/>
-  </action-method>
-
-  <!-- ACTION ATTRS -->
-  <action-attrs name="action-sale-batch-attrs-action-select">
-    <attribute name="hidden" expr="eval: actionSelect != 1" for="InvoicingPage"/>
+  <action-attrs name="action-sale-batch-attrs-supply-chain-action-select">
+    <attribute for="actionSelect" name="selection-in" expr="[1]"
+      if="!__config__.app.getApp('sale')?.enableLoyalty"/>
   </action-attrs>
 
-  <search-filters name="sale-batch-filters" model="com.axelor.apps.sale.db.SaleBatch"
-    title="Sale batch filters">
-    <field name="company" hidden="true"
-      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-  </search-filters>
+  <action-group name="action-sale-batch-group-supply-chain-on-new">
+    <action name="action-sale-batch-record-on-new"/>
+    <action name="action-sale-batch-attrs-supply-chain-action-select"/>
+  </action-group>
+
 </object-views>

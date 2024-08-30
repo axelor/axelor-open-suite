@@ -9,6 +9,7 @@ import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.utils.MapTools;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -52,11 +53,11 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
   public Map<String, Map<String, Object>> getOnNewAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    attrs.putAll(hideAti(saleOrder));
-    attrs.putAll(hideDifferentLanguageMessage(saleOrder));
-    attrs.putAll(hidePriceDiscounted(saleOrder, saleOrderLine));
-    attrs.putAll(getPriceAndQtyScale());
-    attrs.putAll(getTypeSelectSelection());
+    MapTools.addMap(attrs, hideAti(saleOrder));
+    MapTools.addMap(attrs, hideDifferentLanguageMessage(saleOrder));
+    MapTools.addMap(attrs, hidePriceDiscounted(saleOrder, saleOrderLine));
+    MapTools.addMap(attrs, getPriceAndQtyScale());
+    MapTools.addMap(attrs, getTypeSelectSelection());
     return attrs;
   }
 
@@ -64,13 +65,14 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
   public Map<String, Map<String, Object>> getOnLoadAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    attrs.putAll(hideAti(saleOrder));
-    attrs.putAll(hideFieldsForClient());
-    attrs.putAll(hideDifferentLanguageMessage(saleOrder));
-    attrs.putAll(hidePriceDiscounted(saleOrder, saleOrderLine));
-    attrs.putAll(getPriceAndQtyScale());
-    attrs.putAll(getTypeSelectSelection());
-    attrs.putAll(getMultipleQtyLabel(saleOrderLine));
+
+    MapTools.addMap(attrs, hideAti(saleOrder));
+    MapTools.addMap(attrs, hideFieldsForClient());
+    MapTools.addMap(attrs, hideDifferentLanguageMessage(saleOrder));
+    MapTools.addMap(attrs, hidePriceDiscounted(saleOrder, saleOrderLine));
+    MapTools.addMap(attrs, getPriceAndQtyScale());
+    MapTools.addMap(attrs, getTypeSelectSelection());
+    MapTools.addMap(attrs, getMultipleQtyLabel(saleOrderLine));
     return attrs;
   }
 
@@ -78,9 +80,9 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
   public Map<String, Map<String, Object>> getProductOnChangeAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    attrs.putAll(hideAti(saleOrder));
-    attrs.putAll(hidePriceDiscounted(saleOrder, saleOrderLine));
-    attrs.putAll(getMultipleQtyLabel(saleOrderLine));
+    MapTools.addMap(attrs, hideAti(saleOrder));
+    MapTools.addMap(attrs, hidePriceDiscounted(saleOrder, saleOrderLine));
+    MapTools.addMap(attrs, getMultipleQtyLabel(saleOrderLine));
     return attrs;
   }
 
@@ -88,8 +90,8 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
   public Map<String, Map<String, Object>> getDiscountTypeSelectOnChangeAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    attrs.putAll(hidePriceDiscounted(saleOrder, saleOrderLine));
-    attrs.putAll(getDiscountAmountTitle(saleOrderLine));
+    MapTools.addMap(attrs, hidePriceDiscounted(saleOrder, saleOrderLine));
+    MapTools.addMap(attrs, getDiscountAmountTitle(saleOrderLine));
     return attrs;
   }
 
@@ -97,8 +99,8 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
   public Map<String, Map<String, Object>> getQtyOnChangeAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    attrs.putAll(hidePriceDiscounted(saleOrder, saleOrderLine));
-    attrs.putAll(getMultipleQtyLabel(saleOrderLine));
+    MapTools.addMap(attrs, hidePriceDiscounted(saleOrder, saleOrderLine));
+    MapTools.addMap(attrs, getMultipleQtyLabel(saleOrderLine));
     return attrs;
   }
 
@@ -223,7 +225,7 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
         saleOrderLine.getProduct().getSaleProductMultipleQtyList();
     boolean allowToForce = product.getAllowToForceSaleQty();
     boolean isMultiple =
-        productMultipleQtyService.checkMultipleQty(saleOrderLine.getQty(), productMultipleQtyList);
+        productMultipleQtyService.isMultipleQty(saleOrderLine.getQty(), productMultipleQtyList);
 
     Map<String, Object> attrsMap = new HashMap<>();
     attrsMap.put(

@@ -39,9 +39,11 @@
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
-          action="save,action-project-method-my-open-tasks" showIf="id &amp;&amp; isShowStatus"/>
+          action="save,action-project-method-my-open-tasks"
+          showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
         <item name="tasksCreatedByMe" title="Tasks created by me"
-          action="save,action-project-method-my-tasks" showIf="id &amp;&amp; isShowStatus"/>
+          action="save,action-project-method-my-tasks"
+          showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
         <item name="allOpenTasks" title="All open tasks"
           action="save,action-project-method-all-open-tasks" showIf="id"/>
         <item name="allTasks" title="All tasks" action="save,action-project-method-all-tasks"
@@ -129,20 +131,20 @@
       <field name="description" colSpan="12" widget="html"/>
       <field name="siteSet" colSpan="12" grid-view="site-project-grid" form-view="site-form"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"
-        domain="self.isUsableOnProject = true"/>
+        domain="self.isUsableOnProject = true" canEdit="false"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
       <panel title="Task Tree" name="taskTreePanel">
         <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
-          icon="fa-plus" onClick="save,action-project-add-task"/>
+          icon="fa-plus" onClick="save,action-business-project-add-task"/>
         <button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left"
           icon="fa-plus" onClick="save,action-project-add-ticket"
           if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
         <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-          icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
+          icon="fa-tasks" onClick="save,action-business-project-view-show-related-tasks"/>
         <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
-          colSpan="12" action="action-view-show-project-task-tree"/>
+          colSpan="12" action="action-view-show-business-project-task-tree"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
           colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
@@ -150,11 +152,15 @@
       <panel-include view="incl-member-panel-form"/>
       <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
         if="__config__.app.isApp('employee')"/>
-      <panel-include view="incl-holdback-panel-form"/>
+      <panel title="HoldBacks" name="projectHoldBacksPanel">
+        <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"
+          title="HoldBacks lines" colSpan="12" form-view="project-hold-back-line-form"
+          grid-view="project-hold-back-line-grid" editable="true"/>
+      </panel>
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
       <panel name="reportingPanel" title="Reporting" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project')" hidden="true">
+        if="__config__.app.isApp('business-project')">
         <panel title="Time follow-up" colSpan="12">
           <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
             showTitle="false" height="125"/>
@@ -380,9 +386,8 @@
           css="btn-custom" icon="fa-file-text-o"
           onClick="save,action-project-view-show-invoicing-projects"/>
         <panel name="analyticDistributionPanel" title="Analytics"
-          if-module="axelor-business-project"
-          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-          hidden="true" colSpan="12">
+          if-module="axelor-business-project" colSpan="12"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
           <help colSpan="12"><![CDATA[This analytic distribution template will be filled with partner or assigned user configuration according to Business Project module configuration.]]></help>
           <field name="analyticDistributionTemplate"
             grid-view="analytic-distribution-template-grid"
@@ -508,18 +513,18 @@
           if-module="axelor-human-resource"
           onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
         <spacer colSpan="3"/>
-        <field name="allowToGetPricesFromFrameworkContract" hidden="true"/>
+        <field name="allowToGetPricesFromFrameworkContract"/>
         <panel-include view="incl-fields-to-display-panel-form"/>
       </panel>
       <panel title="Contracts" name="contractPanel"
         if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-        <panel name="frameworkContractPanel" hidden="true"
-          showIf="allowToGetPricesFromFrameworkContract" colSpan="12">
-          <field name="frameworkCustomerContractSet" colSpan="12"
+        <panel name="frameworkContractPanel" showIf="allowToGetPricesFromFrameworkContract"
+          colSpan="12">
+          <field name="frameworkCustomerContractSet" colSpan="12" canEdit="false"
             domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 1"/>
           <field name="defaultFrameworkCustomerContract"
             onSelect="action-project-attrs-set-default-customer-contract-domain"/>
-          <field name="frameworkSupplierContractSet" colSpan="12"
+          <field name="frameworkSupplierContractSet" colSpan="12" canEdit="false"
             domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 2"/>
           <field name="defaultFrameworkSupplierContract"
             onSelect="action-project-attrs-set-default-supplier-contract-domain"/>
@@ -535,10 +540,7 @@
         <panel-dashlet name="contractInvoicePanel" title="Invoices"
           action="action-project-dashlet-contract-invoices" colSpan="12"/>
       </panel>
-      <panel title="Custom fields" name="customFieldConfigPanel">
-        <panel-related field="taskCustomFieldsList" colSpan="12" showIf="id"
-          form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
-      </panel>
+      <panel-include view="incl-custom-fields-to-display-panel-form"/>
       <panel title="Activities" name="activityPanel"
         onTabSelect="action-project-activity-dashboard-method-on-new" showIf="id">
         <panel-include view="project-activity-dashboard-form"/>
@@ -687,7 +689,7 @@
   <action-view name="action-dashlet-project-show-all-invoicing-task"
     title="Task Invoicing" model="com.axelor.apps.project.db.ProjectTask">
     <view type="grid" name="business-project-project-task-grid"/>
-    <view type="form" name="project-task-form"/>
+    <view type="form" name="business-project-task-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="popup" value="reload"/>
     <domain>self.project.id in (:_projectIds)</domain>
@@ -700,8 +702,8 @@
 
   <action-view name="action-project-add-ticket"
     model="com.axelor.apps.project.db.ProjectTask" title="Ticket">
-    <view name="project-task-form" type="form"/>
-    <view name="project-task-grid" type="grid"/>
+    <view name="business-project-task-form" type="form"/>
+    <view name="business-project-task-grid" type="grid"/>
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
@@ -710,6 +712,27 @@
     <context name="_project" expr="eval:__this__"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
+  </action-view>
+
+  <action-view name="action-business-project-add-task"
+    model="com.axelor.apps.project.db.ProjectTask" title="Task">
+    <view name="business-project-task-form" type="form"/>
+    <view name="business-project-task-grid" type="grid"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_project" expr="eval:__this__"/>
+    <context name="_typeSelect"
+      expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
+  </action-view>
+
+  <action-view name="action-view-show-business-project-task-tree"
+    title="Project Task Tree" model="com.axelor.apps.project.db.ProjectTask">
+    <view type="tree" name="business-project-project-task-tree"/>
+    <view type="form" name="business-project-task-form"/>
+    <domain>self.project.id = :_id AND self.parentTask = null</domain>
+    <context name="_id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-project-view-convert-project-wizard"
@@ -1266,6 +1289,11 @@
   <action-method name="action-project-method-compute-project-totals">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="computeProjectTotals"/>
+  </action-method>
+
+  <action-method name="action-business-project-view-show-related-tasks">
+    <call class="com.axelor.apps.businessproject.web.ProjectMenuController"
+      method="allProjectRelatedTasks"/>
   </action-method>
 
   <action-group name="action-business-project-group-finish-project">

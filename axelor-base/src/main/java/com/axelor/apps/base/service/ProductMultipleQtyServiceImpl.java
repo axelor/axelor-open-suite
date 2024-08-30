@@ -18,24 +18,39 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ProductMultipleQty;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected AppBaseService appBaseService;
 
-  public boolean checkMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties) {
+  @Inject
+  public ProductMultipleQtyServiceImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
 
-    if (productMultipleQties.size() == 0) {
+  @Override
+  public boolean isMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties) {
+
+    if (productMultipleQties.isEmpty()) {
       return true;
     }
 
@@ -57,7 +72,7 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
     return false;
   }
 
-  public String toStringMultipleQty(List<ProductMultipleQty> productMultipleQties) {
+  protected String toStringMultipleQty(List<ProductMultipleQty> productMultipleQties) {
 
     String message = "";
 
@@ -74,13 +89,14 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
     return message;
   }
 
+  @Override
   public void checkMultipleQty(
       BigDecimal qty,
       List<ProductMultipleQty> productMultipleQties,
       boolean allowToForce,
       ActionResponse response) {
 
-    boolean isMultiple = this.checkMultipleQty(qty, productMultipleQties);
+    boolean isMultiple = this.isMultipleQty(qty, productMultipleQties);
 
     if (isMultiple) {
       response.setAttr("multipleQtyNotRespectedLabel", "hidden", true);
@@ -107,10 +123,32 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
 
   @Override
   public String getMultipleQuantityErrorMessage(List<ProductMultipleQty> productMultipleQties) {
-    String message =
-        String.format(
-            I18n.get("Quantity should be a multiple of %s"),
-            this.toStringMultipleQty(productMultipleQties));
-    return message;
+    return String.format(
+        I18n.get("Quantity should be a multiple of %s"),
+        this.toStringMultipleQty(productMultipleQties));
+  }
+
+  @Override
+  public void checkMultipleQty(List<ProductMultipleQty> productMultipleQtyList, BigDecimal qty)
+      throws AxelorException {
+    String quantityList =
+        productMultipleQtyList.stream()
+            .map(
+                productMultipleQty ->
+                    productMultipleQty
+                        .getMultipleQty()
+                        .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP))
+            .collect(Collectors.toList())
+            .toString();
+    if (CollectionUtils.isNotEmpty(productMultipleQtyList) && qty == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          String.format(I18n.get(BaseExceptionMessage.NO_QUANTITY_PROVIDED), quantityList));
+    }
+    if (!isMultipleQty(qty, productMultipleQtyList)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(I18n.get(BaseExceptionMessage.QUANTITY_NOT_MULTIPLE), quantityList));
+    }
   }
 }

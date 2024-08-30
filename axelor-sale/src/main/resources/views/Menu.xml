@@ -265,6 +265,17 @@
     <context name="_group" expr="eval: __user__.group"/>
   </action-view>
 
+  <menuitem name="sale-conf-carts" parent="sc-root-sale-conf" order="1000" title="Carts"
+    if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"/>
+
+  <menuitem name="sale-conf-edit-cart" parent="sale-conf-carts" title="Cart"
+    action="sale.conf.edit.cart" if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
+    order="100"/>
+
+  <action-method name="sale.conf.edit.cart">
+    <call class="com.axelor.apps.sale.web.CartController" method="editCart"/>
+  </action-method>
+
   <!-- ADMINISTRATION -->
 
   <menuitem name="admin-root-batch-sale" parent="admin-root-batch"
@@ -275,6 +286,7 @@
     model="com.axelor.apps.sale.db.SaleBatch">
     <view type="grid" name="sale-batch-grid"/>
     <view type="form" name="sale-batch-form"/>
+    <view-param name="search-filters" value="sale-batch-filters"/>
   </action-view>
 
 

@@ -14,6 +14,7 @@
       title="Picked products" mappedBy="massStockMove"/>
     <one-to-many name="storedProductList" ref="com.axelor.apps.stock.db.StoredProduct"
       title="Stored products" mappedBy="massStockMove"/>
+    <string name="sequence" title="Sequence" namecolumn="true" readonly="true"/>
   </entity>
 
 

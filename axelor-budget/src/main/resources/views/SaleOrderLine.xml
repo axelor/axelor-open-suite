@@ -55,11 +55,6 @@
     </extend>
   </form>
 
-  <action-group name="budget-action-sale-order-line-group-account-onchange">
-    <action name="action-sale-order-line-method-set-analytic-distribution-panel-hidden"/>
-    <action name="action-reset-budget-method"/>
-  </action-group>
-
   <action-method name="action-budget-sale-order-line-method-budget-domain">
     <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setBudgetDomain"/>
   </action-method>

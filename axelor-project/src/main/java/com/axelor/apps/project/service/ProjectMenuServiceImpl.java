@@ -28,23 +28,24 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
 import java.util.Map;
+import java.util.Optional;
 
 public class ProjectMenuServiceImpl implements ProjectMenuService {
 
-  protected ProjectService projectService;
+  protected ProjectToolService projectToolService;
   protected ProjectTaskRepository projectTaskRepo;
 
   @Inject
   public ProjectMenuServiceImpl(
-      ProjectService projectService, ProjectTaskRepository projectTaskRepo) {
-    this.projectService = projectService;
+      ProjectToolService projectToolService, ProjectTaskRepository projectTaskRepo) {
+    this.projectToolService = projectToolService;
     this.projectTaskRepo = projectTaskRepo;
   }
 
   @Override
   public Map<String, Object> getAllOpenProjectTasks() {
-    User currentUser = AuthUtils.getUser();
-    Project contextProject = currentUser.getContextProject();
+    Project activeProject =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
 
     ActionViewBuilder builder =
         ActionView.define(I18n.get("Project Tasks"))
@@ -55,32 +56,10 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .domain(
                 "self.project.projectStatus.isCompleted = false AND self.typeSelect = :_typeSelect AND (self.project.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.project.membersUserSet")
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .context("_project", contextProject)
-            .context("_projectIds", projectService.getContextProjectIds())
+            .context("_project", activeProject)
+            .context("_projectIds", projectToolService.getActiveProjectIds())
             .param("details-view", "true")
             .param("search-filters", "project-task-filters");
-
-    return builder.map();
-  }
-
-  @Override
-  public Map<String, Object> getAllOpenProjectTickets() {
-    User currentUser = AuthUtils.getUser();
-    Project contextProject = currentUser.getContextProject();
-
-    ActionViewBuilder builder =
-        ActionView.define(I18n.get("Ticket"))
-            .model(ProjectTask.class.getName())
-            .add("kanban", "project-task-kanban")
-            .add("grid", "project-task-grid")
-            .add("form", "project-task-form")
-            .domain(
-                "self.project.projectStatus.isCompleted = false AND self.typeSelect = :_typeSelect AND (self.project.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.project.membersUserSet")
-            .context("_typeSelect", ProjectTaskRepository.TYPE_TICKET)
-            .context("_project", contextProject)
-            .context("_projectIds", projectService.getContextProjectIds())
-            .param("search-filters", "project-task-filters")
-            .param("forceTitle", "true");
 
     return builder.map();
   }
@@ -106,6 +85,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
+            .param("details-view", "true")
             .domain("self.typeSelect = :_typeSelect")
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
             .param("search-filters", "project-task-filters");
@@ -121,6 +101,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
+            .param("details-view", "true")
             .domain("self.typeSelect = :_typeSelect AND self.project.id = :_id")
             .context("_id", project.getId())
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)

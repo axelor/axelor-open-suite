@@ -32,8 +32,9 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHistoryLine;
 import com.axelor.apps.project.db.ProjectStatus;
@@ -41,10 +42,11 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
-import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
+import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectCreateTaskService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.project.service.ResourceBookingService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -53,8 +55,10 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.studio.db.AppSupplychain;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
@@ -81,6 +85,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService;
   protected AppBaseService appBaseService;
   protected InvoiceRepository invoiceRepository;
+  protected UnitProjectToolService unitProjectToolService;
 
   public static final int BIG_DECIMAL_SCALE = 2;
   public static final String FA_LEVEL_UP = "arrow-90deg-up";
@@ -91,8 +96,10 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   public ProjectBusinessServiceImpl(
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
-      ProjectTemplateRepository projTemplateRepo,
       AppProjectService appProjectService,
+      ProjectCreateTaskService projectCreateTaskService,
+      WikiRepository wikiRepo,
+      ResourceBookingService resourceBookingService,
       PartnerService partnerService,
       AddressService addressService,
       AppBusinessProjectService appBusinessProjectService,
@@ -100,13 +107,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService,
       AppBaseService appBaseService,
       InvoiceRepository invoiceRepository,
-      ProjectCreateTaskService projectCreateTaskService) {
+      UnitProjectToolService unitProjectToolService) {
     super(
         projectRepository,
         projectStatusRepository,
         appProjectService,
-        projTemplateRepo,
-        projectCreateTaskService);
+        projectCreateTaskService,
+        wikiRepo,
+        resourceBookingService);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;
@@ -114,6 +122,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.projectTaskReportingValuesComputingService = projectTaskReportingValuesComputingService;
     this.appBaseService = appBaseService;
     this.invoiceRepository = invoiceRepository;
+    this.unitProjectToolService = unitProjectToolService;
   }
 
   @Override
@@ -275,6 +284,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       ProjectTemplate projectTemplate, String projectCode, Partner clientPartner) {
     Project project = super.generateProject(projectTemplate, projectCode, clientPartner);
 
+    project.setCompany(projectTemplate.getCompany());
     if (projectTemplate.getIsBusinessProject()) {
       project.setCurrency(clientPartner.getCurrency());
       if (clientPartner.getPartnerAddressList() != null
@@ -292,9 +302,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.setIsInvoicingPurchases(projectTemplate.getIsInvoicingPurchases());
       project.setInvoicingComment(projectTemplate.getInvoicingComment());
       project.setIsBusinessProject(projectTemplate.getIsBusinessProject());
+
+      if (projectTemplate.getCompany() == null
+          && !ObjectUtils.isEmpty(clientPartner.getCompanySet())
+          && clientPartner.getCompanySet().size() == 1) {
+        project.setCompany(clientPartner.getCompanySet().iterator().next());
+      }
     }
     project.setProjectFolderSet(new HashSet<>(projectTemplate.getProjectFolderSet()));
-    project.setCompany(projectTemplate.getCompany());
 
     return project;
   }
@@ -331,13 +346,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     BigDecimal totalSpentTime = BigDecimal.ZERO;
 
     Unit projectUnit = project.getProjectTimeUnit();
-    BigDecimal numberHoursADay = project.getNumberHoursADay();
-
-    if (numberHoursADay.signum() <= 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
-    }
+    BigDecimal numberHoursADay = unitProjectToolService.getNumberHoursADay(project);
 
     for (ProjectTask projectTask : projectTaskList) {
       Unit projectTaskUnit = projectTask.getTimeUnit();
@@ -347,25 +356,25 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       totalSoldTime =
           totalSoldTime
               .add(
-                  getConvertedTime(
+                  unitProjectToolService.getConvertedTime(
                       projectTask.getSoldTime(), projectTaskUnit, projectUnit, numberHoursADay))
               .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
       totalUpdatedTime =
           totalUpdatedTime
               .add(
-                  getConvertedTime(
+                  unitProjectToolService.getConvertedTime(
                       projectTask.getUpdatedTime(), projectTaskUnit, projectUnit, numberHoursADay))
               .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
       totalPlannedTime =
           totalPlannedTime
               .add(
-                  getConvertedTime(
+                  unitProjectToolService.getConvertedTime(
                       projectTask.getPlannedTime(), projectTaskUnit, projectUnit, numberHoursADay))
               .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
       totalSpentTime =
           totalSpentTime
               .add(
-                  getConvertedTime(
+                  unitProjectToolService.getConvertedTime(
                       projectTask.getSpentTime(), projectTaskUnit, projectUnit, numberHoursADay))
               .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
     }
@@ -559,20 +568,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       return date.getMonthValue() == today.getMonthValue() - 1 && date.getYear() == today.getYear();
     }
     return date.getMonthValue() == 12 && date.getYear() == today.getYear() - 1;
-  }
-
-  protected BigDecimal getConvertedTime(
-      BigDecimal duration, Unit fromUnit, Unit toUnit, BigDecimal numberHoursADay)
-      throws AxelorException {
-    if (appBusinessProjectService.getDaysUnit().equals(fromUnit)
-        && appBusinessProjectService.getHoursUnit().equals(toUnit)) {
-      return duration.multiply(numberHoursADay);
-    } else if (appBusinessProjectService.getHoursUnit().equals(fromUnit)
-        && appBusinessProjectService.getDaysUnit().equals(toUnit)) {
-      return duration.divide(numberHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
-    } else {
-      return duration;
-    }
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -790,5 +785,52 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         project.setProjectStatus(completedStatus);
       }
     }
+  }
+
+  @Override
+  public Map<String, Object> getTaskView(
+      Project project, String title, String domain, Map<String, Object> context) {
+    String gridName = "project-task-grid";
+    String formName = "project-task-form";
+
+    if (project.getIsBusinessProject()) {
+      gridName = "business-project-task-grid";
+      formName = "business-project-task-form";
+    }
+
+    ActionView.ActionViewBuilder builder =
+        ActionView.define(I18n.get(title))
+            .model(ProjectTask.class.getName())
+            .add("grid", gridName)
+            .add("form", formName)
+            .domain(domain)
+            .param("details-view", "true");
+
+    if (project.getIsShowKanbanPerSection() && project.getIsShowCalendarPerSection()) {
+      builder.add("kanban", "task-per-section-kanban");
+      builder.add("calendar", "project-task-per-section-calendar");
+    } else {
+      builder.add("kanban", "project-task-kanban");
+      builder.add("calendar", "project-task-per-status-calendar");
+    }
+
+    if (ObjectUtils.notEmpty(context)) {
+      context.forEach(builder::context);
+    }
+    return builder.map();
+  }
+
+  public String checkPercentagesOver1000OnTasks(Project project) {
+    BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
+    return project.getProjectTaskList().stream()
+        .filter(
+            projectTask ->
+                projectTask.getPercentageOfProgress().compareTo(percentageLimit) == 0
+                    || projectTask.getPercentageOfConsumption().compareTo(percentageLimit) == 0
+                    || projectTask.getRemainingAmountToDo().compareTo(BigDecimal.valueOf(9999.99))
+                        == 0)
+        .map(ProjectTask::getName)
+        .collect(Collectors.toList())
+        .toString();
   }
 }
