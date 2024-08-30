@@ -103,6 +103,7 @@
           colSpan="12" action="action-view-show-project-task-tree"/>
       </panel>
 
+      <panel-include view="incl-todo-panel-form"/>
       <panel-include view="incl-member-panel-form"/>
       <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
         if="__config__.app.isApp('employee')"/>
@@ -341,6 +342,14 @@
         showIf="$contains(customFieldManagementSelect, 'project')"
         form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
     </panel>
+  </form>
+
+  <form name="incl-todo-panel-form" title="To do" model="com.axelor.apps.project.db.Project">
+    <panel-related name="toDoItemListPanel" colSpan="12" x-tree-limit="1"
+      title="To do list" field="projectToDoItemList" orderBy="sequence" canMove="true"
+      onChange="action-to-do-item-method-reset-completed-fields" form-view="project-to-do-item-form"
+      grid-view="project-to-do-item-grid" widget="tree-grid" x-tree-field="projectToDoItemList"
+      x-tree-field-title="Add a new to do item" editable="true"/>
   </form>
 
   <kanban columnBy="projectStatus" sequenceBy="orderByState" limit="10" name="project-kanban"

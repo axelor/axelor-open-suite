@@ -94,6 +94,8 @@
     <panel-include view="incl-customized-field-panel-form"/>
     <panel-tabs name="mainPanelTab">
 
+      <panel-include view="incl-todo-task-panel-form"/>
+
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
         if-module="axelor-human-resource" showIf="project.isShowPlanning">
         <field name="budgetedTime" colSpan="4">
@@ -244,6 +246,15 @@
       </panel>
       <field name="project.customFieldManagementSelect" hidden="true"/>
     </panel>
+  </form>
+
+  <form name="incl-todo-task-panel-form" title="To do"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <panel-related name="toDoItemListPanel" colSpan="12" x-tree-limit="1"
+      title="To do list" field="projectToDoItemList" orderBy="sequence" canMove="true"
+      onChange="action-to-do-item-method-reset-completed-fields" form-view="project-to-do-item-form"
+      grid-view="project-to-do-item-grid" widget="tree-grid" x-tree-field="projectToDoItemList"
+      x-tree-field-title="Add a new to do item" editable="true"/>
   </form>
 
   <gantt name="task-gantt" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"

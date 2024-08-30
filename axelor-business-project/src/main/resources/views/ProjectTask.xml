@@ -207,6 +207,7 @@
     </panel>
     <panel-include view="incl-customized-field-panel-form"/>
     <panel-tabs name="mainPanelTab">
+      <panel-include view="incl-todo-task-panel-form"/>
       <panel name="timeFollowUpPanel" title="Time follow-up"
         if="__config__.app.isApp('business-project')" showIf="timeUnit">
         <field name="soldTime" readonlyIf="saleOrderLine" hidden="true" showIf="!parentTask"
