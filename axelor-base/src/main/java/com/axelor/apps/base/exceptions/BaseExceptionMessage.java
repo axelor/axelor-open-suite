@@ -234,6 +234,12 @@ public final class BaseExceptionMessage {
       "Address validated successfully." /*)*/;
   public static final String ADDRESS_VALIDATION_FAILED = /*$$(*/ "Address validation failed." /*)*/;
 
+  public static final String ADDRESS_VALIDATION_DATA_GOUV_FR_URL_MISSING = /*$$(*/
+      "Please input the URL to Data.Gouv.Fr in App base configurations." /*)*/;
+
+  public static final String ADDRESS_VALIDATION_NOMINATIM_URL_MISSING = /*$$(*/
+      "Please input the URL to Nominatim in App base configurations." /*)*/;
+
   public static final String ADDRESS_CANNOT_BE_NULL = "Address cannot be null.";
 
   /** Bank details controller */
