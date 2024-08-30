@@ -37,7 +37,7 @@ public class BatchLoyaltyAccountEarnPoints extends BatchStrategy {
             .all()
             .order("id")
             .filter("self.pointsBalance != self.futurePointsBalance");
-    while (!(loyaltyAccountList = loyaltyAccountQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(loyaltyAccountList = loyaltyAccountQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
       findBatch();
       for (LoyaltyAccount loyaltyAccount : loyaltyAccountList) {
         ++offset;
