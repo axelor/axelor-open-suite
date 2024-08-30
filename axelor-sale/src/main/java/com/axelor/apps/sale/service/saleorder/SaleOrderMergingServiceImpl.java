@@ -37,6 +37,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.axelor.utils.helpers.MapHelper;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -320,13 +321,36 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
   @Override
   public SaleOrderMergingResult mergeSaleOrdersWithContext(
       List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException {
-    return mergeSaleOrdersWithContext(saleOrdersToMerge, context, this::mergeSaleOrders);
+    SaleOrderMergingResult saleOrderMergeResult =
+        mergeSaleOrdersWithContext(saleOrdersToMerge, context, this::mergeSaleOrders);
+    setDummySaleOrderSeq(saleOrderMergeResult, saleOrdersToMerge);
+    return saleOrderMergeResult;
   }
 
   @Override
   public SaleOrderMergingResult simulateMergeSaleOrders(List<SaleOrder> saleOrdersToMerge)
       throws AxelorException {
-    return mergeSaleOrders(saleOrdersToMerge, this::generateSaleOrder);
+    SaleOrderMergingResult saleOrderMergeResult =
+        mergeSaleOrders(saleOrdersToMerge, this::generateSaleOrder);
+    setDummySaleOrderSeq(saleOrderMergeResult, saleOrdersToMerge);
+    return saleOrderMergeResult;
+  }
+
+  /**
+   * Since the process is done without updating the database, the sale order is not saved and does
+   * not have a sequence. So this method will compute a "dummy sequence". This method cannot be
+   * called when merging sale orders in database.
+   */
+  protected void setDummySaleOrderSeq(
+      SaleOrderMergingResult result, List<SaleOrder> saleOrderList) {
+    result
+        .getSaleOrder()
+        .setSaleOrderSeq(
+            StringHelper.cutTooLongString(
+                saleOrderList.stream()
+                    .map(SaleOrder::getSaleOrderSeq)
+                    .filter(s -> s != null && !s.isEmpty())
+                    .collect(Collectors.joining("-"))));
   }
 
   @Override
