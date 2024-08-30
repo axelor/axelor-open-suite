@@ -52,10 +52,6 @@ public class ProductPostRequest extends RequestPostStructure {
     return partnerId;
   }
 
-  public void setPartner(Long partnerId) {
-    this.partnerId = partnerId;
-  }
-
   public List<Product> fetchProducts() {
     List<Product> products = new ArrayList<>();
     if (productsId.isEmpty()) {
