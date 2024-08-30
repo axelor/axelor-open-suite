@@ -42,6 +42,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -279,6 +280,17 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     TimesheetLine timesheetLine = tsTimer.getTimesheetLine();
     if (timesheetLine != null) {
       timesheetLine.setTimer(null);
+    }
+  }
+
+  @Override
+  public void setToDate(Timesheet timesheet) {
+    Optional<LocalDate> maxDate =
+        timesheet.getTimesheetLineList().stream()
+            .map(TimesheetLine::getDate)
+            .max(Comparator.naturalOrder());
+    if (timesheet.getToDate() == null && maxDate.isPresent()) {
+      timesheet.setToDate(maxDate.get());
     }
   }
 }

@@ -6,14 +6,14 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
-import javax.validation.constraints.Min;
+import java.util.ArrayList;
+import java.util.List;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class ProductPostRequest extends RequestPostStructure {
 
-  @NotNull
-  @Min(0)
-  private Long productId;
+  @NotNull @NotEmpty private List<Long> productsId;
 
   private Long companyId;
 
@@ -32,12 +32,12 @@ public class ProductPostRequest extends RequestPostStructure {
     this.currencyId = currencyId;
   }
 
-  public Long getProductId() {
-    return productId;
+  public void setProductsId(List<Long> productsId) {
+    this.productsId = productsId;
   }
 
-  public void setProductId(Long productId) {
-    this.productId = productId;
+  public List<Long> getProductsId() {
+    return productsId;
   }
 
   public Long getCompanyId() {
@@ -52,15 +52,16 @@ public class ProductPostRequest extends RequestPostStructure {
     return partnerId;
   }
 
-  public void setPartner(Long partnerId) {
-    this.partnerId = partnerId;
-  }
-
-  public Product fetchProduct() {
-    if (productId == null || productId == 0L) {
+  public List<Product> fetchProducts() {
+    List<Product> products = new ArrayList<>();
+    if (productsId.isEmpty()) {
       return null;
     }
-    return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
+    for (Long productId : productsId) {
+
+      products.add(ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION));
+    }
+    return products;
   }
 
   public Company fetchCompany() {

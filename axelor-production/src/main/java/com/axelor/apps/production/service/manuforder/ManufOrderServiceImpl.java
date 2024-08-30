@@ -1142,7 +1142,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             generateManufOrder(
                 product,
                 manufOrder.getQty().multiply(billOfMaterial.getQty()),
-                billOfMaterialService.getPriority(billOfMaterial),
+                manufOrder.getPrioritySelect(),
                 IS_TO_INVOICE,
                 billOfMaterial,
                 manufOrder.getPlannedStartDateT(),
@@ -1181,7 +1181,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           createDraftManufOrder(
               childBom.getProduct(),
               qtyRequested,
-              billOfMaterialService.getPriority(childBom),
+              parentMO.getPrioritySelect(),
               childBom,
               null,
               parentMO.getPlannedStartDateT());

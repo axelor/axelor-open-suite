@@ -1235,6 +1235,7 @@
 "Waiting Timesheet lines",,,
 "Waiting for validation",,,
 "Waiting validation",,,
+"Warning, a timesheet already exists for the date ${fromDate} and the company ${company.name}.",,,
 "Wednesday",,,
 "Weekly Planning",,,
 "Weekly duration",,,
