@@ -72,8 +72,6 @@
           canEdit="false"/>
         <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect" canEdit="false"
           requiredIf="taskStatusManagementSelect == 4"/>
-        <field name="imputable" colSpan="4" widget="boolean-switch"
-          if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
       </panel>
     </panel-tabs>
 
@@ -138,7 +136,6 @@
     <field name="invoicingComment" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
     <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="isBusinessProject" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
   </search-filters>

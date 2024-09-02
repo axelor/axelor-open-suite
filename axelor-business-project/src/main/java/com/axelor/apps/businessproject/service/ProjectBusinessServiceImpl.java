@@ -257,8 +257,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (assignedTo != null) {
       project.addMembersUserSetItem(assignedTo);
     }
-
-    project.setImputable(true);
+    if (parentProject != null) {
+      project.setManageTimeSpent(parentProject.getManageTimeSpent());
+    }
     project.setCompany(company);
     if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
       project.setIsInvoicingTimesheet(true);

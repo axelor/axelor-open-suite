@@ -26,7 +26,6 @@
     <field name="assignedTo"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="imputable" width="90"/>
     <button name="openGanttBtn" title="Gantt" icon="fa-tasks"
       onClick="action-project-open-gantt"/>
     <field name="projectStatus"/>
@@ -135,10 +134,6 @@
           if-module="axelor-human-resource"/>
         <field name="childProjectList" hidden="true"/>
         <field name="sequence" hidden="true"/>
-        <field name="imputable" colSpan="4" widget="boolean-switch"
-          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
-          if-module="axelor-human-resource"
-          onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
 
         <panel-include view="incl-fields-to-display-panel-form"/>
       </panel>
@@ -239,7 +234,7 @@
 
   <form name="incl-log-times-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel title="Log Times" name="logTimesPanel" showIf="isShowTimeSpent">
+    <panel title="Log Times" name="logTimesPanel" showIf="manageTimeSpent">
       <panel-dashlet name="validatedTimesheetsPanel"
         if="__config__.app.getApp('timesheet')?.needValidation"
         action="action-project-dashlet-validated-timesheet-lines" title="Validated Timesheet lines"
@@ -306,9 +301,9 @@
       <field name="isShowProgress" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
-      <field name="isShowTimeSpent" colSpan="4" widget="inline-checkbox"
-        onChange="action-project-record-is-show-timespent-reset-values"
-        if="__config__.app.isApp('timesheet')" readonlyIf="!imputable"/>
+      <field name="manageTimeSpent" colSpan="4" widget="inline-checkbox"
+        onChange="action-project-record-manage-timespent-reset-values"
+        if="__config__.app.isApp('timesheet')"/>
       <field name="isShowSection" colSpan="4" widget="inline-checkbox"
         onChange="action-project-record-section-reset-values"/>
       <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
@@ -557,14 +552,9 @@
     <field name="clientPartner" expr="eval: __parent__?.clientPartner"/>
   </action-record>
 
-  <action-record name="action-project-record-is-show-timespent-reset-values"
+  <action-record name="action-project-record-manage-timespent-reset-values"
     model="com.axelor.apps.project.db.Project">
-    <field name="isInvoicingTimesheet" expr="eval: false" if="!isShowTimeSpent"/>
-  </action-record>
-
-  <action-record name="action-project-record-reset-value-is-show-timespent"
-    model="com.axelor.apps.project.db.Project">
-    <field name="isShowTimeSpent" expr="eval: false" if="!imputable"/>
+    <field name="isInvoicingTimesheet" expr="eval: false" if="!manageTimeSpent"/>
   </action-record>
 
   <action-record name="action-project-record-status-new"
@@ -815,7 +805,6 @@
       if="!__config__.app.getApp('project')?.resourceManagement"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
   </search-filters>
 
   <search-filters name="project-topic-filters"
@@ -861,7 +850,6 @@
     <field name="announcementList" hidden="true"
       if="!__config__.app.isApp('business-support')"/>
     <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="isBusinessProject" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
   </search-filters>

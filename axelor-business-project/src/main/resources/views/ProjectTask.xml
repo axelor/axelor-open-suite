@@ -36,9 +36,9 @@
     <field name="progress" widget="SelectProgress" if="isShowProgress"/>
     <field name="exTaxTotal"/>
     <field name="invoicingType"/>
-    <field name="taskDuration" if="isShowTimeSpent"/>
+    <field name="taskDuration" if="manageTimeSpent"/>
     <field name="$durationForCustomer" title="Duration adjust for customer" type="decimal"
-      if="isShowTimeSpent"/>
+      if="manageTimeSpent"/>
     <field name="toInvoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" readonly="true"
@@ -125,7 +125,7 @@
       <button name="timeSpentBtn" title="Log time"
         onClick="save,action-project-task-validate-check-employee,action-project-task-view-time-spent"
         colSpan="2" hidden="true"/>
-      <field name="project.isShowTimeSpent" hidden="true"/>
+      <field name="project.manageTimeSpent" hidden="true"/>
       <field name="$provider" hidden="true" type="string"/>
       <panel name="projectDetailsPanel" colSpan="12">
         <panel name="detailsPanel" colSpan="8">
@@ -396,7 +396,7 @@
       </panel>
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
+        if="__config__.app.isApp('timesheet')" showIf="project.manageTimeSpent">
         <panel-dashlet name="validatedTimesheetLinesPanel"
           action="action-project-task-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true"
