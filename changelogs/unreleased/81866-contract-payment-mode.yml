@@ -1,0 +1,3 @@
+---
+title: "Contract: fixed an issue where payment mode and payment condition were not filled by default."
+module: axelor-contract
