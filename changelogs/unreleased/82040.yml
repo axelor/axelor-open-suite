@@ -1,2 +1,2 @@
-title: "PaymentVoucher : fix wrong amount on generated invoice payment when using financial discount"
+title: "Payment Voucher: fixed wrong amount on generated invoice payment when using financial discount."
 module: axelor-account
