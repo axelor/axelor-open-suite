@@ -50,9 +50,6 @@ public class ManufOrderGetStockMoveServiceImpl implements ManufOrderGetStockMove
     Optional<StockMove> stockMoveOpt =
         getPlannedStockMove(getFinishedProductOutStockMoveList(manufOrder));
 
-    Company company = manufOrder.getCompany();
-
-    StockMove stockMove;
     if (stockMoveOpt.isPresent()) {
       return stockMoveOpt.get();
     } else {
