@@ -31,7 +31,6 @@ public class SaleOrderLinePostRequest extends RequestPostStructure {
   @Min(0)
   private Long productId;
 
-  @NotNull
   @Min(0)
   private Long saleOrderId;
 

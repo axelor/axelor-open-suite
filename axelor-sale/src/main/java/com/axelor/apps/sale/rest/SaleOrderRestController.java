@@ -20,6 +20,7 @@ package com.axelor.apps.sale.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.rest.dto.SaleOrderLinePostRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderPostRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
@@ -30,6 +31,7 @@ import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -41,6 +43,7 @@ import javax.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class SaleOrderRestController {
+
   @Operation(
       summary = "Create a sale oder",
       tags = {"Sale order"})
@@ -60,6 +63,13 @@ public class SaleOrderRestController {
                 requestBody.fetchContact(),
                 requestBody.fetchCurrency(),
                 requestBody.getInAti());
+    List<SaleOrderLinePostRequest> saleOrderPostResquestList =
+        requestBody.fetchSaleOrderLinePostRequests();
+    if (saleOrderPostResquestList != null) {
+      saleOrder =
+          Beans.get(SaleOrderGeneratorService.class)
+              .fetchAndAddSaleOrderLines(requestBody.getSaleOrderLinePostRequests(), saleOrder);
+    }
 
     return ResponseConstructor.buildCreateResponse(saleOrder, new SaleOrderResponse(saleOrder));
   }

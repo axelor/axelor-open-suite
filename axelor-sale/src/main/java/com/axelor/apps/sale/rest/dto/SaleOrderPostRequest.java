@@ -5,6 +5,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
+import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -18,6 +19,16 @@ public class SaleOrderPostRequest extends RequestPostStructure {
   private Long contactId;
   private Long currencyId;
   private Boolean inAti;
+  private List<SaleOrderLinePostRequest> saleOrderLinePostRequests;
+
+  public List<SaleOrderLinePostRequest> getSaleOrderLinePostRequests() {
+    return saleOrderLinePostRequests;
+  }
+
+  public void setSaleOrderLinePostRequests(
+      List<SaleOrderLinePostRequest> saleOrderLinePostRequests) {
+    this.saleOrderLinePostRequests = saleOrderLinePostRequests;
+  }
 
   public Long getCompanyId() {
     return companyId;
@@ -85,5 +96,12 @@ public class SaleOrderPostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(Currency.class, currencyId, ObjectFinder.NO_VERSION);
+  }
+
+  public List<SaleOrderLinePostRequest> fetchSaleOrderLinePostRequests() {
+    if (saleOrderLinePostRequests == null || saleOrderLinePostRequests.isEmpty()) {
+      return null;
+    }
+    return saleOrderLinePostRequests;
   }
 }

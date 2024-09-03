@@ -22,20 +22,30 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.rest.dto.SaleOrderLinePostRequest;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineGeneratorService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeService;
 import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService {
   protected SaleOrderRepository saleOrderRepository;
@@ -46,6 +56,7 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   protected SaleOrderOnChangeService saleOrderOnChangeService;
   protected SaleOrderDomainService saleOrderDomainService;
   protected PartnerRepository partnerRepository;
+  protected SaleOrderLineGeneratorService saleOrderLineCreateService;
 
   protected SaleConfigRepository saleConfigRepository;
 
@@ -59,7 +70,8 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
       SaleOrderDomainService saleOrderDomainService,
       PartnerRepository partnerRepository,
       SaleConfigService saleConfigService,
-      SaleConfigRepository saleConfigRepository) {
+      SaleConfigRepository saleConfigRepository,
+      SaleOrderLineGeneratorService saleOrderLineCreateService) {
     this.saleOrderRepository = saleOrderRepository;
     this.appSaleService = appSaleService;
     this.companyService = companyService;
@@ -69,6 +81,7 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     this.partnerRepository = partnerRepository;
     this.saleConfigService = saleConfigService;
     this.saleConfigRepository = saleConfigRepository;
+    this.saleOrderLineCreateService = saleOrderLineCreateService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -100,6 +113,7 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     }
     setInAti(inAti, saleOrder);
     saleOrderRepository.save(saleOrder);
+
     return saleOrder;
   }
 
@@ -148,5 +162,26 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.ATI_CHANGE_NOT_ALLOWED));
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public SaleOrder fetchAndAddSaleOrderLines(
+      List<SaleOrderLinePostRequest> saleOrderLinePostRequests, SaleOrder saleOrder)
+      throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = new ArrayList<>();
+    for (SaleOrderLinePostRequest saleOrderLinePostRequest : saleOrderLinePostRequests) {
+      Product product = saleOrderLinePostRequest.fetchProduct();
+      BigDecimal quantity = saleOrderLinePostRequest.getQuantity();
+      SaleOrderLine saleOrderLine =
+          saleOrderLineCreateService.createSaleOrderLine(saleOrder, product, quantity);
+      saleOrderLineList.add(saleOrderLine);
+    }
+    if (!saleOrderLineList.isEmpty()) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList)
+        saleOrder.addSaleOrderLineListItem(saleOrderLine);
+    }
+    saleOrderRepository.save(saleOrder);
+    return saleOrder;
   }
 }
