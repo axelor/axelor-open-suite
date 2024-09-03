@@ -142,7 +142,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
       BigDecimal availableAmount,
-      BigDecimal reconcileAmount) {
+      BigDecimal reconcileAmount)
+      throws AxelorException {
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     InvoiceTerm invoiceTermToPay;
     InvoiceTermPayment invoiceTermPayment;
@@ -162,13 +163,12 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
       if (invoiceTermToPay.getPfpValidateStatusSelect()
           != InvoiceTermRepository.PFP_STATUS_LITIGATION) {
-        BigDecimal invoiceTermCompanyAmount =
-            currencyScaleService.getCompanyScaledValue(
-                invoiceTermToPay, invoiceTermToPay.getCompanyAmountRemaining());
         LocalDate date =
             invoicePayment != null
                 ? invoicePayment.getPaymentDate()
                 : invoiceTermToPay.getDueDate();
+        BigDecimal invoiceTermCompanyAmount =
+            this.getInvoiceTermAmountRemainingAtDate(invoiceTermToPay, date);
         if (invoiceTermCompanyAmount.compareTo(availableAmount) >= 0) {
           invoiceTermPayment =
               createInvoiceTermPayment(invoicePayment, invoiceTermToPay, availableAmount, date);
@@ -364,8 +364,12 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                     RoundingMode.HALF_UP);
       } else {
         ratio =
-            currencyService.getCurrencyConversionRate(
-                companyCurrency, invoicePaymentCurrency, paymentDate);
+            this.computeRatioPaid(
+                companyCurrency,
+                invoicePaymentCurrency,
+                invoiceTerm.getInvoice().getInvoiceDate(),
+                paymentDate,
+                companyPaidAmount.compareTo(invoiceTerm.getCompanyAmountRemaining()) == 0);
       }
 
       return currencyScaleService.getCompanyScaledValue(
@@ -441,5 +445,57 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                 appAccountService.getTodayDate(invoicePayment.getInvoice().getCompany())));
 
     return sum;
+  }
+
+  protected BigDecimal computeRatioPaid(
+      Currency companyCurrency,
+      Currency invoicePaymentCurrency,
+      LocalDate invoiceDate,
+      LocalDate paymentDate,
+      boolean isTotalInvoiceTermPayment)
+      throws AxelorException {
+    if (currencyService.isCurrencyRateLower(
+        invoiceDate, paymentDate, companyCurrency, invoicePaymentCurrency)) {
+      return currencyService.getCurrencyConversionRate(
+          companyCurrency, invoicePaymentCurrency, paymentDate);
+    }
+
+    if (isTotalInvoiceTermPayment) {
+      return currencyService.getCurrencyConversionRate(
+          invoicePaymentCurrency, companyCurrency, paymentDate);
+    }
+
+    return currencyService.getCurrencyConversionRate(
+        companyCurrency, invoicePaymentCurrency, paymentDate);
+  }
+
+  protected BigDecimal getInvoiceTermAmountRemainingAtDate(
+      InvoiceTerm invoiceTermToPay, LocalDate paymentDate) throws AxelorException {
+    BigDecimal amountRemaining =
+        currencyScaleService.getCompanyScaledValue(
+            invoiceTermToPay, invoiceTermToPay.getCompanyAmountRemaining());
+    LocalDate invoiceDate =
+        invoiceTermToPay.getInvoice() == null
+            ? invoiceTermToPay.getDueDate()
+            : invoiceTermToPay.getInvoice().getInvoiceDate();
+    if (!currencyService.isSameCurrencyRate(
+        invoiceDate,
+        paymentDate,
+        invoiceTermToPay.getCurrency(),
+        invoiceTermToPay.getCompanyCurrency())) {
+      BigDecimal newAmountRemaining =
+          currencyService.getAmountCurrencyConvertedAtDate(
+              invoiceTermToPay.getCompanyCurrency(),
+              invoiceTermToPay.getCurrency(),
+              amountRemaining,
+              invoiceDate);
+      return currencyService.getAmountCurrencyConvertedAtDate(
+          invoiceTermToPay.getCurrency(),
+          invoiceTermToPay.getCompanyCurrency(),
+          newAmountRemaining,
+          paymentDate);
+    }
+
+    return amountRemaining;
   }
 }
