@@ -12,6 +12,6 @@ import wslite.json.JSONException;
 
 public interface ProductRestService {
   List<ProductResponse> computeProductResponse(
-          Company company, List<Product> products, Partner partner, Currency currency, Unit unit)
+      Company company, List<Product> products, Partner partner, Currency currency, Unit unit)
       throws AxelorException, JSONException;
 }

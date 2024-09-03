@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
@@ -57,6 +58,7 @@ public class ProductRestServiceImpl implements ProductRestService {
   protected ProductRestService productRestService;
   protected AppBaseService appBaseService;
   protected ProductPriceService productPriceService;
+  protected UnitConversionService unitConversionService;
 
   @Inject
   public ProductRestServiceImpl(
@@ -66,7 +68,8 @@ public class ProductRestServiceImpl implements ProductRestService {
       UserService userService,
       ProductRestService productRestService,
       AppBaseService appBaseService,
-      ProductPriceService productPriceService) {
+      ProductPriceService productPriceService,
+      UnitConversionService unitConversionService) {
     this.appSaleService = appSaleService;
     this.companyService = companyService;
     this.userService = userService;
@@ -74,10 +77,12 @@ public class ProductRestServiceImpl implements ProductRestService {
     this.productRestService = productRestService;
     this.appBaseService = appBaseService;
     this.productPriceService = productPriceService;
+    this.unitConversionService = unitConversionService;
   }
 
   protected List<PriceResponse> fetchProductPrice(
-      Product product, Partner partner, Company company, Currency currency) throws AxelorException {
+      Product product, Partner partner, Company company, Currency currency, Unit unit)
+      throws AxelorException {
 
     List<PriceResponse> priceList = new ArrayList<>();
 
@@ -85,6 +90,11 @@ public class ProductRestServiceImpl implements ProductRestService {
         productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
     BigDecimal priceATI =
         productPriceService.getSaleUnitPrice(company, product, true, partner, currency);
+
+    if (unit != null) {
+      priceWT = unitConversionService.convert(product.getUnit(), unit, priceWT, 5, product);
+      priceATI = unitConversionService.convert(product.getUnit(), unit, priceATI, 5, product);
+    }
 
     priceList.add(new PriceResponse("WT", priceWT));
     priceList.add(new PriceResponse("ATI", priceATI));
@@ -112,7 +122,7 @@ public class ProductRestServiceImpl implements ProductRestService {
 
   @Override
   public List<ProductResponse> computeProductResponse(
-          Company company, List<Product> products, Partner partner, Currency currency, Unit unit)
+      Company company, List<Product> products, Partner partner, Currency currency, Unit unit)
       throws AxelorException {
     List<ProductResponse> productResponses = new ArrayList<>();
     for (Product product : products) {
@@ -121,13 +131,12 @@ public class ProductRestServiceImpl implements ProductRestService {
       if (company == null) {
         company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
       }
-      List<PriceResponse> prices = fetchProductPrice(product, partner, company, currency);
-      if(unit!=null)
-      {
-        unit=product.getUnit();
+      List<PriceResponse> prices = fetchProductPrice(product, partner, company, currency, unit);
+
+      if (unit == null) {
+        unit = product.getUnit();
       }
-      UnitResponse unitResponse =
-          new UnitResponse(unit.getName(), unit.getLabelToPrinting());
+      UnitResponse unitResponse = new UnitResponse(unit.getName(), unit.getLabelToPrinting());
       productResponses.add(
           new ProductResponse(product.getId(), prices, currencyResponse, unitResponse));
     }
