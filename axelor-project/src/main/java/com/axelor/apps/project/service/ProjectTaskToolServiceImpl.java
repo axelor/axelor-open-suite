@@ -2,8 +2,10 @@ package com.axelor.apps.project.service;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskCategoryRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.TaskStatusRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
@@ -25,6 +27,7 @@ public class ProjectTaskToolServiceImpl implements ProjectTaskToolService {
   protected ProjectTaskRepository projectTaskRepository;
   protected TaskStatusToolService taskStatusToolService;
   protected AppProjectRepository appProjectRepository;
+  protected ProjectTaskCategoryRepository projectTaskCategoryRepository;
   protected TaskStatusRepository taskStatusRepository;
   protected AppProjectService appProjectService;
 
@@ -33,11 +36,13 @@ public class ProjectTaskToolServiceImpl implements ProjectTaskToolService {
       ProjectTaskRepository projectTaskRepository,
       TaskStatusToolService taskStatusToolService,
       AppProjectRepository appProjectRepository,
+      ProjectTaskCategoryRepository projectTaskCategoryRepository,
       TaskStatusRepository taskStatusRepository,
       AppProjectService appProjectService) {
     this.projectTaskRepository = projectTaskRepository;
     this.taskStatusToolService = taskStatusToolService;
     this.appProjectRepository = appProjectRepository;
+    this.projectTaskCategoryRepository = projectTaskCategoryRepository;
     this.taskStatusRepository = taskStatusRepository;
     this.appProjectService = appProjectService;
   }
@@ -114,6 +119,19 @@ public class ProjectTaskToolServiceImpl implements ProjectTaskToolService {
   }
 
   @Override
+  public List<ProjectTask> getProjectTaskToUpdate(ProjectTaskCategory category) {
+    if (category == null || category.getId() == null) {
+      return new ArrayList<>();
+    }
+    ProjectTaskCategory savedCategory = projectTaskCategoryRepository.find(category.getId());
+    return getProjectTaskListToUpdate(
+        savedCategory.getProjectTaskStatusSet(),
+        category.getProjectTaskStatusSet(),
+        ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY,
+        category.getId());
+  }
+
+  @Override
   public List<ProjectTask> getProjectTaskListToUpdate(
       Set<TaskStatus> oldTaskStatusSet,
       Set<TaskStatus> newTaskStatusSet,
@@ -134,7 +152,8 @@ public class ProjectTaskToolServiceImpl implements ProjectTaskToolService {
   }
 
   @Override
-  public TaskStatus getPreviousTaskStatus(ProjectTask projectTask, AppProject appProject) {
+  public TaskStatus getPreviousTaskStatus(
+      ProjectTask projectTask, AppProject appProject, ProjectTaskCategory category) {
     Integer taskStatusManagementSelect =
         Optional.ofNullable(projectTask)
             .map(ProjectTask::getProject)
@@ -145,7 +164,8 @@ public class ProjectTaskToolServiceImpl implements ProjectTaskToolService {
       return previousTaskStatus;
     }
     Set<TaskStatus> taskStatusSet =
-        taskStatusToolService.getTaskStatusSet(projectTask.getProject(), projectTask, appProject);
+        taskStatusToolService.getTaskStatusSet(
+            projectTask.getProject(), projectTask, appProject, category);
     if (ObjectUtils.isEmpty(taskStatusSet)) {
       return previousTaskStatus;
     }

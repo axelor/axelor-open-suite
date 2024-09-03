@@ -2,6 +2,7 @@ package com.axelor.apps.project.service;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskStatusProgressByCategory;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -71,7 +72,10 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
 
   @Override
   public Set<TaskStatus> getTaskStatusSet(
-      Project project, ProjectTask projectTask, AppProject appProject) {
+      Project project,
+      ProjectTask projectTask,
+      AppProject appProject,
+      ProjectTaskCategory category) {
     if (project == null
         || projectTask == null
         || project.getTaskStatusManagementSelect()
@@ -80,6 +84,9 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
     }
     if (appProject == null) {
       appProject = appProjectService.getAppProject();
+    }
+    if (category == null) {
+      category = projectTask.getProjectTaskCategory();
     }
 
     boolean enableTaskStatusManagementByCategory = false;
@@ -90,9 +97,9 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
     if (enableTaskStatusManagementByCategory
         && project.getTaskStatusManagementSelect()
             == ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY
-        && projectTask.getProjectTaskCategory() != null
-        && !ObjectUtils.isEmpty(projectTask.getProjectTaskCategory().getProjectTaskStatusSet())) {
-      return projectTask.getProjectTaskCategory().getProjectTaskStatusSet();
+        && category != null
+        && !ObjectUtils.isEmpty(category.getProjectTaskStatusSet())) {
+      return category.getProjectTaskStatusSet();
     }
 
     if (Arrays.asList(

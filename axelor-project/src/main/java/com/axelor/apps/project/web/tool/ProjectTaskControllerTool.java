@@ -33,10 +33,13 @@ public class ProjectTaskControllerTool {
   }
 
   public static void updateAllProjectTaskListStatus(
-      List<ProjectTask> projectTaskList, AppProject appProject, ActionResponse response) {
+      List<ProjectTask> projectTaskList,
+      AppProject appProject,
+      ProjectTaskCategory category,
+      ActionResponse response) {
     Integer taskUpdated =
         Beans.get(TaskStatusMassService.class)
-            .updateTaskStatusOnProjectTask(projectTaskList, appProject);
+            .updateTaskStatusOnProjectTask(projectTaskList, appProject, category);
 
     if (taskUpdated > 0) {
       response.setNotify(

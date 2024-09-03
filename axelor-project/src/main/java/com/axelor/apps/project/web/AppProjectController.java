@@ -74,6 +74,7 @@ public class AppProjectController {
 
     List<ProjectTask> projectTaskList =
         Beans.get(ProjectTaskToolService.class).getProjectTaskToUpdate(appProject);
-    ProjectTaskControllerTool.updateAllProjectTaskListStatus(projectTaskList, appProject, response);
+    ProjectTaskControllerTool.updateAllProjectTaskListStatus(
+        projectTaskList, appProject, null, response);
   }
 }
