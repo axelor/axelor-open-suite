@@ -135,15 +135,13 @@ public class SaleOrderLineController {
 
       try {
         Map<String, Object> saleOrderLineMap =
-            saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
+            Beans.get(SaleOrderLineFireService.class)
+                .computeProductInformation(saleOrderLine, saleOrder);
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, saleOrderLine));
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineDummyService.class)
                 .getOnProductChangeDummies(saleOrderLine, saleOrder));
-        saleOrderLineMap.putAll(
-            Beans.get(SaleOrderLineOnChangeService.class)
-                .productOnChange(saleOrderLine, saleOrder));
         response.setAttrs(
             Beans.get(SaleOrderLineViewService.class)
                 .getProductOnChangeAttrs(saleOrderLine, saleOrder));

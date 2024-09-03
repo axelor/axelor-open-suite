@@ -8,6 +8,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -20,16 +21,16 @@ import org.apache.commons.collections.CollectionUtils;
 public class SaleOrderLineComplementaryProductServiceImpl
     implements SaleOrderLineComplementaryProductService {
 
-  protected SaleOrderLineProductService saleOrderLineProductService;
+  protected SaleOrderLineFireService saleOrderLineFireService;
   protected SaleOrderLineComputeService saleOrderLineComputeService;
   protected SaleOrderLineRepository saleOrderLineRepository;
 
   @Inject
   public SaleOrderLineComplementaryProductServiceImpl(
-      SaleOrderLineProductService saleOrderLineProductService,
+      SaleOrderLineFireService saleOrderLineFireService,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLineRepository saleOrderLineRepository) {
-    this.saleOrderLineProductService = saleOrderLineProductService;
+    this.saleOrderLineFireService = saleOrderLineFireService;
     this.saleOrderLineComputeService = saleOrderLineComputeService;
     this.saleOrderLineRepository = saleOrderLineRepository;
   }
@@ -56,7 +57,7 @@ public class SaleOrderLineComplementaryProductServiceImpl
     complementarySOLine.setIsComplementaryPartnerProductsHandled(
         complementaryProduct.getGenerationTypeSelect()
             == ComplementaryProductRepository.GENERATION_TYPE_SALE_ORDER);
-    saleOrderLineProductService.computeProductInformation(complementarySOLine, saleOrder);
+    saleOrderLineFireService.computeProductInformation(complementarySOLine, saleOrder);
     saleOrderLineComputeService.computeValues(saleOrder, complementarySOLine);
     saleOrderLineRepository.save(complementarySOLine);
     return newComplementarySOLines;
