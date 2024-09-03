@@ -797,4 +797,8 @@
     <option value="2">EmployeeFile</option>
   </selection>
 
+  <selection name="connector.mapper.select">
+    <option value="other" order="10000">Other</option>
+  </selection>
+
 </object-views>
