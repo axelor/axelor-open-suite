@@ -5,6 +5,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.sale.rest.dto.ProductPostRequest;
 import com.axelor.apps.sale.rest.dto.ProductResponse;
 import com.axelor.apps.sale.service.ProductRestService;
@@ -16,6 +17,8 @@ import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import com.axelor.web.ITranslation;
 import io.swagger.v3.oas.annotations.Operation;
+
+import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -46,9 +49,10 @@ public class ProductRestController {
     Partner partner = requestBody.fetchPartner();
     Company company = requestBody.fetchCompany();
     Currency currency = requestBody.fetchCurrency();
+    Unit unit=requestBody.fetchUnit();
     List<ProductResponse> productResponses =
         Beans.get(ProductRestService.class)
-            .computeProductResponse(company, products, partner, currency);
+            .computeProductResponse(company, products, partner, currency,unit);
     return ResponseConstructor.build(
         Response.Status.OK, I18n.get(ITranslation.PRODUCT_PRICE_INFORMATION), productResponses);
   }

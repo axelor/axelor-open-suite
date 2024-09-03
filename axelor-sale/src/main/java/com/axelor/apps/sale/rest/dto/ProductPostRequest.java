@@ -4,6 +4,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
 import java.util.ArrayList;
@@ -19,6 +20,15 @@ public class ProductPostRequest extends RequestPostStructure {
 
   private Long partnerId;
   private Long currencyId;
+  private Long unitId;
+
+  public Long getUnitId() {
+    return unitId;
+  }
+
+  public void setUnitId(Long unitId) {
+    this.unitId = unitId;
+  }
 
   public void setPartnerId(Long partnerId) {
     this.partnerId = partnerId;
@@ -83,5 +93,12 @@ public class ProductPostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(Currency.class, currencyId, ObjectFinder.NO_VERSION);
+  }
+
+  public Unit fetchUnit() {
+    if (unitId == null || unitId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(Unit.class, unitId, ObjectFinder.NO_VERSION);
   }
 }
