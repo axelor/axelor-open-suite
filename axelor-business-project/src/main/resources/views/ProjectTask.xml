@@ -74,7 +74,7 @@
         onClick="action-project-task-record-assigned-yourself,save"/>
       <button name="doneBtn" icon="fa-check"
         onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
-        showIf="project.isShowStatus"/>
+        showIf="project.taskStatusManagementSelect != 1"/>
     </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
@@ -91,7 +91,8 @@
     <panel name="mainPanel" colSpan="12">
       <panel name="statusPanel" stacked="true" colSpan="6">
         <field name="status" widget="NavSelect" showTitle="false"
-          showIf="project.isShowStatus" x-order="sequence"/>
+          showIf="project.taskStatusManagementSelect != 1" x-order="sequence"
+          onChange="action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
       </panel>
       <panel name="viewerTagsPanel" colSpan="4">
