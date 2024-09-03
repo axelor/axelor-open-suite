@@ -16,12 +16,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.service;
+package com.axelor.apps.sale.rest.dto;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.project.db.ProjectTask;
+import java.util.ArrayList;
+import java.util.List;
 
-public interface ProjectTaskReportingValuesComputingService {
+public class ProductResponse {
 
-  void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException;
+  protected Long productId;
+  protected List<PriceResponse> prices;
+  protected CurrencyResponse currency;
+
+  public ProductResponse(Long productId, List<PriceResponse> prices, CurrencyResponse currency) {
+    this.productId = productId;
+    this.prices = new ArrayList<>(prices);
+    this.currency = currency;
+  }
+
+  public Long getProductId() {
+    return productId;
+  }
+
+  public List<PriceResponse> getPrices() {
+    return prices;
+  }
+
+  public CurrencyResponse getCurrency() {
+    return currency;
+  }
 }

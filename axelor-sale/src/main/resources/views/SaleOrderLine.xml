@@ -16,6 +16,11 @@
       icon="fa-exclamation-triangle"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
+    <button name="addToCartBtn" title="Add to cart"
+      onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
+      if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
+      readonlyIf="!product || typeSelect != 0"/>
+    <field name="product" hidden="true"/>
     <field name="typeSelect" hidden="true"/>
     <field name="deliveryState" hidden="true" if="__config__.app.isApp('supplychain')"/>
     <field name="product.code" width="120"/>
@@ -58,6 +63,10 @@
 
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
+    <button name="addToCartBtn" title="Add to cart"
+      onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
+      if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
+      readonlyIf="!product || typeSelect != 0"/>
     <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"/>
     <field name="product" canEdit="false"
       onChange="action-sale-order-line-method-get-product-information"
@@ -721,5 +730,9 @@
     <action name="action-sale-order-line-validate-check-coefficient-config"/>
     <action name="action-sale-order-line-attrs-to-invoice"/>
   </action-group>
+
+  <action-method name="action-sale-order-line-method-add-to-cart">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="addToCart"/>
+  </action-method>
 
 </object-views>

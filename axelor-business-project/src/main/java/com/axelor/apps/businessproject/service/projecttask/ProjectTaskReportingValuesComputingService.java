@@ -16,14 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.service;
+package com.axelor.apps.businessproject.service.projecttask;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.ProjectTask;
-import java.math.BigDecimal;
 
-public interface ProjectTaskProgressUpdateService {
-  ProjectTask updateChildrenProgress(ProjectTask task, BigDecimal progress) throws AxelorException;
+public interface ProjectTaskReportingValuesComputingService {
 
-  ProjectTask updateParentsProgress(ProjectTask task) throws AxelorException;
+  void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException;
 }
