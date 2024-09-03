@@ -72,4 +72,15 @@ public class PickedProductController {
           Beans.get(PickedProductAttrsService.class).getPickedProductDomain(pickedProduct));
     }
   }
+
+  public void setTrackingNumberDomain(ActionRequest request, ActionResponse response) {
+    var pickedProduct = request.getContext().asType(PickedProduct.class);
+
+    if (pickedProduct != null) {
+      response.setAttr(
+          "trackingNumber",
+          "domain",
+          Beans.get(PickedProductAttrsService.class).getTrackingNumberDomain(pickedProduct));
+    }
+  }
 }

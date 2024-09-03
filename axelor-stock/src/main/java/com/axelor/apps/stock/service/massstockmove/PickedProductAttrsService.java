@@ -4,4 +4,6 @@ import com.axelor.apps.stock.db.PickedProduct;
 
 public interface PickedProductAttrsService {
   String getPickedProductDomain(PickedProduct pickedProduct);
+
+  String getTrackingNumberDomain(PickedProduct pickedProduct);
 }

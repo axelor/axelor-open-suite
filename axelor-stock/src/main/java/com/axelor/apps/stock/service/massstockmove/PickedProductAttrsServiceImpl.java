@@ -16,4 +16,24 @@ public class PickedProductAttrsServiceImpl implements PickedProductAttrsService 
     }
     return "self.id IN (0)";
   }
+
+  @Override
+  public String getTrackingNumberDomain(PickedProduct pickedProduct) {
+
+    Objects.requireNonNull(pickedProduct);
+
+    if (pickedProduct.getPickedProduct() != null && pickedProduct.getFromStockLocation() != null) {
+      String domain =
+          "self.product.id = %d AND"
+              + " (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine WHERE stockLocationLine.detailsStockLocation = %d AND stockLocationLine.currentQty > 0))";
+
+      return String.format(
+          domain,
+          pickedProduct.getPickedProduct().getId(),
+          pickedProduct.getFromStockLocation().getId());
+    }
+
+    // Must not be able to select
+    return "self.id IN (0)";
+  }
 }
