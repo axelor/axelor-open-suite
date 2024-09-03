@@ -20,9 +20,13 @@ package com.axelor.apps.base.service.address;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressTemplateLine;
+import com.axelor.apps.base.db.City;
+import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBase;
 import com.axelor.utils.service.TranslationBaseService;
@@ -30,17 +34,31 @@ import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AddressAttrsServiceImpl implements AddressAttrsService {
 
   protected AddressMetaService addressMetaService;
   protected TranslationBaseService translationBaseService;
 
+  protected CityRepository cityRepository;
+
   @Inject
   public AddressAttrsServiceImpl(
-      AddressMetaService addressMetaService, TranslationBaseService translationBaseService) {
+      AddressMetaService addressMetaService,
+      TranslationBaseService translationBaseService,
+      CityRepository cityRepository) {
     this.addressMetaService = addressMetaService;
     this.translationBaseService = translationBaseService;
+    this.cityRepository = cityRepository;
+  }
+
+  @Override
+  public boolean ifCountryHasCities(Country country) {
+    Query<City> cityQuery =
+        cityRepository.all().filter("self.country = :country").bind("country", country);
+    List<City> cityList = cityQuery.fetch();
+    return !CollectionUtils.isEmpty(cityList);
   }
 
   @Override
