@@ -22,7 +22,6 @@ import com.axelor.apps.base.db.Frequency;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPriority;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.auth.db.User;
 import com.axelor.meta.CallMethod;
@@ -56,5 +55,5 @@ public interface ProjectTaskService {
 
   public void fillSubtask(ProjectTask projectTask);
 
-  void changeProgress(ProjectTask projectTask, Project project, ProjectTaskCategory category);
+  void changeProgress(ProjectTask projectTask, Project project);
 }

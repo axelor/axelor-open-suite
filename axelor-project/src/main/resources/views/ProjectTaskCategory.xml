@@ -3,7 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
-
   <grid name="project-task-category-grid" title="Category"
     model="com.axelor.apps.project.db.ProjectTaskCategory">
     <field name="name"/>
@@ -14,8 +13,7 @@
   <form title="Category" name="project-task-category-form"
     model="com.axelor.apps.project.db.ProjectTaskCategory"
     onNew="action-project-task-category-record-status-new,action-category-method-fill-progress-by-category"
-    onLoad="action-project-task-category-method-validate-progress"
-    onSave="action-project-task-category-group-onsave">
+    onLoad="action-project-task-category-method-validate-progress">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="defaultProduct"
@@ -55,11 +53,6 @@
     <action name="action-category-method-fill-progress-by-category"/>
   </action-group>
 
-  <action-group name="action-project-task-category-group-onsave">
-    <action name="action-project-task-category-method-check-changes-on-task-status"/>
-    <action name="action-project-task-category-method-update-project-task-status"/>
-  </action-group>
-
   <action-attrs
     name="action-project-task-category-attrs-set-completed-task-status-domain">
     <attribute name="domain" for="completedTaskStatus"
@@ -93,17 +86,6 @@
   <action-method name="action-project-task-category-method-validate-progress">
     <call class="com.axelor.apps.project.web.ProjectTaskCategoryController"
       method="validateProgress"/>
-  </action-method>
-
-  <action-method
-    name="action-project-task-category-method-check-changes-on-task-status">
-    <call class="com.axelor.apps.project.web.ProjectTaskCategoryController"
-      method="checkTaskStatusSetChanges"/>
-  </action-method>
-
-  <action-method name="action-project-task-category-method-update-project-task-status">
-    <call class="com.axelor.apps.project.web.ProjectTaskCategoryController"
-      method="updateProjectTaskStatus"/>
   </action-method>
 
   <search-filters name="project-task-category-filters"

@@ -193,8 +193,7 @@ public class ProjectTaskController {
   public void changeProgress(ActionRequest request, ActionResponse response) {
     try {
       ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
-      Beans.get(ProjectTaskService.class)
-          .changeProgress(projectTask, projectTask.getProject(), null);
+      Beans.get(ProjectTaskService.class).changeProgress(projectTask, projectTask.getProject());
       response.setValue("progress", projectTask.getProgress());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -234,7 +233,7 @@ public class ProjectTaskController {
     Project project = projectTask.getProject();
 
     Set<TaskStatus> taskStatusSet =
-        Beans.get(TaskStatusToolService.class).getTaskStatusSet(project, projectTask, null, null);
+        Beans.get(TaskStatusToolService.class).getTaskStatusSet(project, projectTask, null);
 
     if (!ObjectUtils.isEmpty(taskStatusSet)) {
       response.setAttr(

@@ -1,8 +1,6 @@
 package com.axelor.apps.project.service;
 
-import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.TaskStatusRepository;
@@ -35,10 +33,7 @@ public class TaskStatusMassServiceImpl implements TaskStatusMassService {
 
   @Override
   public Integer updateTaskStatusOnProjectTask(
-      List<ProjectTask> projectTaskList,
-      AppProject appProject,
-      Project project,
-      ProjectTaskCategory category) {
+      List<ProjectTask> projectTaskList, AppProject appProject) {
     if (ObjectUtils.isEmpty(projectTaskList)) {
       return 0;
     }
@@ -46,7 +41,7 @@ public class TaskStatusMassServiceImpl implements TaskStatusMassService {
     int i = 0;
     for (ProjectTask projectTask : projectTaskList) {
 
-      this.resetProjectTaskStatus(projectTask, appProject, project, category);
+      this.resetProjectTaskStatus(projectTask, appProject);
       i++;
 
       if (i % FETCH_LIMIT == 0) {
@@ -58,19 +53,13 @@ public class TaskStatusMassServiceImpl implements TaskStatusMassService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void resetProjectTaskStatus(
-      ProjectTask projectTask,
-      AppProject appProject,
-      Project project,
-      ProjectTaskCategory category) {
+  protected void resetProjectTaskStatus(ProjectTask projectTask, AppProject appProject) {
     projectTask = projectTaskRepository.find(projectTask.getId());
-    TaskStatus taskStatus =
-        projectTaskToolService.getPreviousTaskStatus(projectTask, appProject, project, category);
+    TaskStatus taskStatus = projectTaskToolService.getPreviousTaskStatus(projectTask, appProject);
     if (taskStatus != null) {
       taskStatus = taskStatusRepository.find(taskStatus.getId());
       projectTask.setStatus(taskStatus);
-      projectTaskService.changeProgress(
-          projectTask, project != null ? project : projectTask.getProject(), category);
+      projectTaskService.changeProgress(projectTask, projectTask.getProject());
       projectTaskRepository.save(projectTask);
     }
   }

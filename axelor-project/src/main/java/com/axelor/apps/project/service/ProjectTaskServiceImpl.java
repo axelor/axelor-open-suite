@@ -25,7 +25,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPriority;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskStatusProgressByCategory;
 import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
@@ -212,7 +211,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
     project = projectRepository.find(project.getId());
     Set<TaskStatus> projectStatusSet =
-        taskStatusToolService.getTaskStatusSet(project, projectTask, null, null);
+        taskStatusToolService.getTaskStatusSet(project, projectTask, null);
 
     return ObjectUtils.isEmpty(projectStatusSet)
         ? null
@@ -282,34 +281,28 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
-  public void changeProgress(
-      ProjectTask projectTask, Project project, ProjectTaskCategory category) {
+  public void changeProgress(ProjectTask projectTask, Project project) {
     if (projectTask == null) {
       return;
     }
 
-    projectTask.setProgress(getNewProgress(projectTask, project, category));
+    projectTask.setProgress(getNewProgress(projectTask, project));
   }
 
-  protected BigDecimal getNewProgress(
-      ProjectTask projectTask, Project project, ProjectTaskCategory category) {
+  protected BigDecimal getNewProgress(ProjectTask projectTask, Project project) {
     AppProject appProject = appProjectService.getAppProject();
     if (appProject != null
         && appProject.getSelectAutoProgressOnProjectTask()
         && projectTask.getStatus() != null) {
       BigDecimal newProgress = projectTask.getStatus().getDefaultProgress();
 
-      if (category == null) {
-        category = projectTask.getProjectTaskCategory();
-      }
-
       if (appProject.getEnableStatusManagementByTaskCategory()
           && project != null
           && project.getEnableStatusProgressByCategory()
-          && category != null) {
+          && projectTask.getProjectTaskCategory() != null) {
         TaskStatusProgressByCategory taskStatusProgressByCategory =
             taskStatusProgressByCategoryRepository.findByCategoryAndStatus(
-                category, projectTask.getStatus());
+                projectTask.getProjectTaskCategory(), projectTask.getStatus());
         if (taskStatusProgressByCategory != null) {
           newProgress = taskStatusProgressByCategory.getProgress();
         }

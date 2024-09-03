@@ -1,9 +1,6 @@
 package com.axelor.apps.project.service;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.studio.db.AppProject;
 import java.util.List;
@@ -17,15 +14,7 @@ public interface ProjectTaskToolService {
   List<ProjectTask> getProjectTaskDependingStatus(
       TaskStatus taskStatus, Integer taskStatusManagementSelect, Long objectId);
 
-  void checkForProjectTaskToUpdate(List<ProjectTask> projectTaskList) throws AxelorException;
-
   List<ProjectTask> getProjectTaskToUpdate(AppProject appProject);
-
-  List<ProjectTask> getProjectTaskToUpdate(Project project);
-
-  List<ProjectTask> getProjectTaskToUpdate(ProjectTaskCategory category);
-
-  List<ProjectTask> getProjectTaskToUpdate(List<Long> taskStatusIdsList);
 
   List<ProjectTask> getProjectTaskListToUpdate(
       Set<TaskStatus> oldTaskStatusSet,
@@ -33,9 +22,5 @@ public interface ProjectTaskToolService {
       Integer taskStatusManagementSelect,
       Long objectId);
 
-  TaskStatus getPreviousTaskStatus(
-      ProjectTask projectTask,
-      AppProject appProject,
-      Project project,
-      ProjectTaskCategory category);
+  TaskStatus getPreviousTaskStatus(ProjectTask projectTask, AppProject appProject);
 }
