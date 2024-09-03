@@ -34,8 +34,10 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.ObjectUtils;
 import org.jsoup.Jsoup;
 
 public class ProjectDashboardServiceImpl implements ProjectDashboardService {
@@ -89,7 +91,6 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
                     },
                     LinkedHashMap::new));
 
-    Map<String, Object> othersMap = null;
     for (Map.Entry<ProjectTaskCategory, List<ProjectTask>> entry : categoryTaskMap.entrySet()) {
       Map<String, Object> categoryMap = new HashMap<>();
       List<ProjectTask> projectTaskList = entry.getValue();
@@ -98,27 +99,22 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
       long closedCount =
           projectTaskList.stream().filter(task -> task.getStatus().getIsCompleted()).count();
 
-      if (category == null) {
-        categoryMap.put("categoryId", 0L);
-        categoryMap.put("categoryName", "Others");
-      } else {
-        categoryMap.put("categoryId", category.getId());
-        categoryMap.put("categoryName", category.getName());
-      }
+      categoryMap.put(
+          "categoryId", Optional.ofNullable(category).map(ProjectTaskCategory::getId).orElse(0L));
+      categoryMap.put(
+          "categoryName",
+          Optional.ofNullable(category).map(ProjectTaskCategory::getName).orElse("Others"));
       categoryMap.put("open", totalCount - closedCount);
       categoryMap.put("closed", closedCount);
       categoryMap.put("total", totalCount);
       categoryMap.put("projectId", project.getId());
 
-      if (category == null) {
-        othersMap = categoryMap;
-      } else {
-        categoryList.add(categoryMap);
-      }
+      categoryList.add(categoryMap);
     }
 
-    if (othersMap != null) {
-      categoryList.add(othersMap);
+    if (!ObjectUtils.isEmpty(categoryList)) {
+      categoryList =
+          categoryList.stream().sorted(this::compareCategoryMap).collect(Collectors.toList());
     }
 
     return categoryList;
@@ -155,5 +151,19 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
         return 0;
       }
     };
+  }
+
+  protected int compareCategoryMap(Map<String, Object> map1, Map<String, Object> map2) {
+    Long id1 = (Long) map1.get("categoryId");
+    Long id2 = (Long) map2.get("categoryId");
+
+    if (id1 == 0L) {
+      return 1;
+    }
+    if (id2 == 0L) {
+      return -1;
+    }
+
+    return id1.compareTo(id2);
   }
 }
