@@ -1235,7 +1235,6 @@
 "Waiting Timesheet lines","Ligne de feuille de temps en attente",,
 "Waiting for validation","En attente de validation",,
 "Waiting validation","Attente validation",,
-"Warning, a timesheet already exists for the date ${fromDate} and the company ${company.name}.","Attention, il existe déjà une feuille de temps pour la date du ${fromDate} et la société ${company.name}.",,
 "Wednesday","Mercredi",,
 "Weekly Planning","Planning hebdomadaire",,
 "Weekly duration","Durée hebdomadaire",,
