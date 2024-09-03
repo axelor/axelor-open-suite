@@ -283,6 +283,8 @@
     <field name="streetName" expr="eval: buildingNumber + ' ' + street?.name"
       if="buildingNumber &amp;&amp; street"/>
     <field name="streetName" expr="eval: street?.name" if="!buildingNumber &amp;&amp; street"/>
+    <field name="streetName" expr="eval: null"
+      if="!street &amp;&amp; __config__.app.getApp('base')?.getStoreStreets()"/>
   </action-record>
 
   <search-filters name="address-filters" model="com.axelor.apps.base.db.Address"
