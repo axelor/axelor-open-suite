@@ -49,6 +49,8 @@ import com.axelor.apps.sale.service.CartInitValueService;
 import com.axelor.apps.sale.service.CartInitValueServiceImpl;
 import com.axelor.apps.sale.service.CartLineService;
 import com.axelor.apps.sale.service.CartLineServiceImpl;
+import com.axelor.apps.sale.service.CartSaleOrderGeneratorService;
+import com.axelor.apps.sale.service.CartSaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.CartService;
 import com.axelor.apps.sale.service.CartServiceImpl;
 import com.axelor.apps.sale.service.PackLineService;
@@ -58,6 +60,8 @@ import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
 import com.axelor.apps.sale.service.PricingGroupSaleServiceImpl;
 import com.axelor.apps.sale.service.ProductCategorySaleService;
 import com.axelor.apps.sale.service.ProductCategoryServiceSaleImpl;
+import com.axelor.apps.sale.service.ProductRestService;
+import com.axelor.apps.sale.service.ProductRestServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderGeneratorService;
 import com.axelor.apps.sale.service.SaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -278,5 +282,7 @@ public class SaleModule extends AxelorModule {
     bind(CartLineService.class).to(CartLineServiceImpl.class);
     bind(ProductPopulateSaleObserver.class);
     bind(LoyaltyAccountHistoryLineService.class).to(LoyaltyAccountHistoryLineServiceImpl.class);
+    bind(ProductRestService.class).to(ProductRestServiceImpl.class);
+    bind(CartSaleOrderGeneratorService.class).to(CartSaleOrderGeneratorServiceImpl.class);
   }
 }

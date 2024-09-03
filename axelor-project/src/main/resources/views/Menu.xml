@@ -6,14 +6,17 @@
   <menuitem name="menu-project-root" order="-1400" title="Project" icon="list-task"
     if="__config__.app.isApp('project')" icon-background="#3f6bb9"/>
 
-  <menuitem name="project-all" parent="menu-project-root" order="100" title="Projects"
-    action="project.all"/>
+  <menuitem name="menu-project-project-root" parent="menu-project-root" order="0"
+    title="Projects" icon="fa-tasks" icon-background="#3f6bb9"/>
+
+  <menuitem name="project-all" parent="menu-project-project-root" order="100"
+    title="Projects" action="project.all"/>
   <action-method name="project.all">
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="allProjects"/>
   </action-method>
 
-  <menuitem name="project-task-all" parent="menu-project-root" order="300" title="Tasks"
-    action="project.task.all"/>
+  <menuitem name="project-task-all" parent="menu-project-project-root" order="300"
+    title="Tasks" action="project.task.all"/>
   <action-method name="project.task.all">
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="allProjectTasks"/>
   </action-method>

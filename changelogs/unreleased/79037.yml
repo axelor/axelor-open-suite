@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order API: fixed an issue where condition in permission were not evaluated correctly to see and add products from a manufacturing order."
+module: axelor-production

@@ -2,6 +2,8 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -67,6 +69,23 @@ public class ProjectMenuController {
             .context("_projectIds", Beans.get(ProjectToolService.class).getActiveProjectIds())
             .context("_fromBusinessProject", false)
             .param("search-filters", "project-project-filters");
+
+    response.setView(builder.map());
+  }
+
+  public void allProjectRelatedTasks(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    ActionView.ActionViewBuilder builder =
+        ActionView.define(I18n.get("Related Tasks"))
+            .model(ProjectTask.class.getName())
+            .add("kanban", "project-task-kanban")
+            .add("grid", "project-task-grid")
+            .add("form", "business-project-task-form")
+            .param("details-view", "true")
+            .domain("self.typeSelect = :_typeSelect AND self.project.id = :_id")
+            .context("_id", project.getId())
+            .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
+            .param("search-filters", "project-task-filters");
 
     response.setView(builder.map());
   }

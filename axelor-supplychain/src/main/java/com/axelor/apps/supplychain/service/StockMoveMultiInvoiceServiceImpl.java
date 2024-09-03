@@ -51,7 +51,6 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.AbstractMap.SimpleImmutableEntry;
@@ -896,8 +895,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         internalRef.add(internalReference);
       }
     }
-    dummyInvoice.setExternalReference(StringHelper.cutTooLongString(externalRef.toString()));
-    dummyInvoice.setInternalReference(StringHelper.cutTooLongString(internalRef.toString()));
+    dummyInvoice.setExternalReference(externalRef.toString());
+    dummyInvoice.setInternalReference(internalRef.toString());
   }
 
   /**
@@ -930,8 +929,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         internalRef.add(internalReference);
       }
     }
-    dummyInvoice.setExternalReference(StringHelper.cutTooLongString(externalRef.toString()));
-    dummyInvoice.setInternalReference(StringHelper.cutTooLongString(internalRef.toString()));
+    dummyInvoice.setExternalReference(externalRef.toString());
+    dummyInvoice.setInternalReference(internalRef.toString());
   }
 
   /**

@@ -251,7 +251,8 @@
           </viewer>
         </field>
         <field name="projectTask" title="Project Task" domain="self.project = :project"
-          form-view="project-task-form" grid-view="project-task-grid" canEdit="false"/>
+          form-view="business-project-task-form" grid-view="business-project-task-grid"
+          canEdit="false"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">

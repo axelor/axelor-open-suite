@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed an issue where tab title for credit note was wrong."
+module: axelor-account

@@ -421,6 +421,7 @@
 "Templates",,,
 "The company %s doesn't have any configured sequence for Project",,,
 "The parent task creates a loop in the task tree.",,,
+"The status of project tasks will be defined by the selection chosen. The priority of the statuses displayed is determined first by the category, then by the project, then by the project's application configuration",,,
 "The status of project tasks will be defined by the selection chosen. The priority of the statuses displayed is determined first by the category, then by the project, then by the project's application configuration. Once a task is linked to the project, the selection can no longer be modified.",,,
 "There is a potential inconsistency between the progression values configured.",,,
 "This configuration allows quick access to the active project change",,,

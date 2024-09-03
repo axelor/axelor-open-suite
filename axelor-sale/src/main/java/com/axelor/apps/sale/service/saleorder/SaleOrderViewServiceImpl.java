@@ -5,6 +5,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.utils.MapTools;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
@@ -48,14 +49,14 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
   public Map<String, Map<String, Object>> getOnNewAttrs(SaleOrder saleOrder)
       throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    attrs.putAll(collapseSpecificSettings());
-    attrs.putAll(inAti(saleOrder));
-    attrs.putAll(hideBankDetails(saleOrder));
-    attrs.putAll(hideDuplicateReferenceLabel(saleOrder));
-    attrs.putAll(getTypeSelectSelection());
-    attrs.putAll(hideDiscount());
-    attrs.putAll(refreshVersionPanel());
-    attrs.putAll(hideContactPartner(saleOrder));
+    MapTools.addMap(attrs, collapseSpecificSettings());
+    MapTools.addMap(attrs, inAti(saleOrder));
+    MapTools.addMap(attrs, hideBankDetails(saleOrder));
+    MapTools.addMap(attrs, hideDuplicateReferenceLabel(saleOrder));
+    MapTools.addMap(attrs, getTypeSelectSelection());
+    MapTools.addMap(attrs, hideDiscount());
+    MapTools.addMap(attrs, refreshVersionPanel());
+    MapTools.addMap(attrs, hideContactPartner(saleOrder));
     return attrs;
   }
 
@@ -63,21 +64,21 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
   public Map<String, Map<String, Object>> getOnLoadAttrs(SaleOrder saleOrder)
       throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    attrs.putAll(hideContactPartner(saleOrder));
+    MapTools.addMap(attrs, hideContactPartner(saleOrder));
     return attrs;
   }
 
   @Override
   public Map<String, Map<String, Object>> getPartnerOnChangeAttrs(SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    attrs.putAll(hideContactPartner(saleOrder));
+    MapTools.addMap(attrs, hideContactPartner(saleOrder));
     return attrs;
   }
 
   @Override
   public Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    attrs.putAll(hideContactPartner(saleOrder));
+    MapTools.addMap(attrs, hideContactPartner(saleOrder));
     return attrs;
   }
 
