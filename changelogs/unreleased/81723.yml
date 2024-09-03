@@ -1,0 +1,3 @@
+---
+title: "CutOff/Analytic : fix cut off batch when using analytic on credit move line"
+module: axelor-account
