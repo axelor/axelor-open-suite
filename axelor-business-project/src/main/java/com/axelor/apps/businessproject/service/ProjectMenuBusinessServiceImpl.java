@@ -28,7 +28,6 @@ public class ProjectMenuBusinessServiceImpl extends ProjectMenuServiceImpl {
             .param("search-filters", "project-project-filters")
             .context("_fromBusinessProject", false)
             .domain("self.isBusinessProject = false");
-    ;
 
     if (projectId != null) {
       builder.context("_showRecord", projectId);

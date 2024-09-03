@@ -22,11 +22,13 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
 import java.util.Map;
+import java.util.Optional;
 
 public class ProjectMenuServiceImpl implements ProjectMenuService {
 
@@ -43,7 +45,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
   @Override
   public Map<String, Object> getAllOpenProjectTasks(Project project) {
     if (project == null) {
-      project = AuthUtils.getUser().getActiveProject();
+      project = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
     }
 
     ActionViewBuilder builder =

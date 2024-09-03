@@ -5,6 +5,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class ProjectToolServiceImpl implements ProjectToolService {
@@ -28,7 +29,8 @@ public class ProjectToolServiceImpl implements ProjectToolService {
   @Override
   public Set<Long> getActiveProjectIds() {
     User currentUser = AuthUtils.getUser();
-    Project activateProject = currentUser.getActiveProject();
+    Project activateProject =
+        Optional.ofNullable(currentUser).map(User::getActiveProject).orElse(null);
 
     return getRelatedProjectIds(activateProject);
   }
@@ -42,7 +44,7 @@ public class ProjectToolServiceImpl implements ProjectToolService {
       projectIdsSet.add(0l);
       return projectIdsSet;
     }
-    if (!currentUser.getIsIncludeSubProjects()) {
+    if (currentUser != null && !currentUser.getIsIncludeSubProjects()) {
       projectIdsSet.add(project.getId());
       return projectIdsSet;
     }

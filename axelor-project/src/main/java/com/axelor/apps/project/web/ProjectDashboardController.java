@@ -28,6 +28,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectDashboardService;
 import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -107,7 +108,7 @@ public class ProjectDashboardController {
             .orElse(0l);
     project = Beans.get(ProjectRepository.class).find(projectId);
     if (project == null) {
-      project = AuthUtils.getUser().getActiveProject();
+      project = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
     }
 
     return project;
