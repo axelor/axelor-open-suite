@@ -32,9 +32,9 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskLinkTypeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskService;
-import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TimerProjectTaskService;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
+import com.axelor.apps.project.service.taskStatus.TaskStatusToolService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
@@ -233,7 +233,7 @@ public class ProjectTaskController {
     Project project = projectTask.getProject();
 
     Set<TaskStatus> taskStatusSet =
-        Beans.get(TaskStatusToolService.class).getTaskStatusSet(project, projectTask, null);
+        Beans.get(TaskStatusToolService.class).getTaskStatusSet(project, projectTask);
 
     if (!ObjectUtils.isEmpty(taskStatusSet)) {
       response.setAttr(

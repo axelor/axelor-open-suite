@@ -32,6 +32,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.taskStatus.TaskStatusToolService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -210,8 +211,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     }
 
     project = projectRepository.find(project.getId());
-    Set<TaskStatus> projectStatusSet =
-        taskStatusToolService.getTaskStatusSet(project, projectTask, null);
+    Set<TaskStatus> projectStatusSet = taskStatusToolService.getTaskStatusSet(project, projectTask);
 
     return ObjectUtils.isEmpty(projectStatusSet)
         ? null

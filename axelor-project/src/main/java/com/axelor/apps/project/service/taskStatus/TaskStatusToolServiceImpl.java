@@ -1,4 +1,4 @@
-package com.axelor.apps.project.service;
+package com.axelor.apps.project.service.taskStatus;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -15,6 +15,7 @@ import com.axelor.studio.db.AppProject;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -70,22 +71,20 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
   }
 
   @Override
-  public Set<TaskStatus> getTaskStatusSet(
-      Project project, ProjectTask projectTask, AppProject appProject) {
+  public Set<TaskStatus> getTaskStatusSet(Project project, ProjectTask projectTask) {
     if (project == null
         || projectTask == null
         || project.getTaskStatusManagementSelect()
             == ProjectRepository.TASK_STATUS_MANAGEMENT_NONE) {
       return null;
     }
-    if (appProject == null) {
-      appProject = appProjectService.getAppProject();
-    }
 
-    boolean enableTaskStatusManagementByCategory = false;
-    if (appProject != null) {
-      enableTaskStatusManagementByCategory = appProject.getEnableStatusManagementByTaskCategory();
-    }
+    AppProject appProject = appProjectService.getAppProject();
+
+    boolean enableTaskStatusManagementByCategory =
+        Optional.ofNullable(appProject)
+            .map(AppProject::getEnableStatusManagementByTaskCategory)
+            .orElse(false);
 
     if (enableTaskStatusManagementByCategory
         && project.getTaskStatusManagementSelect()
@@ -103,10 +102,9 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
       return project.getProjectTaskStatusSet();
     }
 
-    if (appProject != null) {
-      return appProject.getDefaultTaskStatusSet();
-    }
-    return null;
+    return Optional.ofNullable(appProject)
+        .map(AppProject::getDefaultTaskStatusSet)
+        .orElse(new HashSet<>());
   }
 
   @Override
@@ -185,22 +183,5 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
       taskStatusProgressByCategoryService.updateExistingProgressWithValue(
           taskStatusProgressByCategoryList, taskStatus.getDefaultProgress());
     }
-  }
-
-  @Override
-  public List<TaskStatus> getMissingTaskStatus(
-      Set<TaskStatus> oldTaskStatusList, Set<TaskStatus> newTaskStatusList) {
-    List<TaskStatus> missingTaskStatusList = new ArrayList<>();
-
-    if (ObjectUtils.isEmpty(oldTaskStatusList)) {
-      return missingTaskStatusList;
-    }
-
-    for (TaskStatus taskStatus : oldTaskStatusList) {
-      if (ObjectUtils.isEmpty(newTaskStatusList) || !newTaskStatusList.contains(taskStatus)) {
-        missingTaskStatusList.add(taskStatus);
-      }
-    }
-    return missingTaskStatusList;
   }
 }

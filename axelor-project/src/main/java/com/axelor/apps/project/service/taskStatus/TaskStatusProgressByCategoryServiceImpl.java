@@ -1,4 +1,4 @@
-package com.axelor.apps.project.service;
+package com.axelor.apps.project.service.taskStatus;
 
 import com.axelor.apps.project.db.TaskStatusProgressByCategory;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;

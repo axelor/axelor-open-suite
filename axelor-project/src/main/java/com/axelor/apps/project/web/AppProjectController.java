@@ -24,6 +24,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.service.ProjectTaskToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.taskStatus.TaskStatusService;
 import com.axelor.apps.project.web.tool.ProjectTaskControllerTool;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -62,7 +63,7 @@ public class AppProjectController {
     AppProject appProject = request.getContext().asType(AppProject.class);
 
     List<ProjectTask> projectTaskList =
-        Beans.get(ProjectTaskToolService.class).getProjectTaskToUpdate(appProject);
+        Beans.get(TaskStatusService.class).getProjectTaskToUpdate(appProject);
     ProjectTaskControllerTool.notifyProjectTaskChangeInConfig(
         projectTaskList, appProject, response);
   }
@@ -73,7 +74,7 @@ public class AppProjectController {
     AppProject appProject = request.getContext().asType(AppProject.class);
 
     List<ProjectTask> projectTaskList =
-        Beans.get(ProjectTaskToolService.class).getProjectTaskToUpdate(appProject);
+        Beans.get(TaskStatusService.class).getProjectTaskToUpdate(appProject);
     ProjectTaskControllerTool.updateAllProjectTaskListStatus(projectTaskList, appProject, response);
   }
 }

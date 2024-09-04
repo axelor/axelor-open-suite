@@ -4,7 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
-import com.axelor.apps.project.service.TaskStatusToolService;
+import com.axelor.apps.project.service.taskStatus.TaskStatusToolService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;

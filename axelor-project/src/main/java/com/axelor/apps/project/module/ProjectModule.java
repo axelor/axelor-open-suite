@@ -57,12 +57,6 @@ import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.apps.project.service.ProjectToolServiceImpl;
 import com.axelor.apps.project.service.ResourceBookingService;
 import com.axelor.apps.project.service.ResourceBookingServiceImpl;
-import com.axelor.apps.project.service.TaskStatusMassService;
-import com.axelor.apps.project.service.TaskStatusMassServiceImpl;
-import com.axelor.apps.project.service.TaskStatusProgressByCategoryService;
-import com.axelor.apps.project.service.TaskStatusProgressByCategoryServiceImpl;
-import com.axelor.apps.project.service.TaskStatusToolService;
-import com.axelor.apps.project.service.TaskStatusToolServiceImpl;
 import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.apps.project.service.TaskTemplateServiceImpl;
 import com.axelor.apps.project.service.TimerProjectTaskService;
@@ -77,6 +71,14 @@ import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkServiceImpl;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkTypeService;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkTypeServiceImpl;
+import com.axelor.apps.project.service.taskStatus.TaskStatusMassService;
+import com.axelor.apps.project.service.taskStatus.TaskStatusMassServiceImpl;
+import com.axelor.apps.project.service.taskStatus.TaskStatusProgressByCategoryService;
+import com.axelor.apps.project.service.taskStatus.TaskStatusProgressByCategoryServiceImpl;
+import com.axelor.apps.project.service.taskStatus.TaskStatusService;
+import com.axelor.apps.project.service.taskStatus.TaskStatusServiceImpl;
+import com.axelor.apps.project.service.taskStatus.TaskStatusToolService;
+import com.axelor.apps.project.service.taskStatus.TaskStatusToolServiceImpl;
 import com.axelor.team.db.repo.TeamRepository;
 
 public class ProjectModule extends AxelorModule {
@@ -114,5 +116,6 @@ public class ProjectModule extends AxelorModule {
     addQuickMenu(ActiveProjectQuickMenuCreator.class);
     bind(ProjectToolService.class).to(ProjectToolServiceImpl.class);
     bind(TaskStatusMassService.class).to(TaskStatusMassServiceImpl.class);
+    bind(TaskStatusService.class).to(TaskStatusServiceImpl.class);
   }
 }

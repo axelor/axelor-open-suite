@@ -4,7 +4,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
-import com.axelor.apps.project.service.TaskStatusMassService;
+import com.axelor.apps.project.service.taskStatus.TaskStatusMassService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
@@ -42,6 +42,7 @@ public class ProjectTaskControllerTool {
       response.setNotify(
           String.format(
               I18n.get(ProjectExceptionMessage.PROJECT_TASK_UPDATED_NOTIFY), taskUpdated));
+      response.setReload(true);
     }
   }
 
