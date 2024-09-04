@@ -6,7 +6,7 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
 import javax.validation.constraints.NotNull;
 
-public class ProductAndUnitPostResquest extends RequestPostStructure {
+public class ProductResquest extends RequestPostStructure {
   @NotNull private Long productId;
 
   private Long unitId;

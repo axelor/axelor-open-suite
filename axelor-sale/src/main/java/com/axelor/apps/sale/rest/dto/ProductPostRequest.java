@@ -11,20 +11,19 @@ import javax.validation.constraints.NotNull;
 
 public class ProductPostRequest extends RequestPostStructure {
 
-  @NotNull @NotEmpty private List<ProductAndUnitPostResquest> productAndUnitPostRequestList;
+  @NotNull @NotEmpty private List<ProductResquest> productList;
 
   private Long companyId;
 
   private Long partnerId;
   private Long currencyId;
 
-  public List<ProductAndUnitPostResquest> getProductAndUnitPostRequestList() {
-    return productAndUnitPostRequestList;
+  public List<ProductResquest> getProductList() {
+    return productList;
   }
 
-  public void setProductAndUnitPostRequestList(
-      List<ProductAndUnitPostResquest> productAndUnitPostRequestList) {
-    this.productAndUnitPostRequestList = productAndUnitPostRequestList;
+  public void setProductList(List<ProductResquest> productList) {
+    this.productList = productList;
   }
 
   public void setPartnerId(Long partnerId) {
