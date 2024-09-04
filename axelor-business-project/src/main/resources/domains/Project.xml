@@ -125,6 +125,11 @@
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
+    <integer name="saleCoefficient" title="Sale coefficient" default="1"
+      help="This coefficient will be used to compute the quantity for package invoicing"/>
+    <integer name="riskCoefficient" title="Risk coefficient" default="0"
+      help="This coefficient will be used to compute the quantity for package invoicing"/>
+
     <extra-code><![CDATA[
 
 		   	// TYPE SELECT

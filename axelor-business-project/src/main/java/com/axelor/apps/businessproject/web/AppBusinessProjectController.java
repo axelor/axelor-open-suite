@@ -18,10 +18,12 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppBusinessProject;
 
 public class AppBusinessProjectController {
 
@@ -31,5 +33,19 @@ public class AppBusinessProjectController {
     Beans.get(AppBusinessProjectService.class).generateBusinessProjectConfigurations();
 
     response.setReload(true);
+  }
+
+  @ErrorException
+  public void initCoefficientsFields(ActionRequest request, ActionResponse response) {
+    AppBusinessProject appBusinessProject =
+        Beans.get(AppBusinessProjectService.class).getAppBusinessProject();
+
+    if (appBusinessProject != null) {
+      Integer saleCoefficient = appBusinessProject.getSaleCoefficient();
+      Integer riskCoefficient = appBusinessProject.getRiskCoefficient();
+
+      response.setValue("saleCoefficient", saleCoefficient);
+      response.setValue("riskCoefficient", riskCoefficient);
+    }
   }
 }

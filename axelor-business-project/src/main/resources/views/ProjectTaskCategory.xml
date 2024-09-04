@@ -3,6 +3,44 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
+  <form title="Category" name="project-task-category-form"
+    id="business-project-task-category-form" model="com.axelor.apps.project.db.ProjectTaskCategory"
+    extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-project-task-category-group-onnew"/>
+      <attribute name="onLoad" value="action-project-task-category-group-onload"/>
+    </extend>
+
+    <extend target="//panel[@name='progressPanel']">
+      <insert position="after">
+        <panel name="coefficientPanel" title="Coefficient">
+          <field name="$manageSaleCoefficient" type="boolean" title="Manage sale coefficient"
+            onChange="action-business-project-attrs-reset-sale-coefficient"/>
+          <field name="saleCoefficient" showIf="$manageSaleCoefficient"
+            validIf="!$manageSaleCoefficient || ($manageSaleCoefficient &amp;&amp; saleCoefficient >= 0)"/>
+          <field name="$manageRiskCoefficient" type="boolean" title="Manage risk coefficient"
+            onChange="action-business-project-attrs-reset-risk-coefficient"/>
+          <field name="riskCoefficient" showIf="$manageRiskCoefficient"
+            validIf="!$manageRiskCoefficient || ($manageRiskCoefficient &amp;&amp; riskCoefficient >= 0)"/>
+        </panel>
+      </insert>
+    </extend>
+
+  </form>
+
+  <action-group name="action-project-task-category-group-onnew">
+    <action name="action-project-task-category-record-status-new"/>
+    <action name="action-category-method-fill-progress-by-category"/>
+    <action name="action-app-business-project-method-init-coefficient-fields"/>
+    <action name="action-business-project-attrs-manage-coefficients"/>
+  </action-group>
+
+  <action-group name="action-project-task-category-group-onload">
+    <action name="action-project-task-category-method-validate-progress"/>
+    <action name="action-category-method-fill-progress-by-category"/>
+    <action name="action-business-project-attrs-manage-coefficients"/>
+  </action-group>
+
   <action-attrs name="action-project-task-category-attrs-set-invoicing-type">
     <attribute name="value" for="invoicingType" expr="eval: null"/>
   </action-attrs>
