@@ -169,7 +169,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                 : invoiceTermToPay.getDueDate();
         BigDecimal invoiceTermCompanyAmount =
             this.getInvoiceTermAmountRemainingAtDate(invoiceTermToPay, date);
-        if (invoiceTermCompanyAmount.compareTo(availableAmount) >= 0) {
+        if (invoiceTermCompanyAmount.compareTo(availableAmount) >= 0 || i == invoiceTermCount) {
           invoiceTermPayment =
               createInvoiceTermPayment(invoicePayment, invoiceTermToPay, availableAmount, date);
           availableAmount = BigDecimal.ZERO;
