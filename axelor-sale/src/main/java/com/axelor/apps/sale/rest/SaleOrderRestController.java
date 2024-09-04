@@ -51,7 +51,6 @@ public class SaleOrderRestController {
       throws AxelorException, JsonProcessingException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().createAccess(SaleOrder.class).check();
-    Boolean inAti = Beans.get(SaleOrderGeneratorService.class).getInAti(requestBody.getInAti());
 
     SaleOrder saleOrder =
         Beans.get(SaleOrderGeneratorService.class)
@@ -60,7 +59,7 @@ public class SaleOrderRestController {
                 requestBody.fetchCompany(),
                 requestBody.fetchContact(),
                 requestBody.fetchCurrency(),
-                inAti);
+                requestBody.getInAti());
 
     return ResponseConstructor.buildCreateResponse(saleOrder, new SaleOrderResponse(saleOrder));
   }

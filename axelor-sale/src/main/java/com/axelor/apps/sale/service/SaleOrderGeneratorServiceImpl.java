@@ -152,10 +152,4 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
           I18n.get(SaleExceptionMessage.ATI_CHANGE_NOT_ALLOWED));
     }
   }
-
-  @Override
-  public Boolean getInAti(String inAti) {
-    if (inAti == null) return null;
-    return !inAti.equals("false");
-  }
 }

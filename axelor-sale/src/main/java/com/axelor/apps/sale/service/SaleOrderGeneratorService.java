@@ -34,6 +34,4 @@ public interface SaleOrderGeneratorService {
       Currency currency,
       Boolean inAti)
       throws AxelorException, JsonProcessingException;
-
-  Boolean getInAti(String inAti);
 }
