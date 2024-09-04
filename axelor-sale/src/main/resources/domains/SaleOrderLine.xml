@@ -107,6 +107,10 @@
     <decimal name="discountDerogation" title="Discount derogation (%)" min="0" max="100"/>
 
     <string name="lineProductionComment" title="Line production commentary" large="true"/>
+    <one-to-many name="subSaleOrderLineList" title="Sale order line list"
+      ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="parentSaleOrderLine"/>
+    <many-to-one name="parentSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      title="Parent sale order line"/>
 
     <one-to-many name="saleOrderLineTreeList" title="Sale order line trees"
       ref="com.axelor.apps.sale.db.SaleOrderLineTree" mappedBy="saleOrderLine"/>

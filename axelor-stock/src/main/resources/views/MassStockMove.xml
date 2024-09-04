@@ -7,12 +7,17 @@
     model="com.axelor.apps.stock.db.MassStockMove" onNew="action-mass-stock-move-method-on-new">
     <field name="sequence"/>
     <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
+    <field name="statusSelect" required="true"/>
     <field name="cartStockLocation" domain="self.company = :company AND self.typeSelect != 3"/>
   </grid>
 
   <form title="Mass stock move" name="mass-stock-move-form"
     model="com.axelor.apps.stock.db.MassStockMove" onNew="action-mass-stock-move-method-on-new">
-    <panel name="identificationPanel">
+    <panel name="statusPanel">
+      <field name="statusSelect" widget="NavSelect" required="true" readonly="true"
+        showTitle="false" colSpan="12"/>
+    </panel>
+    <panel name="identificationPanel" readonlyIf="statusSelect > 1">
       <field name="sequence"/>
       <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
       <field name="cartStockLocation"
