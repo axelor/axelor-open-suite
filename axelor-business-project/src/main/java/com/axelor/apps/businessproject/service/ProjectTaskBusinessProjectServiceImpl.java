@@ -600,20 +600,23 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
 
     BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
-    BigDecimal remainingLimit = BigDecimal.valueOf(9999.99);
 
-    if (percentageOfProgression.compareTo(percentageLimit) > 0) {
-      percentageOfProgression = percentageLimit;
-    }
-    if (percentageOfConsumption.compareTo(percentageLimit) > 0) {
-      percentageOfConsumption = percentageLimit;
-    }
-    if (remainingAmountToDo.compareTo(remainingLimit) > 0) {
-      remainingAmountToDo = remainingLimit;
-    }
+    projectTask.setPercentageOfProgress(
+        verifiedLimitFollowUp(percentageOfProgression, percentageLimit));
+    projectTask.setPercentageOfConsumption(
+        verifiedLimitFollowUp(percentageOfConsumption, percentageLimit));
+    projectTask.setRemainingAmountToDo(
+        verifiedLimitFollowUp(remainingAmountToDo, BigDecimal.valueOf(9999.99)));
+  }
 
-    projectTask.setPercentageOfProgress(percentageOfProgression);
-    projectTask.setPercentageOfConsumption(percentageOfConsumption);
-    projectTask.setRemainingAmountToDo(remainingAmountToDo);
+  @Override
+  public BigDecimal verifiedLimitFollowUp(BigDecimal value, BigDecimal limit) {
+    if (value.compareTo(limit) > 0) {
+      return limit;
+    }
+    if (value.compareTo(limit.negate()) < 0) {
+      return limit.negate();
+    }
+    return value;
   }
 }

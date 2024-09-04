@@ -66,4 +66,6 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   ProjectTask setProjectTaskValues(ProjectTask projectTask) throws AxelorException;
 
   void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException;
+
+  BigDecimal verifiedLimitFollowUp(BigDecimal value, BigDecimal limit);
 }
