@@ -19,15 +19,14 @@ public class SaleOrderPostRequest extends RequestPostStructure {
   private Long contactId;
   private Long currencyId;
   private Boolean inAti;
-  private List<SaleOrderLinePostRequest> saleOrderLinePostRequests;
+  private List<SaleOrderLinePostRequest> saleOrderLineList;
 
-  public List<SaleOrderLinePostRequest> getSaleOrderLinePostRequests() {
-    return saleOrderLinePostRequests;
+  public List<SaleOrderLinePostRequest> getSaleOrderLineList() {
+    return saleOrderLineList;
   }
 
-  public void setSaleOrderLinePostRequests(
-      List<SaleOrderLinePostRequest> saleOrderLinePostRequests) {
-    this.saleOrderLinePostRequests = saleOrderLinePostRequests;
+  public void setSaleOrderLineList(List<SaleOrderLinePostRequest> saleOrderLineList) {
+    this.saleOrderLineList = saleOrderLineList;
   }
 
   public Long getCompanyId() {
@@ -96,12 +95,5 @@ public class SaleOrderPostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(Currency.class, currencyId, ObjectFinder.NO_VERSION);
-  }
-
-  public List<SaleOrderLinePostRequest> fetchSaleOrderLinePostRequests() {
-    if (saleOrderLinePostRequests == null || saleOrderLinePostRequests.isEmpty()) {
-      return null;
-    }
-    return saleOrderLinePostRequests;
   }
 }

@@ -20,10 +20,12 @@ package com.axelor.apps.sale.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.rest.dto.SaleOrderLinePostRequest;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.rest.dto.SaleOrderPostRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
+import com.axelor.apps.sale.service.SaleOrderRestService;
+import com.axelor.apps.sale.service.SaleOrderRestService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.RequestValidator;
@@ -31,7 +33,6 @@ import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -53,7 +54,11 @@ public class SaleOrderRestController {
   public Response createSaleOrder(SaleOrderPostRequest requestBody)
       throws AxelorException, JsonProcessingException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().createAccess(SaleOrder.class).check();
+    new SecurityCheck()
+        .createAccess(SaleOrder.class)
+        .writeAccess(SaleOrder.class)
+        .createAccess(SaleOrderLine.class)
+        .check();
 
     SaleOrder saleOrder =
         Beans.get(SaleOrderGeneratorService.class)
@@ -63,13 +68,11 @@ public class SaleOrderRestController {
                 requestBody.fetchContact(),
                 requestBody.fetchCurrency(),
                 requestBody.getInAti());
-    List<SaleOrderLinePostRequest> saleOrderPostResquestList =
-        requestBody.fetchSaleOrderLinePostRequests();
-    if (saleOrderPostResquestList != null) {
-      saleOrder =
-          Beans.get(SaleOrderGeneratorService.class)
-              .fetchAndAddSaleOrderLines(requestBody.getSaleOrderLinePostRequests(), saleOrder);
-    }
+
+
+    saleOrder =
+        Beans.get(SaleOrderRestService.class)
+            .fetchAndAddSaleOrderLines(requestBody.getSaleOrderLineList(), saleOrder);
 
     return ResponseConstructor.buildCreateResponse(saleOrder, new SaleOrderResponse(saleOrder));
   }

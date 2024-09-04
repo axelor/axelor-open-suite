@@ -23,9 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.rest.dto.SaleOrderLinePostRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.util.List;
 
 public interface SaleOrderGeneratorService {
 
@@ -36,8 +34,4 @@ public interface SaleOrderGeneratorService {
       Currency currency,
       Boolean inAti)
       throws AxelorException, JsonProcessingException;
-
-  SaleOrder fetchAndAddSaleOrderLines(
-      List<SaleOrderLinePostRequest> saleOrderLinePostRequests, SaleOrder saleOrder)
-      throws AxelorException;
 }

@@ -22,7 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CompanyService;
@@ -32,7 +31,6 @@ import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.rest.dto.SaleOrderLinePostRequest;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
@@ -43,9 +41,6 @@ import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService {
   protected SaleOrderRepository saleOrderRepository;
