@@ -435,7 +435,6 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
             invoicePayment, invoiceTerms, companyAmount, companyAmount);
 
         if (invoiceTermPaymentToolService.isPartialPayment(invoicePayment)) {
-          invoicePayment.setAmount(companyAmount);
           invoicePayment.clearInvoiceTermPaymentList();
           invoicePayment.setApplyFinancialDiscount(false);
           invoicePayment.setTotalAmountWithFinancialDiscount(invoicePayment.getAmount());
