@@ -27,11 +27,14 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskLinkType;
+import com.axelor.apps.project.db.ProjectToDoTemplate;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskLinkTypeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.ProjectToDoTemplateRepository;
 import com.axelor.apps.project.service.ProjectTaskService;
+import com.axelor.apps.project.service.ProjectToDoTemplateService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TimerProjectTaskService;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
@@ -262,5 +265,24 @@ public class ProjectTaskController {
           "status", Beans.get(ProjectTaskService.class).getStatus(project, projectTask));
       manageStatus(request, response);
     }
+  }
+
+  @ErrorException
+  public void generateToDoFromTemplate(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    Map<String, Object> todoTemplateMap =
+        (Map<String, Object>) request.getContext().get("projectToDoTemplate");
+    if (ObjectUtils.isEmpty(todoTemplateMap)) {
+      return;
+    }
+
+    ProjectToDoTemplate template =
+        Beans.get(ProjectToDoTemplateRepository.class)
+            .find(Long.valueOf(todoTemplateMap.get("id").toString()));
+
+    Beans.get(ProjectToDoTemplateService.class)
+        .generateToDoItemsFromTemplate(projectTask, template);
+    response.setValue("projectToDoItemList", projectTask.getProjectToDoItemList());
   }
 }

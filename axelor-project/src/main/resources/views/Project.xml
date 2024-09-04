@@ -345,11 +345,18 @@
   </form>
 
   <form name="incl-todo-panel-form" title="To do" model="com.axelor.apps.project.db.Project">
-    <panel-related name="toDoItemListPanel" colSpan="12" x-tree-limit="1"
-      title="To do list" field="projectToDoItemList" orderBy="sequence" canMove="true"
-      onChange="action-to-do-item-method-reset-completed-fields" form-view="project-to-do-item-form"
-      grid-view="project-to-do-item-grid" widget="tree-grid" x-tree-field="projectToDoItemList"
-      x-tree-field-title="Add a new to do item" editable="true" x-expand-all="true"/>
+    <panel name="templatePanel" title="To do">
+      <field name="$projectToDoTemplate" title="To do template" type="Many-to-one"
+        target="com.axelor.apps.project.db.ProjectToDoTemplate" domain="self.typeSelect = 'project'"/>
+      <button name="generateTodoItems" readonlyIf="!$projectToDoTemplate"
+        title="Generate to do items" onClick="action-project-group-generate-todo-items"/>
+      <panel-related name="toDoItemListPanel" colSpan="12" x-tree-limit="1"
+        title="To do list" field="projectToDoItemList" orderBy="sequence" canMove="true"
+        onChange="action-to-do-item-method-reset-completed-fields"
+        form-view="project-to-do-item-form" grid-view="project-to-do-item-grid" widget="tree-grid"
+        x-tree-field="projectToDoItemList" x-tree-field-title="Add a new to do item" editable="true"
+        x-expand-all="true"/>
+    </panel>
   </form>
 
   <kanban columnBy="projectStatus" sequenceBy="orderByState" limit="10" name="project-kanban"
@@ -476,6 +483,11 @@
     <action name="action-project-validate-canceled-status"/>
     <action name="action-project-record-status-canceled"/>
     <action name="save"/>
+  </action-group>
+
+  <action-group name="action-project-group-generate-todo-items">
+    <action name="action-project-validate-todo-items"/>
+    <action name="action-project-method-generate-todo-items-from-template"/>
   </action-group>
 
   <!-- ACTION ATTRS -->
@@ -667,6 +679,11 @@
       method="taskStatusManagementSelectionIn"/>
   </action-method>
 
+  <action-method name="action-project-method-generate-todo-items-from-template">
+    <call class="com.axelor.apps.project.web.ProjectController"
+      method="generateToDoFromTemplate"/>
+  </action-method>
+
   <!-- ACTION VIEW -->
 
   <action-view name="action-project-open-popup-select-users" title="Select Users"
@@ -800,6 +817,11 @@
   <action-validate name="action-project-validate-canceled-status">
     <error message="Please fill canceled project status in App Project configuration."
       if="!__config__.app.getApp('project')?.canceledProjectStatus"/>
+  </action-validate>
+
+  <action-validate name="action-project-validate-todo-items">
+    <alert message="Your current to do list will be erased, do you want to continue ?"
+      if="projectToDoItemList &amp;&amp; !projectToDoItemList.isEmpty()"/>
   </action-validate>
 
 

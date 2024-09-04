@@ -184,6 +184,15 @@
     <view type="form" name="project-task-link-type-form"/>
   </action-view>
 
+  <menuitem name="project-project-to-do-template" parent="project-configurations"
+    title="To do templates" action="project.root.project.todo.template.all" order="1600"/>
+
+  <action-view name="project.root.project.todo.template.all" title="To do templates"
+    model="com.axelor.apps.project.db.ProjectToDoTemplate">
+    <view type="grid" name="project-to-do-template-grid"/>
+    <view type="form" name="project-to-do-template-form"/>
+  </action-view>
+
   <!-- My project menu -->
 
   <menuitem name="menu-my-project-root" order="-1400" title="My project" icon="list-task"

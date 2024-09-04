@@ -21,13 +21,17 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectToDoTemplate;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.ProjectToDoTemplateRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectTaskToolService;
+import com.axelor.apps.project.service.ProjectToDoTemplateService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -162,5 +166,23 @@ public class ProjectController {
     }
 
     response.setAttr("taskStatusManagementSelect", "selection-in", taskStatusSelect);
+  }
+
+  @ErrorException
+  public void generateToDoFromTemplate(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+
+    Map<String, Object> todoTemplateMap =
+        (Map<String, Object>) request.getContext().get("projectToDoTemplate");
+    if (ObjectUtils.isEmpty(todoTemplateMap)) {
+      return;
+    }
+
+    ProjectToDoTemplate template =
+        Beans.get(ProjectToDoTemplateRepository.class)
+            .find(Long.valueOf(todoTemplateMap.get("id").toString()));
+
+    Beans.get(ProjectToDoTemplateService.class).generateToDoItemsFromTemplate(project, template);
+    response.setValue("projectToDoItemList", project.getProjectToDoItemList());
   }
 }

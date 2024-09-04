@@ -250,11 +250,17 @@
 
   <form name="incl-todo-task-panel-form" title="To do"
     model="com.axelor.apps.project.db.ProjectTask">
-    <panel-related name="toDoItemListPanel" colSpan="12" x-tree-limit="1"
-      title="To do list" field="projectToDoItemList" orderBy="sequence" canMove="true"
-      onChange="action-to-do-item-method-reset-completed-fields" form-view="project-to-do-item-form"
-      grid-view="project-to-do-item-grid" widget="tree-grid" x-tree-field="projectToDoItemList"
-      x-tree-field-title="Add a new to do item" editable="true"/>
+    <panel name="templatePanel" title="To do">
+      <field name="$projectToDoTemplate" title="To do template" type="Many-to-one"
+        target="com.axelor.apps.project.db.ProjectToDoTemplate" domain="self.typeSelect = 'task'"/>
+      <button name="generateTodoItems" readonlyIf="!$projectToDoTemplate"
+        title="Generate to do items" onClick="action-project-task-group-generate-todo-items"/>
+      <panel-related name="toDoItemListPanel" colSpan="12" x-tree-limit="1"
+        title="To do list" field="projectToDoItemList" orderBy="sequence" canMove="true"
+        onChange="action-to-do-item-method-reset-completed-fields"
+        form-view="project-to-do-item-form" grid-view="project-to-do-item-grid" widget="tree-grid"
+        x-tree-field="projectToDoItemList" x-tree-field-title="Add a new to do item" editable="true"/>
+    </panel>
   </form>
 
   <gantt name="task-gantt" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
@@ -444,6 +450,11 @@
     <action name="action-project-task-attrs-hide-time-spent-button"/>
   </action-group>
 
+  <action-group name="action-project-task-group-generate-todo-items">
+    <action name="action-project-validate-todo-items"/>
+    <action name="action-project-task-method-generate-todo-items-from-template"/>
+  </action-group>
+
   <action-method name="action-project-task-method-set-link-type-domain">
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="setLinkTypeDomain"/>
   </action-method>
@@ -467,6 +478,11 @@
 
   <action-method name="action-project-task-method-set-status-selection-in">
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="manageStatus"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-generate-todo-items-from-template">
+    <call class="com.axelor.apps.project.web.ProjectTaskController"
+      method="generateToDoFromTemplate"/>
   </action-method>
 
   <action-group name="action-project-task-group-click-done">

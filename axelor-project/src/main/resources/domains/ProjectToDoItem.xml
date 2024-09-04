@@ -16,6 +16,8 @@
       title="Parent"/>
     <one-to-many name="projectToDoItemList"
       ref="com.axelor.apps.project.db.ProjectToDoItem" mappedBy="parentItem"/>
+    <many-to-one name="projectToDoTemplate"
+      ref="com.axelor.apps.project.db.ProjectToDoTemplate"/>
   </entity>
 
 </domain-models>

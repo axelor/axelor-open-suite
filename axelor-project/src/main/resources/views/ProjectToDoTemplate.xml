@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="project-to-do-template-grid" title="To do templates"
+    model="com.axelor.apps.project.db.ProjectToDoTemplate" groupBy="typeSelect">
+    <field name="title"/>
+    <field name="typeSelect"/>
+  </grid>
+
+  <form title="To do template" name="project-to-do-template-form"
+    model="com.axelor.apps.project.db.ProjectToDoTemplate">
+    <panel name="mainPanel">
+      <field name="title" placeholder="Title" required="true"/>
+      <field name="typeSelect" required="true"/>
+      <panel-related name="toDoItemListPanel" colSpan="12" x-tree-limit="1"
+        title="To do list" field="projectToDoItemList" orderBy="sequence" canMove="true"
+        form-view="project-to-do-item-form" grid-view="project-to-do-item-grid" widget="tree-grid"
+        x-tree-field="projectToDoItemList" x-tree-field-title="Add a new to do item" editable="true"
+        x-expand-all="true">
+        <field name="title" showTitle="false" placeholder="Title" required="true"/>
+        <field name="projectToDoTemplate" hidden="true"/>
+        <field name="sequence" hidden="true"/>
+      </panel-related>
+    </panel>
+  </form>
+
+</object-views>
