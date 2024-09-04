@@ -89,6 +89,4 @@ public interface TimesheetLineService {
   Product getDefaultProduct(TimesheetLine timesheetLine);
 
   void resetTimesheetLineTimer(TSTimer tsTimer);
-
-  void setToDate(Timesheet timesheet);
 }

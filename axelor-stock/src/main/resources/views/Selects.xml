@@ -170,4 +170,11 @@
     <option value="com.axelor.apps.stock.db.StockRules">Stock Rules</option>
   </selection>
 
+  <selection name="stock.mass.stock.move.status.select">
+    <option value="1">Draft</option>
+    <option value="2">In progress</option>
+    <option value="3">Realized</option>
+    <option value="4">Canceled</option>
+  </selection>
+
 </object-views>

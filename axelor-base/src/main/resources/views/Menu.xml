@@ -1094,6 +1094,18 @@
     <view type="form" name="faker-api-field-form"/>
   </action-view>
 
+  <menuitem name="admin-root-connector" title="Connectors" parent="admin-root-maintenance"
+    order="1400"/>
+
+  <menuitem name="admin-root-connector-mapper" title="Connector mappers"
+    action="action.admin.root.view.connector.mapper" parent="admin-root-connector" order="100"/>
+
+  <action-view name="action.admin.root.view.connector.mapper" title="Connector mappers"
+    model="com.axelor.apps.base.db.ConnectorMapper">
+    <view type="grid" name="connector-mapper-grid"/>
+    <view type="form" name="connector-mapper-form"/>
+  </action-view>
+
   <menuitem name="studio-app-root" id="base-studio-app-root" title="App" order="-250"
     icon="pencil-square" icon-background="#9c27b0" if="__config__.app.isApp('studio')"/>
 

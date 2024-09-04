@@ -161,6 +161,7 @@
           </>
           ]]>
           </viewer>
+          <editor></editor>
         </field>
       </panel>
       <panel name="InvoicingAmountsPanel" title="Invoicing amounts">
@@ -178,6 +179,7 @@
           </>
           ]]>
           </viewer>
+          <editor></editor>
         </field>
       </panel>
     </panel>
