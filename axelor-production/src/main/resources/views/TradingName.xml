@@ -19,7 +19,7 @@
 
   <action-attrs name="action-stock-attrs-production-stock-locations-domain">
     <attribute name="domain"
-      expr="eval: companySet?.isEmpty() ? &quot; self = null &quot; : &quot; self.usableOnProduction = true AND self.typeSelect != 3 AND self.company.id IN (${companySet?.collect{it.id}.join(',')}) &quot;"
+      expr="eval: !company ? &quot; self = null &quot; : &quot; self.usableOnProduction = true AND self.typeSelect != 3 AND self.company = :company &quot;"
       for="componentDefaultStockLocation,finishedProductsDefaultStockLocation"/>
   </action-attrs>
 
