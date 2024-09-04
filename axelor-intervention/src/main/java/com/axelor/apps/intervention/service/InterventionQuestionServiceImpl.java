@@ -36,7 +36,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -105,10 +104,7 @@ public class InterventionQuestionServiceImpl implements InterventionQuestionServ
     if (appBaseService.getAppBase().getEnableTradingNamesManagement()) {
       Optional.ofNullable(AuthUtils.getUser())
           .map(User::getTradingName)
-          .map(TradingName::getCompanySet)
-          .stream()
-          .flatMap(Collection::stream)
-          .findFirst()
+          .map(TradingName::getCompany)
           .map(Company::getAddress)
           .ifPresent(
               it ->
