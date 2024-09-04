@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="project-to-do-item-grid" title="To do items"
-    model="com.axelor.apps.project.db.ProjectToDoItem" editable="true">
+    model="com.axelor.apps.project.db.ProjectToDoItem" editable="true" edit-icon="false">
     <field name="title" showTitle="false" placeholder="Title" required="true" width="800%"/>
     <field name="completed" showTitle="false"
       onChange="action-to-do-item-method-change-completed"/>
@@ -15,7 +15,7 @@
   </grid>
 
   <form title="To do item" name="project-to-do-item-form"
-    model="com.axelor.apps.project.db.ProjectToDoItem">
+    model="com.axelor.apps.project.db.ProjectToDoItem" canAttach="true">
     <panel name="mainPanel">
       <field name="title" showTitle="false" placeholder="Title" required="true"/>
       <field name="completed" showTitle="false"

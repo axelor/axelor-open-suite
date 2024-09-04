@@ -35,4 +35,6 @@ public interface ITranslation {
   public static final String PROJECT_PRIORITY_LOW = /*$$(*/ "value:Low"; /*)*/
 
   public static final String PROJECT_PRIORITY_HIGH = /*$$(*/ "value:High"; /*)*/
+
+  public static final String ADD_TO_DO_ITEM_TREE = /*$$(*/ "Add a new to do item"; /*)*/
 }
