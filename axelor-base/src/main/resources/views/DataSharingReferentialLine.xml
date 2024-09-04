@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="data-sharing-referential-line-grid" title="Data sharing referential lines"
+    model="com.axelor.apps.base.db.DataSharingReferentialLine">
+    <field name="metaModel"/>
+  </grid>
+
+  <form name="data-sharing-referential-line-form" title="Data sharing referential line"
+    model="com.axelor.apps.base.db.DataSharingReferentialLine" width="large">
+    <panel name="mainPanel">
+      <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+      <field name="queryCondition" colSpan="12"/>
+    </panel>
+  </form>
+
+</object-views>
