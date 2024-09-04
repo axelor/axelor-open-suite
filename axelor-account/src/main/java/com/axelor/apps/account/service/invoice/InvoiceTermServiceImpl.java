@@ -662,7 +662,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 .subtract(invoiceTermPayment.getCompanyPaidAmount());
       }
 
-      if (amountRemaining.signum() <= 0) {
+      if (amountRemaining.signum() <= 0 || companyAmountRemaining.signum() <= 0) {
         amountRemaining = BigDecimal.ZERO;
         invoiceTerm.setIsPaid(true);
         Invoice invoice = invoiceTerm.getInvoice();
