@@ -3,31 +3,28 @@ package com.axelor.apps.sale.rest.dto;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
-import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class ProductPostRequest extends RequestPostStructure {
 
-  @NotNull @NotEmpty private List<Long> productsId;
+  @NotNull @NotEmpty private List<ProductAndUnitPostResquest> productAndUnitPostRequestList;
 
   private Long companyId;
 
   private Long partnerId;
   private Long currencyId;
-  private Long unitId;
 
-  public Long getUnitId() {
-    return unitId;
+  public List<ProductAndUnitPostResquest> getProductAndUnitPostRequestList() {
+    return productAndUnitPostRequestList;
   }
 
-  public void setUnitId(Long unitId) {
-    this.unitId = unitId;
+  public void setProductAndUnitPostRequestList(
+      List<ProductAndUnitPostResquest> productAndUnitPostRequestList) {
+    this.productAndUnitPostRequestList = productAndUnitPostRequestList;
   }
 
   public void setPartnerId(Long partnerId) {
@@ -42,14 +39,6 @@ public class ProductPostRequest extends RequestPostStructure {
     this.currencyId = currencyId;
   }
 
-  public void setProductsId(List<Long> productsId) {
-    this.productsId = productsId;
-  }
-
-  public List<Long> getProductsId() {
-    return productsId;
-  }
-
   public Long getCompanyId() {
     return companyId;
   }
@@ -60,18 +49,6 @@ public class ProductPostRequest extends RequestPostStructure {
 
   public Long getPartnerId() {
     return partnerId;
-  }
-
-  public List<Product> fetchProducts() {
-    List<Product> products = new ArrayList<>();
-    if (productsId.isEmpty()) {
-      return null;
-    }
-    for (Long productId : productsId) {
-
-      products.add(ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION));
-    }
-    return products;
   }
 
   public Company fetchCompany() {
@@ -93,12 +70,5 @@ public class ProductPostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(Currency.class, currencyId, ObjectFinder.NO_VERSION);
-  }
-
-  public Unit fetchUnit() {
-    if (unitId == null || unitId == 0L) {
-      return null;
-    }
-    return ObjectFinder.find(Unit.class, unitId, ObjectFinder.NO_VERSION);
   }
 }

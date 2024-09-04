@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.rest.dto.CurrencyResponse;
 import com.axelor.apps.sale.rest.dto.PriceResponse;
+import com.axelor.apps.sale.rest.dto.ProductAndUnitPostResquest;
 import com.axelor.apps.sale.rest.dto.ProductResponse;
 import com.axelor.apps.sale.rest.dto.UnitResponse;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -92,8 +93,8 @@ public class ProductRestServiceImpl implements ProductRestService {
         productPriceService.getSaleUnitPrice(company, product, true, partner, currency);
 
     if (unit != null) {
-      priceWT = unitConversionService.convert(product.getUnit(), unit, priceWT, 5, product);
-      priceATI = unitConversionService.convert(product.getUnit(), unit, priceATI, 5, product);
+      priceWT = unitConversionService.convert(unit, product.getSalesUnit(), priceWT, 5, product);
+      priceATI = unitConversionService.convert(unit, product.getSalesUnit(), priceATI, 5, product);
     }
 
     priceList.add(new PriceResponse("WT", priceWT));
@@ -122,10 +123,15 @@ public class ProductRestServiceImpl implements ProductRestService {
 
   @Override
   public List<ProductResponse> computeProductResponse(
-      Company company, List<Product> products, Partner partner, Currency currency, Unit unit)
+      Company company,
+      List<ProductAndUnitPostResquest> unitsProducts,
+      Partner partner,
+      Currency currency)
       throws AxelorException {
     List<ProductResponse> productResponses = new ArrayList<>();
-    for (Product product : products) {
+    for (ProductAndUnitPostResquest productAndUnit : unitsProducts) {
+      Unit unit = productAndUnit.fetchUnit();
+      Product product = productAndUnit.fetchProduct();
       CurrencyResponse currencyResponse =
           createCurrencyResponse(product, partner, company, currency);
       if (company == null) {

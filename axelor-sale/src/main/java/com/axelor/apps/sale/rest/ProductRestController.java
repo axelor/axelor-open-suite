@@ -6,6 +6,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.sale.rest.dto.ProductAndUnitPostResquest;
 import com.axelor.apps.sale.rest.dto.ProductPostRequest;
 import com.axelor.apps.sale.rest.dto.ProductResponse;
 import com.axelor.apps.sale.service.ProductRestService;
@@ -40,17 +41,18 @@ public class ProductRestController {
   public Response getProductsPrice(ProductPostRequest requestBody)
       throws JSONException, AxelorException {
     RequestValidator.validateBody(requestBody);
-    for (Long productId : requestBody.getProductsId()) {
-      new SecurityCheck().readAccess(Product.class, productId).check();
+    for (ProductAndUnitPostResquest unitProductPostRequest :
+        requestBody.getProductAndUnitPostRequestList()) {
+      new SecurityCheck().readAccess(Product.class, unitProductPostRequest.getProductId()).check();
+      new SecurityCheck().readAccess(Unit.class, unitProductPostRequest.getUnitId()).check();
     }
-    List<Product> products = requestBody.fetchProducts();
+    List<ProductAndUnitPostResquest> unitProducts = requestBody.getProductAndUnitPostRequestList();
     Partner partner = requestBody.fetchPartner();
     Company company = requestBody.fetchCompany();
     Currency currency = requestBody.fetchCurrency();
-    Unit unit = requestBody.fetchUnit();
     List<ProductResponse> productResponses =
         Beans.get(ProductRestService.class)
-            .computeProductResponse(company, products, partner, currency, unit);
+            .computeProductResponse(company, unitProducts, partner, currency);
     return ResponseConstructor.build(
         Response.Status.OK, I18n.get(ITranslation.PRODUCT_PRICE_INFORMATION), productResponses);
   }
