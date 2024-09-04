@@ -6,6 +6,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.meta.loader.ModuleManager;
 import com.google.inject.Inject;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineDomainServiceImpl implements SaleOrderLineDomainService {
 
@@ -47,8 +48,7 @@ public class SaleOrderLineDomainServiceImpl implements SaleOrderLineDomainServic
         && saleOrder != null
         && saleOrder.getTradingName() != null
         && saleOrder.getCompany() != null
-        && saleOrder.getCompany().getTradingNameSet() != null
-        && !saleOrder.getCompany().getTradingNameSet().isEmpty()) {
+        && !CollectionUtils.isEmpty(saleOrder.getCompany().getTradingNameList())) {
       domain +=
           " AND " + saleOrder.getTradingName().getId() + " member of self.tradingNameSellerSet";
     }

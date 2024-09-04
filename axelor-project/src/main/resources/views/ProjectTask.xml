@@ -91,27 +91,7 @@
         <panel-include view="incl-characteristics-panel-form"/>
       </panel>
     </panel>
-    <panel name="customizedFieldsPanel" title="Customized fields" collapseIf="true"
-      canCollapse="true" colSpan="12">
-      <panel name="appJsonPanel" colSpan="12"
-        showIf="$contains(project.customFieldManagementSelect, 'app')" title="App customized fields">
-        <field name="appJson" colSpan="12"/>
-      </panel>
-      <panel name="projectJsonPanel" colSpan="12"
-        showIf="$contains(project.customFieldManagementSelect, 'project')"
-        title="Project customized fields">
-        <field name="projectJson" colSpan="12"/>
-      </panel>
-      <panel name="categoryJsonPanel" colSpan="12"
-        showIf="projectTaskCategory &amp;&amp; $contains(project.customFieldManagementSelect, 'category')"
-        title="Category customized fields">
-        <field name="categoryJson" colSpan="12"/>
-      </panel>
-      <panel name="otherFieldsPanel" title="Other customized fields" colSpan="12">
-        <field name="attrs" colSpan="12"/>
-      </panel>
-      <field name="project.customFieldManagementSelect" hidden="true"/>
-    </panel>
+    <panel-include view="incl-customized-field-panel-form"/>
     <panel-tabs name="mainPanelTab">
 
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
@@ -237,6 +217,31 @@
         colSpan="3"/>
       <panel-related field="projectTaskLinkList" colSpan="12" readonly="true"
         grid-view="project-task-link-grid" form-view="project-task-link-form"/>
+    </panel>
+  </form>
+
+  <form name="incl-customized-field-panel-form" title="Customized fields"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <panel name="customizedFieldsPanel" title="Customized fields" collapseIf="true"
+      canCollapse="true" colSpan="12">
+      <panel name="appJsonPanel" colSpan="12"
+        showIf="$contains(project.customFieldManagementSelect, 'app')" title="App customized fields">
+        <field name="appJson" colSpan="12"/>
+      </panel>
+      <panel name="projectJsonPanel" colSpan="12"
+        showIf="$contains(project.customFieldManagementSelect, 'project')"
+        title="Project customized fields">
+        <field name="projectJson" colSpan="12"/>
+      </panel>
+      <panel name="categoryJsonPanel" colSpan="12"
+        showIf="projectTaskCategory &amp;&amp; $contains(project.customFieldManagementSelect, 'category')"
+        title="Category customized fields">
+        <field name="categoryJson" colSpan="12"/>
+      </panel>
+      <panel name="otherFieldsPanel" title="Other customized fields" colSpan="12">
+        <field name="attrs" colSpan="12"/>
+      </panel>
+      <field name="project.customFieldManagementSelect" hidden="true"/>
     </panel>
   </form>
 

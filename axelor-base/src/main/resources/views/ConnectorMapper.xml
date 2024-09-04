@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="connector-mapper-grid" title="Connector mappers"
+    model="com.axelor.apps.base.db.ConnectorMapper" groupBy="connectorSelect,metaModel">
+    <field name="connectorSelect"/>
+    <field name="metaModel"/>
+    <field name="modelId"/>
+    <field name="externalReference"/>
+  </grid>
+
+  <form name="connector-mapper-form" title="Connector mapper"
+    model="com.axelor.apps.base.db.ConnectorMapper" width="large">
+    <panel name="mainPanel" itemSpan="3">
+      <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+      <field name="modelId"/>
+      <field name="connectorSelect"/>
+      <field name="externalReference"/>
+    </panel>
+  </form>
+
+</object-views>

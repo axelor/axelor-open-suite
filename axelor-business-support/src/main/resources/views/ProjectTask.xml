@@ -107,6 +107,7 @@
         <field name="assignment" hidden="true" readonlyIf="id" showIf="typeSelect == 'ticket'"/>
       </panel>
     </panel>
+    <panel-include view="incl-customized-field-panel-form"/>
     <panel-tabs name="mainPanelTab" readonlyIf="id">
       <panel name="contentPanel" title="Content" colSpan="12">
         <field name="description" showTitle="false" colSpan="12" widget="html"/>

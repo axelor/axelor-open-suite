@@ -14,12 +14,16 @@
     <toolbar>
       <button name="emptyCartBtn" title="Empty cart"
         onClick="save,action-cart-method-empty-cart"/>
+      <button name="createSaleOrderBtn" title="Create the sale order"
+        onClick="save,action-method-cart-create-sale-order"/>
     </toolbar>
 
     <panel name="mainPanel">
       <field name="user" form-view="user-form" grid-view="user-grid" readonly="true"/>
-      <field name="company" form-view="company-form" grid-view="company-grid"/>
-      <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+      <field name="company" form-view="company-form" grid-view="company-grid"
+        onChange="action-cart-record-reset-partner"/>
+      <field name="partner" form-view="partner-form" grid-view="partner-grid" canNew="true"
+        readonlyIf="!company" domain=":company MEMBER OF self.companySet"/>
       <panel-related field="cartLineList" form-view="cart-line-form"
         grid-view="cart-line-grid" colSpan="12"/>
     </panel>
@@ -32,5 +36,14 @@
   <action-method name="action-cart-method-empty-cart">
     <call class="com.axelor.apps.sale.web.CartController" method="emptyCart"/>
   </action-method>
+
+  <action-method name="action-method-cart-create-sale-order">
+    <call class="com.axelor.apps.sale.web.CartController" method="createSaleOrder"/>
+  </action-method>
+
+  <action-record name="action-cart-record-reset-partner"
+    model="com.axelor.apps.sale.db.Cart">
+    <field name="partner" expr="eval: null" if="!company"/>
+  </action-record>
 
 </object-views>
