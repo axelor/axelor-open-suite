@@ -8,7 +8,7 @@
     onNew="action-picked-product-group-onnew">
     <field name="fromStockLocation"
       onSelect="action-picked-product-method-set-domain-from-stock-location"
-      onChange="action-picked-product-record-set-tracking-number,action-picked-product-method-set-current-qty"
+      onChange="action-picked-product-method-set-current-qty"
            readonlyIf="stockMoveLine"/>
     <field name="pickedProduct"
       onSelect="action-picked-product-method-set-picked-product-domain"
@@ -37,7 +37,7 @@
     <panel name="mainPanel" readonlyIf="stockMoveLine">
       <field name="fromStockLocation"
         onSelect="action-picked-product-method-set-domain-from-stock-location"
-        onChange="action-picked-product-record-set-tracking-number,action-picked-product-method-set-current-qty"/>
+        onChange="action-picked-product-method-set-current-qty"/>
       <field name="pickedProduct"
         onSelect="action-picked-product-method-set-picked-product-domain"
         onChange="action-picked-product-group-product-onchange"/>
