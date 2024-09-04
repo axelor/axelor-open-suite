@@ -5,6 +5,7 @@
 
   <grid name="project-to-do-item-grid" title="To do items"
     model="com.axelor.apps.project.db.ProjectToDoItem" editable="true" edit-icon="false">
+    <hilite if="!completed" color="black"/>
     <field name="title" showTitle="false" placeholder="Title" required="true" width="800%"/>
     <field name="completed" showTitle="false"
       onChange="action-to-do-item-method-change-completed"/>
