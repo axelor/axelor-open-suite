@@ -6,6 +6,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.invoke.MethodHandles;
@@ -26,12 +27,10 @@ public class AddressValidationNominatimService extends AddressValidationAbstract
     if (StringUtils.isEmpty(apiUrl)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          BaseExceptionMessage.ADDRESS_VALIDATION_NOMINATIM_URL_MISSING);
+          I18n.get(BaseExceptionMessage.ADDRESS_VALIDATION_NOMINATIM_URL_MISSING));
     }
     String queryUri =
-        String.format(
-            "%s?q=%s&format=jsonv2&addressdetails=1&limit=10",
-            apiUrl, formattedFullName.replace("\n", "%20").replace(" ", "%20"));
+        String.format("%s%s", apiUrl, formattedFullName.replace("\n", "%20").replace(" ", "%20"));
     LOG.debug("query URI = {}", queryUri);
     JsonNode parentNode = getJsonNodeFromAPI(queryUri);
     if (parentNode == null) {
