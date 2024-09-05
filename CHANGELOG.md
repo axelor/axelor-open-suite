@@ -1,3 +1,14 @@
+## [6.5.41] (2024-09-05)
+
+### Fixes
+#### Account
+
+* Invoice payment: fixed move display in payment details grid view.
+
+#### Production
+
+* Manufacturing order: fixed wrong priority on the sub manuf order.
+
 ## [6.5.40] (2024-08-22)
 
 ### Fixes
@@ -1512,6 +1523,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.41]: https://github.com/axelor/axelor-open-suite/compare/v6.5.40...v6.5.41
 [6.5.40]: https://github.com/axelor/axelor-open-suite/compare/v6.5.39...v6.5.40
 [6.5.39]: https://github.com/axelor/axelor-open-suite/compare/v6.5.38...v6.5.39
 [6.5.38]: https://github.com/axelor/axelor-open-suite/compare/v6.5.37...v6.5.38
