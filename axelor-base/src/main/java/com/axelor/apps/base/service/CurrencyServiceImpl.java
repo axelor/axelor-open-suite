@@ -302,13 +302,4 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
     return oldCurrencyRate;
   }
-
-  @Override
-  public boolean isCurrencyRateLower(
-      LocalDate oldDate, LocalDate newDate, Currency startCurrency, Currency endCurrency)
-      throws AxelorException {
-    return this.getCurrencyConversionRate(startCurrency, endCurrency, oldDate)
-            .compareTo(this.getCurrencyConversionRate(startCurrency, endCurrency, newDate))
-        < 0;
-  }
 }

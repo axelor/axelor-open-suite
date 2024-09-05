@@ -59,8 +59,4 @@ public interface CurrencyService {
       Currency endCurrency,
       BigDecimal oldCurrencyRate)
       throws AxelorException;
-
-  boolean isCurrencyRateLower(
-      LocalDate oldDate, LocalDate newDate, Currency startCurrency, Currency endCurrency)
-      throws AxelorException;
 }
