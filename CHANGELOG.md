@@ -1,3 +1,26 @@
+## [8.0.14] (2024-09-05)
+
+### Fixes
+#### Account
+
+* Invoice payment: fixed move display in payment details grid view.
+* Payment Voucher: fixed wrong amount on generated invoice payment when using financial discount.
+* Invoice: fixed an issue preventing invoice ventilation when pack feature is used.
+
+#### Budget
+
+* Purchase order line: fixed an issue where budget panel was editable on a confirmed purchase order.
+
+#### Production
+
+* Manufacturing order: fixed wrong priority on the sub manuf order.
+* Manufacturing order: fixed title for produced quantity in produced products form view.
+
+#### Supply Chain
+
+* Invoicing: fixed an issue preventing stock moves/order/contracts invoicing with analytic accounting lines.
+* Analytic panel: fixed display issue when product family is empty.
+
 ## [8.0.13] (2024-08-22)
 
 ### Fixes
@@ -1007,6 +1030,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.14]: https://github.com/axelor/axelor-open-suite/compare/v8.0.13...v8.0.14
 [8.0.13]: https://github.com/axelor/axelor-open-suite/compare/v8.0.12...v8.0.13
 [8.0.12]: https://github.com/axelor/axelor-open-suite/compare/v8.0.11...v8.0.12
 [8.0.11]: https://github.com/axelor/axelor-open-suite/compare/v8.0.10...v8.0.11
