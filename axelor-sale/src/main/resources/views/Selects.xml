@@ -104,8 +104,8 @@
   </selection>
 
   <selection name="sale.app.sale.loyalty.account.type.select">
-    <option value="0">Company</option>
-    <option value="1">Partner</option>
+    <option value="0">Partner</option>
+    <option value="1">Company</option>
     <option value="2">Trading name</option>
   </selection>
 
