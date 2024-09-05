@@ -815,24 +815,15 @@ public class PaymentVoucherConfirmService {
     BigDecimal ratio =
         currencyService.computeScaledExchangeRate(
             invoiceTerm.getCompanyAmount(), invoiceTerm.getAmount());
+    BigDecimal currencyAmount =
+        payVoucherElementToPay
+            .getAmountToPayCurrency()
+            .add(payVoucherElementToPay.getFinancialDiscountTotalAmount());
     BigDecimal companyAmountToPay =
         currencyScaleService.getCompanyScaledValue(
-            payVoucherElementToPay.getPaymentVoucher(),
-            (payVoucherElementToPay
-                    .getAmountToPayCurrency()
-                    .add(payVoucherElementToPay.getFinancialDiscountTotalAmount()))
-                .multiply(ratio));
+            payVoucherElementToPay.getPaymentVoucher(), currencyAmount.multiply(ratio));
 
     BigDecimal currencyRate = invoiceTerm.getMoveLine().getCurrencyRate();
-
-    companyAmountToPay =
-        invoiceTermService.adjustAmountInCompanyCurrency(
-            moveLineToPay.getInvoiceTermList(),
-            moveLineToPay.getAmountRemaining(),
-            companyAmountToPay,
-            amountToPay,
-            moveLineToPay.getCurrencyRate(),
-            moveLineToPay.getMove().getCompany());
 
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
