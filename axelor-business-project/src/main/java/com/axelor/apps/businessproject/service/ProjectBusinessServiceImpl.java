@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHistoryLine;
 import com.axelor.apps.project.db.ProjectStatus;
@@ -85,7 +86,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService;
   protected AppBaseService appBaseService;
   protected InvoiceRepository invoiceRepository;
-  protected UnitProjectToolService unitProjectToolService;
+  protected UnitConversionForProjectService unitConversionForProjectService;
 
   public static final int BIG_DECIMAL_SCALE = 2;
   public static final String FA_LEVEL_UP = "arrow-90deg-up";
@@ -107,7 +108,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService,
       AppBaseService appBaseService,
       InvoiceRepository invoiceRepository,
-      UnitProjectToolService unitProjectToolService) {
+      UnitConversionForProjectService unitConversionForProjectService) {
     super(
         projectRepository,
         projectStatusRepository,
@@ -122,7 +123,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.projectTaskReportingValuesComputingService = projectTaskReportingValuesComputingService;
     this.appBaseService = appBaseService;
     this.invoiceRepository = invoiceRepository;
-    this.unitProjectToolService = unitProjectToolService;
+    this.unitConversionForProjectService = unitConversionForProjectService;
   }
 
   @Override
@@ -346,7 +347,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     BigDecimal totalSpentTime = BigDecimal.ZERO;
 
     Unit projectUnit = project.getProjectTimeUnit();
-    BigDecimal numberHoursADay = unitProjectToolService.getNumberHoursADay(project);
 
     for (ProjectTask projectTask : projectTaskList) {
       Unit projectTaskUnit = projectTask.getTimeUnit();
@@ -354,29 +354,37 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         continue;
       }
       totalSoldTime =
-          totalSoldTime
-              .add(
-                  unitProjectToolService.getConvertedTime(
-                      projectTask.getSoldTime(), projectTaskUnit, projectUnit, numberHoursADay))
-              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+          totalSoldTime.add(
+              unitConversionForProjectService.convert(
+                  projectTaskUnit,
+                  projectUnit,
+                  projectTask.getSoldTime(),
+                  BIG_DECIMAL_SCALE,
+                  project));
       totalUpdatedTime =
-          totalUpdatedTime
-              .add(
-                  unitProjectToolService.getConvertedTime(
-                      projectTask.getUpdatedTime(), projectTaskUnit, projectUnit, numberHoursADay))
-              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+          totalUpdatedTime.add(
+              unitConversionForProjectService.convert(
+                  projectTaskUnit,
+                  projectUnit,
+                  projectTask.getUpdatedTime(),
+                  BIG_DECIMAL_SCALE,
+                  project));
       totalPlannedTime =
-          totalPlannedTime
-              .add(
-                  unitProjectToolService.getConvertedTime(
-                      projectTask.getPlannedTime(), projectTaskUnit, projectUnit, numberHoursADay))
-              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+          totalPlannedTime.add(
+              unitConversionForProjectService.convert(
+                  projectTaskUnit,
+                  projectUnit,
+                  projectTask.getPlannedTime(),
+                  BIG_DECIMAL_SCALE,
+                  project));
       totalSpentTime =
-          totalSpentTime
-              .add(
-                  unitProjectToolService.getConvertedTime(
-                      projectTask.getSpentTime(), projectTaskUnit, projectUnit, numberHoursADay))
-              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+          totalSpentTime.add(
+              unitConversionForProjectService.convert(
+                  projectTaskUnit,
+                  projectUnit,
+                  projectTask.getSpentTime(),
+                  BIG_DECIMAL_SCALE,
+                  project));
     }
 
     project.setSoldTime(totalSoldTime);
