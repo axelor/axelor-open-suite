@@ -1,3 +1,18 @@
+## [7.1.29] (2024-09-05)
+
+### Fixes
+#### Account
+
+* Invoice payment: fixed move display in payment details grid view.
+
+#### Budget
+
+* Purchase order line: fixed an issue where budget panel was editable on a confirmed purchase order.
+
+#### Production
+
+* Manufacturing order: fixed wrong priority on the sub manuf order.
+
 ## [7.1.28] (2024-08-22)
 
 ### Fixes
@@ -1344,6 +1359,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.29]: https://github.com/axelor/axelor-open-suite/compare/v7.1.28...v7.1.29
 [7.1.28]: https://github.com/axelor/axelor-open-suite/compare/v7.1.27...v7.1.28
 [7.1.27]: https://github.com/axelor/axelor-open-suite/compare/v7.1.26...v7.1.27
 [7.1.26]: https://github.com/axelor/axelor-open-suite/compare/v7.1.25...v7.1.26
