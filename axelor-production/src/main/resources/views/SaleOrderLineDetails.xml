@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="sale-order-line-details-grid" title="Sale order lines details"
+    model="com.axelor.apps.production.db.SaleOrderLineDetails">
+    <field name="typeSelect"/>
+    <field name="title"/>
+    <field name="qty"/>
+    <field name="price"/>
+    <field name="totalPrice"/>
+    <field name="unit"/>
+    <field name="description"/>
+  </grid>
+
+  <form name="sale-order-line-details-form" title="Sale order line details"
+    model="com.axelor.apps.production.db.SaleOrderLineDetails"
+    onNew="action-sale-order-line-details-group-onnew"
+    onLoad="action-sale-order-line-details-group-onload">
+    <panel name="mainPanel" colSpan="12">
+      <field name="typeSelect" colSpan="6"
+        onChange="action-sale-order-line-details-attrs-reset"/>
+      <field name="title" colSpan="6"/>
+      <field name="product" form-view="product-form" grid-view="product-grid"
+        onChange="action-sale-order-line-details-method-product-onchange" colSpan="6"
+        showIf="typeSelect == 1"/>
+      <field name="unit" colSpan="6" showIf="typeSelect == 1"/>
+      <field name="workCenter" colSpan="6"
+        onChange="action-sale-order-line-details-attrs-work-center-onchange"
+        showIf="typeSelect == 2"/>
+      <spacer colSpan="6"/>
+      <field name="qty" min="0"
+        onChange="action-sale-order-line-details-attrs-compute-total-price" colSpan="4"
+        showIf="typeSelect &amp;&amp; typeSelect == 0"/>
+      <spacer colSpan="8"/>
+      <field name="price" colSpan="6"
+        onChange="action-sale-order-line-details-attrs-compute-total-price"/>
+      <field name="totalPrice" colSpan="6"/>
+      <field name="description" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-group name="action-sale-order-line-details-group-onnew">
+    <action name="action-sale-order-line-details-attrs-scale-and-precision"/>
+  </action-group>
+
+  <action-group name="action-sale-order-line-details-group-onload">
+    <action name="action-sale-order-line-details-attrs-scale-and-precision"/>
+  </action-group>
+
+  <action-attrs name="action-sale-order-line-details-attrs-scale-and-precision">
+    <attribute name="scale" for="price"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="totalPrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-details-attrs-compute-total-price">
+    <attribute for="totalPrice" name="value" expr="eval: price * qty"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-details-attrs-reset">
+    <attribute for="title" name="value" expr="eval: null"/>
+    <attribute for="product" name="value" expr="eval: null"/>
+    <attribute for="workCenter" name="value" expr="eval: null"/>
+    <attribute for="unit" name="value" expr="eval: null"/>
+    <attribute for="qty" name="value" expr="eval: 1"/>
+    <attribute for="price" name="value" expr="eval: 0"/>
+    <attribute for="totalPrice" name="value" expr="eval: 0"/>
+    <attribute for="totalPrice" name="value" expr="eval: 0"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-details-attrs-work-center-onchange">
+    <attribute for="title" name="value" expr="eval: workCenter?.name"/>
+  </action-attrs>
+
+  <action-method name="action-sale-order-line-details-method-product-onchange">
+    <call class="com.axelor.apps.production.web.SaleOrderLineDetailsController"
+      method="productOnChange"/>
+  </action-method>
+
+</object-views>
