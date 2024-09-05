@@ -214,21 +214,6 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                         .add(invoicePayment.getFinancialDiscountTotalAmount())));
           }
         }
-
-        if (availableAmountUnchanged.compareTo(reconcileAmount) != 0
-            && availableAmount.signum() <= 0) {
-          BigDecimal totalInCompanyCurrency =
-              invoiceTermPaymentList.stream()
-                  .map(InvoiceTermPayment::getCompanyPaidAmount)
-                  .reduce(BigDecimal::add)
-                  .orElse(BigDecimal.ZERO);
-          BigDecimal diff = reconcileAmount.subtract(totalInCompanyCurrency);
-          BigDecimal companyPaidAmount =
-              currencyScaleService.getCompanyScaledValue(
-                  invoiceTermToPay, invoiceTermPayment.getCompanyPaidAmount().add(diff));
-
-          invoiceTermPayment.setCompanyPaidAmount(companyPaidAmount);
-        }
       }
     }
 
