@@ -51,7 +51,8 @@
     <integer name="loyaltyAccountPointsAcquiringDelay" title="Points acquiring delay (days)"
       default="14"/>
     <integer name="loyaltyAccountPointsValidityPeriod"
-      title="Points validity period (months)" default="24"/>
+      title="Points validity period (months)" default="24"
+      help="Use this setting to determine the number of months that must pass before loyalty points expire from a partner’s account. (Points never expire if set to 0)"/>
     <boolean name="isCartManagementEnabled" title="Enable cart management"/>
 
     <extra-code>

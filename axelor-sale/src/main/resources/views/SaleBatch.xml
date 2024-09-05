@@ -25,15 +25,9 @@
     <panel name="createdPanel">
       <field name="createdOn" title="Created on"/>
       <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
-      <panel name="loyaltyAccountPointsEarningPanel" colSpan="12" showIf="actionSelect == 2">
-        <button name="earnLoyaltyAccountPointsBtn"
-          title="Loyalty account points earning batch"
-          onClick="save,action-sale-batch-method-run-batch"/>
-      </panel>
-      <panel name="loyaltyAccountPointsVerifyingValidityPanel" colSpan="12"
-        showIf="actionSelect == 3">
-        <button name="verifyValidityLoyaltyAccountPointsBtn"
-          title="Loyalty account points validity verifying batch"
+      <panel name="loyaltyAccountPointsPanel" colSpan="12" showIf="actionSelect == 2">
+        <button name="loyaltyAccountPointsBtn"
+          title="Loyalty account points actualising batch"
           onClick="save,action-sale-batch-method-run-batch"/>
       </panel>
     </panel>

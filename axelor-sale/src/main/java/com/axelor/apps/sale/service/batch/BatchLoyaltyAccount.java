@@ -10,18 +10,19 @@ import com.axelor.apps.sale.service.loyalty.LoyaltyAccountService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppSale;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BatchLoyaltyAccountVerifyValidityPoints extends BatchStrategy {
+public class BatchLoyaltyAccount extends BatchStrategy {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
-  protected BatchLoyaltyAccountVerifyValidityPoints(
+  protected BatchLoyaltyAccount(
       AppSaleService appSaleService,
       LoyaltyAccountService loyaltyAccountService,
       LoyaltyAccountRepository loyaltyAccountRepository) {
@@ -33,13 +34,19 @@ public class BatchLoyaltyAccountVerifyValidityPoints extends BatchStrategy {
     int offset = 0;
     List<LoyaltyAccount> loyaltyAccountList;
     Query<LoyaltyAccount> loyaltyAccountQuery = loyaltyAccountRepository.all().order("id");
+    AppSale appSale = appSaleService.getAppSale();
     while (!(loyaltyAccountList = loyaltyAccountQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       findBatch();
       for (LoyaltyAccount loyaltyAccount : loyaltyAccountList) {
         ++offset;
         try {
+          if (loyaltyAccount.getPointsBalance().compareTo(loyaltyAccount.getFuturePointsBalance())
+              != 0) {
+            loyaltyAccountService.acquirePoints(
+                loyaltyAccount, appSale.getLoyaltyAccountPointsAcquiringDelay());
+          }
           loyaltyAccountService.spendOutOfValidityPoints(
-              loyaltyAccount, appSaleService.getAppSale().getLoyaltyAccountPointsValidityPeriod());
+              loyaltyAccount, appSale.getLoyaltyAccountPointsValidityPeriod());
           updateLoyaltyAccount(loyaltyAccount);
         } catch (Exception e) {
           TraceBackService.trace(

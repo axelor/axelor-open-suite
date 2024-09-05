@@ -47,26 +47,19 @@ public class SaleBatchService extends AbstractBatchService {
   @Override
   public Batch run(Model batchModel) throws AxelorException {
     SaleBatch saleBatch = (SaleBatch) batchModel;
-    switch (saleBatch.getActionSelect()) {
-      case SaleBatchRepository.ACTION_EARN_LOYALTY_ACCOUNT_POINTS:
-        return earnLoyaltyAccountPoints(saleBatch);
-      case SaleBatchRepository.ACTION_VERIFY_VALIDITY_LOYALTY_ACCOUNT_POINTS:
-        return verifyValidityLoyaltyAccountPoints(saleBatch);
-      default:
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BaseExceptionMessage.BASE_BATCH_1),
-            saleBatch.getActionSelect(),
-            saleBatch.getCode());
+    if (saleBatch.getActionSelect()
+        == SaleBatchRepository.ACTION_ACTUALISE_LOYALTY_ACCOUNT_POINTS) {
+      return actualiseLoyaltyAccountBatch(saleBatch);
     }
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_INCONSISTENCY,
+        I18n.get(BaseExceptionMessage.BASE_BATCH_1),
+        saleBatch.getActionSelect(),
+        saleBatch.getCode());
   }
 
-  protected Batch earnLoyaltyAccountPoints(SaleBatch saleBatch) {
-    return Beans.get(BatchLoyaltyAccountEarnPoints.class).run(saleBatch);
-  }
-
-  protected Batch verifyValidityLoyaltyAccountPoints(SaleBatch saleBatch) {
-    return Beans.get(BatchLoyaltyAccountVerifyValidityPoints.class).run(saleBatch);
+  protected Batch actualiseLoyaltyAccountBatch(SaleBatch saleBatch) {
+    return Beans.get(BatchLoyaltyAccount.class).run(saleBatch);
   }
 
   /**

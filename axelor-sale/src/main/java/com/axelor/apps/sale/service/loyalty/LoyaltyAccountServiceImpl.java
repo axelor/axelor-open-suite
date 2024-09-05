@@ -109,6 +109,10 @@ public class LoyaltyAccountServiceImpl implements LoyaltyAccountService {
   @Override
   public LoyaltyAccount spendOutOfValidityPoints(LoyaltyAccount loyaltyAccount, int period)
       throws AxelorException {
+    if (period <= 0) {
+      return loyaltyAccount;
+    }
+
     BigDecimal outOfValidityPoints =
         loyaltyAccount.getHistoryLineList().stream()
             .filter(
