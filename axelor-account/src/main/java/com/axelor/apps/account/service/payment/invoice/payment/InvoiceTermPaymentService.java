@@ -52,6 +52,7 @@ public interface InvoiceTermPaymentService {
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
       BigDecimal availableAmount,
+      BigDecimal currencyAvailableAmount,
       BigDecimal reconcileAmount)
       throws AxelorException;
 
@@ -76,7 +77,7 @@ public interface InvoiceTermPaymentService {
       InvoicePayment invoicePayment,
       InvoiceTerm invoiceTermToPay,
       BigDecimal paidAmount,
-      LocalDate paymentDate);
+      BigDecimal companyPaidAmount);
 
   /**
    * Method to compute total paid amount of invoiceTermPayments

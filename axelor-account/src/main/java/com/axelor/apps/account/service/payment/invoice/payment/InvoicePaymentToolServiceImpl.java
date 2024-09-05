@@ -432,14 +432,18 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
         invoicePayment.clearInvoiceTermPaymentList();
         invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-            invoicePayment, invoiceTerms, companyAmount, companyAmount);
+            invoicePayment, invoiceTerms, companyAmount, invoicePayment.getAmount(), companyAmount);
 
         if (invoiceTermPaymentToolService.isPartialPayment(invoicePayment)) {
           invoicePayment.clearInvoiceTermPaymentList();
           invoicePayment.setApplyFinancialDiscount(false);
           invoicePayment.setTotalAmountWithFinancialDiscount(invoicePayment.getAmount());
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-              invoicePayment, invoiceTerms, companyAmount, companyAmount);
+              invoicePayment,
+              invoiceTerms,
+              companyAmount,
+              invoicePayment.getAmount(),
+              companyAmount);
         } else if (invoicePayment.getApplyFinancialDiscount() && invoicePayment.getManualChange()) {
           BigDecimal financialDiscountAmount =
               invoicePayment.getInvoiceTermPaymentList().stream()
@@ -453,6 +457,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
               invoicePayment,
               invoiceTerms,
+              amountWithFinancialDiscount,
               amountWithFinancialDiscount,
               amountWithFinancialDiscount);
         }
