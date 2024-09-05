@@ -17,6 +17,7 @@ public class SaleOrderPostRequest extends RequestPostStructure {
   private Long companyId;
   private Long contactId;
   private Long currencyId;
+  private Boolean inAti;
 
   public Long getCompanyId() {
     return companyId;
@@ -48,6 +49,14 @@ public class SaleOrderPostRequest extends RequestPostStructure {
 
   public void setClientPartnerId(Long clientPartnerId) {
     this.clientPartnerId = clientPartnerId;
+  }
+
+  public Boolean getInAti() {
+    return inAti;
+  }
+
+  public void setInAti(Boolean inAti) {
+    this.inAti = inAti;
   }
 
   public Partner fetchClientPartner() {
