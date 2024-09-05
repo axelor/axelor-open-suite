@@ -2187,6 +2187,7 @@
 "The sequence letter type can't be null.",,,
 "The sequence type '%s' is not handled.",,,
 "The start date cannot be later than the end date.","La date de début ne peut pas être postérieure à la date de fin.",,
+"The status has been changed successfully.",,,
 "The tags below can be used as a prefix or a suffix","Les variables ci-dessous peuvent être utilisées en tant que préfixe ou suffixe",,
 "The tags below can be used to specify the pattern","Les étiquettes ci-dessous peuvent être utilisées pour spécifier le modèle",,
 "The temporary closure of an accounting period will restrict operations on the journal of accounting entries. Do you want to continue ?","La clôture provisoire d'une période comptable va restreindre les opérations réalisables sur les journaux comptables pour cette période. Souhaitez-vous continuer ?",,

@@ -21,17 +21,21 @@ package com.axelor.apps.sale.rest;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.rest.dto.SaleOrderPostRequest;
+import com.axelor.apps.sale.rest.dto.SaleOrderPutRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
 import com.axelor.apps.sale.service.SaleOrderGeneratorService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
+import com.axelor.web.ITranslation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -62,5 +66,20 @@ public class SaleOrderRestController {
                 requestBody.getInAti());
 
     return ResponseConstructor.buildCreateResponse(saleOrder, new SaleOrderResponse(saleOrder));
+  }
+
+  @Operation(
+      summary = "Create a sale oder",
+      tags = {"Sale order"})
+  @Path("/")
+  @PUT
+  @HttpExceptionHandler
+  public Response changeSaleOrderStatus(SaleOrderPutRequest requestBody) throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(SaleOrder.class, requestBody.getSaleOrderId()).check();
+
+    Beans.get(SaleOrderGeneratorService.class)
+        .changeSaleOrderStatus(requestBody.fetchSaleOrder(), requestBody.getStatusId());
+    return ResponseConstructor.build(Response.Status.OK, I18n.get(ITranslation.STATUS_CHANGE));
   }
 }
