@@ -1,3 +1,25 @@
+## [7.2.21] (2024-09-05)
+
+### Fixes
+#### Account
+
+* Invoice payment: fixed move display in payment details grid view.
+* Invoice: fixed an issue preventing invoice ventilation when pack feature is used.
+
+#### Budget
+
+* Purchase order line: fixed an issue where budget panel was editable on a confirmed purchase order.
+
+#### Production
+
+* Manufacturing order: fixed wrong priority on the sub manuf order.
+* Manufacturing order: fixed title for produced quantity in produced products form view.
+
+#### Supply Chain
+
+* Invoicing: fixed an issue preventing stock moves/order/contracts invoicing with analytic accounting lines.
+* Analytic panel: fixed display issue when product family is empty.
+
 ## [7.2.20] (2024-08-22)
 
 ### Fixes
@@ -1128,6 +1150,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.21]: https://github.com/axelor/axelor-open-suite/compare/v7.2.20...v7.2.21
 [7.2.20]: https://github.com/axelor/axelor-open-suite/compare/v7.2.19...v7.2.20
 [7.2.19]: https://github.com/axelor/axelor-open-suite/compare/v7.2.18...v7.2.19
 [7.2.18]: https://github.com/axelor/axelor-open-suite/compare/v7.2.17...v7.2.18
