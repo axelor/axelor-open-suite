@@ -15,6 +15,8 @@
     <one-to-many name="manufOrderList" ref="com.axelor.apps.production.db.ManufOrder"
       mappedBy="saleOrderLine" copy="false"/>
 
+    <one-to-many name="saleOrderLineDetailsList" title="Sale order line details list"
+      ref="com.axelor.apps.production.db.SaleOrderLineDetails" mappedBy="saleOrderLine"/>
 
   </entity>
 

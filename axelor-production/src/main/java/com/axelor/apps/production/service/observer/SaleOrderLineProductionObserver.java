@@ -12,14 +12,20 @@ public class SaleOrderLineProductionObserver {
   void onSaleOrderLineOnNew(@Observes SaleOrderLineViewOnNew event) {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
+    SaleOrderLineViewProductionService saleOrderLineViewProductionService =
+        Beans.get(SaleOrderLineViewProductionService.class);
     saleOrderLineMap.putAll(
-        Beans.get(SaleOrderLineViewProductionService.class).hideBomAndProdProcess(saleOrderLine));
+        saleOrderLineViewProductionService.hideBomAndProdProcess(saleOrderLine));
+    saleOrderLineMap.putAll(saleOrderLineViewProductionService.getSolDetailsScale());
   }
 
   void onSaleOrderLineOnLoad(@Observes SaleOrderLineViewOnLoad event) {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
+    SaleOrderLineViewProductionService saleOrderLineViewProductionService =
+        Beans.get(SaleOrderLineViewProductionService.class);
     saleOrderLineMap.putAll(
-        Beans.get(SaleOrderLineViewProductionService.class).hideBomAndProdProcess(saleOrderLine));
+        saleOrderLineViewProductionService.hideBomAndProdProcess(saleOrderLine));
+    saleOrderLineMap.putAll(saleOrderLineViewProductionService.getSolDetailsScale());
   }
 }
