@@ -241,6 +241,44 @@
     <view type="form" name="freight-carrier-mode-form"/>
   </action-view>
 
+  <!-- Pricing menus -->
+  <menuitem title="Freight carrier pricings" name="stock-root-freight-carrier-pricing"
+    parent="stock-root-conf" order="510"/>
+
+  <menuitem title="Freight carrier pricing" name="stock-pricing-freight-carrier-pricing"
+    parent="stock-root-freight-carrier-pricing" order="10"
+    action="stock.root.carrier.freight.pricing"/>
+
+  <action-view name="stock.root.carrier.freight.pricing" title="Freight carrier pricing"
+    model="com.axelor.apps.stock.db.FreightCarrierPricing">
+    <view type="grid" name="freight-carrier-pricing-grid"/>
+    <view type="form" name="freight-carrier-pricing-form"/>
+  </action-view>
+
+  <menuitem title="Pricing" name="stock-pricing-freight-carrier-pricing-pricing"
+    parent="stock-root-freight-carrier-pricing" order="10"
+    action="stock.root.carrier.freight.pricing.pricing"/>
+
+  <action-view name="stock.root.carrier.freight.pricing.pricing" title="Pricing"
+    model="com.axelor.apps.base.db.Pricing">
+    <view type="grid" name="pricing-grid"/>
+    <view type="form" name="pricing-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_CARRIER_MODE_PRICING"/>
+  </action-view>
+
+  <menuitem title="Pricing rules" name="stock-pricing-carrier-freight-conf-pricing-rule"
+    parent="stock-root-freight-carrier-pricing" order="20"
+    action="stock.root.carrier.freight.conf.pricing.rule"/>
+
+  <action-view name="stock.root.carrier.freight.conf.pricing.rule" title="Pricing rules"
+    model="com.axelor.apps.base.db.PricingRule">
+    <view type="grid" name="pricing-rule-grid"/>
+    <view type="form" name="pricing-rule-form"/>
+    <domain>self.concernedModel.name IN ('SaleOrder')</domain>
+  </action-view>
+
   <menuitem name="stock-root-conf-shipment-mode" parent="stock-root-conf"
     title="Shipment Mode" action="stock.root.conf.shipment.mode" order="600"/>
 

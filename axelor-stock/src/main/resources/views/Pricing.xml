@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form id="stock-pricing-form" name="pricing-form" title="Pricing"
+    model="com.axelor.apps.base.db.Pricing" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-stock-group-pricing-onnew"/>
+    </extend>
+  </form>
+
+  <action-group name="action-stock-group-pricing-onnew">
+    <action name="action-group-pricing-onnew"/>
+    <action name="action-freight-carrier-pricing-attrs-init-type-select"/>
+  </action-group>
+
+  <action-attrs name="action-freight-carrier-pricing-attrs-init-type-select">
+    <attribute for="typeSelect" name="value"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_CARRIER_MODE_PRICING"
+      if="__parent__ != null &amp;&amp; __parent__.get('_model') == 'com.axelor.apps.stock.db.FreightCarrierPricing'"/>
+  </action-attrs>
+
+</object-views>

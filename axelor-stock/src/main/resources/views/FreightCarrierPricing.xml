@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="freight-carrier-pricing-grid" title="Freight carrier pricings"
+    model="com.axelor.apps.stock.db.FreightCarrierPricing">
+    <field name="freightCarrierMode"/>
+    <field name="freightCarrierPricingSet"/>
+  </grid>
+
+  <form name="freight-carrier-pricing-form" title="Freight carrier pricing"
+    model="com.axelor.apps.stock.db.FreightCarrierPricing"
+    onNew="action-freight-carrier-pricing-on-new"
+    onLoad="action-freight-carrier-pricing-set-freight-carrier-mode-readonly">
+    <panel name="mainPanel">
+      <field name="freightCarrierMode"/>
+      <panel-related field="freightCarrierPricingSet" grid-view="pricing-grid"
+        form-view="pricing-form" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-group name="action-freight-carrier-pricing-on-new">
+    <action name="action-freight-carrier-pricing-set-default-freight-carrier-mode"/>
+    <action name="action-freight-carrier-pricing-set-freight-carrier-mode-readonly"/>
+  </action-group>
+
+  <action-record
+    name="action-freight-carrier-pricing-set-default-freight-carrier-mode"
+    model="com.axelor.apps.stock.db.FreightCarrierPricing">
+    <field name="freightCarrierMode" expr="eval: __parent__"
+      if="__parent__ != null &amp;&amp; __parent__.get('_model') == 'com.axelor.apps.stock.db.FreightCarrierMode'"/>
+  </action-record>
+
+  <action-attrs name="action-freight-carrier-pricing-set-freight-carrier-mode-readonly">
+    <attribute for="freightCarrierMode" name="readonly" expr="eval: freightCarrierMode"/>
+  </action-attrs>
+
+</object-views>
