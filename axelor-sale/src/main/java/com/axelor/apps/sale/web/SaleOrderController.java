@@ -330,6 +330,8 @@ public class SaleOrderController {
           Beans.get(SaleOrderConfirmService.class)
               .confirmSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
 
+      response.setReload(true);
+
       if (StringUtils.notEmpty(message)) {
         response.setNotify(message);
       }
@@ -849,9 +851,5 @@ public class SaleOrderController {
 
     Beans.get(LoyaltyAccountPointsManagementService.class)
         .incrementLoyaltyPointsFromAmount(saleOrder);
-  }
-
-  public void reloadMethod(ActionRequest request, ActionResponse response) {
-    response.setReload(true);
   }
 }
