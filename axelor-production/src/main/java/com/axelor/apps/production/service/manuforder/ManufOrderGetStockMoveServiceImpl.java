@@ -48,11 +48,8 @@ public class ManufOrderGetStockMoveServiceImpl implements ManufOrderGetStockMove
       throws AxelorException {
 
     Optional<StockMove> stockMoveOpt =
-        getPlannedStockMove(getNonResidualOutStockMoveLineList(manufOrder));
+        getPlannedStockMove(getFinishedProductOutStockMoveList(manufOrder));
 
-    Company company = manufOrder.getCompany();
-
-    StockMove stockMove;
     if (stockMoveOpt.isPresent()) {
       return stockMoveOpt.get();
     } else {
@@ -127,18 +124,19 @@ public class ManufOrderGetStockMoveServiceImpl implements ManufOrderGetStockMove
   }
 
   @Override
-  public List<StockMove> getNonResidualOutStockMoveLineList(ManufOrder manufOrder)
+  public List<StockMove> getFinishedProductOutStockMoveList(ManufOrder manufOrder)
       throws AxelorException {
     Objects.requireNonNull(manufOrder);
-    StockLocation residualProductStockLocation =
-        manufOrderStockMoveService.getResidualProductStockLocation(manufOrder);
+    StockLocation producedProductStockLocation =
+        manufOrderStockMoveService.getProducedProductStockLocation(
+            manufOrder, manufOrder.getCompany());
 
-    if (manufOrder.getOutStockMoveList() == null || residualProductStockLocation == null) {
+    if (manufOrder.getOutStockMoveList() == null || producedProductStockLocation == null) {
       return manufOrder.getOutStockMoveList();
     }
 
     return manufOrder.getOutStockMoveList().stream()
-        .filter(sm -> !residualProductStockLocation.equals(sm.getToStockLocation()))
+        .filter(sm -> producedProductStockLocation.equals(sm.getToStockLocation()))
         .collect(Collectors.toList());
   }
 

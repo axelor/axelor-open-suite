@@ -176,8 +176,9 @@
           readonlyIf="extendsMembersFromParent" colSpan="3"
           onClick="action-project-method-import-members"/>
       </panel>
-      <panel title="Planning" name="planningPanel" colSpan="12" hideIf="!isShowPlanning"
-        if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
+      <panel title="Planning" name="planningPanel" colSpan="12"
+        hideIf="!isShowPlanning || !id" if="__config__.app.isApp('employee')"
+        if-module="axelor-human-resource">
         <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
           x-show-bars="true" action="action-project-dashlet-project-planning-time" colSpan="12"
           canSearch="true"/>
@@ -592,7 +593,8 @@
   </form>
 
   <kanban columnBy="projectStatus" sequenceBy="orderByState" limit="10" name="project-kanban"
-    title="Projects" model="com.axelor.apps.project.db.Project">
+    title="Projects" model="com.axelor.apps.project.db.Project"
+    onMove="action-business-project-group-project-status-on-change">
     <field name="fullName"/>
     <field name="description"/>
     <field name="projectStatus"/>

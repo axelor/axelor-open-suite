@@ -574,7 +574,6 @@ public class TimesheetController {
       BigDecimal periodTotal =
           Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet);
 
-      response.setAttr("periodTotal", "value", periodTotal);
       response.setAttr("$periodTotalConvert", "hidden", false);
       response.setAttr(
           "$periodTotalConvert",
