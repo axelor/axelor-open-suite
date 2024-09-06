@@ -16,20 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.research;
+package com.axelor.apps.base.service.meta;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.ResearchRequest;
-import com.axelor.apps.base.db.ResearchResultLine;
-import java.util.List;
 import java.util.Map;
 
-public interface ResearchRequestService {
+public interface MetaViewService {
 
-  public List<ResearchResultLine> searchObject(
-      Map<String, Object> searchParams, ResearchRequest researchRequest) throws AxelorException;
-
-  public String getStringResearchKeyDomain(ResearchRequest researchRequest);
-
-  public String getDateResearchKeyDomain(ResearchRequest researchRequest);
+  Map<String, Object> getActionView(Class<?> modelClass, Long recordId) throws AxelorException;
 }
