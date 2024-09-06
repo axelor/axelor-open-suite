@@ -726,10 +726,10 @@
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="currency" expr="eval: supplierPartner?.currency"/>
     <field name="fiscalPosition" expr="eval: supplierPartner?.fiscalPosition"/>
-    <field name="paymentCondition" expr="eval: supplierPartner?.paymentCondition"
-      if="supplierPartner?.paymentCondition != null"/>
+    <field name="paymentCondition" expr="eval: supplierPartner?.outPaymentCondition"
+      if="supplierPartner?.outPaymentCondition != null"/>
     <field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition"
-      if="supplierPartner?.paymentCondition == null"/>
+      if="supplierPartner?.outPaymentCondition == null"/>
     <field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode"
       if="supplierPartner?.outPaymentMode != null"/>
     <field name="paymentMode" expr="eval: company?.accountConfig?.outPaymentMode"

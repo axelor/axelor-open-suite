@@ -273,7 +273,12 @@ public class InvoiceToolService {
     Partner partner = invoice.getPartner();
 
     if (partner != null) {
-      PaymentCondition paymentCondition = partner.getPaymentCondition();
+      PaymentCondition paymentCondition = null;
+      if (InvoiceToolService.isOutPayment(invoice)) {
+        paymentCondition = partner.getOutPaymentCondition();
+      } else {
+        paymentCondition = partner.getPaymentCondition();
+      }
       if (paymentCondition != null) {
         return paymentCondition;
       }
