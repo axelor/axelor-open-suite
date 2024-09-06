@@ -69,9 +69,9 @@ public class SaleOrderRestController {
   }
 
   @Operation(
-      summary = "Create a sale oder",
+      summary = "Update sale order status",
       tags = {"Sale order"})
-  @Path("/")
+  @Path("/status")
   @PUT
   @HttpExceptionHandler
   public Response changeSaleOrderStatus(SaleOrderPutRequest requestBody) throws AxelorException {

@@ -118,10 +118,7 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   @Override
   public void changeSaleOrderStatus(SaleOrder saleOrder, Long statusId) throws AxelorException {
     if (statusId == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-      String checkAlert = saleOrderValidateService.finalizeCheckAlert(saleOrder);
-      if (StringUtils.notEmpty(checkAlert)) {
-        throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, checkAlert);
-      }
+
       Beans.get(SaleOrderFinalizeService.class).finalizeQuotation(saleOrder);
     }
     if (statusId == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
@@ -177,13 +174,6 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   }
 
   protected void setStatusToConfirmed(SaleOrder saleOrder) throws AxelorException {
-
-    String alert = Beans.get(SaleOrderCheckService.class).confirmCheckAlert(saleOrder);
-
-    if (StringUtils.notEmpty(alert)) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, alert);
-    }
-
     String message =
         Beans.get(SaleOrderConfirmService.class)
             .confirmSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
