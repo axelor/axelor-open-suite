@@ -1,3 +1,50 @@
+## [8.1.6] (2024-09-05)
+
+### Fixes
+#### Base
+
+* Partner: fixed an address not linked to a partner in demo data.
+
+#### Account
+
+* Invoice: fixed an issue where tab title for credit note was wrong.
+* Invoice payment: fixed move display in payment details grid view.
+* Payment Voucher: fixed wrong amount on generated invoice payment when using financial discount.
+* Invoice: fixed an issue preventing invoice ventilation when pack feature is used.
+* Mass entry move line: increased width of some columns.
+
+#### Budget
+
+* Purchase order line: fixed an issue where budget panel was editable on a confirmed purchase order.
+
+#### Contract
+
+* Contract: fixed an issue where payment mode and payment condition were not filled by default.
+* Contract: fixed display issue of 'isPeriodicInvoicing' field.
+
+#### Human Resource
+
+* Timesheet: opened timesheets are no longer dirty when opening the form view.
+
+#### Maintenance
+
+* Menu: fixed icon for 'Configuration' menu.
+
+#### Production
+
+* Manufacturing order: fixed unit conversion when computing missing components label.
+* Manufacturing order API: fixed an issue where condition in permission were not evaluated correctly to see and add products from a manufacturing order.
+* Operation order API: fixed an issue where condition in permission were not evaluated correctly to update operation orders.
+* Manufacturing order: fixed wrong priority on the sub manuf order.
+* Manufacturing order: fixed title for produced quantity in produced products form view.
+* Manufacturing order: fixed an issue occurring when adding produced products.
+
+#### Supply Chain
+
+* Invoicing: fixed an issue preventing stock moves/order/contracts invoicing with analytic accounting lines.
+* Invoicing: fixed internal reference on invoices generated from delivery stock move missing sale order reference.
+* Analytic panel: fixed display issue when product family is empty.
+
 ## [8.1.5] (2024-08-22)
 
 ### Fixes
@@ -471,6 +518,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.6]: https://github.com/axelor/axelor-open-suite/compare/v8.1.5...v8.1.6
 [8.1.5]: https://github.com/axelor/axelor-open-suite/compare/v8.1.4...v8.1.5
 [8.1.4]: https://github.com/axelor/axelor-open-suite/compare/v8.1.3...v8.1.4
 [8.1.3]: https://github.com/axelor/axelor-open-suite/compare/v8.1.2...v8.1.3
