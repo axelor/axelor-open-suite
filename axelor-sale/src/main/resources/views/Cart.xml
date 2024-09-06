@@ -21,7 +21,8 @@
     <panel name="mainPanel">
       <field name="user" form-view="user-form" grid-view="user-grid" readonly="true"/>
       <field name="company" form-view="company-form" grid-view="company-grid"
-        onChange="action-cart-record-reset-fields"/>
+        onChange="action-cart-record-reset-fields"
+        readonlyIf="cartLineList &amp;&amp; cartLineList.length > 0"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid" canNew="true"
         readonlyIf="!company" domain=":company MEMBER OF self.companySet"/>
       <panel-related field="cartLineList" form-view="cart-line-form"
