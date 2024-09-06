@@ -23,6 +23,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProdProcessService;
+import com.axelor.apps.production.service.SaleOrderLineBomService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.i18n.I18n;
@@ -103,5 +104,16 @@ public class SaleOrderLineController {
         "prodProcess",
         "domain",
         Beans.get(SaleOrderLineDomainProductionService.class).getProdProcessDomain(saleOrderLine));
+  }
+
+  public void generateSubLines(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+    if (saleOrderLine.getBillOfMaterial() != null) {
+      response.setValue(
+          "subSaleOrderLineList",
+          Beans.get(SaleOrderLineBomService.class)
+              .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial()));
+    }
   }
 }
