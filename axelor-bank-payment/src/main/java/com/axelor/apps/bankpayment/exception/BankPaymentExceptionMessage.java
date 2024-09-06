@@ -185,6 +185,9 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_ORDER_FILE_UNKNOWN_SEPA_TYPE = /*$$(*/
       "Unknown SEPA type for file generation" /*)*/;
 
+  public static final String BANK_ORDER_FILE_DECRYPT_ERROR = /*$$(*/
+      "Error during file decryption." /*)*/;
+
   /** Batch bank statement */
   public static final String BATCH_BANK_STATEMENT_RETRIEVED_BANK_STATEMENT_COUNT = /*$$(*/
       "Number of retrieved bank statements: %d." /*)*/;

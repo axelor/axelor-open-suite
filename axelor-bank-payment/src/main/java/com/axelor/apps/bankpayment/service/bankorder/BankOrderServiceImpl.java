@@ -25,6 +25,7 @@ import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile008Service;
@@ -60,13 +61,20 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   protected BankOrderRepository bankOrderRepository;
   protected BankDetailsService bankDetailsService;
+  protected AppBankPaymentService appBankPaymentService;
+  protected BankOrderEncryptionService bankOrderEncryptionService;
 
   @Inject
   public BankOrderServiceImpl(
-      BankOrderRepository bankOrderRepository, BankDetailsService bankDetailsService) {
+      BankOrderRepository bankOrderRepository,
+      BankDetailsService bankDetailsService,
+      AppBankPaymentService appBankPaymentService,
+      BankOrderEncryptionService bankOrderEncryptionService) {
 
     this.bankOrderRepository = bankOrderRepository;
     this.bankDetailsService = bankDetailsService;
+    this.appBankPaymentService = appBankPaymentService;
+    this.bankOrderEncryptionService = bankOrderEncryptionService;
   }
 
   public void processBankOrderStatus(BankOrder bankOrder, PaymentMode paymentMode)
@@ -196,6 +204,10 @@ public class BankOrderServiceImpl implements BankOrderService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_ISSUE_DURING_FILE_GENERATION),
           bankOrder.getBankOrderSeq());
+    }
+
+    if (appBankPaymentService.getAppBankPayment().getEnableBankOrderFileEncryption()) {
+      file = bankOrderEncryptionService.encryptFile(file);
     }
 
     MetaFiles metaFiles = Beans.get(MetaFiles.class);
