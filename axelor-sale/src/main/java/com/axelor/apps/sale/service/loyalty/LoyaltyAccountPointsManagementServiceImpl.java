@@ -51,7 +51,6 @@ public class LoyaltyAccountPointsManagementServiceImpl
     Objects.requireNonNull(loyaltyAccount);
 
     BigDecimal updatedBalance = loyaltyAccount.getFuturePointsBalance().add(points);
-    loyaltyAccount.setFuturePointsBalance(updatedBalance.setScale(0, RoundingMode.FLOOR));
     loyaltyAccount.addHistoryLineListItem(
         loyaltyAccountHistoryLineService.createHistoryLine(points, saleOrder));
     loyaltyAccountRepository.save(loyaltyAccount);

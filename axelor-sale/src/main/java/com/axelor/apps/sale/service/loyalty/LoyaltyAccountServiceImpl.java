@@ -87,8 +87,6 @@ public class LoyaltyAccountServiceImpl implements LoyaltyAccountService {
               historyLine.setAcquisitionDateTime(
                   appBaseService.getTodayDateTime().toLocalDateTime());
               historyLine.setPointsAcquired(true);
-              loyaltyAccount.setPointsBalance(
-                  loyaltyAccount.getPointsBalance().add(historyLine.getPointsBalance()));
             });
     return loyaltyAccount;
   }
