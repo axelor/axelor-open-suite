@@ -12,9 +12,29 @@
     <many-to-one name="tradingName" title="Trading name"
       ref="com.axelor.apps.base.db.TradingName"/>
     <decimal name="pointsBalance" title="Points balance" precision="20" scale="10"
-      default="0"/>
+      default="0">
+      <![CDATA[
+        if (historyLineList == null || historyLineList.isEmpty()) {
+          return BigDecimal.ZERO;
+        } else {
+          return historyLineList.stream()
+             .map(LoyaltyAccountHistoryLine::getRemainingPoints)
+             .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+      ]]>
+    </decimal>
     <decimal name="futurePointsBalance" title="Future points balance" precision="20"
-      scale="10" default="0"/>
+      scale="10" default="0">
+      <![CDATA[
+        if (historyLineList == null || historyLineList.isEmpty()) {
+          return BigDecimal.ZERO;
+        } else {
+          return historyLineList.stream()
+             .map(LoyaltyAccountHistoryLine::getPointsBalance)
+             .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+      ]]>
+    </decimal>
     <one-to-many name="historyLineList" title="History"
       ref="com.axelor.apps.sale.db.LoyaltyAccountHistoryLine" mappedBy="loyaltyAccount"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
