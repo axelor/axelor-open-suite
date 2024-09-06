@@ -80,4 +80,8 @@ public interface MoveLineToolService {
   void setIsNonDeductibleTax(MoveLine moveLine, Tax tax);
 
   BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit);
+
+  boolean isMoveLineSpecialAccount(MoveLine moveLine);
+
+  boolean isMoveLineCommitmentAccount(MoveLine moveLine);
 }
