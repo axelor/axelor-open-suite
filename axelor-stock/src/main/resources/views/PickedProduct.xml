@@ -8,16 +8,14 @@
     onNew="action-picked-product-group-onnew">
     <field name="fromStockLocation"
       onSelect="action-picked-product-method-set-domain-from-stock-location"
-      onChange="action-picked-product-method-set-current-qty"
-           readonlyIf="stockMoveLine"/>
+      onChange="action-picked-product-method-set-current-qty" readonlyIf="stockMoveLine"/>
     <field name="pickedProduct"
       onSelect="action-picked-product-method-set-picked-product-domain"
       onChange="action-picked-product-group-product-onchange" required="true"
-           readonlyIf="stockMoveLine"/>
+      readonlyIf="stockMoveLine"/>
     <field name="trackingNumber" title="Tracking no."
       onSelect="action-picked-product-method-set-tracking-number-domain"
-      onChange="action-picked-product-method-set-current-qty"
-           readonlyIf="stockMoveLine"/>
+      onChange="action-picked-product-method-set-current-qty" readonlyIf="stockMoveLine"/>
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
       readonly="true"/>
     <field name="unit" readonly="true"/>

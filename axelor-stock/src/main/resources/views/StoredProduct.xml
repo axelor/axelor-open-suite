@@ -12,7 +12,7 @@
     <field name="toStockLocation"
       onSelect="action-stored-product-method-set-domain-to-stock-location"
       onChange="action-stored-product-method-set-current-qty" required="true"
-           readonlyIf="stockMoveLine"/>
+      readonlyIf="stockMoveLine"/>
     <field name="trackingNumber" title="Tracking no."
       onSelect="action-stored-product-method-tracking-number-domain"
       onChange="action-stored-product-method-set-current-qty" readonlyIf="stockMoveLine"/>
