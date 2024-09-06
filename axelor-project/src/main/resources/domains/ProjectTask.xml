@@ -8,7 +8,8 @@
   <entity name="ProjectTask">
 
     <string name="name" title="Name" required="true"/>
-    <many-to-one name="assignedTo" title="Assigned to" ref="com.axelor.auth.db.User"/>
+    <many-to-one name="assignedTo" title="Assigned to" ref="com.axelor.auth.db.User"
+      help="Assign the task to a user.The user has to be created beforehand and recorded as a member of the selected project (in the membersPanelTab of the project)."/>
     <date name="taskDate" title="Start date"/>
     <many-to-one name="status" title="Status"
       ref="com.axelor.apps.project.db.TaskStatus"/>
@@ -80,6 +81,14 @@
       ref="com.axelor.apps.project.db.ProjectTaskSection" title="Section"/>
 
     <string name="ticketNumber" title="Ticker number" readonly="true"/>
+
+    <one-to-many name="projectTaskLinkList"
+      ref="com.axelor.apps.project.db.ProjectTaskLink" title="Project task linked"
+      mappedBy="projectTask"/>
+
+    <string name="appJson" title="App json" json="true"/>
+    <string name="projectJson" title="Project json" json="true"/>
+    <string name="categoryJson" title="Category json" json="true"/>
 
     <extra-code>
 

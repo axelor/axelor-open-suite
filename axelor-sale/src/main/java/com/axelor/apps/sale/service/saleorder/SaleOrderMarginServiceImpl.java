@@ -98,7 +98,10 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
     BigDecimal subMarginRate = BigDecimal.ZERO;
     BigDecimal totalWT =
         currencyService.getAmountCurrencyConvertedAtDate(
-            saleOrder.getCurrency(), company.getCurrency(), exTaxTotal, null);
+            saleOrder.getCurrency(),
+            company != null ? company.getCurrency() : null,
+            exTaxTotal,
+            null);
 
     if (product != null
         && exTaxTotal.compareTo(BigDecimal.ZERO) != 0

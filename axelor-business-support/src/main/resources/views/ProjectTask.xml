@@ -35,7 +35,8 @@
     model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-onnew"
     onLoad="action-project-task-group-timer-process" width="large">
     <panel name="mainPanel">
-      <panel name="statusPanel" showIf="project.isShowStatus" stacked="true" colSpan="12">
+      <panel name="statusPanel" showIf="project.taskStatusManagementSelect != 1"
+        stacked="true" colSpan="12">
         <field name="status" widget="NavSelect" showTitle="false" x-order="sequence"/>
         <field name="typeSelect" hidden="true"/>
       </panel>
@@ -78,7 +79,7 @@
           onSelect="action-project-task-attrs-parent-task-configurations"/>
         <field name="isOrderAccepted" hidden="true" showIf="typeSelect == 'ticket'"/>
         <field name="isOrderProposed" hidden="true"/>
-        <field name="project.isShowStatus" hidden="true"/>
+        <field name="project.taskStatusManagementSelect" hidden="true"/>
       </panel>
       <panel name="actionsPanel" colSpan="4">
         <button name="acceptOrderBtn" title="Accept Order" hidden="true"
@@ -106,6 +107,7 @@
         <field name="assignment" hidden="true" readonlyIf="id" showIf="typeSelect == 'ticket'"/>
       </panel>
     </panel>
+    <panel-include view="incl-customized-field-panel-form"/>
     <panel-tabs name="mainPanelTab" readonlyIf="id">
       <panel name="contentPanel" title="Content" colSpan="12">
         <field name="description" showTitle="false" colSpan="12" widget="html"/>
@@ -148,7 +150,7 @@
   <action-view name="action-dashlet-version-view-show-task" title="Ticket associated"
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="grid" name="business-support-version-project-task-grid"/>
-    <view type="form" name="project-task-form"/>
+    <view type="form" name="business-project-task-form"/>
     <view-param name="popup" value="true"/>
     <domain>self.targetVersion.id = :id</domain>
   </action-view>

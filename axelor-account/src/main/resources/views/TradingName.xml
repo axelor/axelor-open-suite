@@ -9,7 +9,7 @@
       <attribute name="onLoad" value="action-trading-name-method-show-analytic-panel"/>
     </extend>
 
-    <extend target="//panel-related[@name='companySetPanel']">
+    <extend target="//field[@name='company']">
       <attribute name="onChange" value="action-trading-name-group-company-onchange"/>
     </extend>
 

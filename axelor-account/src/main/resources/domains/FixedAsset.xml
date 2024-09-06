@@ -216,6 +216,7 @@
 		// Split type
 		public static final int SPLIT_TYPE_QUANTITY = 1;
 		public static final int SPLIT_TYPE_AMOUNT = 2;
+		public static final int SPLIT_TYPE_UNIT_QUANTITY = 3;
 
 		// Moves generation exception
 		public static final int MOVE_GENERATION_EXCEPTION_NONE = 0;

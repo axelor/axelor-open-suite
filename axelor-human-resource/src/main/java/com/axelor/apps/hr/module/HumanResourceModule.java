@@ -207,6 +207,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLeaveServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineComputeNameService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineComputeNameServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
@@ -225,8 +227,6 @@ import com.axelor.apps.hr.service.timesheet.TimesheetReportService;
 import com.axelor.apps.hr.service.timesheet.TimesheetReportServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
-import com.axelor.apps.hr.service.timesheet.TimesheetTimeComputationService;
-import com.axelor.apps.hr.service.timesheet.TimesheetTimeComputationServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowCheckServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
@@ -256,6 +256,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(TimesheetTimerService.class).to(TimesheetTimerServiceImpl.class);
     bind(TimesheetRepository.class).to(TimesheetHRRepository.class);
     bind(TimesheetLineRepository.class).to(TimesheetLineHRRepository.class);
+    bind(TimesheetLineComputeNameService.class).to(TimesheetLineComputeNameServiceImpl.class);
     bind(TSTimerRepository.class).to(TimesheetTimerHRRepository.class);
     bind(MailBatchService.class).to(MailBatchServiceHR.class);
     bind(AccountConfigService.class).to(AccountConfigHRService.class);
@@ -345,7 +346,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(TimesheetProjectPlanningTimeService.class)
         .to(TimesheetProjectPlanningTimeServiceImpl.class);
     bind(TimesheetRemoveService.class).to(TimesheetRemoveServiceImpl.class);
-    bind(TimesheetTimeComputationService.class).to(TimesheetTimeComputationServiceImpl.class);
     bind(TimesheetWorkflowService.class).to(TimesheetWorkflowServiceImpl.class);
     bind(TimesheetTimerCreateService.class).to(TimesheetTimerCreateServiceImpl.class);
     bind(TimerTimesheetGenerationService.class).to(TimerTimesheetGenerationServiceImpl.class);

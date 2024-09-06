@@ -767,6 +767,8 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType17.acquisition"; /*)*/
   public static final String ACCOUNTING_REPORT_17_ASSET_DISPOSAL =
       /*$$(*/ "AccountingReportType17.asset_disposal"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_ASSET_SCRAP =
+      /*$$(*/ "AccountingReportType17.asset_scrap"; /*)*/
   public static final String ACCOUNTING_REPORT_17_YEAR_END_VALUE =
       /*$$(*/ "AccountingReportType17.year_end_value"; /*)*/
   public static final String ACCOUNTING_REPORT_17_DEPRECIATION =
@@ -807,6 +809,8 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_19_TO = /*$$(*/ "AccountingReportType19.to"; /*)*/
   public static final String ACCOUNTING_REPORT_19_TOTAL_REPORT =
       /*$$(*/ "AccountingReportType19.total_report"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_AMOUNT =
+      /*$$(*/ "AccountingReportType19.amount"; /*)*/
 
   public static final String ACCOUNTING_REPORT_20_ACCOUNT_CODE =
       /*$$(*/ "AccountingReportType20.accountCode"; /*)*/

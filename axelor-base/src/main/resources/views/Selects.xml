@@ -417,8 +417,10 @@
   </selection>
 
   <selection name="base.printing.template.type.select">
-    <option value="1">File</option>
-    <option value="2">Birt</option>
+    <option value="1"
+      data-print-factory="com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryFile">File</option>
+    <option value="2"
+      data-print-factory="com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryBirt">Birt</option>
   </selection>
 
   <selection name="base.printing.template.status.select">
@@ -793,6 +795,10 @@
   <selection name="base.file.type.select">
     <option value="1">ContractFile</option>
     <option value="2">EmployeeFile</option>
+  </selection>
+
+  <selection name="connector.mapper.select">
+    <option value="other" order="10000">Other</option>
   </selection>
 
 </object-views>

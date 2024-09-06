@@ -14,9 +14,8 @@
     <panel name="mainPanel">
       <field name="name"/>
       <field name="logo" widget="Image"/>
+      <field name="company" form-view="company-form" grid-view="company-grid"/>
       <field name="partner"/>
-      <panel-related name="companySetPanel" field="companySet"
-        form-view="company-form" grid-view="company-grid" colSpan="12" canNew="false"/>
     </panel>
   </form>
 

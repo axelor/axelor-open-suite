@@ -22,13 +22,17 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
+import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class TimesheetLineController {
 
@@ -141,5 +145,34 @@ public class TimesheetLineController {
     TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
     response.setAttr(
         "product", "value", Beans.get(TimesheetLineService.class).getDefaultProduct(timesheetLine));
+  }
+
+  public void setTimesheet(ActionRequest request, ActionResponse response) {
+    try {
+      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+      timesheetLine = Beans.get(TimesheetCreateService.class).getOrCreateTimesheet(timesheetLine);
+      response.setValues(timesheetLine);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setTimesheetDomain(ActionRequest request, ActionResponse response) {
+    try {
+      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+      String idList = "0";
+      if (timesheetLine == null) {
+        response.setAttr("timesheet", "domain", "self.id IN (" + idList + ")");
+        return;
+      }
+
+      List<Timesheet> timesheetList =
+          Beans.get(TimesheetService.class).getTimesheetQuery(timesheetLine).fetch();
+      idList = StringHelper.getIdListString(timesheetList);
+
+      response.setAttr("timesheet", "domain", "self.id IN (" + idList + ")");
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

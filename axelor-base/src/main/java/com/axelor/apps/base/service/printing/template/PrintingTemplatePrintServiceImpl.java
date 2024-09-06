@@ -111,6 +111,13 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
 
   @Override
   public File getPrintFile(
+      PrintingTemplate template, PrintingGenFactoryContext context, Boolean toAttach)
+      throws AxelorException {
+    return getPrintFile(template, context, getTemplateName(template), toAttach);
+  }
+
+  @Override
+  public File getPrintFile(
       PrintingTemplate template,
       PrintingGenFactoryContext context,
       String outputFileName,

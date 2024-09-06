@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <menuitem name="stock-root" title="Stock management" order="-700"
-    if="__config__.app.isApp('stock')" icon="fa-cubes" icon-background="#b6473f"/>
+    if="__config__.app.isApp('stock')" icon="boxes" icon-background="#b6473f"/>
 
 
   <menuitem title="Deliveries" name="stock-root-deliveries" parent="stock-root" order="100"/>

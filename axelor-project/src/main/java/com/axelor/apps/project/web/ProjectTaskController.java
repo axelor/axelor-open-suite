@@ -18,18 +18,33 @@
  */
 package com.axelor.apps.project.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.ProjectTaskLinkType;
+import com.axelor.apps.project.db.TaskStatus;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskLinkTypeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskService;
+import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TimerProjectTaskService;
+import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.time.Duration;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProjectTaskController {
 
@@ -123,6 +138,129 @@ public class ProjectTaskController {
       response.setValues(projectTask);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  @ErrorException
+  public void setLinkTypeDomain(ActionRequest request, ActionResponse response) {
+    Project project =
+        Optional.of(request.getContext().asType(ProjectTask.class))
+            .map(ProjectTask::getProject)
+            .orElse(null);
+
+    String domain = Beans.get(ProjectTaskLinkService.class).getLinkTypeDomain(project);
+
+    response.setAttr("$projectTaskLinkType", "domain", domain);
+  }
+
+  @ErrorException
+  public void setTaskDomain(ActionRequest request, ActionResponse response) {
+
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    String domain = Beans.get(ProjectTaskLinkService.class).getProjectTaskDomain(projectTask);
+
+    response.setAttr("$projectTask", "domain", domain);
+  }
+
+  @ErrorException
+  public void generateNewLink(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    Map<String, Object> relatedTaskMap =
+        (Map<String, Object>) request.getContext().get("projectTask");
+    Map<String, Object> projectTaskLinkTypeMap =
+        (Map<String, Object>) request.getContext().get("projectTaskLinkType");
+    if (ObjectUtils.isEmpty(relatedTaskMap) || ObjectUtils.isEmpty(projectTaskLinkTypeMap)) {
+      return;
+    }
+
+    ProjectTaskRepository projectTaskRepository = Beans.get(ProjectTaskRepository.class);
+
+    projectTask = projectTaskRepository.find(projectTask.getId());
+    ProjectTask relatedTask =
+        projectTaskRepository.find(Long.valueOf(relatedTaskMap.get("id").toString()));
+    ProjectTaskLinkType projectTaskLinkType =
+        Beans.get(ProjectTaskLinkTypeRepository.class)
+            .find(Long.valueOf(projectTaskLinkTypeMap.get("id").toString()));
+
+    Beans.get(ProjectTaskLinkService.class)
+        .generateTaskLink(projectTask, relatedTask, projectTaskLinkType);
+    response.setReload(true);
+  }
+
+  public void changeProgress(ActionRequest request, ActionResponse response) {
+    try {
+      ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+      Beans.get(ProjectTaskService.class).changeProgress(projectTask, projectTask.getProject());
+      response.setValue("progress", projectTask.getProgress());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @ErrorException
+  public void changeStatus(ActionRequest request, ActionResponse response) throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    Project project = projectTask.getProject();
+
+    Optional<TaskStatus> completedStatus =
+        Beans.get(TaskStatusToolService.class).getCompletedTaskStatus(project, projectTask);
+
+    if (completedStatus.isPresent()) {
+      response.setValue("statusBeforeComplete", projectTask.getStatus());
+      response.setValue("status", completedStatus.get());
+    }
+  }
+
+  @ErrorException
+  public void validateCompletedStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    Project project = projectTask.getProject();
+    String warning =
+        Beans.get(TaskStatusToolService.class).checkCompletedTaskStatus(project, projectTask);
+
+    if (!StringUtils.isEmpty(warning)) {
+      response.setAlert(warning);
+    }
+  }
+
+  @ErrorException
+  public void manageStatus(ActionRequest request, ActionResponse response) throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    Project project = projectTask.getProject();
+
+    Set<TaskStatus> taskStatusSet =
+        Beans.get(TaskStatusToolService.class).getTaskStatusSet(project, projectTask);
+
+    if (!ObjectUtils.isEmpty(taskStatusSet)) {
+      response.setAttr(
+          "status",
+          "selection-in",
+          taskStatusSet.stream()
+              .map(TaskStatus::getId)
+              .map(String::valueOf)
+              .collect(Collectors.joining(",")));
+    } else {
+      response.setAttr("statusPanel", "hidden", true);
+    }
+  }
+
+  @ErrorException
+  public void changeStatusDependingCategory(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    Project project = projectTask.getProject();
+
+    if (project != null
+        && project.getTaskStatusManagementSelect()
+            == ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY
+        && projectTask.getProjectTaskCategory() != null) {
+      response.setValue(
+          "status", Beans.get(ProjectTaskService.class).getStatus(project, projectTask));
+      manageStatus(request, response);
     }
   }
 }

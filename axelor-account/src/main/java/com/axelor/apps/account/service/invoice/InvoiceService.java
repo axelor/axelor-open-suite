@@ -297,8 +297,6 @@ public interface InvoiceService {
 
   boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice);
 
-  public void validatePfp(Long invoiceId) throws AxelorException;
-
   void updateUnpaidInvoiceTerms(Invoice invoice);
 
   /**

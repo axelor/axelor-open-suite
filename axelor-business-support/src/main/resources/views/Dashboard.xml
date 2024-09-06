@@ -11,8 +11,7 @@
   </form>
 
   <action-method name="action-project-activity-announcement-dashboard-method-on-new">
-    <call
-      class="com.axelor.apps.businesssupport.service.web.ProjectActivityDashboardController"
+    <call class="com.axelor.apps.businesssupport.web.ProjectActivityDashboardController"
       method="getData"/>
   </action-method>
 

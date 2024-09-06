@@ -712,6 +712,7 @@
   <selection name="account.fixed.asset.split.type.select">
     <option value="1">Quantity</option>
     <option value="2">Amount</option>
+    <option value="3">Unit quantity</option>
   </selection>
 
   <selection name="account.fixed.asset.move.generation.exception">

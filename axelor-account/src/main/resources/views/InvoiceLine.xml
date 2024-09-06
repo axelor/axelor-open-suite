@@ -75,7 +75,7 @@
         <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
           showTitle="false">
           <viewer depends="$partnerLanguage">
-			<![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t('The partner\'s language is different from the current language. Description and product name are in :')} {$partnerLanguage}</Badge>}</>]]>
+			<![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t("The partner's language is different from the current language. Description and product name are in :")} {$partnerLanguage}</Badge>}</>]]>
           </viewer>
         </field>
         <panel name="customerInvoicePanel" colSpan="12">
@@ -173,7 +173,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()"
         title="Business Project" if-module="axelor-business-project">
         <field name="project" canEdit="false"
-          onSelect="action-invoice-line-attrs-domain-project" form-view="project-form"
+          onSelect="action-invoice-line-attrs-domain-project" form-view="business-project-form"
           grid-view="project-grid"/>
         <field name="previousProgress" readonly="true"/>
         <field name="newProgress" readonly="true"/>
@@ -720,13 +720,13 @@
 
   <action-attrs name="action-invoice-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.partner?.localization?.language?.code?.equals(__user__.getLanguage())"
-      if="__parent__"/>
+      expr="eval: __parent__?.partner?.localization?.language == __user__.localization?.language"
+      if="__parent__ &amp;&amp; __parent__.partner &amp;&amp; __parent__.partner.localization &amp;&amp; __user__.localization"/>
     <attribute for="$partnerLanguage" name="value"
       expr="eval: __parent__?.partner?.localization?.language?.code?.toUpperCase()" if="__parent__"/>
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: invoice?.partner?.localization?.language?.code?.equals(__user__.getLanguage())"
-      if="invoice"/>
+      expr="eval: invoice?.partner?.localization?.language == __user__.localization?.language"
+      if="invoice &amp;&amp; invoice.partner &amp;&amp; invoice.partner.localization &amp;&amp; __user__.localization"/>
     <attribute for="$partnerLanguage" name="value"
       expr="eval: invoice?.partner?.localization?.language?.code?.toUpperCase()" if="invoice"/>
   </action-attrs>
@@ -743,8 +743,8 @@
 
   <action-view name="action-invoice-line-view-project-tasks" title="Related tasks"
     model="com.axelor.apps.project.db.ProjectTask">
-    <view type="grid" name="project-task-grid"/>
-    <view type="form" name="project-task-form"/>
+    <view type="grid" name="business-project-task-grid"/>
+    <view type="form" name="business-project-task-form"/>
     <domain>:id IN self.invoiceLineSet.id</domain>
   </action-view>
 
