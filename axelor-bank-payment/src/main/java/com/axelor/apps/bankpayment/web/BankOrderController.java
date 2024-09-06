@@ -20,7 +20,6 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderEncryptionService;
@@ -29,7 +28,6 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -39,7 +37,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import org.slf4j.Logger;
@@ -190,48 +187,33 @@ public class BankOrderController {
 
     String password = request.getContext().get("password").toString();
 
-    try {
-      MetaFile decryptedFile =
-              Beans.get(BankOrderEncryptionService.class)
-                  .getDecryptedFile(bankOrder.getGeneratedMetaFile(), password);
+    MetaFile decryptedFile =
+        Beans.get(BankOrderEncryptionService.class)
+            .getDecryptedFile(bankOrder.getGeneratedMetaFile(), password);
 
-      if (decryptedFile != null) {
-        response.setView(
-            ActionView.define(I18n.get("Export file"))
-                .add(
-                    "html",
-                    "ws/rest/com.axelor.meta.db.MetaFile/"
-                        + decryptedFile.getId()
-                        + "/content/download?v="
-                        + decryptedFile.getVersion())
-                .param("download", "true")
-                .map());
-        response.setCanClose(true);
-      } else {
-        response.setAlert(I18n.get("The password is incorrect"));
-      }
-
-    } catch (IOException e) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_DECRYPT_ERROR),
-          e.getMessage());
+    if (decryptedFile != null) {
+      response.setView(
+          ActionView.define(I18n.get("Export file"))
+              .add(
+                  "html",
+                  "ws/rest/com.axelor.meta.db.MetaFile/"
+                      + decryptedFile.getId()
+                      + "/content/download?v="
+                      + decryptedFile.getVersion())
+              .param("download", "true")
+              .map());
+      response.setCanClose(true);
+    } else {
+      response.setAlert(I18n.get("The password is incorrect"));
     }
   }
 
   public void setIsFileEncrypted(ActionRequest request, ActionResponse response)
       throws AxelorException {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    try {
-      response.setValue(
-          "$isMetafileEncrypted",
-          Beans.get(BankOrderEncryptionService.class)
-              .isFileEncrypted(bankOrder.getGeneratedMetaFile()));
-    } catch (IOException e) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_DECRYPT_ERROR),
-          e.getMessage());
-    }
+    response.setValue(
+        "$isMetafileEncrypted",
+        Beans.get(BankOrderEncryptionService.class)
+            .isFileEncrypted(bankOrder.getGeneratedMetaFile()));
   }
 }
