@@ -10,4 +10,6 @@ public interface ProjectToolService {
 
   @CallMethod
   Set<Long> getActiveProjectIds();
+
+  Set<Long> getRelatedProjectIds(Project project);
 }
