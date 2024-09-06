@@ -29,11 +29,14 @@ import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineGeneratorService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
@@ -52,7 +55,10 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       SaleOrderComputeService saleOrderComputeService,
       MetaFieldRepository metaFieldRepository,
       ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService,
-      SaleOrderLineComputeService saleOrderLineComputeService) {
+      SaleOrderLineProductService saleOrderLineProductService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLineGeneratorService saleOrderLineGeneratorService,
+      SaleOrderRepository saleOrderRepository) {
     super(
         appBaseService,
         configuratorFormulaService,
@@ -61,7 +67,10 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         saleOrderComputeService,
         metaFieldRepository,
         configuratorMetaJsonFieldService,
-        saleOrderLineComputeService);
+        saleOrderLineProductService,
+        saleOrderLineComputeService,
+        saleOrderLineGeneratorService,
+        saleOrderRepository);
   }
 
   /**

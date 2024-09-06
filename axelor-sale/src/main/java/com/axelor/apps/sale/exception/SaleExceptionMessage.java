@@ -139,9 +139,28 @@ public final class SaleExceptionMessage {
   public static final String SALE_ORDER_NOT_DRAFT = /*$$(*/
       "You can only add a line to a draft sale order." /*)*/;
 
+  public static final String ATI_CHANGE_NOT_ALLOWED = /*$$(*/
+      "The company configuration doesn't allow you to manage the exclusion or inclusion of taxes." /*)*/;
+
+  public static final String PRODUCT_CURRENCY_IS_NULL = /*$$(*/
+      "This product currency is empty: %s" /*)*/;
+
+  public static final String NO_PRODUCT_FAMILY =
+      /*$$(*/ "No product family is set for this product: %s" /*)*/;
+  public static final String PRODUCT_IS_NULL = /*$$(*/ "Product should not be null" /*)*/;
+
   public static final String PRODUCT_ADDED_TO_CART = /*$$(*/
       "%s has been added to your cart." /*)*/;
 
   public static final String CONTACT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS = /*$$(*/
       "The contact provided is not a contact partner of the client." /*)*/;
+  public static final String BATCH_LOYALTY_ACCOUNT_EARN_POINTS_1 = /*$$(*/
+      "Loyalty account points earning report :" /*)*/;
+  public static final String BATCH_LOYALTY_ACCOUNT_EARN_POINTS_2 = /*$$(*/
+      "Loyalty account(s) processed" /*)*/;
+  public static final String BATCH_LOYALTY_ACCOUNT_EARN_POINTS_3 = /*$$(*/
+      "Bug occured for loyalty account with id {}" /*)*/;
+
+  public static final String MISSING_PRODUCT_VARIANTS = /*$$(*/
+      "Please select product variant for following product(s) :" /*)*/;
 }

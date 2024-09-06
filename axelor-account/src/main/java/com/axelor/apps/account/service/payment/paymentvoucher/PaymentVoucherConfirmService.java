@@ -20,7 +20,9 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -28,6 +30,7 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
@@ -95,6 +98,7 @@ public class PaymentVoucherConfirmService {
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected FinancialDiscountService financialDiscountService;
   protected CurrencyScaleService currencyScaleService;
+  protected InvoicePaymentRepository invoicePaymentRepository;
 
   @Inject
   public PaymentVoucherConfirmService(
@@ -116,7 +120,8 @@ public class PaymentVoucherConfirmService {
       InvoiceTermRepository invoiceTermRepository,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       FinancialDiscountService financialDiscountService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      InvoicePaymentRepository invoicePaymentRepository) {
 
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
@@ -137,6 +142,7 @@ public class PaymentVoucherConfirmService {
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.financialDiscountService = financialDiscountService;
     this.currencyScaleService = currencyScaleService;
+    this.invoicePaymentRepository = invoicePaymentRepository;
   }
 
   /**
@@ -868,7 +874,13 @@ public class PaymentVoucherConfirmService {
     if (reconcile != null) {
       log.debug("Reconcile : : : {}", reconcile);
       reconcileService.confirmReconcile(reconcile, true, true);
+
+      manageFinancialDiscountOnInvoicePayment(
+          reconcile,
+          Optional.of(moveLineToPay).map(MoveLine::getMove).map(Move::getInvoice).orElse(null),
+          payVoucherElementToPay);
     }
+
     return moveLine;
   }
 
@@ -879,6 +891,43 @@ public class PaymentVoucherConfirmService {
     } else {
       return payVoucherElementToPay.getPaymentVoucher().getRef();
     }
+  }
+
+  protected void manageFinancialDiscountOnInvoicePayment(
+      Reconcile reconcile, Invoice invoice, PayVoucherElementToPay payVoucherElementToPay) {
+    if (invoice == null
+        || payVoucherElementToPay == null
+        || !payVoucherElementToPay.getApplyFinancialDiscount()) {
+      return;
+    }
+
+    InvoicePayment invoicePayment =
+        invoicePaymentRepository.findByReconcileAndInvoice(reconcile, invoice);
+    if (invoicePayment == null) {
+      return;
+    }
+
+    invoicePayment.setApplyFinancialDiscount(true);
+    invoicePayment.setFinancialDiscount(payVoucherElementToPay.getFinancialDiscount());
+    invoicePayment.setFinancialDiscountTotalAmount(
+        payVoucherElementToPay.getFinancialDiscountTotalAmount());
+    invoicePayment.setFinancialDiscountTaxAmount(
+        payVoucherElementToPay.getFinancialDiscountTaxAmount());
+    invoicePayment.setFinancialDiscountAmount(payVoucherElementToPay.getFinancialDiscountAmount());
+    invoicePayment.setAmount(
+        invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
+
+    if (ObjectUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
+      return;
+    }
+
+    LocalDate deadlineDate =
+        invoicePayment.getInvoiceTermPaymentList().stream()
+            .map(InvoiceTermPayment::getInvoiceTerm)
+            .map(InvoiceTerm::getFinancialDiscountDeadlineDate)
+            .min(LocalDate::compareTo)
+            .orElse(null);
+    invoicePayment.setFinancialDiscountDeadlineDate(deadlineDate);
   }
 
   protected BigDecimal computeForeignExchangeCompanyAmount(

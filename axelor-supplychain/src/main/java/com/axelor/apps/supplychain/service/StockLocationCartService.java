@@ -16,23 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.address;
+package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.City;
-import com.axelor.apps.base.db.Country;
-import java.io.IOException;
+import com.axelor.apps.stock.db.StockLocation;
 
-public interface AddressExportService {
+public interface StockLocationCartService {
 
-  int export(String path) throws IOException;
-
-  Address getAddress(
-      String room,
-      String floor,
-      String streetName,
-      String postBox,
-      String zip,
-      City city,
-      Country country);
+  void addToCart(StockLocation stockLocation);
 }

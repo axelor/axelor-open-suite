@@ -26,6 +26,7 @@ import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class TimesheetContextProjectServiceImpl implements TimesheetContextProjectService {
@@ -43,7 +44,8 @@ public class TimesheetContextProjectServiceImpl implements TimesheetContextProje
   @Override
   public Set<Long> getActiveProjectIds() {
     User currentUser = AuthUtils.getUser();
-    Project contextProject = currentUser.getActiveProject();
+    Project contextProject =
+        Optional.ofNullable(currentUser).map(User::getActiveProject).orElse(null);
     Set<Long> projectIdsSet = new HashSet<>();
     if (contextProject == null) {
       List<Project> allTimeSpentProjectList =

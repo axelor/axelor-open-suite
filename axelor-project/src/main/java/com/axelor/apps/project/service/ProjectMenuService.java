@@ -23,9 +23,9 @@ import java.util.Map;
 
 public interface ProjectMenuService {
 
-  public Map<String, Object> getAllOpenProjectTasks();
+  public Map<String, Object> getAllOpenProjectTasks(Project project);
 
-  public Map<String, Object> getAllProjects();
+  public Map<String, Object> getAllProjects(Long projectId);
 
   public Map<String, Object> getAllProjectTasks();
 

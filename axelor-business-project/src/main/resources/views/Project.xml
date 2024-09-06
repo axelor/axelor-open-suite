@@ -137,14 +137,14 @@
     <panel-tabs name="mainPanelTab">
       <panel title="Task Tree" name="taskTreePanel">
         <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
-          icon="fa-plus" onClick="save,action-project-add-task"/>
+          icon="fa-plus" onClick="save,action-business-project-add-task"/>
         <button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left"
           icon="fa-plus" onClick="save,action-project-add-ticket"
           if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
         <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-          icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
+          icon="fa-tasks" onClick="save,action-business-project-view-show-related-tasks"/>
         <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
-          colSpan="12" action="action-view-show-project-task-tree"/>
+          colSpan="12" action="action-view-show-business-project-task-tree"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
           colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
@@ -159,9 +159,14 @@
       </panel>
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
-      <panel name="reportingPanel" title="Reporting" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project')">
-        <panel title="Time follow-up" colSpan="12">
+      <panel name="reportingPanel" title="Reporting">
+        <panel name="dashboardPanel" title="Dashboard" colSpan="12" canCollapse="true"
+          collapseIf="true">
+          <panel-dashlet name="dashboardPanelDashlet"
+            action="project.reporting.projects.dashboard" colSpan="12"/>
+        </panel>
+
+        <panel title="Time follow-up" colSpan="12" canCollapse="true" collapseIf="true">
           <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
             showTitle="false" height="125"/>
           <panel-dashlet action="action-project-view-updated-time-custom" colSpan="3"
@@ -179,7 +184,7 @@
             colSpan="3" showTitle="false" height="125"/>
         </panel>
 
-        <panel title="Financial follow-up" colSpan="12">
+        <panel title="Financial follow-up" colSpan="12" canCollapse="true" collapseIf="true">
           <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
             <panel-dashlet action="action-project-view-turnover-custom" colSpan="3"
               height="125"/>
@@ -689,7 +694,7 @@
   <action-view name="action-dashlet-project-show-all-invoicing-task"
     title="Task Invoicing" model="com.axelor.apps.project.db.ProjectTask">
     <view type="grid" name="business-project-project-task-grid"/>
-    <view type="form" name="project-task-form"/>
+    <view type="form" name="business-project-task-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="popup" value="reload"/>
     <domain>self.project.id in (:_projectIds)</domain>
@@ -702,8 +707,8 @@
 
   <action-view name="action-project-add-ticket"
     model="com.axelor.apps.project.db.ProjectTask" title="Ticket">
-    <view name="project-task-form" type="form"/>
-    <view name="project-task-grid" type="grid"/>
+    <view name="business-project-task-form" type="form"/>
+    <view name="business-project-task-grid" type="grid"/>
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
@@ -712,6 +717,27 @@
     <context name="_project" expr="eval:__this__"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
+  </action-view>
+
+  <action-view name="action-business-project-add-task"
+    model="com.axelor.apps.project.db.ProjectTask" title="Task">
+    <view name="business-project-task-form" type="form"/>
+    <view name="business-project-task-grid" type="grid"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_project" expr="eval:__this__"/>
+    <context name="_typeSelect"
+      expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
+  </action-view>
+
+  <action-view name="action-view-show-business-project-task-tree"
+    title="Project Task Tree" model="com.axelor.apps.project.db.ProjectTask">
+    <view type="tree" name="business-project-project-task-tree"/>
+    <view type="form" name="business-project-task-form"/>
+    <domain>self.project.id = :_id AND self.parentTask = null</domain>
+    <context name="_id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-project-view-convert-project-wizard"
@@ -1268,6 +1294,11 @@
   <action-method name="action-project-method-compute-project-totals">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="computeProjectTotals"/>
+  </action-method>
+
+  <action-method name="action-business-project-view-show-related-tasks">
+    <call class="com.axelor.apps.businessproject.web.ProjectMenuController"
+      method="allProjectRelatedTasks"/>
   </action-method>
 
   <action-group name="action-business-project-group-finish-project">

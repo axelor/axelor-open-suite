@@ -18,9 +18,7 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.AddressExport;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -32,7 +30,6 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressAttrsService;
-import com.axelor.apps.base.service.address.AddressExportService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -44,7 +41,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.Singleton;
@@ -53,7 +49,6 @@ import com.qas.web_2005_02.PicklistEntryType;
 import com.qas.web_2005_02.QAAddressType;
 import com.qas.web_2005_02.QAPicklistType;
 import com.qas.web_2005_02.VerifyLevelType;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -195,22 +190,6 @@ public class AddressController {
       }
 
     } else response.setInfo(I18n.get(BaseExceptionMessage.ADDRESS_4));
-  }
-
-  public void export(ActionRequest request, ActionResponse response)
-      throws IOException, AxelorException {
-
-    AddressExport addressExport = request.getContext().asType(AddressExport.class);
-    String dataExportDir = Beans.get(AppService.class).getDataExportDir();
-
-    String addressExportPath = addressExport.getPath();
-    if (addressExportPath == null) {
-      addressExportPath = "adresses.csv";
-    }
-
-    int size = Beans.get(AddressExportService.class).export(dataExportDir + addressExportPath);
-
-    response.setValue("log", size + " adresses exportées");
   }
 
   public void viewMap(ActionRequest request, ActionResponse response) {

@@ -48,6 +48,8 @@
     <boolean name="enableLoyalty" title="Enable loyalty"/>
     <integer name="loyaltyAccountsManagement" title="Loyalty accounts managed on"
       selection="sale.app.sale.loyalty.account.type.select"/>
+    <integer name="loyaltyAccountPointsAcquiringDelay" title="Points acquiring delay (days)"
+      default="14"/>
     <boolean name="isCartManagementEnabled" title="Enable cart management"/>
 
     <extra-code>

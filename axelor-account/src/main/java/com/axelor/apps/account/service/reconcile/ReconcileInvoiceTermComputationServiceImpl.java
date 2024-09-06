@@ -189,6 +189,15 @@ public class ReconcileInvoiceTermComputationServiceImpl
       Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap =
           this.getInvoiceTermPfpStatus(invoice);
 
+      if (invoicePayment != null) {
+        amount =
+            currencyService.getAmountCurrencyConvertedAtDate(
+                invoicePayment.getCurrency(),
+                invoicePayment.getCompanyCurrency(),
+                invoicePayment.getAmount(),
+                invoicePayment.getPaymentDate());
+      }
+
       invoiceTermPaymentList =
           invoiceTermService.updateInvoiceTerms(
               invoiceTermList,

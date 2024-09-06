@@ -20,7 +20,7 @@ package com.axelor.apps.businesssupport.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
-import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectServiceImpl;
 import com.axelor.apps.businesssupport.db.repo.ProjectAnnouncementBusinessSupportRepository;
 import com.axelor.apps.businesssupport.db.repo.ProjectAnnouncementRepository;
 import com.axelor.apps.businesssupport.db.repo.ProjectTaskBusinessSupportRepository;
