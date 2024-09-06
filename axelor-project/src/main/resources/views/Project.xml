@@ -593,7 +593,8 @@
   </form>
 
   <kanban columnBy="projectStatus" sequenceBy="orderByState" limit="10" name="project-kanban"
-    title="Projects" model="com.axelor.apps.project.db.Project">
+    title="Projects" model="com.axelor.apps.project.db.Project"
+    onMove="action-business-project-group-project-status-on-change">
     <field name="fullName"/>
     <field name="description"/>
     <field name="projectStatus"/>

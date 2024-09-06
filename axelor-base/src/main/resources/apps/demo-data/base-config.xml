@@ -145,7 +145,8 @@
       search="self.partner.importId = :importId">
       <bind to="address" column="email"/>
     </bind>
-    <bind to="partnerAddressList" search="self.address.importId = :address"
+    <bind to="partnerAddressList"
+      search="self.address.importId = :address AND self.partner.importId = :importId"
       if="address != null &amp;&amp; isContact == 'false'">
       <bind to="address" search="self.importId = :address" update="true"/>
       <bind to="isInvoicingAddr" eval="true"/>
