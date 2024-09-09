@@ -2143,6 +2143,7 @@
 "The analysis must be completed before the report can be printed.","La classification doit être terminée avant que le rapport ne puisse être généré",,
 "The application does not support key starting with -----BEGIN OPENSSH PRIVATE KEY-----","L'application ne prend pas en charge les clés commençant par -----BEGIN OPENSSH PRIVATE KEY-----",,
 "The binding file should be only an XML file.","Le fichier de liaison doit être un fichier XML.",,
+"The cart was emptied successfully.","Le panier a été vidé avec succès.",,
 "The class '%s' doesn't exist in the Faker API.","La classe '%s' n'existe pas dans l'API Faker.",,
 "The classes total quantity and total worth must equal 100%.","La valeur totale et la quantité totale des classes doivent être égales à 100%",,
 "The configuration to print this model has not been found","La configuration pour imprimer ce modèle est manquante",,
