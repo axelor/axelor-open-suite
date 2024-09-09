@@ -10,13 +10,27 @@
   </grid>
 
   <form model="com.axelor.apps.base.db.TradingName" title="Trading name"
-    name="trading-name-form">
+    name="trading-name-form" onLoad="action-trading-name-attrs-show-related-connectors-panel">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="logo" widget="Image"/>
       <field name="company" form-view="company-form" grid-view="company-grid"/>
       <field name="partner"/>
     </panel>
+    <panel-dashlet name="relatedConnectorsPanel"
+      action="action-trading-name-view-related-connector-mappers" colSpan="12" hidden="true"/>
   </form>
+
+  <action-attrs name="action-trading-name-attrs-show-related-connectors-panel">
+    <attribute name="hidden" for="relatedConnectorsPanel"
+      expr="eval: __repo__(ConnectorMapper).all().filter('self.metaModel.name = ?1 AND self.modelId = ?2','TradingName',id).count() &lt;= 0"/>
+  </action-attrs>
+
+  <action-view name="action-trading-name-view-related-connector-mappers"
+    title="Connector mappers" model="com.axelor.apps.base.db.ConnectorMapper">
+    <view type="grid" name="connector-mapper-base-grid"/>
+    <view type="form" name="connector-mapper-form"/>
+    <domain>self.metaModel.name = 'TradingName' AND self.modelId = :id</domain>
+  </action-view>
 
 </object-views>
