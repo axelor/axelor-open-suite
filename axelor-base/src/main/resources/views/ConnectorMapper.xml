@@ -13,6 +13,12 @@
       onClick="action-connector-mapper-method-show-aos-record" icon="box-arrow-up-right"/>
   </grid>
 
+  <grid name="connector-mapper-base-grid" title="Connector mappers"
+    model="com.axelor.apps.base.db.ConnectorMapper" groupBy="connectorSelect">
+    <field name="connectorSelect"/>
+    <field name="externalReference"/>
+  </grid>
+
   <form name="connector-mapper-form" title="Connector mapper"
     model="com.axelor.apps.base.db.ConnectorMapper" width="large">
     <toolbar>
