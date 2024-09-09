@@ -367,6 +367,7 @@
 "No Of Units",,,
 "No pricing scale used for this record",,,
 "No product family is set for this product: %s",,,
+"No sale unit is set for this product: %s",,,
 "Not delivered",,,
 "Not invoiced",,,
 "Notice period in days",,,

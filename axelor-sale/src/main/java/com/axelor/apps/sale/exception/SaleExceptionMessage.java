@@ -160,4 +160,6 @@ public final class SaleExceptionMessage {
 
   public static final String MISSING_PRODUCT_VARIANTS = /*$$(*/
       "Please select product variant for following product(s) :" /*)*/;
+  public static final String PRODUCT_SALE_UNIT_IS_NULL = /*$$(*/
+      "No sale unit is set for this product: %s" /*)*/;
 }

@@ -93,8 +93,20 @@ public class ProductRestServiceImpl implements ProductRestService {
         productPriceService.getSaleUnitPrice(company, product, true, partner, currency);
 
     if (unit != null) {
-      priceWT = unitConversionService.convert(unit, product.getSalesUnit(), priceWT, 5, product);
-      priceATI = unitConversionService.convert(unit, product.getSalesUnit(), priceATI, 5, product);
+      priceWT =
+          unitConversionService.convert(
+              unit,
+              product.getSalesUnit(),
+              priceWT,
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              product);
+      priceATI =
+          unitConversionService.convert(
+              unit,
+              product.getSalesUnit(),
+              priceATI,
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              product);
     }
 
     priceList.add(new PriceResponse("WT", priceWT));
@@ -137,7 +149,13 @@ public class ProductRestServiceImpl implements ProductRestService {
       List<PriceResponse> prices = fetchProductPrice(product, partner, company, currency, unit);
 
       if (unit == null) {
-        unit = product.getUnit();
+        if (product.getSalesUnit() == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(SaleExceptionMessage.PRODUCT_SALE_UNIT_IS_NULL),
+              product.getId());
+        }
+        unit = product.getSalesUnit();
       }
       UnitResponse unitResponse = new UnitResponse(unit.getName(), unit.getLabelToPrinting());
       productResponses.add(
