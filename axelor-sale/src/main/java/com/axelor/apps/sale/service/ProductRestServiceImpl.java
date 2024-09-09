@@ -84,14 +84,18 @@ public class ProductRestServiceImpl implements ProductRestService {
   protected List<PriceResponse> fetchProductPrice(
       Product product, Partner partner, Company company, Currency currency, Unit unit)
       throws AxelorException {
-
     List<PriceResponse> priceList = new ArrayList<>();
 
     BigDecimal priceWT =
         productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
     BigDecimal priceATI =
         productPriceService.getSaleUnitPrice(company, product, true, partner, currency);
-
+    if (product.getSalesUnit() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(SaleExceptionMessage.PRODUCT_SALE_UNIT_IS_NULL),
+          product.getId());
+    }
     if (unit != null) {
       priceWT =
           unitConversionService.convert(
@@ -147,14 +151,7 @@ public class ProductRestServiceImpl implements ProductRestService {
         company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
       }
       List<PriceResponse> prices = fetchProductPrice(product, partner, company, currency, unit);
-
       if (unit == null) {
-        if (product.getSalesUnit() == null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(SaleExceptionMessage.PRODUCT_SALE_UNIT_IS_NULL),
-              product.getId());
-        }
         unit = product.getSalesUnit();
       }
       UnitResponse unitResponse = new UnitResponse(unit.getName(), unit.getLabelToPrinting());
