@@ -45,11 +45,6 @@
       help="This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view."/>
     <boolean name="isDiscountEnabledOnEditableGrid"
       title="Enable discount on editable lines"/>
-    <boolean name="enableLoyalty" title="Enable loyalty"/>
-    <integer name="loyaltyAccountsManagement" title="Loyalty accounts managed on"
-      selection="sale.app.sale.loyalty.account.type.select"/>
-    <integer name="loyaltyAccountPointsAcquiringDelay" title="Points acquiring delay (days)"
-      default="14"/>
     <boolean name="isCartManagementEnabled" title="Enable cart management"
       help="Allow the user to put products aside to generate an order at a later date."/>
 
