@@ -190,10 +190,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
 
   @Override
   public Product getDefaultProduct(TimesheetLine timesheetLine) {
-    if (timesheetLine.getProjectTask() != null
-        && timesheetLine.getProjectTask().getProduct() != null) {
-      return timesheetLine.getProjectTask().getProduct();
-    }
-    return timesheetLine.getEmployee().getProduct();
+    return userHrService.getTimesheetProduct(
+        timesheetLine.getEmployee(), timesheetLine.getProjectTask());
   }
 }

@@ -368,7 +368,6 @@
   <action-record name="action-hr-default-timesheet-line-project"
     model="com.axelor.apps.hr.db.TimesheetLine">
     <field name="employee" expr="eval:__user__.employee"/>
-    <field name="product" expr="eval:__user__.employee?.product"/>
     <field name="enableEditor" expr="eval: true"
       if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
   </action-record>
@@ -376,9 +375,6 @@
   <action-record name="action-hr-default-timesheet-line-timesheet"
     model="com.axelor.apps.hr.db.TimesheetLine">
     <field name="employee" expr="eval:__parent__.employee"/>
-    <field name="product"
-      expr="call:com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct(__repo__(Employee).find(__parent__.employee.id))"
-      if="__parent__.employee != null"/>
     <field name="enableEditor" expr="eval: true"
       if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
   </action-record>
@@ -398,7 +394,7 @@
   <action-record name="action-timesheet-line-editor-record-get-default"
     model="com.axelor.apps.hr.db.TimesheetLine">
     <field name="product"
-      expr="call:com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct(employee)"
+      expr="call:com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct(employee, null)"
       if="employee != null"/>
   </action-record>
 
