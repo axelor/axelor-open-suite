@@ -15,7 +15,8 @@
       <button name="emptyCartBtn" title="Empty cart"
         onClick="save,action-cart-method-empty-cart"/>
       <button name="createSaleOrderBtn" title="Create the sale order"
-        onClick="save,action-method-cart-create-sale-order"/>
+        onClick="save,action-method-cart-create-sale-order" hidden="true"
+        showIf="cartLineList &amp;&amp; cartLineList.length > 0"/>
     </toolbar>
 
     <panel name="mainPanel">
