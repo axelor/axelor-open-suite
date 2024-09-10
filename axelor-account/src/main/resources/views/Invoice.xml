@@ -1654,7 +1654,6 @@
       if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect > 0"/>
     <action name="action-invoice-record-set-dummy-field-localization"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
-    <action name="action-invoice-record-set-payment-condition"/>
     <action name="action-method-invoice-address-str"/>
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect) &amp;&amp; operationSubTypeSelect != 2"/>
@@ -1928,7 +1927,6 @@
 
   <action-record name="action-invoice-record-partner-change"
     model="com.axelor.apps.account.db.Invoice">
-    <field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
     <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"/>
     <field name="address"
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>

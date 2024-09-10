@@ -172,6 +172,7 @@
       <field name="locationToCheck" hidden="true" colSpan="12"/>
       <field name="contactPartnerToCheck" hidden="true" colSpan="12"/>
       <field name="fromStockMove" hidden="true" colSpan="12"/>
+      <field name="tradingNameToCheck" hidden="true" colSpan="12"/>
       <field name="$priceList" title="Price List" type="many-to-one"
         target="com.axelor.apps.base.db.PriceList"
         domain="self.typeSelect = 1 and self.isActive = true" colSpan="6" colOffset="3"
@@ -188,6 +189,12 @@
         domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
         colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+      <field name="$tradingName"
+        if="__config__.app.getApp('base')?.enableTradingNamesManagement" title="Trading name"
+        type="many-to-one" form-view="trading-name-form" grid-view="trading-name-grid"
+        target="com.axelor.apps.base.db.TradingName" colOffset="3" colSpan="6" width="200px"
+        showIf="tradingNameToCheck" domain=":company MEMBER OF self.companySet"
+        requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
       <button name="confirmBtn" title="Confirmer"
         onClick="action-sale-order-method-merge-from-pop-up" colSpan="12" width="200px"
         showIf="!fromStockMove"/>
@@ -1479,7 +1486,6 @@
     <action name="action-sale-order-method-confirm"/>
     <action name="action-sale-order-method-update-loyalty-account"
       if="__config__.app.getApp('sale')?.enableLoyalty"/>
-    <action name="action-sale-order-method-reload"/>
   </action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
@@ -1632,10 +1638,6 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="recoverVersion"/>
   </action-method>
 
-  <action-method name="action-sale-order-method-reload">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="reloadMethod"/>
-  </action-method>
-
   <action-view name="action-open-sale-order-merge-form" title="Merge sale orders"
     model="com.axelor.utils.db.Wizard">
     <view type="form" name="sale-order-merge-form"/>
@@ -1673,6 +1675,8 @@
     <field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
     <field name="locationToCheck" expr="eval: contextLocationToCheck"/>
     <field name="partnerId" expr="eval: contextPartnerId"/>
+    <field name="tradingNameToCheck" expr="eval: contextTradingNameToCheck"/>
+    <field name="company" expr="eval: company"/>
   </action-record>
 
   <action-record name="action-sale-order-record-partner"
