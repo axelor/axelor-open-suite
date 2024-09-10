@@ -182,6 +182,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       for (int subIndex = 1; subIndex <= parentIndex; subIndex++) {
         tempAliasName = isKeyword(splitField, subIndex);
         if (!aliasName.equals(splitField[parentIndex])) {
+          tempAliasName = aliasName + "_" + tempAliasName;
           joinFieldSet.add(
               "LEFT JOIN " + aliasName + "." + splitField[subIndex] + " " + tempAliasName);
           aliasName = tempAliasName;
