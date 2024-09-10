@@ -242,7 +242,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     }
   }
 
-  protected ProjectPlanningTime createProjectPlanningTime(
+  @Override
+  public ProjectPlanningTime createProjectPlanningTime(
       LocalDateTime fromDate,
       ProjectTask projectTask,
       Project project,

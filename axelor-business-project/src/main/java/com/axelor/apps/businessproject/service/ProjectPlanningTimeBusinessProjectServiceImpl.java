@@ -94,7 +94,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
   }
 
   @Override
-  protected ProjectPlanningTime createProjectPlanningTime(
+  public ProjectPlanningTime createProjectPlanningTime(
       LocalDateTime fromDate,
       ProjectTask projectTask,
       Project project,

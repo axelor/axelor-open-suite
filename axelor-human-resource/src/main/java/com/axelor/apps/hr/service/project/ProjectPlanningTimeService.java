@@ -20,7 +20,10 @@ package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ICalendarEvent;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -70,5 +73,17 @@ public interface ProjectPlanningTimeService {
   BigDecimal getDefaultPlanningTime(ProjectPlanningTime projectPlanningTime) throws AxelorException;
 
   PlannedTimeValue getDefaultPlanningRestrictedTime(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException;
+
+  ProjectPlanningTime createProjectPlanningTime(
+      LocalDateTime fromDate,
+      ProjectTask projectTask,
+      Project project,
+      Integer timePercent,
+      Employee employee,
+      Product activity,
+      BigDecimal dailyWorkHrs,
+      LocalDateTime taskEndDateTime,
+      Site site)
       throws AxelorException;
 }
