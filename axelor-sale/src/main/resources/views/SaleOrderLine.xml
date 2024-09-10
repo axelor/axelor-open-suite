@@ -110,7 +110,6 @@
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
-    <field name="subSaleOrderLineList" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"

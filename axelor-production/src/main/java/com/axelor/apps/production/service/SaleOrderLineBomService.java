@@ -10,6 +10,4 @@ public interface SaleOrderLineBomService {
 
   List<SaleOrderLine> createSaleOrderLinesFromBom(
       BillOfMaterial billOfMaterial, SaleOrder saleOrder) throws AxelorException;
-
-  boolean isToProduce(SaleOrderLine saleOrderLine);
 }

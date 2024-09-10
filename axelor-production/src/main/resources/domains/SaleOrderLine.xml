@@ -16,9 +16,9 @@
       mappedBy="saleOrderLine" copy="false"/>
 
 
-    <boolean name="isProductible" transient="true">
+    <boolean name="isToProduce" transient="true">
       <![CDATA[
-		return this.saleSupplySelect == 1 && this.billOfMaterial != null;
+		return (this.saleSupplySelect == 3 || this.saleSupplySelect == 4) && this.billOfMaterial != null;
         ]]>
     </boolean>
 
