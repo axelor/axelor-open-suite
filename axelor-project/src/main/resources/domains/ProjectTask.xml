@@ -90,6 +90,8 @@
     <string name="projectJson" title="Project json" json="true"/>
     <string name="categoryJson" title="Category json" json="true"/>
 
+    <many-to-one ref="com.axelor.apps.project.db.Sprint" name="sprint" title="Sprint"/>
+
     <extra-code>
 
       // TYPE SELECT
