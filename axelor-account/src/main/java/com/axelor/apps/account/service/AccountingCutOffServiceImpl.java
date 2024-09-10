@@ -575,7 +575,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         amount
             .multiply(BigDecimal.valueOf(100))
             .divide(
-                moveLine.getCurrencyAmount(),
+                moveLine.getCurrencyAmount().abs(),
                 AppAccountService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP);
 
