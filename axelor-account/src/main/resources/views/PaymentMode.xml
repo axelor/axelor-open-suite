@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="payment-mode-form" title="Payment Mode"
     model="com.axelor.apps.account.db.PaymentMode" id="account-payment-mode-form" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="action-payment-mode-group-onload"/>
+    </extend>
+
     <extend target="//panel[@name='mainPanel']/field[@name='typeSelect']">
-      <attribute name="onChange"
-        value="action-payment-mode-group-empty,action-payment-mode-record-accounting-trigger-init-cheque-in"/>
+      <attribute name="onChange" value="action-payment-mode-group-type-onchange"/>
     </extend>
     <extend target="//panel[@name='mainPanel']/field[@name='inOutSelect']">
       <attribute name="onChange"
@@ -19,7 +22,8 @@
           <panel name="mainAccountingSettingsTab" title="General accounting config.">
             <panel name="accountingTriggerPanel" stacked="true">
               <field name="accountingTriggerSelect" hidden="true"
-                hideIf="typeSelect == 7 &amp;&amp; inOutSelect == 1"/>
+                hideIf="typeSelect == 7 &amp;&amp; inOutSelect == 1"
+                onChange="action-attrs-payment-mode-accounting-method-domain"/>
               <field name="accountingTriggerSelect" hidden="true"
                 showIf="typeSelect == 7 &amp;&amp; inOutSelect == 1" selection-in="[1,5]"/>
             </panel>
@@ -29,30 +33,49 @@
           </panel>
           <panel name="paymentProcessesSettingsPanel" title="Payment processes settings">
             <field name="canSelectInPaymentSession"
-              readonlyIf="typeSelect != 2 &amp;&amp; typeSelect != 9"/>
+              readonlyIf="![2,9,10].includes(typeSelect)"/>
             <panel name="paymentSessionPanel" colSpan="12" showIf="canSelectInPaymentSession">
               <field name="daysMarginOnPaySession" requiredIf="canSelectInPaymentSession"
                 min="0"/>
-              <panel name="accountingMethodPanel" stacked="true">
-                <field name="accountingMethodSelect" requiredIf="canSelectInPaymentSession"
-                  showIf="moveAccountingDateSelect != 3"/>
-                <field name="accountingMethodSelect" requiredIf="canSelectInPaymentSession"
-                  showIf="moveAccountingDateSelect == 3" selection-in="[1,2]"/>
-              </panel>
-              <panel name="moveAccountingDatePanel" stacked="true">
-                <field name="moveAccountingDateSelect" requiredIf="canSelectInPaymentSession"
-                  showIf="accountingMethodSelect != 3"
-                  onChange="action-payment-mode-validate-check-bank-order-file-format"/>
-                <field name="moveAccountingDateSelect" requiredIf="canSelectInPaymentSession"
-                  showIf="accountingMethodSelect == 3" selection-in="[1,2]"
-                  onChange="action-payment-mode-validate-check-bank-order-file-format"/>
-              </panel>
+              <field name="accountingMethodSelect" requiredIf="canSelectInPaymentSession"
+                onChange="action-attrs-payment-mode-move-accounting-date-domain"/>
+              <field name="moveAccountingDateSelect" requiredIf="canSelectInPaymentSession"
+                onChange="action-group-payment-mode-move-accounting-date-onchange"/>
             </panel>
           </panel>
         </panel-tabs>
       </insert>
     </extend>
   </form>
+
+  <action-group name="action-payment-mode-group-onload">
+    <action name="action-method-account-set-read-only-if-in-move"/>
+    <action name="action-attrs-payment-mode-accounting-method-domain"/>
+    <action name="action-attrs-payment-mode-move-accounting-date-domain"/>
+  </action-group>
+
+  <action-group name="action-payment-mode-group-type-onchange">
+    <action name="action-payment-mode-group-empty"/>
+    <action name="action-payment-mode-record-accounting-trigger-init-cheque-in"/>
+    <action name="action-attrs-payment-mode-accounting-method-domain"/>
+  </action-group>
+
+  <action-group name="action-group-payment-mode-move-accounting-date-onchange">
+    <action name="action-payment-mode-validate-check-bank-order-file-format"/>
+    <action name="action-attrs-payment-mode-accounting-method-domain"/>
+  </action-group>
+
+  <action-attrs name="action-attrs-payment-mode-accounting-method-domain">
+    <attribute for="accountingMethodSelect" name="selection-in"
+      expr="eval: moveAccountingDateSelect != 3 ? [1,2,3] : [1,2]" if="typeSelect != 10"/>
+    <attribute for="accountingMethodSelect" name="selection-in" expr="eval: [3]"
+      if="typeSelect == 10"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-payment-mode-move-accounting-date-domain">
+    <attribute for="moveAccountingDateSelect" name="selection-in"
+      expr="eval: accountingMethodSelect != 3 ? [1,2,3] : [1,2]"/>
+  </action-attrs>
 
   <action-record name="action-payment-mode-record-accounting-trigger-init-cheque-in"
     model="com.axelor.apps.account.db.PaymentMode">

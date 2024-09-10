@@ -224,6 +224,9 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       LocalDate disposalDate)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
+    if (fixedAsset.getMoveGenerationException() == FixedAssetRepository.MOVE_GENERATION_NO_MOVES) {
+      return null;
+    }
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();

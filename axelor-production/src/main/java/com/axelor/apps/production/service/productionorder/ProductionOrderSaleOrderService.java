@@ -26,8 +26,8 @@ import java.util.List;
 
 public interface ProductionOrderSaleOrderService {
 
-  public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException;
+  List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException;
 
-  public ProductionOrder generateManufOrders(
-      ProductionOrder productionOrder, SaleOrderLine saleOrderLine) throws AxelorException;
+  ProductionOrder generateManufOrders(ProductionOrder productionOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
 }

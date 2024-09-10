@@ -25,7 +25,7 @@ import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -40,7 +40,7 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   protected AppBaseService appBaseService;
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
-  protected InvoiceTermService invoiceTermService;
+  protected InvoiceTermToolService invoiceTermToolService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected PaymentVoucherToolService paymentVoucherToolService;
   protected CurrencyScaleService currencyScaleService;
@@ -51,7 +51,7 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
       AppBaseService appBaseService,
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
-      InvoiceTermService invoiceTermService,
+      InvoiceTermToolService invoiceTermToolService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       PaymentVoucherToolService paymentVoucherToolService,
       CurrencyScaleService currencyScaleService) {
@@ -59,7 +59,7 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
-    this.invoiceTermService = invoiceTermService;
+    this.invoiceTermToolService = invoiceTermToolService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.paymentVoucherToolService = paymentVoucherToolService;
     this.currencyScaleService = currencyScaleService;
@@ -113,7 +113,7 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
     return invoiceTerm.getFinancialDiscount() != null
         && invoiceTerm.getFinancialDiscountDeadlineDate() != null
         && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(paymentVoucher.getPaymentDate())
-        && !invoiceTermService.isPartiallyPaid(invoiceTerm);
+        && !invoiceTermToolService.isPartiallyPaid(invoiceTerm);
   }
 
   @Override

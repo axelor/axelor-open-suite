@@ -19,16 +19,22 @@
 package com.axelor.apps.purchase.db.repo;
 
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.Map;
 
 public class SupplierCatalogManagementRepository extends SupplierCatalogRepository {
+
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public SupplierCatalogManagementRepository(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
+
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    json.put(
-        "$nbDecimalDigitForUnitPrice",
-        Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
-    json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
+    json.put("$nbDecimalDigitForUnitPrice", appBaseService.getNbDecimalDigitForUnitPrice());
+    json.put("$nbDecimalDigitForQty", appBaseService.getNbDecimalDigitForQty());
 
     return super.populate(json, context);
   }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="business-project-project-task-grid" orderBy="-taskDate">
@@ -9,7 +9,7 @@
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
-    <field name="progressSelect" widget="SelectProgress" if="isShowProgress"/>
+    <field name="progress" widget="SelectProgress" if="isShowProgress"/>
     <field name="exTaxTotal"/>
     <field name="invoicingType"/>
     <field name="taskDuration" if="isShowTimeSpent"/>
@@ -32,13 +32,13 @@
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
-    <field name="progressSelect" widget="SelectProgress"/>
+    <field name="invoicingProgress"/>
+    <field name="progress"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="quantity" aggregate="sum"/>
     <field name="toInvoice" readonly="true"
       if="!__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if="__config__.app.getApp('business-project').automaticInvoicing"/>
-    <field name="invoiced"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
       readonlyIf="invoiced" icon="fa-check-circle"
@@ -53,8 +53,24 @@
     </extend>
     <extend target="//field[@name='parentTask']">
       <attribute name="onChange" value="action-project-task-record-get-parent-timeunit"/>
+      <insert position="after">
+        <field name="frameworkCustomerContract" hidden="true"
+          onSelect="action-project-task-method-set-customer-contract-domain"
+          showIf="project.allowToGetPricesFromFrameworkContract"
+          onChange="action-project-task-group-set-price-from-contract"/>
+        <field name="frameworkSupplierContract" hidden="true"
+          onSelect="action-project-task-method-set-supplier-contract-domain"
+          showIf="project.allowToGetPricesFromFrameworkContract"
+          onChange="action-project-task-group-set-price-from-contract"/>
+      </insert>
     </extend>
     <extend target="//field[@name='assignedTo']">
+      <insert position="after">
+        <field name="project.allowToGetPricesFromFrameworkContract" hidden="true"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='assignedTo']">
+      <attribute name="onChange" value="action-project-task-group-assigned-to-on-change"/>
       <insert position="after">
         <field name="saleOrderLine" readonly="true" showIf="saleOrderLine"
           form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
@@ -103,14 +119,16 @@
           if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
           <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true">
             <field name="product" colSpan="3" canEdit="false"
-              onChange="action-project-task-group-product-onchange"
-              domain="self.unit.unitTypeSelect=3 AND self.dtype = 'Product'"
-              form-view="product-form" grid-view="product-grid" readonlyIf="saleOrderLine"/>
+              onChange="action-business-project-project-task-group-product-onchange"
+              onSelect="action-project-task-attrs-set-product-domain" form-view="product-form"
+              grid-view="product-grid" readonlyIf="saleOrderLine"/>
             <field name="quantity" colSpan="3"
               onChange="action-project-task-group-qty-onchange" readonlyIf="saleOrderLine"/>
             <field name="unitPrice" colSpan="3"
-              onChange="action-project-task-group-unit-price-onchange" readonlyIf="saleOrderLine"/>
-            <field name="unitCost" colSpan="3" readonlyIf="saleOrderLine"/>
+              onChange="action-project-task-group-unit-price-onchange"
+              readonlyIf="saleOrderLine || frameworkCustomerContract"/>
+            <field name="unitCost" colSpan="3"
+              readonlyIf="saleOrderLine || frameworkSupplierContract"/>
             <field name="invoicingUnit" colSpan="3" domain="self.unitTypeSelect=3"
               form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"/>
             <field name="currency" colSpan="3" grid-view="currency-grid"
@@ -118,7 +136,8 @@
             <field name="exTaxTotal" readonly="true" colSpan="3"/>
             <field name="totalCosts" colSpan="3"/>
             <field name="invoicingType" colSpan="3"
-              onChange="action-project-task-attrs-onchange-invoice-type"/>
+              onChange="action-project-task-attrs-onchange-invoice-type"
+              readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length > 0"/>
             <field name="toInvoice" colSpan="2" readonly="true"
               if="__config__.app.getApp('business-project').automaticInvoicing"/>
             <field name="toInvoice" colSpan="2" readonlyIf="invoiced"
@@ -147,8 +166,8 @@
             </panel>
             <field name="project.invoicingSequenceSelect" hidden="true"
               if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-            <field name="invoiceLine" readonly="true" showIf="invoiceLine"
-              form-view="invoice-line-form" grid-view="invoice-line-grid"/>
+            <field name="invoiceLineSet" readonly="true" showIf="invoiceLineSet"
+              form-view="invoice-line-form" grid-view="invoice-line-grid" colSpan="12"/>
           </panel>
           <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
             width="120" widget="Image"/>
@@ -234,7 +253,7 @@
       <field name="realMarkup" as="real"/>
       <field name="landingMarkup" as="landing"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
         onClick="save, action-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
@@ -249,7 +268,7 @@
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
         onClick="save, action-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
@@ -280,6 +299,11 @@
       method="generatePurchaseOrder"/>
   </action-method>
 
+  <action-method name="action-project-task-method-get-contract-product">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="getProductData"/>
+  </action-method>
+
   <action-attrs name="action-project-task-attrs-scale-and-precision">
     <attribute name="scale" for="priceDiscounted"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
@@ -287,9 +311,32 @@
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
 
+  <action-attrs name="action-project-task-attrs-set-product-domain">
+    <attribute for="product" name="domain"
+      expr="self.unit.unitTypeSelect=3 AND self.dtype = 'Product'"
+      if="!frameworkCustomerContract &amp;&amp; !frameworkSupplierContract"/>
+    <attribute for="product" name="domain"
+      expr="eval: &quot;self.unit.unitTypeSelect=3 AND self.dtype = 'Product' AND self.productTypeSelect ='service' AND self.id IN (${(frameworkCustomerContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')})&quot;"
+      if="frameworkCustomerContract"/>
+    <attribute for="product" name="domain"
+      expr="eval: &quot;self.unit.unitTypeSelect=3 AND self.dtype = 'Product' AND self.productTypeSelect ='service' AND self.id IN (${(frameworkSupplierContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')})&quot;"
+      if="frameworkSupplierContract"/>
+    <attribute for="product" name="domain"
+      expr="eval: &quot;self.unit.unitTypeSelect=3 AND self.dtype = 'Product' AND self.productTypeSelect ='service' AND (self.id IN (${(frameworkCustomerContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')}) AND self.id IN (${(frameworkSupplierContract?.currentContractVersion?.contractLineList.collect{it?.product?.id}+[0]).join(',')}))&quot;"
+      if="frameworkCustomerContract &amp;&amp; frameworkSupplierContract"/>
+  </action-attrs>
+
+  <action-group name="action-project-task-group-set-price-from-contract">
+    <action name="action-project-task-method-get-contract-product"/>
+    <action name="action-project-task-method-update-discount"/>
+    <action name="action-project-task-method-compute"/>
+  </action-group>
+
   <action-group name="action-business-project-project-task-group-on-new">
     <action name="action-project-task-group-onnew"/>
     <action name="action-project-task-attrs-set-time-unit-default"/>
+    <action name="action-project-task-attrs-set-framework-contracts"/>
+    <action name="action-project-task-group-set-product-and-update"/>
   </action-group>
 
   <action-group name="action-business-project-project-task-group-on-load">
@@ -319,5 +366,45 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="timeUnit" expr="eval: parentTask?.timeUnit" if="parentTask"/>
   </action-record>
+
+  <action-group name="action-business-project-project-task-group-product-onchange">
+    <action name="action-project-task-group-product-onchange"/>
+    <action name="action-project-task-group-set-price-from-contract"/>
+  </action-group>
+
+  <action-attrs name="action-project-task-attrs-set-framework-contracts">
+    <attribute for="frameworkCustomerContract" name="value"
+      expr="eval: project?.defaultFrameworkCustomerContract"
+      if="project?.allowToGetPricesFromFrameworkContract"/>
+    <attribute for="frameworkSupplierContract" name="value"
+      expr="eval: project?.defaultFrameworkSupplierContract"
+      if="project?.allowToGetPricesFromFrameworkContract"/>
+  </action-attrs>
+
+  <action-group name="action-project-task-group-assigned-to-on-change">
+    <action name="action-project-task-attrs-hide-time-spent-button"/>
+    <action name="action-project-task-group-set-product-and-update"/>
+  </action-group>
+
+  <action-method name="action-project-task-method-get-employee-product">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="getEmployeeProduct"/>
+  </action-method>
+
+  <action-group name="action-project-task-group-set-product-and-update">
+    <action name="action-project-task-method-get-employee-product" if="assignedTo"/>
+    <action name="action-business-project-project-task-group-product-onchange" if="product"/>
+  </action-group>
+
+  <action-method name="action-project-task-method-set-customer-contract-domain">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="getCustomerContractDomain"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-set-supplier-contract-domain">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="getSupplierContractDomain"/>
+  </action-method>
+
 
 </object-views>

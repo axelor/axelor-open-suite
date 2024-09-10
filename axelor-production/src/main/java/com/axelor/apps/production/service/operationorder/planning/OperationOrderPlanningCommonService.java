@@ -25,12 +25,15 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.helpers.date.LocalDateTimeHelper;
 import com.google.inject.Inject;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.apache.commons.collections.CollectionUtils;
 
 public abstract class OperationOrderPlanningCommonService {
@@ -39,17 +42,20 @@ public abstract class OperationOrderPlanningCommonService {
   protected OperationOrderStockMoveService operationOrderStockMoveService;
   protected OperationOrderRepository operationOrderRepository;
   protected AppBaseService appBaseService;
+  protected OperationOrderOutsourceService operationOrderOutsourceService;
 
   @Inject
   protected OperationOrderPlanningCommonService(
       OperationOrderService operationOrderService,
       OperationOrderStockMoveService operationOrderStockMoveService,
       OperationOrderRepository operationOrderRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      OperationOrderOutsourceService operationOrderOutsourceService) {
     this.operationOrderService = operationOrderService;
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepository = operationOrderRepository;
     this.appBaseService = appBaseService;
+    this.operationOrderOutsourceService = operationOrderOutsourceService;
   }
 
   protected abstract void planWithStrategy(OperationOrder operationOrder) throws AxelorException;
@@ -84,7 +90,8 @@ public abstract class OperationOrderPlanningCommonService {
     LocalDateTime todayDateT =
         appBaseService.getTodayDateTime(manufOrder.getCompany()).toLocalDateTime();
 
-    if (operationOrder.getPlannedStartDateT().isBefore(todayDateT)) {
+    LocalDateTime plannedStartDateT = operationOrder.getPlannedStartDateT();
+    if (plannedStartDateT.isBefore(todayDateT)) {
 
       int qtyScale = appBaseService.getNbDecimalDigitForQty();
       throw new AxelorException(
@@ -95,7 +102,32 @@ public abstract class OperationOrderPlanningCommonService {
               manufOrder.getQty() != null
                   ? manufOrder.getQty().setScale(qtyScale, RoundingMode.HALF_UP)
                   : null,
-              manufOrder.getProduct().getFullName()));
+              manufOrder.getProduct().getFullName()),
+          DateTimeFormatter.ISO_DATE_TIME.format(plannedStartDateT));
     }
+  }
+
+  protected void planWithStrategyAsapOutSourced(OperationOrder operationOrder) {
+    LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
+    LocalDateTime lastOperationDate = operationOrderService.getLastOperationDate(operationOrder);
+    LocalDateTime maxDate = LocalDateTimeHelper.max(plannedStartDate, lastOperationDate);
+
+    operationOrder.setPlannedStartDateT(maxDate);
+    operationOrder.setPlannedDuration(
+        operationOrderOutsourceService.getOutsourcingDuration(operationOrder));
+    operationOrder.setPlannedEndDateT(
+        operationOrder.getPlannedStartDateT().plusSeconds(operationOrder.getPlannedDuration()));
+  }
+
+  protected void planWithStrategyAtTheLatestOutSourced(OperationOrder operationOrder) {
+    LocalDateTime plannedEndDate = operationOrder.getPlannedEndDateT();
+    LocalDateTime nextOperationDate = operationOrderService.getNextOperationDate(operationOrder);
+    LocalDateTime minDate = LocalDateTimeHelper.min(plannedEndDate, nextOperationDate);
+
+    operationOrder.setPlannedEndDateT(minDate);
+    operationOrder.setPlannedDuration(
+        operationOrderOutsourceService.getOutsourcingDuration(operationOrder));
+    operationOrder.setPlannedStartDateT(
+        operationOrder.getPlannedEndDateT().minusSeconds(operationOrder.getPlannedDuration()));
   }
 }

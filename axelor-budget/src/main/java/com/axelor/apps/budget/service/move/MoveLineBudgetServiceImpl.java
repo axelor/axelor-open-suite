@@ -116,7 +116,7 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
   }
 
   @Override
-  public String getBudgetDomain(Move move, MoveLine moveLine) {
+  public String getBudgetDomain(Move move, MoveLine moveLine) throws AxelorException {
     Company company = null;
     LocalDate date = null;
     if (move != null) {
@@ -135,7 +135,7 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
             .orElse(null);
 
     return budgetDistributionService.getBudgetDomain(
-        company, date, technicalTypeSelect, new HashSet<>());
+        company, date, technicalTypeSelect, moveLine.getAccount(), new HashSet<>());
   }
 
   @Override
@@ -181,7 +181,7 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
                 moveLine.getCredit().add(moveLine.getDebit()),
                 move.getDate());
         budgetDistributionService.linkBudgetDistributionWithParent(budgetDistribution, moveLine);
-        moveLine.setBudgetDistributionSumAmount(moveLine.getCredit().add(moveLine.getDebit()));
+        moveLine.setBudgetRemainingAmountToAllocate(BigDecimal.ZERO);
       }
     }
   }

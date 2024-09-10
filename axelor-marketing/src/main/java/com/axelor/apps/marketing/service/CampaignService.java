@@ -26,23 +26,23 @@ import com.axelor.meta.db.MetaFile;
 
 public interface CampaignService {
 
-  public MetaFile sendEmail(Campaign campaign);
+  MetaFile sendEmail(Campaign campaign);
 
-  public MetaFile sendReminderEmail(Campaign campaign);
+  MetaFile sendReminderEmail(Campaign campaign);
 
-  public void generateEvents(Campaign campaign);
+  void generateEvents(Campaign campaign);
 
-  public void generateTargets(Campaign campaign) throws AxelorException;
+  void generateTargets(Campaign campaign) throws AxelorException;
 
-  public void inviteAllTargets(Campaign campaign);
+  void inviteAllTargets(Campaign campaign);
 
-  public void inviteSelectedTargets(Campaign campaign, Campaign campaignContext);
+  void inviteSelectedTargets(Campaign campaign, Campaign campaignContext);
 
-  public void addParticipatingTargets(Campaign campaign, Campaign campaignContext);
+  void addParticipatingTargets(Campaign campaign, Campaign campaignContext);
 
-  public void addNotParticipatingTargets(Campaign campaign, Campaign campaignContext);
+  void addNotParticipatingTargets(Campaign campaign, Campaign campaignContext);
 
-  public void markLeadPresent(Campaign campaign, Lead lead);
+  void markLeadPresent(Campaign campaign, Lead lead);
 
-  public void markPartnerPresent(Campaign campaign, Partner partner);
+  void markPartnerPresent(Campaign campaign, Partner partner);
 }

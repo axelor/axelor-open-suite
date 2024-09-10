@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-production-config-form" title="App manufacturing"
     model="com.axelor.studio.db.AppProduction" canDelete="false" canNew="false" width="large"
@@ -23,6 +23,7 @@
         <panel name="billOfMaterialPanel" title="Bill of materials">
           <field name="manageBillOfMaterialVersion" widget="boolean-switch"/>
           <field name="manageResidualProductOnBom" widget="boolean-switch"/>
+          <field name="allowPersonalizedBOM" widget="boolean-switch"/>
           <field name="nbDecimalDigitForBomQty"/>
         </panel>
         <panel name="prodProcessPanel" title="Production process">
@@ -38,6 +39,7 @@
           <field name="autoGenerateTimesheetLine" if-module="axelor-business-production"
             widget="boolean-switch"
             showIf="manageBusinessProduction &amp;&amp; enableTimesheetOnManufOrder"/>
+          <field name="allowPersonalizedProdProcess" widget="boolean-switch"/>
           <field name="operationContinuitySelect"/>
         </panel>
 

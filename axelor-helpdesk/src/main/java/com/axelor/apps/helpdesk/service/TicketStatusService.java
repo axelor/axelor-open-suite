@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.helpdesk.service;
 
+import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.TicketStatus;
 
 public interface TicketStatusService {
@@ -29,4 +30,12 @@ public interface TicketStatusService {
   TicketStatus findResolvedStatus();
 
   TicketStatus findClosedStatus();
+
+  boolean isNewTicket(Ticket ticket);
+
+  boolean isInProgressTicket(Ticket ticket);
+
+  boolean isResolvedTicket(Ticket ticket);
+
+  boolean isClosedTicket(Ticket ticket);
 }

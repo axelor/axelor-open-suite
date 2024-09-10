@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid model="com.axelor.apps.intervention.db.Question" title="Question" name="question-grid">
+    <field name="title"/>
+    <field name="indication"/>
+    <field name="answerType" grid-view="answer-type-grid" form-view="answer-type-form"/>
+  </grid>
+
+  <form model="com.axelor.apps.intervention.db.Question" title="Question" name="question-form"
+    width="large">
+    <panel name="mainPanel">
+      <field name="title" widget="string"/>
+      <field name="indication" widget="string"/>
+      <field name="answerType" grid-view="answer-type-grid" form-view="answer-type-form"/>
+    </panel>
+    <panel-dashlet action="action-question-view-linked-ranges" title="Linked ranges"
+      canEdit="true"/>
+    <panel-dashlet action="action-question-view-linked-intervention-types"
+      title="Linked intervention types" canEdit="true"/>
+    <panel-mail name="mailsPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-view name="action-question-view-linked-ranges" title="Linked ranges"
+    model="com.axelor.apps.intervention.db.Range">
+    <view type="grid" name="range-grid"/>
+    <view type="form" name="range-form"/>
+    <domain>:questionId in (SELECT rq.question.id FROM RangeQuestion rq WHERE rq.rangeVal = self)</domain>
+    <context name="questionId" expr="eval: id ?: 0"/>
+  </action-view>
+
+  <action-view name="action-question-view-linked-intervention-types"
+    title="Linked intervention types" model="com.axelor.apps.intervention.db.InterventionType">
+    <view type="grid" name="intervention-type-grid"/>
+    <view type="form" name="intervention-type-form"/>
+    <domain>
+      :questionId in (SELECT rq.question.id FROM RangeQuestion rq WHERE rq.rangeVal.id in
+      self.advancedStartupMonitoringRange.id)
+      OR :questionId in (SELECT rq.question.id FROM
+      RangeQuestion rq WHERE rq.rangeVal.id in self.headerRangeList.rangeVal.id)
+      OR :questionId in
+      (SELECT
+      rq.question.id FROM RangeQuestion rq WHERE rq.rangeVal.id in
+      self.equipmentRangeList.rangeVal.id)
+      OR
+      :questionId in (SELECT rq.question.id FROM RangeQuestion
+      rq WHERE rq.rangeVal.id in
+      self.footerRangeList.rangeVal.id)
+    </domain>
+    <context name="questionId" expr="eval: id ?: 0"/>
+  </action-view>
+
+</object-views>

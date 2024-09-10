@@ -20,37 +20,25 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdProcessLine;
-import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.common.ObjectUtils;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -60,6 +48,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
     implements ManufOrderCreatePurchaseOrderService {
 
   protected PurchaseOrderService purchaseOrderService;
+  protected PurchaseOrderCreateService purchaseOrderCreateService;
   protected StockConfigProductionService stockConfigProductionService;
   protected ManufOrderRepository manufOrderRepository;
   protected OperationOrderOutsourceService operationOrderOutsourceService;
@@ -70,6 +59,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
   @Inject
   public ManufOrderCreatePurchaseOrderServiceImpl(
       PurchaseOrderService purchaseOrderService,
+      PurchaseOrderCreateService purchaseOrderCreateService,
       StockConfigProductionService stockConfigProductionService,
       ManufOrderRepository manufOrderRepository,
       OperationOrderOutsourceService operationOrderOutsourceService,
@@ -77,6 +67,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
       AppBaseService appBaseService,
       AppProductionService appProductionService) {
     this.purchaseOrderService = purchaseOrderService;
+    this.purchaseOrderCreateService = purchaseOrderCreateService;
     this.stockConfigProductionService = stockConfigProductionService;
     this.manufOrderRepository = manufOrderRepository;
     this.operationOrderOutsourceService = operationOrderOutsourceService;
@@ -94,7 +85,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
     List<PurchaseOrder> generatedPurchaseOrders = new ArrayList<>();
     for (Partner outsourcePartner : outsourcePartners) {
       PurchaseOrder purchaseOrder =
-          purchaseOrderService.createPurchaseOrder(
+          purchaseOrderCreateService.createPurchaseOrder(
               null,
               manufOrder.getCompany(),
               null,
@@ -125,26 +116,40 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
     }
 
     for (PurchaseOrder purchaseOrder : generatedPurchaseOrders) {
-      List<OperationOrder> operationOrderGeneratePurchaseOrderList =
-          manufOrder.getOperationOrderList().stream()
-              .filter(
-                  oo ->
-                      oo.getProdProcessLine().getUseLineInGeneratedPurchaseOrder()
-                          && purchaseOrder
-                              .getSupplierPartner()
-                              .equals(
-                                  operationOrderOutsourceService
-                                      .getOutsourcePartner(oo)
-                                      .orElse(null)))
-              .collect(Collectors.toList());
 
-      for (OperationOrder operationOrder : operationOrderGeneratePurchaseOrderList) {
-        this.createPurchaseOrderLineProduction(operationOrder, purchaseOrder);
+      // When manufOrder is fully outsourced
+      if (manufOrder.getOutsourcing()) {
+        operationOrderOutsourceService.createPurchaseOrderLines(
+            manufOrder,
+            manufOrder.getProdProcess().getGeneratedPurchaseOrderProductSet(),
+            purchaseOrder);
+      } else {
+        List<OperationOrder> operationOrderGeneratePurchaseOrderList =
+            getOperationOrdersForGeneratedPOs(manufOrder, purchaseOrder);
+
+        for (OperationOrder operationOrder : operationOrderGeneratePurchaseOrderList) {
+          operationOrderOutsourceService.createPurchaseOrderLines(operationOrder, purchaseOrder);
+        }
       }
+
       purchaseOrderService.computePurchaseOrder(purchaseOrder);
     }
 
     manufOrderRepository.save(manufOrder);
+  }
+
+  protected List<OperationOrder> getOperationOrdersForGeneratedPOs(
+      ManufOrder manufOrder, PurchaseOrder purchaseOrder) {
+
+    return manufOrder.getOperationOrderList().stream()
+        .filter(
+            oo ->
+                oo.getProdProcessLine().getGeneratePurchaseOrderOnMoPlanning()
+                    && purchaseOrder
+                        .getSupplierPartner()
+                        .equals(
+                            operationOrderOutsourceService.getOutsourcePartner(oo).orElse(null)))
+        .collect(Collectors.toList());
   }
 
   protected PurchaseOrder setPurchaseOrderSupplierDetails(PurchaseOrder purchaseOrder)
@@ -201,72 +206,6 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
     }
 
     return purchaseOrder;
-  }
-
-  protected void createPurchaseOrderLineProduction(
-      OperationOrder operationOrder, PurchaseOrder purchaseOrder) throws AxelorException {
-
-    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
-    PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
-    PurchaseOrderLine purchaseOrderLine;
-    BigDecimal quantity;
-    Unit startUnit = appBaseService.getAppBase().getUnitHours();
-
-    if (ObjectUtils.isEmpty(startUnit)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_HOURS_UNIT));
-    }
-
-    Product product = getHrProduct(operationOrder);
-    if (product != null) {
-      Unit purchaseUnit = product.getPurchasesUnit();
-      Unit stockUnit = product.getUnit();
-
-      Unit endUnit = (purchaseUnit != null) ? purchaseUnit : stockUnit;
-
-      if (endUnit == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_END_UNIT));
-      }
-      final int COMPUTATION_SCALE = 20;
-      quantity =
-          unitConversionService.convert(
-              startUnit,
-              endUnit,
-              new BigDecimal(operationOrder.getWorkCenter().getHrDurationPerCycle())
-                  .divide(BigDecimal.valueOf(3600), COMPUTATION_SCALE, RoundingMode.HALF_UP),
-              appBaseService.getNbDecimalDigitForQty(),
-              product);
-      // have to force the scale as the conversion service will not round if the start unit and the
-      // end unit are equals.
-      quantity = quantity.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
-
-      purchaseOrderLine =
-          purchaseOrderLineService.createPurchaseOrderLine(
-              purchaseOrder, product, null, null, quantity, purchaseUnit);
-
-      purchaseOrder.getPurchaseOrderLineList().add(purchaseOrderLine);
-    }
-  }
-
-  protected Product getHrProduct(OperationOrder operationOrder) {
-    boolean isCostPerProcessLine = appProductionService.getIsCostPerProcessLine();
-
-    if (isCostPerProcessLine) {
-      ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
-      if (prodProcessLine != null && prodProcessLine.getHrProduct() != null) {
-        return prodProcessLine.getHrProduct();
-      }
-    } else {
-      WorkCenter workCenter = operationOrder.getWorkCenter();
-      if (workCenter != null && workCenter.getHrProduct() != null) {
-        return workCenter.getHrProduct();
-      }
-    }
-
-    return null;
   }
 
   protected List<Partner> getOutsourcePartnersForGenerationPO(ManufOrder manufOrder) {

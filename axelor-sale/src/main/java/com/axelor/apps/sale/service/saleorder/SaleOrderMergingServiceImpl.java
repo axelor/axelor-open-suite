@@ -26,14 +26,20 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.axelor.utils.helpers.MapHelper;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,6 +47,17 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
+
+  @FunctionalInterface
+  protected interface MergingMethod {
+    SaleOrder createOrMergeSaleOrders(
+        List<SaleOrder> saleOrdersToMerge, SaleOrderMergingResult result) throws AxelorException;
+  }
+
+  @FunctionalInterface
+  protected interface SaleOrderStringGetter {
+    String getString(SaleOrder saleOrder);
+  }
 
   protected static class CommonFieldsImpl implements CommonFields {
 
@@ -262,12 +279,22 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
   protected SaleOrderCreateService saleOrderCreateService;
 
   protected SaleOrderRepository saleOrderRepository;
+  protected SaleOrderComputeService saleOrderComputeService;
+  protected SaleOrderLineRepository saleOrderLineRepository;
+  protected DMSService dmsService;
 
   @Inject
   public SaleOrderMergingServiceImpl(
-      SaleOrderCreateService saleOrderCreateService, SaleOrderRepository saleOrderRepository) {
+      SaleOrderCreateService saleOrderCreateService,
+      SaleOrderRepository saleOrderRepository,
+      SaleOrderComputeService saleOrderComputeService,
+      SaleOrderLineRepository saleOrderLineRepository,
+      DMSService dmsService) {
     this.saleOrderCreateService = saleOrderCreateService;
     this.saleOrderRepository = saleOrderRepository;
+    this.saleOrderComputeService = saleOrderComputeService;
+    this.saleOrderLineRepository = saleOrderLineRepository;
+    this.dmsService = dmsService;
   }
 
   @Override
@@ -288,6 +315,62 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
   @Override
   public SaleOrderMergingResult mergeSaleOrders(List<SaleOrder> saleOrdersToMerge)
       throws AxelorException {
+    return mergeSaleOrders(saleOrdersToMerge, this::mergeSaleOrders);
+  }
+
+  @Override
+  public SaleOrderMergingResult mergeSaleOrdersWithContext(
+      List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException {
+    SaleOrderMergingResult saleOrderMergeResult =
+        mergeSaleOrdersWithContext(saleOrdersToMerge, context, this::mergeSaleOrders);
+    setDummySaleOrderSeq(saleOrderMergeResult, saleOrdersToMerge);
+    return saleOrderMergeResult;
+  }
+
+  @Override
+  public SaleOrderMergingResult simulateMergeSaleOrders(List<SaleOrder> saleOrdersToMerge)
+      throws AxelorException {
+    SaleOrderMergingResult saleOrderMergeResult =
+        mergeSaleOrders(saleOrdersToMerge, this::generateSaleOrder);
+    setDummySaleOrderSeq(saleOrderMergeResult, saleOrdersToMerge);
+    return saleOrderMergeResult;
+  }
+
+  /**
+   * Since the process is done without updating the database, the sale order is not saved and does
+   * not have a sequence. So this method will compute a "dummy sequence". This method cannot be
+   * called when merging sale orders in database.
+   */
+  protected void setDummySaleOrderSeq(
+      SaleOrderMergingResult result, List<SaleOrder> saleOrderList) {
+    result
+        .getSaleOrder()
+        .setSaleOrderSeq(
+            StringHelper.cutTooLongString(
+                saleOrderList.stream()
+                    .map(SaleOrder::getSaleOrderSeq)
+                    .filter(s -> s != null && !s.isEmpty())
+                    .collect(Collectors.joining("-"))));
+  }
+
+  @Override
+  public SaleOrderMergingResult simulateMergeSaleOrdersWithContext(
+      List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException {
+    return mergeSaleOrdersWithContext(saleOrdersToMerge, context, this::generateSaleOrder);
+  }
+
+  /**
+   * Generic method to merge a sale order that can update the database or not.
+   *
+   * @param saleOrdersToMerge list of sales order to merge
+   * @param mergeMethod can be {@link this#mergeSaleOrders( List, SaleOrderMergingResult)} which
+   *     will update the database or {@link this#generateSaleOrder( List, SaleOrderMergingResult)}
+   *     which will not update the database, only create the merged sale order in memory.
+   * @return a sale order merging result object
+   * @throws AxelorException
+   */
+  protected SaleOrderMergingResult mergeSaleOrders(
+      List<SaleOrder> saleOrdersToMerge, MergingMethod mergeMethod) throws AxelorException {
     Objects.requireNonNull(saleOrdersToMerge);
     SaleOrderMergingResult result = controlSaleOrdersToMerge(saleOrdersToMerge);
 
@@ -295,19 +378,31 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
       result.needConfirmation();
       return result;
     }
-    result.setSaleOrder(mergeSaleOrders(saleOrdersToMerge, result));
+    result.setSaleOrder(mergeMethod.createOrMergeSaleOrders(saleOrdersToMerge, result));
     return result;
   }
 
-  @Override
-  public SaleOrderMergingResult mergeSaleOrdersWithContext(
-      List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException {
+  /**
+   * Generic method to merge a sale order that can update the database or not.
+   *
+   * @param saleOrdersToMerge list of sales order to merge
+   * @param context a context with the parameters the user chose for conflicting fields (example:
+   *     contactPartner)
+   * @param mergeMethod can be {@link this#mergeSaleOrders( List, SaleOrderMergingResult)} which
+   *     will update the database or {@link this#generateSaleOrder( List, SaleOrderMergingResult)}
+   *     which will not update the database, only create the merged sale order in memory.
+   * @return a sale order merging result object
+   * @throws AxelorException
+   */
+  protected SaleOrderMergingResult mergeSaleOrdersWithContext(
+      List<SaleOrder> saleOrdersToMerge, Context context, MergingMethod mergeMethod)
+      throws AxelorException {
     Objects.requireNonNull(saleOrdersToMerge);
     Objects.requireNonNull(context);
 
     SaleOrderMergingResult result = controlSaleOrdersToMerge(saleOrdersToMerge);
     updateResultWithContext(result, context);
-    result.setSaleOrder(mergeSaleOrders(saleOrdersToMerge, result));
+    result.setSaleOrder(mergeMethod.createOrMergeSaleOrders(saleOrdersToMerge, result));
     return result;
   }
 
@@ -339,10 +434,7 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     fillCommonFields(firstSaleOrder, result);
     saleOrdersToMerge.stream()
         .skip(1)
-        .forEach(
-            saleOrder -> {
-              updateDiffsCommonFields(saleOrder, result);
-            });
+        .forEach(saleOrder -> updateDiffsCommonFields(saleOrder, result));
 
     StringJoiner fieldErrors = new StringJoiner("<BR/>");
     checkErrors(fieldErrors, result);
@@ -359,18 +451,80 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
         || getChecks(result).isExistTeamDiff();
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected SaleOrder mergeSaleOrders(
       List<SaleOrder> saleOrdersToMerge, SaleOrderMergingResult result) throws AxelorException {
-    return saleOrderCreateService.mergeSaleOrders(
-        saleOrdersToMerge,
-        getCommonFields(result).getCommonCurrency(),
-        getCommonFields(result).getCommonClientPartner(),
-        getCommonFields(result).getCommonCompany(),
-        getCommonFields(result).getCommonContactPartner(),
-        getCommonFields(result).getCommonPriceList(),
-        getCommonFields(result).getCommonTeam(),
-        getCommonFields(result).getCommonTaxNumber(),
-        getCommonFields(result).getCommonFiscalPosition());
+
+    SaleOrder saleOrderMerged = generateSaleOrder(saleOrdersToMerge, result);
+    return updateDatabase(saleOrderMerged, saleOrdersToMerge);
+  }
+
+  protected SaleOrder generateSaleOrder(
+      List<SaleOrder> saleOrdersToMerge, SaleOrderMergingResult result) throws AxelorException {
+    String internalNote =
+        computeConcatenatedString(saleOrdersToMerge, SaleOrder::getInternalNote, "<br>");
+    String numSeq = computeConcatenatedString(saleOrdersToMerge, SaleOrder::getSaleOrderSeq, "-");
+    String externalRef =
+        computeConcatenatedString(saleOrdersToMerge, SaleOrder::getExternalReference, "|");
+
+    SaleOrder saleOrderMerged =
+        saleOrderCreateService.createSaleOrder(
+            AuthUtils.getUser(),
+            getCommonFields(result).getCommonCompany(),
+            getCommonFields(result).getCommonContactPartner(),
+            getCommonFields(result).getCommonCurrency(),
+            null,
+            numSeq,
+            externalRef,
+            getCommonFields(result).getCommonPriceList(),
+            getCommonFields(result).getCommonClientPartner(),
+            getCommonFields(result).getCommonTeam(),
+            getCommonFields(result).getCommonTaxNumber(),
+            internalNote,
+            getCommonFields(result).getCommonFiscalPosition());
+
+    this.attachToNewSaleOrder(saleOrdersToMerge, saleOrderMerged);
+    saleOrderComputeService.computeSaleOrder(saleOrderMerged);
+    return saleOrderMerged;
+  }
+
+  protected String computeConcatenatedString(
+      List<SaleOrder> saleOrderList, SaleOrderStringGetter getter, String joiner) {
+    return saleOrderList.stream()
+        .map(getter::getString)
+        .filter(s -> s != null && !s.isEmpty())
+        .collect(Collectors.joining(joiner));
+  }
+
+  protected SaleOrder updateDatabase(SaleOrder saleOrderMerged, List<SaleOrder> saleOrdersToMerge) {
+
+    saleOrderRepository.save(saleOrderMerged);
+
+    dmsService.addLinkedDMSFiles(saleOrdersToMerge, saleOrderMerged);
+
+    this.removeOldSaleOrders(saleOrdersToMerge);
+
+    return saleOrderMerged;
+  }
+
+  /** Attach all sale order lines to new sale order */
+  protected void attachToNewSaleOrder(List<SaleOrder> saleOrderList, SaleOrder saleOrderMerged) {
+    for (SaleOrder saleOrder : saleOrderList) {
+      int countLine = 1;
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        SaleOrderLine copiedSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, false);
+        copiedSaleOrderLine.setSequence(countLine * 10);
+        saleOrderMerged.addSaleOrderLineListItem(copiedSaleOrderLine);
+        countLine++;
+      }
+    }
+  }
+
+  /** Remove old sale orders after merge */
+  protected void removeOldSaleOrders(List<SaleOrder> saleOrderList) {
+    for (SaleOrder saleOrder : saleOrderList) {
+      saleOrderRepository.remove(saleOrder);
+    }
   }
 
   protected void checkErrors(StringJoiner fieldErrors, SaleOrderMergingResult result) {

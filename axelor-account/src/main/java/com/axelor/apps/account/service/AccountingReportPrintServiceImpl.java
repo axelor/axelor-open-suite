@@ -98,7 +98,7 @@ public class AccountingReportPrintServiceImpl implements AccountingReportPrintSe
     }
     return ReportFactory.createReport(file, name + "-${date}")
         .addParam("AccountingReportId", accountingReport.getId())
-        .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addParam("__locale", ReportSettings.getPrintingLocale(null))
         .addParam(
             "Timezone",
             accountingReport.getCompany() != null

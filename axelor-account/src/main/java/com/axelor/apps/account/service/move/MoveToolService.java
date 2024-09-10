@@ -208,5 +208,21 @@ public interface MoveToolService {
 
   boolean isMultiCurrency(Move move);
 
+  @CallMethod
+  List<Integer> getMoveStatusSelectWithoutAccounted(
+      String moveStatusSelect, Set<Company> companySet);
+
+  List<Integer> getMoveStatusSelect(String moveStatusSelect, Set<Company> companySet);
+
+  @CallMethod
+  List<Integer> getMoveStatusSelectWithoutAccounted(String moveStatusSelect, Company company);
+
   List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company);
+
+  List<Integer> getMoveStatusSelection(Company company, Journal journal) throws AxelorException;
+
+  Integer computeFunctionalOriginSelect(Journal journal, Integer massEntryStatus);
+
+  List<MoveLine> getRefundAdvancePaymentMoveLines(InvoicePayment invoicePayment)
+      throws AxelorException;
 }

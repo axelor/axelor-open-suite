@@ -33,7 +33,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -41,7 +41,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -63,34 +62,31 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
-  protected CurrencyService currencyService;
   protected AppBaseService appBaseService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceService invoiceService;
-  protected InvoiceVisibilityService invoiceVisibilityService;
+  protected PfpService pfpService;
 
   @Inject
   public InvoicePaymentCreateServiceImpl(
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
-      CurrencyService currencyService,
       AppBaseService appBaseService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
       InvoiceService invoiceService,
-      InvoiceVisibilityService invoiceVisibilityService) {
+      PfpService pfpService) {
 
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
-    this.currencyService = currencyService;
     this.appBaseService = appBaseService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceService = invoiceService;
-    this.invoiceVisibilityService = invoiceVisibilityService;
+    this.pfpService = pfpService;
   }
 
   /**
@@ -532,7 +528,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
       }
 
-      if (invoiceVisibilityService.getPfpCondition(invoice)
+      if (pfpService.getPfpCondition(invoice)
           && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -543,5 +539,34 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     }
 
     return invoiceToPay;
+  }
+
+  @Override
+  public InvoiceTerm updateInvoiceTermsAmounts(
+      InvoiceTerm invoiceTerm,
+      BigDecimal amount,
+      Reconcile reconcile,
+      Move move,
+      PaymentSession paymentSession,
+      boolean isRefund)
+      throws AxelorException {
+
+    if (invoiceTerm.getInvoice() != null) {
+      InvoicePayment invoicePayment =
+          this.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
+      invoicePayment.setReconcile(reconcile);
+
+      List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
+
+      invoiceTermList.add(invoiceTerm);
+
+      invoiceTermService.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
+    } else {
+      invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
+    }
+
+    invoiceTerm = invoiceTermService.updateInvoiceTermsAmountsSessionPart(invoiceTerm, isRefund);
+
+    return invoiceTerm;
   }
 }

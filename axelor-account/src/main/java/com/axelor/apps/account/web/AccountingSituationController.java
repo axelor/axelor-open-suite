@@ -18,15 +18,12 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.DebtRecovery;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationGroupService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -38,63 +35,26 @@ import com.google.inject.Singleton;
 @Singleton
 public class AccountingSituationController {
 
-  /**
-   * return the domain of the field companyInBankDetails in the view.
-   *
-   * @see AccountingSituationService#createDomainForBankDetails(AccountingSituation, boolean)
-   * @param request
-   * @param response
-   */
+  /** return the domain of the field companyInBankDetails in the view. */
   public void createInBankDetailsDomain(ActionRequest request, ActionResponse response) {
     AccountingSituation accountingSituation =
         request.getContext().asType(AccountingSituation.class);
-    String domain =
-        Beans.get(AccountingSituationService.class)
-            .createDomainForBankDetails(accountingSituation, true);
-    if (!domain.equals("")) {
-      response.setAttr("companyInBankDetails", "domain", domain);
-    } else {
-      response.setAttr("companyInBankDetails", "domain", "self.id in (0)");
-    }
+    Partner partner = getPartner(request, accountingSituation);
+
+    response.setAttrs(
+        Beans.get(AccountingSituationGroupService.class)
+            .getBankDetailsOnSelectAttrsMap(accountingSituation, partner, true));
   }
 
-  /**
-   * return the domain of the field companyOutBankDetails in the view.
-   *
-   * @see AccountingSituationService#createDomainForBankDetails(AccountingSituation, boolean)
-   * @param request
-   * @param response
-   */
+  /** return the domain of the field companyOutBankDetails in the view. */
   public void createOutBankDetailsDomain(ActionRequest request, ActionResponse response) {
     AccountingSituation accountingSituation =
         request.getContext().asType(AccountingSituation.class);
-    String domain =
-        Beans.get(AccountingSituationService.class)
-            .createDomainForBankDetails(accountingSituation, false);
-    if (!domain.equals("")) {
-      response.setAttr("companyOutBankDetails", "domain", domain);
-    } else {
-      response.setAttr("companyOutBankDetails", "domain", "self.id in (0)");
-    }
-  }
+    Partner partner = getPartner(request, accountingSituation);
 
-  /**
-   * set default value for automatic invoice printing
-   *
-   * @param request
-   * @param response
-   * @throws AxelorException
-   */
-  public void setDefaultMail(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    AccountingSituation accountingSituation =
-        request.getContext().asType(AccountingSituation.class);
-    Company company = accountingSituation.getCompany();
-    if (company != null) {
-      AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
-      response.setValue("invoiceAutomaticMail", accountConfig.getInvoiceAutomaticMail());
-      response.setValue("invoiceMessageTemplate", accountConfig.getInvoiceMessageTemplate());
-    }
+    response.setAttrs(
+        Beans.get(AccountingSituationGroupService.class)
+            .getBankDetailsOnSelectAttrsMap(accountingSituation, partner, false));
   }
 
   /**
@@ -121,15 +81,65 @@ public class AccountingSituationController {
     }
   }
 
-  public void setHoldBackAccounts(ActionRequest request, ActionResponse response) {
-    try {
-      AccountingSituation accountingSituation =
-          request.getContext().asType(AccountingSituation.class);
-      Partner partner = ContextHelper.getContextParent(request.getContext(), Partner.class, 1);
-      Beans.get(AccountingSituationService.class).setHoldBackAccounts(accountingSituation, partner);
-      response.setValues(accountingSituation);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  /** return the domain of the field company in the view. */
+  @ErrorException
+  public void setCompanyDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AccountingSituation accountingSituation =
+        request.getContext().asType(AccountingSituation.class);
+    Partner partner = getPartner(request, accountingSituation);
+
+    response.setAttrs(
+        Beans.get(AccountingSituationGroupService.class)
+            .getCompanyOnSelectAttrsMap(accountingSituation, partner));
+  }
+
+  @ErrorException
+  public void onNew(ActionRequest request, ActionResponse response) throws AxelorException {
+    AccountingSituation accountingSituation =
+        request.getContext().asType(AccountingSituation.class);
+    Partner partner = getPartner(request, accountingSituation);
+    AccountingSituationGroupService accountingSituationGroupService =
+        Beans.get(AccountingSituationGroupService.class);
+
+    response.setValues(
+        accountingSituationGroupService.getOnNewValuesMap(accountingSituation, partner));
+    response.setAttrs(
+        accountingSituationGroupService.getOnNewAttrsMap(accountingSituation, partner));
+  }
+
+  @ErrorException
+  public void onLoad(ActionRequest request, ActionResponse response) throws AxelorException {
+    AccountingSituation accountingSituation =
+        request.getContext().asType(AccountingSituation.class);
+    Partner partner = getPartner(request, accountingSituation);
+    AccountingSituationGroupService accountingSituationGroupService =
+        Beans.get(AccountingSituationGroupService.class);
+
+    response.setAttrs(
+        accountingSituationGroupService.getOnNewAttrsMap(accountingSituation, partner));
+  }
+
+  @ErrorException
+  public void companyOnChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AccountingSituation accountingSituation =
+        request.getContext().asType(AccountingSituation.class);
+    Partner partner = getPartner(request, accountingSituation);
+    AccountingSituationGroupService accountingSituationGroupService =
+        Beans.get(AccountingSituationGroupService.class);
+
+    response.setValues(
+        accountingSituationGroupService.getCompanyOnChangeValuesMap(accountingSituation, partner));
+    response.setAttrs(
+        accountingSituationGroupService.getCompanyOnChangeAttrsMap(accountingSituation, partner));
+  }
+
+  protected Partner getPartner(ActionRequest request, AccountingSituation accountingSituation) {
+    if (accountingSituation != null && accountingSituation.getPartner() != null) {
+      return accountingSituation.getPartner();
     }
+
+    return ContextHelper.getContextParent(request.getContext(), Partner.class, 1);
   }
 }

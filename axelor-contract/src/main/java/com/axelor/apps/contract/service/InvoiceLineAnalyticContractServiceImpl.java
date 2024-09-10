@@ -29,7 +29,6 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
-import com.axelor.utils.helpers.ListHelper;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -42,7 +41,6 @@ public class InvoiceLineAnalyticContractServiceImpl
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
-      ListHelper listHelper,
       AppAccountService appAccountService,
       AnalyticLineModelService analyticLineModelService,
       AnalyticMoveLineRepository analyticMoveLineRepository,
@@ -52,7 +50,6 @@ public class InvoiceLineAnalyticContractServiceImpl
         analyticMoveLineService,
         analyticToolService,
         accountConfigService,
-        listHelper,
         appAccountService,
         analyticLineModelService,
         analyticMoveLineRepository,

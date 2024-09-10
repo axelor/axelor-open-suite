@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -121,10 +121,8 @@
   </selection>
 
   <selection name='inventory.export.format.select'>
-    <option value="pdf">PDF</option>
-    <option value="xlsx">XLS</option>
+    <option value="printingTemplate">Printing template</option>
     <option value="csv">CSV</option>
-    <option value="ods">ODS</option>
   </selection>
 
   <selection name="stock.correction.status.select">
@@ -159,6 +157,13 @@
     <option value="cancelation">Cancelation</option>
     <option value="updateStockLocationFromProduct">Update stock location from product</option>
   </selection>
+
+  <selection name="stock.tracking.number.origin.move.type.select">
+    <option value="1">Manual</option>
+    <option value="2">Inventory</option>
+  </selection>
+
+
 
   <selection name="message.related.to.select" id="stockRule.message.related.to.select">
     <option value="com.axelor.apps.stock.db.StockRules">Stock Rules</option>

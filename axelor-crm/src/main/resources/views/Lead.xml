@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <kanban columnBy="leadStatus" model="com.axelor.apps.crm.db.Lead" sequenceBy="sequence"
     title="Leads" name="lead-kanban" draggable="true" limit="10"
@@ -23,8 +23,7 @@
     <hilite color="success" if="leadScoringSelect == 5.00"/>
     <template> <![CDATA[
          <>
-         	<h4>{simpleFullName}</h4>
-         	{user && <Image src={$image('user', 'image')}></Image>}
+         	<strong>{simpleFullName}</strong>
          	<Box as="dl" mt={4}>
          		{enterpriseName &&
          			<Box>
@@ -45,6 +44,9 @@
          			</Box>
          		</Box>
          	</Box>
+         	<Box d="flex" justifyContent="flex-end">
+         		{user && <Image src={$image('user', 'image')} style={{ width: "1.5rem", height: "1.5rem", borderRadius: "100%" }}></Image>}
+         	</Box>
 	        <Box className="card-summary popover">
 	       		<Box as="p" m={2}>
 	        		{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ wordBreak: "break-all", maxWidth: 250 }}></Box>}
@@ -59,9 +61,6 @@
     orderBy="-contactDate">
     <!-- <toolbar> <button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> </toolbar> -->
     <menubar>
-      <menu name="leadReportsMenu" title="Reports" icon="fa-files-o">
-        <item name="printItem" title="Print" action="action-method-print-birt-list"/>
-      </menu>
       <menu name="leadToolsMenu" title="Tools" icon="fa-wrench">
         <item name="assignToMeItem" title="Assign to me"
           action="action-lead-method-assign-to-me-multiple"/>
@@ -94,11 +93,6 @@
     onLoad="action-group-crm-lead-onload" onNew="action-group-crm-lead-onnew"
     onSave="action-crm-lead-method-check-name,action-lead-method-show-duplicate-records-fullname">
 
-    <menubar>
-      <menu name="leadReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="save,action-method-print-birt"/>
-      </menu>
-    </menubar>
     <panel name="mainPanel">
       <panel name="statusPanel" colSpan="12">
         <field name="$isLost" type="boolean" hidden="true"/>

@@ -31,7 +31,6 @@ import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.axelor.utils.helpers.ListHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -48,7 +47,6 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
-      ListHelper listHelper,
       AppAccountService appAccountService,
       AnalyticLineModelService analyticLineModelService,
       AnalyticMoveLineRepository analyticMoveLineRepository,
@@ -58,7 +56,6 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
         analyticMoveLineService,
         analyticToolService,
         accountConfigService,
-        listHelper,
         appAccountService,
         currencyScaleService);
     this.analyticLineModelService = analyticLineModelService;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -44,16 +44,17 @@
       selection="move.line.reimbursement.status.select"/>
     <string name="passageReason" title="Doubtful Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
-    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
-    <many-to-one name="taxLineBeforeReverse" ref="com.axelor.apps.account.db.TaxLine"
-      title="Tax"/>
-    <many-to-one name="sourceTaxLine" ref="com.axelor.apps.account.db.TaxLine"
-      title="Source Tax"/>
+    <many-to-many name="taxLineSet" ref="com.axelor.apps.account.db.TaxLine"
+      title="Taxes"/>
+    <many-to-many name="taxLineBeforeReverseSet"
+      ref="com.axelor.apps.account.db.TaxLine" title="Taxes"/>
+    <many-to-many name="sourceTaxLineSet" ref="com.axelor.apps.account.db.TaxLine"
+      title="Source Taxes"/>
 
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
 
-    <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5"
+    <decimal name="currencyRate" title="Currency Rate" precision="20" scale="6"
       initParam="true"/>
     <decimal name="currencyAmount" title="Amount in move currency" initParam="true"
       scale="3" precision="20"/>
@@ -191,6 +192,7 @@
     <string name="fiscalYearCode"/>
     <date name="accountingDate"/>
     <boolean name="adjustingMove"/>
+    <boolean name="isNonDeductibleTax"/>
 
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 

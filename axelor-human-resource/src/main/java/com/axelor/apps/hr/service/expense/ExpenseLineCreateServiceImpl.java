@@ -34,6 +34,7 @@ import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
@@ -84,7 +85,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       String comments,
       Employee employee,
       Currency currency,
-      Boolean toInvoice)
+      Boolean toInvoice,
+      ProjectTask projectTask)
       throws AxelorException {
 
     if (expenseProduct == null) {
@@ -94,7 +96,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     }
 
     ExpenseLine expenseLine =
-        createBasicExpenseLine(project, employee, expenseDate, comments, currency, toInvoice);
+        createBasicExpenseLine(
+            project, employee, expenseDate, comments, currency, toInvoice, projectTask);
     expenseLineToolService.setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
     convertJustificationFileToPdf(expenseLine);
@@ -122,14 +125,16 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       Employee employee,
       Company company,
       Currency currency,
-      Boolean toInvoice)
+      Boolean toInvoice,
+      ProjectTask projectTask)
       throws AxelorException {
 
     checkKilometricLineRequiredValues(
         kilometricAllowParam, kilometricType, fromCity, toCity, company);
 
     ExpenseLine expenseLine =
-        createBasicExpenseLine(project, employee, expenseDate, comments, currency, toInvoice);
+        createBasicExpenseLine(
+            project, employee, expenseDate, comments, currency, toInvoice, projectTask);
     setKilometricExpenseLineInfo(
         kilometricAllowParam, kilometricType, fromCity, toCity, company, expenseLine);
 
@@ -193,7 +198,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       LocalDate expenseDate,
       String comments,
       Currency currency,
-      Boolean toInvoice)
+      Boolean toInvoice,
+      ProjectTask projectTask)
       throws AxelorException {
     ExpenseLine expenseLine = new ExpenseLine();
 
@@ -203,6 +209,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     expenseLine.setExpenseDate(expenseDate);
     expenseLine.setComments(comments);
     expenseLine.setTotalAmount(BigDecimal.ZERO);
+    expenseLine.setProjectTask(projectTask);
     return expenseLine;
   }
 

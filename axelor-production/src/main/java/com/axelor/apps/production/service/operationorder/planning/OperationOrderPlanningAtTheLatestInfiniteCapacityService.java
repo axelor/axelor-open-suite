@@ -27,6 +27,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.model.machine.MachineTimeSlot;
 import com.axelor.apps.production.service.machine.MachineService;
+import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.utils.helpers.date.DurationHelper;
@@ -49,6 +50,7 @@ public class OperationOrderPlanningAtTheLatestInfiniteCapacityService
       OperationOrderStockMoveService operationOrderStockMoveService,
       OperationOrderRepository operationOrderRepository,
       AppBaseService appBaseService,
+      OperationOrderOutsourceService operationOrderOutsourceService,
       OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService,
       WeeklyPlanningService weeklyPlanningService,
       MachineService machineService) {
@@ -56,7 +58,8 @@ public class OperationOrderPlanningAtTheLatestInfiniteCapacityService
         operationOrderService,
         operationOrderStockMoveService,
         operationOrderRepository,
-        appBaseService);
+        appBaseService,
+        operationOrderOutsourceService);
     this.operationOrderPlanningInfiniteCapacityService =
         operationOrderPlanningInfiniteCapacityService;
     this.weeklyPlanningService = weeklyPlanningService;
@@ -65,6 +68,15 @@ public class OperationOrderPlanningAtTheLatestInfiniteCapacityService
 
   @Override
   protected void planWithStrategy(OperationOrder operationOrder) throws AxelorException {
+    if (operationOrder.getOutsourcing()) {
+      planWithStrategyAtTheLatestOutSourced(operationOrder);
+    } else {
+      planWithStrategyNotOutSourced(operationOrder);
+    }
+  }
+
+  protected void planWithStrategyNotOutSourced(OperationOrder operationOrder)
+      throws AxelorException {
 
     Machine machine = operationOrder.getMachine();
     WeeklyPlanning weeklyPlanning = null;

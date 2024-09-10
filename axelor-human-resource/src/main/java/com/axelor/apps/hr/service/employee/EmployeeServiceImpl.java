@@ -19,10 +19,10 @@
 package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -50,17 +50,22 @@ import java.time.Period;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
   protected WeeklyPlanningService weeklyPlanningService;
   protected HRConfigService hrConfigService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public EmployeeServiceImpl(
-      WeeklyPlanningService weeklyPlanningService, HRConfigService hrConfigService) {
+      WeeklyPlanningService weeklyPlanningService,
+      HRConfigService hrConfigService,
+      AppBaseService appBaseService) {
     this.weeklyPlanningService = weeklyPlanningService;
     this.hrConfigService = hrConfigService;
+    this.appBaseService = appBaseService;
   }
 
   public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException {
@@ -71,16 +76,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE),
           employee.getName());
     }
-
-    Period period =
-        Period.between(
-            employee.getSeniorityDate(),
-            refDate == null
-                ? Beans.get(AppBaseService.class)
-                    .getTodayDate(
-                        employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
-                : refDate);
-    return period.getYears();
+    return getYears(employee.getUser(), employee.getSeniorityDate(), refDate);
   }
 
   public int getAge(Employee employee, LocalDate refDate) throws AxelorException {
@@ -91,32 +87,16 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_BIRTH_DATE),
           employee.getName());
     }
+    return getYears(employee.getUser(), employee.getBirthDate(), refDate);
+  }
 
-    if (employee.getUser() == null) {
-      throw new AxelorException(
-          employee,
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_USER),
-          employee.getName());
+  protected int getYears(User user, LocalDate fromDate, LocalDate toDate) {
+    if (toDate == null) {
+      toDate =
+          appBaseService.getTodayDate(
+              Optional.ofNullable(user).map(User::getActiveCompany).orElse(null));
     }
-
-    if (employee.getUser().getActiveCompany() == null) {
-      throw new AxelorException(
-          employee,
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_ACTIVE_COMPANY),
-          employee.getName());
-    }
-
-    Period period =
-        Period.between(
-            employee.getBirthDate(),
-            refDate == null
-                ? Beans.get(AppBaseService.class)
-                    .getTodayDate(
-                        employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
-                : refDate);
-    return period.getYears();
+    return Period.between(fromDate, toDate).getYears();
   }
 
   @Override
@@ -292,36 +272,37 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
   }
 
   @Override
-  public BirtTemplate getAnnualReportBirtTemplate(Employee employee) throws AxelorException {
+  public PrintingTemplate getAnnualReportPrintingTemplate(Employee employee)
+      throws AxelorException {
     Company company = getUser(employee).getActiveCompany();
-    BirtTemplate employeeAnnualReportBirtTemplate = null;
+    PrintingTemplate employeeAnnualReportPrintTemplate = null;
     if (ObjectUtils.notEmpty(company)) {
       HRConfig hrConfig = hrConfigService.getHRConfig(company);
-      employeeAnnualReportBirtTemplate = hrConfig.getEmployeeAnnualReportBirtTemplate();
+      employeeAnnualReportPrintTemplate = hrConfig.getEmployeeAnnualReportPrintTemplate();
     }
 
-    if (ObjectUtils.isEmpty(employeeAnnualReportBirtTemplate)) {
+    if (ObjectUtils.isEmpty(employeeAnnualReportPrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
-    return employeeAnnualReportBirtTemplate;
+    return employeeAnnualReportPrintTemplate;
   }
 
   @Override
-  public BirtTemplate getEmpPhoneBookBirtTemplate() throws AxelorException {
+  public PrintingTemplate getEmpPhoneBookPrintingTemplate() throws AxelorException {
     Company company = getUser().getActiveCompany();
-    BirtTemplate employeePhoneBookBirtTemplate = null;
+    PrintingTemplate employeePhoneBookPrintTemplate = null;
     if (ObjectUtils.notEmpty(company)) {
       HRConfig hrConfig = hrConfigService.getHRConfig(company);
-      employeePhoneBookBirtTemplate = hrConfig.getEmployeePhoneBookBirtTemplate();
+      employeePhoneBookPrintTemplate = hrConfig.getEmployeePhoneBookPrintTemplate();
     }
 
-    if (ObjectUtils.isEmpty(employeePhoneBookBirtTemplate)) {
+    if (ObjectUtils.isEmpty(employeePhoneBookPrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
-    return employeePhoneBookBirtTemplate;
+    return employeePhoneBookPrintTemplate;
   }
 }

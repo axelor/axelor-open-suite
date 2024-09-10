@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="abc-analysis-grid" model="com.axelor.apps.base.db.ABCAnalysis"
     title="ABC Analysis" orderBy="-abcAnalysisSeq">
@@ -21,13 +21,10 @@
         onClick="action-abc-analysis-method-set-sequence,save,action-abc-analysis-method-check-classes,action-abc-analysis-method-run-analysis"
         prompt="Are you sure you want to run the analysis ? It can take a long time."
         showIf="statusSelect != 2"/>
+      <button name="printBtn" title="Print"
+        onClick="save,action-abc-analysis-validate-abc-analysis-seq,action-abc-analysis-validate-status,action-method-print-template"
+        icon="fa-print"/>
     </toolbar>
-    <menubar>
-      <menu title="Reports" icon="fa-files-o" showTitle="true">
-        <item title="Print"
-          action="save,action-abc-analysis-validate-abc-analysis-seq,action-abc-analysis-validate-status,action-method-print-birt"/>
-      </menu>
-    </menubar>
     <panel name="statusPanel" hidden="true">
       <field name="statusSelect"/>
       <field name="typeSelect"/>

@@ -20,16 +20,23 @@ package com.axelor.apps.quality.db.repo;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.quality.db.ControlEntry;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class ControlEntryManagementRepository extends ControlEntryRepository {
+
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public ControlEntryManagementRepository(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
 
   @Override
   public ControlEntry copy(ControlEntry entity, boolean deep) {
     ControlEntry copy = super.copy(entity, deep);
 
     copy.setStatusSelect(DRAFT_STATUS);
-    copy.setEntryDateTime(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+    copy.setEntryDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     copy.clearControlEntrySamplesList();
 
     return copy;

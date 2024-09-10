@@ -19,8 +19,8 @@
 package com.axelor.apps.purchase.service.config;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseConfig;
@@ -43,14 +43,14 @@ public class PurchaseConfigService {
     return purchaseConfig;
   }
 
-  public BirtTemplate getPurchaseOrderBirtTemplate(Company company) throws AxelorException {
-    BirtTemplate purchaseOrderBirtTemplate =
-        getPurchaseConfig(company).getPurchaseOrderBirtTemplate();
-    if (purchaseOrderBirtTemplate == null) {
+  public PrintingTemplate getPurchaseOrderPrintTemplate(Company company) throws AxelorException {
+    PrintingTemplate purchaseOrderPrintTemplate =
+        getPurchaseConfig(company).getPurchaseOrderPrintTemplate();
+    if (purchaseOrderPrintTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
-    return purchaseOrderBirtTemplate;
+    return purchaseOrderPrintTemplate;
   }
 }

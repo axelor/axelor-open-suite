@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -28,13 +29,14 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.PfpService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -302,6 +304,7 @@ public class InvoiceToolService {
     copy.setOriginalInvoice(null);
     copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
     copy.setAmountPaid(BigDecimal.ZERO);
+    computeInvoiceAmounts(copy);
     copy.setAmountRemaining(copy.getInTaxTotal());
     copy.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
     copy.setAmountRejected(BigDecimal.ZERO);
@@ -406,6 +409,7 @@ public class InvoiceToolService {
   }
 
   protected static void setFinancialDiscount(Invoice copy) {
+    CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
     FinancialDiscount financialDiscount =
         Optional.of(copy).map(Invoice::getPartner).map(Partner::getFinancialDiscount).orElse(null);
     BigDecimal discountRate = BigDecimal.ZERO;
@@ -417,8 +421,11 @@ public class InvoiceToolService {
     if (financialDiscount != null) {
       discountRate = financialDiscount.getDiscountRate();
       financialDiscountTotalAmount =
-          discountRate.multiply(inTaxTotal).divide(BigDecimal.valueOf(100));
-      remainingAmountAfterFinDiscount = inTaxTotal.subtract(financialDiscountTotalAmount);
+          currencyScaleService.getCompanyScaledValue(
+              copy, discountRate.multiply(inTaxTotal).divide(BigDecimal.valueOf(100)));
+      remainingAmountAfterFinDiscount =
+          currencyScaleService.getCompanyScaledValue(
+              copy, inTaxTotal.subtract(financialDiscountTotalAmount));
       legalNotice = financialDiscount.getLegalNotice();
     }
     copy.setFinancialDiscount(financialDiscount);
@@ -427,5 +434,19 @@ public class InvoiceToolService {
     copy.setFinancialDiscountTotalAmount(financialDiscountTotalAmount);
     copy.setRemainingAmountAfterFinDiscount(remainingAmountAfterFinDiscount);
     copy.setLegalNotice(legalNotice);
+  }
+
+  protected static void computeInvoiceAmounts(Invoice copy) throws AxelorException {
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+    // Update invoice lines with new currency rate
+    for (InvoiceLine invoiceLine : copy.getInvoiceLineList()) {
+      invoiceLine.setCompanyExTaxTotal(
+          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), copy));
+      invoiceLine.setCompanyInTaxTotal(
+          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getInTaxTotal(), copy));
+    }
+
+    // Update invoice
+    Beans.get(InvoiceService.class).compute(copy);
   }
 }

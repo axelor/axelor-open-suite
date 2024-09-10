@@ -25,7 +25,6 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -33,7 +32,6 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -44,14 +42,16 @@ import org.slf4j.LoggerFactory;
 public class BankOrderCreateServiceHr extends BankOrderCreateService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected AppBaseService appBaseService;
 
   @Inject
   public BankOrderCreateServiceHr(
-      BankOrderRepository bankOrderRepo,
-      BankOrderService bankOrderService,
+      BankOrderRepository bankOrderRepository,
       BankOrderLineService bankOrderLineService,
-      InvoiceService invoiceService) {
-    super(bankOrderRepo, bankOrderService, bankOrderLineService, invoiceService);
+      InvoiceService invoiceService,
+      AppBaseService appBaseService) {
+    super(bankOrderRepository, bankOrderLineService, invoiceService);
+    this.appBaseService = appBaseService;
   }
 
   /**
@@ -75,9 +75,8 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
     LocalDate paymentDate =
         expense.getPaymentDate() != null
             ? expense.getPaymentDate()
-            : Beans.get(AppBaseService.class)
-                .getTodayDate(
-                    company); // Take into consideration today's date if paymentDate is null
+            : appBaseService.getTodayDate(
+                company); // Take into consideration today's date if paymentDate is null
 
     BankOrder bankOrder =
         super.createBankOrder(
@@ -103,7 +102,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             expense.getExpenseSeq(),
             expense.getFullName(),
             expense));
-    bankOrder = bankOrderRepo.save(bankOrder);
+    bankOrder = bankOrderRepository.save(bankOrder);
 
     return bankOrder;
   }

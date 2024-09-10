@@ -136,4 +136,10 @@ public class TimesheetLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setProduct(ActionRequest request, ActionResponse response) {
+    TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+    response.setAttr(
+        "product", "value", Beans.get(TimesheetLineService.class).getDefaultProduct(timesheetLine));
+  }
 }

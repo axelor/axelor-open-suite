@@ -25,10 +25,13 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.AdvancePaymentMoveLineCreateService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -44,10 +47,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.persistence.Query;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +68,8 @@ public class PaymentServiceImpl implements PaymentService {
   protected AppBaseService appBaseService;
   protected CurrencyService currencyService;
   protected MoveInvoiceTermService moveInvoiceTermService;
+  protected InvoicePaymentRepository invoicePaymentRepository;
+  protected AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService;
 
   @Inject
   public PaymentServiceImpl(
@@ -71,7 +78,9 @@ public class PaymentServiceImpl implements PaymentService {
       ReconcileService reconcileService,
       MoveLineCreateService moveLineCreateService,
       CurrencyService currencyService,
-      MoveInvoiceTermService moveInvoiceTermService) {
+      MoveInvoiceTermService moveInvoiceTermService,
+      InvoicePaymentRepository invoicePaymentRepository,
+      AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService) {
 
     this.reconcileService = reconcileService;
     this.moveLineCreateService = moveLineCreateService;
@@ -79,6 +88,8 @@ public class PaymentServiceImpl implements PaymentService {
     this.appBaseService = appBaseService;
     this.currencyService = currencyService;
     this.moveInvoiceTermService = moveInvoiceTermService;
+    this.invoicePaymentRepository = invoicePaymentRepository;
+    this.advancePaymentMoveLineCreateService = advancePaymentMoveLineCreateService;
   }
 
   /**
@@ -257,6 +268,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     List<Reconcile> reconcileList = new ArrayList<Reconcile>();
     int i = debitMoveLines.size();
+
+    Map<TaxConfiguration, Pair<BigDecimal, BigDecimal>> taxConfigurationAmountMap = new HashMap<>();
     for (MoveLine debitMoveLine : debitMoveLines) {
       i--;
       BigDecimal amountRemaining = debitMoveLine.getAmountRemaining();
@@ -268,6 +281,15 @@ public class PaymentServiceImpl implements PaymentService {
 
       BigDecimal currencyRate = debitMoveLine.getCurrencyRate();
       BigDecimal amountToPay = remainingPaidAmount2.abs().min(amountRemaining);
+
+      if (amountRemaining.signum() != 0) {
+        BigDecimal prorata =
+            amountToPay.divide(
+                amountRemaining, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+        advancePaymentMoveLineCreateService.manageAdvancePaymentInvoiceTaxMoveLines(
+            move, debitMoveLine, prorata, paymentDate, taxConfigurationAmountMap);
+      }
+
       BigDecimal moveLineAmount = amountToPay;
       if (currencyRate.signum() > 0) {
         moveLineAmount =
@@ -328,6 +350,8 @@ public class PaymentServiceImpl implements PaymentService {
         remainingPaidAmount2 = remainingPaidAmount2.subtract(amountRemaining);
       }
     }
+
+    advancePaymentMoveLineCreateService.fillMoveWithTaxMoveLines(move, taxConfigurationAmountMap);
 
     moveInvoiceTermService.generateInvoiceTerms(move);
 
@@ -435,6 +459,9 @@ public class PaymentServiceImpl implements PaymentService {
           move.getMoveLineList().add(debitMoveLine);
           moveLineNo2++;
 
+          Map<TaxConfiguration, Pair<BigDecimal, BigDecimal>> taxConfigurationAmountMap =
+              new HashMap<>();
+
           for (MoveLine creditMoveLine : creditMoveLines) {
             if (creditMoveLine.getAccount().equals(accountMap)) {
               Reconcile reconcile = null;
@@ -446,6 +473,13 @@ public class PaymentServiceImpl implements PaymentService {
               }
 
               BigDecimal amountToPay = amountDebit.min(creditMoveLine.getAmountRemaining().abs());
+              BigDecimal prorata =
+                  amountToPay.divide(
+                      creditMoveLine.getAmountRemaining().abs(),
+                      AppBaseService.COMPUTATION_SCALING,
+                      RoundingMode.HALF_UP);
+              advancePaymentMoveLineCreateService.manageAdvancePaymentInvoiceTaxMoveLines(
+                  move, creditMoveLine, prorata, date, taxConfigurationAmountMap);
 
               // Gestion du passage en 580
               if (i == 0) {
@@ -466,6 +500,9 @@ public class PaymentServiceImpl implements PaymentService {
               }
             }
           }
+
+          advancePaymentMoveLineCreateService.fillMoveWithTaxMoveLines(
+              move, taxConfigurationAmountMap);
         }
       }
       moveInvoiceTermService.generateInvoiceTerms(move);
