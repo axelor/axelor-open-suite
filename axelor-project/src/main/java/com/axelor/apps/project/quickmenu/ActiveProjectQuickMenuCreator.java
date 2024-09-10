@@ -56,7 +56,7 @@ public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
     String action = UserController.class.getName() + ":" + "setActiveProject";
 
     for (Project project : projectSet) {
-      if (!project.getArchived()) {
+      if (!Boolean.TRUE.equals(project.getArchived())) {
         QuickMenuItem item =
             new QuickMenuItem(
                 project.getName(),
