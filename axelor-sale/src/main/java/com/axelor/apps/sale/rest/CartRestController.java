@@ -2,7 +2,9 @@ package com.axelor.apps.sale.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.Cart;
+import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.rest.dto.CartLinePostRequest;
 import com.axelor.apps.sale.rest.dto.CartPutRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
 import com.axelor.apps.sale.service.CartSaleOrderGeneratorService;
@@ -59,5 +61,22 @@ public class CartRestController {
     SaleOrder saleOrder =
         Beans.get(CartSaleOrderGeneratorService.class).createSaleOrder(requestBody.fetchCart());
     return ResponseConstructor.buildCreateResponse(saleOrder, new SaleOrderResponse(saleOrder));
+  }
+
+  @Operation(
+      summary = "Add a product to the the cart",
+      tags = {"Cart"})
+  @Path("/cart-line")
+  @POST
+  @HttpExceptionHandler
+  public Response createCartLine(CartLinePostRequest requestBody) {
+    RequestValidator.validateBody(requestBody);
+    CartService cartService = Beans.get(CartService.class);
+    Cart cart = cartService.getCurrentCart();
+    new SecurityCheck().writeAccess(Cart.class, cart.getId()).createAccess(CartLine.class).check();
+    cartService.addToCart(requestBody.fetchProduct());
+
+    return ResponseConstructor.build(
+        Response.Status.OK, I18n.get(ITranslation.PRODUCT_IS_ADDED), requestBody.getProductId());
   }
 }
