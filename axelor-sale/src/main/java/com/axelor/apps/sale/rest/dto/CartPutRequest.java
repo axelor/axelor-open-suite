@@ -3,9 +3,10 @@ package com.axelor.apps.sale.rest.dto;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
+import javax.validation.constraints.NotNull;
 
 public class CartPutRequest extends RequestPostStructure {
-  private Long cartId;
+  @NotNull private Long cartId;
 
   public Long getCartId() {
     return cartId;
