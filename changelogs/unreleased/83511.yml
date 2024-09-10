@@ -1,0 +1,3 @@
+---
+title: "Advanced export: fix export when multiple fields contain same sub path."
+module: axelor-base
