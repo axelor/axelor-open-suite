@@ -115,7 +115,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
       return lines;
     }
 
-    Product product = userHrService.getTimesheetProduct(timesheet.getEmployee());
+    Product product = userHrService.getTimesheetProduct(timesheet.getEmployee(), null);
 
     if (product == null) {
       return lines;
