@@ -9,4 +9,9 @@ public interface SaleOrderLineBomLineMappingService {
 
   SaleOrderLine mapToSaleOrderLine(BillOfMaterialLine billOfMaterialLine, SaleOrder saleOrder)
       throws AxelorException;
+
+
+  boolean equals(BillOfMaterialLine billOfMaterialLine, SaleOrderLine saleOrderLine);
+
+  boolean isSyncWithBomLine(SaleOrderLine saleOrderLine);
 }

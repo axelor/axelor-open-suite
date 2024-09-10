@@ -9,6 +9,7 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
 import com.google.inject.Inject;
 import java.util.Objects;
+import java.util.Optional;
 
 public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomLineMappingService {
 
@@ -36,11 +37,37 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
       SaleOrderLine saleOrderLine = new SaleOrderLine();
       saleOrderLine.setProduct(billOfMaterialLine.getProduct());
       saleOrderLine.setQty(billOfMaterialLine.getQty());
+      saleOrderLine.setBillOfMaterialLine(billOfMaterialLine);
       saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
       saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
 
       return saleOrderLine;
     }
     return null;
+  }
+
+  @Override
+  public boolean equals(BillOfMaterialLine billOfMaterialLine, SaleOrderLine saleOrderLine) {
+
+    if (billOfMaterialLine == null && saleOrderLine != null) {
+      return false;
+    } else if (billOfMaterialLine != null && saleOrderLine == null) {
+      return false;
+    } else if (billOfMaterialLine == null && saleOrderLine == null) {
+      return false;
+    }
+
+
+    return billOfMaterialLine.getQty().equals(saleOrderLine.getQty()) && billOfMaterialLine.getProduct().equals(saleOrderLine.getProduct())
+            && Optional.ofNullable(saleOrderLine.getBillOfMaterial()).map(solBom -> solBom.equals(billOfMaterialLine.getBillOfMaterial()))
+            .or(() -> Optional.of(billOfMaterialLine.getBillOfMaterial() == null)).get();
+
+  }
+
+  @Override
+  public boolean isSyncWithBomLine(SaleOrderLine saleOrderLine) {
+    Objects.requireNonNull(saleOrderLine);
+
+    return saleOrderLine.getBillOfMaterialLine() != null && this.equals(saleOrderLine.getBillOfMaterialLine(), saleOrderLine);
   }
 }
