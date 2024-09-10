@@ -440,6 +440,7 @@
 "Citizenship","Nationalité",,
 "City","Commune",,
 "City import completed","L'import des communes est terminé.",,
+"City zip is different from address zip","Le code postal sur la ville est différent que celui sur l'adresse",,
 "Civil Year","Année civile",,
 "Civil year already exist for ${com.axelor.i18n.L10n.getInstance().format(fromDate)} and ${com.axelor.i18n.L10n.getInstance().format(toDate)}.","Une année civile existe déjà pour la période du ${com.axelor.i18n.L10n.getInstance().format(fromDate)} au ${com.axelor.i18n.L10n.getInstance().format(toDate)}.",,
 "Civility","Civilité",,
