@@ -10,6 +10,7 @@
     <field name="morningTo"/>
     <field name="afternoonFrom"/>
     <field name="afternoonTo"/>
+    <field name="isWeekend"/>
   </grid>
 
   <form name="day-planning-form" title="Day" model="com.axelor.apps.base.db.DayPlanning">
@@ -19,6 +20,7 @@
       <field name="morningTo"/>
       <field name="afternoonFrom"/>
       <field name="afternoonTo"/>
+      <field name="isWeekend" widget="boolean-switch"/>
     </panel>
   </form>
 

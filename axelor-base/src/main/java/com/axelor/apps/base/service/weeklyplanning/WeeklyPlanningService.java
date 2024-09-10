@@ -19,6 +19,7 @@
 package com.axelor.apps.base.service.weeklyplanning;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import java.math.BigDecimal;
@@ -82,4 +83,6 @@ public interface WeeklyPlanningService {
   public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date);
 
   public DayPlanning findDayWithName(WeeklyPlanning planning, String name);
+
+  public boolean checkDateIsWeekend(Company company, LocalDate date);
 }
