@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
@@ -65,6 +66,10 @@ public interface SaleOrderMergingService {
     PriceList getCommonPriceList();
 
     void setCommonPriceList(PriceList commonPriceList);
+
+    TradingName getCommonTradingName();
+
+    void setCommonTradingName(TradingName tradingName);
   }
 
   interface Checks {
@@ -99,6 +104,10 @@ public interface SaleOrderMergingService {
     boolean isExistPriceListDiff();
 
     void setExistPriceListDiff(boolean existPriceListDiff);
+
+    boolean isExistTradingNameDiff();
+
+    void setExistTradingNameDiff(boolean existTradingNameDiff);
   }
 
   interface SaleOrderMergingResult {

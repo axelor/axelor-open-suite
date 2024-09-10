@@ -5,6 +5,10 @@
 
   <grid name="business-project-grid" title="Projects"
     model="com.axelor.apps.project.db.Project">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <field name="fullName"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
@@ -36,6 +40,11 @@
     onLoad="action-business-project-project-group-on-load"
     onNew="action-business-project-project-group-on-new"
     onSave="action-project-method-check-resource-availibility">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="save,action-timesheet-line-method-log-time" showIf="isShowTimeSpent"
+        if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -159,9 +168,14 @@
       </panel>
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
-      <panel name="reportingPanel" title="Reporting" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project')">
-        <panel title="Time follow-up" colSpan="12">
+      <panel name="reportingPanel" title="Reporting">
+        <panel name="dashboardPanel" title="Dashboard" colSpan="12" canCollapse="true"
+          collapseIf="true">
+          <panel-dashlet name="dashboardPanelDashlet"
+            action="project.reporting.projects.dashboard" colSpan="12"/>
+        </panel>
+
+        <panel title="Time follow-up" colSpan="12" canCollapse="true" collapseIf="true">
           <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
             showTitle="false" height="125"/>
           <panel-dashlet action="action-project-view-updated-time-custom" colSpan="3"
@@ -179,7 +193,7 @@
             colSpan="3" showTitle="false" height="125"/>
         </panel>
 
-        <panel title="Financial follow-up" colSpan="12">
+        <panel title="Financial follow-up" colSpan="12" canCollapse="true" collapseIf="true">
           <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
             <panel-dashlet action="action-project-view-turnover-custom" colSpan="3"
               height="125"/>

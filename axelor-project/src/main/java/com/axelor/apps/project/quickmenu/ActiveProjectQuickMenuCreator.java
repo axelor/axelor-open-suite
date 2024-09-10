@@ -13,7 +13,9 @@ import com.axelor.ui.QuickMenuCreator;
 import com.axelor.ui.QuickMenuItem;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
@@ -42,10 +44,11 @@ public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
 
   protected List<QuickMenuItem> getItems() {
     User user = AuthUtils.getUser();
-    Set<Project> projectSet = user.getProjectSet();
+    Set<Project> projectSet =
+        Optional.ofNullable(user).map(User::getProjectSet).orElse(new HashSet<>());
     List<QuickMenuItem> items = new ArrayList<>();
 
-    if (projectSet == null || projectSet.size() <= 1) {
+    if (projectSet.size() <= 1) {
       return items;
     }
 

@@ -423,7 +423,7 @@
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
           onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
-          domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          domain="self.company = :company" form-view="trading-name-form"
           grid-view="trading-name-grid"/>
         <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
@@ -476,7 +476,7 @@
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
           onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
-          domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          domain="self.company = :company" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="3"/>
         <field name="partner" canEdit="false"
           domain="self.isContact = false AND :company member of self.companySet"
@@ -557,7 +557,7 @@
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
           onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
-          domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          domain="self.company = :company" form-view="trading-name-form"
           grid-view="trading-name-grid"/>
         <field name="estimatedDate"
           readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>

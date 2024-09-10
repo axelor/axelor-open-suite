@@ -68,7 +68,8 @@ public interface SaleOrderCreateService {
       Team team,
       TaxNumber taxNumber,
       String internalNote,
-      FiscalPosition fiscalPosition)
+      FiscalPosition fiscalPosition,
+      TradingName tradingName)
       throws AxelorException;
 
   /**

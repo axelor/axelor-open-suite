@@ -5,6 +5,10 @@
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
@@ -28,6 +32,9 @@
         onClick="action-project-task-record-assigned-yourself,save"/>
       <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
         showIf="project.taskStatusManagementSelect != 1"/>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="save,action-timesheet-line-method-log-time" showIf="project.isShowTimeSpent"
+        if="__config__.app.isApp('timesheet')"/>
     </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
@@ -304,6 +311,10 @@
 
   <kanban name="project-task-kanban" columnBy="status" title="Tasks" limit="30"
     sequenceBy="sequence" model="com.axelor.apps.project.db.ProjectTask">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="save,action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <field name="name"/>
     <field name="project"/>
     <field name="assignedTo"/>

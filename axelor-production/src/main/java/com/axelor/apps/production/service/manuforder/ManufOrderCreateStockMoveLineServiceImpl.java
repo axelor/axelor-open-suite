@@ -221,7 +221,7 @@ public class ManufOrderCreateStockMoveLineServiceImpl
       throws AxelorException {
     Optional<StockMove> stockMoveOpt =
         manufOrderGetStockMoveService.getPlannedStockMove(
-            manufOrderGetStockMoveService.getNonResidualOutStockMoveLineList(manufOrder));
+            manufOrderGetStockMoveService.getFinishedProductOutStockMoveList(manufOrder));
     if (!stockMoveOpt.isPresent()) {
       return;
     }

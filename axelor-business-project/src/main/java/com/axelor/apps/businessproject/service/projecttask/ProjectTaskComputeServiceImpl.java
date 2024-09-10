@@ -4,8 +4,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
-import com.axelor.apps.businessproject.service.UnitProjectToolService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
@@ -17,16 +17,17 @@ import java.util.Optional;
 
 public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService {
 
-  protected UnitProjectToolService unitProjectToolService;
+  protected UnitConversionForProjectService unitConversionForProjectService;
   protected ProjectFrameworkContractService projectFrameworkContractService;
   protected AppBusinessProjectService appBusinessProjectService;
+  public static final int BIG_DECIMAL_SCALE = 2;
 
   @Inject
   public ProjectTaskComputeServiceImpl(
-      UnitProjectToolService unitProjectToolService,
+      UnitConversionForProjectService unitConversionForProjectService,
       ProjectFrameworkContractService projectFrameworkContractService,
       AppBusinessProjectService appBusinessProjectService) {
-    this.unitProjectToolService = unitProjectToolService;
+    this.unitConversionForProjectService = unitConversionForProjectService;
     this.projectFrameworkContractService = projectFrameworkContractService;
     this.appBusinessProjectService = appBusinessProjectService;
   }
@@ -41,15 +42,13 @@ public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService 
       return;
     }
 
-    BigDecimal numberHoursADay =
-        unitProjectToolService.getNumberHoursADay(projectTask.getProject());
-
     projectTask.setBudgetedTime(
-        unitProjectToolService.getConvertedTime(
-            projectTask.getBudgetedTime(),
+        unitConversionForProjectService.convert(
             oldTimeUnit,
             projectTask.getTimeUnit(),
-            numberHoursADay));
+            projectTask.getBudgetedTime(),
+            BIG_DECIMAL_SCALE,
+            projectTask.getProject()));
   }
 
   @Override
@@ -102,15 +101,13 @@ public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService 
       return;
     }
 
-    BigDecimal numberHoursADay =
-        unitProjectToolService.getNumberHoursADay(projectTask.getProject());
-
     projectTask.setQuantity(
-        unitProjectToolService.getConvertedTime(
-            projectTask.getUpdatedTime(),
+        unitConversionForProjectService.convert(
             projectTask.getTimeUnit(),
             projectTask.getInvoicingUnit(),
-            numberHoursADay));
+            projectTask.getUpdatedTime(),
+            BIG_DECIMAL_SCALE,
+            projectTask.getProject()));
   }
 
   @Override
@@ -120,26 +117,26 @@ public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService 
     }
     Map<String, Object> productDatas =
         projectFrameworkContractService.getProductDataFromContract(projectTask);
-    BigDecimal numberHoursADay =
-        unitProjectToolService.getNumberHoursADay(projectTask.getProject());
     Product product = projectTask.getProduct();
     Unit productUnit = Optional.of(product).map(Product::getSalesUnit).orElse(product.getUnit());
 
     if (productDatas.get("unitPrice") != null) {
       projectTask.setUnitPrice(
-          unitProjectToolService.getConvertedTime(
-              (BigDecimal) productDatas.get("unitPrice"),
+          unitConversionForProjectService.convert(
               projectTask.getInvoicingUnit(),
               productUnit,
-              numberHoursADay));
+              (BigDecimal) productDatas.get("unitPrice"),
+              BIG_DECIMAL_SCALE,
+              projectTask.getProject()));
     }
     if (productDatas.get("unitCost") != null) {
       projectTask.setUnitCost(
-          unitProjectToolService.getConvertedTime(
-              (BigDecimal) productDatas.get("unitCost"),
+          unitConversionForProjectService.convert(
               projectTask.getInvoicingUnit(),
               productUnit,
-              numberHoursADay));
+              (BigDecimal) productDatas.get("unitCost"),
+              BIG_DECIMAL_SCALE,
+              projectTask.getProject()));
     }
   }
 }

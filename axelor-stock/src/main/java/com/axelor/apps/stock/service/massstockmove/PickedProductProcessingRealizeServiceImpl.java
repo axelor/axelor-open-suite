@@ -2,6 +2,7 @@ package com.axelor.apps.stock.service.massstockmove;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.PickedProduct;
+import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.google.inject.Inject;
@@ -36,6 +37,8 @@ public class PickedProductProcessingRealizeServiceImpl
     Objects.requireNonNull(movableProduct);
 
     var createdStoredProduct = pickedProductService.createFromPickedProduct(movableProduct);
+    var massStockMove = movableProduct.getMassStockMove();
+    massStockMove.setStatusSelect(MassStockMoveRepository.STATUS_IN_PROGRESS);
 
     storedProductRepository.save(createdStoredProduct);
     pickedProductRepository.save(movableProduct);

@@ -139,6 +139,9 @@ public final class SaleExceptionMessage {
   public static final String SALE_ORDER_NOT_DRAFT = /*$$(*/
       "You can only add a line to a draft sale order." /*)*/;
 
+  public static final String ATI_CHANGE_NOT_ALLOWED = /*$$(*/
+      "The company configuration doesn't allow you to manage the exclusion or inclusion of taxes." /*)*/;
+
   public static final String PRODUCT_CURRENCY_IS_NULL = /*$$(*/
       "This product currency is empty: %s" /*)*/;
 
