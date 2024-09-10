@@ -569,7 +569,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     BigDecimal percentage =
         amount
             .multiply(BigDecimal.valueOf(100))
-            .divide(moveLine.getCurrencyAmount(), 2, RoundingMode.HALF_UP);
+            .divide(moveLine.getCurrencyAmount().abs(), 2, RoundingMode.HALF_UP);
 
     analyticMoveLine.setPercentage(percentage);
     analyticMoveLine.setAmount(amount.setScale(2, RoundingMode.HALF_UP));
