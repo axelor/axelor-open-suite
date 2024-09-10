@@ -669,6 +669,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         if (invoice != null) {
           invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
         }
+
+        if (companyAmountRemaining.signum() <= 0) {
+          companyAmountRemaining = BigDecimal.ZERO;
+        }
       }
 
       invoiceTerm.setAmountRemaining(amountRemaining);
