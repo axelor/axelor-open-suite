@@ -546,7 +546,10 @@ public class PartnerServiceImpl implements PartnerService {
   public void convertToIndividualPartner(Partner partner) {
     partner.setIsContact(false);
     partner.setPartnerTypeSelect(PARTNER_TYPE_INDIVIDUAL);
-    addPartnerAddress(partner, partner.getMainAddress(), true, false, false);
+    Address mainAddress = partner.getMainAddress();
+    if (mainAddress != null) {
+      addPartnerAddress(partner, mainAddress, true, false, false);
+    }
     partner.setMainAddress(null);
   }
 

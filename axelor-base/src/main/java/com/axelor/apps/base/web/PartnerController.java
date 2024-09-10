@@ -331,13 +331,21 @@ public class PartnerController {
   public void convertToIndividualPartner(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Partner partner = request.getContext().asType(Partner.class);
-    if (partner.getId() == null) {
+    Long id = partner.getId();
+    if (id == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.PARTNER_3));
     }
-    partner = Beans.get(PartnerRepository.class).find(partner.getId());
+    partner = Beans.get(PartnerRepository.class).find(id);
     Beans.get(PartnerService.class).convertToIndividualPartner(partner);
+    response.setView(
+        ActionView.define(I18n.get("Partner"))
+            .model(Partner.class.getName())
+            .add("form", "partner-form")
+            .add("grid", "partner-grid")
+            .context("_showRecord", id)
+            .map());
   }
 
   /**
