@@ -3,6 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
+
+  <form id="sale-order-production-form" name="sale-order-form" title="Sale order"
+    model="com.axelor.apps.sale.db.SaleOrder" extension="true">
+
+    <extend target="panel-related[@name='saleOrderLineTreePanel']">
+      <attribute name="summary-view" value="sale-order-line-summary-form"/>
+    </extend>
+  </form>
+
   <action-method name="action-sale-order-method-create-production-order"
     if-module="axelor-production">
     <call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController"
