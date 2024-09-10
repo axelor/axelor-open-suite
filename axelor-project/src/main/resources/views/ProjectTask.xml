@@ -193,7 +193,7 @@
         onChange="action-project-task-attrs-set-task-duration"/>
       <field name="taskDeadline" title="Task deadline" colSpan="4"/>
       <field name="projectTaskTagSet" widget="TagSelect" x-color-field="colorSelect"
-        form-view="project-task-tag-form" grid-view="project-task-tag-grid" colSpan="4"/>
+        form-view="tag-form" grid-view="tag-simplified-grid" colSpan="4"/>
       <field name="progress" onChange="action-project-task-group-progress-onchange"
         showIf="project.isShowProgress &amp;&amp; !$readonly()" colSpan="4" min="0"/>
       <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; !$readonly()"/>
