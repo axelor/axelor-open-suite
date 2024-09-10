@@ -31,7 +31,8 @@
           <panel name="contractualSectionPanel" title="Contractual" colSpan="12">
             <field name="onCallManagement" widget="BooleanRadio" x-true-text="Yes"
               x-false-text="No"/>
-            <field name="onCallPlanning" hidden="true" showIf="onCallManagement"/>
+            <field name="onCallPlanning" hidden="true" showIf="onCallManagement"
+              requiredIf="onCallManagement"/>
             <field name="guaranteedInterventionTime" colSpan="4" widget="duration"
               x-big="true"/>
             <field name="guaranteedRecoveryTime" colSpan="4" widget="duration" x-big="true"/>
