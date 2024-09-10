@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
@@ -42,9 +43,12 @@ public class CartLineSupplychainServiceImpl implements CartLineSupplychainServic
 
   @Override
   public CartLine setAvailableStatus(Cart cart, CartLine cartLine) {
+    Product product = cartLine.getProduct();
+    if (product != null && product.getIsModel() && cartLine.getVariantProduct() != null) {
+      product = cartLine.getVariantProduct();
+    }
     BigDecimal availableQty =
-        stockLocationLineFetchService.getAvailableQty(
-            cart.getStockLocation(), cartLine.getProduct());
+        stockLocationLineFetchService.getAvailableQty(cart.getStockLocation(), product);
     BigDecimal qty = cartLine.getQty();
 
     if (availableQty.compareTo(qty) >= 0) {
