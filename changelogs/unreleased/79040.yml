@@ -1,3 +1,3 @@
 ---
-title: "[Mobile Dashboard] Permissions are now checked with id in rest controller"
+title: "Mobile Dashboard API: fixed an issue where condition in permission were not evaluated correctly to get mobile chart information."
 module: axelor-mobile-settings
