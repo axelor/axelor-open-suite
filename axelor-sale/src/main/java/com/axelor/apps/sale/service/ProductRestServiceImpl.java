@@ -93,11 +93,12 @@ public class ProductRestServiceImpl implements ProductRestService {
     if (product.getSalesUnit() == null && product.getUnit() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(SaleExceptionMessage.PRODUCT_SALE_UNIT_IS_NULL),
-          product.getId());
+          I18n.get(SaleExceptionMessage.PRODUCT_UNIT_IS_NULL),
+          product.getName());
     }
-    Unit convertFrom = product.getSalesUnit() != null ? product.getSalesUnit() : product.getUnit();
     if (unit != null) {
+      Unit convertFrom =
+          product.getSalesUnit() != null ? product.getSalesUnit() : product.getUnit();
       priceWT =
           unitConversionService.convert(
               unit, convertFrom, priceWT, appBaseService.getNbDecimalDigitForUnitPrice(), product);
