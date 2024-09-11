@@ -72,7 +72,7 @@
       <panel name="certificationPanel" title="Certification" colSpan="12" itemSpan="12">
         <field name="certifiedOk"/>
         <button name="validateBtn" title="Validate"
-          onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
+          onClick="save,action-address-method-validate-address,save"/>
         <panel-related name="pickListPanel" title="Pick list" readonly="true"
           field="pickList" grid-view="pick-list-entry-grid" form="pick-list-entry-form"
           showIf="country.addressValidationApi == 2 &amp;&amp; pickList &amp;&amp; pickList.length &gt; 0"/>
@@ -266,6 +266,11 @@
   <action-method name="action-address-method-autocomplete-address">
     <call class="com.axelor.apps.base.web.AddressController" method="autocompleteAddress"/>
   </action-method>
+
+  <action-method name="action-address-method-validate-address">
+    <call class="com.axelor.apps.base.web.AddressController" method="validate"/>
+  </action-method>
+
 
   <action-record name="action-address-record-change-streetName"
     model="com.axelor.apps.base.db.Address">
