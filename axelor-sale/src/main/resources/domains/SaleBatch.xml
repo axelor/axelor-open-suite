@@ -21,7 +21,6 @@
     <extra-code><![CDATA[
       // ACTION
       public static final int ACTION_INVOICING = 1;
-      public static final int ACTION_EARN_LOYALTY_ACCOUNT_POINTS = 2;
     ]]></extra-code>
   </entity>
 
