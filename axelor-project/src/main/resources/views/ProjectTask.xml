@@ -556,6 +556,7 @@
     <field name="assignedTo" expr="eval:__user__"/>
     <field name="taskDate" expr="#{__config__.date}"/>
     <field name="project" expr="eval:_project"/>
+    <field name="project" expr="eval: __user__?.activeProject" if="!_project"/>
     <field name="parentTask" expr="eval:_parentTask"/>
   </action-record>
 
