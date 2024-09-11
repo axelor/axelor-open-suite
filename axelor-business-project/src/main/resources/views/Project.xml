@@ -95,7 +95,7 @@
           <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
             onChange="action-business-project-group-project-status-on-change"/>
         </panel>
-        <field name="$viewerProjectTags" showTitle="false" colSpan="4" readonly="true">
+        <field name="$viewerProjectTags" showTitle="false" colSpan="1" readonly="true">
           <viewer depends="isBusinessProject,$toInvoiceCounter,id">
             <![CDATA[
 								<>
@@ -113,6 +113,19 @@
 							]]>
           </viewer>
         </field>
+        <spacer colSpan="1"/>
+        <panel name="statusChangeBtn" colSpan="2">
+          <button name="finishBtn" icon="check-circle" title="Finish" colSpan="12"
+            showIf="id &amp;&amp; !projectStatus.isCompleted"
+            onClick="action-business-project-group-finish-project"/>
+          <button name="cancelBtn" title="Cancel" css="btn-danger" colSpan="12"
+            hideIf="projectStatus.id == $canceledProjectStatusId || !id" icon="x-circle"
+            onClick="action-project-group-status-canceled"/>
+          <button name="resetBtn" title="Reset" css="btn-warning" colSpan="12"
+            showIf="id &amp;&amp; projectStatus.id == $canceledProjectStatusId"
+            icon="skip-backward-fill" onClick="action-project-record-status-new,save"/>
+          <field name="projectStatus.isCompleted" hidden="true"/>
+        </panel>
       </panel>
 
       <panel-include view="incl-information-panel-form"/>
@@ -562,18 +575,6 @@
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
-    </panel>
-    <panel name="actionsPanel" colSpan="2" sidebar="true">
-      <button name="finishBtn" title="Finish" colSpan="12" icon="fa-check"
-        showIf="!projectStatus.isCompleted" onClick="action-business-project-group-finish-project"
-        hidden="true"/>
-      <button name="cancelBtn" title="Cancel" colSpan="12" css="btn-danger"
-        hideIf="projectStatus.id == $canceledProjectStatusId" icon="fa-times-circle"
-        onClick="action-project-group-status-canceled"/>
-      <button name="resetBtn" title="Reset" hidden="true"
-        showIf="projectStatus.id == $canceledProjectStatusId" colSpan="12" css="btn-danger"
-        icon="fa-file" onClick="action-project-record-status-new,save"/>
-      <field name="projectStatus.isCompleted" hidden="true"/>
     </panel>
     <panel name="characteristicsPanel" title="Characteristics" colSpan="12" sidebar="true"
       canCollapse="true">
