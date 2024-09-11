@@ -84,4 +84,13 @@ public final class ProjectExceptionMessage {
 
   public static final String TASK_STATUS_USED_ON_PROJECT_TASK_CATEGORY = /*$$(*/
       "This task status is used on project task category for the auto progress process. Do you want to update all unmodified values with this one ?" /*)*/;
+
+  public static final String PROJECT_TASK_STATUS_WILL_BE_REMOVED = /*$$(*/
+      "You want to delete the status of the task used in %s project tasks. These will take the previous status as their new status according to its configuration. Do you want to continue ?" /*)*/;
+
+  public static final String PROJECT_TASK_STATUS_WILL_BE_REMOVED_EMPTY = /*$$(*/
+      "You want to delete the status of the task used in %s project tasks. But the new configuration is empty, please fill it." /*)*/;
+
+  public static final String PROJECT_TASK_UPDATED_NOTIFY = /*$$(*/
+      "%s project task(s) updated." /*)*/;
 }

@@ -32,6 +32,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.taskStatus.TaskStatusToolService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -294,6 +295,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
         && appProject.getSelectAutoProgressOnProjectTask()
         && projectTask.getStatus() != null) {
       BigDecimal newProgress = projectTask.getStatus().getDefaultProgress();
+
       if (appProject.getEnableStatusManagementByTaskCategory()
           && project != null
           && project.getEnableStatusProgressByCategory()

@@ -1,0 +1,9 @@
+package com.axelor.apps.project.service.taskStatus;
+
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.studio.db.AppProject;
+import java.util.List;
+
+public interface TaskStatusMassService {
+  Integer updateTaskStatusOnProjectTask(List<ProjectTask> projectTaskList, AppProject appProject);
+}

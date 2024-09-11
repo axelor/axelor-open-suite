@@ -1,4 +1,4 @@
-package com.axelor.apps.project.service;
+package com.axelor.apps.project.service.taskStatus;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -15,6 +15,7 @@ import com.axelor.studio.db.AppProject;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -79,10 +80,11 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
     }
 
     AppProject appProject = appProjectService.getAppProject();
-    boolean enableTaskStatusManagementByCategory = false;
-    if (appProject != null) {
-      enableTaskStatusManagementByCategory = appProject.getEnableStatusManagementByTaskCategory();
-    }
+
+    boolean enableTaskStatusManagementByCategory =
+        Optional.ofNullable(appProject)
+            .map(AppProject::getEnableStatusManagementByTaskCategory)
+            .orElse(false);
 
     if (enableTaskStatusManagementByCategory
         && project.getTaskStatusManagementSelect()
@@ -100,10 +102,9 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
       return project.getProjectTaskStatusSet();
     }
 
-    if (appProject != null) {
-      return appProject.getDefaultTaskStatusSet();
-    }
-    return null;
+    return Optional.ofNullable(appProject)
+        .map(AppProject::getDefaultTaskStatusSet)
+        .orElse(new HashSet<>());
   }
 
   @Override
