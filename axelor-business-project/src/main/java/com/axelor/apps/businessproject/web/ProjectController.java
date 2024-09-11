@@ -112,7 +112,6 @@ public class ProjectController {
             .model(InvoicingProject.class.getName())
             .add("form", "invoicing-project-form")
             .param("forceEdit", "true")
-            .param("show-toolbar", "false")
             .context("_project", project)
             .map());
   }

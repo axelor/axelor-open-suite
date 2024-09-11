@@ -142,6 +142,9 @@
       <field name="tradingName"
         if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
         form-view="trading-name-form" grid-view="trading-name-grid"/>
+      <field name="defaultStockLocation" form-view="stock-location-form"
+        grid-view="stock-location-grid" domain="self.company = :activeCompany"
+        if="__config__.app.isApp('supplychain')"/>
       <field name="workshopStockLocation"
         onSelect="action-user-attrs-domain-workshop-stock-location" canEdit="false"
         if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"/>

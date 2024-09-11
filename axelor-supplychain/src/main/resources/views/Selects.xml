@@ -202,4 +202,9 @@
     <option value="1">Invoicing</option>
   </selection>
 
+  <selection name="cart.line.available.status.select">
+    <option value="1">Available</option>
+    <option value="2">Missing</option>
+  </selection>
+
 </object-views>
