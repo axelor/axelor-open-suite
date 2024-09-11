@@ -9,14 +9,14 @@
     <field name="metaModel"/>
     <field name="modelId"/>
     <field name="externalReference"/>
-    <button name="showRecordBtn" title="Show AOS record"
+    <button name="showRecordBtn" title="Show record"
       onClick="action-connector-mapper-method-show-aos-record" icon="box-arrow-up-right"/>
   </grid>
 
   <form name="connector-mapper-form" title="Connector mapper"
     model="com.axelor.apps.base.db.ConnectorMapper" width="large">
     <toolbar>
-      <button name="showRecordBtn" title="Show AOS record"
+      <button name="showRecordBtn" title="Show record"
         onClick="save,action-connector-mapper-method-show-aos-record"/>
     </toolbar>
     <panel name="mainPanel" itemSpan="3">

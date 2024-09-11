@@ -1988,6 +1988,7 @@
 "Show all stock moves","Voir tous les mouvements de stock",,
 "Show bank order","Afficher l’ordre bancaire",,
 "Show permissions","Afficher les permissions",,
+"Show record","Afficher l'enregistrement",,
 "Show the batch",,,
 "Show the reference",,,
 "Show tracebacks","Afficher les tracebacks",,
