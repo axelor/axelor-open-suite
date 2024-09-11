@@ -61,7 +61,8 @@ public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGenerator
       checkProduct(cartLineList);
     }
     SaleOrder saleOrder =
-        saleOrderGeneratorService.createSaleOrder(cart.getPartner(), cart.getCompany(), null, null);
+        saleOrderGeneratorService.createSaleOrder(
+            cart.getPartner(), cart.getCompany(), null, null, null);
 
     for (CartLine cartLine : cartLineList) {
       createSaleOrderLine(cartLine, saleOrder);

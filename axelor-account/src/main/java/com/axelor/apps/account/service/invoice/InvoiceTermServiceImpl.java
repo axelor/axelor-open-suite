@@ -662,7 +662,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 .subtract(invoiceTermPayment.getCompanyPaidAmount());
       }
 
-      if (amountRemaining.signum() <= 0) {
+      if (amountRemaining.signum() <= 0 || companyAmountRemaining.signum() <= 0) {
         amountRemaining = BigDecimal.ZERO;
         invoiceTerm.setIsPaid(true);
         Invoice invoice = invoiceTerm.getInvoice();
@@ -1248,9 +1248,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       throws AxelorException {
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     if (invoiceTermList != null) {
+      BigDecimal currencyAmount =
+          invoicePayment != null
+              ? currencyService.getAmountCurrencyConvertedAtDate(
+                  invoicePayment.getCompanyCurrency(),
+                  invoicePayment.getCurrency(),
+                  amount,
+                  invoicePayment.getPaymentDate())
+              : amount;
       invoiceTermPaymentList =
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-              invoicePayment, invoiceTermList, amount, reconcile.getAmount());
+              invoicePayment, invoiceTermList, amount, currencyAmount, reconcile.getAmount());
 
       for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
         this.updateInvoiceTermsPaidAmount(

@@ -163,13 +163,17 @@ public class ReconcileInvoiceTermComputationServiceImpl
 
         BigDecimal invoicePaymentAmount = amount;
         if (!reconcileCheckService.isCompanyCurrency(reconcile, null, otherMove)) {
-          invoicePaymentAmount = this.getTotal(moveLine, otherMoveLine, amount, false);
+          invoicePaymentAmount = this.getTotal(moveLine, otherMoveLine, amount, true);
         }
 
         invoicePayment =
             invoicePaymentCreateService.createInvoicePayment(
                 invoice, invoicePaymentAmount, otherMove);
         invoicePayment.setReconcile(reconcile);
+      }
+
+      if (!reconcileCheckService.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
+        amount = this.getTotal(moveLine, otherMoveLine, amount, false);
       }
     } else if (!reconcileCheckService.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
       amount = this.getTotal(moveLine, otherMoveLine, amount, false);
@@ -184,6 +188,15 @@ public class ReconcileInvoiceTermComputationServiceImpl
       List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, otherMove, moveLine);
       Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap =
           this.getInvoiceTermPfpStatus(invoice);
+
+      if (invoicePayment != null) {
+        amount =
+            currencyService.getAmountCurrencyConvertedAtDate(
+                invoicePayment.getCurrency(),
+                invoicePayment.getCompanyCurrency(),
+                invoicePayment.getAmount(),
+                invoicePayment.getPaymentDate());
+      }
 
       invoiceTermPaymentList =
           invoiceTermService.updateInvoiceTerms(
@@ -234,7 +247,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
   }
 
   protected BigDecimal getTotal(
-      MoveLine moveLine, MoveLine otherMoveLine, BigDecimal amount, boolean isInvoicePayment) {
+      MoveLine moveLine, MoveLine otherMoveLine, BigDecimal amount, boolean isForInvoicePayment) {
     BigDecimal total;
     BigDecimal moveLineAmount = moveLine.getCredit().add(moveLine.getDebit());
     BigDecimal rate = moveLine.getCurrencyRate();
@@ -249,7 +262,8 @@ public class ReconcileInvoiceTermComputationServiceImpl
     total = amount.divide(rate, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     if (total.stripTrailingZeros().scale() > currencyScaleService.getScale(otherMoveLine)) {
       total =
-          computePaidRatio(moveLineAmount, amount, invoiceAmount, computedAmount, isInvoicePayment)
+          computePaidRatio(
+                  moveLineAmount, amount, invoiceAmount, computedAmount, isForInvoicePayment)
               .multiply(moveLine.getCurrencyAmount().abs());
     }
 
@@ -260,7 +274,16 @@ public class ReconcileInvoiceTermComputationServiceImpl
       total = otherMoveLine.getCurrencyAmount().abs();
     }
 
-    return total;
+    if (isForInvoicePayment) {
+      return total;
+    } else {
+      if (rate.compareTo(otherMoveLine.getCurrencyRate()) > 0) {
+        return amount;
+      } else {
+        return currencyScaleService.getCompanyScaledValue(
+            moveLine, total.multiply(otherMoveLine.getCurrencyRate()));
+      }
+    }
   }
 
   protected BigDecimal computePaidRatio(

@@ -129,18 +129,22 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     Partner partner = move.getPartner();
     JournalType journalType =
         Optional.ofNullable(move.getJournal()).map(Journal::getJournalType).orElse(null);
+    PaymentCondition paymentCondition = null;
+    if (partner != null && journalType != null) {
 
-    if (partner != null
-        && journalType != null
-        && !journalType
-            .getTechnicalTypeSelect()
-            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)) {
-      PaymentCondition paymentCondition = partner.getPaymentCondition();
-      paymentConditionService.checkPaymentCondition(paymentCondition);
-      move.setPaymentCondition(paymentCondition);
-    } else {
-      move.setPaymentCondition(null);
+      Integer journalTechnicalType = journalType.getTechnicalTypeSelect();
+      if (journalTechnicalType.compareTo(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
+          == 0) {
+        paymentCondition = partner.getOutPaymentCondition();
+      } else if (journalTechnicalType.compareTo(
+              JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
+          != 0) {
+        paymentCondition = partner.getPaymentCondition();
+      }
     }
+
+    paymentConditionService.checkPaymentCondition(paymentCondition);
+    move.setPaymentCondition(paymentCondition);
   }
 
   @Override

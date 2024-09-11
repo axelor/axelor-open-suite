@@ -621,6 +621,7 @@
     <view type="form" name="user-form"/>
     <view-param name="search-filters" value="user-filters"/>
     <context name="_today" expr="eval: __config__.date"/>
+    <context name="_showRecord" expr="eval: userId" if="userId"/>
   </action-view>
 
   <menuitem name="admin-root-user-company" parent="admin-root-user" title="Companies"
@@ -1104,6 +1105,30 @@
     model="com.axelor.apps.base.db.ConnectorMapper">
     <view type="grid" name="connector-mapper-grid"/>
     <view type="form" name="connector-mapper-form"/>
+  </action-view>
+
+  <menuitem name="admin-root-connector-data" title="Data sharing"
+    parent="admin-root-connector" order="200"/>
+
+  <menuitem name="admin-root-data-sharing-referential" title="Data sharing referentials"
+    action="action.admin.root.view.data.sharing.referential" parent="admin-root-connector-data"
+    order="100"/>
+
+  <action-view name="action.admin.root.view.data.sharing.referential"
+    title="Data sharing referentials" model="com.axelor.apps.base.db.DataSharingReferential">
+    <view type="grid" name="data-sharing-referential-grid"/>
+    <view type="form" name="data-sharing-referential-form"/>
+  </action-view>
+
+  <menuitem name="admin-root-data-sharing-product-wizard"
+    title="Data sharing product assistant"
+    action="action.admin.root.view.data.sharing.product.wizard" parent="admin-root-connector-data"
+    order="200"/>
+
+  <action-view name="action.admin.root.view.data.sharing.product.wizard"
+    title="Data sharing product assistant" model="com.axelor.apps.base.db.DataSharingProductWizard">
+    <view type="grid" name="data-sharing-product-wizard-grid"/>
+    <view type="form" name="data-sharing-product-wizard-form"/>
   </action-view>
 
   <menuitem name="studio-app-root" id="base-studio-app-root" title="App" order="-250"

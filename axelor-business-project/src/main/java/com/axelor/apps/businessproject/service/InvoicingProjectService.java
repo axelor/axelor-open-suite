@@ -299,6 +299,7 @@ public class InvoicingProjectService {
                   Beans.get(AccountConfigService.class)
                       .getInvoicePrintTemplate(invoice.getCompany()),
                   null));
+      metaFiles.attach(new FileInputStream(file), file.getName(), invoice);
       fileList.add(file);
       file = PrintingTemplateHelper.mergeToFile(fileList, Files.getNameWithoutExtension(fileName));
     }

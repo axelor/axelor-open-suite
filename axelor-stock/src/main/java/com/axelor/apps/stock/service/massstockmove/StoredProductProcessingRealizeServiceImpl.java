@@ -28,11 +28,15 @@ public class StoredProductProcessingRealizeServiceImpl
     var currentQty =
         massStockMovableProductQuantityService.getCurrentAvailableQty(
             movableProduct, movableProduct.getMassStockMove().getCartStockLocation());
+    var commonToStockLocation = movableProduct.getMassStockMove().getCommonToStockLocation();
     if (movableProduct.getStoredQty().compareTo(currentQty) < 0) {
       var newStoredProduct = storedProductRepository.copy(movableProduct, false);
       newStoredProduct.setStoredQty(BigDecimal.ZERO);
       newStoredProduct.setMassStockMove(movableProduct.getMassStockMove());
       newStoredProduct.setStockMoveLine(null);
+      if (commonToStockLocation != null) {
+        newStoredProduct.setToStockLocation(commonToStockLocation);
+      }
       storedProductRepository.save(newStoredProduct);
     }
   }

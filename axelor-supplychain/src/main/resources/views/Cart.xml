@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid id="supplychain-cart-grid" name="cart-grid" title="Carts"
+    model="com.axelor.apps.sale.db.Cart" extension="true">
+    <extend target="//field[@name='partner']">
+      <insert position="after">
+        <field name="stockLocation"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form id="supplychain-cart-form" name="cart-form" title="Cart"
+    model="com.axelor.apps.sale.db.Cart" extension="true">
+    <extend target="//field[@name='partner']">
+      <insert position="after">
+        <field name="stockLocation" form-view="stock-location-form"
+          grid-view="stock-location-grid" domain="self.company = :company" readonlyIf="!company"
+          onChange="action-cart-method-set-available-status"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-method name="action-cart-method-set-available-status">
+    <call class="com.axelor.apps.supplychain.web.CartController" method="setAvailableStatus"/>
+  </action-method>
+
+</object-views>
