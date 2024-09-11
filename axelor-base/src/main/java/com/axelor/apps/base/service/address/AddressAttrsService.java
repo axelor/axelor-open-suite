@@ -19,12 +19,16 @@
 package com.axelor.apps.base.service.address;
 
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.Country;
 import java.util.Map;
 
 public interface AddressAttrsService {
 
   Map<String, Map<String, Object>> getCountryAddressMetaFieldOnChangeAttrsMap(Address address);
 
-  boolean ifCountryHasCities(Country country);
+  Map<String, Map<String, Object>> getTownNameAndCityAttrsMap(
+      Map<String, Map<String, Object>> countryAddressMetaFieldOnChangeAttrsMap, Address address);
+
+  void updateAttrsMap(
+      Map<String, Map<String, Object>> townNameAndCityAttrtsMap,
+      Map<String, Map<String, Object>> countryAddressMetaFieldOnChangeAttrsMap);
 }

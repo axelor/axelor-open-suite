@@ -53,8 +53,7 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
     this.cityRepository = cityRepository;
   }
 
-  @Override
-  public boolean ifCountryHasCities(Country country) {
+  protected boolean ifCountryHasCities(Country country) {
     Query<City> cityQuery =
         cityRepository.all().filter("self.country = :country").bind("country", country);
     List<City> cityList = cityQuery.fetch();
@@ -142,5 +141,77 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
       attrsMap.put(field, new HashMap<>());
     }
     attrsMap.get(field).put(attr, value);
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getTownNameAndCityAttrsMap(
+      Map<String, Map<String, Object>> countryAddressMetaFieldOnChangeAttrsMap, Address address) {
+    Map<String, Object> cityAttrs = countryAddressMetaFieldOnChangeAttrsMap.get("city");
+    Boolean cityHidden = (Boolean) cityAttrs.get("hidden");
+
+    boolean ifCountryHasCities = ifCountryHasCities(address.getCountry());
+
+    Map<String, Map<String, Object>> outerMap = new HashMap<>();
+    Map<String, Object> townNameAndCityPanelMap = new HashMap<>();
+    Map<String, Object> cityPanelMap = new HashMap<>();
+    Map<String, Object> cityMap = new HashMap<>();
+
+    if (countryAddressMetaFieldOnChangeAttrsMap.get("townName") != null) {
+      Map<String, Object> townNameAttrs = countryAddressMetaFieldOnChangeAttrsMap.get("townName");
+      if (townNameAttrs.containsKey("hidden")) {
+        Boolean townNameHidden = (Boolean) townNameAttrs.get("hidden");
+        if (!townNameHidden && ifCountryHasCities) {
+          // show townName and city in townNameAndCityPanel
+          townNameAndCityPanelMap.put("hidden", false);
+          cityPanelMap.put("hidden", true);
+          cityMap.put("hidden", false);
+        } else if (!townNameHidden) {
+          // show townName but don't show city in townNameAndCityPanel
+          townNameAndCityPanelMap.put("hidden", false);
+          cityPanelMap.put("hidden", true);
+          cityMap.put("hidden", true);
+        } else {
+          // only show cityPanel and keep the previous setting.
+          townNameAndCityPanelMap.put("hidden", true);
+          cityPanelMap.put("hidden", false);
+          cityMap.put("hidden", cityHidden);
+        }
+        outerMap.put("townNameAndCityPanel", townNameAndCityPanelMap);
+        outerMap.put("cityPanel", cityPanelMap);
+        outerMap.put("city", cityMap);
+      }
+    }
+    return outerMap;
+  }
+
+  @Override
+  public void updateAttrsMap(
+      Map<String, Map<String, Object>> townNameAndCityAttrtsMap,
+      Map<String, Map<String, Object>> countryAddressMetaFieldOnChangeAttrsMap) {
+    for (Map.Entry<String, Map<String, Object>> entry2 : townNameAndCityAttrtsMap.entrySet()) {
+      String key2 = entry2.getKey();
+      Map<String, Object> innerMap2 = entry2.getValue();
+
+      // Check if map1 contains the same key as map2
+      if (countryAddressMetaFieldOnChangeAttrsMap.containsKey(key2)) {
+        Map<String, Object> innerMap1 = countryAddressMetaFieldOnChangeAttrsMap.get(key2);
+
+        // Check each key-value pair in the inner map of map2
+        for (Map.Entry<String, Object> innerEntry2 : innerMap2.entrySet()) {
+          String innerKey2 = innerEntry2.getKey();
+          Object innerValue2 = innerEntry2.getValue();
+
+          // If map1's inner map contains the same key as map2's inner map, update the value
+          if (innerMap1.containsKey(innerKey2)) {
+            innerMap1.put(innerKey2, innerValue2); // Update the value in map1
+          } else {
+            innerMap1.put(innerKey2, innerValue2); // Add new key-value pair to inner map
+          }
+        }
+      } else {
+        // If map1 doesn't contain the key, add the entire key-value pair from map2
+        countryAddressMetaFieldOnChangeAttrsMap.put(key2, new HashMap<>(innerMap2));
+      }
+    }
   }
 }
