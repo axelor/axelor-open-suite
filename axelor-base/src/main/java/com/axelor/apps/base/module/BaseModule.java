@@ -96,6 +96,8 @@ import com.axelor.apps.base.service.DataBackupAnonymizeService;
 import com.axelor.apps.base.service.DataBackupAnonymizeServiceImpl;
 import com.axelor.apps.base.service.DataBackupService;
 import com.axelor.apps.base.service.DataBackupServiceImpl;
+import com.axelor.apps.base.service.DataSharingReferentialLineService;
+import com.axelor.apps.base.service.DataSharingReferentialLineServiceImpl;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.FakerService;
@@ -476,5 +478,6 @@ public class BaseModule extends AxelorModule {
     bind(PrintingTemplateComputeNameService.class).to(PrintingTemplateComputeNameServiceImpl.class);
     bind(ProductFireService.class).to(ProductFireServiceImpl.class);
     bind(ProductPriceService.class).to(ProductPriceServiceImpl.class);
+    bind(DataSharingReferentialLineService.class).to(DataSharingReferentialLineServiceImpl.class);
   }
 }

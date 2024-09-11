@@ -825,16 +825,15 @@ public class PaymentVoucherConfirmService {
     BigDecimal currencyRate =
         currencyService.getCurrencyConversionRate(
             invoiceTerm.getCurrency(), invoiceTerm.getCompanyCurrency(), paymentDate);
+    BigDecimal currencyAmount =
+        payVoucherElementToPay
+            .getAmountToPayCurrency()
+            .add(payVoucherElementToPay.getFinancialDiscountTotalAmount());
     BigDecimal invoiceTermCurrencyRate =
         currencyService.getCurrencyConversionRate(
             invoiceTerm.getCurrency(),
             invoiceTerm.getCompanyCurrency(),
             invoiceTerm.getInvoice().getInvoiceDate());
-    BigDecimal currencyAmount =
-        payVoucherElementToPay
-            .getAmountToPayCurrency()
-            .add(payVoucherElementToPay.getFinancialDiscountTotalAmount());
-
     BigDecimal companyAmountToPay =
         currencyScaleService.getCompanyScaledValue(
             payVoucherElementToPay.getPaymentVoucher(), currencyAmount.multiply(currencyRate));
