@@ -58,5 +58,4 @@ public interface ITranslation {
       "Price product fetch was successful"; /*)*/
   public static final String EMPTY_CART = /*$$(*/ "The cart was emptied successfully."; /*)*/
   String STATUS_CHANGE = /*$$(*/ "The status has been changed successfully."; /*)*/
-  public static String STATUS_CHANGE = /*$$(*/ "The status has been changed successfully."; /*)*/
 }

@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 public class SaleOrderPutRequest extends RequestPostStructure {
   @NotNull private Long saleOrderId;
-  private Long statusId;
+  @NotNull private Long statusId;
 
   public Long getSaleOrderId() {
     return saleOrderId;

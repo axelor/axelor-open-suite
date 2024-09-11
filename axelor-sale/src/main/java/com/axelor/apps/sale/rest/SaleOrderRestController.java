@@ -20,10 +20,13 @@ package com.axelor.apps.sale.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.rest.dto.SaleOrderPostRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderPutRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
 import com.axelor.apps.sale.service.SaleOrderGeneratorService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderFinalizeService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -77,9 +80,15 @@ public class SaleOrderRestController {
   public Response changeSaleOrderStatus(SaleOrderPutRequest requestBody) throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(SaleOrder.class, requestBody.getSaleOrderId()).check();
-
-    Beans.get(SaleOrderGeneratorService.class)
-        .changeSaleOrderStatus(requestBody.fetchSaleOrder(), requestBody.getStatusId());
+    Long statusId = requestBody.getStatusId();
+    SaleOrder saleOrder = requestBody.fetchSaleOrder();
+    if (statusId == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+      Beans.get(SaleOrderFinalizeService.class).finalizeQuotation(requestBody.fetchSaleOrder());
+    }
+    if (statusId == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
+      Beans.get(SaleOrderConfirmService.class)
+          .confirmSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
+    }
     return ResponseConstructor.build(Response.Status.OK, I18n.get(ITranslation.STATUS_CHANGE));
   }
 }

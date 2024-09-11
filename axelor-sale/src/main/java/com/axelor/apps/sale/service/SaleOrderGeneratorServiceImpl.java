@@ -32,16 +32,10 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.apps.sale.service.loyalty.LoyaltyAccountPointsManagementService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderFinalizeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeService;
-import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -57,7 +51,6 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   protected PartnerRepository partnerRepository;
 
   protected SaleConfigRepository saleConfigRepository;
-  protected SaleOrderCheckService saleOrderValidateService;
 
   @Inject
   public SaleOrderGeneratorServiceImpl(
@@ -69,8 +62,7 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
       SaleOrderDomainService saleOrderDomainService,
       PartnerRepository partnerRepository,
       SaleConfigService saleConfigService,
-      SaleConfigRepository saleConfigRepository,
-      SaleOrderCheckService saleOrderValidateService) {
+      SaleConfigRepository saleConfigRepository) {
     this.saleOrderRepository = saleOrderRepository;
     this.appSaleService = appSaleService;
     this.companyService = companyService;
@@ -80,7 +72,6 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     this.partnerRepository = partnerRepository;
     this.saleConfigService = saleConfigService;
     this.saleConfigRepository = saleConfigRepository;
-    this.saleOrderValidateService = saleOrderValidateService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -113,17 +104,6 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     setInAti(inAti, saleOrder);
     saleOrderRepository.save(saleOrder);
     return saleOrder;
-  }
-
-  @Override
-  public void changeSaleOrderStatus(SaleOrder saleOrder, Long statusId) throws AxelorException {
-    if (statusId == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-
-      Beans.get(SaleOrderFinalizeService.class).finalizeQuotation(saleOrder);
-    }
-    if (statusId == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
-      setStatusToConfirmed(saleOrder);
-    }
   }
 
   protected void checkClientPartner(Partner clientPartner, SaleOrder saleOrder)
@@ -170,25 +150,6 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.ATI_CHANGE_NOT_ALLOWED));
-    }
-  }
-
-  protected void setStatusToConfirmed(SaleOrder saleOrder) throws AxelorException {
-    String message =
-        Beans.get(SaleOrderConfirmService.class)
-            .confirmSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
-
-    if (StringUtils.notEmpty(message)) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
-    }
-
-    if (appSaleService.getAppSale().getEnableLoyalty()) {
-      Partner clientPartner = saleOrder.getClientPartner();
-      if (clientPartner == null) {
-        return;
-      }
-      Beans.get(LoyaltyAccountPointsManagementService.class)
-          .incrementLoyaltyPointsFromAmount(saleOrder);
     }
   }
 }
