@@ -787,4 +787,10 @@
     <series key="_num_event" type="bar" title="Activities"/>
   </chart>
 
+  <action-record name="action.chart.crm.chart.set.active.team"
+    model="com.axelor.apps.crm.db.Event">
+    <field name="activeTeam"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+  </action-record>
+
 </object-views>
