@@ -158,7 +158,7 @@
           colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
-      <panel-include view="incl-member-panel-form"/>
+      <panel-include view="incl-project-structure-panel-form"/>
       <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
         if="__config__.app.isApp('employee')"/>
       <panel title="HoldBacks" name="projectHoldBacksPanel">
@@ -574,33 +574,6 @@
         showIf="projectStatus.id == $canceledProjectStatusId" colSpan="12" css="btn-danger"
         icon="fa-file" onClick="action-project-record-status-new,save"/>
       <field name="projectStatus.isCompleted" hidden="true"/>
-    </panel>
-    <panel name="characteristicsPanel" title="Characteristics" colSpan="12" sidebar="true"
-      canCollapse="true">
-      <panel name="configPanel" colSpan="12">
-        <field name="isShowPhasesElements" colSpan="12" widget="boolean-switch"/>
-        <field if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project" name="$toInvoiceCounter" showTitle="false"
-          type="integer" hidden="true" colSpan="6"/>
-      </panel>
-      <panel name="projectPanel" colSpan="12">
-        <field name="parentProject" canEdit="false" form-view="business-project-form"
-          grid-view="project-grid" onSelect="action-project-attrs-set-parent-project-domain"/>
-        <spacer name="childProjectSpacer" colSpan="6"/>
-        <field name="childProjectList" readonly="true" colSpan="12"
-          form-view="business-project-form" grid-view="project-child-grid"
-          showIf="isShowPhasesElements"/>
-      </panel>
-    </panel>
-    <panel name="followUpPanel" colSpan="12" title="Follow-up" sidebar="true"
-      canCollapse="true">
-      <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
-        canEdit="false" onChange="action-business-project-group-assigned-to-onchange"
-        form-view="user-form" grid-view="user-grid"/>
-    </panel>
-    <panel name="datePanel" title="Dates" colSpan="12" sidebar="true" canCollapse="true">
-      <field name="fromDate" colSpan="6"/>
-      <field name="toDate" colSpan="6"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>

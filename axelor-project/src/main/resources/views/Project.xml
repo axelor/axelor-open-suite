@@ -112,7 +112,7 @@
           colSpan="12" action="action-view-show-project-task-tree"/>
       </panel>
 
-      <panel-include view="incl-member-panel-form"/>
+      <panel-include view="incl-project-structure-panel-form"/>
       <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
         if="__config__.app.isApp('employee')"/>
       <panel-include if-module="axelor-human-resource"
@@ -163,29 +163,6 @@
         icon="fa-file" onClick="action-project-record-status-new,save"/>
       <field name="projectStatus.isCompleted" hidden="true"/>
     </panel>
-    <panel name="characteristicsPanel" title="Characteristics" colSpan="12" sidebar="true"
-      canCollapse="true">
-      <panel name="configPanel" colSpan="12">
-        <field name="isShowPhasesElements" colSpan="12" widget="boolean-switch"/>
-      </panel>
-      <panel name="projectPanel" colSpan="12">
-        <field name="parentProject" canEdit="false" form-view="project-form"
-          grid-view="project-grid" onSelect="action-project-attrs-set-parent-project-domain"/>
-        <spacer name="childProjectSpacer" colSpan="6"/>
-        <field name="childProjectList" readonly="true" colSpan="12" form-view="project-form"
-          grid-view="project-child-grid" showIf="isShowPhasesElements"/>
-      </panel>
-    </panel>
-    <panel name="followUpPanel" colSpan="12" title="Follow-up" sidebar="true"
-      canCollapse="true">
-      <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
-        canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
-        grid-view="user-grid"/>
-    </panel>
-    <panel name="datePanel" title="Dates" colSpan="12" sidebar="true" canCollapse="true">
-      <field name="fromDate" colSpan="6"/>
-      <field name="toDate" colSpan="6"/>
-    </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
@@ -212,19 +189,36 @@
     </panel>
   </form>
 
-  <form name="incl-member-panel-form" title="Project"
+  <form name="incl-project-structure-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel title="Members" name="membersPanel">
-      <field name="team" title="Team" readonlyIf="synchronize || extendsMembersFromParent"
-        colSpan="6" canNew="false" canEdit="false"/>
-      <field name="synchronize" readonlyIf="extendsMembersFromParent" colSpan="2"
-        widget="boolean-switch"/>
-      <field name="extendsMembersFromParent" hidden="true" colSpan="3" widget="boolean-switch"/>
-      <field name="membersUserSet" colSpan="12" widget="TagSelect" canNew="false"
-        form-view="user-form" grid-view="user-grid" canEdit="false"/>
-      <button name="importMemberBtn" title="Import all members" showIf="team != null"
-        readonlyIf="extendsMembersFromParent" colSpan="3"
-        onClick="action-project-method-import-members"/>
+    <panel name="structurePanel" title="Project structure">
+      <field name="fromDate" colSpan="6"/>
+      <field name="toDate" colSpan="6"/>
+      <panel title="Members" name="membersPanel" canCollapse="true" colSpan="12"
+        collapseIf="true">
+        <field name="extendsMembersFromParent" hidden="true" widget="boolean-switch"/>
+        <spacer/>
+        <field name="team" title="Team" readonlyIf="synchronize || extendsMembersFromParent"
+          colSpan="6" canNew="false" canEdit="false"/>
+        <field name="synchronize" readonlyIf="extendsMembersFromParent" colSpan="3"
+          widget="boolean-switch"/>
+        <button name="importMemberBtn" title="Import all members" showIf="team != null"
+          readonlyIf="extendsMembersFromParent" colSpan="3"
+          onClick="action-project-method-import-members"/>
+        <field name="membersUserSet" colSpan="9" widget="TagSelect" canNew="false"
+          form-view="user-form" grid-view="user-grid" canEdit="false"/>
+        <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
+          canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
+          grid-view="user-grid" colSpan="3"/>
+      </panel>
+      <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
+        canCollapse="true" collapseIf="true">
+        <field name="parentProject" canEdit="false" form-view="project-form"
+          grid-view="project-grid" onSelect="action-project-attrs-set-parent-project-domain"/>
+        <field name="isShowPhasesElements" widget="boolean-switch"/>
+        <field name="childProjectList" readonly="true" colSpan="12" form-view="project-form"
+          grid-view="project-child-grid" showIf="isShowPhasesElements"/>
+      </panel>
     </panel>
   </form>
 
