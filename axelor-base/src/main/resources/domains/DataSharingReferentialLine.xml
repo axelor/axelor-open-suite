@@ -11,6 +11,9 @@
       ref="com.axelor.apps.base.db.DataSharingReferential" title="Data sharing referential"/>
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
     <string name="queryCondition" title="Condition" large="true" multiline="true"/>
+    <many-to-one name="wizardMetaModel" ref="com.axelor.meta.db.MetaModel"
+      title="Wizard model"/>
+    <long name="wizardRefId" title="Wizard reference id"/>
 
   </entity>
 

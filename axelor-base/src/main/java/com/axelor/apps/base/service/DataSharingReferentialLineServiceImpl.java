@@ -18,12 +18,15 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.DataSharingReferential;
 import com.axelor.apps.base.db.DataSharingReferentialLine;
 import com.axelor.apps.base.db.repo.DataSharingReferentialLineRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -31,11 +34,14 @@ import org.apache.commons.collections.CollectionUtils;
 public class DataSharingReferentialLineServiceImpl implements DataSharingReferentialLineService {
 
   protected DataSharingReferentialLineRepository dataSharingReferentialLineRepository;
+  protected MetaModelRepository metaModelRepository;
 
   @Inject
   public DataSharingReferentialLineServiceImpl(
-      DataSharingReferentialLineRepository dataSharingReferentialLineRepository) {
+      DataSharingReferentialLineRepository dataSharingReferentialLineRepository,
+      MetaModelRepository metaModelRepository) {
     this.dataSharingReferentialLineRepository = dataSharingReferentialLineRepository;
+    this.metaModelRepository = metaModelRepository;
   }
 
   @Override
@@ -73,5 +79,22 @@ public class DataSharingReferentialLineServiceImpl implements DataSharingReferen
       }
     }
     return conditionList;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public DataSharingReferentialLine createDataSharingReferentialLine(
+      DataSharingReferential dataSharingReferential,
+      String metaModelName,
+      String condition,
+      String wizardModelName,
+      Long wizardRefId) {
+    DataSharingReferentialLine dataSharingReferentialLine = new DataSharingReferentialLine();
+    dataSharingReferentialLine.setDataSharingReferential(dataSharingReferential);
+    dataSharingReferentialLine.setMetaModel(metaModelRepository.findByName(metaModelName));
+    dataSharingReferentialLine.setQueryCondition(condition);
+    dataSharingReferentialLine.setWizardMetaModel(metaModelRepository.findByName(wizardModelName));
+    dataSharingReferentialLine.setWizardRefId(wizardRefId);
+    return dataSharingReferentialLineRepository.save(dataSharingReferentialLine);
   }
 }
