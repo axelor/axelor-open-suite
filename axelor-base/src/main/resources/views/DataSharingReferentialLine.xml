@@ -4,16 +4,41 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="data-sharing-referential-line-grid" title="Data sharing referential lines"
-    model="com.axelor.apps.base.db.DataSharingReferentialLine">
+    model="com.axelor.apps.base.db.DataSharingReferentialLine" canDelete="false">
     <field name="metaModel"/>
+    <button name="openWizardMetaModelBtn" title="Open wizard meta model"
+      icon="box-arrow-up-right"
+      onClick="action-data-sharing-referential-line-view-wizard-meta-model"
+      readonlyIf="!wizardMetaModel &amp;&amp; !wizardRefId"/>
+    <field name="wizardMetaModel" hidden="true"/>
+    <field name="wizardRefId" hidden="true"/>
   </grid>
 
   <form name="data-sharing-referential-line-form" title="Data sharing referential line"
-    model="com.axelor.apps.base.db.DataSharingReferentialLine" width="large">
+    model="com.axelor.apps.base.db.DataSharingReferentialLine" width="large" canDelete="false"
+    readonlyIf="wizardMetaModel &amp;&amp; wizardRefId">
     <panel name="mainPanel">
+      <field name="$wizardRefTag" showTitle="false" readonly="true" colSpan="12">
+        <viewer>
+            <![CDATA[
+                <>{wizardMetaModel && wizardRefId && <Badge bg="info">{_t('Linked to a creation assistant')}</Badge>}</>
+            ]]>
+        </viewer>
+      </field>
       <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
       <field name="queryCondition" colSpan="12"/>
     </panel>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="wizardMetaModel"/>
+      <field name="wizardRefId"/>
+    </panel>
   </form>
+
+  <action-view name="action-data-sharing-referential-line-view-wizard-meta-model"
+    title="Data sharing product assistant" model="com.axelor.apps.base.db.DataSharingProductWizard">
+    <view type="form" name="data-sharing-product-wizard-form"/>
+    <view type="grid" name="data-sharing-product-wizard-grid"/>
+    <context name="_showRecord" expr="eval: wizardRefId"/>
+  </action-view>
 
 </object-views>
