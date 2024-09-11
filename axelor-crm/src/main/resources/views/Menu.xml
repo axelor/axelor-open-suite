@@ -600,7 +600,7 @@
 
   <menuitem name="crm-search" parent="crm-root" title="Search" order="60" icon="fa-search"/>
 
-  <menuitem name="crm-search-request" parent="crm-search" title="Request"
+  <menuitem name="crm-search-request" parent="crm-search" title="ResearchRequest.title"
     action="crm.root.crm.search.request" order="1"/>
   <action-view name="crm.root.crm.search.request" title="Requests"
     model="com.axelor.apps.base.db.ResearchRequest">
