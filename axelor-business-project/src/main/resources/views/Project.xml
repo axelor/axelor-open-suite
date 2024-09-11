@@ -137,13 +137,12 @@
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
           domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
       </panel>
-      <field name="description" colSpan="12" widget="html"/>
-      <field name="siteSet" colSpan="12" grid-view="site-project-grid" form-view="site-form"
-        if="__config__.app.getApp('base')?.enableSiteManagementForProject"
-        domain="self.isUsableOnProject = true" canEdit="false"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
+
+      <panel-include view="incl-project-overview-panel-form"/>
+
       <panel title="Task Tree" name="taskTreePanel">
         <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
           icon="fa-plus" onClick="save,action-business-project-add-task"/>
@@ -555,10 +554,6 @@
           action="action-project-dashlet-contract-invoices" colSpan="12"/>
       </panel>
       <panel-include view="incl-custom-fields-to-display-panel-form"/>
-      <panel title="Activities" name="activityPanel"
-        onTabSelect="action-project-activity-dashboard-method-on-new" showIf="id">
-        <panel-include view="project-activity-dashboard-form"/>
-      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
