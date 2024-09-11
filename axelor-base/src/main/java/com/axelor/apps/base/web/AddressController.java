@@ -354,37 +354,18 @@ public class AddressController {
 
     if (address.getCountry() != null) {
       AddressAttrsService addressAttrsService = Beans.get(AddressAttrsService.class);
+
       Map<String, Map<String, Object>> countryAddressMetaFieldOnChangeAttrsMap =
           addressAttrsService.getCountryAddressMetaFieldOnChangeAttrsMap(address);
+
+      Map<String, Map<String, Object>> townNameAndCityAttrtsMap =
+          addressAttrsService.getTownNameAndCityAttrsMap(
+              countryAddressMetaFieldOnChangeAttrsMap, address);
+
+      addressAttrsService.updateAttrsMap(
+          townNameAndCityAttrtsMap, countryAddressMetaFieldOnChangeAttrsMap);
+
       response.setAttrs(countryAddressMetaFieldOnChangeAttrsMap);
-
-      Map<String, Object> cityAttrs = countryAddressMetaFieldOnChangeAttrsMap.get("city");
-      Boolean cityHidden = (Boolean) cityAttrs.get("hidden");
-
-      boolean ifCountryHasCities = addressAttrsService.ifCountryHasCities(address.getCountry());
-
-      if (countryAddressMetaFieldOnChangeAttrsMap.get("townName") != null) {
-        Map<String, Object> townNameAttrs = countryAddressMetaFieldOnChangeAttrsMap.get("townName");
-        if (townNameAttrs.containsKey("hidden")) {
-          Boolean townNameHidden = (Boolean) townNameAttrs.get("hidden");
-          if (!townNameHidden && ifCountryHasCities) {
-            // show townName and city in townNameAndCityPanel
-            response.setAttr("townNameAndCityPanel", "hidden", false);
-            response.setAttr("cityPanel", "hidden", true);
-            response.setAttr("city", "hidden", false);
-          } else if (!townNameHidden) {
-            // show townName but don't show city in townNameAndCityPanel
-            response.setAttr("townNameAndCityPanel", "hidden", false);
-            response.setAttr("cityPanel", "hidden", true);
-            response.setAttr("city", "hidden", true);
-          } else {
-            // only show cityPanel and keep the previous setting.
-            response.setAttr("townNameAndCityPanel", "hidden", true);
-            response.setAttr("cityPanel", "hidden", false);
-            response.setAttr("city", "hidden", cityHidden);
-          }
-        }
-      }
     }
   }
 }
