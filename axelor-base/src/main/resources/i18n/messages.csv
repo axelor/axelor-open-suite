@@ -441,6 +441,7 @@
 "Citizenship",,,
 "City",,,
 "City import completed",,,
+"City zip is different from address zip",,,
 "Civil Year",,,
 "Civil year already exist for ${com.axelor.i18n.L10n.getInstance().format(fromDate)} and ${com.axelor.i18n.L10n.getInstance().format(toDate)}.",,,
 "Civility",,,
