@@ -90,27 +90,20 @@ public class ProductRestServiceImpl implements ProductRestService {
         productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
     BigDecimal priceATI =
         productPriceService.getSaleUnitPrice(company, product, true, partner, currency);
-    if (product.getSalesUnit() == null) {
+    if (product.getSalesUnit() == null && product.getUnit() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(SaleExceptionMessage.PRODUCT_SALE_UNIT_IS_NULL),
           product.getId());
     }
+    Unit convertFrom = product.getSalesUnit() != null ? product.getSalesUnit() : product.getUnit();
     if (unit != null) {
       priceWT =
           unitConversionService.convert(
-              unit,
-              product.getSalesUnit(),
-              priceWT,
-              appBaseService.getNbDecimalDigitForUnitPrice(),
-              product);
+              unit, convertFrom, priceWT, appBaseService.getNbDecimalDigitForUnitPrice(), product);
       priceATI =
           unitConversionService.convert(
-              unit,
-              product.getSalesUnit(),
-              priceATI,
-              appBaseService.getNbDecimalDigitForUnitPrice(),
-              product);
+              unit, convertFrom, priceATI, appBaseService.getNbDecimalDigitForUnitPrice(), product);
     }
 
     priceList.add(new PriceResponse("WT", priceWT));
@@ -152,7 +145,7 @@ public class ProductRestServiceImpl implements ProductRestService {
       }
       List<PriceResponse> prices = fetchProductPrice(product, partner, company, currency, unit);
       if (unit == null) {
-        unit = product.getSalesUnit();
+        unit = product.getSalesUnit() != null ? product.getSalesUnit() : product.getUnit();
       }
       UnitResponse unitResponse = new UnitResponse(unit.getName(), unit.getLabelToPrinting());
       productResponses.add(
