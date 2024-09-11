@@ -49,25 +49,24 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
   @Override
   public boolean equals(BillOfMaterialLine billOfMaterialLine, SaleOrderLine saleOrderLine) {
 
-    if (billOfMaterialLine == null && saleOrderLine != null) {
-      return false;
-    } else if (billOfMaterialLine != null && saleOrderLine == null) {
-      return false;
-    } else if (billOfMaterialLine == null && saleOrderLine == null) {
-      return false;
-    }
-
-
-    return billOfMaterialLine.getQty().equals(saleOrderLine.getQty()) && billOfMaterialLine.getProduct().equals(saleOrderLine.getProduct())
-            && Optional.ofNullable(saleOrderLine.getBillOfMaterial()).map(solBom -> solBom.equals(billOfMaterialLine.getBillOfMaterial()))
-            .or(() -> Optional.of(billOfMaterialLine.getBillOfMaterial() == null)).get();
-
+    return billOfMaterialLine.getQty().equals(saleOrderLine.getQty())
+        && billOfMaterialLine.getProduct().equals(saleOrderLine.getProduct())
+        && billOfMaterialLine.getUnit().equals(saleOrderLine.getUnit())
+        && Optional.ofNullable(saleOrderLine.getBillOfMaterial())
+            .map(solBom -> solBom.equals(billOfMaterialLine.getBillOfMaterial()))
+            .or(() -> Optional.of(billOfMaterialLine.getBillOfMaterial() == null))
+            .get();
   }
 
   @Override
   public boolean isSyncWithBomLine(SaleOrderLine saleOrderLine) {
     Objects.requireNonNull(saleOrderLine);
 
-    return saleOrderLine.getBillOfMaterialLine() != null && this.equals(saleOrderLine.getBillOfMaterialLine(), saleOrderLine);
+    // No BOM => Not synchronize
+    if (saleOrderLine.getBillOfMaterialLine() == null) {
+      return false;
+    }
+
+    return this.equals(saleOrderLine.getBillOfMaterialLine(), saleOrderLine);
   }
 }

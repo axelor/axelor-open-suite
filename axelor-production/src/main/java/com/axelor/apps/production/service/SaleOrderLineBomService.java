@@ -10,4 +10,8 @@ public interface SaleOrderLineBomService {
 
   List<SaleOrderLine> createSaleOrderLinesFromBom(
       BillOfMaterial billOfMaterial, SaleOrder saleOrder) throws AxelorException;
+
+  BillOfMaterial customizeBomOf(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  void updateWithBillOfMaterial(SaleOrderLine saleOrderLine) throws AxelorException;
 }

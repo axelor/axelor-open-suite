@@ -20,6 +20,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
     extends SaleOrderOnLineChangeSupplyChainServiceImpl {
 
   protected final AppProductionService appProductionService;
+  protected final SaleOrderProductionSyncService saleOrderProductionSyncService;
 
   @Inject
   public SaleOrderOnLineChangeProductionServiceImpl(
@@ -33,7 +34,8 @@ public class SaleOrderOnLineChangeProductionServiceImpl
       SaleOrderLineProductService saleOrderLineProductService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      SaleOrderProductionSyncService saleOrderProductionSyncService) {
     super(
         appSaleService,
         saleOrderService,
@@ -47,6 +49,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
         saleOrderShipmentService);
 
     this.appProductionService = appProductionService;
+    this.saleOrderProductionSyncService = saleOrderProductionSyncService;
   }
 
   @Override
@@ -54,7 +57,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
     super.onLineChange(saleOrder);
 
     if (appProductionService.isApp("production")) {
-
+      saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder);
     }
   }
 }
