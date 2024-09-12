@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -40,7 +39,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -115,17 +113,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     List<InvoiceTerm> invoiceTerms;
     if (CollectionUtils.isNotEmpty(invoiceTermToPayList)) {
       invoiceTerms = new ArrayList<>(invoiceTermToPayList);
-    } else if (invoicePayment.getMove() != null
-        && invoicePayment.getMove().getPaymentVoucher() != null
-        && CollectionUtils.isNotEmpty(
-            invoicePayment.getMove().getPaymentVoucher().getPayVoucherElementToPayList())) {
-      invoiceTerms =
-          invoicePayment.getMove().getPaymentVoucher().getPayVoucherElementToPayList().stream()
-              .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
-              .map(PayVoucherElementToPay::getInvoiceTerm)
-              .collect(Collectors.toList());
     } else {
-      invoiceTerms = invoiceTermFilterService.getUnpaidInvoiceTermsFiltered(invoice);
+      invoiceTerms = invoiceTermToolService.getPaymentVoucherInvoiceTerms(invoicePayment, invoice);
     }
 
     if (CollectionUtils.isNotEmpty(invoiceTerms)) {
