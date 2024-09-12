@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.businessproject.service.BusinessProjectSprintAllocationLineService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.hr.db.Employee;
@@ -56,6 +57,7 @@ import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
@@ -100,6 +102,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   private TimesheetLineRepository timesheetLineRepository;
   private AppBusinessProjectService appBusinessProjectService;
   private ProjectPlanningTimeService projectPlanningTimeService;
+  private ProjectPlanningTimeRepository projectPlanningTimeRepo;
+  private BusinessProjectSprintAllocationLineService businessProjectSprintAllocationLineService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -118,7 +122,9 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
       AppBusinessProjectService appBusinessProjectService,
-      ProjectPlanningTimeService projectPlanningTimeService) {
+      ProjectPlanningTimeService projectPlanningTimeService,
+      ProjectPlanningTimeRepository projectPlanningTimeRepo,
+      BusinessProjectSprintAllocationLineService businessProjectSprintAllocationLineService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -136,6 +142,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.timesheetLineRepository = timesheetLineRepository;
     this.appBusinessProjectService = appBusinessProjectService;
     this.projectPlanningTimeService = projectPlanningTimeService;
+    this.projectPlanningTimeRepo = projectPlanningTimeRepo;
+    this.businessProjectSprintAllocationLineService = businessProjectSprintAllocationLineService;
   }
 
   @Override
@@ -753,85 +761,92 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   }
 
   @Override
+  @Transactional
   public List<ProjectPlanningTime> updateProjectTimePlanning(ProjectTask projectTask)
       throws AxelorException {
 
-    List<ProjectPlanningTime> projectPlanningTimeList = projectTask.getProjectPlanningTimeList();
+    List<ProjectPlanningTime> projectPlanningTimeList =
+        Optional.ofNullable(projectTask.getProjectPlanningTimeList()).orElse(new ArrayList<>());
 
     Sprint sprint = projectTask.getSprint();
     User assignedTo = projectTask.getAssignedTo();
 
-    User projectTaskDbUser = null;
-    // Sprint projectTaskDbSprint = null;
+    if (projectTask.getId() == null
+        || sprint == null
+        || sprint.getSprintPeriod() == null
+        || assignedTo == null) {
+      return projectPlanningTimeList;
+    }
+
+    ProjectTask projectTaskDb = projectTaskRepo.find(projectTask.getId());
+    User projectTaskDbUser =
+        Optional.ofNullable(projectTaskDb).map(ProjectTask::getAssignedTo).orElse(null);
+    Sprint projectTaskDbSprint =
+        Optional.ofNullable(projectTaskDb).map(ProjectTask::getSprint).orElse(null);
+
+    LocalDateTime startDateTime = sprint.getSprintPeriod().getFromDate().atStartOfDay();
+    LocalDateTime endDateTime = sprint.getSprintPeriod().getToDate().atStartOfDay();
 
     boolean foundAndUpdated = false;
 
-    if (projectTask.getId() != null) {
-      ProjectTask projectTaskDb = projectTaskRepo.find(projectTask.getId());
-      projectTaskDbUser = projectTaskDb.getAssignedTo();
-      // projectTaskDbSprint = projectTaskDb.getSprint();
-    }
+    if (CollectionUtils.isNotEmpty(projectPlanningTimeList)) {
 
-    if (sprint != null && sprint.getSprintPeriod() != null) {
-      // && (assignedTo != projectTaskDbUser || sprint != projectTaskDbSprint)) {
-      LocalDateTime startDateTime = sprint.getSprintPeriod().getFromDate().atStartOfDay();
-      LocalDateTime endDateTime = sprint.getSprintPeriod().getToDate().atStartOfDay();
+      for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeList) {
 
-      if (CollectionUtils.isNotEmpty(projectPlanningTimeList)) {
-
-        for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeList) {
-
-          if (projectPlanningTime.getEmployee().equals(projectTaskDbUser.getEmployee())) {
-            projectPlanningTime.setEmployee(assignedTo.getEmployee());
-            foundAndUpdated = true;
-          }
-
-          projectPlanningTime.setStartDateTime(startDateTime);
-          projectPlanningTime.setEndDateTime(endDateTime);
-        }
-      }
-
-      if (!foundAndUpdated) {
-        Product product =
-            Optional.ofNullable(projectTask)
-                .map(ProjectTask::getAssignedTo)
-                .map(User::getEmployee)
-                .map(Employee::getProduct)
-                .orElse(null);
-        Project project = projectTask.getProject();
-        Employee employee = assignedTo.getEmployee();
-
-        ProjectPlanningTime projectPlanningTime =
-            projectPlanningTimeService.createProjectPlanningTime(
-                startDateTime,
-                projectTask,
-                project,
-                0,
-                employee,
-                product,
-                BigDecimal.ZERO,
-                endDateTime,
-                null);
-
-        if (projectTask.getProgress().compareTo(BigDecimal.ZERO) == 0) {
-          projectPlanningTime.setPlannedTime(
-              projectTask.getBudgetedTime().subtract(projectTask.getSpentTime()));
-        } else {
-          BigDecimal hundred = new BigDecimal("100");
-          BigDecimal remainingPercentage = hundred.subtract(projectTask.getProgress());
-          BigDecimal plannedTime =
-              remainingPercentage
-                  .multiply(projectTask.getBudgetedTime())
-                  .divide(hundred, RoundingMode.HALF_UP);
-
-          projectPlanningTime.setPlannedTime(plannedTime);
+        if (projectTaskDbUser != null
+            && projectTaskDbUser.getEmployee() != null
+            && projectPlanningTime.getEmployee().equals(projectTaskDbUser.getEmployee())) {
+          projectPlanningTime.setEmployee(assignedTo.getEmployee());
+          foundAndUpdated = true;
         }
 
-        projectPlanningTimeList.add(projectPlanningTime);
+        projectPlanningTime.setStartDateTime(startDateTime);
+        projectPlanningTime.setEndDateTime(endDateTime);
       }
     }
+
+    Project project = projectTask.getProject();
+
+    if (!foundAndUpdated) {
+      Employee employee = assignedTo.getEmployee();
+      Product product = Optional.ofNullable(employee).map(Employee::getProduct).orElse(null);
+
+      ProjectPlanningTime projectPlanningTime =
+          projectPlanningTimeService.createProjectPlanningTime(
+              startDateTime,
+              projectTask,
+              project,
+              0,
+              employee,
+              product,
+              BigDecimal.ZERO,
+              endDateTime,
+              null);
+
+      projectPlanningTime.setPlannedTime(calculatePlannedTime(projectTask));
+
+      projectPlanningTimeRepo.save(projectPlanningTime);
+      projectPlanningTimeList.add(projectPlanningTime);
+    }
+
+    businessProjectSprintAllocationLineService.sprintOnChange(project, projectTaskDbSprint);
+    businessProjectSprintAllocationLineService.sprintOnChange(project, sprint);
 
     return projectPlanningTimeList;
+  }
+
+  public BigDecimal calculatePlannedTime(ProjectTask projectTask) {
+
+    if (projectTask.getProgress().compareTo(BigDecimal.ZERO) == 0) {
+      return projectTask.getBudgetedTime().subtract(projectTask.getSpentTime());
+    } else {
+      BigDecimal hundred = new BigDecimal("100");
+      BigDecimal remainingPercentage = hundred.subtract(projectTask.getProgress());
+
+      return remainingPercentage
+          .multiply(projectTask.getBudgetedTime())
+          .divide(hundred, RoundingMode.HALF_UP);
+    }
   }
 
   @Override

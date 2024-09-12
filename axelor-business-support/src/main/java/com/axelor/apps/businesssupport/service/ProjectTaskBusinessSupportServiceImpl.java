@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.service.BusinessProjectSprintAllocationLineService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectServiceImpl;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -32,6 +33,7 @@ import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
@@ -62,7 +64,9 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
       AppBusinessProjectService appBusinessProjectService,
-      ProjectPlanningTimeService projectPlanningTimeService) {
+      ProjectPlanningTimeService projectPlanningTimeService,
+      ProjectPlanningTimeRepository projectPlanningTimeRepo,
+      BusinessProjectSprintAllocationLineService businessProjectSprintAllocationLineService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -79,7 +83,9 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
         productCompanyService,
         timesheetLineRepository,
         appBusinessProjectService,
-        projectPlanningTimeService);
+        projectPlanningTimeService,
+        projectPlanningTimeRepo,
+        businessProjectSprintAllocationLineService);
   }
 
   @Override

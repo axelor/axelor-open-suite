@@ -24,7 +24,6 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
-import com.axelor.apps.project.service.SprintAllocationLineService;
 import com.axelor.inject.Beans;
 
 public class BusinessProjectPlanningTimeRepository extends ProjectPlanningTimeHRRepository {
@@ -42,7 +41,6 @@ public class BusinessProjectPlanningTimeRepository extends ProjectPlanningTimeHR
 
       if (sprint != null) {
         Beans.get(BusinessProjectSprintAllocationLineService.class).sprintOnChange(project, sprint);
-        Beans.get(SprintAllocationLineService.class).updateSprintTotals(sprint);
       }
     }
 
@@ -62,7 +60,6 @@ public class BusinessProjectPlanningTimeRepository extends ProjectPlanningTimeHR
 
       if (sprint != null) {
         Beans.get(BusinessProjectSprintAllocationLineService.class).sprintOnChange(project, sprint);
-        Beans.get(SprintAllocationLineService.class).updateSprintTotals(sprint);
       }
     }
   }
