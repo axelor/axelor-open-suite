@@ -18,11 +18,15 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -163,5 +167,24 @@ public class InvoiceTermToolServiceImpl implements InvoiceTermToolService {
         .bind("invoiceTermIds", invoiceTermIds)
         .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
         .fetch();
+  }
+
+  @Override
+  public List<InvoiceTerm> getPaymentVoucherInvoiceTerms(
+      InvoicePayment invoicePayment, Invoice invoice) throws AxelorException {
+    List<InvoiceTerm> invoiceTerms;
+    if (invoicePayment.getMove() != null
+        && invoicePayment.getMove().getPaymentVoucher() != null
+        && CollectionUtils.isNotEmpty(
+            invoicePayment.getMove().getPaymentVoucher().getPayVoucherElementToPayList())) {
+      invoiceTerms =
+          invoicePayment.getMove().getPaymentVoucher().getPayVoucherElementToPayList().stream()
+              .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
+              .map(PayVoucherElementToPay::getInvoiceTerm)
+              .collect(Collectors.toList());
+    } else {
+      invoiceTerms = invoiceTermFilterService.getUnpaidInvoiceTermsFiltered(invoice);
+    }
+    return invoiceTerms;
   }
 }

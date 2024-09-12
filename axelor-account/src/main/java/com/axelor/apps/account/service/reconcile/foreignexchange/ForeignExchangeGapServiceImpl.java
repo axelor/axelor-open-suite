@@ -97,9 +97,6 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     return null;
   }
 
-  @Override
-  public void unreconcileForeignExchangeMove(Reconcile reconcile) throws AxelorException {}
-
   protected boolean checkForeignExchangeAccounts(Company company) throws AxelorException {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     Account gainsAccount = accountConfig.getForeignExchangeGainsAccount();
@@ -216,5 +213,17 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
         moveLineCreateService.createMoveLine(
             move, partner, account, amount, isDebit, move.getDate(), ref, null, null);
     move.addMoveLineListItem(newMoveLine);
+  }
+
+  @Override
+  public void unreconcileForeignExchangeMove(Reconcile reconcile) throws AxelorException {
+    if (reconcile.getForeignExchangeMove() != null) {
+      moveReverseService.generateReverse(
+          reconcile.getForeignExchangeMove(),
+          true,
+          true,
+          true,
+          appBaseService.getTodayDate(reconcile.getCompany()));
+    }
   }
 }
