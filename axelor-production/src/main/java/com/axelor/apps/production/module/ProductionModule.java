@@ -38,7 +38,6 @@ import com.axelor.apps.production.db.repo.ProductionBatchManagementRepository;
 import com.axelor.apps.production.db.repo.ProductionBatchRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementProductionRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementRepository;
-import com.axelor.apps.production.db.repo.SaleOrderLineProductionRepository;
 import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
 import com.axelor.apps.production.db.repo.StockMoveProductionRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepository;
@@ -90,7 +89,6 @@ import com.axelor.apps.production.service.SaleOrderLineProductProductionService;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineViewProductionService;
 import com.axelor.apps.production.service.SaleOrderLineViewProductionServiceImpl;
-import com.axelor.apps.production.service.SaleOrderProductionCheckSaveServiceImpl;
 import com.axelor.apps.production.service.SopService;
 import com.axelor.apps.production.service.SopServiceImpl;
 import com.axelor.apps.production.service.StockMoveLineProductionServiceImpl;
@@ -192,10 +190,8 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderWizardS
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderCheckSaveServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.apps.supplychain.db.repo.SaleOrderLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
@@ -324,7 +320,5 @@ public class ProductionModule extends AxelorModule {
     bind(ProdProcessWorkflowService.class).to(ProdProcessWorkflowServiceImpl.class);
     bind(SaleOrderLineBomService.class).to(SaleOrderLineBomServiceImpl.class);
     bind(SaleOrderLineBomLineMappingService.class).to(SaleOrderLineBomLineMappingServiceImpl.class);
-    bind(SaleOrderLineSupplychainRepository.class).to(SaleOrderLineProductionRepository.class);
-    bind(SaleOrderCheckSaveServiceImpl.class).to(SaleOrderProductionCheckSaveServiceImpl.class);
   }
 }

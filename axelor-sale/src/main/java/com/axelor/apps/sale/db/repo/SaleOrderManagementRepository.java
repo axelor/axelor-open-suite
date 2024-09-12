@@ -27,7 +27,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderCheckSaveService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
@@ -84,7 +83,6 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     try {
       AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
       SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
-      Beans.get(SaleOrderCheckSaveService.class).checkSaleOrderLineSubList(saleOrder);
 
       if (appSale.getEnablePackManagement()) {
         saleOrderComputeService.computePackTotal(saleOrder);
