@@ -80,12 +80,6 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
-import com.axelor.apps.sale.service.loyalty.LoyaltyAccountHistoryLineService;
-import com.axelor.apps.sale.service.loyalty.LoyaltyAccountHistoryLineServiceImpl;
-import com.axelor.apps.sale.service.loyalty.LoyaltyAccountPointsManagementService;
-import com.axelor.apps.sale.service.loyalty.LoyaltyAccountPointsManagementServiceImpl;
-import com.axelor.apps.sale.service.loyalty.LoyaltyAccountService;
-import com.axelor.apps.sale.service.loyalty.LoyaltyAccountServiceImpl;
 import com.axelor.apps.sale.service.observer.ProductPopulateSaleObserver;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireServiceImpl;
@@ -271,9 +265,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderObserver.class);
     bind(SaleOrderConfirmService.class).to(SaleOrderConfirmServiceImpl.class);
     bind(SaleOrderLineCheckService.class).to(SaleOrderLineCheckServiceImpl.class);
-    bind(LoyaltyAccountService.class).to(LoyaltyAccountServiceImpl.class);
-    bind(LoyaltyAccountPointsManagementService.class)
-        .to(LoyaltyAccountPointsManagementServiceImpl.class);
     bind(SaleOrderLineGeneratorService.class).to(SaleOrderLineGeneratorServiceImpl.class);
     bind(SaleOrderGeneratorService.class).to(SaleOrderGeneratorServiceImpl.class);
     bind(CartInitValueService.class).to(CartInitValueServiceImpl.class);
@@ -281,7 +272,6 @@ public class SaleModule extends AxelorModule {
     bind(CartLineRepository.class).to(CartLineManagementRepository.class);
     bind(CartLineService.class).to(CartLineServiceImpl.class);
     bind(ProductPopulateSaleObserver.class);
-    bind(LoyaltyAccountHistoryLineService.class).to(LoyaltyAccountHistoryLineServiceImpl.class);
     bind(ProductRestService.class).to(ProductRestServiceImpl.class);
     bind(CartSaleOrderGeneratorService.class).to(CartSaleOrderGeneratorServiceImpl.class);
   }

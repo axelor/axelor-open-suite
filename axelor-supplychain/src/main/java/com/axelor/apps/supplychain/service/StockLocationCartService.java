@@ -18,9 +18,10 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StockLocation;
 
 public interface StockLocationCartService {
 
-  void addToCart(StockLocation stockLocation);
+  void addToCart(StockLocation stockLocation) throws AxelorException;
 }

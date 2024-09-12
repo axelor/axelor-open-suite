@@ -82,7 +82,9 @@ public class CartController {
     try {
       Cart cart = request.getContext().asType(Cart.class);
       cart = Beans.get(CartRepository.class).find(cart.getId());
-      SaleOrder saleOrder = Beans.get(CartSaleOrderGeneratorService.class).createSaleOrder(cart);
+      SaleOrder saleOrder =
+          Beans.get(CartSaleOrderGeneratorService.class)
+              .createSaleOrder(cart, cart.getCartLineList());
       response.setView(
           ActionView.define(I18n.get("Sale order"))
               .model(SaleOrder.class.getName())

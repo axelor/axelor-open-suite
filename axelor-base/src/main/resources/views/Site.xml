@@ -21,7 +21,7 @@
         </editor>
       </field>
       <field name="address" canNew="true"/>
-      <field name="companySet" widget="tagSelect" canNew="false"/>
+      <field name="company" canNew="false"/>
     </panel>
     <panel-tabs>
       <panel name="basePanel" hidden="true">
@@ -36,7 +36,7 @@
   </form>
 
   <action-attrs name="action-site-attrs-set-defaults">
-    <attribute for="companySet" name="value" expr="eval: [__user__.activeCompany]"
+    <attribute for="company" name="value" expr="eval: __user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <attribute for="typeSelect" name="value" expr="1"/>
   </action-attrs>

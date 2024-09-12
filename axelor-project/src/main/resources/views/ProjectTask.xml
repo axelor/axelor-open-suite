@@ -103,11 +103,7 @@
 
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
         if-module="axelor-human-resource" showIf="project.isShowPlanning">
-        <field name="budgetedTime" colSpan="4">
-          <viewer><![CDATA[
-                   	<><span>{$fmt('budgetedTime')} </span><span>{_t('hours')}</span></>
-       			]]></viewer>
-        </field>
+        <field name="budgetedTime" colSpan="4"/>
         <spacer name="budgetedTimeSpacer" colSpan="4"/>
         <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
           x-show-bars="false" action="action-project-task-dashlet-project-planning-time"

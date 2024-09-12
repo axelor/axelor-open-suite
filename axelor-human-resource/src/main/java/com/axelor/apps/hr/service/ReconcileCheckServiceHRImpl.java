@@ -24,6 +24,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.reconcile.ReconcileCheckServiceImpl;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.google.inject.Inject;
 
 public class ReconcileCheckServiceHRImpl extends ReconcileCheckServiceImpl {
@@ -33,8 +34,14 @@ public class ReconcileCheckServiceHRImpl extends ReconcileCheckServiceImpl {
       CurrencyScaleService currencyScaleService,
       InvoiceTermPfpService invoiceTermPfpService,
       InvoiceTermToolService invoiceTermToolService,
-      MoveLineToolService moveLineToolService) {
-    super(currencyScaleService, invoiceTermPfpService, invoiceTermToolService, moveLineToolService);
+      MoveLineToolService moveLineToolService,
+      CurrencyService currencyService) {
+    super(
+        currencyScaleService,
+        invoiceTermPfpService,
+        invoiceTermToolService,
+        moveLineToolService,
+        currencyService);
   }
 
   @Override
