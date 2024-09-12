@@ -218,7 +218,6 @@ public class BankReconciliationMoveGenerationServiceImpl
         }
         if (bankReconciliationLine.getMoveLine() == null
             && bankReconciliationLine.getAccount() != null
-            && bankReconciliationLine.getPartner() != null
             && bankReconciliation.getCashAccount() != null
             && bankReconciliation.getJournal() != null) {
           move = generateMove(bankReconciliationLine, null);
@@ -288,6 +287,7 @@ public class BankReconciliationMoveGenerationServiceImpl
             (String) moveFieldsMap.get("origin"),
             (String) moveFieldsMap.get("description"),
             (BankDetails) moveFieldsMap.get("companyBankDetails"));
+    move.setPaymentCondition(null);
     LocalDate originDate =
         Optional.ofNullable(bankStatementLine)
             .map(BankStatementLine::getOperationDate)
