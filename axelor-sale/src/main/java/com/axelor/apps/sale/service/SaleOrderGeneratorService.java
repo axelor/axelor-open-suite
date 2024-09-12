@@ -26,7 +26,12 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface SaleOrderGeneratorService {
+
   SaleOrder createSaleOrder(
-      Partner clientPartner, Company company, Partner contactPartner, Currency currency)
+      Partner clientPartner,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      Boolean inAti)
       throws AxelorException, JsonProcessingException;
 }

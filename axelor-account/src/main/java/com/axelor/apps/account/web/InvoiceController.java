@@ -378,10 +378,10 @@ public class InvoiceController {
 
       String viewTitle = AccountExceptionMessage.INVOICE_GENERATED_INVOICE_REFUND;
       if (InvoiceToolService.isRefund(refund)) {
-        if (refund.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT) {
-          viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND;
-        } else {
+        if (refund.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
           viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT;
+        } else {
+          viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND;
         }
       }
 

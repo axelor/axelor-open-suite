@@ -1,3 +1,0 @@
----
-title: "Invoicing: fixed an issue preventing stock moves/order/contracts invoicing with analytic accounting lines."
-module: axelor-supplychain

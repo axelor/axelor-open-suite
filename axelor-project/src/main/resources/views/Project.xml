@@ -5,6 +5,10 @@
 
   <grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project"
     orderBy="projectStatus, name">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <menubar>
       <menu name="projectToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="ganttWithUserItem" title="Gantt with user"
@@ -37,6 +41,11 @@
   <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-method-check-resource-availibility">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="save,action-timesheet-line-method-log-time" showIf="isShowTimeSpent"
+        if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -86,14 +95,11 @@
       </panel>
       <panel-include view="incl-information-panel-form"/>
     </panel>
-    <panel name="detailsPanel">
-      <field name="description" colSpan="12" widget="html"/>
-      <field name="siteSet" colSpan="12" grid-view="site-project-grid" form-view="site-form"
-        if="__config__.app.getApp('base')?.enableSiteManagementForProject"
-        domain="self.isUsableOnProject = true" canEdit="false"/>
-    </panel>
 
     <panel-tabs name="mainPanelTab">
+
+      <panel-include view="incl-project-overview-panel-form"/>
+
       <panel title="Task Tree" name="taskTreePanel">
         <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
           icon="fa-plus" onClick="save,action-project-add-task"/>
@@ -130,10 +136,6 @@
         <panel-include view="incl-fields-to-display-panel-form"/>
       </panel>
       <panel-include view="incl-custom-fields-to-display-panel-form"/>
-      <panel title="Activities" name="activityPanel"
-        onTabSelect="action-project-activity-dashboard-method-on-new" showIf="id">
-        <panel-include view="project-activity-dashboard-form"/>
-      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -177,6 +179,28 @@
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>
+  </form>
+
+  <form name="incl-project-overview-panel-form" title="Project"
+    model="com.axelor.apps.project.db.Project">
+    <panel name="overviewPanel" title="Overview"
+      onTabSelect="action-project-activity-dashboard-method-on-new">
+      <field name="description" colSpan="12" widget="html"/>
+      <panel name="dashboardPanel" title="Dashboard" colSpan="12" canCollapse="true"
+        collapseIf="true">
+        <panel-dashlet name="dashboardPanelDashlet"
+          action="project.reporting.projects.dashboard" colSpan="12"/>
+      </panel>
+      <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject">
+        <field name="siteSet" showTitle="false" colSpan="12" grid-view="site-project-grid"
+          form-view="site-form" domain="self.isUsableOnProject = true" canEdit="false"/>
+      </panel>
+      <panel title="Activities" name="activityPanel" canCollapse="true" collapseIf="true"
+        colSpan="12" showIf="id">
+        <panel-include view="project-activity-dashboard-form"/>
+      </panel>
+    </panel>
   </form>
 
   <form name="incl-information-panel-form" title="Project"

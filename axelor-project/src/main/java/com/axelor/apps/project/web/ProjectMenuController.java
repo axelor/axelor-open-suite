@@ -35,11 +35,27 @@ import java.util.Optional;
 public class ProjectMenuController {
 
   public void allOpenProjectTasks(ActionRequest request, ActionResponse response) {
-    response.setView(Beans.get(ProjectMenuService.class).getAllOpenProjectTasks());
+    Long projectId =
+        Optional.of(request)
+            .map(ActionRequest::getContext)
+            .map(context -> context.get("projectId"))
+            .map(Object::toString)
+            .map(Long::valueOf)
+            .orElse(null);
+    Project project = projectId != null ? Beans.get(ProjectRepository.class).find(projectId) : null;
+    response.setView(Beans.get(ProjectMenuService.class).getAllOpenProjectTasks(project));
   }
 
   public void allProjects(ActionRequest request, ActionResponse response) {
-    response.setView(Beans.get(ProjectMenuService.class).getAllProjects());
+    Long projectId =
+        Optional.of(request)
+            .map(ActionRequest::getContext)
+            .map(context -> context.get("childProjectId"))
+            .map(Object::toString)
+            .map(Long::valueOf)
+            .orElse(null);
+
+    response.setView(Beans.get(ProjectMenuService.class).getAllProjects(projectId));
   }
 
   public void allProjectTasks(ActionRequest request, ActionResponse response) {

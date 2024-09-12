@@ -119,8 +119,7 @@
           if=" __config__.app.getApp('production')?.getManageBusinessProduction()"
           name="employee.timesheetImputationSelect" hidden="true"/>
         <field name="fromDate"
-          onChange="action-timesheet-validate-from-date,action-timesheet-validate-fromDate,action-timesheet-record-to-date"
-          colSpan="5"/>
+          onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date" colSpan="5"/>
         <field name="toDate" onChange="action-timesheet-group-to-date-onchange" colSpan="5"/>
         <button name="createBtn" title="Create" colSpan="2" hideIf="id"
           if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
@@ -268,7 +267,6 @@
   </action-group>
 
   <action-group name="action-timesheet-group-onsave">
-    <action name="action-timesheet-validate-from-date"/>
     <action name="action-timesheet-validate-toDate"/>
     <action name="action-timesheet-method-update-operation-order"
       if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
@@ -285,7 +283,6 @@
     <action name="action-timesheet-attrs-panels"/>
     <action name="action-timesheet-attrs-refresh-editor"/>
     <action name="action-timesheet-method-timesheet-compute-period-total"/>
-    <action name="action-timesheet-attrs-readonly-todate"/>
   </action-group>
 
   <action-attrs name="action-hr-timesheet-attrs-domain-product">
@@ -333,7 +330,6 @@
     <action name="action-timesheet-group-buttons"/>
     <action name="action-timesheet-attrs-set-visible-duration-title"/>
     <action name="action-timesheet-record-from-period-date"/>
-    <action name="action-timesheet-validate-from-date"/>
     <action name="action-timesheet-record-to-date" if="fromDate != null"/>
     <action name="action-timesheet-prefill-lines"
       if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet')?.getCreateLinesForLeaves() || __config__.app.getApp('timesheet')?.getCreateLinesForHolidays())"/>
@@ -499,11 +495,6 @@
       expr="eval: __repo__(Timesheet).all().filter('self.employee.user.id = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__.id, TimesheetRepository.STATUS_CANCELED).fetchOne() != null"/>
   </action-attrs>
 
-  <action-attrs name="action-timesheet-attrs-readonly-todate">
-    <attribute name="readonly" for="toDate" if="toDate != null"
-      expr="eval: __repo__(Timesheet).all().filter('self.employee.user.id = ?1 AND self.statusSelect != ?2 AND self.fromDate = ?3', __user__.id, TimesheetRepository.STATUS_CANCELED, toDate + 1).fetchOne() != null"/>
-  </action-attrs>
-
   <action-attrs name="action-timesheet-attrs-from-date">
     <attribute name="readonly" for="fromDate" expr="eval: fromDate != null"/>
   </action-attrs>
@@ -532,14 +523,8 @@
   <action-record name="action-timesheet-record-from-period-date"
     model="com.axelor.apps.hr.db.Timesheet">
     <field name="fromDate"
-      expr="eval: __repo__(Timesheet).all().filter('self.employee.user.id = ?1 AND self.statusSelect != ?2 AND self.toDate IS NOT NULL ORDER BY self.toDate DESC', __user__.id, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate?.plusDays(1)"/>
+      expr="eval: __repo__(Timesheet).all().filter('self.employee.user.id = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__.id, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate?.plusDays(1)"/>
   </action-record>
-
-  <action-validate name="action-timesheet-validate-from-date">
-    <error
-      message="Warning, a timesheet already exists for the date ${fromDate} and the company ${company.name}."
-      if="fromDate != null &amp;&amp; __repo__(Timesheet).all().filter('self.employee.user.id = ?1 AND self.statusSelect != ?2 AND self.fromDate = ?3 AND self.company = ?4', __user__.id, TimesheetRepository.STATUS_CANCELED, fromDate, company).fetchOne() != null"/>
-  </action-validate>
 
   <action-record name="action-timesheet-null-fromDate"
     model="com.axelor.apps.hr.db.Timesheet">

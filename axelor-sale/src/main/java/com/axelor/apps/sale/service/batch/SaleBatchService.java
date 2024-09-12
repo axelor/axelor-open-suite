@@ -27,7 +27,6 @@ import com.axelor.apps.sale.db.SaleBatch;
 import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class SaleBatchService extends AbstractBatchService {
@@ -48,8 +47,6 @@ public class SaleBatchService extends AbstractBatchService {
   public Batch run(Model batchModel) throws AxelorException {
     SaleBatch saleBatch = (SaleBatch) batchModel;
     switch (saleBatch.getActionSelect()) {
-      case SaleBatchRepository.ACTION_EARN_LOYALTY_ACCOUNT_POINTS:
-        return earnLoyaltyAccountPoints(saleBatch);
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -57,10 +54,6 @@ public class SaleBatchService extends AbstractBatchService {
             saleBatch.getActionSelect(),
             saleBatch.getCode());
     }
-  }
-
-  protected Batch earnLoyaltyAccountPoints(SaleBatch saleBatch) {
-    return Beans.get(BatchLoyaltyAccountEarnPoints.class).run(saleBatch);
   }
 
   /**

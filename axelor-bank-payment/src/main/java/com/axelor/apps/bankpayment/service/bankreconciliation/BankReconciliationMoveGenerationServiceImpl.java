@@ -55,14 +55,18 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
+import com.axelor.text.GroovyTemplates;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
@@ -261,6 +265,7 @@ public class BankReconciliationMoveGenerationServiceImpl
       BankReconciliationLine bankReconciliationLine, BankStatementRule bankStatementRule)
       throws AxelorException {
     BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
+
     BankReconciliation bankReconciliation = bankReconciliationLine.getBankReconciliation();
 
     Map<String, Object> moveFieldsMap =
@@ -299,6 +304,59 @@ public class BankReconciliationMoveGenerationServiceImpl
     bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, moveLine);
 
     return moveRepository.save(move);
+  }
+
+  protected String computeOrigin(
+      BankReconciliationLine bankReconciliationLine,
+      BankStatementLine bankStatementLine,
+      String rule) {
+    try {
+      Object origin = computeLabel(bankReconciliationLine, rule);
+      if (ObjectUtils.notEmpty(origin)) {
+        return origin.toString();
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+    return bankStatementLine != null ? bankStatementLine.getOrigin() : null;
+  }
+
+  protected String computeDescription(
+      BankReconciliationLine bankReconciliationLine,
+      BankStatementLine bankStatementLine,
+      String rule) {
+    String description = "";
+
+    try {
+      Object desc = computeLabel(bankReconciliationLine, rule);
+      if (ObjectUtils.notEmpty(desc)) {
+        return desc.toString();
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+
+    if (bankStatementLine != null) {
+      description = description.concat(bankStatementLine.getDescription());
+    }
+    description = StringHelper.cutTooLongString(description);
+
+    if (!Strings.isNullOrEmpty(bankReconciliationLine.getReference())) {
+      String reference = "ref:";
+      reference =
+          StringHelper.cutTooLongString(reference.concat(bankReconciliationLine.getReference()));
+      description = StringHelper.cutTooLongStringWithOffset(description, reference.length());
+      description = description.concat(reference);
+    }
+    return description;
+  }
+
+  protected Object computeLabel(Model model, String rule) {
+    if (StringUtils.isEmpty(rule)) {
+      return null;
+    }
+    Context scriptContext = new Context(Mapper.toMap(model), model.getClass());
+    return Beans.get(GroovyTemplates.class).fromText(rule).make(scriptContext).render();
   }
 
   protected void generateTaxMoveLine(MoveLine counterPartMoveLine, MoveLine moveLine)
@@ -522,6 +580,7 @@ public class BankReconciliationMoveGenerationServiceImpl
     LocalDate effectDate = bankReconciliationLine.getEffectDate();
     Currency currency = null;
     FiscalPosition fiscalPosition = null;
+    Partner partner = bankReconciliationLine.getPartner();
 
     if (bankReconciliation != null) {
       company = bankReconciliation.getCompany();
@@ -531,44 +590,39 @@ public class BankReconciliationMoveGenerationServiceImpl
       companyBankDetails = bankReconciliation.getBankDetails();
     }
 
-    if (bankStatementRule != null && bankStatementRule.getAccountManagement() != null) {
-      AccountManagement accountManagement = bankStatementRule.getAccountManagement();
+    if (bankStatementRule != null) {
+      if (bankStatementRule.getAccountManagement() != null) {
+        AccountManagement accountManagement = bankStatementRule.getAccountManagement();
 
-      paymentMode = accountManagement.getPaymentMode();
-      if (company == null) {
-        company = accountManagement.getCompany();
+        paymentMode = accountManagement.getPaymentMode();
+        if (company == null) {
+          company = accountManagement.getCompany();
+        }
+        if (journal == null) {
+          journal = accountManagement.getJournal();
+        }
       }
-      if (journal == null) {
-        journal = accountManagement.getJournal();
+      if (partner == null) {
+        partner =
+            bankStatementRuleService
+                .getPartner(bankStatementRule, bankReconciliationLine)
+                .orElse(null);
       }
+
+      description =
+          computeDescription(
+              bankReconciliationLine,
+              bankStatementLine,
+              bankStatementRule.getEntryDescriptionComputation());
+      origin =
+          computeOrigin(
+              bankReconciliationLine,
+              bankStatementLine,
+              bankStatementRule.getEntryOriginComputation());
     }
 
-    if (bankStatementLine != null) {
-      if (StringUtils.isEmpty(origin)) {
-        origin = bankStatementLine.getOrigin();
-      }
-      if (StringUtils.isEmpty(description)) {
-        description = bankStatementLine.getDescription();
-      }
-      if (currency == null) {
-        currency = bankStatementLine.getCurrency();
-      }
-    }
-    description = StringHelper.cutTooLongString(description);
-    if (!Strings.isNullOrEmpty(origin)) {
-      String reference = "ref:";
-      reference = StringHelper.cutTooLongString(reference.concat(origin));
-      description = StringHelper.cutTooLongStringWithOffset(description, reference.length());
-      description = description.concat(reference);
-    }
-
-    Partner partner = bankReconciliationLine.getPartner();
-
-    if (partner == null) {
-      partner =
-          bankStatementRuleService
-              .getPartner(bankStatementRule, bankReconciliationLine)
-              .orElse(null);
+    if (bankStatementLine != null && currency == null) {
+      currency = bankStatementLine.getCurrency();
     }
 
     if (partner != null) {
