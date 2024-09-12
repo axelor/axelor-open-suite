@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.base.service.meta;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.stock.db.StockLocation;
+import java.util.Map;
 
-public interface StockLocationCartService {
+public interface MetaViewService {
 
-  void addToCart(StockLocation stockLocation) throws AxelorException;
+  Map<String, Object> getActionView(Class<?> modelClass, Long recordId) throws AxelorException;
 }

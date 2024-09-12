@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
@@ -64,7 +65,7 @@ public class CartServiceImpl implements CartService {
   }
 
   @Override
-  public void addToCart(Product product) {
+  public void addToCart(Product product) throws AxelorException {
     Cart cart = getCurrentCart();
     if (cart == null) {
       cart = createCart();

@@ -96,6 +96,8 @@ import com.axelor.apps.base.service.DataBackupAnonymizeService;
 import com.axelor.apps.base.service.DataBackupAnonymizeServiceImpl;
 import com.axelor.apps.base.service.DataBackupService;
 import com.axelor.apps.base.service.DataBackupServiceImpl;
+import com.axelor.apps.base.service.DataSharingProductWizardService;
+import com.axelor.apps.base.service.DataSharingProductWizardServiceImpl;
 import com.axelor.apps.base.service.DataSharingReferentialLineService;
 import com.axelor.apps.base.service.DataSharingReferentialLineServiceImpl;
 import com.axelor.apps.base.service.DurationService;
@@ -211,6 +213,8 @@ import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
+import com.axelor.apps.base.service.meta.MetaViewService;
+import com.axelor.apps.base.service.meta.MetaViewServiceImpl;
 import com.axelor.apps.base.service.observer.ProductFireService;
 import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
@@ -479,5 +483,7 @@ public class BaseModule extends AxelorModule {
     bind(ProductFireService.class).to(ProductFireServiceImpl.class);
     bind(ProductPriceService.class).to(ProductPriceServiceImpl.class);
     bind(DataSharingReferentialLineService.class).to(DataSharingReferentialLineServiceImpl.class);
+    bind(MetaViewService.class).to(MetaViewServiceImpl.class);
+    bind(DataSharingProductWizardService.class).to(DataSharingProductWizardServiceImpl.class);
   }
 }

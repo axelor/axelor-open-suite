@@ -16,34 +16,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.web;
+package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.db.ConnectorMapper;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.sale.db.Cart;
-import com.axelor.apps.sale.db.CartLine;
-import com.axelor.apps.sale.service.CartLineService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
+import com.axelor.apps.base.service.meta.MetaViewService;
+import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
-public class CartLineController {
+public class ConnectorMapperController {
 
-  public void setUnit(ActionRequest request, ActionResponse response) {
+  @SuppressWarnings("unchecked")
+  public void showAOSRecord(ActionRequest request, ActionResponse response) {
     try {
-      CartLine cartLine = request.getContext().asType(CartLine.class);
-      response.setValue(
-          "unit", Beans.get(SaleOrderLineProductService.class).getSaleUnit(cartLine.getProduct()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setPrice(ActionRequest request, ActionResponse response) {
-    try {
-      CartLine cartLine = request.getContext().asType(CartLine.class);
-      Cart cart = request.getContext().getParent().asType(Cart.class);
-      response.setValue("price", Beans.get(CartLineService.class).getSalePrice(cart, cartLine));
+      ConnectorMapper connectorMapper = request.getContext().asType(ConnectorMapper.class);
+      Class<? extends Model> modelClass =
+          (Class<? extends Model>) Class.forName(connectorMapper.getMetaModel().getFullName());
+      Model record = JPA.find(modelClass, connectorMapper.getModelId());
+      if (record == null) {
+        return;
+      }
+      response.setView(Beans.get(MetaViewService.class).getActionView(modelClass, record.getId()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

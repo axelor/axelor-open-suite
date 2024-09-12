@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.base.db.DataSharingProductWizard;
+import com.axelor.apps.base.db.DataSharingReferentialLine;
+import java.util.List;
 
-public interface StockLocationCartService {
+public interface DataSharingProductWizardService {
 
-  void addToCart(StockLocation stockLocation) throws AxelorException;
+  List<DataSharingReferentialLine> generateDataSharingReferentialLines(
+      DataSharingProductWizard dataSharingProductWizard);
 }

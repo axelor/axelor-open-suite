@@ -616,8 +616,7 @@ public final class BaseExceptionMessage {
   public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
       "Error while accessing certificate information." /*)*/;
 
-  public static final String RESEARCH_RESULT_NO_VIEW_CONFIGURED = /*$$(*/
-      "No view configured for model %s." /*)*/;
+  public static final String VIEW_NOT_FOUND = /*$$(*/ "No view configured for model %s." /*)*/;
 
   public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
       "The file could not be generated." /*)*/;
