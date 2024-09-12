@@ -3,7 +3,6 @@ package com.axelor.apps.account.service.reconcile.foreignexchange;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,15 +46,5 @@ public class ForeignExchangeGapToolServiceImpl implements ForeignExchangeGapTool
         && !creditMoveLine.getCurrency().equals(creditMoveLine.getCompanyCurrency())
         && !debitMoveLine.getCurrency().equals(debitMoveLine.getCompanyCurrency())
         && creditMoveLine.getCurrency().equals(debitMoveLine.getCurrency());
-  }
-
-  @Override
-  public boolean checkIsTotalPayment(
-      BigDecimal reconciledAmount, MoveLine creditMoveLine, MoveLine debitMoveLine) {
-    boolean paymentIsDebit = this.isDebit(creditMoveLine, debitMoveLine);
-
-    return reconciledAmount.compareTo(
-            paymentIsDebit ? creditMoveLine.getCredit() : debitMoveLine.getDebit())
-        == 0;
   }
 }

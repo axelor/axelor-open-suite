@@ -67,38 +67,32 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
         && this.checkForeignExchangeAccounts(reconcile.getCompany())) {
       BigDecimal foreignExchangeGapAmount =
           this.getForeignExchangeGapAmount(reconcile.getAmount(), creditMoveLine, debitMoveLine);
-      BigDecimal reconciledAmount =
-          currencyScaleService.getCompanyScaledValue(
-              reconcile.getCompany(), reconcile.getAmount().add(foreignExchangeGapAmount));
-      if (foreignExchangeGapToolService.checkIsTotalPayment(
-          reconciledAmount, creditMoveLine, debitMoveLine)) {
 
-        // We only create a foreign exchange move if foreignExchangeGapAmount is greater than 0.01
-        if (foreignExchangeGapAmount.compareTo(BigDecimal.valueOf(0.01)) > 0) {
-          Move foreignExchangeMove =
-              this.createForeignExchangeGapMove(reconcile, foreignExchangeGapAmount);
-          MoveLine foreignExchangeDebitMoveLine = foreignExchangeMove.getMoveLineList().get(0);
-          MoveLine foreignExchangeCreditMoveLine = foreignExchangeMove.getMoveLineList().get(1);
+      // We only create a foreign exchange move if foreignExchangeGapAmount is greater than 0.01
+      if (foreignExchangeGapAmount.compareTo(BigDecimal.valueOf(0.01)) > 0) {
+        Move foreignExchangeMove =
+            this.createForeignExchangeGapMove(reconcile, foreignExchangeGapAmount);
+        MoveLine foreignExchangeDebitMoveLine = foreignExchangeMove.getMoveLineList().get(0);
+        MoveLine foreignExchangeCreditMoveLine = foreignExchangeMove.getMoveLineList().get(1);
 
-          MoveLine debitMoveLineToReconcile;
-          MoveLine creditMoveLineToReconcile;
-          if (foreignExchangeGapToolService.isGain(creditMoveLine, debitMoveLine)) {
-            debitMoveLineToReconcile = foreignExchangeDebitMoveLine;
-            creditMoveLineToReconcile = creditMoveLine;
-          } else {
-            debitMoveLineToReconcile = debitMoveLine;
-            creditMoveLineToReconcile = foreignExchangeCreditMoveLine;
-          }
-
-          boolean updateInvoiceTerms =
-              foreignExchangeGapToolService.isGain(creditMoveLine, debitMoveLine)
-                  == foreignExchangeGapToolService.isDebit(creditMoveLine, debitMoveLine);
-          return new ForeignMoveToReconcile(
-              foreignExchangeMove,
-              debitMoveLineToReconcile,
-              creditMoveLineToReconcile,
-              updateInvoiceTerms);
+        MoveLine debitMoveLineToReconcile;
+        MoveLine creditMoveLineToReconcile;
+        if (foreignExchangeGapToolService.isGain(creditMoveLine, debitMoveLine)) {
+          debitMoveLineToReconcile = foreignExchangeDebitMoveLine;
+          creditMoveLineToReconcile = creditMoveLine;
+        } else {
+          debitMoveLineToReconcile = debitMoveLine;
+          creditMoveLineToReconcile = foreignExchangeCreditMoveLine;
         }
+
+        boolean updateInvoiceTerms =
+            foreignExchangeGapToolService.isGain(creditMoveLine, debitMoveLine)
+                == foreignExchangeGapToolService.isDebit(creditMoveLine, debitMoveLine);
+        return new ForeignMoveToReconcile(
+            foreignExchangeMove,
+            debitMoveLineToReconcile,
+            creditMoveLineToReconcile,
+            updateInvoiceTerms);
       }
     }
 
