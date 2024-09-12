@@ -193,7 +193,11 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
   @Override
   public ProjectTask updateDiscount(ProjectTask projectTask) {
-    PriceList priceList = projectTask.getProject().getPriceList();
+    PriceList priceList =
+        Optional.of(projectTask)
+            .map(ProjectTask::getProject)
+            .map(Project::getPriceList)
+            .orElse(null);
     Contract frameworkCustomerContract = projectTask.getFrameworkCustomerContract();
     if (frameworkCustomerContract != null || priceList == null) {
       this.emptyDiscounts(projectTask);
@@ -451,7 +455,11 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
     PriceList priceList =
         partnerPriceListService.getDefaultPriceList(
-            projectTask.getProject().getClientPartner(), PriceListRepository.TYPE_SALE);
+            Optional.of(projectTask)
+                .map(ProjectTask::getProject)
+                .map(Project::getClientPartner)
+                .orElse(null),
+            PriceListRepository.TYPE_SALE);
     if (priceList == null) {
       return unitPrice;
     }
