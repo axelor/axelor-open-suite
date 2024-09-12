@@ -51,13 +51,18 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
+import com.axelor.text.GroovyTemplates;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
@@ -241,19 +246,11 @@ public class BankReconciliationMoveGenerationServiceImpl
       BankReconciliationLine bankReconciliationLine, BankStatementRule bankStatementRule)
       throws AxelorException {
     BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
-    String description = "";
-    if (bankStatementLine != null) {
-      description = description.concat(bankStatementLine.getDescription());
-    }
-    description = StringHelper.cutTooLongString(description);
-
-    if (!Strings.isNullOrEmpty(bankReconciliationLine.getReference())) {
-      String reference = "ref:";
-      reference =
-          StringHelper.cutTooLongString(reference.concat(bankReconciliationLine.getReference()));
-      description = StringHelper.cutTooLongStringWithOffset(description, reference.length());
-      description = description.concat(reference);
-    }
+    String description =
+        computeDescription(
+            bankReconciliationLine,
+            bankStatementLine,
+            bankStatementRule.getEntryDescriptionComputation());
     AccountManagement accountManagement = bankStatementRule.getAccountManagement();
     Partner partner =
         bankStatementRuleService.getPartner(bankStatementRule, bankReconciliationLine).orElse(null);
@@ -269,7 +266,10 @@ public class BankReconciliationMoveGenerationServiceImpl
             partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-            bankStatementLine != null ? bankStatementLine.getOrigin() : null,
+            computeOrigin(
+                bankReconciliationLine,
+                bankStatementLine,
+                bankStatementRule.getEntryOriginComputation()),
             description,
             bankReconciliationLine.getBankReconciliation().getBankDetails());
 
@@ -283,6 +283,59 @@ public class BankReconciliationMoveGenerationServiceImpl
     bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, moveLine);
 
     return moveRepository.save(move);
+  }
+
+  protected String computeOrigin(
+      BankReconciliationLine bankReconciliationLine,
+      BankStatementLine bankStatementLine,
+      String rule) {
+    try {
+      Object origin = computeLabel(bankReconciliationLine, rule);
+      if (ObjectUtils.notEmpty(origin)) {
+        return origin.toString();
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+    return bankStatementLine != null ? bankStatementLine.getOrigin() : null;
+  }
+
+  protected String computeDescription(
+      BankReconciliationLine bankReconciliationLine,
+      BankStatementLine bankStatementLine,
+      String rule) {
+    String description = "";
+
+    try {
+      Object desc = computeLabel(bankReconciliationLine, rule);
+      if (ObjectUtils.notEmpty(desc)) {
+        return desc.toString();
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+
+    if (bankStatementLine != null) {
+      description = description.concat(bankStatementLine.getDescription());
+    }
+    description = StringHelper.cutTooLongString(description);
+
+    if (!Strings.isNullOrEmpty(bankReconciliationLine.getReference())) {
+      String reference = "ref:";
+      reference =
+          StringHelper.cutTooLongString(reference.concat(bankReconciliationLine.getReference()));
+      description = StringHelper.cutTooLongStringWithOffset(description, reference.length());
+      description = description.concat(reference);
+    }
+    return description;
+  }
+
+  protected Object computeLabel(Model model, String rule) {
+    if (StringUtils.isEmpty(rule)) {
+      return null;
+    }
+    Context scriptContext = new Context(Mapper.toMap(model), model.getClass());
+    return Beans.get(GroovyTemplates.class).fromText(rule).make(scriptContext).render();
   }
 
   protected void generateTaxMoveLine(

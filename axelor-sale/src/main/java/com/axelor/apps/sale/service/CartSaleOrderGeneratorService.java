@@ -20,10 +20,13 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.Cart;
+import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.List;
 
 public interface CartSaleOrderGeneratorService {
 
-  SaleOrder createSaleOrder(Cart cart) throws JsonProcessingException, AxelorException;
+  SaleOrder createSaleOrder(Cart cart, List<CartLine> cartLineList)
+      throws JsonProcessingException, AxelorException;
 }

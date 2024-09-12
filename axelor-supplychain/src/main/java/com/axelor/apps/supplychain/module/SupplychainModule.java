@@ -51,6 +51,7 @@ import com.axelor.apps.sale.db.repo.CartLineManagementRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineSaleRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
+import com.axelor.apps.sale.service.CartSaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
 import com.axelor.apps.sale.service.batch.SaleBatchService;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
@@ -125,6 +126,7 @@ import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.CartLineSupplychainService;
 import com.axelor.apps.supplychain.service.CartLineSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.CartSaleOrderGeneratorSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.CartSupplychainService;
 import com.axelor.apps.supplychain.service.CartSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
@@ -468,5 +470,7 @@ public class SupplychainModule extends AxelorModule {
     bind(CartLineManagementRepository.class).to(CartLineSupplychainRepository.class);
     bind(CartLineSupplychainService.class).to(CartLineSupplychainServiceImpl.class);
     bind(CartSupplychainService.class).to(CartSupplychainServiceImpl.class);
+    bind(CartSaleOrderGeneratorServiceImpl.class)
+        .to(CartSaleOrderGeneratorSupplychainServiceImpl.class);
   }
 }
