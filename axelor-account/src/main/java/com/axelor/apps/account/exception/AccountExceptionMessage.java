@@ -1758,4 +1758,10 @@ public final class AccountExceptionMessage {
 
   public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT = /*$$(*/
       "Block customer with late payment issues batch's reporting :" /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_GAINS_ACCOUNT = /*$$(*/
+      "Please select a foreign exchange gain account config for company %s." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_LOSSES_ACCOUNT = /*$$(*/
+      "Please select a foreign exchange loss account config for company %s." /*)*/;
 }
