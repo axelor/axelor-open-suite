@@ -115,7 +115,7 @@ public class SaleOrderLineProductProductionServiceImpl
         } else if (product.getParentProduct() != null) {
           saleOrderLine.setBillOfMaterial(product.getParentProduct().getDefaultBillOfMaterial());
         }
-        if (saleOrderLine.getIsToProduce()) {
+        if (saleOrderLine.getIsToProduce() && !saleOrderLineBomService.isUpdated(saleOrderLine)) {
           saleOrderLineBomService
               .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
               .stream()

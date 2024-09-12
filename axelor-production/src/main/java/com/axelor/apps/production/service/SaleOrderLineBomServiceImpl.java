@@ -15,10 +15,14 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
 
@@ -27,6 +31,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected final BillOfMaterialLineService billOfMaterialLineService;
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public SaleOrderLineBomServiceImpl(
@@ -73,12 +78,14 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   @Transactional(rollbackOn = Exception.class)
   public void updateWithBillOfMaterial(SaleOrderLine saleOrderLine) throws AxelorException {
     // Easiest cases where a line has been added or modified.
+    logger.debug("Updating {}", saleOrderLine);
     var bom = saleOrderLine.getBillOfMaterial();
     for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
       if (!saleOrderLineBomLineMappingService.isSyncWithBomLine(subSaleOrderLine)) {
         var bomLine = subSaleOrderLine.getBillOfMaterialLine();
         // Updating the existing one
         if (bomLine != null) {
+          logger.debug("Updating bomLine {} with subSaleOrderLine {}", bomLine, subSaleOrderLine);
           bomLine.setQty(subSaleOrderLine.getQty());
           bomLine.setProduct(subSaleOrderLine.getProduct());
           bomLine.setUnit(subSaleOrderLine.getUnit());
@@ -87,30 +94,48 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
         }
         // Creating a new one
         else {
+          logger.debug(
+              "Creating bomLine from subSaleOrderLine {} and adding it to bom {}",
+              subSaleOrderLine,
+              bom);
           bomLine = createBomLineFrom(subSaleOrderLine);
+          logger.debug("Created bomLine {}", bomLine);
           bom.addBillOfMaterialLineListItem(bomLine);
-          saleOrderLine.setBillOfMaterialLine(bomLine);
+          subSaleOrderLine.setBillOfMaterialLine(bomLine);
+          billOfMaterialLineRepository.save(bomLine);
         }
       }
     }
 
-    var bomLines = saleOrderLine.getBillOfMaterial().getBillOfMaterialLineList().stream().filter(bomLine -> bomLine.getProduct().getProductSubTypeSelect().equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)).collect(Collectors.toList());
+    var bomLines =
+        bom.getBillOfMaterialLineList().stream()
+            .filter(
+                bomLine ->
+                    bomLine
+                        .getProduct()
+                        .getProductSubTypeSelect()
+                        .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
+            .collect(Collectors.toList());
     // Case where a line has been removed
+    logger.debug("Removing bom lines");
     for (BillOfMaterialLine billOfMaterialLine : bomLines) {
       var isInSubList =
           saleOrderLine.getSubSaleOrderLineList().stream()
               .map(SaleOrderLine::getBillOfMaterialLine)
-                  .filter(Objects::nonNull)
+              .filter(Objects::nonNull)
               .anyMatch(bomLine -> bomLine.equals(billOfMaterialLine));
 
+      logger.debug(
+          "Checking existence of billOfMaterialLine {} in {}",
+          billOfMaterialLine,
+          saleOrderLine.getSubSaleOrderLineList());
       if (!isInSubList) {
+        logger.debug("BomLine does not exist, removing it");
         bom.removeBillOfMaterialLineListItem(billOfMaterialLine);
-        billOfMaterialLine.setBillOfMaterialParent(null);
-
-        billOfMaterialLineRepository.save(billOfMaterialLine);
       }
     }
     billOfMaterialRepository.save(bom);
+    logger.debug("Updated saleOrderLine {} with bom {}", saleOrderLine, bom);
   }
 
   protected BillOfMaterialLine createBomLineFrom(SaleOrderLine subSaleOrderLine) {
@@ -166,11 +191,41 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       personalizedBOM.addBillOfMaterialLineListItem(bomLine);
     }
 
-    //Copy components lines
-    billOfMaterial.getBillOfMaterialLineList().stream().filter(oldBomLine -> !oldBomLine.getProduct().getProductSubTypeSelect().equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
-            .map(oldBomLine -> billOfMaterialLineRepository.copy(oldBomLine, false))
-            .forEach(personalizedBOM::addBillOfMaterialLineListItem);
+    // Copy components lines
+    billOfMaterial.getBillOfMaterialLineList().stream()
+        .filter(
+            oldBomLine ->
+                !oldBomLine
+                    .getProduct()
+                    .getProductSubTypeSelect()
+                    .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
+        .map(oldBomLine -> billOfMaterialLineRepository.copy(oldBomLine, false))
+        .forEach(personalizedBOM::addBillOfMaterialLineListItem);
 
     return billOfMaterialRepository.save(personalizedBOM);
+  }
+
+  @Override
+  public boolean isUpdated(SaleOrderLine saleOrderLine) {
+
+    if (saleOrderLine.getBillOfMaterial() == null) {
+      return true;
+    }
+
+    var nbBomLinesAccountable =
+        saleOrderLine.getBillOfMaterial().getBillOfMaterialLineList().stream()
+            .map(BillOfMaterialLine::getProduct)
+            .filter(
+                product ->
+                    product
+                        .getProductSubTypeSelect()
+                        .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
+            .count();
+
+    var nbSubSaleOrderLines =
+        Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).map(List::size).orElse(0);
+    return nbBomLinesAccountable == nbSubSaleOrderLines
+        && saleOrderLine.getSubSaleOrderLineList().stream()
+            .allMatch(saleOrderLineBomLineMappingService::isSyncWithBomLine);
   }
 }
