@@ -307,4 +307,13 @@ public final class StockExceptionMessage {
       "Expected BigDecimal as result during the computation of field %s, please fix the corresponding formula." /*)*/;
   public static final String STOCK_MOVE_TRACKING_NUMBER_PARENT_MAXIMUM_ITERATION_REACHED = /*$$(*/
       "Maximum iteration for looking tracking numbers parent has been reached. Please check any circular parent dependencies." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_STATUS = /*$$(*/
+      "You can only split line in draft or planned stock move." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_TYPE = /*$$(*/
+      "You can only split line in incoming stock move." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_REAL_QTY = /*$$(*/
+      "Real quantity must not be equal to 0 and should be less than expected quantity." /*)*/;
 }
