@@ -26,6 +26,7 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.service.ProdProcessService;
+import com.axelor.apps.production.service.ProdProcessWorkflowService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -139,5 +140,52 @@ public class ProdProcessController {
             .param("search-filters", "prod-process-filters")
             .context("_showRecord", String.valueOf(copy.getId()))
             .map());
+  }
+
+  public void setDraftStaus(ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      Beans.get(ProdProcessWorkflowService.class).setDraftStatus(prodProcess);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setValidateStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      Beans.get(ProdProcessWorkflowService.class).setValidateStatus(prodProcess);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setApplicableStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      Beans.get(ProdProcessWorkflowService.class).setApplicableStatus(prodProcess);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setObsoleteStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      Beans.get(ProdProcessWorkflowService.class).setObsoleteStatus(prodProcess);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
