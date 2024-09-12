@@ -382,7 +382,4 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_MISSING_COMPONENTS = /*$$(*/
       "<b>Missing components</b> :<br/>%s" /*)*/;
-
-  public static final String SUB_SALE_ORDER_LINE_CAN_NOT_BE_CREATED = /*$$(*/
-      "You can not create a sub sale order line if parent is not to be produced." /*)*/;
 }
