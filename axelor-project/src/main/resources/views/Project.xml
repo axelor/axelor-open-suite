@@ -5,6 +5,10 @@
 
   <grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project"
     orderBy="projectStatus, name">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <menubar>
       <menu name="projectToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="ganttWithUserItem" title="Gantt with user"
@@ -37,6 +41,11 @@
   <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-method-check-resource-availibility">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="save,action-timesheet-line-method-log-time" showIf="isShowTimeSpent"
+        if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -108,6 +117,10 @@
         if="__config__.app.isApp('employee')"/>
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
+      <panel name="reportingPanel" title="Reporting">
+        <panel-dashlet name="dashboardPanelDashlet"
+          action="project.reporting.projects.dashboard" colSpan="12"/>
+      </panel>
       <panel-include view="incl-resource-booking-panel-form"
         if="__config__.app.getApp('project')?.resourceManagement"/>
       <panel-include view="incl-wiki-panel-form"/>

@@ -18,11 +18,17 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
+import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.repo.CartLineRepository;
+import com.axelor.apps.sale.db.repo.SaleConfigRepository;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -33,15 +39,21 @@ public class CartLineServiceImpl implements CartLineService {
   protected CartLineRepository cartLineRepository;
   protected ProductRepository productRepository;
   protected SaleOrderLineProductService saleOrderLineProductService;
+  protected SaleConfigService saleConfigService;
+  protected ProductPriceService productPriceService;
 
   @Inject
   public CartLineServiceImpl(
       CartLineRepository cartLineRepository,
       ProductRepository productRepository,
-      SaleOrderLineProductService saleOrderLineProductService) {
+      SaleOrderLineProductService saleOrderLineProductService,
+      SaleConfigService saleConfigService,
+      ProductPriceService productPriceService) {
     this.cartLineRepository = cartLineRepository;
     this.productRepository = productRepository;
     this.saleOrderLineProductService = saleOrderLineProductService;
+    this.saleConfigService = saleConfigService;
+    this.productPriceService = productPriceService;
   }
 
   @Override
@@ -56,10 +68,11 @@ public class CartLineServiceImpl implements CartLineService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public CartLine createCartLine(Cart cart, Product product) {
+  public CartLine createCartLine(Cart cart, Product product) throws AxelorException {
     CartLine cartLine = new CartLine();
     cartLine.setProduct(productRepository.find(product.getId()));
     cartLine.setUnit(saleOrderLineProductService.getSaleUnit(cartLine.getProduct()));
+    cartLine.setPrice(getSalePrice(cart, cartLine));
     cartLine.setCart(cart);
     return cartLineRepository.save(cartLine);
   }
@@ -69,5 +82,21 @@ public class CartLineServiceImpl implements CartLineService {
   public void updateCartLine(CartLine cartLine) {
     cartLine.setQty(cartLine.getQty().add(BigDecimal.ONE));
     cartLineRepository.save(cartLine);
+  }
+
+  @Override
+  public BigDecimal getSalePrice(Cart cart, CartLine cartLine) throws AxelorException {
+    Company company = cart.getCompany();
+    Product product =
+        cartLine.getVariantProduct() != null ? cartLine.getVariantProduct() : cartLine.getProduct();
+    if (company == null || product == null) {
+      return BigDecimal.ZERO;
+    }
+    SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
+    int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
+    boolean inAti =
+        saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
+            || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_DEFAULT;
+    return productPriceService.getSaleUnitPrice(company, product, inAti, cart.getPartner());
   }
 }

@@ -302,24 +302,29 @@
     onSave="action-timesheet-line-group-project-task-form-on-save"
     onLoad="action-timesheet-line-attrs-overview-readonly-for-project-task">
     <panel name="overviewPanel" title="Overview">
-      <field name="project" readonly="true" form-view="project-form" grid-view="project-grid"
-        onSelect="action-timesheet-line-attrs-domain-project"/>
+      <field name="project" form-view="project-form" grid-view="project-grid"
+        onChange="action-timesheet-line-record-set-project-task"
+        onSelect="action-timesheet-line-attrs-domain-project" readonlyIf="_project" required="true"/>
       <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"
-        onChange="action-timesheet-line-method-set-product" readonly="true"/>
+        domain="(:project IS NULL OR self.project = :project) AND self.project.isShowTimeSpent = true"
+        readonlyIf="_projectTask"
+        onChange="action-timesheet-line-method-set-product,action-timesheet-line-record-set-project"/>
       <field name="date" onChange="action-timesheet-line-method-set-timesheet"/>
+      <field name="duration" width="62%" colSpan="4"
+        onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
+      <label name="durationLabel" colSpan="2"/>
+      <field name="comments" colSpan="12"/>
+    </panel>
+    <panel name="informationPanel" title="Information" canCollapse="true" collapseIf="true">
       <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
         canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
       <field name="employee" readonly="false"
         onSelect="action-timesheet-line-attrs-domain-employee" form-view="employee-form"
         grid-view="employee-grid" canNew="false" canEdit="false" canView="false"/>
-      <field name="duration" width="62%" colSpan="4"
-        onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
-      <label name="durationLabel" colSpan="2"/>
       <field name="timesheet" form-view="timesheet-form" readonly="false"
         onSelect="action-timesheet-line-method-set-timesheet-domain"/>
       <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
-      <field name="comments" colSpan="12"/>
       <field name="hoursDuration" hidden="true"/>
     </panel>
   </form>
@@ -447,6 +452,17 @@
       if="employee != null"/>
   </action-record>
 
+  <action-record name="action-timesheet-line-record-set-project"
+    model="com.axelor.apps.hr.db.TimesheetLine">
+    <field name="project" expr="eval: projectTask?.project" if="projectTask != null"/>
+  </action-record>
+
+  <action-record name="action-timesheet-line-record-set-project-task"
+    model="com.axelor.apps.hr.db.TimesheetLine">
+    <field name="projectTask" expr="eval: null"
+      if="project == null || projectTask?.project != project"/>
+  </action-record>
+
   <action-validate name="action-timesheet-line-validate-date">
     <error message="This date is invalid. It must be included in the timesheet's period."
       if="date != null &amp;&amp; ((__parent__.toDate != null &amp;&amp; date &gt; __parent__.toDate) || (__parent__.fromDate != null &amp;&amp; date &lt; __parent__.fromDate))"
@@ -498,6 +514,10 @@
   <action-method name="action-timesheet-line-method-set-timesheet-domain">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController"
       method="setTimesheetDomain"/>
+  </action-method>
+
+  <action-method name="action-timesheet-line-method-log-time">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController" method="logTime"/>
   </action-method>
 
   <action-validate name="action-project-task-validate-check-employee">
@@ -590,8 +610,11 @@
   <action-view name="action-timesheet-line-log-time"
     model="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet Line Form">
     <view name="timesheet-line-timesheet-project-task-form" type="form"/>
-    <context name="_project" expr="eval: __user__.activeProject"/>
+    <context name="_project"
+      expr="eval: projectId ? __repo__(Project).find(projectId) : __user__.activeProject"/>
     <context name="_user" expr="eval: __user__"/>
+    <context name="_employee" expr="eval: __user__.employee"/>
+
   </action-view>
 
   <action-attrs name="action-timesheet-line-attrs-set-site-domain">

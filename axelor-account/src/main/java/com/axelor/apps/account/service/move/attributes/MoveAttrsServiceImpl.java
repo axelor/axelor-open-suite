@@ -209,9 +209,9 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     }
 
     String tradingNameIds =
-        CollectionUtils.isEmpty(move.getCompany().getTradingNameSet())
+        CollectionUtils.isEmpty(move.getCompany().getTradingNameList())
             ? "0"
-            : move.getCompany().getTradingNameSet().stream()
+            : move.getCompany().getTradingNameList().stream()
                 .map(TradingName::getId)
                 .map(Objects::toString)
                 .collect(Collectors.joining(","));

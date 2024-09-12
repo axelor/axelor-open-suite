@@ -49,7 +49,7 @@ public class ProjectDashboardBusinessSupportServiceImpl extends ProjectDashboard
 
     projectRepo
         .all()
-        .filter("self.id IN ?1", projectToolService.getActiveProjectIds())
+        .filter("self.id IN ?1", projectToolService.getRelatedProjectIds(project))
         .fetch()
         .stream()
         .forEach(subProject -> announcementList.addAll(subProject.getAnnouncementList()));

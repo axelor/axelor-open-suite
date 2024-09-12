@@ -55,7 +55,6 @@ import java.util.Objects;
 public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanningTimeServiceImpl {
 
   protected AppBusinessProjectService appBusinessProjectService;
-  protected UnitProjectToolService unitProjectToolService;
 
   @Inject
   public ProjectPlanningTimeBusinessProjectServiceImpl(
@@ -74,8 +73,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       UnitConversionRepository unitConversionRepository,
       AppBusinessProjectService appBusinessProjectService,
       ICalendarService iCalendarService,
-      ICalendarEventRepository iCalendarEventRepository,
-      UnitProjectToolService unitProjectToolService) {
+      ICalendarEventRepository iCalendarEventRepository) {
     super(
         planningTimeRepo,
         projectRepo,
@@ -93,7 +91,6 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
         unitConversionForProjectService,
         unitConversionRepository);
     this.appBusinessProjectService = appBusinessProjectService;
-    this.unitProjectToolService = unitProjectToolService;
   }
 
   @Override
@@ -138,7 +135,13 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       planningTime.setTimeUnit(appBusinessProjectService.getHoursUnit());
     }
     if (planningTime.getTimeUnit().equals(appBusinessProjectService.getDaysUnit())) {
-      BigDecimal numberHoursADay = unitProjectToolService.getNumberHoursADay(project);
+      BigDecimal numberHoursADay = project.getNumberHoursADay();
+
+      if (numberHoursADay.signum() <= 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
+      }
       planningTime.setPlannedTime(
           planningTime.getPlannedTime().divide(numberHoursADay, 2, RoundingMode.HALF_UP));
     }

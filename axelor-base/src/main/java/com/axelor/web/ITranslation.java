@@ -56,4 +56,5 @@ public interface ITranslation {
   public static final String PRINTING_TEMPLATE_PRINT_BTN = /*$$(*/ "Print"; /*)*/
   public static final String PRODUCT_PRICE_INFORMATION = /*$$(*/
       "Price product fetch was successful"; /*)*/
+  public static final String EMPTY_CART = /*$$(*/ "The cart was emptied successfully."; /*)*/
 }

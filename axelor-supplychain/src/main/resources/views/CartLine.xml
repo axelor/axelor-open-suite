@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid id="supplychain-cart-line-grid" name="cart-line-grid" title="Cart lines"
+    model="com.axelor.apps.sale.db.CartLine" extension="true">
+    <extend target="//field[@name='variantProduct']">
+      <insert position="after">
+        <field name="availableStatus" readonly="true">
+          <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+          <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
+        </field>
+      </insert>
+    </extend>
+
+    <extend target="//field[@name='product']">
+      <attribute name="onChange"
+        value="action-cart-line-method-set-unit,action-cart-line-method-set-price,action-cart-line-method-set-available-status"/>
+    </extend>
+
+    <extend target="//field[@name='qty']">
+      <attribute name="onChange" value="action-cart-line-method-set-available-status"/>
+    </extend>
+
+    <extend target="//field[@name='variantProduct']">
+      <attribute name="onChange" value="action-cart-line-method-set-available-status"/>
+    </extend>
+  </grid>
+
+  <action-method name="action-cart-line-method-set-available-status">
+    <call class="com.axelor.apps.supplychain.web.CartLineController"
+      method="setAvailableStatus"/>
+  </action-method>
+
+</object-views>

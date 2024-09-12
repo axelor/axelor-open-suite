@@ -32,6 +32,10 @@
     <decimal name="defaultHoldBackPercentage" title="Default holdback percentage"/>
     <many-to-one name="saleOrderPrintTemplate" title="Sale order template"
       ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <integer name="cartOrderCreationModeSelect"
+      title="Order creation mode from cart if stock is missing"
+      selection="cart.order.creation.mode.select" default="0"
+      help="This configuration blocks the creation of orders, or ignores missing products, if there are products missing from the cart."/>
 
     <extra-code>
       <![CDATA[
@@ -40,6 +44,11 @@
 		public static final int SALE_ATI_ALWAYS = 2;
 		public static final int SALE_WT_DEFAULT = 3;
 		public static final int SALE_ATI_DEFAULT = 4;
+
+		// ORDER CREATION MODE SELECT
+		public static final int CREATE_ORDER_WITH_MISSING_PRODUCTS = 0;
+		public static final int IGNORE_MISSING_PRODUCTS = 1;
+		public static final int BLOCK_ORDER_CREATION = 2;
       ]]>
     </extra-code>
 
