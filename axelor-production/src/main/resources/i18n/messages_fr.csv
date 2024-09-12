@@ -103,7 +103,7 @@
 "Cannot make BOM applicable that is not validated","Impossible de mettre une nomenclature non validée à applicable",,
 "Cannot make BOM obsolete that is not applicable","Impossible de mettre une nomenclature non applicable au statut obsolète",,
 "Cannot make prod process applicable that is not validated","Impossible de passer une gamme non validée au statut applicable",,
-"Cannot make prod process obsolete that is not applicable","Impossible de passer une gamme non validée au statut obsolète",,
+"Cannot make prod process obsolete that is not applicable","Impossible de passer une gamme non applicable au statut obsolète",,
 "Cannot validate BOM that is not draft","Impossible de valider une nomenclature qui n'est pas brouillon",,
 "Cannot validate prod process that is not draft",,,
 "Capacity","Capacité",,
