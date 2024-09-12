@@ -507,29 +507,19 @@
           <field name="content"/>
         </panel-related>
       </panel>
+
       <panel title="Configurations" name="configurationsPanel">
-        <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
-          name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
-          domain="self.isActivity = true AND self.dtype = 'Product'"
-          form-view="product-activity-form" grid-view="product-activity-grid"/>
-        <field name="projectFolderSet" colSpan="12" widget="TagSelect"
-          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-        <field name="projectTimeUnit"/>
-        <field name="numberHoursADay" if="__config__.app.isApp('business-project')"/>
-        <field name="spentTimeCostComputationMethod"
-          if="__config__.app.isApp('business-project')"/>
-        <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
-          if-module="axelor-human-resource"/>
-        <field name="childProjectList" hidden="true"/>
-        <field name="sequence" hidden="true"/>
-        <field name="imputable" colSpan="4" widget="boolean-switch"
-          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
-          if-module="axelor-human-resource"
-          onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
-        <spacer colSpan="3"/>
-        <field name="allowToGetPricesFromFrameworkContract"/>
-        <panel-include view="incl-fields-to-display-panel-form"/>
+        <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
+          canCollapse="true" collapseIf="true">
+          <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
+          <field name="projectTimeUnit"/>
+          <field name="numberHoursADay"/>
+          <field name="spentTimeCostComputationMethod"/>
+          <field name="allowToGetPricesFromFrameworkContract"/>
+        </panel>
+        <panel-include view="incl-project-config-panel-form"/>
       </panel>
+
       <panel title="Contracts" name="contractPanel"
         if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
         <panel name="frameworkContractPanel" showIf="allowToGetPricesFromFrameworkContract"
@@ -554,7 +544,6 @@
         <panel-dashlet name="contractInvoicePanel" title="Invoices"
           action="action-project-dashlet-contract-invoices" colSpan="12"/>
       </panel>
-      <panel-include view="incl-custom-fields-to-display-panel-form"/>
       <panel title="Activities" name="activityPanel"
         onTabSelect="action-project-activity-dashboard-method-on-new" showIf="id">
         <panel-include view="project-activity-dashboard-form"/>
