@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<files xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <file>
+    <name>File1</name>
+  </file>
+
+  <file>
+    <name>File2</name>
+  </file>
+
+  <file>
+    <name>File3</name>
+  </file>
+
+  <file>
+    <name>File4</name>
+  </file>
+
+  <file>
+    <name>File5</name>
+  </file>
+
+  <file>
+    <name>File6</name>
+  </file>
+
+</files>

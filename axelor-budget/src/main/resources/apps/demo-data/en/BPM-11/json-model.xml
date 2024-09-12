@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<json-models>
+
+  <json-model>
+
+    <name>File</name>
+
+    <title>Dossier</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth>large</formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <studioMenu name='studio-menu-purchase-req-file' title='Dossier'
+      xmlId='studio-menu-purchase-req-file'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuParent></menuParent>
+
+    <studioApp>BPM-11</studioApp>
+
+  </json-model>
+  <json-model>
+
+    <name>PurchaseReq</name>
+
+    <title>Demande d&apos;achat</title>
+
+    <onNew>action-purchase-request-defaults</onNew>
+
+    <onSave>save,action-refresh-record</onSave>
+
+    <formWidth>large</formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <studioMenu name='studio-menu-purchasereq' title='Demande d&apos;achat'
+      xmlId='studio-menu-purchasereq'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuParent></menuParent>
+
+    <studioApp>BPM-11</studioApp>
+
+  </json-model>
+</json-models>

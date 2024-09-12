@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<studio-apps>
+  <studio-app>
+    <name>Purchase request</name>
+    <code>BPM-11</code>
+    <description></description>
+    <depends></depends>
+    <image name=""></image>
+    <sequence>0</sequence>
+    <modules></modules>
+  </studio-app>
+</studio-apps>
