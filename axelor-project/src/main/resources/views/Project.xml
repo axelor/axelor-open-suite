@@ -114,10 +114,6 @@
         if="__config__.app.isApp('employee')"/>
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
-      <panel name="reportingPanel" title="Reporting">
-        <panel-dashlet name="dashboardPanelDashlet"
-          action="project.reporting.projects.dashboard" colSpan="12"/>
-      </panel>
       <panel-include view="incl-resource-booking-panel-form"
         if="__config__.app.getApp('project')?.resourceManagement"/>
       <panel-include view="incl-wiki-panel-form"/>
@@ -190,6 +186,11 @@
     <panel name="overviewPanel" title="Overview"
       onTabSelect="action-project-activity-dashboard-method-on-new">
       <field name="description" colSpan="12" widget="html"/>
+      <panel name="dashboardPanel" title="Dashboard" colSpan="12" canCollapse="true"
+        collapseIf="true">
+        <panel-dashlet name="dashboardPanelDashlet"
+          action="project.reporting.projects.dashboard" colSpan="12"/>
+      </panel>
       <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject">
         <field name="siteSet" showTitle="false" colSpan="12" grid-view="site-project-grid"

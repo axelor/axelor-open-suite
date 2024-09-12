@@ -168,12 +168,6 @@
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
       <panel name="reportingPanel" title="Reporting">
-        <panel name="dashboardPanel" title="Dashboard" colSpan="12" canCollapse="true"
-          collapseIf="true">
-          <panel-dashlet name="dashboardPanelDashlet"
-            action="project.reporting.projects.dashboard" colSpan="12"/>
-        </panel>
-
         <panel title="Time follow-up" colSpan="12" canCollapse="true" collapseIf="true">
           <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
             showTitle="false" height="125"/>
