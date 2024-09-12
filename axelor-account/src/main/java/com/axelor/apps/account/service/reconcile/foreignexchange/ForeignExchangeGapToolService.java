@@ -2,6 +2,7 @@ package com.axelor.apps.account.service.reconcile.foreignexchange;
 
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ForeignExchangeGapToolService {
@@ -16,5 +17,6 @@ public interface ForeignExchangeGapToolService {
 
   boolean checkCurrencies(MoveLine creditMoveLine, MoveLine debitMoveLine);
 
-  boolean checkIsTotalPayment(Reconcile reconcile, MoveLine creditMoveLine, MoveLine debitMoveLine);
+  boolean checkIsTotalPayment(
+      BigDecimal reconciledAmount, MoveLine creditMoveLine, MoveLine debitMoveLine);
 }
