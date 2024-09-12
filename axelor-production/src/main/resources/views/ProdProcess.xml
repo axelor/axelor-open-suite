@@ -41,8 +41,7 @@
     </toolbar>
 
     <panel name="mainPanel">
-      <field name="statusSelect" showTitle="false" colSpan="12" readonly="false"
-        widget="NavSelect"/>
+      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
       <panel name="namePanel" stacked="true" colSpan="8">
         <field name="fullName" hidden="true" showIf="$readonly()" showTitle="false"
           css="label-bold bold large"/>
@@ -142,6 +141,16 @@
       <field name="versionNumber" colSpan="3"/>
       <field name="originalProdProcess" grid-view="prod-process-grid"
         form-view="prod-process-form" colSpan="3" readonly="true"/>
+    </panel>
+    <panel name="actionPanel" sidebar="true">
+      <button onClick="save,action-prod-process-method-set-validate-status"
+        name="validateBtn" title="Validate" showIf="statusSelect == 1"/>
+      <button onClick="save,action-prod-process-method-set-applicable-status"
+        name="makeItApplicableBtn" title="Make it applicable" showIf="statusSelect == 2"/>
+      <button onClick="save,action-prod-process-method-set-obsolete-status"
+        name="makeItObsoleteBtn" title="Make it obsolete" showIf="statusSelect == 3"/>
+      <button onClick="save,action-prod-process-method-set-draft-status"
+        name="backToDraftBtn" title="Back to draft" showIf="statusSelect > 1"/>
     </panel>
 
     <panel-mail name="mailPanel">
@@ -301,4 +310,23 @@
     <field name="workshopStockLocation" hidden="true"
       if="!__config__.app.getApp('production')?.getManageWorkshop()"/>
   </search-filters>
+
+  <action-method name="action-prod-process-method-set-draft-status">
+    <call class="com.axelor.apps.production.web.ProdProcessController" method="setDraftStaus"/>
+  </action-method>
+
+  <action-method name="action-prod-process-method-set-validate-status">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="setValidateStatus"/>
+  </action-method>
+
+  <action-method name="action-prod-process-method-set-applicable-status">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="setApplicableStatus"/>
+  </action-method>
+
+  <action-method name="action-prod-process-method-set-obsolete-status">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="setObsoleteStatus"/>
+  </action-method>
 </object-views>
