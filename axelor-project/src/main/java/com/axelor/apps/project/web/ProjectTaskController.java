@@ -19,6 +19,7 @@
 package com.axelor.apps.project.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -38,6 +39,7 @@ import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.time.Duration;
@@ -262,5 +264,26 @@ public class ProjectTaskController {
           "status", Beans.get(ProjectTaskService.class).getStatus(project, projectTask));
       manageStatus(request, response);
     }
+  }
+
+  @ErrorException
+  public void setTagDomain(ActionRequest request, ActionResponse response) throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    Company company =
+        Optional.of(projectTask).map(ProjectTask::getProject).map(Project::getCompany).orElse(null);
+    String domain =
+        String.format(
+            "%s member of self.concernedModelSet",
+            Beans.get(MetaModelRepository.class).findByName("ProjectTask").getId());
+
+    if (company != null) {
+      domain =
+          domain.concat(
+              String.format(
+                  " AND (self.companySet IS EMPTY OR %s member of self.companySet)",
+                  company.getId()));
+    }
+
+    response.setAttr("projectTaskTagSet", "domain", domain);
   }
 }
