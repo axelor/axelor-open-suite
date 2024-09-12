@@ -338,8 +338,6 @@
         <panel-dashlet name="supplierArrivalsPanel"
           action="action-project-dashlet-supplier-arrivals" colSpan="12"/>
       </panel>
-      <panel-include view="incl-resource-booking-panel-form"
-        if="__config__.app.getApp('project')?.resourceManagement"/>
 
       <panel title="Expenses" name="expensesPanel"
         if="__config__.app.isApp('business-project')
@@ -487,7 +485,6 @@
         <panel-dashlet name="analyticDashletPanel"
           action="action-project-dashlet-analytic-move-lines" colSpan="12"/>
       </panel>
-      <panel-include view="incl-wiki-panel-form"/>
       <panel title="Roadmap" name="roadmapPanel" if-module="axelor-business-support"
         if="__config__.app.isApp('business-support')">
         <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"

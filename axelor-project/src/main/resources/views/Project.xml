@@ -121,9 +121,6 @@
         <panel-dashlet name="dashboardPanelDashlet"
           action="project.reporting.projects.dashboard" colSpan="12"/>
       </panel>
-      <panel-include view="incl-resource-booking-panel-form"
-        if="__config__.app.getApp('project')?.resourceManagement"/>
-      <panel-include view="incl-wiki-panel-form"/>
 
       <panel title="Configurations" name="configurationsPanel">
         <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
@@ -219,6 +216,9 @@
         <field name="childProjectList" readonly="true" colSpan="12" form-view="project-form"
           grid-view="project-child-grid" showIf="isShowPhasesElements"/>
       </panel>
+      <panel-include view="incl-resource-booking-panel-form"
+        if="__config__.app.getApp('project')?.resourceManagement"/>
+      <panel-include view="incl-wiki-panel-form"/>
     </panel>
   </form>
 
@@ -252,7 +252,8 @@
 
   <form name="incl-resource-booking-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel name="resourceBookingListPanel" title="Resource booking">
+    <panel name="resourceBookingListPanel" title="Resource booking" canCollapse="true"
+      collapseIf="true" colSpan="12">
       <panel-related name="resourceBookingListPanel" field="resourceBookingList"
         form-view="resource-booking-form" grid-view="resource-booking-grid-incl-project"
         colSpan="12"/>
@@ -260,7 +261,7 @@
   </form>
 
   <form name="incl-wiki-panel-form" title="Project" model="com.axelor.apps.project.db.Project">
-    <panel title="Wiki" name="wikiPanel">
+    <panel title="Wiki" name="wikiPanel" canCollapse="true" collapseIf="true" colSpan="12">
       <panel-related name="wikiListPanel" field="wikiList" colSpan="12"
         form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
     </panel>
