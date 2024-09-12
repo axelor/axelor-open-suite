@@ -1,8 +1,6 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
@@ -47,15 +45,9 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
 
     // if bom lines list is same size as sub line list (checking if more line or less)
     // and if each lines are sync
-    var alreadySync =
-        saleOrderLine.getBillOfMaterial().getBillOfMaterialLineList()
-                .stream().map(BillOfMaterialLine::getProduct).filter(product -> product.getProductSubTypeSelect().equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
-                .count()
-                == saleOrderLine.getSubSaleOrderLineList().size()
-            && saleOrderLine.getSubSaleOrderLineList().stream()
-                .allMatch(saleOrderLineBomLineMappingService::isSyncWithBomLine);
+    var isUpdated = saleOrderLineBomService.isUpdated(saleOrderLine);
 
-    if (alreadySync) {
+    if (isUpdated) {
       return;
     }
 

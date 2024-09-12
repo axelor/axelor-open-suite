@@ -14,4 +14,6 @@ public interface SaleOrderLineBomService {
   BillOfMaterial customizeBomOf(SaleOrderLine saleOrderLine) throws AxelorException;
 
   void updateWithBillOfMaterial(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  boolean isUpdated(SaleOrderLine saleOrderLine);
 }

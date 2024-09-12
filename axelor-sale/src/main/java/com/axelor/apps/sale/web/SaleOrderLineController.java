@@ -230,12 +230,17 @@ public class SaleOrderLineController {
     try {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      var isSubLine =
+          Optional.ofNullable(request.getContext())
+              .map(Context::getParent)
+              .map(parentContext -> parentContext.getContextClass().equals(SaleOrderLine.class))
+              .orElse(false);
       SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
       response.setAttr(
           "product",
           "domain",
           Beans.get(SaleOrderLineDomainService.class)
-              .computeProductDomain(saleOrderLine, saleOrder));
+              .computeProductDomain(saleOrderLine, saleOrder, isSubLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

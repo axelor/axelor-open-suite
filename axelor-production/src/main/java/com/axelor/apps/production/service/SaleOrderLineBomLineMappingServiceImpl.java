@@ -38,6 +38,7 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
       saleOrderLine.setProduct(billOfMaterialLine.getProduct());
       saleOrderLine.setQty(billOfMaterialLine.getQty());
       saleOrderLine.setBillOfMaterialLine(billOfMaterialLine);
+      // ComputeProductInformation will generate sub lines.
       saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
       saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
 
