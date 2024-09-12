@@ -18,7 +18,6 @@ import com.axelor.web.ITranslation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -49,7 +48,7 @@ public class CartRestController {
       summary = "Create sale order from cart",
       tags = {"Cart"})
   @Path("/validate/{cartId}")
-  @POST
+  @PUT
   @HttpExceptionHandler
   public Response createSaleOrder(@PathParam("cartId") Long cartId)
       throws AxelorException, JsonProcessingException {
