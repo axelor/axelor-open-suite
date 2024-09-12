@@ -81,7 +81,7 @@
 
   <action-attrs name="action-picked-product-attrs-tracking-number-required">
     <attribute name="required" for="trackingNumber"
-      expr="eval: pickedProduct?.trackingNumberConfiguration != null"/>
+      expr="eval: com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(pickedProduct, 'trackingNumberConfiguration', __parent__?.company) != null"/>
   </action-attrs>
 
   <action-method name="action-picked-product-method-set-tracking-number-domain">
