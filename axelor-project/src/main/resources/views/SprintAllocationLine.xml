@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="sprint-allocation-line-grid" title="Sprint allocation lines"
+    model="com.axelor.apps.project.db.SprintAllocationLine" editable="true">
+
+    <field name="status" title="Status"/>
+    <field name="sprint" title="Sprint"/>
+    <field name="user" title="User"/>
+    <field name="allocated" title="Allocated"/>
+    <field name="leaves" title="Leaves" readonly="true"/>
+    <field name="plannedTime" title="Planned time" readonly="true"/>
+    <field name="remainingTime" title="Remaining time" readonly="true"/>
+    <field name="description" title="Description"/>
+
+  </grid>
+
+  <form name="sprint-allocation-line-form" title="Sprint allocation line"
+    model="com.axelor.apps.project.db.SprintAllocationLine" width="large">
+
+    <panel name="mainPanel">
+      <field name="status" widget="NavSelect" showTitle="false" x-order="sequence"
+        colSpan="12"/>
+      <field name="sprint" title="Sprint"/>
+      <field name="user" title="User"/>
+      <field name="allocated" title="Allocated" colSpan="3"/>
+      <field name="leaves" title="Leaves" colSpan="3" readonly="true"/>
+      <field name="plannedTime" title="Planned time" colSpan="3" readonly="true"/>
+      <field name="remainingTime" title="Remaining time" colSpan="3" readonly="true"/>
+      <field name="description" title="Description" colSpan="12"/>
+    </panel>
+
+  </form>
+
+</object-views>

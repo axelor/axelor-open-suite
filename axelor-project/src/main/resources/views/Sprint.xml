@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="sprint-grid" title="Sprints" model="com.axelor.apps.project.db.Sprint">
+
+    <field name="name" title="Name"/>
+    <field name="project" title="Project"/>
+    <field name="sprintPeriod" title="Sprint period"/>
+    <field name="description" title="Description"/>
+    <field name="totalAllocatedTime" title="Total allocated time"/>
+    <field name="totalEstimatedTime" title="Total estimated time"/>
+    <field name="totalPlannedTime" title="Total planned time"/>
+    <field name="totalRemainingTime" title="Total remaining time"/>
+
+  </grid>
+
+  <grid name="sprint-summary-grid" title="Sprints summary"
+    model="com.axelor.apps.project.db.Sprint">
+
+    <field name="name" title="Name"/>
+    <field name="totalAllocatedTime" title="Total allocated time"/>
+    <field name="totalEstimatedTime" title="Total estimated time"/>
+    <field name="totalPlannedTime" title="Total planned time"/>
+    <field name="totalRemainingTime" title="Total remaining time"/>
+
+  </grid>
+
+  <form name="sprint-form" title="Sprint" model="com.axelor.apps.project.db.Sprint"
+    width="large">
+
+    <panel name="mainPanel">
+      <field name="name" title="Name" required="true"/>
+      <field name="project" title="Project" required="true"/>
+      <field name="sprintPeriod" title="Sprint period"/>
+      <field name="description" title="Description" colSpan="12"/>
+      <field name="projectTaskList" title="Tasks" canSelect="true" canNew="false"
+        canEdit="false" domain="self.project=:project" colSpan="12"/>
+      <panel-dashlet action="action-sprint-view-sprint-allocation-lines"
+        name="sprintAllocationLinePanel" colSpan="12"/>
+      <field name="totalAllocatedTime" title="Total allocated time" readonly="true"/>
+      <field name="totalEstimatedTime" title="Total estimated time" readonly="true"/>
+      <field name="totalPlannedTime" title="Total planned time" readonly="true"/>
+      <field name="totalRemainingTime" title="Total remaining time" readonly="true"/>
+    </panel>
+
+  </form>
+
+  <action-view name="action-sprint-view-sprint-allocation-lines"
+    title="Sprint allocation lines" model="com.axelor.apps.project.db.SprintAllocationLine">
+    <view type="grid" name="sprint-allocation-line-grid"/>
+    <view type="form" name="sprint-allocation-line-form"/>
+    <domain>self.sprint.id = :id</domain>
+  </action-view>
+
+</object-views>
