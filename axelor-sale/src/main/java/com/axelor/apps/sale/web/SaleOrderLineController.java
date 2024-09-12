@@ -29,7 +29,7 @@ import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.service.CartService;
+import com.axelor.apps.sale.service.cart.CartProductService;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
@@ -341,7 +341,7 @@ public class SaleOrderLineController {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
       Product product = saleOrderLine.getProduct();
-      Beans.get(CartService.class).addToCart(product);
+      Beans.get(CartProductService.class).addToCart(product);
       response.setNotify(
           String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
     } catch (Exception e) {

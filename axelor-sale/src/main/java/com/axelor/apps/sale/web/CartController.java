@@ -22,9 +22,10 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.CartRepository;
-import com.axelor.apps.sale.service.CartInitValueService;
-import com.axelor.apps.sale.service.CartSaleOrderGeneratorService;
-import com.axelor.apps.sale.service.CartService;
+import com.axelor.apps.sale.service.cart.CartInitValueService;
+import com.axelor.apps.sale.service.cart.CartResetService;
+import com.axelor.apps.sale.service.cart.CartRetrievalService;
+import com.axelor.apps.sale.service.cart.CartSaleOrderGeneratorService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -46,7 +47,7 @@ public class CartController {
 
   public void editCart(ActionRequest request, ActionResponse response) {
     try {
-      Cart cart = Beans.get(CartService.class).getCurrentCart();
+      Cart cart = Beans.get(CartRetrievalService.class).getCurrentCart();
       if (cart == null) {
         response.setView(
             ActionView.define(I18n.get("Cart"))
@@ -71,7 +72,7 @@ public class CartController {
     try {
       Cart cart = request.getContext().asType(Cart.class);
       cart = Beans.get(CartRepository.class).find(cart.getId());
-      Beans.get(CartService.class).emptyCart(cart);
+      Beans.get(CartResetService.class).emptyCart(cart);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

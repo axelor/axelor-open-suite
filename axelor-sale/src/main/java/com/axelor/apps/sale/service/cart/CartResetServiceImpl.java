@@ -16,12 +16,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.sale.service.cart;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.sale.db.Cart;
+import com.axelor.apps.sale.db.repo.CartRepository;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import org.apache.commons.collections.CollectionUtils;
 
-public interface StockLocationCartService {
+public class CartResetServiceImpl implements CartResetService {
 
-  void addToCart(StockLocation stockLocation) throws AxelorException;
+  protected CartRepository cartRepository;
+
+  @Inject
+  public CartResetServiceImpl(CartRepository cartRepository) {
+    this.cartRepository = cartRepository;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void emptyCart(Cart cart) {
+    if (!CollectionUtils.isEmpty(cart.getCartLineList())) {
+      cart.getCartLineList().clear();
+    }
+    cart.setPartner(null);
+    cartRepository.save(cart);
+  }
 }

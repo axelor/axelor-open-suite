@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.supplychain.service.cartline;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -28,17 +28,31 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
-public class CartLineSupplychainServiceImpl implements CartLineSupplychainService {
+public class CartLineAvailabilityServiceImpl implements CartLineAvailabilityService {
 
   protected StockLocationLineFetchService stockLocationLineFetchService;
   protected AppBaseService appBaseService;
 
   @Inject
-  public CartLineSupplychainServiceImpl(
+  public CartLineAvailabilityServiceImpl(
       StockLocationLineFetchService stockLocationLineFetchService, AppBaseService appBaseService) {
     this.stockLocationLineFetchService = stockLocationLineFetchService;
     this.appBaseService = appBaseService;
+  }
+
+  @Override
+  public void setAvailableStatus(Cart cart) {
+    List<CartLine> cartLineList = cart.getCartLineList();
+    if (CollectionUtils.isEmpty(cartLineList)) {
+      return;
+    }
+    for (CartLine cartLine : cartLineList) {
+      setAvailableStatus(cart, cartLine);
+    }
   }
 
   @Override
@@ -63,5 +77,22 @@ public class CartLineSupplychainServiceImpl implements CartLineSupplychainServic
       cartLine.setAvailableStatusSelect(SaleOrderLineRepository.STATUS_MISSING);
     }
     return cartLine;
+  }
+
+  @Override
+  public List<CartLine> getAvailableCartLineList(Cart cart, List<CartLine> cartLineList) {
+    List<CartLine> availableCartLineList = new ArrayList<>();
+    for (CartLine cartLine : cartLineList) {
+      Product product = cartLine.getProduct();
+      if (product.getIsModel() && cartLine.getVariantProduct() != null) {
+        product = cartLine.getVariantProduct();
+      }
+      BigDecimal availableQty =
+          stockLocationLineFetchService.getAvailableQty(cart.getStockLocation(), product);
+      if (availableQty.compareTo(cartLine.getQty()) >= 0) {
+        availableCartLineList.add(cartLine);
+      }
+    }
+    return availableCartLineList;
   }
 }

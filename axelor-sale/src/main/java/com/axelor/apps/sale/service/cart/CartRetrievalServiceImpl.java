@@ -16,24 +16,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.web;
+package com.axelor.apps.sale.service.cart;
 
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Cart;
-import com.axelor.apps.supplychain.service.cartline.CartLineAvailabilityService;
-import com.axelor.inject.Beans;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
+import com.axelor.apps.sale.db.repo.CartRepository;
+import com.axelor.auth.AuthUtils;
+import com.google.inject.Inject;
 
-public class CartController {
+public class CartRetrievalServiceImpl implements CartRetrievalService {
 
-  public void setAvailableStatus(ActionRequest request, ActionResponse response) {
-    try {
-      Cart cart = request.getContext().asType(Cart.class);
-      Beans.get(CartLineAvailabilityService.class).setAvailableStatus(cart);
-      response.setValue("cartLineList", cart.getCartLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  protected CartRepository cartRepository;
+
+  @Inject
+  public CartRetrievalServiceImpl(CartRepository cartRepository) {
+    this.cartRepository = cartRepository;
+  }
+
+  @Override
+  public Cart getCurrentCart() {
+    return cartRepository
+        .all()
+        .filter("self.user = :user")
+        .bind("user", AuthUtils.getUser())
+        .order("-createdOn")
+        .fetchOne();
   }
 }
