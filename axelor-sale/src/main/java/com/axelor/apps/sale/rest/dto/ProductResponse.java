@@ -26,11 +26,21 @@ public class ProductResponse {
   protected Long productId;
   protected List<PriceResponse> prices;
   protected CurrencyResponse currency;
+  protected UnitResponse unitResponse;
 
-  public ProductResponse(Long productId, List<PriceResponse> prices, CurrencyResponse currency) {
+  public UnitResponse getUnit() {
+    return unitResponse;
+  }
+
+  public ProductResponse(
+      Long productId,
+      List<PriceResponse> prices,
+      CurrencyResponse currency,
+      UnitResponse unitResponse) {
     this.productId = productId;
     this.prices = new ArrayList<>(prices);
     this.currency = currency;
+    this.unitResponse = unitResponse;
   }
 
   public Long getProductId() {

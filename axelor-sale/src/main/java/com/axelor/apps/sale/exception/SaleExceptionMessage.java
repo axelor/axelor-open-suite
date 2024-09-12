@@ -160,4 +160,7 @@ public final class SaleExceptionMessage {
 
   public static final String BLOCK_ORDER_CREATION = /*$$(*/
       "You can not create sale order as some products are not in stock." /*)*/;
+
+  public static final String PRODUCT_UNIT_IS_NULL = /*$$(*/
+      "No unit is set for this product: %s" /*)*/;
 }
