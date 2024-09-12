@@ -21,9 +21,12 @@ package com.axelor.apps.budget.service.saleorder;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
@@ -71,6 +74,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
   protected BudgetService budgetService;
   protected BudgetToolsService budgetToolsService;
   protected InvoiceToolBudgetService invoiceToolBudgetService;
+  protected CompanyService companyService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public SaleOrderBudgetServiceImpl(
@@ -93,7 +98,9 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       SaleOrderLineBudgetService saleOrderLineBudgetService,
       BudgetService budgetService,
       BudgetToolsService budgetToolsService,
-      InvoiceToolBudgetService invoiceToolBudgetService) {
+      InvoiceToolBudgetService invoiceToolBudgetService,
+      CompanyService companyService,
+      AccountConfigService accountConfigService) {
     super(
         appBaseService,
         appStockService,
@@ -115,6 +122,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     this.budgetService = budgetService;
     this.budgetToolsService = budgetToolsService;
     this.invoiceToolBudgetService = invoiceToolBudgetService;
+    this.companyService = companyService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -319,5 +328,28 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
               saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));
       saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, true);
     }
+  }
+
+  @Override
+  public Map<String, Object> getDummies(SaleOrder saleOrder) throws AxelorException {
+    Map<String, Object> dummies = new HashMap<>();
+    if (!appBaseService.isApp("budget")) {
+      dummies.putAll(getEnableBudgetKey(saleOrder));
+    }
+    return dummies;
+  }
+
+  protected Map<String, Object> getEnableBudgetKey(SaleOrder saleOrder) throws AxelorException {
+    Map<String, Object> dummies = new HashMap<>();
+    Long companyId =
+        Optional.of(saleOrder).map(SaleOrder::getCompany).map(Company::getId).orElse(null);
+    Company company = companyService.getDefaultCompany(companyId);
+
+    if (company != null) {
+      dummies.put(
+          "$enableBudgetKey", accountConfigService.getAccountConfig(company).getEnableBudgetKey());
+    }
+
+    return dummies;
   }
 }

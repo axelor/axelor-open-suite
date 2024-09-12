@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service.saleorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.meta.CallMethod;
+import java.util.Map;
 
 public interface SaleOrderBudgetService {
 
@@ -38,4 +39,6 @@ public interface SaleOrderBudgetService {
   String getBudgetExceedAlert(SaleOrder saleOrder);
 
   void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException;
+
+  Map<String, Object> getDummies(SaleOrder saleOrder) throws AxelorException;
 }

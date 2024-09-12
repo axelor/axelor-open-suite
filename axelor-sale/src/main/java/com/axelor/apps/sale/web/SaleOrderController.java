@@ -113,7 +113,7 @@ public class SaleOrderController {
     Map<String, Object> saleOrderMap = new HashMap<>();
     saleOrderMap.putAll(saleOrderInitValueService.setIsTemplate(saleOrder, isTemplate));
     saleOrderMap.putAll(saleOrderInitValueService.getOnNewInitValues(saleOrder));
-    saleOrderMap.putAll(Beans.get(SaleOrderDummyService.class).getOnNewDummies(saleOrder));
+    saleOrderMap.putAll(Beans.get(SaleOrderDummyService.class).fireDummies(saleOrder));
     response.setValues(saleOrderMap);
     Map<String, Map<String, Object>> attrsMap =
         Beans.get(SaleOrderViewService.class).getOnNewAttrs(saleOrder);
@@ -125,6 +125,10 @@ public class SaleOrderController {
     Map<String, Map<String, Object>> attrsMap =
         Beans.get(SaleOrderViewService.class).getOnLoadAttrs(saleOrder);
     response.setAttrs(attrsMap);
+
+    Map<String, Object> saleOrderMap =
+        new HashMap<>(Beans.get(SaleOrderDummyService.class).fireDummies(saleOrder));
+    response.setValues(saleOrderMap);
   }
 
   public void compute(ActionRequest request, ActionResponse response) {

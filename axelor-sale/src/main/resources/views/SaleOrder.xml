@@ -1447,28 +1447,16 @@
     <action name="action-sale-order-method-merge-sale"/>
   </action-group>
 
-  <action-record name="action-sale-order-record-get-trading-names-management-config"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="$enableTradingNamesManagement"
-      expr="eval: __config__.app.getApp('base')?.enableTradingNamesManagement"/>
-  </action-record>
-
   <action-group name="action-group-sale-saleorder-onload">
     <action name="action-sale-order-method-onload"/>
     <action name="action-sale-order-attrs-collapse-specific-settings-group"/>
     <action name="action-sale-order-attrs-in-ati"/>
     <action name="action-sale-order-attrs-hidden-bank-details"/>
-    <action name="action-sale-order-record-project-default-fields"
-      if="__config__.app.isApp('business-project')"/>
     <action name="action-sale-order-attrs-external-reference"/>
     <action name="action-sale-order-attrs-availability"/>
     <action name="action-sale-order-attrs-set-required"/>
-    <action name="action-sale-order-attrs-set-discounts-need-review"/>
-    <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-method-is-incoterm-required"/>
     <action name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product"/>
-    <action name="action-sale-order-method-get-last-version"/>
-    <action name="action-sale-order-attrs-set-save-actual-version"/>
     <action name="action-sale-order-attrs-list-selection-in-type-select"/>
     <action name="action-sale-order-attrs-editable-display-discount-amount"/>
   </action-group>
@@ -1785,10 +1773,6 @@
       if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
   </action-attrs>
 
-  <action-attrs name="action-sale-order-attrs-set-save-actual-version">
-    <attribute for="$saveActualVersion" name="value" expr="eval: true"/>
-  </action-attrs>
-
   <action-method name="action-sale-order-method-set-client-partner-domain">
     <call class="com.axelor.apps.sale.web.SaleOrderController"
       method="getSaleOrderPartnerDomain"/>
@@ -2058,11 +2042,6 @@
     <field name="manualUnblock" expr="true"/>
   </action-record>
 
-  <action-attrs name="action-sale-order-record-project-default-fields"
-    if-module="axelor-business-project">
-    <attribute for="$_elementStartDate" name="value" expr="#{__datetime__}"/>
-  </action-attrs>
-
   <action-attrs name="action-sale-order-attrs-external-reference">
     <attribute name="hidden" for="duplicateReferenceLabel"
       expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
@@ -2075,11 +2054,6 @@
       expr="eval: !(__repo__(StockMove).all().filter('? MEMBER OF self.saleOrderSet  AND self.availabilityRequest = ? AND self.statusSelect = ?',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
     <attribute name="hidden" expr="eval: statusSelect != 3"
       for="saleOrderLineList.availableStatus" if="__config__.app.isApp('supplychain')"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-order-attrs-set-discounts-need-review">
-    <attribute name="value" for="$discountsNeedReview"
-      expr="eval: (statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || (orderBeingEdited &amp;&amp; __repo__(SaleOrder).STATUS_ORDER_CONFIRMED)) &amp;&amp; saleOrderLineList?.any{it.discountsNeedReview}"/>
   </action-attrs>
 
   <action-group name="action-sale-order-group-on-estimated-shipping-date-change">

@@ -5,8 +5,10 @@ import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderCheckBudgetService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.event.SaleOrderConfirm;
+import com.axelor.apps.sale.service.event.SaleOrderViewDummy;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderBudgetObserver {
@@ -21,5 +23,12 @@ public class SaleOrderBudgetObserver {
     }
 
     Beans.get(SaleOrderCheckBudgetService.class).checkNoComputeBudgetError(saleOrder);
+  }
+
+  public void budgetComputeDummiesSaleOrder(@Observes SaleOrderViewDummy event)
+      throws AxelorException {
+    SaleOrder saleOrder = event.getSaleOrder();
+    Map<String, Object> saleOrderMap = event.getSaleOrderMap();
+    saleOrderMap.putAll(Beans.get(SaleOrderBudgetService.class).getDummies(saleOrder));
   }
 }
