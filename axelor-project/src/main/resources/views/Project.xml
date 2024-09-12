@@ -119,23 +119,8 @@
       <panel-include view="incl-wiki-panel-form"/>
 
       <panel title="Configurations" name="configurationsPanel">
-        <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
-          name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
-          domain="self.isActivity = true AND self.dtype = 'Product'"
-          form-view="product-activity-form" grid-view="product-activity-grid"/>
-        <field name="projectTimeUnit"/>
-        <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
-          if-module="axelor-human-resource"/>
-        <field name="childProjectList" hidden="true"/>
-        <field name="sequence" hidden="true"/>
-        <field name="imputable" colSpan="4" widget="boolean-switch"
-          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
-          if-module="axelor-human-resource"
-          onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
-
-        <panel-include view="incl-fields-to-display-panel-form"/>
+        <panel-include view="incl-project-config-panel-form"/>
       </panel>
-      <panel-include view="incl-custom-fields-to-display-panel-form"/>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -283,9 +268,27 @@
     </panel>
   </form>
 
-  <form name="incl-fields-to-display-panel-form" title="Project"
+  <form name="incl-project-config-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
+    <panel title="General configuration" name="generalConfigurationsPanel" colSpan="12"
+      canCollapse="true" collapseIf="true">
+      <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
+        name="productSet" widget="TagSelect" canEdit="false"
+        domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-activity-form"
+        grid-view="product-activity-grid"/>
+      <field name="projectTimeUnit"/>
+      <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
+        if-module="axelor-human-resource"/>
+      <field name="imputable" widget="boolean-switch"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
+        if-module="axelor-human-resource"
+        onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
+      <field name="isShowTimeSpent" widget="inline-checkbox"
+        onChange="action-project-record-is-show-timespent-reset-values"
+        if="__config__.app.isApp('timesheet')" readonlyIf="!imputable"/>
+    </panel>
+    <panel name="taskConfigurationPanel" title="Task configuration" colSpan="12"
+      canCollapse="true" collapseIf="true">
       <field name="taskStatusManagementSelect" widget="RadioSelect"
         readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
         onChange="action-project-record-manage-task-status-set, action-project-record-activate-task-status-by-category"/>
@@ -298,31 +301,31 @@
         showIf="taskStatusManagementSelect == 2 || taskStatusManagementSelect == 3"
         requiredIf="taskStatusManagementSelect == 2" readonlyIf="taskStatusManagementSelect == 3"
         onSelect="action-project-attrs-set-completed-task-status-domain"/>
-      <field name="isShowPriority" colSpan="4" widget="inline-checkbox"
+      <field name="isShowPriority" widget="inline-checkbox"
         onChange="action-project-record-priority-reset-values"/>
-      <field name="projectTaskPrioritySet" widget="TagSelect" colSpan="12"
-        showIf="isShowPriority" requiredIf="isShowPriority" canEdit="false"/>
-      <spacer colSpan="12" showIf="isShowPriority"/>
+      <field name="projectTaskPrioritySet" widget="TagSelect" showIf="isShowPriority"
+        requiredIf="isShowPriority" canEdit="false"/>
       <field name="isShowTaskCategory" widget="inline-checkbox"
         onChange="action-project-record-change-show-task-category, action-project-record-manage-task-status-set"
         canEdit="false"/>
+      <field name="projectTaskCategorySet" widget="TagSelect" showIf="isShowTaskCategory"
+        canEdit="false"
+        requiredIf="taskStatusManagementSelect == 4 || enableStatusProgressByCategory"/>
+      <field name="isShowProgress" widget="inline-checkbox"/>
       <field name="enableStatusProgressByCategory"
         if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask"
         showIf="isShowTaskCategory"/>
-      <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect"
-        showIf="isShowTaskCategory" canEdit="false"
-        requiredIf="taskStatusManagementSelect == 4 || enableStatusProgressByCategory"/>
       <field name="projectTaskLinkTypeSet" colSpan="12" widget="TagSelect" canEdit="false"
         placeholder="All"/>
-      <field name="isShowProgress" colSpan="4" widget="inline-checkbox"/>
+    </panel>
+    <panel title="View configuration" name="viewConfig" colSpan="12" canCollapse="true"
+      collapseIf="true">
       <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
-      <field name="isShowTimeSpent" colSpan="4" widget="inline-checkbox"
-        onChange="action-project-record-is-show-timespent-reset-values"
-        if="__config__.app.isApp('timesheet')" readonlyIf="!imputable"/>
       <field name="isShowSection" colSpan="4" widget="inline-checkbox"
         onChange="action-project-record-section-reset-values"/>
       <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
+      <spacer colSpan="8"/>
       <field name="isShowGantt" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowKanbanPerStatus" colSpan="4" widget="inline-checkbox"
         showIf="taskStatusManagementSelect != 1"/>
@@ -332,8 +335,8 @@
       <field name="isShowCalendarPerSection" colSpan="4" widget="inline-checkbox"
         showIf="isShowSection"/>
       <field name="isShowCalendarPerUser" colSpan="4" widget="inline-checkbox"/>
-      <field name="projectTaskList" hidden="true"/>
     </panel>
+    <panel-include view="incl-custom-fields-to-display-panel-form"/>
   </form>
 
   <form name="project-select-wizard-form" title="Select Projects"
@@ -358,7 +361,8 @@
 
   <form name="incl-custom-fields-to-display-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel title="Custom fields" name="customFieldConfigPanel">
+    <panel title="Custom fields" name="customFieldConfigPanel" canCollapse="true"
+      collapseIf="true" colSpan="12">
       <field name="customFieldManagementSelect" widget="MultiSelect" placeholder="None"
         onChange="save"/>
       <panel-related field="taskCustomFieldsList" colSpan="12"
