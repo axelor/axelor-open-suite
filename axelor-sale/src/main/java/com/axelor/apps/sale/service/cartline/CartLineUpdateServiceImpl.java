@@ -16,24 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.web;
+package com.axelor.apps.sale.service.cartline;
 
-import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.sale.db.Cart;
-import com.axelor.apps.supplychain.service.cartline.CartLineAvailabilityService;
-import com.axelor.inject.Beans;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
+import com.axelor.apps.sale.db.CartLine;
+import com.axelor.apps.sale.db.repo.CartLineRepository;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
-public class CartController {
+public class CartLineUpdateServiceImpl implements CartLineUpdateService {
 
-  public void setAvailableStatus(ActionRequest request, ActionResponse response) {
-    try {
-      Cart cart = request.getContext().asType(Cart.class);
-      Beans.get(CartLineAvailabilityService.class).setAvailableStatus(cart);
-      response.setValue("cartLineList", cart.getCartLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  protected CartLineRepository cartLineRepository;
+
+  @Inject
+  public CartLineUpdateServiceImpl(CartLineRepository cartLineRepository) {
+    this.cartLineRepository = cartLineRepository;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void updateCartLine(CartLine cartLine) {
+    cartLine.setQty(cartLine.getQty().add(BigDecimal.ONE));
+    cartLineRepository.save(cartLine);
   }
 }

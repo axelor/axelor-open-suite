@@ -16,27 +16,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.web;
+package com.axelor.apps.sale.service.cartline;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.service.cart.CartProductService;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
+import com.axelor.apps.sale.db.Cart;
+import com.axelor.apps.sale.db.CartLine;
 
-public class ProductController {
+public interface CartLineRetrievalService {
 
-  public void addToCart(ActionRequest request, ActionResponse response) {
-    try {
-      Product product = request.getContext().asType(Product.class);
-      Beans.get(CartProductService.class).addToCart(product);
-      response.setNotify(
-          String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
+  CartLine getCartLine(Cart cart, Product product);
 }

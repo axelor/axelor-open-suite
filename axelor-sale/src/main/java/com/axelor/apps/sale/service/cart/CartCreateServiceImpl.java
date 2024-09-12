@@ -16,21 +16,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.sale.service.cart;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Cart;
-import com.axelor.apps.sale.db.CartLine;
-import java.math.BigDecimal;
+import com.axelor.apps.sale.db.repo.CartRepository;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
-public interface CartLineService {
+public class CartCreateServiceImpl implements CartCreateService {
 
-  CartLine getCartLine(Cart cart, Product product);
+  protected CartRepository cartRepository;
+  protected CartInitValueService cartInitValueService;
 
-  CartLine createCartLine(Cart cart, Product product) throws AxelorException;
+  @Inject
+  public CartCreateServiceImpl(
+      CartRepository cartRepository, CartInitValueService cartInitValueService) {
+    this.cartRepository = cartRepository;
+    this.cartInitValueService = cartInitValueService;
+  }
 
-  void updateCartLine(CartLine cartLine);
-
-  BigDecimal getSalePrice(Cart cart, CartLine cartLine) throws AxelorException;
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public Cart createCart() {
+    Cart cart = new Cart();
+    cartInitValueService.getDefaultValues(cart);
+    return cartRepository.save(cart);
+  }
 }
