@@ -69,6 +69,12 @@
     <string name="groupingPeriodSelect" title="Grouping period"
       selection="business.project.invoice.grouping.period.select" default="month"/>
 
+    <integer name="saleCoefficient" title="Default sale coefficient" default="1"
+      help="This coefficient will be used to compute the quantity for package invoicing"/>
+    <integer name="riskCoefficient" title="Default risk coefficient" default="0"
+      help="This coefficient will be used to compute the quantity for package invoicing"/>
+
+
     <extra-code><![CDATA[
 		public static final int CLOSING_PROJECT_RULE_NONE = 0;
 		public static final int CLOSING_PROJECT_RULE_NON_BLOCKING = 1;

@@ -516,6 +516,14 @@
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
         <field name="projectTimeUnit"/>
         <field name="numberHoursADay" if="__config__.app.isApp('business-project')"/>
+        <field name="$manageSaleCoefficient" type="boolean" title="Manage sale coefficient"
+          onChange="action-business-project-attrs-reset-sale-coefficient"/>
+        <field name="saleCoefficient" showIf="$manageSaleCoefficient"
+          validIf="!$manageSaleCoefficient || ($manageSaleCoefficient &amp;&amp; saleCoefficient >= 0)"/>
+        <field name="$manageRiskCoefficient" type="boolean" title="Manage risk coefficient"
+          onChange="action-business-project-attrs-reset-risk-coefficient"/>
+        <field name="riskCoefficient" showIf="$manageRiskCoefficient"
+          validIf="!$manageRiskCoefficient || ($manageRiskCoefficient &amp;&amp; riskCoefficient >= 0)"/>
         <field name="spentTimeCostComputationMethod"
           if="__config__.app.isApp('business-project')"/>
         <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
@@ -631,6 +639,8 @@
     <action name="action-project-attrs-set-time-unit-domain"/>
     <action name="action-business-project-method-get-analytic-distribution-template"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+    <action name="action-app-business-project-method-init-coefficient-fields"/>
+    <action name="action-app-business-project-attrs-manage-coefficients"/>
   </action-group>
 
   <action-group name="action-business-project-project-group-on-load">
@@ -641,6 +651,7 @@
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-attrs-set-time-unit-domain"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+    <action name="action-business-project-attrs-manage-coefficients"/>
   </action-group>
 
   <action-method name="action-project-method-generate-quotation">

@@ -36,7 +36,7 @@ public class ProjectTaskGroupServiceImpl implements ProjectTaskGroupService {
 
   @Override
   public Map<String, Object> updateSoldTime(ProjectTask projectTask) throws AxelorException {
-    projectTask.setSoldTime(projectTask.getBudgetedTime());
+    projectTask.setSoldTime(projectTaskComputeService.computeSoldTime(projectTask));
 
     Map<String, Object> valuesMap = new HashMap<>(updateUpdatedTime(projectTask));
 
