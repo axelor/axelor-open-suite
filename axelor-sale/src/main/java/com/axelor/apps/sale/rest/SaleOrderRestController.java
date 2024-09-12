@@ -36,6 +36,7 @@ import com.axelor.utils.api.SecurityCheck;
 import com.axelor.web.ITranslation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.Objects;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -80,12 +81,12 @@ public class SaleOrderRestController {
   public Response changeSaleOrderStatus(SaleOrderPutRequest requestBody) throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(SaleOrder.class, requestBody.getSaleOrderId()).check();
-    Long statusId = requestBody.getStatusId();
+    String toStatus = requestBody.getToStatus();
     SaleOrder saleOrder = requestBody.fetchSaleOrder();
-    if (statusId == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+    if (Objects.equals(toStatus, SaleOrderPutRequest.SALE_ORDER_UPDATE_FINALIZE)) {
       Beans.get(SaleOrderFinalizeService.class).finalizeQuotation(requestBody.fetchSaleOrder());
     }
-    if (statusId == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
+    if (Objects.equals(toStatus, SaleOrderPutRequest.SALE_ORDER_UPDATE_CONFIRM)) {
       Beans.get(SaleOrderConfirmService.class)
           .confirmSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
     }
