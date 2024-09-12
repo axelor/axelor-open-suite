@@ -18,15 +18,19 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
+import java.math.BigDecimal;
 
 public interface CartLineService {
 
   CartLine getCartLine(Cart cart, Product product);
 
-  CartLine createCartLine(Cart cart, Product product);
+  CartLine createCartLine(Cart cart, Product product) throws AxelorException;
 
   void updateCartLine(CartLine cartLine);
+
+  BigDecimal getSalePrice(Cart cart, CartLine cartLine) throws AxelorException;
 }

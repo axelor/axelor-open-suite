@@ -18,8 +18,10 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.service.CartService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.google.inject.Inject;
 
 public class StockLocationCartServiceImpl implements StockLocationCartService {
@@ -32,12 +34,9 @@ public class StockLocationCartServiceImpl implements StockLocationCartService {
   }
 
   @Override
-  public void addToCart(StockLocation stockLocation) {
-    stockLocation
-        .getStockLocationLineList()
-        .forEach(
-            stockLocationLine -> {
-              cartService.addToCart(stockLocationLine.getProduct());
-            });
+  public void addToCart(StockLocation stockLocation) throws AxelorException {
+    for (StockLocationLine stockLocationLine : stockLocation.getStockLocationLineList()) {
+      cartService.addToCart(stockLocationLine.getProduct());
+    }
   }
 }

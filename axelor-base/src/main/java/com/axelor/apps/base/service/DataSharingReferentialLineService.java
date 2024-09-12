@@ -18,10 +18,19 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.DataSharingReferential;
+import com.axelor.apps.base.db.DataSharingReferentialLine;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 
 public interface DataSharingReferentialLineService {
 
   Query<? extends Model> getQuery(Class<? extends Model> modelClass);
+
+  DataSharingReferentialLine createDataSharingReferentialLine(
+      DataSharingReferential dataSharingReferential,
+      String metaModelName,
+      String condition,
+      String wizardModelName,
+      Long wizardRefId);
 }

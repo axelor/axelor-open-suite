@@ -601,6 +601,13 @@
           <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
       </panel>
+      <panel name="projectPanel" title="Projects"
+        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+        <panel-dashlet name="projectPanel" title="Projects"
+          action="action-partner-view-related-projects" colSpan="12"/>
+        <panel-dashlet name="invoicingProjectPanel" title="Invoicing projects"
+          action="action-partner-view-related-invoicing-projects" colSpan="12"/>
+      </panel>
     </panel-tabs>
     <panel name="partnerAttrsPanel">
       <field name="partnerAttrs" colSpan="12"/>
@@ -1739,5 +1746,19 @@
     <attribute name="domain" for="partnerTagSet"
       expr="eval: &quot; ${__repo__(MetaModel).findByName('Partner')?.id} member of self.concernedModelSet AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
   </action-attrs>
+
+  <action-view name="action-partner-view-related-projects" title="Projects"
+    model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="project-grid"/>
+    <view type="form" name="project-form"/>
+    <domain>self.clientPartner = :id</domain>
+  </action-view>
+
+  <action-view name="action-partner-view-related-invoicing-projects"
+    title="Invoicing projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
+    <view type="grid" name="invoicing-project-grid"/>
+    <view type="form" name="invoicing-project-form"/>
+    <domain>self.project.clientPartner = :id</domain>
+  </action-view>
 
 </object-views>

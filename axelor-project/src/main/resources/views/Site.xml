@@ -24,7 +24,7 @@
 
   <action-attrs name="action-site-attrs-set-defaults"
     id="project-action-site-attrs-set-defaults">
-    <attribute for="companySet" name="value" expr="eval: [__user__.activeCompany]"
+    <attribute for="company" name="value" expr="eval: __user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <attribute for="typeSelect" name="value" expr="1"/>
     <attribute for="isUsableOnProject" name="value" expr="eval:_isFromProject"/>
