@@ -1778,7 +1778,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     BigDecimal realQty = stockMoveLine.getRealQty();
     BigDecimal qty = stockMoveLine.getQty();
-    if (realQty != null && (realQty.signum() < 1 || realQty.compareTo(qty) > 0)) {
+    if (realQty != null && (realQty.signum() < 1 || realQty.compareTo(qty) >= 0)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_REAL_QTY));
