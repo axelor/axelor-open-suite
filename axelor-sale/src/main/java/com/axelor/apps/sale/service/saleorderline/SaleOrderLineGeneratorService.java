@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder;
+package com.axelor.apps.sale.service.saleorderline;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;

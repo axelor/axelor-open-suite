@@ -20,8 +20,8 @@ package com.axelor.apps.sale.service.saleorderline;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeComputationService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;

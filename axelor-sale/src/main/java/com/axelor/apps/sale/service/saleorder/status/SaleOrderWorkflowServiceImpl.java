@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder;
+package com.axelor.apps.sale.service.saleorder.status;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;

@@ -1,4 +1,4 @@
-package com.axelor.apps.sale.service.saleorder;
+package com.axelor.apps.sale.service.saleorder.status;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Blocking;
@@ -17,6 +17,7 @@ import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;

@@ -1,4 +1,4 @@
-package com.axelor.apps.sale.service.saleorderline;
+package com.axelor.apps.sale.service.saleorderline.product;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxEquiv;
@@ -17,6 +17,9 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineTaxService;
 import com.axelor.db.mapper.Mapper;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;

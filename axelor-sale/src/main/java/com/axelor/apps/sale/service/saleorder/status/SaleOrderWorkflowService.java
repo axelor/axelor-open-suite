@@ -16,14 +16,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder;
+package com.axelor.apps.sale.service.saleorder.status;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.sale.db.SaleOrder;
 
-public interface SaleOrderLineTreeComputationService {
+public interface SaleOrderWorkflowService {
 
-  void computePrices(SaleOrderLine saleOrderLine) throws AxelorException;
+  void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
+      throws AxelorException;
 
-  void computeSubTotalCostPrice(SaleOrderLine saleOrderLine);
+  void completeSaleOrder(SaleOrder saleOrder) throws AxelorException;
 }

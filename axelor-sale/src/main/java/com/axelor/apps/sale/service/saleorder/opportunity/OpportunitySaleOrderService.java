@@ -16,16 +16,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder;
+package com.axelor.apps.sale.service.saleorder.opportunity;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.sale.db.SaleOrder;
 
-public interface SaleOrderWorkflowService {
+public interface OpportunitySaleOrderService {
 
-  void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
-      throws AxelorException;
+  SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException;
 
-  void completeSaleOrder(SaleOrder saleOrder) throws AxelorException;
+  public void cancelSaleOrders(Opportunity opportunity) throws AxelorException;
 }

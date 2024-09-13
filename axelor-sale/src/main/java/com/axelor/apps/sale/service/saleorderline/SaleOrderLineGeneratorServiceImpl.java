@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder;
+package com.axelor.apps.sale.service.saleorderline;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
@@ -29,11 +29,10 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDomainService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineInitValueService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;

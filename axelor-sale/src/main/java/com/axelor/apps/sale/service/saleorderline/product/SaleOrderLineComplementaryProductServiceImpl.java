@@ -1,4 +1,4 @@
-package com.axelor.apps.sale.service.saleorderline;
+package com.axelor.apps.sale.service.saleorderline.product;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
@@ -8,6 +8,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;

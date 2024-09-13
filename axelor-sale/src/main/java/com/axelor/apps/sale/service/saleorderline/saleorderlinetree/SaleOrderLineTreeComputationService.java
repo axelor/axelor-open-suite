@@ -16,15 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder;
+package com.axelor.apps.sale.service.saleorderline.saleorderlinetree;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 
-public interface OpportunitySaleOrderService {
+public interface SaleOrderLineTreeComputationService {
 
-  SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException;
+  void computePrices(SaleOrderLine saleOrderLine) throws AxelorException;
 
-  public void cancelSaleOrders(Opportunity opportunity) throws AxelorException;
+  void computeSubTotalCostPrice(SaleOrderLine saleOrderLine);
 }
