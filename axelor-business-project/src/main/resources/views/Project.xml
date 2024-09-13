@@ -497,25 +497,6 @@
             canSearch="true"/>
         </panel>
       </panel>
-      <panel title="Roadmap" name="roadmapPanel" if-module="axelor-business-support"
-        if="__config__.app.isApp('business-support')">
-        <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
-          form-view="project-version-form">
-          <field name="title"/>
-          <field name="projectStatus"/>
-          <field name="testingServerDate"/>
-          <field name="productionServerDate"/>
-        </panel-related>
-      </panel>
-      <panel name="announcementPanel" title="Announcement" if-module="axelor-business-support"
-        if="__config__.app.isApp('business-support')">
-        <panel-related name="announcementListPanel" field="announcementList"
-          colSpan="12" form-view="project-announcement-form">
-          <field name="title"/>
-          <field name="date"/>
-          <field name="content"/>
-        </panel-related>
-      </panel>
 
       <panel title="Configurations" name="configurationsPanel">
         <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
