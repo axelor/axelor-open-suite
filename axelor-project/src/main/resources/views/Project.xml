@@ -40,7 +40,7 @@
 
   <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
-    onSave="action-project-method-check-resource-availibility">
+    onSave="action-project-method-check-resource-availibility" width="large">
     <toolbar>
       <button name="logTimeBtn" icon="clock-history"
         onClick="save,action-timesheet-line-method-log-time" showIf="isShowTimeSpent"
@@ -113,7 +113,7 @@
 
       <panel-include view="incl-project-overview-panel-form"/>
 
-      <panel title="Task Tree" name="taskTreePanel">
+      <panel title="Tasks" name="taskTreePanel">
         <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
           icon="fa-plus" onClick="save,action-project-add-task"/>
         <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
@@ -127,9 +127,6 @@
         if="__config__.app.isApp('employee')"/>
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
-      <panel-include view="incl-resource-booking-panel-form"
-        if="__config__.app.getApp('project')?.resourceManagement"/>
-      <panel-include view="incl-wiki-panel-form"/>
 
       <panel title="Configurations" name="configurationsPanel">
         <panel-include view="incl-project-config-panel-form"/>
