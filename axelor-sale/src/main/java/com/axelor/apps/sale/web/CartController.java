@@ -18,18 +18,23 @@
  */
 package com.axelor.apps.sale.web;
 
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Cart;
+import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.CartRepository;
 import com.axelor.apps.sale.service.CartInitValueService;
 import com.axelor.apps.sale.service.CartSaleOrderGeneratorService;
 import com.axelor.apps.sale.service.CartService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.List;
 import java.util.Map;
 
 public class CartController {
@@ -93,6 +98,25 @@ public class CartController {
               .context("_showRecord", String.valueOf(saleOrder.getId()))
               .map());
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getCartPartnerDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Cart cart = request.getContext().asType(Cart.class);
+      List<CartLine> cartLineList = cart.getCartLineList();
+      String domain =
+          Beans.get(SaleOrderDomainService.class).getPartnerBaseDomain(cart.getCompany());
+
+      if (!(cartLineList == null || cartLineList.isEmpty())) {
+        domain =
+            Beans.get(PricedOrderDomainService.class)
+                .getPartnerDomain(cart, domain, PriceListRepository.TYPE_SALE);
+      }
+
+      response.setAttr("partner", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
