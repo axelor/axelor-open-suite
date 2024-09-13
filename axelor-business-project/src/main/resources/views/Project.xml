@@ -36,7 +36,7 @@
   </form>
 
   <form name="business-project-form" title="Business project"
-    model="com.axelor.apps.project.db.Project"
+    model="com.axelor.apps.project.db.Project" width="large"
     onLoad="action-business-project-project-group-on-load"
     onNew="action-business-project-project-group-on-new"
     onSave="action-project-method-check-resource-availibility">
@@ -130,52 +130,31 @@
 
       <panel-include view="incl-information-panel-form"/>
     </panel>
-    <panel name="detailsPanel">
-      <panel name="generalInfoPanel" colSpan="12">
-        <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"
-          canEdit="false" if-module="axelor-business-project"/>
-        <field name="clientPartner"
-          domain="self.isCustomer = true AND :company member of self.companySet"
-          onChange="action-project-method-get-partner-data" required="true" form-view="partner-form"
-          grid-view="partner-grid" colSpan="3" if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project"/>
-        <field name="currency" colSpan="3" if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project" canEdit="false"/>
-        <field name="priceList" colSpan="3" if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project" canEdit="false"/>
-        <field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner"
-          form-view="partner-form" grid-view="partner-grid" colSpan="6"
-          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-        <field name="customerAddress" grid-view="address-grid" form-view="address-form"
-          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-          domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
-      </panel>
+    <panel name="generalInfoPanel" colSpan="12" title="General information" canCollapse="true"
+      collapseIf="id">
+      <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"
+        canEdit="false" if-module="axelor-business-project"/>
+      <field name="clientPartner"
+        domain="self.isCustomer = true AND :company member of self.companySet"
+        onChange="action-project-method-get-partner-data" required="true" form-view="partner-form"
+        grid-view="partner-grid" colSpan="3" if="__config__.app.isApp('business-project')"
+        if-module="axelor-business-project"/>
+      <field name="currency" colSpan="3" if="__config__.app.isApp('business-project')"
+        if-module="axelor-business-project" canEdit="false"/>
+      <field name="priceList" colSpan="3" if="__config__.app.isApp('business-project')"
+        if-module="axelor-business-project" canEdit="false"/>
+      <field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner"
+        form-view="partner-form" grid-view="partner-grid" colSpan="6"
+        if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+      <field name="customerAddress" grid-view="address-grid" form-view="address-form"
+        if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+        domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
 
       <panel-include view="incl-project-overview-panel-form"/>
 
-      <panel title="Task Tree" name="taskTreePanel">
-        <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
-          icon="fa-plus" onClick="save,action-business-project-add-task"/>
-        <button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left"
-          icon="fa-plus" onClick="save,action-project-add-ticket"
-          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-        <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-          icon="fa-tasks" onClick="save,action-business-project-view-show-related-tasks"/>
-        <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
-          colSpan="12" action="action-view-show-business-project-task-tree"/>
-        <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
-          colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
-          if="__config__.app.isApp('business-project')" canSearch="true"/>
-      </panel>
-      <panel-include view="incl-project-structure-panel-form"/>
-      <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
-        if="__config__.app.isApp('employee')"/>
-
-      <panel-include if-module="axelor-human-resource"
-        view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
       <panel name="reportingPanel" title="Reporting">
         <panel title="Time follow-up" colSpan="12" canCollapse="true" collapseIf="true">
           <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
@@ -266,6 +245,28 @@
             canRemove="false" title=""/>
         </panel>
       </panel>
+
+      <panel title="Tasks" name="taskTreePanel">
+        <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
+          icon="fa-plus" onClick="save,action-business-project-add-task"/>
+        <button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left"
+          icon="fa-plus" onClick="save,action-project-add-ticket"
+          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+        <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
+          icon="fa-tasks" onClick="save,action-business-project-view-show-related-tasks"/>
+        <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
+          colSpan="12" action="action-view-show-business-project-task-tree"/>
+        <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
+          colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
+          if="__config__.app.isApp('business-project')" canSearch="true"/>
+      </panel>
+      <panel-include view="incl-project-structure-panel-form"/>
+      <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
+        if="__config__.app.isApp('employee')"/>
+
+      <panel-include if-module="axelor-human-resource"
+        view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
+
       <panel title="Sales" name="salesPanel"
         if="__config__.app.isApp('business-project')
 				&amp;&amp; __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject()"
@@ -374,6 +375,32 @@
         <panel-dashlet name="expenseLinePanel"
           action="action-project-view-show-validated-expense-lines" colSpan="12" canSearch="true"/>
       </panel>
+
+      <panel title="Contracts" name="contractPanel"
+        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+        <panel name="frameworkContractPanel" showIf="allowToGetPricesFromFrameworkContract"
+          colSpan="12">
+          <field name="frameworkCustomerContractSet" colSpan="12" canEdit="false"
+            domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 1"/>
+          <field name="defaultFrameworkCustomerContract"
+            onSelect="action-project-attrs-set-default-customer-contract-domain"/>
+          <field name="frameworkSupplierContractSet" colSpan="12" canEdit="false"
+            domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 2"/>
+          <field name="defaultFrameworkSupplierContract"
+            onSelect="action-project-attrs-set-default-supplier-contract-domain"/>
+        </panel>
+        <button name="createNewCustomerContract" title="Create new customer contract"
+          colSpan="6" onClick="save,action-project-view-create-new-customer-contract"/>
+        <button name="createNewSupplierContract" title="Create new supplier contract"
+          colSpan="6" onClick="save,action-project-view-create-new-supplier-contract"/>
+        <panel-dashlet name="customerContractPanel" title="Customer contracts"
+          action="action-project-dashlet-customer-contracts" colSpan="12" canSearch="true"/>
+        <panel-dashlet name="supplierContractPanel" title="Supplier contracts"
+          action="action-project-dashlet-supplier-contracts" colSpan="12" canSearch="true"/>
+        <panel-dashlet name="contractInvoicePanel" title="Invoices"
+          action="action-project-dashlet-contract-invoices" colSpan="12"/>
+      </panel>
+
       <panel title="Production" name="productionPanel" if-module="axelor-business-production"
         if="__config__.app.isApp('business-project')
 				 &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()">
@@ -508,31 +535,6 @@
           <field name="allowToGetPricesFromFrameworkContract"/>
         </panel>
         <panel-include view="incl-project-config-panel-form"/>
-      </panel>
-
-      <panel title="Contracts" name="contractPanel"
-        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-        <panel name="frameworkContractPanel" showIf="allowToGetPricesFromFrameworkContract"
-          colSpan="12">
-          <field name="frameworkCustomerContractSet" colSpan="12" canEdit="false"
-            domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 1"/>
-          <field name="defaultFrameworkCustomerContract"
-            onSelect="action-project-attrs-set-default-customer-contract-domain"/>
-          <field name="frameworkSupplierContractSet" colSpan="12" canEdit="false"
-            domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 2"/>
-          <field name="defaultFrameworkSupplierContract"
-            onSelect="action-project-attrs-set-default-supplier-contract-domain"/>
-        </panel>
-        <button name="createNewCustomerContract" title="Create new customer contract"
-          colSpan="6" onClick="save,action-project-view-create-new-customer-contract"/>
-        <button name="createNewSupplierContract" title="Create new supplier contract"
-          colSpan="6" onClick="save,action-project-view-create-new-supplier-contract"/>
-        <panel-dashlet name="customerContractPanel" title="Customer contracts"
-          action="action-project-dashlet-customer-contracts" colSpan="12" canSearch="true"/>
-        <panel-dashlet name="supplierContractPanel" title="Supplier contracts"
-          action="action-project-dashlet-supplier-contracts" colSpan="12" canSearch="true"/>
-        <panel-dashlet name="contractInvoicePanel" title="Invoices"
-          action="action-project-dashlet-contract-invoices" colSpan="12"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
