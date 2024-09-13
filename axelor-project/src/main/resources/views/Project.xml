@@ -65,8 +65,6 @@
         <item name="bookResourceItem" title="Book resource"
           if=" __config__.app.getApp('project')?.resourceManagement"
           action="save,action-project-book-resource"/>
-        <item name="taskEditorItem" action="save,action-project-open-task-editor"
-          title="Task editor"/>
         <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
         <item name="topic" title="Topic" action="save,project.topic.all"
           showIf="id &amp;&amp; isShowTopic"/>
@@ -755,11 +753,6 @@
     <view type="grid" name="resource-booking-grid"/>
     <view type="calendar" name="resource-booking-calendar"/>
     <context name="_project" expr="eval:__self__"/>
-  </action-view>
-
-  <action-view name="action-project-open-task-editor" title="Task editor">
-    <view name="project/task-editor/?id={{id}}" type="html"/>
-    <context name="id" expr="eval:id"/>
   </action-view>
 
   <action-view name="project.wiki.all" title="Wikis (${name})"
