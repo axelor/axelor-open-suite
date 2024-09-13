@@ -276,12 +276,12 @@
 
   <action-attrs name="action-stock-location-attrs-set-site-domain">
     <attribute for="site" name="domain"
-      expr="self.typeSelect = 1 AND :company MEMBER OF self.companySet" if="eval: typeSelect == 1"/>
+      expr="self.typeSelect = 1 AND self.company = :company" if="eval: typeSelect == 1"/>
     <attribute for="site" name="domain"
-      expr="self.typeSelect = 2 AND self.partner = :partner AND :company MEMBER OF self.companySet"
+      expr="self.typeSelect = 2 AND self.partner = :partner AND self.company = :company"
       if="eval: typeSelect == 2 &amp;&amp; partner != null"/>
     <attribute for="site" name="domain"
-      expr="self.typeSelect = 2 AND :company MEMBER OF self.companySet"
+      expr="self.typeSelect = 2 AND self.company = :company"
       if="eval: typeSelect == 2 &amp;&amp; partner == null"/>
   </action-attrs>
 

@@ -217,13 +217,15 @@
     <panel-tabs name="mainPanelTab">
       <panel name="timeFollowUpPanel" title="Time follow-up"
         if="__config__.app.isApp('business-project')" showIf="timeUnit">
+        <field name="budgetedTime" colSpan="4"
+          onChange="action-project-task-method-update-sold-time">
+        </field>
         <field name="soldTime" readonlyIf="saleOrderLine" hidden="true" showIf="!parentTask"
-          onChange="action-project-task-method-update-updated-time" colSpan="3"/>
-        <field name="updatedTime" showIf="!parentTask" colSpan="3"
+          onChange="action-project-task-method-update-updated-time" colSpan="4"/>
+        <field name="updatedTime" showIf="!parentTask" colSpan="4"
           onChange="action-project-task-method-update-quantity"/>
-        <spacer/>
-        <field name="plannedTime" readonly="true" colSpan="3"/>
-        <field name="spentTime" readonly="true" colSpan="3"/>
+        <field name="plannedTime" readonly="true" colSpan="4"/>
+        <field name="spentTime" readonly="true" colSpan="4"/>
         <panel name="reportingPanel" showIf="!parentTask" colSpan="12">
           <panel-dashlet action="action-project-task-view-percentage-progress-custom"
             colSpan="3" showTitle="false" height="125"/>
@@ -241,13 +243,6 @@
 
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
         if-module="axelor-human-resource" showIf="project.isShowPlanning">
-        <field name="budgetedTime" colSpan="4"
-          onChange="action-project-task-method-update-sold-time">
-          <viewer><![CDATA[
-                   	<><span>{$fmt('budgetedTime')} </span><span>{_t('hours')}</span></>
-       			]]></viewer>
-        </field>
-        <spacer name="budgetedTimeSpacer" colSpan="4"/>
         <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
           x-show-bars="false" action="action-project-task-dashlet-project-planning-time"
           colSpan="12" canSearch="true"/>
