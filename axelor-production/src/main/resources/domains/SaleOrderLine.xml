@@ -15,6 +15,15 @@
     <one-to-many name="manufOrderList" ref="com.axelor.apps.production.db.ManufOrder"
       mappedBy="saleOrderLine" copy="false"/>
 
+    <many-to-one name="billOfMaterialLine"
+      ref="com.axelor.apps.production.db.BillOfMaterialLine" title="BoM line"/>
+
+    <boolean name="isToProduce" transient="true">
+      <![CDATA[
+		return (this.saleSupplySelect == 3 || this.saleSupplySelect == 4) && this.billOfMaterial != null;
+        ]]>
+    </boolean>
+
 
   </entity>
 

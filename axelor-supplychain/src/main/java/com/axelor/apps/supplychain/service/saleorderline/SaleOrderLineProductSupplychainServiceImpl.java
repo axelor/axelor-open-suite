@@ -92,7 +92,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
   }
 
   @Override
-  public Map<String, Object> getProductionInformation(SaleOrderLine saleOrderLine) {
+  public Map<String, Object> getProductionInformation(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(setStandardDelay(saleOrderLine));
     return saleOrderLineMap;

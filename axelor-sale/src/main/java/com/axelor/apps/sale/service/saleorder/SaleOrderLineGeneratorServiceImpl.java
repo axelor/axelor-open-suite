@@ -131,7 +131,8 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
 
   protected void checkProduct(SaleOrder saleOrder, SaleOrderLine saleOrderLine, Product product)
       throws AxelorException {
-    String domain = saleOrderLineDomainService.computeProductDomain(saleOrderLine, saleOrder);
+    String domain =
+        saleOrderLineDomainService.computeProductDomain(saleOrderLine, saleOrder, false);
     if (!productRepository
         .all()
         .filter(domain)
