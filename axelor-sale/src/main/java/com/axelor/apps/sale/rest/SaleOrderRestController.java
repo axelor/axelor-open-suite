@@ -20,7 +20,6 @@ package com.axelor.apps.sale.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.rest.dto.SaleOrderPostRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderPutRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
@@ -30,6 +29,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderFinalizeService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
+import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
@@ -40,6 +40,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -74,20 +75,21 @@ public class SaleOrderRestController {
   @Operation(
       summary = "Update sale order status",
       tags = {"Sale order"})
-  @Path("/status")
+  @Path("/status/{saleOrderId}")
   @PUT
   @HttpExceptionHandler
-  public Response changeSaleOrderStatus(SaleOrderPutRequest requestBody) throws AxelorException {
+  public Response changeSaleOrderStatus(
+      SaleOrderPutRequest requestBody, @PathParam("saleOrderId") Long saleOrderId)
+      throws AxelorException {
+    new SecurityCheck().writeAccess(SaleOrder.class, saleOrderId).check();
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(SaleOrder.class, requestBody.getSaleOrderId()).check();
     String toStatus = requestBody.getToStatus();
-    SaleOrder saleOrder = requestBody.fetchSaleOrder();
+    SaleOrder saleOrder = ObjectFinder.find(SaleOrder.class, saleOrderId, requestBody.getVersion());
     if (SaleOrderPutRequest.SALE_ORDER_UPDATE_FINALIZE.equals(toStatus)) {
-      Beans.get(SaleOrderFinalizeService.class).finalizeQuotation(requestBody.fetchSaleOrder());
+      Beans.get(SaleOrderFinalizeService.class).finalizeQuotation(saleOrder);
     }
     if (SaleOrderPutRequest.SALE_ORDER_UPDATE_CONFIRM.equals(toStatus)) {
-      Beans.get(SaleOrderConfirmService.class)
-          .confirmSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
+      Beans.get(SaleOrderConfirmService.class).confirmSaleOrder(saleOrder);
     }
     return ResponseConstructor.build(Response.Status.OK, I18n.get(ITranslation.STATUS_CHANGE));
   }
