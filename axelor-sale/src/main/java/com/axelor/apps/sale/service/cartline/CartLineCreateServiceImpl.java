@@ -52,8 +52,9 @@ public class CartLineCreateServiceImpl implements CartLineCreateService {
   public CartLine createCartLine(Cart cart, Product product) throws AxelorException {
     CartLine cartLine = new CartLine();
     cartLine.setProduct(productRepository.find(product.getId()));
-    cartLine.setUnit(saleOrderLineProductService.getSaleUnit(cartLine.getProduct()));
-    cartLine.setPrice(cartLinePriceService.getSalePrice(cart, cartLine));
+    cartLine.setUnit(saleOrderLineProductService.getSaleUnit(product));
+    cartLine.setPrice(
+        cartLinePriceService.getSalePrice(product, cart.getCompany(), cart.getPartner()));
     cartLine.setCart(cart);
     return cartLineRepository.save(cartLine);
   }
