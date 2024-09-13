@@ -50,6 +50,8 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final List<String> fieldsToShowOnTimesheet;
   protected final List<Long> dashboardIdList;
   protected final List<MobileShortcutResponse> mobileShortcutList;
+  protected final Boolean isGenericProductShown;
+  protected final List<String> productTypesToDisplay;
 
   public MobileSettingsResponse(
       Integer version,
@@ -78,7 +80,9 @@ public class MobileSettingsResponse extends ResponseStructure {
       String minimalRequiredMobileAppVersion,
       List<String> fieldsToShowOnTimesheet,
       List<Long> dashboardIdList,
-      List<MobileShortcutResponse> mobileShortcutList) {
+      List<MobileShortcutResponse> mobileShortcutList,
+      Boolean isGenericProductShown,
+      List<String> productTypesToDisplay) {
     super(version);
     this.apps = apps;
     this.isLoginUserQrcodeEnabled = isLoginUserQrcodeEnabled;
@@ -106,6 +110,8 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.fieldsToShowOnTimesheet = fieldsToShowOnTimesheet;
     this.dashboardIdList = dashboardIdList;
     this.mobileShortcutList = mobileShortcutList;
+    this.isGenericProductShown = isGenericProductShown;
+    this.productTypesToDisplay = productTypesToDisplay;
   }
 
   public List<MobileConfigResponse> getApps() {
@@ -233,5 +239,15 @@ public class MobileSettingsResponse extends ResponseStructure {
 
   public List<MobileShortcutResponse> getMobileShortcutList() {
     return mobileShortcutList;
+  }
+
+  @JsonProperty(value = "isGenericProductShown")
+  public Boolean getGenericProductShown() {
+    return isGenericProductShown;
+  }
+
+  @JsonProperty(value = "productTypesToDisplay")
+  public List<String> getProductTypesToDisplay() {
+    return productTypesToDisplay;
   }
 }
