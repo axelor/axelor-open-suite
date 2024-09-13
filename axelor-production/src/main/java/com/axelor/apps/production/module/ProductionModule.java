@@ -79,6 +79,10 @@ import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionService;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineBomLineMappingService;
+import com.axelor.apps.production.service.SaleOrderLineBomLineMappingServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineBomService;
+import com.axelor.apps.production.service.SaleOrderLineBomServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionService;
@@ -314,5 +318,7 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderProductionObserver.class);
     bind(SaleOrderConfirmProductionService.class).to(SaleOrderConfirmProductionServiceImpl.class);
     bind(ProdProcessWorkflowService.class).to(ProdProcessWorkflowServiceImpl.class);
+    bind(SaleOrderLineBomService.class).to(SaleOrderLineBomServiceImpl.class);
+    bind(SaleOrderLineBomLineMappingService.class).to(SaleOrderLineBomLineMappingServiceImpl.class);
   }
 }
