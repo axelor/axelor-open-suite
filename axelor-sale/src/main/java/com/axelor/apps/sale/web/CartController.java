@@ -18,8 +18,6 @@
  */
 package com.axelor.apps.sale.web;
 
-import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
@@ -111,9 +109,7 @@ public class CartController {
           Beans.get(SaleOrderDomainService.class).getPartnerBaseDomain(cart.getCompany());
 
       if (!(cartLineList == null || cartLineList.isEmpty())) {
-        domain =
-            Beans.get(PricedOrderDomainService.class)
-                .getPartnerDomain(cart, domain, PriceListRepository.TYPE_SALE);
+        domain = Beans.get(SaleOrderDomainService.class).getPartnerBaseDomain(cart.getCompany());
       }
 
       response.setAttr("partner", "domain", domain);

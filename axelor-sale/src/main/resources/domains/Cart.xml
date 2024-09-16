@@ -5,20 +5,14 @@
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="Cart" implements="com.axelor.apps.base.interfaces.PricedOrder">
+  <entity name="Cart">
 
     <many-to-one name="user" column="user_id" title="User" ref="com.axelor.auth.db.User"/>
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
     <one-to-many name="cartLineList" title="Cart line list"
       ref="com.axelor.apps.sale.db.CartLine" mappedBy="cart"/>
-    <!-- Impression -->
-    <string name="specificNotes" title="Specific notes" large="true"/>
-    <many-to-one name="fiscalPosition" title="Fiscal position"
-      ref="com.axelor.apps.account.db.FiscalPosition"/>
-    <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList"
-      title="Price list"/>
-    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+
   </entity>
 
 </domain-models>
