@@ -6,7 +6,7 @@ import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.google.inject.Inject;
 import java.util.Objects;
 
