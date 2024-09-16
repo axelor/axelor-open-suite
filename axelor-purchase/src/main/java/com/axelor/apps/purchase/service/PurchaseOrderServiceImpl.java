@@ -187,7 +187,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setInTaxTotal(purchaseOrder.getExTaxTotal().add(purchaseOrder.getTaxTotal()));
 
     logger.debug(
-        "Purchse order amounts: W.T. = {}, VAT = {}, A.T.I. = {}",
+        "Purchase order amounts: W.T. = {}, VAT = {}, A.T.I. = {}",
         purchaseOrder.getExTaxTotal(),
         purchaseOrder.getTaxTotal(),
         purchaseOrder.getInTaxTotal());
