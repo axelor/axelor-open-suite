@@ -500,7 +500,7 @@
 
       <panel title="Configurations" name="configurationsPanel">
         <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
-          canCollapse="true" collapseIf="true">
+          canCollapse="true" collapseIf="false">
           <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
           <field name="projectTimeUnit"/>
           <field name="numberHoursADay"/>
