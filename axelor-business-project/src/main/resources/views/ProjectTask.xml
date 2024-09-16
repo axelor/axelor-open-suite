@@ -99,7 +99,8 @@
     <panel name="mainPanel" colSpan="12">
       <panel name="statusPanel" stacked="true" colSpan="6">
         <field name="status" widget="NavSelect" showTitle="false"
-          showIf="project.isShowStatus" x-order="sequence"/>
+          hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
+          x-order="sequence"/>
         <field name="typeSelect" hidden="true"/>
       </panel>
       <panel name="viewerTagsPanel" colSpan="4">
