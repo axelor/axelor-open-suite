@@ -16,12 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.sale.service.cartline;
 
-import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 
-public interface CartLineSupplychainService {
+public interface CartLineUpdateService {
 
-  CartLine setAvailableStatus(Cart cart, CartLine cartLine);
+  void updateCartLine(CartLine cartLine);
 }

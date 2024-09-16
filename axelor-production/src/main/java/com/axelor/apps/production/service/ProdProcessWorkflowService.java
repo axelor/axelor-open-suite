@@ -16,14 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.sale.db.Cart;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.axelor.apps.production.db.ProdProcess;
 
-public interface CartSaleOrderGeneratorService {
+public interface ProdProcessWorkflowService {
 
-  SaleOrder createSaleOrder(Cart cart) throws JsonProcessingException, AxelorException;
+  ProdProcess setDraftStatus(ProdProcess prodProcess) throws AxelorException;
+
+  ProdProcess setApplicableStatus(ProdProcess prodProcess) throws AxelorException;
+
+  ProdProcess setValidateStatus(ProdProcess prodProcess) throws AxelorException;
+
+  ProdProcess setObsoleteStatus(ProdProcess prodProcess) throws AxelorException;
 }

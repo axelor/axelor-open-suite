@@ -16,17 +16,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.sale.service.cart;
 
-import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.sale.db.Cart;
-import com.axelor.apps.sale.db.CartLine;
+import com.axelor.auth.AuthUtils;
+import com.google.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface CartLineService {
+public class CartInitValueServiceImpl implements CartInitValueService {
 
-  CartLine getCartLine(Cart cart, Product product);
+  protected CompanyService companyService;
 
-  CartLine createCartLine(Cart cart, Product product);
+  @Inject
+  public CartInitValueServiceImpl(CompanyService companyService) {
+    this.companyService = companyService;
+  }
 
-  void updateCartLine(CartLine cartLine);
+  @Override
+  public Map<String, Object> getDefaultValues(Cart cart) {
+    cart.setUser(AuthUtils.getUser());
+    cart.setCompany(companyService.getDefaultCompany(null));
+
+    Map<String, Object> values = new HashMap<>();
+    values.put("user", cart.getUser());
+    values.put("company", cart.getCompany());
+    return values;
+  }
 }

@@ -34,7 +34,14 @@ public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
       return null;
     }
 
-    return new QuickMenu(I18n.get("Active project"), 5, true, getItems());
+    return new QuickMenu(
+        Optional.ofNullable(AuthUtils.getUser())
+            .map(User::getActiveProject)
+            .map(Project::getName)
+            .orElse(I18n.get("Active project")),
+        5,
+        true,
+        getItems());
   }
 
   protected boolean hasConfigEnabled() {

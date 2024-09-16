@@ -6,8 +6,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.CartRepository;
 import com.axelor.apps.sale.rest.dto.CartPutRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
-import com.axelor.apps.sale.service.CartSaleOrderGeneratorService;
-import com.axelor.apps.sale.service.CartService;
+import com.axelor.apps.sale.service.cart.CartResetService;
+import com.axelor.apps.sale.service.cart.CartSaleOrderGeneratorService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -39,7 +39,7 @@ public class CartRestController {
   public Response emptyCart(CartPutRequest requestBody) {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(Cart.class, requestBody.getCartId()).check();
-    Beans.get(CartService.class).emptyCart(requestBody.fetchCart());
+    Beans.get(CartResetService.class).emptyCart(requestBody.fetchCart());
 
     return ResponseConstructor.build(Response.Status.OK, I18n.get(ITranslation.EMPTY_CART));
   }
@@ -54,7 +54,9 @@ public class CartRestController {
       throws AxelorException, JsonProcessingException {
     new SecurityCheck().readAccess(Cart.class, cartId).createAccess(SaleOrder.class).check();
     Cart cart = Beans.get(CartRepository.class).find(cartId);
-    SaleOrder saleOrder = Beans.get(CartSaleOrderGeneratorService.class).createSaleOrder(cart);
+    SaleOrder saleOrder =
+        Beans.get(CartSaleOrderGeneratorService.class)
+            .createSaleOrder(cart, cart.getCartLineList());
     return ResponseConstructor.buildCreateResponse(saleOrder, new SaleOrderResponse(saleOrder));
   }
 }

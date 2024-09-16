@@ -19,7 +19,9 @@
 package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
+import com.axelor.apps.sale.service.cartline.CartLineProductService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -32,6 +34,17 @@ public class CartLineController {
       CartLine cartLine = request.getContext().asType(CartLine.class);
       response.setValue(
           "unit", Beans.get(SaleOrderLineProductService.class).getSaleUnit(cartLine.getProduct()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPrice(ActionRequest request, ActionResponse response) {
+    try {
+      CartLine cartLine = request.getContext().asType(CartLine.class);
+      Cart cart = request.getContext().getParent().asType(Cart.class);
+      response.setValue(
+          "price", Beans.get(CartLineProductService.class).getSalePrice(cart, cartLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
