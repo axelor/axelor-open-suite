@@ -162,6 +162,7 @@
       <field name="isEditionOfDateAllowed" on="UPDATE"/>
       <field name="isTimesheetProjectInvoicingEnabled" on="UPDATE"/>
       <field name="isGenericProductShown" on="UPDATE"/>
+      <field name="isConfiguratorProductShown" on="UPDATE"/>
       <field name="productTypesToDisplaySelect" on="UPDATE"/>
     </track>
   </entity>
