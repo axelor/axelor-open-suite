@@ -273,7 +273,7 @@ public class ProjectTaskController {
         Optional.of(projectTask).map(ProjectTask::getProject).map(Project::getCompany).orElse(null);
     String domain =
         String.format(
-            "%s member of self.concernedModelSet",
+            "(self.concernedModelSet IS EMPTY OR %s member of self.concernedModelSet)",
             Beans.get(MetaModelRepository.class).findByName("ProjectTask").getId());
 
     if (company != null) {
