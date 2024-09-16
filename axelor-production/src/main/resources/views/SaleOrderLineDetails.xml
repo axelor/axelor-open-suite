@@ -5,12 +5,19 @@
 
   <grid name="sale-order-line-details-grid" title="Sale order lines details"
     model="com.axelor.apps.production.db.SaleOrderLineDetails">
-    <field name="typeSelect"/>
+    <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"/>
     <field name="title"/>
-    <field name="qty"/>
-    <field name="price"/>
-    <field name="totalPrice"/>
-    <field name="unit"/>
+    <field name="product" form-view="product-form" grid-view="product-grid"
+      onChange="action-sale-order-line-details-method-product-onchange" showIf="typeSelect == 1"/>
+    <field name="unit" showIf="typeSelect == 1"/>
+    <field name="workCenter"
+      onChange="action-sale-order-line-details-attrs-work-center-onchange" showIf="typeSelect == 2"/>
+    <field name="qty" min="0"
+      onChange="action-sale-order-line-details-attrs-compute-total-price"
+      x-scale="$nbDecimalDigitForQty" showIf="typeSelect &amp;&amp; typeSelect == 1"/>
+    <field name="price" onChange="action-sale-order-line-details-attrs-compute-total-price"
+      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="totalPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="description"/>
   </grid>
 
@@ -20,7 +27,7 @@
     onLoad="action-sale-order-line-details-group-onload">
     <panel name="mainPanel" colSpan="12">
       <field name="typeSelect" colSpan="6"
-        onChange="action-sale-order-line-details-attrs-reset"/>
+        onChange="action-sale-order-line-details-group-type-onchange"/>
       <field name="title" colSpan="6"/>
       <field name="product" form-view="product-form" grid-view="product-grid"
         onChange="action-sale-order-line-details-method-product-onchange" colSpan="6"
@@ -32,7 +39,7 @@
       <spacer colSpan="6"/>
       <field name="qty" min="0"
         onChange="action-sale-order-line-details-attrs-compute-total-price" colSpan="4"
-        showIf="typeSelect &amp;&amp; typeSelect == 0"/>
+        showIf="typeSelect &amp;&amp; typeSelect == 1"/>
       <spacer colSpan="8"/>
       <field name="price" colSpan="6"
         onChange="action-sale-order-line-details-attrs-compute-total-price"/>
@@ -62,6 +69,11 @@
     <attribute for="totalPrice" name="value" expr="eval: price * qty"/>
   </action-attrs>
 
+  <action-group name="action-sale-order-line-details-group-type-onchange">
+    <action name="action-sale-order-line-details-attrs-reset"/>
+    <action name="action-sale-order-line-details-attrs-focus"/>
+  </action-group>
+
   <action-attrs name="action-sale-order-line-details-attrs-reset">
     <attribute for="title" name="value" expr="eval: null"/>
     <attribute for="product" name="value" expr="eval: null"/>
@@ -71,6 +83,11 @@
     <attribute for="price" name="value" expr="eval: 0"/>
     <attribute for="totalPrice" name="value" expr="eval: 0"/>
     <attribute for="totalPrice" name="value" expr="eval: 0"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-details-attrs-focus">
+    <attribute for="product" name="focus" expr="true" if="typeSelect == 1"/>
+    <attribute for="workCenter" name="focus" expr="true" if="typeSelect == 2"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-details-attrs-work-center-onchange">

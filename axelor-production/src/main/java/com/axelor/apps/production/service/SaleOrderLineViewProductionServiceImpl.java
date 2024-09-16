@@ -111,6 +111,10 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
 
     attrs.put("saleOrderLineDetailsList.price", Map.of(SCALE_ATTR, scaleForPrice));
     attrs.put("saleOrderLineDetailsList.totalPrice", Map.of(SCALE_ATTR, scaleForPrice));
+    // attrs.put("saleOrderLineDetailsList.saleOrderLineDetailsList.price", Map.of(SCALE_ATTR,
+    // scaleForPrice));
+    // attrs.put("saleOrderLineDetailsList.saleOrderLineDetailsList.totalPrice", Map.of(SCALE_ATTR,
+    // scaleForPrice));
 
     attrs.put("saleOrderLineDetailsList.qty", Map.of(SCALE_ATTR, scaleForQty));
 
