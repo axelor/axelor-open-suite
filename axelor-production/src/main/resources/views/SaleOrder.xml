@@ -3,6 +3,25 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
+  <form id="sale-order-production-form" name="sale-order-form" title="Sale order"
+    model="com.axelor.apps.sale.db.SaleOrder" extension="true">
+
+    <extend target="//panel-related[@name='saleOrderLineTreePanel']">
+      <replace>
+        <panel-related name="saleOrderLineTreePanel" colSpan="12"
+          title="Details Lines (Tree)" field="saleOrderLineList" orderBy="sequence" canMove="true"
+          form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
+          widget="tree-grid" x-tree-field="subSaleOrderLineList"
+          x-tree-field-title="Add a new sale order line" summary-view="sale-order-line-summary-form"
+          onChange="action-sale-order-method-on-line-change"
+          if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"
+          editable="true">
+        </panel-related>
+      </replace>
+
+    </extend>
+  </form>
+
   <action-method name="action-sale-order-method-create-production-order"
     if-module="axelor-production">
     <call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController"
