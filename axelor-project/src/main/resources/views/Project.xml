@@ -147,7 +147,7 @@
       onTabSelect="action-project-activity-dashboard-method-on-new">
       <field name="description" colSpan="12" widget="html"/>
       <panel name="dashboardPanel" title="Dashboard" colSpan="12" canCollapse="true"
-        collapseIf="true">
+        collapseIf="false">
         <panel-dashlet name="dashboardPanelDashlet"
           action="project.reporting.projects.dashboard" colSpan="12"/>
       </panel>
@@ -267,7 +267,7 @@
   <form name="incl-project-config-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
     <panel title="General configuration" name="generalConfigurationsPanel" colSpan="12"
-      canCollapse="true" collapseIf="true">
+      canCollapse="true" collapseIf="false">
       <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
         name="productSet" widget="TagSelect" canEdit="false"
         domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-activity-form"
@@ -284,7 +284,7 @@
         if="__config__.app.isApp('timesheet')" readonlyIf="!imputable"/>
     </panel>
     <panel name="taskConfigurationPanel" title="Task configuration" colSpan="12"
-      canCollapse="true" collapseIf="true">
+      canCollapse="true" collapseIf="false">
       <field name="taskStatusManagementSelect" widget="RadioSelect"
         readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
         onChange="action-project-record-manage-task-status-set, action-project-record-activate-task-status-by-category"/>
@@ -315,7 +315,7 @@
         placeholder="All"/>
     </panel>
     <panel title="View configuration" name="viewConfig" colSpan="12" canCollapse="true"
-      collapseIf="true">
+      collapseIf="false">
       <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowSection" colSpan="4" widget="inline-checkbox"
@@ -358,7 +358,7 @@
   <form name="incl-custom-fields-to-display-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
     <panel title="Custom fields" name="customFieldConfigPanel" canCollapse="true"
-      collapseIf="true" colSpan="12">
+      collapseIf="false" colSpan="12">
       <field name="customFieldManagementSelect" widget="MultiSelect" placeholder="None"
         onChange="save"/>
       <panel-related field="taskCustomFieldsList" colSpan="12"
