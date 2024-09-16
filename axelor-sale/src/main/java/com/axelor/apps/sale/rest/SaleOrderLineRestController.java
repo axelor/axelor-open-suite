@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.rest.dto.SaleOrderLinePostRequest;
+import com.axelor.apps.sale.rest.dto.SaleOrderLineParentPostRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderLineResponse;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGeneratorService;
 import com.axelor.inject.Beans;
@@ -50,7 +50,8 @@ public class SaleOrderLineRestController {
   @Path("/")
   @POST
   @HttpExceptionHandler
-  public Response createSaleOrderLine(SaleOrderLinePostRequest requestBody) throws AxelorException {
+  public Response createSaleOrderLine(SaleOrderLineParentPostRequest requestBody)
+      throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().createAccess(SaleOrderLine.class).writeAccess(SaleOrder.class).check();
 
