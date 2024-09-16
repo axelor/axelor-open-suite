@@ -56,7 +56,8 @@ public class SaleOrderOnLineChangeProductionServiceImpl
   public void onLineChange(SaleOrder saleOrder) throws AxelorException {
     super.onLineChange(saleOrder);
 
-    if (appProductionService.isApp("production")) {
+    if (appProductionService.isApp("production")
+        && appSaleService.getAppSale().getActivateMultiLevelSaleOrderLines()) {
       saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder);
     }
   }
