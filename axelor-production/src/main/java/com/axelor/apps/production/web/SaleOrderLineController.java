@@ -114,12 +114,15 @@ public class SaleOrderLineController {
     if (saleOrder == null) {
       saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext());
     }
+    SaleOrderLineBomService saleOrderLineBomService = Beans.get(SaleOrderLineBomService.class);
+    if (saleOrderLine.getBillOfMaterial() != null
+        && saleOrder != null
+        && !saleOrderLineBomService.isUpdated(saleOrderLine)) {
 
-    if (saleOrderLine.getBillOfMaterial() != null && saleOrder != null) {
       response.setValue(
           "subSaleOrderLineList",
-          Beans.get(SaleOrderLineBomService.class)
-              .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder));
+          saleOrderLineBomService.createSaleOrderLinesFromBom(
+              saleOrderLine.getBillOfMaterial(), saleOrder));
     }
   }
 }
