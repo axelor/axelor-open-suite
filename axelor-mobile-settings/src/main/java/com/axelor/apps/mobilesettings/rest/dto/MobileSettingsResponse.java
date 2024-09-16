@@ -51,6 +51,7 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final List<Long> dashboardIdList;
   protected final List<MobileShortcutResponse> mobileShortcutList;
   protected final Boolean isGenericProductShown;
+  protected final Boolean isConfiguratorProductShown;
   protected final List<String> productTypesToDisplay;
 
   public MobileSettingsResponse(
@@ -82,6 +83,7 @@ public class MobileSettingsResponse extends ResponseStructure {
       List<Long> dashboardIdList,
       List<MobileShortcutResponse> mobileShortcutList,
       Boolean isGenericProductShown,
+      Boolean isConfiguratorProductShown,
       List<String> productTypesToDisplay) {
     super(version);
     this.apps = apps;
@@ -111,6 +113,7 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.dashboardIdList = dashboardIdList;
     this.mobileShortcutList = mobileShortcutList;
     this.isGenericProductShown = isGenericProductShown;
+    this.isConfiguratorProductShown = isConfiguratorProductShown;
     this.productTypesToDisplay = productTypesToDisplay;
   }
 
@@ -244,6 +247,11 @@ public class MobileSettingsResponse extends ResponseStructure {
   @JsonProperty(value = "isGenericProductShown")
   public Boolean getGenericProductShown() {
     return isGenericProductShown;
+  }
+
+  @JsonProperty(value = "isConfiguratorProductShown")
+  public Boolean getConfiguratorProductShown() {
+    return isConfiguratorProductShown;
   }
 
   @JsonProperty(value = "productTypesToDisplay")

@@ -106,6 +106,7 @@ public class MobileSettingsResponseComputeServiceImpl
         getAuthorizedDashboardIdList(appMobileSettings),
         getAuthorizedShortcutList(appMobileSettings),
         appMobileSettings.getIsGenericProductShown(),
+        appMobileSettings.getIsConfiguratorProductShown(),
         getProductTypesToDisplay(appMobileSettings));
   }
 
