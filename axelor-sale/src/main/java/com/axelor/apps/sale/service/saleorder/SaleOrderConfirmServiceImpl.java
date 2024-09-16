@@ -9,6 +9,7 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.event.SaleOrderConfirm;
@@ -53,7 +54,9 @@ public class SaleOrderConfirmServiceImpl implements SaleOrderConfirmService {
     return saleOrderConfirm.getNotifyMessage();
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional(
+      rollbackOn = {Exception.class},
+      ignore = {BlockedSaleOrderException.class})
   public void confirmProcess(SaleOrder saleOrder) throws AxelorException {
     List<Integer> authorizedStatus = new ArrayList<>();
     authorizedStatus.add(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
