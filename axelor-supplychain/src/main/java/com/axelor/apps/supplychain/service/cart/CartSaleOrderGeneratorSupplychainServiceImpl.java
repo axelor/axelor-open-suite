@@ -58,7 +58,7 @@ public class CartSaleOrderGeneratorSupplychainServiceImpl
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public SaleOrder createSaleOrder(Cart cart, List<CartLine> cartLineList)
+  protected SaleOrder createSaleOrder(Cart cart, List<CartLine> cartLineList)
       throws JsonProcessingException, AxelorException {
     SaleConfig saleConfig = saleConfigService.getSaleConfig(cart.getCompany());
     int cartOrderCreationModeSelect = saleConfig.getCartOrderCreationModeSelect();
