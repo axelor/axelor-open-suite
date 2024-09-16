@@ -146,7 +146,7 @@
         </panel>
       </panel>
       <panel name="saleConfigPanel" title="Sale" itemSpan="12" showIf="isSaleAppEnabled">
-        <field name="isGenericProductShown" widget="booealn-switch"/>
+        <field name="isGenericProductShown" widget="boolean-switch"/>
         <field name="productTypesToDisplaySelect" widget="MultiSelect" placeholder="All"/>
       </panel>
     </panel-tabs>
