@@ -158,4 +158,6 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_BUSINESS_PROJECT_MISSING_CLIENT_PARTNER_COMPANY = /*$$(*/
       "Please fill the company and the client partner before conversion." /*)*/;
+  public static final String NO_HOLD_BACK_LINES_TO_RELEASE = /*$$(*/
+      "No holdBack lines to release." /*)*/;
 }

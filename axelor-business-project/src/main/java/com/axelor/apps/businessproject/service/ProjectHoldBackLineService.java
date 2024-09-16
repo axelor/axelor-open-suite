@@ -27,4 +27,7 @@ public interface ProjectHoldBackLineService {
 
   List<InvoiceLine> createInvoiceLines(Invoice invoice, List<InvoiceLine> invoiceLineList)
       throws AxelorException;
+
+  List<InvoiceLine> generateInvoiceLinesForReleasedHoldBacks(
+      Invoice invoice, List<Integer> projectHoldBacksIds) throws AxelorException;
 }

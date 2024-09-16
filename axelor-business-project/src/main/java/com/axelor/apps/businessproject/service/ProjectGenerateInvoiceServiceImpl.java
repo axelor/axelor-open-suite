@@ -353,4 +353,46 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       analyticLineService.setAnalyticAccount(invoiceLine, company);
     }
   }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public Invoice generateInvoiceForReleasedHoldBacks(
+      Project project, List<Integer> projectHoldBacksIds) throws AxelorException {
+    Partner customer = project.getClientPartner();
+    Partner customerContact = project.getContactPartner();
+
+    if (customerContact == null && customer.getContactPartnerSet().size() == 1) {
+      customerContact = customer.getContactPartnerSet().iterator().next();
+    }
+    Company company = invoicingProjectService.getRootCompany(project);
+
+    InvoiceGenerator invoiceGenerator =
+        getInvoiceGenerator(
+            InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+            company,
+            customer,
+            customerContact,
+            project,
+            customer.getInPaymentMode());
+
+    return createInvoiceForReleasedHoldBacks(invoiceGenerator, company, projectHoldBacksIds);
+  }
+
+  protected Invoice createInvoiceForReleasedHoldBacks(
+      InvoiceGenerator invoiceGenerator, Company company, List<Integer> projectHoldBacksIds)
+      throws AxelorException {
+    Invoice invoice = invoiceGenerator.generate();
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    invoice.setDisplayTimesheetOnPrinting(accountConfig.getDisplayTimesheetOnPrinting());
+    invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    invoice.setIsExpenseLineOnInvoiceGrouped(appBusinessProject.getIsExpenseLineOnInvoiceGrouped());
+    invoice.setGroupingPeriodSelect(appBusinessProject.getGroupingPeriodSelect());
+    List<InvoiceLine> invoiceLineList =
+        projectHoldBackLineService.generateInvoiceLinesForReleasedHoldBacks(
+            invoice, projectHoldBacksIds);
+
+    invoiceGenerator.populate(invoice, invoiceLineList);
+    invoiceRepository.save(invoice);
+    return invoice;
+  }
 }
