@@ -549,8 +549,9 @@
           if-module="axelor-purchase"
           if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
         <field name="supplierQualityRating" hidden="true"/>
-        <field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false"
-          colSpan="3" onChange="action-record-set-supplier-quality-rating"/>
+        <field name="supplierQualityRatingSelect" widget="Rating"
+          x-rating-color="black,black,black,black,black" colSpan="3"
+          onChange="action-record-set-supplier-quality-rating"/>
         <field name="supplierArrivalProductQty" colSpan="3"/>
         <spacer name="supplierSpacer"/>
         <field name="partnerProductQualityRatingList" colSpan="12"

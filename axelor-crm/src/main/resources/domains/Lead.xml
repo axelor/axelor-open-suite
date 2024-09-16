@@ -86,8 +86,7 @@
       SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.event_lead = id AND ICAL_EVENT.start_date_time > NOW() AND ICAL_EVENT.status_select = 1 ORDER BY ICAL_EVENT.start_date_time ASC LIMIT 1
       ]]>
     </datetime>
-    <integer name="leadScoringSelect" title="Lead scoring"
-      selection="gold.rating.icon.select"/>
+    <integer name="leadScoringSelect" title="Lead scoring"/>
     <integer name="sizeSelect" title="Size" selection="crm.lead.size.select"/>
     <boolean name="isKeyAccount" title="Key account"/>
     <many-to-one ref="com.axelor.apps.base.db.PartnerCategory" name="type"
