@@ -184,6 +184,8 @@
           canSearch="true"/>
       </panel>
       <panel title="HoldBacks" name="projectHoldBacksPanel">
+        <button name="invoiceReleasedProjectHoldBacksBtn" title="Invoice released holdBacks"
+          onClick="action-project-view-release-hold-backs"/>
         <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"
           title="HoldBacks lines" colSpan="12" form-view="project-hold-back-line-form"
           grid-view="project-hold-back-line-grid" editable="true"/>
@@ -591,6 +593,20 @@
         onClick="action-wizard-validate-user-select,action-open-user-gantt,close" colSpan="3"/>
     </panel>
   </form>
+  <form name="hold-backs-select-wizard-form" title="Select holdBacks"
+    onLoad="action-business-project-method-load-project-hold-backs"
+    model="com.axelor.utils.db.Wizard">
+    <panel name="mainPanel">
+      <panel-related field="$projectHoldBackList" type="one-to-many"
+        target="com.axelor.apps.project.db.ProjectHoldBack" title="HoldBacks"
+        grid-view="project-hold-back-grid" form-view="project-hold-back-form" readonly="true"
+        colSpan="12"/>
+      <spacer colSpan="8"/>
+      <button name="invoiceSelectedProjectHoldBacksBtn"
+        title="Invoice released holdBacks"
+        onClick="action-business-project-method-invoice-released-hold-backs,close" colSpan="4"/>
+    </panel>
+  </form>
 
   <kanban columnBy="projectStatus" sequenceBy="orderByState" limit="10" name="project-kanban"
     title="Projects" model="com.axelor.apps.project.db.Project"
@@ -926,6 +942,17 @@
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
   </action-view>
 
+  <action-view name="action-project-view-release-hold-backs"
+    model="com.axelor.apps.project.db.Project" title="Team">
+    <view name="hold-backs-select-wizard-form" type="form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
   <action-record name="action-project-record-bind-customer-project"
     model="com.axelor.apps.project.db.Project">
     <field name="clientPartner" expr="eval: project?.clientPartner"/>
@@ -1101,6 +1128,16 @@
   <action-method name="action-project-view-show-related-tasks">
     <call class="com.axelor.apps.project.web.ProjectMenuController"
       method="allProjectRelatedTasks"/>
+  </action-method>
+
+  <action-method name="action-business-project-method-invoice-released-hold-backs">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="generateInvoiceForReleasedHoldBacks"/>
+  </action-method>
+
+  <action-method name="action-business-project-method-load-project-hold-backs">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="loadProjectRelatedHoldBacks"/>
   </action-method>
 
   <action-record name="action-project-record-status-reset-values"
