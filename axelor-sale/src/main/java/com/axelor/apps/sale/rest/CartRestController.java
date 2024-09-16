@@ -54,9 +54,7 @@ public class CartRestController {
       throws AxelorException, JsonProcessingException {
     new SecurityCheck().readAccess(Cart.class, cartId).createAccess(SaleOrder.class).check();
     Cart cart = Beans.get(CartRepository.class).find(cartId);
-    SaleOrder saleOrder =
-        Beans.get(CartSaleOrderGeneratorService.class)
-            .createSaleOrder(cart, cart.getCartLineList());
+    SaleOrder saleOrder = Beans.get(CartSaleOrderGeneratorService.class).createSaleOrder(cart);
     return ResponseConstructor.buildCreateResponse(saleOrder, new SaleOrderResponse(saleOrder));
   }
 }

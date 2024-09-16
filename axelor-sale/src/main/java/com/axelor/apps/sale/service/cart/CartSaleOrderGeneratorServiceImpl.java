@@ -55,8 +55,12 @@ public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGenerator
   }
 
   @Override
+  public SaleOrder createSaleOrder(Cart cart) throws JsonProcessingException, AxelorException {
+    return createSaleOrder(cart, cart.getCartLineList());
+  }
+
   @Transactional(rollbackOn = Exception.class)
-  public SaleOrder createSaleOrder(Cart cart, List<CartLine> cartLineList)
+  protected SaleOrder createSaleOrder(Cart cart, List<CartLine> cartLineList)
       throws JsonProcessingException, AxelorException {
     if (CollectionUtils.isNotEmpty(cartLineList)) {
       checkProduct(cartLineList);
