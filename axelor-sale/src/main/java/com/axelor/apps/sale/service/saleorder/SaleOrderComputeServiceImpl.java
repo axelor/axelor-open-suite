@@ -151,10 +151,10 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     saleOrder.setInTaxTotal(saleOrder.getExTaxTotal().add(saleOrder.getTaxTotal()));
     saleOrder.setAdvanceTotal(computeTotalAdvancePayment(saleOrder));
     logger.debug(
-        "Invoice's total: W.T.T. = {},  W.T. = {}, Tax = {}, A.T.I. = {}",
-        new Object[] {
-          saleOrder.getExTaxTotal(), saleOrder.getTaxTotal(), saleOrder.getInTaxTotal()
-        });
+        "Sale order amounts: W.T. = {}, Tax = {}, A.T.I. = {}",
+        saleOrder.getExTaxTotal(),
+        saleOrder.getTaxTotal(),
+        saleOrder.getInTaxTotal());
   }
 
   protected BigDecimal computeTotalAdvancePayment(SaleOrder saleOrder) {

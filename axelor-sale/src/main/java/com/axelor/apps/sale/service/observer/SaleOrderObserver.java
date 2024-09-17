@@ -3,7 +3,7 @@ package com.axelor.apps.sale.service.observer;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.event.SaleOrderConfirm;
-import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
 

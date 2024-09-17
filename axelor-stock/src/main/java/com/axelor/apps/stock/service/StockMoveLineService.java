@@ -360,5 +360,6 @@ public interface StockMoveLineService {
    * @return
    * @throws AxelorException
    */
-  void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine);
+  void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine)
+      throws AxelorException;
 }

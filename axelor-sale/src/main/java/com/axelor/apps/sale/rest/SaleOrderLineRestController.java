@@ -24,7 +24,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.rest.dto.SaleOrderLinePostRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderLineResponse;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineGeneratorService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGeneratorService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.RequestValidator;
