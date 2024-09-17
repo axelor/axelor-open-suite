@@ -25,6 +25,7 @@ import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -89,4 +90,7 @@ public interface TimesheetLineService {
   Product getDefaultProduct(TimesheetLine timesheetLine);
 
   void resetTimesheetLineTimer(TSTimer tsTimer);
+
+  @Transactional
+  void removeTimesheetLines(List<Integer> projectTimesheetLineIds);
 }

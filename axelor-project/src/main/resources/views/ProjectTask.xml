@@ -32,9 +32,6 @@
         onClick="action-project-task-record-assigned-yourself,save"/>
       <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
         showIf="project.taskStatusManagementSelect != 1"/>
-      <button name="logTimeBtn" icon="clock-history"
-        onClick="save,action-timesheet-line-method-log-time" showIf="project.isShowTimeSpent"
-        if="__config__.app.isApp('timesheet')"/>
     </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
@@ -55,10 +52,6 @@
           onChange="action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
       </panel>
-      <button name="timeSpentBtn" title="Log time"
-        onClick="save,action-project-task-validate-check-employee,action-project-task-view-time-spent"
-        colSpan="2" hidden="true"/>
-      <field name="project.isShowTimeSpent" hidden="true"/>
       <field name="$provider" hidden="true" type="string"/>
       <panel name="projectDetailsPanel" colSpan="12">
         <panel name="detailsPanel" colSpan="8">
@@ -133,17 +126,18 @@
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
         if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
-        <panel-dashlet name="validatedTimesheetLinesPanel"
+        <panel-dashlet name="validatedTimesheetLinesPanel" x-show-bars="true"
           action="action-project-task-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
-        <panel-dashlet name="waitingTimesheetLinesPanel"
+        <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
           action="action-project-task-dashlet-waiting-timesheet-lines"
           title="Waiting Timesheet lines" colSpan="12" canSearch="true"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
-        <panel-dashlet name="allTimesheetLinesPanel"
+        <panel-dashlet name="allTimesheetLinesPanel" x-show-bars="true"
           action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
           colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
+        <field name="project.isShowTimeSpent" hidden="true"/>
       </panel>
 
       <panel name="timerPanel" title="Timer" showIf="id" hidden="true"
