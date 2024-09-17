@@ -286,6 +286,7 @@
 "Please set days unit in the configuration of app Business Project.","Merci de paramétrer l'unité pour les jours dans l'application Gestion à l'affaire.",,
 "Please set hours unit in the configuration of app Business Project.","Merci de paramétrer l'unité pour les heures dans l'application Gestion à l'affaire.",,
 "Please set the default number of hours per day in the project configuration.","Merci de définir le nombre d'heures par jour dans la configuration du projet.",,
+"Please set the time unit for this project.","Veuillez définir l'unité de temps pour ce projet.",,
 "Please set the unit for the task %s.","Merci de saisir l'unité pour la tâche %s.",,
 "Previous progress","Ancienne progression",,
 "Price list","Liste de prix",,

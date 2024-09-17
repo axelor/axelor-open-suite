@@ -43,7 +43,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 public class ProjectTaskReportingValuesComputingServiceImpl
     implements ProjectTaskReportingValuesComputingService {
@@ -142,11 +141,11 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @param projectTask
    * @return
    */
-  protected BigDecimal getTaskSpentTime(ProjectTask projectTask) {
+  protected BigDecimal getTaskSpentTime(ProjectTask projectTask) throws AxelorException {
     List<TimesheetLine> timesheetLines = getValidatedTimesheetLinesForProjectTask(projectTask);
     Unit timeUnit =
-        Optional.ofNullable(projectTask.getTimeUnit())
-            .orElse(projectTask.getProject().getProjectTimeUnit());
+        getTimeUnitForTimesheetLineConversion(
+            projectTask.getTimeUnit(), projectTask.getProject().getProjectTimeUnit());
     BigDecimal spentTime = BigDecimal.ZERO;
 
     for (TimesheetLine timeSheetLine : timesheetLines) {
@@ -154,6 +153,18 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     }
 
     return spentTime;
+  }
+
+  protected Unit getTimeUnitForTimesheetLineConversion(Unit taskUnit, Unit projectUnit)
+      throws AxelorException {
+    if (taskUnit != null) {
+      return taskUnit;
+    } else if (projectUnit != null) {
+      return projectUnit;
+    }
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_INCONSISTENCY,
+        BusinessProjectExceptionMessage.PROJECT_NO_UNIT_FOUND);
   }
 
   /**
