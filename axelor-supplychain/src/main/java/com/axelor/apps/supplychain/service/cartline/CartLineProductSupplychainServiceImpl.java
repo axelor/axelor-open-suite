@@ -44,9 +44,7 @@ public class CartLineProductSupplychainServiceImpl extends CartLineProductServic
   public Map<String, Object> getProductInformation(Cart cart, CartLine cartLine)
       throws AxelorException {
     Map<String, Object> cartLineMap = super.getProductInformation(cart, cartLine);
-    cartLineAvailabilityService.setAvailableStatus(cart, cartLine);
-    cartLineMap.put("setAailableStatus", cartLine.getAvailableStatus());
-    cartLineMap.put("setAailableStatusSelect", cartLine.getAvailableStatusSelect());
+    cartLineMap.putAll(cartLineAvailabilityService.setAvailableStatus(cart, cartLine));
     return cartLineMap;
   }
 }

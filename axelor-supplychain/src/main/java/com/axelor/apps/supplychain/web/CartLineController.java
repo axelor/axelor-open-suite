@@ -32,9 +32,8 @@ public class CartLineController {
     try {
       CartLine cartLine = request.getContext().asType(CartLine.class);
       Cart cart = request.getContext().getParent().asType(Cart.class);
-      Beans.get(CartLineAvailabilityService.class).setAvailableStatus(cart, cartLine);
-      response.setValue("availableStatus", cartLine.getAvailableStatus());
-      response.setValue("availableStatusSelect", cartLine.getAvailableStatusSelect());
+      response.setValues(
+          Beans.get(CartLineAvailabilityService.class).setAvailableStatus(cart, cartLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
