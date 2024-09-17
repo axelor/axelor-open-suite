@@ -52,7 +52,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderFinalizeService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;

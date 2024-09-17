@@ -66,11 +66,11 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
     globalBudget.setTotalAmountPaid(BigDecimal.ZERO);
     globalBudget.setActiveVersion(null);
     globalBudget.clearBudgetVersionList();
-    globalBudget.clearBudgetList();
     List<BudgetLevel> budgetLevelList = globalBudget.getBudgetLevelList();
     List<Budget> budgetList = globalBudget.getBudgetList();
 
     if (!ObjectUtils.isEmpty(budgetLevelList)) {
+      globalBudget.clearBudgetList();
       budgetLevelList.forEach(budgetLevelResetToolService::resetBudgetLevel);
     } else if (ObjectUtils.isEmpty(budgetList)) {
       budgetList.forEach(budgetResetToolService::resetBudget);

@@ -5,6 +5,10 @@
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
@@ -28,6 +32,9 @@
         onClick="action-project-task-record-assigned-yourself,save"/>
       <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
         showIf="project.taskStatusManagementSelect != 1"/>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="save,action-timesheet-line-method-log-time" showIf="project.isShowTimeSpent"
+        if="__config__.app.isApp('timesheet')"/>
     </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
@@ -44,8 +51,8 @@
     <panel name="mainPanel" colSpan="12">
       <panel name="statusPanel" stacked="true" colSpan="6">
         <field name="status" widget="NavSelect" showTitle="false"
-          showIf="project.taskStatusManagementSelect != 1" x-order="sequence"
-          onChange="action-project-task-method-auto-change-progress"/>
+          hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
+          x-order="sequence" onChange="action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
       </panel>
       <button name="timeSpentBtn" title="Log time"
@@ -96,11 +103,7 @@
 
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
         if-module="axelor-human-resource" showIf="project.isShowPlanning">
-        <field name="budgetedTime" colSpan="4">
-          <viewer><![CDATA[
-                   	<><span>{$fmt('budgetedTime')} </span><span>{_t('hours')}</span></>
-       			]]></viewer>
-        </field>
+        <field name="budgetedTime" colSpan="4"/>
         <spacer name="budgetedTimeSpacer" colSpan="4"/>
         <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
           x-show-bars="false" action="action-project-task-dashlet-project-planning-time"
@@ -304,6 +307,10 @@
 
   <kanban name="project-task-kanban" columnBy="status" title="Tasks" limit="30"
     sequenceBy="sequence" model="com.axelor.apps.project.db.ProjectTask">
+    <toolbar>
+      <button name="logTimeBtn" icon="clock-history"
+        onClick="save,action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
+    </toolbar>
     <field name="name"/>
     <field name="project"/>
     <field name="assignedTo"/>
@@ -545,6 +552,7 @@
     <field name="assignedTo" expr="eval:__user__"/>
     <field name="taskDate" expr="#{__config__.date}"/>
     <field name="project" expr="eval:_project"/>
+    <field name="project" expr="eval: __user__?.activeProject" if="!_project"/>
     <field name="parentTask" expr="eval:_parentTask"/>
   </action-record>
 

@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.user.UserHrService;
@@ -50,6 +51,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   protected TimesheetRepository timesheetRepository;
   protected TimesheetLineCreateService timesheetLineCreateService;
   protected TimesheetService timesheetService;
+  protected EmployeeRepository employeeRepository;
 
   @Inject
   public TimesheetCreateServiceImpl(
@@ -58,23 +60,25 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
       TimesheetLineService timesheetLineService,
       TimesheetRepository timesheetRepository,
       TimesheetLineCreateService timesheetLineCreateService,
-      TimesheetService timesheetService) {
+      TimesheetService timesheetService,
+      EmployeeRepository employeeRepository) {
     this.userHrService = userHrService;
     this.projectRepository = projectRepository;
     this.timesheetLineService = timesheetLineService;
     this.timesheetRepository = timesheetRepository;
     this.timesheetLineCreateService = timesheetLineCreateService;
     this.timesheetService = timesheetService;
+    this.employeeRepository = employeeRepository;
   }
 
   @Transactional
   @Override
   public Timesheet createTimesheet(Employee employee, LocalDate fromDate, LocalDate toDate) {
     Timesheet timesheet = new Timesheet();
-    timesheet.setEmployee(employee);
 
     Company company = null;
     if (employee != null) {
+      employee = employeeRepository.find(employee.getId());
       if (employee.getMainEmploymentContract() != null) {
         company = employee.getMainEmploymentContract().getPayCompany();
       } else if (employee.getUser() != null) {
@@ -89,6 +93,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
     timesheet.setFromDate(fromDate);
     timesheet.setToDate(toDate);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
+    timesheet.setEmployee(employee);
 
     return timesheetRepository.save(timesheet);
   }

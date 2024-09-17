@@ -27,7 +27,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;

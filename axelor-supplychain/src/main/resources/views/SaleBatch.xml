@@ -19,11 +19,6 @@
     </extend>
   </form>
 
-  <action-attrs name="action-sale-batch-attrs-supply-chain-action-select">
-    <attribute for="actionSelect" name="selection-in" expr="[1]"
-      if="!__config__.app.getApp('sale')?.enableLoyalty"/>
-  </action-attrs>
-
   <action-group name="action-sale-batch-group-supply-chain-on-new">
     <action name="action-sale-batch-record-on-new"/>
     <action name="action-sale-batch-attrs-supply-chain-action-select"/>

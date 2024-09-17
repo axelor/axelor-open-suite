@@ -26,11 +26,6 @@
     <panel name="createdPanel">
       <field name="createdOn" title="Created on"/>
       <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
-      <panel name="loyaltyAccountPointsEarningPanel" colSpan="12" showIf="actionSelect == 2">
-        <button name="earnLoyaltyAccountPointsBtn"
-          title="Loyalty account points earning batch"
-          onClick="save,action-sale-batch-method-run-batch"/>
-      </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="descriptionPanel" title="Description">
@@ -64,11 +59,6 @@
   </action-method>
 
   <!-- ACTION ATTRS -->
-  <action-attrs name="action-sale-batch-attrs-action-select">
-    <attribute for="actionSelect" name="selection-in" expr="[]"
-      if="!__config__.app.getApp('sale')?.enableLoyalty"/>
-  </action-attrs>
-
   <action-group name="action-sale-batch-group-on-new">
     <action name="action-sale-batch-record-on-new"/>
     <action name="action-sale-batch-attrs-action-select"/>

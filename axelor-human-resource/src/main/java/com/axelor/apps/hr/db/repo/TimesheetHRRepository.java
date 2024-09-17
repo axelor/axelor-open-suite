@@ -21,6 +21,7 @@ package com.axelor.apps.hr.db.repo;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineComputeNameService;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -29,17 +30,26 @@ import java.util.Map;
 
 public class TimesheetHRRepository extends TimesheetRepository {
 
-  @Inject private TimesheetCreateService timesheetCreateService;
+  protected TimesheetLineComputeNameService timesheetLineComputeNameService;
+  protected TimesheetPeriodComputationService timesheetPeriodComputationService;
+
+  @Inject
+  public TimesheetHRRepository(
+      TimesheetLineComputeNameService timesheetLineComputeNameService,
+      TimesheetPeriodComputationService timesheetPeriodComputationService) {
+    this.timesheetLineComputeNameService = timesheetLineComputeNameService;
+    this.timesheetPeriodComputationService = timesheetPeriodComputationService;
+  }
 
   @Override
   public Timesheet save(Timesheet timesheet) {
     if (timesheet.getTimesheetLineList() != null) {
-      for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList())
-        Beans.get(TimesheetLineHRRepository.class).computeFullName(timesheetLine);
+      for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
+        timesheetLineComputeNameService.computeFullName(timesheetLine);
+      }
     }
 
-    timesheet.setPeriodTotal(
-        Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet));
+    timesheet.setPeriodTotal(timesheetPeriodComputationService.computePeriodTotal(timesheet));
     return super.save(timesheet);
   }
 
@@ -51,7 +61,8 @@ public class TimesheetHRRepository extends TimesheetRepository {
     if (json.get("id") == null) {
       Timesheet timesheet = create(json);
       if (timesheet.getTimesheetLineList() == null || timesheet.getTimesheetLineList().isEmpty()) {
-        timesheet.setTimesheetLineList(new ArrayList<TimesheetLine>());
+        TimesheetCreateService timesheetCreateService = Beans.get(TimesheetCreateService.class);
+        timesheet.setTimesheetLineList(new ArrayList<>());
         obj.put("timesheetLineList", timesheetCreateService.createDefaultLines(timesheet));
       }
     }

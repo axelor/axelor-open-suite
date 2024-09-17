@@ -41,9 +41,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.repo.MessageRepository;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.Table;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchDebtRecovery extends BatchStrategy {
 
@@ -101,14 +102,14 @@ public class BatchDebtRecovery extends BatchStrategy {
 
   public void debtRecoveryPartner() {
     Company company = batch.getAccountingBatch().getCompany();
-    Set<TradingName> tradingNameSet =
+    List<TradingName> tradingNameList =
         null; // Get the trading names for which to operate the debt recovery process
 
     if (appBaseService.getAppBase().getEnableTradingNamesManagement()
         && batch.getAccountingBatch().getIsDebtRecoveryByTradingName()) {
-      tradingNameSet = batch.getAccountingBatch().getTradingNameSet();
-      if (tradingNameSet == null || tradingNameSet.isEmpty()) {
-        tradingNameSet = company.getTradingNameSet();
+      tradingNameList = new ArrayList<>(batch.getAccountingBatch().getTradingNameSet());
+      if (CollectionUtils.isEmpty(tradingNameList)) {
+        tradingNameList = company.getTradingNameList();
       }
     }
 
@@ -138,9 +139,9 @@ public class BatchDebtRecovery extends BatchStrategy {
 
         boolean remindedOk;
         // if recovery handled by trading name
-        if (tradingNameSet != null && !tradingNameSet.isEmpty()) {
+        if (!CollectionUtils.isEmpty(tradingNameList)) {
           boolean incrementPartner = false;
-          for (TradingName tradingName : tradingNameSet) {
+          for (TradingName tradingName : tradingNameList) {
             try {
               remindedOk = debtRecoveryService.debtRecoveryGenerate(partner, company, tradingName);
               if (remindedOk) {

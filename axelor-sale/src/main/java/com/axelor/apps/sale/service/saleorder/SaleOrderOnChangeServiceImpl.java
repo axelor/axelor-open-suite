@@ -8,20 +8,15 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.sale.db.LoyaltyAccount;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.apps.sale.service.loyalty.LoyaltyAccountService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -38,8 +33,6 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
   protected SaleConfigService saleConfigService;
   protected SaleOrderBankDetailsService saleOrderBankDetailsService;
   protected AppBaseService appBaseService;
-  protected AppSaleService appSaleService;
-  protected LoyaltyAccountService loyaltyAccountService;
 
   @Inject
   public SaleOrderOnChangeServiceImpl(
@@ -53,9 +46,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
       SaleOrderComputeService saleOrderComputeService,
       SaleConfigService saleConfigService,
       SaleOrderBankDetailsService saleOrderBankDetailsService,
-      AppBaseService appBaseService,
-      AppSaleService appSaleService,
-      LoyaltyAccountService loyaltyAccountService) {
+      AppBaseService appBaseService) {
     this.partnerService = partnerService;
     this.saleOrderUserService = saleOrderUserService;
     this.saleOrderService = saleOrderService;
@@ -67,8 +58,6 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     this.saleConfigService = saleConfigService;
     this.saleOrderBankDetailsService = saleOrderBankDetailsService;
     this.appBaseService = appBaseService;
-    this.appSaleService = appSaleService;
-    this.loyaltyAccountService = loyaltyAccountService;
   }
 
   @Override
@@ -86,17 +75,6 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     values.putAll(updateLinesAfterFiscalPositionChange(saleOrder));
     values.putAll(getComputeSaleOrderMap(saleOrder));
     values.putAll(getEndOfValidityDate(saleOrder));
-    if (appSaleService.getAppSale().getEnableLoyalty()) {
-      Optional<LoyaltyAccount> loyaltyAccount =
-          loyaltyAccountService.getLoyaltyAccount(
-              saleOrder.getClientPartner(), saleOrder.getCompany(), saleOrder.getTradingName());
-      values.put(
-          "$loyaltyPoints",
-          loyaltyAccount
-              .map(LoyaltyAccount::getPointsBalance)
-              .map(points -> points.setScale(0, RoundingMode.HALF_UP))
-              .orElse(null));
-    }
     return values;
   }
 
