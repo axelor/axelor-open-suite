@@ -12,6 +12,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import java.util.Optional;
 
 public class ProjectMenuController {
@@ -74,10 +75,18 @@ public class ProjectMenuController {
   }
 
   public void allProjectRelatedTasks(ActionRequest request, ActionResponse response) {
-    Project project = request.getContext().asType(Project.class);
+    Project project =
+        Optional.ofNullable(request.getContext())
+            .map(Context::getParent)
+            .map(c -> c.asType(Project.class))
+            .orElse(null);
+    if (project == null) {
+      return;
+    }
     ActionView.ActionViewBuilder builder =
         ActionView.define(I18n.get("Related Tasks"))
             .model(ProjectTask.class.getName())
+            .add("tree", "business-project-project-task-tree")
             .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "business-project-task-form")

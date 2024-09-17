@@ -683,6 +683,10 @@
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="deleteProjectTask"/>
   </action-method>
 
+  <action-method name="action-project-task-method-delete-project-tasks">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="deleteProjectTasks"/>
+  </action-method>
+
   <action-view name="action-project-task-dashlet-project-planning-time"
     title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-time-grid"/>
