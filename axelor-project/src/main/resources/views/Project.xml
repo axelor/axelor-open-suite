@@ -144,7 +144,8 @@
       <field name="description" colSpan="12" widget="html"/>
       <field name="siteSet" colSpan="12" grid-view="site-project-grid" form-view="site-form"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"
-        domain="self.isUsableOnProject = true"/>
+        domain="(self.typeSelect = 1 AND self.isUsableOnProject = true AND :company MEMBER OF self.companySet) OR
+             (self.typeSelect = 2 AND self.isUsableOnProject = true AND :company MEMBER OF self.companySet AND self.partner = :clientPartner)"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
