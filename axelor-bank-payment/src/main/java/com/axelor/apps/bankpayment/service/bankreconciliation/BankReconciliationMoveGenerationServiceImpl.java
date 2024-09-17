@@ -75,6 +75,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -267,31 +268,14 @@ public class BankReconciliationMoveGenerationServiceImpl
 
     BankReconciliation bankReconciliation = bankReconciliationLine.getBankReconciliation();
 
-    Map<String, Object> moveFieldsMap =
-        initializeMoveFields(
+    Move move =
+        generateMove(
             bankReconciliation, bankReconciliationLine, bankStatementLine, bankStatementRule);
 
-    LocalDate effectDate = (LocalDate) moveFieldsMap.get("effectDate");
-    Move move =
-        moveCreateService.createMove(
-            (Journal) moveFieldsMap.get("journal"),
-            (Company) moveFieldsMap.get("company"),
-            (Currency) moveFieldsMap.get("currency"),
-            (Partner) moveFieldsMap.get("partner"),
-            effectDate,
-            effectDate,
-            (PaymentMode) moveFieldsMap.get("paymentMode"),
-            (FiscalPosition) moveFieldsMap.get("fiscalPosition"),
-            (Integer) moveFieldsMap.get("technicalOriginSelect"),
-            (Integer) moveFieldsMap.get("functionalOriginSelect"),
-            (String) moveFieldsMap.get("origin"),
-            (String) moveFieldsMap.get("description"),
-            (BankDetails) moveFieldsMap.get("companyBankDetails"));
-    move.setPaymentCondition(null);
     LocalDate originDate =
         Optional.ofNullable(bankStatementLine)
             .map(BankStatementLine::getOperationDate)
-            .orElse(effectDate);
+            .orElse(move.getDate());
 
     MoveLine counterPartMoveLine =
         generateMoveLine(bankReconciliationLine, bankStatementRule, move, true, originDate);
@@ -560,6 +544,37 @@ public class BankReconciliationMoveGenerationServiceImpl
     }
   }
 
+  protected Move generateMove(
+      BankReconciliation bankReconciliation,
+      BankReconciliationLine bankReconciliationLine,
+      BankStatementLine bankStatementLine,
+      BankStatementRule bankStatementRule)
+      throws AxelorException {
+    Map<String, Object> moveFieldsMap =
+        initializeMoveFields(
+            bankReconciliation, bankReconciliationLine, bankStatementLine, bankStatementRule);
+
+    LocalDate effectDate = (LocalDate) moveFieldsMap.get("effectDate");
+    Move move =
+        moveCreateService.createMove(
+            (Journal) moveFieldsMap.get("journal"),
+            (Company) moveFieldsMap.get("company"),
+            (Currency) moveFieldsMap.get("currency"),
+            (Partner) moveFieldsMap.get("partner"),
+            effectDate,
+            effectDate,
+            (PaymentMode) moveFieldsMap.get("paymentMode"),
+            (FiscalPosition) moveFieldsMap.get("fiscalPosition"),
+            (Integer) moveFieldsMap.get("technicalOriginSelect"),
+            (Integer) moveFieldsMap.get("functionalOriginSelect"),
+            (String) moveFieldsMap.get("origin"),
+            (String) moveFieldsMap.get("description"),
+            (BankDetails) moveFieldsMap.get("companyBankDetails"));
+    move.setPaymentCondition(null);
+
+    return move;
+  }
+
   protected Map<String, Object> initializeMoveFields(
       BankReconciliation bankReconciliation,
       BankReconciliationLine bankReconciliationLine,
@@ -642,5 +657,72 @@ public class BankReconciliationMoveGenerationServiceImpl
     moveFieldMap.put("description", description);
     moveFieldMap.put("companyBankDetails", companyBankDetails);
     return moveFieldMap;
+  }
+
+  protected void manageDynamicSearchOnMoveLines(BankReconciliationLine bankReconciliationLine)
+      throws AxelorException {
+    if (bankReconciliationLine == null
+        || bankReconciliationLine.getBankStatementLine() == null
+        || bankReconciliationLine.getBankReconciliation() == null) {
+      return;
+    }
+
+    List<MoveLine> fetchedMoveLineList = getMoveLineFetchedByMoveLines(bankReconciliationLine);
+    if (ObjectUtils.isEmpty(fetchedMoveLineList)) {
+      return;
+    }
+
+    Move move =
+        generateMove(
+            bankReconciliationLine.getBankReconciliation(),
+            bankReconciliationLine,
+            bankReconciliationLine.getBankStatementLine(),
+            null);
+  }
+
+  protected List<MoveLine> getMoveLineFetchedByMoveLines(
+      BankReconciliationLine bankReconciliationLine) throws AxelorException {
+    List<MoveLine> fetchedMoveLineList = new ArrayList<>();
+    List<BankStatementRule> bankStatementRuleList =
+        bankStatementRuleRepository
+            .all()
+            .filter(
+                "self.ruleTypeSelect = :ruleTypeSelect"
+                    + " AND self.accountManagement.interbankCodeLine = :interbankCodeLine"
+                    + " AND self.accountManagement.company = :company"
+                    + " AND self.accountManagement.bankDetails = :bankDetails")
+            .bind("ruleTypeSelect", BankStatementRuleRepository.RULE_TYPE_MOVE_LINE_FETCHING)
+            .bind(
+                "partnerFetchMethodSelect",
+                BankStatementRuleRepository.PARTNER_FETCH_METHOD_MOVE_LINE)
+            .bind(
+                "company",
+                Optional.of(bankReconciliationLine)
+                    .map(BankReconciliationLine::getBankReconciliation)
+                    .map(BankReconciliation::getCompany)
+                    .orElse(null))
+            .bind(
+                "bankDetails",
+                Optional.of(bankReconciliationLine)
+                    .map(BankReconciliationLine::getBankStatementLine)
+                    .map(BankStatementLine::getBankDetails)
+                    .orElse(null))
+            .fetch();
+
+    if (ObjectUtils.isEmpty(bankStatementRuleList)) {
+      return fetchedMoveLineList;
+    }
+
+    for (BankStatementRule bankStatementRule : bankStatementRuleList) {
+      MoveLine fetchedMoveLine =
+          bankStatementRuleService
+              .getMoveLine(bankStatementRule, bankReconciliationLine, null)
+              .orElse(null);
+      if (fetchedMoveLine != null) {
+        fetchedMoveLineList.add(fetchedMoveLine);
+      }
+    }
+
+    return fetchedMoveLineList;
   }
 }
