@@ -194,7 +194,10 @@
       <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject">
         <field name="siteSet" showTitle="false" colSpan="12" grid-view="site-project-grid"
-          form-view="site-form" domain="self.isUsableOnProject = true" canEdit="false"/>
+          form-view="site-form"
+          domain="(self.typeSelect = 1 AND self.isUsableOnProject = true AND self.company = :company)
+          OR (self.typeSelect = 2 AND self.isUsableOnProject = true AND self.company = :company AND self.partner = :clientPartner)"
+          canEdit="false"/>
       </panel>
       <panel title="Activities" name="activityPanel" canCollapse="true" collapseIf="true"
         colSpan="12" showIf="id">
