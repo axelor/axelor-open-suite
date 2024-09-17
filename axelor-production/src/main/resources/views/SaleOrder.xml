@@ -13,6 +13,7 @@
           form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
           widget="tree-grid" x-tree-field="subSaleOrderLineList"
           x-tree-field-title="Add a new sale order line" summary-view="sale-order-line-summary-form"
+          x-expand-all="subSaleOrderLineList,saleOrderLineDetailsList"
           onChange="action-sale-order-method-on-line-change"
           if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"
           editable="true">
