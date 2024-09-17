@@ -684,6 +684,25 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
   }
 
+  protected BigDecimal manageForeignExchange(
+      InvoiceTermPayment invoiceTermPayment, InvoicePayment invoicePayment, BigDecimal paidAmount) {
+    if (invoicePayment != null
+        && invoicePayment.getReconcile() != null
+        && invoicePayment.getReconcile().getForeignExchangeMove() != null) {
+      BigDecimal foreignExchangeAmount =
+          invoicePayment.getReconcile().getForeignExchangeMove().getMoveLineList().stream()
+              .map(MoveLine::getCredit)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+
+      if (invoiceTermPayment.getCompanyPaidAmount().equals(foreignExchangeAmount)) {
+        return BigDecimal.ZERO;
+      }
+    }
+
+    return paidAmount;
+  }
+
   protected BigDecimal computePaidAmount(
       InvoiceTermPayment invoiceTermPayment, InvoicePayment invoicePayment, InvoiceTerm invoiceTerm)
       throws AxelorException {
@@ -710,6 +729,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               invoiceTermPayment.getCompanyPaidAmount(),
               invoiceTerm.getDueDate());
     }
+
+    paidAmount = this.manageForeignExchange(invoiceTermPayment, invoicePayment, paidAmount);
 
     return paidAmount;
   }

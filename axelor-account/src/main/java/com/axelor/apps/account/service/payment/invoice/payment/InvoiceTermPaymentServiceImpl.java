@@ -135,13 +135,11 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       List<InvoiceTerm> invoiceTermsToPay,
       BigDecimal availableAmount,
       BigDecimal currencyAvailableAmount,
-      BigDecimal reconcileAmount)
-      throws AxelorException {
+      BigDecimal reconcileAmount) {
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     InvoiceTerm invoiceTermToPay;
     InvoiceTermPayment invoiceTermPayment;
     BigDecimal baseAvailableAmount = availableAmount;
-    BigDecimal availableAmountUnchanged = availableAmount;
     int invoiceTermCount = invoiceTermsToPay.size();
 
     if (invoicePayment != null) {
@@ -158,10 +156,6 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
       if (invoiceTermToPay.getPfpValidateStatusSelect()
           != InvoiceTermRepository.PFP_STATUS_LITIGATION) {
-        LocalDate date =
-            invoicePayment != null
-                ? invoicePayment.getPaymentDate()
-                : invoiceTermToPay.getDueDate();
         BigDecimal invoiceTermCompanyAmount = invoiceTermToPay.getCompanyAmountRemaining();
         BigDecimal invoiceTermAmount = invoiceTermToPay.getAmountRemaining();
         if (invoiceTermAmount.compareTo(currencyAvailableAmount) >= 0
@@ -170,8 +164,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
           invoiceTermPayment =
               createInvoiceTermPayment(
                   invoicePayment, invoiceTermToPay, currencyAvailableAmount, availableAmount);
-          availableAmount = availableAmount.subtract(availableAmount);
-          currencyAvailableAmount = currencyAvailableAmount.subtract(currencyAvailableAmount);
+          availableAmount = BigDecimal.ZERO;
+          currencyAvailableAmount = BigDecimal.ZERO;
         } else {
           invoiceTermPayment =
               createInvoiceTermPayment(
