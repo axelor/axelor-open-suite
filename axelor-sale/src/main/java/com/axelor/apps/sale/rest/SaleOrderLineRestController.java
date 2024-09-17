@@ -22,19 +22,21 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.rest.dto.SaleOrderLineParentPostRequest;
+import com.axelor.apps.sale.rest.dto.SaleOrderLinePostRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderLineResponse;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGeneratorService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
+import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import java.math.BigDecimal;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -47,18 +49,18 @@ public class SaleOrderLineRestController {
   @Operation(
       summary = "Create an Sale order line",
       tags = {"Sale order line"})
-  @Path("/")
-  @POST
+  @Path("add-line/{saleOrderId}")
+  @PUT
   @HttpExceptionHandler
-  public Response createSaleOrderLine(SaleOrderLineParentPostRequest requestBody)
+  public Response createSaleOrderLine(
+      @PathParam("saleOrderId") Long saleOrderId, SaleOrderLinePostRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().createAccess(SaleOrderLine.class).writeAccess(SaleOrder.class).check();
-
+    SaleOrder saleOrder = ObjectFinder.find(SaleOrder.class, saleOrderId, ObjectFinder.NO_VERSION);
     SaleOrderLineGeneratorService saleorderLineCreateService =
         Beans.get(SaleOrderLineGeneratorService.class);
     Product product = requestBody.fetchProduct();
-    SaleOrder saleOrder = requestBody.fetchsaleOrder();
     BigDecimal quantity = requestBody.getQuantity();
     SaleOrderLine saleOrderLine =
         saleorderLineCreateService.createSaleOrderLine(saleOrder, product, quantity);
