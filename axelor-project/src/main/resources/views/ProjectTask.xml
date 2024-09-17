@@ -38,7 +38,7 @@
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
-    <field name="name" width="1000"/>
+    <field name="name" width="850"/>
     <field name="projectTaskCategory" width="200"/>
     <field name="taskDate" width="100"/>
     <field name="status" width="100"/>
