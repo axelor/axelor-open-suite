@@ -16,10 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.supplychain.service.cart;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
@@ -28,24 +27,22 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.service.CartSaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderGeneratorService;
+import com.axelor.apps.sale.service.cart.CartSaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGeneratorService;
-import com.axelor.apps.stock.service.StockLocationLineFetchService;
+import com.axelor.apps.supplychain.service.cartline.CartLineAvailabilityService;
 import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CartSaleOrderGeneratorSupplychainServiceImpl
     extends CartSaleOrderGeneratorServiceImpl {
 
   protected SaleConfigService saleConfigService;
-  protected StockLocationLineFetchService stockLocationLineFetchService;
+  protected CartLineAvailabilityService cartLineAvailabilityService;
 
   @Inject
   public CartSaleOrderGeneratorSupplychainServiceImpl(
@@ -53,15 +50,15 @@ public class CartSaleOrderGeneratorSupplychainServiceImpl
       SaleOrderLineGeneratorService saleOrderLineGeneratorService,
       SaleOrderLineRepository saleOrderLineRepository,
       SaleConfigService saleConfigService,
-      StockLocationLineFetchService stockLocationLineFetchService) {
+      CartLineAvailabilityService cartLineAvailabilityService) {
     super(saleOrderGeneratorService, saleOrderLineGeneratorService, saleOrderLineRepository);
     this.saleConfigService = saleConfigService;
-    this.stockLocationLineFetchService = stockLocationLineFetchService;
+    this.cartLineAvailabilityService = cartLineAvailabilityService;
   }
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public SaleOrder createSaleOrder(Cart cart, List<CartLine> cartLineList)
+  protected SaleOrder createSaleOrder(Cart cart, List<CartLine> cartLineList)
       throws JsonProcessingException, AxelorException {
     SaleConfig saleConfig = saleConfigService.getSaleConfig(cart.getCompany());
     int cartOrderCreationModeSelect = saleConfig.getCartOrderCreationModeSelect();
@@ -75,22 +72,7 @@ public class CartSaleOrderGeneratorSupplychainServiceImpl
       return super.createSaleOrder(cart, cartLineList);
     }
     super.checkProduct(cartLineList);
-    return super.createSaleOrder(cart, getAvailableCartLineList(cart, cartLineList));
-  }
-
-  protected List<CartLine> getAvailableCartLineList(Cart cart, List<CartLine> cartLineList) {
-    List<CartLine> availableCartLineList = new ArrayList<>();
-    for (CartLine cartLine : cartLineList) {
-      Product product = cartLine.getProduct();
-      if (product.getIsModel() && cartLine.getVariantProduct() != null) {
-        product = cartLine.getVariantProduct();
-      }
-      BigDecimal availableQty =
-          stockLocationLineFetchService.getAvailableQty(cart.getStockLocation(), product);
-      if (availableQty.compareTo(cartLine.getQty()) >= 0) {
-        availableCartLineList.add(cartLine);
-      }
-    }
-    return availableCartLineList;
+    return super.createSaleOrder(
+        cart, cartLineAvailabilityService.getAvailableCartLineList(cart, cartLineList));
   }
 }

@@ -16,12 +16,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.supplychain.service.cartline;
 
 import com.axelor.apps.sale.db.Cart;
-import java.util.Map;
+import com.axelor.apps.sale.db.CartLine;
+import java.util.List;
 
-public interface CartInitValueService {
+public interface CartLineAvailabilityService {
 
-  Map<String, Object> getDefaultValues(Cart cart);
+  void setAvailableStatus(Cart cart);
+
+  CartLine setAvailableStatus(Cart cart, CartLine cartLine);
+
+  List<CartLine> getAvailableCartLineList(Cart cart, List<CartLine> cartLineList);
 }

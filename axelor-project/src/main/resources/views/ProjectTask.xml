@@ -51,8 +51,8 @@
     <panel name="mainPanel" colSpan="12">
       <panel name="statusPanel" stacked="true" colSpan="6">
         <field name="status" widget="NavSelect" showTitle="false"
-          showIf="project.taskStatusManagementSelect != 1" x-order="sequence"
-          onChange="action-project-task-method-auto-change-progress"/>
+          hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
+          x-order="sequence" onChange="action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
       </panel>
       <button name="timeSpentBtn" title="Log time"

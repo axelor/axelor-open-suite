@@ -16,21 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.sale.service.cart;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Cart;
-import com.axelor.apps.sale.db.CartLine;
-import java.math.BigDecimal;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
-public interface CartLineService {
+public interface CartSaleOrderGeneratorService {
 
-  CartLine getCartLine(Cart cart, Product product);
-
-  CartLine createCartLine(Cart cart, Product product) throws AxelorException;
-
-  void updateCartLine(CartLine cartLine);
-
-  BigDecimal getSalePrice(Cart cart, CartLine cartLine) throws AxelorException;
+  SaleOrder createSaleOrder(Cart cart) throws JsonProcessingException, AxelorException;
 }

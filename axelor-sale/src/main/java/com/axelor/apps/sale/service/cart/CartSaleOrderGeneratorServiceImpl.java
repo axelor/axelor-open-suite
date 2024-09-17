@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.sale.service.cart;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
@@ -27,6 +27,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.SaleOrderGeneratorService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGeneratorService;
 import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,8 +55,12 @@ public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGenerator
   }
 
   @Override
+  public SaleOrder createSaleOrder(Cart cart) throws JsonProcessingException, AxelorException {
+    return createSaleOrder(cart, cart.getCartLineList());
+  }
+
   @Transactional(rollbackOn = Exception.class)
-  public SaleOrder createSaleOrder(Cart cart, List<CartLine> cartLineList)
+  protected SaleOrder createSaleOrder(Cart cart, List<CartLine> cartLineList)
       throws JsonProcessingException, AxelorException {
     if (CollectionUtils.isNotEmpty(cartLineList)) {
       checkProduct(cartLineList);

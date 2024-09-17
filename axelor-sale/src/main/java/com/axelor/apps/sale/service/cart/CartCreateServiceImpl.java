@@ -16,31 +16,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.sale.service.cart;
 
 import com.axelor.apps.sale.db.Cart;
-import com.axelor.apps.sale.db.CartLine;
+import com.axelor.apps.sale.db.repo.CartRepository;
 import com.google.inject.Inject;
-import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
+import com.google.inject.persist.Transactional;
 
-public class CartSupplychainServiceImpl implements CartSupplychainService {
+public class CartCreateServiceImpl implements CartCreateService {
 
-  protected CartLineSupplychainService cartLineSupplychainService;
+  protected CartRepository cartRepository;
+  protected CartInitValueService cartInitValueService;
 
   @Inject
-  public CartSupplychainServiceImpl(CartLineSupplychainService cartLineSupplychainService) {
-    this.cartLineSupplychainService = cartLineSupplychainService;
+  public CartCreateServiceImpl(
+      CartRepository cartRepository, CartInitValueService cartInitValueService) {
+    this.cartRepository = cartRepository;
+    this.cartInitValueService = cartInitValueService;
   }
 
   @Override
-  public void setAvailableStatus(Cart cart) {
-    List<CartLine> cartLineList = cart.getCartLineList();
-    if (CollectionUtils.isEmpty(cartLineList)) {
-      return;
-    }
-    for (CartLine cartLine : cartLineList) {
-      cartLineSupplychainService.setAvailableStatus(cart, cartLine);
-    }
+  @Transactional(rollbackOn = Exception.class)
+  public Cart createCart() {
+    Cart cart = new Cart();
+    cartInitValueService.getDefaultValues(cart);
+    return cartRepository.save(cart);
   }
 }
