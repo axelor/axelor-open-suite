@@ -292,6 +292,7 @@
 	    public static final int OPERATION_SUB_TYPE_DEFAULT = 1;
 	    public static final int OPERATION_SUB_TYPE_ADVANCE = 2;
 	    public static final int OPERATION_SUB_TYPE_BALANCE = 3;
+	    public static final int OPERATION_SUB_TYPE_LATE_PAYMENT = 9;
 
 	    // REPORT TYPE
 		public static final int REPORT_TYPE_PROFORMA = 1;

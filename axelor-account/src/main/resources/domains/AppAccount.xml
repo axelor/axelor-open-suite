@@ -48,6 +48,10 @@
     <many-to-one name="fixedAssetBarcodeTypeConfig" title="Fixed asset barcode type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 
+    <boolean name="enableLatePaymentInterest" title="Enable late payment interest"/>
+    <decimal name="latePaymentInterestFlatFee" title="Late payment interest flat fee"
+      min="0"/>
+
     <extra-code><![CDATA[
 
 		public static final int DISTRIBUTION_TYPE_FREE = 1;

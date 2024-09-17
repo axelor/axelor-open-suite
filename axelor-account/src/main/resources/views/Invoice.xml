@@ -862,6 +862,10 @@
         </panel>
       </panel>
       <panel name="invoicePaymentPanel" title="Payments details" showIf="statusSelect != 1">
+        <button name="Generate late payment interest invoice"
+          title="Generate late payment interest invoice"
+          onClick="action-invoice-method-generate-late-payment-invoice"
+          if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
         <panel name="pfpValidationPanel" colSpan="12"
           if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
           showIf="pfpValidateStatusSelect > 0">
@@ -2885,5 +2889,10 @@
     <action name="action-invoice-group-report-print"/>
     <action name="close"/>
   </action-group>
+
+  <action-method name="action-invoice-method-generate-late-payment-invoice">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="generateLatePaymentInvoice"/>
+  </action-method>
 
 </object-views>

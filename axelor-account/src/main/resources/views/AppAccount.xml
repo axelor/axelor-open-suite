@@ -36,6 +36,10 @@
       <panel name="accountingExportPanel" title="Accounting exports">
         <field name="dasActiveNorm"/>
       </panel>
+      <panel name="latePaymentInterestPanel" title="Late payment interest" colSpan="12">
+        <field name="enableLatePaymentInterest" widget="boolean-switch"/>
+        <field name="latePaymentInterestFlatFee" showIf="enableLatePaymentInterest"/>
+      </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="accountConfigurationsPanel" title="Account configurations">

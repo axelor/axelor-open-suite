@@ -1758,4 +1758,7 @@ public final class AccountExceptionMessage {
 
   public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT = /*$$(*/
       "Block customer with late payment issues batch's reporting :" /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_INVOICE_NO_LATE = /*$$(*/
+      "None of the payment due dates have been exceeded." /*)*/;
 }
