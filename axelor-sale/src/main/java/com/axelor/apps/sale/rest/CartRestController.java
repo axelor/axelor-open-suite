@@ -11,6 +11,7 @@ import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
+import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import com.axelor.web.ITranslation;
@@ -36,6 +37,7 @@ public class CartRestController {
   @PUT
   @HttpExceptionHandler
   public Response emptyCart(@PathParam("cartId") Long cartId, RequestStructure requestBody) {
+    RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(Cart.class, cartId).check();
     Cart cart = ObjectFinder.find(Cart.class, cartId, requestBody.getVersion());
     Beans.get(CartResetService.class).emptyCart(cart);
@@ -50,6 +52,7 @@ public class CartRestController {
   @HttpExceptionHandler
   public Response createSaleOrder(@PathParam("cartId") Long cartId, RequestStructure requestBody)
       throws AxelorException, JsonProcessingException {
+    RequestValidator.validateBody(requestBody);
     new SecurityCheck().readAccess(Cart.class, cartId).createAccess(SaleOrder.class).check();
     Cart cart = ObjectFinder.find(Cart.class, cartId, requestBody.getVersion());
     SaleOrder saleOrder = Beans.get(CartSaleOrderGeneratorService.class).createSaleOrder(cart);
