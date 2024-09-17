@@ -6,17 +6,33 @@
   <grid name="sale-order-line-details-grid" title="Sale order lines details"
     model="com.axelor.apps.production.db.SaleOrderLineDetails">
     <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"/>
-    <field name="title"/>
     <field name="product" form-view="product-form" grid-view="product-grid"
-      onChange="action-sale-order-line-details-method-product-onchange" showIf="typeSelect == 1"/>
-    <field name="unit" showIf="typeSelect == 1"/>
+      onChange="action-sale-order-line-details-method-product-onchange" showIf="!$readonly()"
+      readonlyIf="typeSelect != 1"/>
     <field name="workCenter"
-      onChange="action-sale-order-line-details-attrs-work-center-onchange" showIf="typeSelect == 2"/>
+      onChange="action-sale-order-line-details-attrs-work-center-onchange" showIf="!$readonly()"
+      readonlyIf="typeSelect != 2"/>
+    <field name="title"/>
     <field name="qty" min="0"
       onChange="action-sale-order-line-details-attrs-compute-total-price"
       x-scale="$nbDecimalDigitForQty" showIf="typeSelect &amp;&amp; typeSelect == 1"/>
     <field name="price" onChange="action-sale-order-line-details-attrs-compute-total-price"
       x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="unit" showIf="typeSelect == 1"/>
+    <field name="totalPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="description"/>
+  </grid>
+
+  <grid name="sale-order-line-details-readonly-grid" title="Sale order lines details"
+    model="com.axelor.apps.production.db.SaleOrderLineDetails">
+    <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"/>
+    <field name="title"/>
+    <field name="qty" min="0"
+      onChange="action-sale-order-line-details-attrs-compute-total-price"
+      x-scale="$nbDecimalDigitForQty" showIf="typeSelect &amp;&amp; typeSelect == 1"/>
+    <field name="price" onChange="action-sale-order-line-details-attrs-compute-total-price"
+      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="unit" showIf="typeSelect == 1"/>
     <field name="totalPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="description"/>
   </grid>
