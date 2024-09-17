@@ -192,12 +192,13 @@
   </action-view>
 
   <menuitem name="sc-root-sale-conf-partner-price-list" parent="sc-root-sale-conf"
-    title="Partner price lists" action="sc.root.sale.conf.partner.price.list" order="500"/>
+    title="Customer partner price lists" action="sc.root.sale.conf.partner.price.list" order="500"/>
 
-  <action-view name="sc.root.sale.conf.partner.price.list" title="Partner price lists"
-    model="com.axelor.apps.base.db.PartnerPriceList">
+  <action-view name="sc.root.sale.conf.partner.price.list"
+    title="Customer partner price list" model="com.axelor.apps.base.db.PartnerPriceList">
     <view type="grid" name="partner-price-list-grid"/>
     <view type="form" name="partner-price-list-form"/>
+    <view-param name="forceTitle" value="true"/>
     <domain>self.typeSelect = 1</domain>
     <context name="_typeSelect" expr="eval: 1"/>
   </action-view>

@@ -148,9 +148,10 @@
     action="contracts.conf.customer.partner.price.list" order="800"/>
 
   <action-view name="contracts.conf.customer.partner.price.list"
-    title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
+    title="Customer price lists" model="com.axelor.apps.base.db.PartnerPriceList">
     <view type="grid" name="partner-price-list-grid"/>
     <view type="form" name="partner-price-list-form"/>
+    <view-param name="forceTitle" value="true"/>
     <domain>self.typeSelect = 3</domain>
     <context name="_typeSelect" expr="eval: 3"/>
   </action-view>
@@ -160,9 +161,10 @@
     action="contracts.conf.supplier.partner.price.list" order="900"/>
 
   <action-view name="contracts.conf.supplier.partner.price.list"
-    title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
+    title="Supplier price lists" model="com.axelor.apps.base.db.PartnerPriceList">
     <view type="grid" name="partner-price-list-grid"/>
     <view type="form" name="partner-price-list-form"/>
+    <view-param name="forceTitle" value="true"/>
     <domain>self.typeSelect = 4</domain>
     <context name="_typeSelect" expr="eval: 4"/>
   </action-view>
