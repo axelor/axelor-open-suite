@@ -16,28 +16,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service.saleorder;
+package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
-import java.util.Map;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
-public interface SaleOrderLineBudgetService {
+public interface SaleOrderGeneratorService {
 
-  void fillBudgetStrOnLine(SaleOrderLine saleOrderLine, boolean multiBudget);
-
-  String searchAndFillBudgetStr(SaleOrderLine saleOrderLine, boolean multiBudget);
-
-  String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException;
-
-  String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
-
-  void checkAmountForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException;
-
-  Map<String, Object> setProductAccount(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException;
-
-  Map<String, Object> resetBudget(SaleOrderLine saleOrderLine);
+  SaleOrder createSaleOrder(
+      Partner clientPartner,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      Boolean inAti)
+      throws AxelorException, JsonProcessingException;
 }

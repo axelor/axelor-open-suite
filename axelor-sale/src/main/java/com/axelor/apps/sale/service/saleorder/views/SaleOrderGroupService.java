@@ -16,16 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.attributes;
+package com.axelor.apps.sale.service.saleorder.views;
 
 import com.axelor.apps.sale.db.SaleOrder;
 import java.util.Map;
 
-public interface SaleOrderAttrsService {
+public interface SaleOrderGroupService {
 
-  void setSaleOrderLineScale(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
-
-  void setSaleOrderLineTaxScale(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
-
-  void addIncotermRequired(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
+  Map<String, Map<String, Object>> onChangeSaleOrderLine(SaleOrder saleOrder);
 }

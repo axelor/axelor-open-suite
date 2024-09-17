@@ -1,9 +1,10 @@
-package com.axelor.apps.sale.service.saleorder;
+package com.axelor.apps.sale.service.saleorder.views;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import java.util.HashMap;

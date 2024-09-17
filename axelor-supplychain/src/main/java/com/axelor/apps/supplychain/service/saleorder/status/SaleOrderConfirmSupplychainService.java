@@ -1,4 +1,4 @@
-package com.axelor.apps.supplychain.service.saleorder;
+package com.axelor.apps.supplychain.service.saleorder.status;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;

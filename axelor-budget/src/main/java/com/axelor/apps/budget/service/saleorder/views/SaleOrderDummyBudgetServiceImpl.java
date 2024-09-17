@@ -1,4 +1,4 @@
-package com.axelor.apps.budget.service.saleorder;
+package com.axelor.apps.budget.service.saleorder.views;
 
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -7,8 +7,8 @@ import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderDummyServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyServiceImpl;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;

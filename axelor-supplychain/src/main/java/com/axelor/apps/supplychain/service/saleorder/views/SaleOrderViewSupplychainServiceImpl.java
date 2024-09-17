@@ -1,4 +1,4 @@
-package com.axelor.apps.supplychain.service.saleorder;
+package com.axelor.apps.supplychain.service.saleorder.views;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -10,7 +10,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderViewServiceImpl;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.google.inject.Inject;
 import java.util.HashMap;

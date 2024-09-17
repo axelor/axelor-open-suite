@@ -1,4 +1,4 @@
-package com.axelor.apps.sale.service.saleorder;
+package com.axelor.apps.sale.service.saleorder.views;
 
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;

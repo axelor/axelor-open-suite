@@ -1,4 +1,4 @@
-package com.axelor.apps.budget.service.saleorder;
+package com.axelor.apps.budget.service.saleorderline;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
