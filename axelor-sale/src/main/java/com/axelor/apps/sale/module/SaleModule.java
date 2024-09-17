@@ -70,6 +70,8 @@ import com.axelor.apps.sale.service.cart.CartSaleOrderGeneratorService;
 import com.axelor.apps.sale.service.cart.CartSaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.cartline.CartLineCreateService;
 import com.axelor.apps.sale.service.cartline.CartLineCreateServiceImpl;
+import com.axelor.apps.sale.service.cartline.CartLinePriceService;
+import com.axelor.apps.sale.service.cartline.CartLinePriceServiceImpl;
 import com.axelor.apps.sale.service.cartline.CartLineProductService;
 import com.axelor.apps.sale.service.cartline.CartLineProductServiceImpl;
 import com.axelor.apps.sale.service.cartline.CartLineRetrievalService;
@@ -289,6 +291,7 @@ public class SaleModule extends AxelorModule {
     bind(CartLineRetrievalService.class).to(CartLineRetrievalServiceImpl.class);
     bind(CartLineUpdateService.class).to(CartLineUpdateServiceImpl.class);
     bind(CartLineProductService.class).to(CartLineProductServiceImpl.class);
+    bind(CartLinePriceService.class).to(CartLinePriceServiceImpl.class);
     bind(ProductPopulateSaleObserver.class);
     bind(ProductRestService.class).to(ProductRestServiceImpl.class);
     bind(CartSaleOrderGeneratorService.class).to(CartSaleOrderGeneratorServiceImpl.class);

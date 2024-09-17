@@ -21,9 +21,9 @@ package com.axelor.apps.sale.service.cartline;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
-import java.math.BigDecimal;
+import java.util.Map;
 
 public interface CartLineProductService {
 
-  BigDecimal getSalePrice(Cart cart, CartLine cartLine) throws AxelorException;
+  Map<String, Object> getProductInformation(Cart cart, CartLine cartLine) throws AxelorException;
 }

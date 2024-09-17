@@ -22,29 +22,20 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.service.cartline.CartLineProductService;
-import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.Map;
 
 public class CartLineController {
 
-  public void setUnit(ActionRequest request, ActionResponse response) {
-    try {
-      CartLine cartLine = request.getContext().asType(CartLine.class);
-      response.setValue(
-          "unit", Beans.get(SaleOrderLineProductService.class).getSaleUnit(cartLine.getProduct()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setPrice(ActionRequest request, ActionResponse response) {
+  public void setProductInformation(ActionRequest request, ActionResponse response) {
     try {
       CartLine cartLine = request.getContext().asType(CartLine.class);
       Cart cart = request.getContext().getParent().asType(Cart.class);
-      response.setValue(
-          "price", Beans.get(CartLineProductService.class).getSalePrice(cart, cartLine));
+      Map<String, Object> cartLineMap =
+          Beans.get(CartLineProductService.class).getProductInformation(cart, cartLine);
+      response.setValues(cartLineMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
