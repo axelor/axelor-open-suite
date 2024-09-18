@@ -55,6 +55,7 @@ import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.project.service.TaskStatusToolService;
@@ -104,6 +105,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       AppProjectService appProjectService,
       TaskStatusToolService taskStatusToolService,
       TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository,
+      SprintRepository sprintRepo,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
@@ -118,7 +120,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         projectRepository,
         appProjectService,
         taskStatusToolService,
-        taskStatusProgressByCategoryRepository);
+        taskStatusProgressByCategoryRepository,
+        sprintRepo);
     this.priceListLineRepo = priceListLineRepo;
     this.priceListService = priceListService;
     this.partnerPriceListService = partnerPriceListService;

@@ -101,7 +101,17 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
 
     projectTask.setDescription(projectTaskService.getTaskLink(projectTask.getDescription()));
 
+    Beans.get(ProjectTaskService.class).updateSprintTotals(projectTask);
+
     return super.save(projectTask);
+  }
+
+  @Override
+  public void remove(ProjectTask projectTask) {
+
+    Beans.get(ProjectTaskService.class).updateSprintTotals(projectTask);
+
+    super.remove(projectTask);
   }
 
   @Override

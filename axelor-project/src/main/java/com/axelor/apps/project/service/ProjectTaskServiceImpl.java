@@ -25,11 +25,13 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPriority;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskStatusProgressByCategory;
 import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.auth.db.User;
@@ -46,6 +48,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskServiceImpl implements ProjectTaskService {
 
@@ -57,6 +60,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected AppProjectService appProjectService;
   protected TaskStatusToolService taskStatusToolService;
   protected TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository;
+  protected SprintRepository sprintRepo;
 
   private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
@@ -69,7 +73,8 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       ProjectRepository projectRepository,
       AppProjectService appProjectService,
       TaskStatusToolService taskStatusToolService,
-      TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository) {
+      TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository,
+      SprintRepository sprintRepo) {
     this.projectTaskRepo = projectTaskRepo;
     this.frequencyRepo = frequencyRepo;
     this.frequencyService = frequencyService;
@@ -78,6 +83,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     this.appProjectService = appProjectService;
     this.taskStatusToolService = taskStatusToolService;
     this.taskStatusProgressByCategoryRepository = taskStatusProgressByCategoryRepository;
+    this.sprintRepo = sprintRepo;
   }
 
   @Override
@@ -310,5 +316,27 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     }
 
     return projectTask.getProgress();
+  }
+
+  @Override
+  @Transactional
+  public void updateSprintTotals(ProjectTask projectTask) {
+
+    List<Sprint> sprints =
+        sprintRepo.all().filter("self.project = ?1", projectTask.getProject()).fetch();
+
+    if (CollectionUtils.isNotEmpty(sprints)) {
+
+      for (Sprint sprint : sprints) {
+        BigDecimal totalEstimatedTime =
+            sprint.getProjectTaskList().stream()
+                .map(ProjectTask::getBudgetedTime)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        sprint.setTotalEstimatedTime(totalEstimatedTime);
+
+        sprintRepo.save(sprint);
+      }
+    }
   }
 }

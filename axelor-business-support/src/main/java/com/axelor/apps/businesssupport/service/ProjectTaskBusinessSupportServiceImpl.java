@@ -33,6 +33,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
@@ -53,6 +54,7 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       AppProjectService appProjectService,
       TaskStatusToolService taskStatusToolService,
       TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository,
+      SprintRepository sprintRepo,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
@@ -68,6 +70,7 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
         appProjectService,
         taskStatusToolService,
         taskStatusProgressByCategoryRepository,
+        sprintRepo,
         priceListLineRepo,
         priceListService,
         partnerPriceListService,
