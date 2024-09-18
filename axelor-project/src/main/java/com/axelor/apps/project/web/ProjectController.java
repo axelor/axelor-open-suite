@@ -21,15 +21,18 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectTaskToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppProject;
@@ -41,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ProjectController {
@@ -162,5 +166,29 @@ public class ProjectController {
     }
 
     response.setAttr("taskStatusManagementSelect", "selection-in", taskStatusSelect);
+  }
+
+  public void viewTasksPerSprint(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Project project = request.getContext().asType(Project.class);
+
+    ActionView.ActionViewBuilder actionViewBuilder =
+        ActionView.define(I18n.get("Tasks per sprint"));
+
+    actionViewBuilder.model(ProjectTask.class.getName());
+    actionViewBuilder.add("kanban", "project-task-sprint-kanban");
+    actionViewBuilder.param(
+        "kanban-hide-columns",
+        Beans.get(SprintRepository.class)
+            .all()
+            .filter("self.project.id != ?1", project.getId())
+            .fetchStream()
+            .map(sprint -> String.valueOf(sprint.getId()))
+            .collect(Collectors.joining(",")));
+    actionViewBuilder.domain("self.project.id = :_projectId");
+    actionViewBuilder.context("_projectId", project.getId());
+
+    response.setView(actionViewBuilder.map());
   }
 }
