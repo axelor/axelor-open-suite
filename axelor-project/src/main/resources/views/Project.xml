@@ -111,6 +111,7 @@
 
     <panel-tabs name="mainPanelTab">
 
+      <panel-include view="sprint-project-form"/>
       <panel-include view="incl-project-overview-panel-form"/>
 
       <panel title="Tasks" name="taskTreePanel">
@@ -140,6 +141,31 @@
       <mail-followers/>
     </panel-mail>
   </form>
+
+  <form model="com.axelor.apps.project.db.Project" title="Sprint" name="sprint-project-form">
+
+    <panel name="sprintPanel" title="Sprint">
+      <panel-dashlet action="action-project-view-sprint-allocation-lines"
+        name="sprintAllocationLinePanel" colSpan="12"/>
+      <panel-dashlet action="action-project-view-sprints-summary"
+        name="sprintSummaryPanel" readonly="true" colSpan="12"/>
+    </panel>
+
+  </form>
+
+  <action-view name="action-project-view-sprint-allocation-lines"
+    title="Sprint allocation lines" model="com.axelor.apps.project.db.SprintAllocationLine">
+    <view type="grid" name="sprint-allocation-line-grid"/>
+    <view type="form" name="sprint-allocation-line-form"/>
+    <domain>self.sprint = :sprint</domain>
+  </action-view>
+
+  <action-view name="action-project-view-sprints-summary" title="Sprints summary"
+    model="com.axelor.apps.project.db.Sprint">
+    <view type="grid" name="sprint-summary-grid"/>
+    <view type="form" name="sprint-form"/>
+    <domain>self.project.id = :id</domain>
+  </action-view>
 
   <form name="incl-project-overview-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">

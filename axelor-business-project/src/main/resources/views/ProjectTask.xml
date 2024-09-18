@@ -422,6 +422,9 @@
         </panel>
       </panel>
       <panel-include view="incl-links-panel-form"/>
+      <panel name="sprintPanel" title="Sprint">
+        <field name="sprint" title="Sprint"/>
+      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>

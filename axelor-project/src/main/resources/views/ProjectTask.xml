@@ -162,6 +162,9 @@
         </panel>
       </panel>
       <panel-include view="incl-links-panel-form"/>
+      <panel name="sprintPanel" title="Sprint">
+        <field name="sprint" title="Sprint"/>
+      </panel>
     </panel-tabs>
 
     <panel-mail name="mailPanel">
