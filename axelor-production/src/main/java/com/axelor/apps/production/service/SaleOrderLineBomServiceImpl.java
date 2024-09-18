@@ -225,7 +225,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     var nbSubSaleOrderLines =
         Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).map(List::size).orElse(0);
     return nbBomLinesAccountable == nbSubSaleOrderLines
-        && saleOrderLine.getSubSaleOrderLineList().stream()
+        && Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
             .allMatch(saleOrderLineBomLineMappingService::isSyncWithBomLine);
   }
 }
