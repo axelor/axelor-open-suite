@@ -34,6 +34,7 @@ import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,4 +81,7 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
 
   List<ProjectPlanningTime> updateProjectTimePlanning(ProjectTask projectTask)
       throws AxelorException;
+
+  public void attachTasksToSprint(
+      Long sprintId, List<LinkedHashMap<String, Object>> projectTaskMaps) throws AxelorException;
 }

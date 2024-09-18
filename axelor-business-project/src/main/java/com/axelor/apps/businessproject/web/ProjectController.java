@@ -35,6 +35,7 @@ import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectHistoryService;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.translation.ITranslation;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.Sprint;
@@ -295,6 +296,28 @@ public class ProjectController {
       Sprint sprint = Beans.get(SprintRepository.class).find(sprintId);
 
       Beans.get(BusinessProjectSprintAllocationLineService.class).sprintOnChange(project, sprint);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void attachTasksToSprint(ActionRequest request, ActionResponse response) {
+
+    try {
+      Object sprintContext = request.getContext().get("sprint");
+
+      if (sprintContext != null) {
+        Long sprintId =
+            Long.valueOf(((LinkedHashMap<String, Object>) sprintContext).get("id").toString());
+
+        Beans.get(ProjectTaskBusinessProjectService.class)
+            .attachTasksToSprint(
+                sprintId,
+                (List<LinkedHashMap<String, Object>>) request.getContext().get("projectTasks"));
+
+        response.setCanClose(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

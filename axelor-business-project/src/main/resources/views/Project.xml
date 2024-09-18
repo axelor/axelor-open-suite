@@ -1301,4 +1301,9 @@
     <call class="com.axelor.apps.businessproject.web.ProjectController" method="sprintOnChange"/>
   </action-method>
 
+  <action-method name="action-project-method-attach-tasks-to-sprint">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="attachTasksToSprint"/>
+  </action-method>
+
 </object-views>

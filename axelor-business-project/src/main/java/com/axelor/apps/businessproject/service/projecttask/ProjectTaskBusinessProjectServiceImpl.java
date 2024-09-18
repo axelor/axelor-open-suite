@@ -80,11 +80,13 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
@@ -828,5 +830,31 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     }
 
     return projectPlanningTimeList;
+  }
+
+  @Override
+  @Transactional
+  public void attachTasksToSprint(
+      Long sprintId, List<LinkedHashMap<String, Object>> projectTaskMaps) throws AxelorException {
+
+    Sprint sprint = sprintRepo.find(sprintId);
+
+    List<ProjectTask> projectTasks =
+        projectTaskMaps.stream()
+            .map(task -> Long.valueOf(task.get("id").toString()))
+            .map(projectTaskRepo::find)
+            .collect(Collectors.toList());
+
+    List<ProjectTask> filteredTasks =
+        projectTasks.stream()
+            .filter(task -> !sprint.getProjectTaskList().contains(task))
+            .peek(sprint::addProjectTaskListItem)
+            .collect(Collectors.toList());
+
+    for (ProjectTask projectTask : filteredTasks) {
+      projectTask.setProjectPlanningTimeList(updateProjectTimePlanning(projectTask));
+    }
+
+    filteredTasks.forEach(projectTaskRepo::save);
   }
 }

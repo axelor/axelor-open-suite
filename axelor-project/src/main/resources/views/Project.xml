@@ -155,6 +155,24 @@
         name="sprintSummaryPanel" readonly="true" colSpan="12"/>
       <panel-dashlet action="action-project-method-tasks-per-sprint"
         name="tasksPerSprintPanel" colSpan="12"/>
+      <button onClick="action-project-view-attach-tasks-to-sprint"
+        name="attachTasksToSprintBtn" title="Attach tasks to sprint"/>
+    </panel>
+
+  </form>
+
+  <form model="com.axelor.utils.db.Wizard" title="Attach tasks to sprint"
+    name="attach-tasks-to-sprint-wizard-form">
+
+    <panel name="mainPanel">
+      <field name="sprint" title="Sprint" type="many-to-one"
+        target="com.axelor.apps.project.db.Sprint" domain="self.project.id = :_projectId"
+        colSpan="6"/>
+      <field name="projectTasks" title="Project tasks" type="many-to-many"
+        target="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :_projectId"
+        colSpan="12"/>
+      <button onClick="action-project-method-attach-tasks-to-sprint"
+        name="attachTasksToSprintBtn" title="Attach tasks to sprint"/>
     </panel>
 
   </form>
@@ -176,6 +194,17 @@
   <action-method name="action-project-method-tasks-per-sprint">
     <call class="com.axelor.apps.project.web.ProjectController" method="viewTasksPerSprint"/>
   </action-method>
+
+  <action-view name="action-project-view-attach-tasks-to-sprint"
+    title="Attach tasks to sprint" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="attach-tasks-to-sprint-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup" value="reload"/>
+    <context name="_projectId" expr="eval: id"/>
+  </action-view>
 
   <action-attrs name="action-project-attrs-on-change-sprint">
     <attribute name="refresh" for="sprintAllocationLinePanel" expr="eval: true"/>
