@@ -566,6 +566,7 @@
     <field name="stockMove.toStockLocation"/>
     <field name="realQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit"/>
+    <field name="stockMove.statusSelect"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
