@@ -3,13 +3,16 @@ package com.axelor.apps.stock.service.massstockmove;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.MassStockMoveNeed;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.MassStockMoveNeedRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class MassStockMoveNeedServiceImpl implements MassStockMoveNeedService {
 
@@ -31,13 +34,32 @@ public class MassStockMoveNeedServiceImpl implements MassStockMoveNeedService {
     Objects.requireNonNull(massStockMove);
     Objects.requireNonNull(stockMoveLinesToAdd);
 
-    for (Long stockMoveLineId : stockMoveLinesToAdd) {
-      var stockMoveLine = stockMoveLineRepository.find(stockMoveLineId);
-      if (stockMoveLine != null) {
-        var massStockMoveNeed =
-            this.createMassStockMoveNeed(
-                massStockMove, stockMoveLine.getProduct(), stockMoveLine.getRealQty());
-        massStockMove.addMassStockMoveNeedListItem(massStockMoveNeed);
+    Map<Product, BigDecimal> mapStockMoveNeed =
+        stockMoveLinesToAdd.stream()
+            .map(stockMoveLineRepository::find)
+            .filter(Objects::nonNull)
+            .collect(
+                Collectors.toMap(
+                    StockMoveLine::getProduct, StockMoveLine::getRealQty, BigDecimal::add));
+
+    mapStockMoveNeed.forEach(
+        (product, qty) -> {
+          this.merge(massStockMove, product, qty);
+        });
+  }
+
+  protected void merge(MassStockMove massStockMove, Product product, BigDecimal qty) {
+    if (massStockMove.getMassStockMoveNeedList() != null) {
+      var moveNeedWithSameProductOpt =
+          massStockMove.getMassStockMoveNeedList().stream()
+              .filter(moveNeed -> moveNeed.getProductToMove().equals(product))
+              .findAny();
+      if (moveNeedWithSameProductOpt.isPresent()) {
+        var moveNeedWithSameProduct = moveNeedWithSameProductOpt.get();
+        moveNeedWithSameProduct.setQtyToMove(moveNeedWithSameProduct.getQtyToMove().add(qty));
+      } else {
+        massStockMove.addMassStockMoveNeedListItem(
+            this.createMassStockMoveNeed(massStockMove, product, qty));
       }
     }
   }
