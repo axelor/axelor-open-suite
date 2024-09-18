@@ -59,6 +59,13 @@ public class BusinessProjectSprintAllocationLineServiceImpl extends SprintAlloca
   }
 
   @Override
+  public HashMap<String, BigDecimal> computeFields(SprintAllocationLine sprintAllocationLine) {
+
+    return computeValueMap(
+        sprintAllocationLine.getSprint(), sprintAllocationLine.getUser(), sprintAllocationLine);
+  }
+
+  @Override
   @Transactional
   public void sprintOnChange(Project project, Sprint sprint) {
 

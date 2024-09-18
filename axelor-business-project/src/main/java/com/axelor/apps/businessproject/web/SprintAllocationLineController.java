@@ -16,17 +16,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.service;
+package com.axelor.apps.businessproject.web;
 
-import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.businessproject.service.BusinessProjectSprintAllocationLineService;
 import com.axelor.apps.project.db.SprintAllocationLine;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
-public interface BusinessProjectSprintAllocationLineService {
+public class SprintAllocationLineController {
 
-  public HashMap<String, BigDecimal> computeFields(SprintAllocationLine sprintAllocationLine);
+  public void computeFields(ActionRequest request, ActionResponse response) {
 
-  public void sprintOnChange(Project project, Sprint sprint);
+    SprintAllocationLine sprintAllocationLine =
+        request.getContext().asType(SprintAllocationLine.class);
+
+    HashMap<String, BigDecimal> valueMap =
+        Beans.get(BusinessProjectSprintAllocationLineService.class)
+            .computeFields(sprintAllocationLine);
+
+    response.setValue("leaves", valueMap.get("leaves"));
+    response.setValue("plannedTime", valueMap.get("plannedTime"));
+    response.setValue("remainingTime", valueMap.get("remainingTime"));
+  }
 }
