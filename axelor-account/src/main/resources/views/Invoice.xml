@@ -1090,7 +1090,7 @@
         canCollapse="true" collapseIf="true">
         <field name="internalReference" widget="string"/>
         <field name="externalReference" widget="string"/>
-        <field name="latePaymentInterestMainInvoice" grid-view="invoice-grid"
+        <field name="latePaymentInterestSourceInvoice" grid-view="invoice-grid"
           form-view="invoice-form" showIf="operationSubTypeSelect == 9"
           if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
       </panel>
@@ -2907,7 +2907,7 @@
     title="Late interest invoices" model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.latePaymentInterestMainInvoice.id = :id</domain>
+    <domain>self.latePaymentInterestSourceInvoice.id = :id</domain>
   </action-view>
 
 </object-views>

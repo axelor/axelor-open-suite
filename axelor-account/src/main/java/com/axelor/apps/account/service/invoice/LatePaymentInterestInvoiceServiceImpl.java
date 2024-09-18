@@ -63,7 +63,7 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
     invoiceLines.add(createInvoiceLineFromInvoiceTerm(latePaymentInvoice, lateInvoiceTerms));
 
     invoiceGenerator.populate(latePaymentInvoice, invoiceLines);
-    latePaymentInvoice.setLatePaymentInterestMainInvoice(invoice);
+    latePaymentInvoice.setLatePaymentInterestSourceInvoice(invoice);
     invoiceRepository.save(latePaymentInvoice);
 
     return latePaymentInvoice;
