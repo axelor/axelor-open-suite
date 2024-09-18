@@ -29,7 +29,6 @@ import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
@@ -38,7 +37,6 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -57,7 +55,6 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   protected AppHumanResourceService appHumanResourceService;
   protected UserHrService userHrService;
   protected DateService dateService;
-  protected TimesheetLineRepository timeSheetLineRepository;
 
   @Inject
   public TimesheetLineServiceImpl(
@@ -66,15 +63,13 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       TimesheetRepository timesheetRepo,
       AppHumanResourceService appHumanResourceService,
       UserHrService userHrService,
-      DateService dateService,
-      TimesheetLineRepository timeSheetLineRepository) {
+      DateService dateService) {
     this.timesheetService = timesheetService;
     this.employeeRepository = employeeRepository;
     this.timesheetRepo = timesheetRepo;
     this.appHumanResourceService = appHumanResourceService;
     this.userHrService = userHrService;
     this.dateService = dateService;
-    this.timeSheetLineRepository = timeSheetLineRepository;
   }
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -285,33 +280,5 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     if (timesheetLine != null) {
       timesheetLine.setTimer(null);
     }
-  }
-
-  @Override
-  @Transactional
-  public void removeTimesheetLines(List<Integer> projectTimesheetLineIds) {
-    for (Integer id : projectTimesheetLineIds) {
-      removeTimesheetLine(timeSheetLineRepository.find(Long.valueOf(id)));
-    }
-  }
-
-  @Transactional
-  protected void removeTimesheetLine(TimesheetLine timesheetLine) {
-    if (timesheetLine == null) {
-      return;
-    }
-
-    if (timesheetLine.getTimesheet() != null) {
-      Timesheet timesheet = timesheetLine.getTimesheet();
-      timesheetLine.setTimesheet(null);
-      timesheet.removeTimesheetLineListItem(timesheetLine);
-    }
-    if (timesheetLine.getProject() != null) {
-      Project project = timesheetLine.getProject();
-      timesheetLine.setProject(null);
-      project.removeTimesheetLineListItem(timesheetLine);
-    }
-
-    timeSheetLineRepository.remove(timesheetLine);
   }
 }

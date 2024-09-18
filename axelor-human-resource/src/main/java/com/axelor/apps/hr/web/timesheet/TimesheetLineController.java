@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
@@ -239,7 +240,7 @@ public class TimesheetLineController {
     List<Integer> projectTimeSheetLineIds = (List<Integer>) request.getContext().get("_ids");
 
     if (!ObjectUtils.isEmpty(projectTimeSheetLineIds)) {
-      Beans.get(TimesheetLineService.class).removeTimesheetLines(projectTimeSheetLineIds);
+      Beans.get(TimesheetLineRemoveService.class).removeTimesheetLines(projectTimeSheetLineIds);
     }
 
     response.setReload(true);

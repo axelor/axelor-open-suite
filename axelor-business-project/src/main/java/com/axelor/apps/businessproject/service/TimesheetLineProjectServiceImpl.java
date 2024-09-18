@@ -47,19 +47,20 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
 
   protected ProjectRepository projectRepo;
   protected ProjectTaskRepository projectTaskRepo;
+  protected TimesheetLineRepository timesheetLineRepo;
   protected TimesheetCreateService timesheetCreateService;
 
   @Inject
   public TimesheetLineProjectServiceImpl(
       TimesheetService timesheetService,
-      EmployeeRepository employeeRepository,
       TimesheetRepository timesheetRepo,
+      EmployeeRepository employeeRepository,
+      ProjectRepository projectRepo,
+      ProjectTaskRepository projectTaskaRepo,
+      TimesheetLineRepository timesheetLineRepo,
       AppHumanResourceService appHumanResourceService,
       UserHrService userHrService,
       DateService dateService,
-      TimesheetLineRepository timeSheetLineRepository,
-      ProjectRepository projectRepo,
-      ProjectTaskRepository projectTaskRepo,
       TimesheetCreateService timesheetCreateService) {
     super(
         timesheetService,
@@ -67,11 +68,12 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
         timesheetRepo,
         appHumanResourceService,
         userHrService,
-        dateService,
-        timeSheetLineRepository);
+        dateService);
 
     this.projectRepo = projectRepo;
-    this.projectTaskRepo = projectTaskRepo;
+    this.projectTaskRepo = projectTaskaRepo;
+    this.timesheetLineRepo = timesheetLineRepo;
+    this.timesheetRepo = timesheetRepo;
     this.timesheetCreateService = timesheetCreateService;
   }
 
@@ -106,7 +108,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   @Override
   public TimesheetLine updateTimesheetLines(TimesheetLine timesheetLine) {
     timesheetLine = getDefaultToInvoice(timesheetLine);
-    return timeSheetLineRepository.save(timesheetLine);
+    return timesheetLineRepo.save(timesheetLine);
   }
 
   @Override

@@ -20,25 +20,16 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.businessproduction.exception.BusinessProductionExceptionMessage;
-import com.axelor.apps.businessproject.service.TimesheetLineProjectServiceImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
-import com.axelor.apps.hr.service.timesheet.TimesheetService;
-import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
-import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
@@ -49,40 +40,21 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
 
-public class TimesheetLineBusinessProductionServiceImpl extends TimesheetLineProjectServiceImpl
+public class TimesheetLineBusinessProductionServiceImpl
     implements TimesheetLineBusinessProductionService {
 
   protected EmployeeService employeeService;
   protected TimesheetFetchService timesheetFetchService;
+  protected TimesheetRepository timesheetRepository;
 
   @Inject
-  public TimesheetLineBusinessProductionServiceImpl(
-      TimesheetService timesheetService,
-      EmployeeRepository employeeRepository,
-      TimesheetRepository timesheetRepo,
-      AppHumanResourceService appHumanResourceService,
-      UserHrService userHrService,
-      DateService dateService,
-      TimesheetLineRepository timesheetLineRepo,
-      ProjectRepository projectRepo,
-      ProjectTaskRepository projectTaskRepo,
-      TimesheetCreateService timesheetCreateService,
+  public void TimesheetBusinessProductionServiceImpl(
       EmployeeService employeeService,
-      TimesheetFetchService timesheetFetchService) {
-    super(
-        timesheetService,
-        employeeRepository,
-        timesheetRepo,
-        appHumanResourceService,
-        userHrService,
-        dateService,
-        timesheetLineRepo,
-        projectRepo,
-        projectTaskRepo,
-        timesheetCreateService);
-
+      TimesheetFetchService timesheetFetchService,
+      TimesheetRepository timesheetRepository) {
     this.employeeService = employeeService;
     this.timesheetFetchService = timesheetFetchService;
+    this.timesheetRepository = timesheetRepository;
   }
 
   @Override
@@ -108,7 +80,7 @@ public class TimesheetLineBusinessProductionServiceImpl extends TimesheetLinePro
       TimesheetLine tsl = createTimesheetLine(timesheet, operationOrderDuration);
 
       timesheet.addTimesheetLineListItem(tsl);
-      timesheet = timesheetRepo.save(timesheet);
+      timesheet = timesheetRepository.save(timesheet);
       return Optional.ofNullable(tsl);
     }
 
@@ -166,21 +138,5 @@ public class TimesheetLineBusinessProductionServiceImpl extends TimesheetLinePro
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             BusinessProductionExceptionMessage.EMPLOYEE_TIME_PREFERENCE_INVALID_VALUE);
     }
-  }
-
-  @Override
-  @Transactional
-  protected void removeTimesheetLine(TimesheetLine timesheetLine) {
-    if (timesheetLine == null) {
-      return;
-    }
-
-    if (timesheetLine.getOperationOrder() != null) {
-      OperationOrder operationOrder = timesheetLine.getOperationOrder();
-      timesheetLine.setTimesheet(null);
-      operationOrder.removeTimesheetLineListItem(timesheetLine);
-    }
-
-    super.removeTimesheetLine(timesheetLine);
   }
 }
