@@ -31,8 +31,6 @@ public class BusinessProjectPlanningTimeRepository extends ProjectPlanningTimeHR
   @Override
   public ProjectPlanningTime save(ProjectPlanningTime projectPlanningTime) {
 
-    super.save(projectPlanningTime);
-
     Project project = projectPlanningTime.getProject();
     ProjectTask task = projectPlanningTime.getProjectTask();
 
@@ -44,7 +42,7 @@ public class BusinessProjectPlanningTimeRepository extends ProjectPlanningTimeHR
       }
     }
 
-    return projectPlanningTime;
+    return super.save(projectPlanningTime);
   }
 
   @Override

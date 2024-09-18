@@ -37,14 +37,14 @@ public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeReposito
   @Override
   public ProjectPlanningTime save(ProjectPlanningTime projectPlanningTime) {
 
-    super.save(projectPlanningTime);
-
     ProjectTask task = projectPlanningTime.getProjectTask();
     if (task != null) {
+      task = Beans.get(ProjectTaskRepository.class).find(task.getId());
       task.setTotalPlannedHrs(planningTimeService.getTaskPlannedHrs(task));
+      projectPlanningTime.setProjectTask(task);
     }
 
-    return projectPlanningTime;
+    return super.save(projectPlanningTime);
   }
 
   @Override
