@@ -793,7 +793,9 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
       if (!foundAndUpdated) {
         Product product =
-            Optional.ofNullable(projectTask.getAssignedTo().getEmployee())
+            Optional.ofNullable(projectTask)
+                .map(ProjectTask::getAssignedTo)
+                .map(User::getEmployee)
                 .map(Employee::getProduct)
                 .orElse(null);
         Project project = projectTask.getProject();
