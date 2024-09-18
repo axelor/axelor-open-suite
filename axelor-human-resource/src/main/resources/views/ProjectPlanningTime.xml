@@ -207,6 +207,14 @@
       if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask' &amp;&amp; __parent__?.project &amp;&amp; __user__ in __repo__(Project).find(__parent__.project.id).membersUserSet &amp;&amp; __user__.employee"/>
     <attribute name="value" for="timeUnit" expr="eval: _project.projectTimeUnit"/>
     <attribute name="value" for="displayTimeUnit" expr="eval: _project.projectTimeUnit"/>
+    <attribute name="value" for="timeUnit"
+      expr="eval: __repo__(Project).find(_project.id).projectTimeUnit"/>
+    <attribute name="value" for="displayTimeUnit"
+      expr="eval: __repo__(Project).find(_project.id).projectTimeUnit"/>
+    <attribute name="value" for="startDateTime" expr="eval: _sprintFromDate"
+      if="_sprintFromDate"/>
+    <attribute name="value" for="endDateTime" expr="eval: _sprintToDate"
+      if="_sprintToDate"/>
   </action-attrs>
 
   <action-method name="action-project-planning-time-method-get-company-config">

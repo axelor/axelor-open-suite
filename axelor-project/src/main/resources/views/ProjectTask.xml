@@ -26,7 +26,7 @@
 
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
-    width="large">
+    onSave="action-business-project-task-method-update-project-time-plannings" width="large">
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
@@ -309,7 +309,8 @@
   </tree>
 
   <kanban columnBy="sprint" model="com.axelor.apps.project.db.ProjectTask"
-    sequenceBy="sequence" title="Tasks per sprint" name="project-task-sprint-kanban">
+    sequenceBy="sequence" title="Tasks per sprint" name="project-task-sprint-kanban"
+    draggable="true" onMove="action-business-project-task-method-update-project-time-plannings">
 
     <field name="name"/>
     <field name="assignedTo.name"/>
@@ -711,6 +712,13 @@
     <view type="form" name="project-planning-time-form"/>
     <view-param name="popup" value="true"/>
     <domain>self.projectTask.id = :id</domain>
+    <context name="_project" expr="eval: project"/>
+    <context name="_projectTask" expr="eval: __this__"/>
+    <context name="_sprintFromDate" expr="eval: sprint.sprintPeriod.fromDate.atStartOfDay()"
+      if="sprint &amp;&amp; sprint.sprintPeriod"/>
+    <context name="_sprintToDate"
+      expr="eval: sprint.sprintPeriod.toDate.atTime(java.time.LocalTime.MAX)"
+      if="sprint &amp;&amp; sprint.sprintPeriod"/>
   </action-view>
 
   <action-view name="dashlet.task" title="Tasks"

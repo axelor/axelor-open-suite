@@ -42,15 +42,18 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -94,6 +97,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   private ProductCompanyService productCompanyService;
   private TimesheetLineRepository timesheetLineRepository;
   private AppBusinessProjectService appBusinessProjectService;
+  private ProjectPlanningTimeService projectPlanningTimeService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -111,7 +115,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      ProjectPlanningTimeService projectPlanningTimeService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -128,6 +133,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.productCompanyService = productCompanyService;
     this.timesheetLineRepository = timesheetLineRepository;
     this.appBusinessProjectService = appBusinessProjectService;
+    this.projectPlanningTimeService = projectPlanningTimeService;
   }
 
   @Override
@@ -742,5 +748,85 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       return limit.negate();
     }
     return value;
+  }
+
+  @Override
+  public List<ProjectPlanningTime> updateProjectTimePlanning(ProjectTask projectTask)
+      throws AxelorException {
+
+    List<ProjectPlanningTime> projectPlanningTimeList = projectTask.getProjectPlanningTimeList();
+
+    Sprint sprint = projectTask.getSprint();
+    User assignedTo = projectTask.getAssignedTo();
+
+    User projectTaskDbUser = null;
+    // Sprint projectTaskDbSprint = null;
+
+    boolean foundAndUpdated = false;
+
+    if (projectTask.getId() != null) {
+      ProjectTask projectTaskDb = projectTaskRepo.find(projectTask.getId());
+      projectTaskDbUser = projectTaskDb.getAssignedTo();
+      // projectTaskDbSprint = projectTaskDb.getSprint();
+    }
+
+    if (sprint != null && sprint.getSprintPeriod() != null) {
+      // && (assignedTo != projectTaskDbUser || sprint != projectTaskDbSprint)) {
+      LocalDateTime startDateTime = sprint.getSprintPeriod().getFromDate().atStartOfDay();
+      LocalDateTime endDateTime = sprint.getSprintPeriod().getToDate().atStartOfDay();
+
+      if (CollectionUtils.isNotEmpty(projectPlanningTimeList)) {
+
+        for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeList) {
+
+          if (projectPlanningTime.getEmployee().equals(projectTaskDbUser.getEmployee())) {
+            projectPlanningTime.setEmployee(assignedTo.getEmployee());
+            foundAndUpdated = true;
+          }
+
+          projectPlanningTime.setStartDateTime(startDateTime);
+          projectPlanningTime.setEndDateTime(endDateTime);
+        }
+      }
+
+      if (!foundAndUpdated) {
+        Product product =
+            Optional.ofNullable(projectTask.getAssignedTo().getEmployee())
+                .map(Employee::getProduct)
+                .orElse(null);
+        Project project = projectTask.getProject();
+        Employee employee = assignedTo.getEmployee();
+
+        ProjectPlanningTime projectPlanningTime =
+            projectPlanningTimeService.createProjectPlanningTime(
+                startDateTime,
+                projectTask,
+                project,
+                0,
+                employee,
+                product,
+                BigDecimal.ZERO,
+                endDateTime,
+                null);
+
+        if (projectTask.getProgress().compareTo(BigDecimal.ZERO) == 0) {
+          projectPlanningTime.setPlannedTime(
+              projectTask.getBudgetedTime().subtract(projectTask.getSpentTime()));
+        } else {
+          BigDecimal hundred = new BigDecimal("100");
+          BigDecimal remainingPercentage = hundred.subtract(projectTask.getProgress());
+          BigDecimal plannedTime =
+              remainingPercentage
+                  .multiply(projectTask.getBudgetedTime())
+                  .divide(hundred, RoundingMode.HALF_UP);
+
+          projectPlanningTime.setPlannedTime(plannedTime);
+        }
+
+        projectPlanningTimeList.add(projectPlanningTime);
+      }
+    }
+
+    return projectPlanningTimeList;
   }
 }

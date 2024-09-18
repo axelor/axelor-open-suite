@@ -266,4 +266,17 @@ public class ProjectTaskController {
 
     response.setValues(Beans.get(ProjectTaskGroupService.class).updateFinancialDatas(projectTask));
   }
+
+  public void updateProjectTimePlanning(ActionRequest request, ActionResponse response) {
+
+    try {
+      ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+      response.setValue(
+          "projectPlanningTimeList",
+          Beans.get(ProjectTaskBusinessProjectService.class)
+              .updateProjectTimePlanning(projectTask));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

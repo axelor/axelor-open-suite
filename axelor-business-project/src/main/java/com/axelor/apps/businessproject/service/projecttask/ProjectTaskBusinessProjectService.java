@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.service.ProjectTaskService;
@@ -76,4 +77,7 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   boolean isTimeUnitValid(Unit unit);
 
   BigDecimal verifiedLimitFollowUp(BigDecimal value, BigDecimal limit);
+
+  List<ProjectPlanningTime> updateProjectTimePlanning(ProjectTask projectTask)
+      throws AxelorException;
 }
