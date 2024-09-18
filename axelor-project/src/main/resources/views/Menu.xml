@@ -271,6 +271,15 @@
     <view type="form" name="sprint-allocation-line-status-form"/>
   </action-view>
 
+  <menuitem name="sprint-root-sprint-period-generator" title="Sprint period generator"
+    parent="sprint-root" action="sprint.root.sprint.period.generator"/>
+
+  <action-view name="sprint.root.sprint.period.generator"
+    title="Sprint period generator" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="sprint-period-generator-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+  </action-view>
+
   <!-- Sprint menus -->
 
 </object-views>
