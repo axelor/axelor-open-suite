@@ -47,11 +47,38 @@
 
   </form>
 
+  <form model="com.axelor.utils.db.Wizard" title="Sprint generator"
+    name="sprint-generator-wizard-form" width="large">
+
+    <panel name="mainPanel">
+      <field name="projects" title="Projects" target="com.axelor.apps.project.db.Project"
+        type="many-to-many" widget="TagSelect" x-dirty="false" colSpan="12"/>
+      <field name="sprintPeriods" title="Sprint periods"
+        target="com.axelor.apps.project.db.SprintPeriod" type="many-to-many"
+        onSelect="action-sprint-attrs-on-period-select" widget="TagSelect" x-dirty="false"
+        colSpan="12"/>
+      <button onClick="action-sprint-method-generate" name="generate" title="Generate"/>
+    </panel>
+
+  </form>
+
   <action-view name="action-sprint-view-sprint-allocation-lines"
     title="Sprint allocation lines" model="com.axelor.apps.project.db.SprintAllocationLine">
     <view type="grid" name="sprint-allocation-line-grid"/>
     <view type="form" name="sprint-allocation-line-form"/>
     <domain>self.sprint.id = :id</domain>
   </action-view>
+
+  <action-attrs name="action-sprint-attrs-on-period-select">
+    <attribute name="domain" for="sprintPeriods"
+      expr="eval: &quot;self.toDate &gt; :__date__&quot;"/>
+    <attribute name="domain" for="sprintPeriods" expr="eval: &quot;self.id in (0)&quot;"
+      if="!projects||projects.isEmpty()"/>
+    <!-- need to add domain based on project and company -->
+  </action-attrs>
+
+  <action-method name="action-sprint-method-generate">
+    <call class="com.axelor.apps.project.web.SprintController" method="sprintGenerate"/>
+  </action-method>
 
 </object-views>

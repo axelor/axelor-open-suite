@@ -280,6 +280,15 @@
     <view-param name="show-toolbar" value="false"/>
   </action-view>
 
+  <menuitem name="sprint-root-sprint-generator" title="Sprint generator"
+    parent="sprint-root" action="sprint.root.sprint.generator"/>
+
+  <action-view name="sprint.root.sprint.generator" title="Sprint generator"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="sprint-generator-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+  </action-view>
+
   <!-- Sprint menus -->
 
 </object-views>
