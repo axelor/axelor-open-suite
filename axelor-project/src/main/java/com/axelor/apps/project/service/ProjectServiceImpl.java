@@ -236,7 +236,6 @@ public class ProjectServiceImpl implements ProjectService {
     project.setProjectTaskCategorySet(new HashSet<>(projectTemplate.getProjectTaskCategorySet()));
     project.setSynchronize(projectTemplate.getSynchronize());
     project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
-    project.setImputable(projectTemplate.getImputable());
     project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
     project.setProjectStatus(getDefaultProjectStatus());
 
