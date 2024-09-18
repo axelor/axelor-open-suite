@@ -193,7 +193,11 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
   @Override
   public ProjectTask updateDiscount(ProjectTask projectTask) {
-    PriceList priceList = projectTask.getProject().getPriceList();
+    PriceList priceList =
+        Optional.of(projectTask)
+            .map(ProjectTask::getProject)
+            .map(Project::getPriceList)
+            .orElse(null);
     Contract frameworkCustomerContract = projectTask.getFrameworkCustomerContract();
     if (frameworkCustomerContract != null || priceList == null) {
       this.emptyDiscounts(projectTask);
@@ -451,7 +455,11 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
     PriceList priceList =
         partnerPriceListService.getDefaultPriceList(
-            projectTask.getProject().getClientPartner(), PriceListRepository.TYPE_SALE);
+            Optional.of(projectTask)
+                .map(ProjectTask::getProject)
+                .map(Project::getClientPartner)
+                .orElse(null),
+            PriceListRepository.TYPE_SALE);
     if (priceList == null) {
       return unitPrice;
     }
@@ -659,21 +667,13 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
 
     BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
-    BigDecimal remainingLimit = BigDecimal.valueOf(9999.99);
 
-    if (percentageOfProgression.compareTo(percentageLimit) > 0) {
-      percentageOfProgression = percentageLimit;
-    }
-    if (percentageOfConsumption.compareTo(percentageLimit) > 0) {
-      percentageOfConsumption = percentageLimit;
-    }
-    if (remainingAmountToDo.compareTo(remainingLimit) > 0) {
-      remainingAmountToDo = remainingLimit;
-    }
-
-    projectTask.setPercentageOfProgress(percentageOfProgression);
-    projectTask.setPercentageOfConsumption(percentageOfConsumption);
-    projectTask.setRemainingAmountToDo(remainingAmountToDo);
+    projectTask.setPercentageOfProgress(
+        verifiedLimitFollowUp(percentageOfProgression, percentageLimit));
+    projectTask.setPercentageOfConsumption(
+        verifiedLimitFollowUp(percentageOfConsumption, percentageLimit));
+    projectTask.setRemainingAmountToDo(
+        verifiedLimitFollowUp(remainingAmountToDo, BigDecimal.valueOf(9999.99)));
   }
 
   @Override
@@ -728,5 +728,16 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
     return Objects.equals(unit, appBusinessProject.getDaysUnit())
         || Objects.equals(unit, appBusinessProject.getHoursUnit());
+  }
+
+  @Override
+  public BigDecimal verifiedLimitFollowUp(BigDecimal value, BigDecimal limit) {
+    if (value.compareTo(limit) > 0) {
+      return limit;
+    }
+    if (value.compareTo(limit.negate()) < 0) {
+      return limit.negate();
+    }
+    return value;
   }
 }

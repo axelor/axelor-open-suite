@@ -442,6 +442,7 @@
       <field name="product.isUnrenewed"/>
       <field name="product.isPrototype"/>
       <field name="saleOrder"/>
+      <field name="subSaleOrderLineList"/>
     </panel>
     <panel-mail name="mailsPanel">
       <mail-messages/>
