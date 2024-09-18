@@ -105,7 +105,7 @@ public class BusinessProjectSprintAllocationLineServiceImpl extends SprintAlloca
 
     HashMap<String, BigDecimal> valueMap = new HashMap<>();
 
-    if (sprint != null && user != null) {
+    if (sprint != null && user != null && sprint.getSprintPeriod() != null) {
       SprintPeriod sprintPeriod = sprint.getSprintPeriod();
       Employee employee = user.getEmployee();
 
