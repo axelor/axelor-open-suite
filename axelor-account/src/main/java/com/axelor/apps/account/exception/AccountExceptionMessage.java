@@ -1761,4 +1761,10 @@ public final class AccountExceptionMessage {
 
   public static final String LATE_PAYMENT_INTEREST_INVOICE_NO_LATE = /*$$(*/
       "None of the payment due dates have been exceeded." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_FLAT_FEE_NO_PRODUCT = /*$$(*/
+      "There is no product configured for flat fee." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_NO_PRODUCT = /*$$(*/
+      "There is no product configured for late payment interest." /*)*/;
 }

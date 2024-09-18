@@ -881,6 +881,9 @@
           field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid"
           form-view="invoice-payment-form" canNew="false" canRemove="false"/>
         <field name="amountPaid" hidden="true"/>
+        <panel-dashlet action="action-invoice-view-late-interest-invoices"
+          showIf="operationTypeSelect == 3 &amp;&amp; operationSubTypeSelect == 9" colSpan="12"
+          if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
       </panel>
       <panel name="pfpAccountConfigPanel"
         if="__config__.app.getApp('account')?.getActivatePassedForPayment()" hidden="true">
@@ -1086,6 +1089,8 @@
         canCollapse="true" collapseIf="true">
         <field name="internalReference" widget="string"/>
         <field name="externalReference" widget="string"/>
+        <field name="latePaymentInterestMainInvoice" grid-view="invoice-grid"
+          form-view="invoice-form" showIf="operationSubTypeSelect == 9"/>
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true"
         collapseIf="true">
@@ -2895,5 +2900,12 @@
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="generateLatePaymentInvoice"/>
   </action-method>
+
+  <action-view name="action-invoice-view-late-interest-invoices"
+    title="Late interest invoices" model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="invoice-grid"/>
+    <view type="form" name="invoice-form"/>
+    <domain>self.latePaymentInterestMainInvoice.id = :id</domain>
+  </action-view>
 
 </object-views>

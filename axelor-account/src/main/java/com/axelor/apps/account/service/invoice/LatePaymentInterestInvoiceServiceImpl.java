@@ -9,9 +9,11 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppAccount;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -61,19 +63,28 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
     invoiceLines.add(createInvoiceLineFromInvoiceTerm(latePaymentInvoice, lateInvoiceTerms));
 
     invoiceGenerator.populate(latePaymentInvoice, invoiceLines);
-
+    latePaymentInvoice.setLatePaymentInterestMainInvoice(invoice);
     invoiceRepository.save(latePaymentInvoice);
 
     return latePaymentInvoice;
   }
 
   protected InvoiceLine createFlatFeeInvoiceLine(Invoice invoice) throws AxelorException {
-    BigDecimal flatFeeAmount = appAccountService.getAppAccount().getLatePaymentInterestFlatFee();
+    AppAccount appAccount = appAccountService.getAppAccount();
+    BigDecimal flatFeeAmount = appAccount.getLatePaymentInterestFlatFee();
+    Product flatFeeProduct = appAccount.getFlatFeeProduct();
+
+    if (flatFeeProduct == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_FLAT_FEE_NO_PRODUCT));
+    }
+
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
-            null,
-            null,
+            flatFeeProduct,
+            flatFeeProduct.getName(),
             flatFeeAmount,
             flatFeeAmount,
             flatFeeAmount,
@@ -105,13 +116,22 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
   protected InvoiceLine createInvoiceLineFromInvoiceTerm(
       Invoice invoice, List<InvoiceTerm> invoiceTermList) throws AxelorException {
 
+    Product latePaymentInterestProduct =
+        appAccountService.getAppAccount().getLatePaymentInterestProduct();
+
+    if (latePaymentInterestProduct == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_NO_PRODUCT));
+    }
+
     BigDecimal latePaymentInterest = computeLatePaymentInterest(invoiceTermList);
 
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
-            null,
-            null,
+            latePaymentInterestProduct,
+            latePaymentInterestProduct.getName(),
             latePaymentInterest,
             latePaymentInterest,
             latePaymentInterest,

@@ -68,6 +68,7 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -1400,7 +1401,7 @@ public class InvoiceController {
 
     Invoice lateInvoice =
         Beans.get(LatePaymentInterestInvoiceService.class)
-            .generateLatePaymentInterestInvoice(invoice);
+            .generateLatePaymentInterestInvoice(JPA.find(Invoice.class, invoice.getId()));
 
     response.setView(
         ActionView.define(I18n.get("Invoice"))

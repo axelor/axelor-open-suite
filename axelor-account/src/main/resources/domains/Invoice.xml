@@ -248,6 +248,8 @@
 	      id]]>
     </integer>
 
+    <many-to-one name="latePaymentInterestMainInvoice"
+      ref="com.axelor.apps.account.db.Invoice" title="Late payment interest main invoice"/>
 
     <!-- Invoice terms -->
     <integer name="paymentProgress" title="Payment progress" default="0"/>
