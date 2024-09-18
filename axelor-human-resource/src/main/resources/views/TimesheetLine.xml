@@ -306,7 +306,7 @@
         onChange="action-timesheet-line-record-set-project-task"
         onSelect="action-timesheet-line-attrs-domain-project" readonlyIf="_project" required="true"/>
       <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"
-        domain="(:project IS NULL OR self.project = :project) AND self.project.isShowTimeSpent = true"
+        domain="(:project IS NULL OR self.project = :project) AND self.project.manageTimeSpent = true"
         readonlyIf="_projectTask"
         onChange="action-timesheet-line-method-set-product,action-timesheet-line-record-set-project"/>
       <field name="date" onChange="action-timesheet-line-method-set-timesheet"/>

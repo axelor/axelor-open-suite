@@ -26,6 +26,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
+import com.axelor.utils.api.RequestStructure;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
@@ -73,5 +74,29 @@ public class StockMoveLineRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK, "Line successfully updated.", new StockMoveLineResponse(stockmoveLine));
+  }
+
+  @Operation(
+      summary = "Split stock move line",
+      tags = {"Stock move line"})
+  @Path("split/{id}")
+  @PUT
+  @HttpExceptionHandler
+  public Response splitStockMoveLine(
+      @PathParam("id") long stockMoveLineId, RequestStructure requestBody) throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck()
+        .writeAccess(StockMoveLine.class, stockMoveLineId)
+        .createAccess(StockMoveLine.class)
+        .check();
+
+    StockMoveLine stockmoveLine =
+        ObjectFinder.find(StockMoveLine.class, stockMoveLineId, requestBody.getVersion());
+
+    Beans.get(StockMoveLineService.class)
+        .splitIntoFulfilledMoveLineAndUnfulfilledOne(stockmoveLine);
+
+    return ResponseConstructor.build(
+        Response.Status.OK, "Line successfully split.", new StockMoveLineResponse(stockmoveLine));
   }
 }

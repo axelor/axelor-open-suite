@@ -6,15 +6,14 @@
   <grid name="cart-line-grid" title="Cart lines" model="com.axelor.apps.sale.db.CartLine"
     editable="true">
     <field name="product" form-view="product-form" grid-view="product-grid"
-      domain="self.parentProduct IS NULL"
-      onChange="action-cart-line-method-set-unit,action-cart-line-method-set-price"/>
+      domain="self.parentProduct IS NULL" onChange="action-cart-line-method-set-product-information"/>
     <field name="product.code"/>
     <field name="price" x-scale="$nbDecimalDigitForUnitPrice" readonly="true"/>
     <field name="qty" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
     <field name="variantProduct" form-view="product-form"
       grid-view="product-product-variant-grid" domain="self.parentProduct = :product"
-      onChange="action-cart-line-method-set-price"
+      onChange="action-cart-line-method-set-product-information"
       if="__config__.app.getApp('base')?.getManageProductVariants()"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
@@ -24,26 +23,22 @@
     <panel name="mainPanel">
       <field name="product" form-view="product-form" grid-view="product-grid"
         domain="self.parentProduct IS NULL"
-        onChange="action-cart-line-method-set-unit,action-cart-line-method-set-price"/>
+        onChange="action-cart-line-method-set-product-information"/>
       <field name="product.code"/>
       <field name="price" x-scale="$nbDecimalDigitForUnitPrice" readonly="true"/>
       <field name="qty" x-scale="$nbDecimalDigitForQty"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
       <field name="variantProduct" form-view="product-form"
         grid-view="product-product-variant-grid" domain="self.parentProduct = :product"
-        onChange="action-cart-line-method-set-price"
+        onChange="action-cart-line-method-set-product-information"
         if="__config__.app.getApp('base')?.getManageProductVariants()"/>
       <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
       <field name="$nbDecimalDigitForQty" hidden="true"/>
     </panel>
   </form>
 
-  <action-method name="action-cart-line-method-set-unit">
-    <call class="com.axelor.apps.sale.web.CartLineController" method="setUnit"/>
-  </action-method>
-
-  <action-method name="action-cart-line-method-set-price">
-    <call class="com.axelor.apps.sale.web.CartLineController" method="setPrice"/>
+  <action-method name="action-cart-line-method-set-product-information">
+    <call class="com.axelor.apps.sale.web.CartLineController" method="setProductInformation"/>
   </action-method>
 
 </object-views>

@@ -14,11 +14,6 @@
       </insert>
     </extend>
 
-    <extend target="//field[@name='product']">
-      <attribute name="onChange"
-        value="action-cart-line-method-set-unit,action-cart-line-method-set-price,action-cart-line-method-set-available-status"/>
-    </extend>
-
     <extend target="//field[@name='qty']">
       <attribute name="onChange" value="action-cart-line-method-set-available-status"/>
     </extend>

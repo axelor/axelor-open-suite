@@ -145,6 +145,12 @@
           <field name="fieldsToShowOnTimesheet" widget="MultiSelect" placeholder="All"/>
         </panel>
       </panel>
+      <panel name="saleConfigPanel" title="Sale" itemSpan="12" showIf="isSaleAppEnabled">
+        <field name="productTypesToDisplaySelect" widget="MultiSelect" placeholder="All"
+          colSpan="4"/>
+        <field name="isGenericProductShown" widget="boolean-switch" colSpan="4"/>
+        <field name="isConfiguratorProductShown" widget="boolean-switch" colSpan="4"/>
+      </panel>
     </panel-tabs>
 
     <panel-mail name="mailPanel">

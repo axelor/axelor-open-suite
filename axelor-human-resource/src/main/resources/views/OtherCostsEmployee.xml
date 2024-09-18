@@ -7,6 +7,7 @@
     model="com.axelor.apps.hr.db.OtherCostsEmployee" canNew="false">
     <field name="amount" aggregate="sum"/>
     <field name="description"/>
+    <field name="exportCode"/>
   </grid>
 
   <form name="other-costs-employee-form" title="Employee's other costs"
@@ -14,6 +15,7 @@
     <panel name="mainPanel" colSpan="12">
       <field name="amount" required="true"/>
       <field name="description" required="true"/>
+      <field name="exportCode" canNew="true"/>
     </panel>
   </form>
 

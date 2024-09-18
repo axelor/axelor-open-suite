@@ -9,6 +9,8 @@
     <field name="typeSelect"/>
     <field name="partner"/>
     <field name="address"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </grid>
 
   <form title="Site" name="site-form" model="com.axelor.apps.base.db.Site"
@@ -20,8 +22,11 @@
           <field name="name" showTitle="false" css="label-bold bold large" colSpan="9"/>
         </editor>
       </field>
-      <field name="address" canNew="true"/>
-      <field name="company" canNew="false"/>
+      <field name="address" canNew="true" colSpan="4"/>
+      <field name="company" canNew="false" colSpan="4"/>
+      <field name="tradingName" canNew="false" colSpan="4" readonlyIf="!company"
+        domain="self.company = :company" form-view="trading-name-form" grid-view="trading-name-grid"
+        if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     </panel>
     <panel-tabs>
       <panel name="basePanel" hidden="true">
