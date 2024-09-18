@@ -25,8 +25,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DMSService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -37,6 +39,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.axelor.utils.helpers.MapHelper;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -68,6 +71,7 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     private Team commonTeam = null;
     private Partner commonContactPartner = null;
     private PriceList commonPriceList = null;
+    private TradingName commonTradingName = null;
 
     @Override
     public Company getCommonCompany() {
@@ -148,6 +152,16 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     public void setCommonPriceList(PriceList commonPriceList) {
       this.commonPriceList = commonPriceList;
     }
+
+    @Override
+    public TradingName getCommonTradingName() {
+      return commonTradingName;
+    }
+
+    @Override
+    public void setCommonTradingName(TradingName tradingName) {
+      this.commonTradingName = tradingName;
+    }
   }
 
   protected static class ChecksImpl implements Checks {
@@ -160,6 +174,7 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     private boolean existTeamDiff = false;
     private boolean existContactPartnerDiff = false;
     private boolean existPriceListDiff = false;
+    private boolean existTradingNameDiff = false;
 
     @Override
     public boolean isExistCurrencyDiff() {
@@ -240,6 +255,16 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     public void setExistPriceListDiff(boolean existPriceListDiff) {
       this.existPriceListDiff = existPriceListDiff;
     }
+
+    @Override
+    public boolean isExistTradingNameDiff() {
+      return existTradingNameDiff;
+    }
+
+    @Override
+    public void setExistTradingNameDiff(boolean existTradingNameDiff) {
+      this.existTradingNameDiff = existTradingNameDiff;
+    }
   }
 
   protected static class SaleOrderMergingResultImpl implements SaleOrderMergingResult {
@@ -281,6 +306,7 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrderLineRepository saleOrderLineRepository;
   protected DMSService dmsService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public SaleOrderMergingServiceImpl(
@@ -288,12 +314,14 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
       SaleOrderRepository saleOrderRepository,
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderLineRepository saleOrderLineRepository,
-      DMSService dmsService) {
+      DMSService dmsService,
+      AppBaseService appBaseService) {
     this.saleOrderCreateService = saleOrderCreateService;
     this.saleOrderRepository = saleOrderRepository;
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.dmsService = dmsService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -320,13 +348,36 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
   @Override
   public SaleOrderMergingResult mergeSaleOrdersWithContext(
       List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException {
-    return mergeSaleOrdersWithContext(saleOrdersToMerge, context, this::mergeSaleOrders);
+    SaleOrderMergingResult saleOrderMergeResult =
+        mergeSaleOrdersWithContext(saleOrdersToMerge, context, this::mergeSaleOrders);
+    setDummySaleOrderSeq(saleOrderMergeResult, saleOrdersToMerge);
+    return saleOrderMergeResult;
   }
 
   @Override
   public SaleOrderMergingResult simulateMergeSaleOrders(List<SaleOrder> saleOrdersToMerge)
       throws AxelorException {
-    return mergeSaleOrders(saleOrdersToMerge, this::generateSaleOrder);
+    SaleOrderMergingResult saleOrderMergeResult =
+        mergeSaleOrders(saleOrdersToMerge, this::generateSaleOrder);
+    setDummySaleOrderSeq(saleOrderMergeResult, saleOrdersToMerge);
+    return saleOrderMergeResult;
+  }
+
+  /**
+   * Since the process is done without updating the database, the sale order is not saved and does
+   * not have a sequence. So this method will compute a "dummy sequence". This method cannot be
+   * called when merging sale orders in database.
+   */
+  protected void setDummySaleOrderSeq(
+      SaleOrderMergingResult result, List<SaleOrder> saleOrderList) {
+    result
+        .getSaleOrder()
+        .setSaleOrderSeq(
+            StringHelper.cutTooLongString(
+                saleOrderList.stream()
+                    .map(SaleOrder::getSaleOrderSeq)
+                    .filter(s -> s != null && !s.isEmpty())
+                    .collect(Collectors.joining("-"))));
   }
 
   @Override
@@ -394,6 +445,10 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     if (context.get("team") != null) {
       getCommonFields(result).setCommonTeam(MapHelper.get(context, Team.class, "team"));
     }
+    if (context.get("tradingName") != null) {
+      getCommonFields(result)
+          .setCommonTradingName(MapHelper.get(context, TradingName.class, "tradingName"));
+    }
   }
 
   protected SaleOrderMergingResult controlSaleOrdersToMerge(List<SaleOrder> saleOrdersToMerge)
@@ -424,7 +479,8 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
 
     return getChecks(result).isExistContactPartnerDiff()
         || getChecks(result).isExistPriceListDiff()
-        || getChecks(result).isExistTeamDiff();
+        || getChecks(result).isExistTeamDiff()
+        || getChecks(result).isExistTradingNameDiff();
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -457,7 +513,8 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
             getCommonFields(result).getCommonTeam(),
             getCommonFields(result).getCommonTaxNumber(),
             internalNote,
-            getCommonFields(result).getCommonFiscalPosition());
+            getCommonFields(result).getCommonFiscalPosition(),
+            getCommonFields(result).getCommonTradingName());
 
     this.attachToNewSaleOrder(saleOrdersToMerge, saleOrderMerged);
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
@@ -577,6 +634,13 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
       commonFields.setCommonFiscalPosition(null);
       checks.setExistFiscalPositionDiff(true);
     }
+    if (appBaseService.getAppBase().getEnableTradingNamesManagement()
+        && ((commonFields.getCommonTradingName() == null ^ saleOrder.getTradingName() == null)
+            || (commonFields.getCommonTradingName() != saleOrder.getTradingName()
+                && !commonFields.getCommonTradingName().equals(saleOrder.getTradingName())))) {
+      commonFields.setCommonTradingName(null);
+      checks.setExistTradingNameDiff(true);
+    }
   }
 
   protected void fillCommonFields(SaleOrder firstSaleOrder, SaleOrderMergingResult result) {
@@ -589,6 +653,7 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     commonFields.setCommonTaxNumber(firstSaleOrder.getTaxNumber());
     commonFields.setCommonTeam(firstSaleOrder.getTeam());
     commonFields.setCommonClientPartner(firstSaleOrder.getClientPartner());
+    commonFields.setCommonTradingName(firstSaleOrder.getTradingName());
   }
 
   @Override

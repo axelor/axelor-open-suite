@@ -1915,7 +1915,7 @@ this.height=row["logo_height"];]]></method>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'AccountingReportType20.amount'</value>
+                                                    <value type="javascript">'AccountingReportType19.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -2274,7 +2274,7 @@ this.height=row["logo_height"];]]></method>
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalAmount"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row._outer["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalAmount"] ? row["totalAmount"] : 0, row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row._outer["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>

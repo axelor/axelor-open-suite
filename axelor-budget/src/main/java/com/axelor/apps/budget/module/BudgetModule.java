@@ -108,6 +108,7 @@ import com.axelor.apps.budget.service.move.MoveRemoveBudgetService;
 import com.axelor.apps.budget.service.move.MoveReverseServiceBudgetImpl;
 import com.axelor.apps.budget.service.move.MoveValidateBudgetServiceImpl;
 import com.axelor.apps.budget.service.observer.SaleOrderBudgetObserver;
+import com.axelor.apps.budget.service.observer.SaleOrderLineBudgetObserver;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetServiceImpl;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderInvoiceBudgetServiceImpl;
@@ -118,12 +119,14 @@ import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderCheckBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderCheckBudgetServiceImpl;
-import com.axelor.apps.budget.service.saleorder.SaleOrderDummyBudgetServiceImpl;
-import com.axelor.apps.budget.service.saleorder.SaleOrderFinalizeBudgetServiceImpl;
-import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
-import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetServiceImpl;
-import com.axelor.apps.budget.service.saleorder.SaleOrderLineComputeBudgetServiceImpl;
-import com.axelor.apps.budget.service.saleorder.SaleOrderLineOnChangeBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorder.status.SaleOrderFinalizeBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorder.views.SaleOrderDummyBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetService;
+import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorderline.SaleOrderLineComputeBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorderline.SaleOrderLineOnChangeBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorderline.SaleOrderLineViewBudgetService;
+import com.axelor.apps.budget.service.saleorderline.SaleOrderLineViewBudgetServiceImpl;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
@@ -136,12 +139,12 @@ import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderDummyServiceImpl;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
-import com.axelor.apps.supplychain.service.SaleOrderCheckSupplychainServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderFinalizeSupplychainServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderLineComputeSupplychainServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderLineOnChangeSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderFinalizeSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineComputeSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineOnChangeSupplychainServiceImpl;
 import java.util.concurrent.Callable;
 
 public class BudgetModule extends AxelorModule {
@@ -224,5 +227,7 @@ public class BudgetModule extends AxelorModule {
     bind(SaleOrderLineOnChangeSupplychainServiceImpl.class)
         .to(SaleOrderLineOnChangeBudgetServiceImpl.class);
     bind(SaleOrderBudgetObserver.class);
+    bind(SaleOrderLineViewBudgetService.class).to(SaleOrderLineViewBudgetServiceImpl.class);
+    bind(SaleOrderLineBudgetObserver.class);
   }
 }

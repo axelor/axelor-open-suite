@@ -499,8 +499,8 @@
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="statusSelect != 1"
           onChange="action-invoice-method-printing-settings-default-values"
-          domain=":company MEMBER OF self.companySet"
-          requiredIf="statusSelect == 1 &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
+          domain="self.company = :company"
+          requiredIf="statusSelect == 1 &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0"
           form-view="trading-name-form" grid-view="trading-name-grid" colSpan="4"/>
         <field name="inAti" onChange="action-invoice-attrs-in-ati" hidden="true"
           readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" colSpan="2"/>
@@ -515,7 +515,7 @@
           <field name="createdByInterco" readonly="true"/>
         </panel>
       </panel>
-      <field name="company.tradingNameSet"
+      <field name="company.tradingNameList"
         if="__config__.app.getApp('base')?.enableTradingNamesManagement" hidden="true" colSpan="12"/>
     </panel>
 
@@ -973,7 +973,7 @@
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
       <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
         <viewer
-          depends="typeSelect,statusSelect,id,paymentDate,amount,totalAmountWithFinancialDiscount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount,currency.numberOfDecimals">
+          depends="move,typeSelect,statusSelect,id,paymentDate,amount,totalAmountWithFinancialDiscount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount,currency.numberOfDecimals">
                 <![CDATA[
 				<>
 					<Box d="flex" flexDirection="column">
@@ -1079,8 +1079,8 @@
     <panel-stack name="otherDetailsPanel" sidebar="true" hideIf="partner == null">
       <panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6"
         canCollapse="true" collapseIf="true">
-        <field name="internalReference"/>
-        <field name="externalReference"/>
+        <field name="internalReference" widget="string"/>
+        <field name="externalReference" widget="string"/>
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true"
         collapseIf="true">
@@ -1243,8 +1243,8 @@
 
     <panel-stack name="otherDetailsPanel" sidebar="true">
       <panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6">
-        <field name="internalReference"/>
-        <field name="externalReference"/>
+        <field name="internalReference" widget="string"/>
+        <field name="externalReference" widget="string"/>
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
         <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"/>
@@ -1654,7 +1654,6 @@
       if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect > 0"/>
     <action name="action-invoice-record-set-dummy-field-localization"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
-    <action name="action-invoice-record-set-payment-condition"/>
     <action name="action-method-invoice-address-str"/>
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect) &amp;&amp; operationSubTypeSelect != 2"/>
@@ -1928,7 +1927,6 @@
 
   <action-record name="action-invoice-record-partner-change"
     model="com.axelor.apps.account.db.Invoice">
-    <field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
     <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"/>
     <field name="address"
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>

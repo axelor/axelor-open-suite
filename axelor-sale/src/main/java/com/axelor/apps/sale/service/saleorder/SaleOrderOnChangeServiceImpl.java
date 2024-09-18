@@ -12,6 +12,7 @@ import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import java.util.HashMap;

@@ -63,7 +63,7 @@ public class StockMoveRestController {
   public Response realizeStockMove(@PathParam("id") long stockMoveId, RequestStructure requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockMove.class).check();
+    new SecurityCheck().writeAccess(StockMove.class, stockMoveId).check();
 
     StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
 
@@ -84,7 +84,10 @@ public class StockMoveRestController {
       @PathParam("id") long stockMoveId, StockMoveLinePostRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockMove.class).createAccess(StockMoveLine.class).check();
+    new SecurityCheck()
+        .writeAccess(StockMove.class, stockMoveId)
+        .readAccess(StockMoveLine.class)
+        .check();
 
     StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
     new StockMoveLineRequestValidator(
@@ -152,7 +155,7 @@ public class StockMoveRestController {
       @PathParam("id") long stockMoveId, StockInternalMovePutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockMove.class).check();
+    new SecurityCheck().writeAccess(StockMove.class, stockMoveId).check();
 
     StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
 

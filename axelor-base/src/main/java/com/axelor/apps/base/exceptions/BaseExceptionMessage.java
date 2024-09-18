@@ -616,8 +616,7 @@ public final class BaseExceptionMessage {
   public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
       "Error while accessing certificate information." /*)*/;
 
-  public static final String RESEARCH_RESULT_NO_VIEW_CONFIGURED = /*$$(*/
-      "No view configured for model %s." /*)*/;
+  public static final String VIEW_NOT_FOUND = /*$$(*/ "No view configured for model %s." /*)*/;
 
   public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
       "The file could not be generated." /*)*/;
@@ -660,4 +659,10 @@ public final class BaseExceptionMessage {
 
   public static final String PRINTING_TEMPLATE_SCRIPT_ERROR = /*$$(*/
       "Error when computing the printing filename, using template %s: %s" /*)*/;
+
+  public static final String NO_QUANTITY_PROVIDED = /*$$(*/
+      "This product comes in multiple quantities, so please specify a quantity that is a multiple of at least one from the list %s." /*)*/;
+
+  public static final String QUANTITY_NOT_MULTIPLE = /*$$(*/
+      "This product comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
 }

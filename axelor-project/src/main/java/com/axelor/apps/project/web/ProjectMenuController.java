@@ -22,32 +22,77 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectMenuService;
+import com.axelor.apps.project.service.ProjectToolService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import java.util.Optional;
 
 public class ProjectMenuController {
 
   public void allOpenProjectTasks(ActionRequest request, ActionResponse response) {
-    response.setView(Beans.get(ProjectMenuService.class).getAllOpenProjectTasks());
-  }
-
-  public void allOpenProjectTickets(ActionRequest request, ActionResponse response) {
-    response.setView(Beans.get(ProjectMenuService.class).getAllOpenProjectTickets());
+    Long projectId =
+        Optional.of(request)
+            .map(ActionRequest::getContext)
+            .map(context -> context.get("projectId"))
+            .map(Object::toString)
+            .map(Long::valueOf)
+            .orElse(null);
+    Project project = projectId != null ? Beans.get(ProjectRepository.class).find(projectId) : null;
+    response.setView(Beans.get(ProjectMenuService.class).getAllOpenProjectTasks(project));
   }
 
   public void allProjects(ActionRequest request, ActionResponse response) {
-    response.setView(Beans.get(ProjectMenuService.class).getAllProjects());
+    Long projectId =
+        Optional.of(request)
+            .map(ActionRequest::getContext)
+            .map(context -> context.get("childProjectId"))
+            .map(Object::toString)
+            .map(Long::valueOf)
+            .orElse(null);
+
+    response.setView(Beans.get(ProjectMenuService.class).getAllProjects(projectId));
   }
 
   public void allProjectTasks(ActionRequest request, ActionResponse response) {
     response.setView(Beans.get(ProjectMenuService.class).getAllProjectTasks());
   }
 
+  public void myProjects(ActionRequest request, ActionResponse response) {
+    Project activeProject =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
+
+    ActionView.ActionViewBuilder builder =
+        ActionView.define(I18n.get("Project"))
+            .model(Project.class.getName())
+            .add("grid", "project-grid")
+            .add("form", "project-form")
+            .add("kanban", "project-kanban")
+            .domain(
+                "(self.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.membersUserSet")
+            .context("_project", activeProject)
+            .context("_projectIds", Beans.get(ProjectToolService.class).getActiveProjectIds())
+            .param("search-filters", "project-project-filters");
+
+    response.setView(builder.map());
+  }
+
   public void allProjectRelatedTasks(ActionRequest request, ActionResponse response) {
 
     try {
-      Project project = request.getContext().asType(Project.class);
+      Project project =
+          Optional.ofNullable(request.getContext())
+              .map(Context::getParent)
+              .map(c -> c.asType(Project.class))
+              .orElse(null);
+      if (project == null) {
+        return;
+      }
       project = Beans.get(ProjectRepository.class).find(project.getId());
       response.setView(Beans.get(ProjectMenuService.class).getAllProjectRelatedTasks(project));
     } catch (Exception e) {

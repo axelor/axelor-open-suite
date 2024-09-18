@@ -20,8 +20,8 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineTaxService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 

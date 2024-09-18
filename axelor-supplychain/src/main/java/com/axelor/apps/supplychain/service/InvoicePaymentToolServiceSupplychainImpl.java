@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -62,7 +63,8 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
       CurrencyScaleService currencyScaleService,
       InvoiceTermFilterService invoiceTermFilterService,
-      InvoiceTermToolService invoiceTermToolService) {
+      InvoiceTermToolService invoiceTermToolService,
+      InvoiceTermPaymentToolService invoiceTermPaymentToolService) {
     super(
         invoiceRepo,
         moveToolService,
@@ -73,7 +75,8 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
         invoicePaymentFinancialDiscountService,
         currencyScaleService,
         invoiceTermFilterService,
-        invoiceTermToolService);
+        invoiceTermToolService,
+        invoiceTermPaymentToolService);
     this.partnerSupplychainService = partnerSupplychainService;
     this.saleOrderComputeService = saleOrderComputeService;
     this.purchaseOrderService = purchaseOrderService;

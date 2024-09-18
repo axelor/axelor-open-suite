@@ -27,8 +27,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -46,7 +45,6 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
 
 public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainImpl {
-
   @Inject
   public StockMoveServiceProductionImpl(
       StockMoveLineService stockMoveLineService,
@@ -69,7 +67,6 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       PartnerSupplychainService partnerSupplychainService,
       FixedAssetRepository fixedAssetRepository,
       PfpService pfpService,
-      SaleOrderWorkflowService saleOrderWorkflowService,
       SaleOrderConfirmService saleOrderConfirmService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
     super(
@@ -93,7 +90,6 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         partnerSupplychainService,
         fixedAssetRepository,
         pfpService,
-        saleOrderWorkflowService,
         saleOrderConfirmService,
         stockMoveLineServiceSupplychain);
   }

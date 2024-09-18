@@ -30,7 +30,7 @@ public class StoredProductAttrsServiceImpl implements StoredProductAttrsService 
     if (storedProduct.getStoredProduct() != null && massStockMove.getCartStockLocation() != null) {
       String domain =
           "self.product.id = %d AND"
-              + " (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine WHERE stockLocationLine.detailsStockLocation = %d))";
+              + " (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine WHERE stockLocationLine.detailsStockLocation = %d AND stockLocationLine.currentQty > 0))";
 
       return String.format(
           domain,

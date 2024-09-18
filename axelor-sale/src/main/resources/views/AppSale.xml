@@ -32,6 +32,7 @@
         showIf="isEditableGridEnabled"/>
       <field name="isEnableCalculationEntireQuotation" widget="boolean-switch"/>
       <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>
+      <field name="isCartManagementEnabled" widget="boolean-switch"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"

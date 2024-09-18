@@ -81,16 +81,16 @@
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName"
           readonlyIf="(contractLineList &amp;&amp; contractLineList.length > 0) || statusSelect >= 2"
-          canEdit="false" domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          canEdit="false" domain="self.company = :company" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="3"
-          requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
-          hideIf="company.tradingNameSet == null || company.tradingNameSet.length == 0"
+          requiredIf="company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0"
+          hideIf="company.tradingNameList == null || company.tradingNameList.length == 0"
           hidden="true"/>
         <label name="tradingNameLabel"
           if="!(__config__.app.getApp('base')?.enableTradingNamesManagement)" colSpan="3"/>
         <field name="project" colSpan="8" domain="self.clientPartner=:partner" hidden="true"
           showIf="contractTypeSelect == 1"/>
-        <field name="company.tradingNameSet" hidden="true"/>
+        <field name="company.tradingNameList" hidden="true"/>
       </panel>
     </panel>
     <panel sidebar="true" name="actionPanel">
@@ -161,6 +161,7 @@
           </>
           ]]>
           </viewer>
+          <editor></editor>
         </field>
       </panel>
       <panel name="InvoicingAmountsPanel" title="Invoicing amounts">
@@ -178,6 +179,7 @@
           </>
           ]]>
           </viewer>
+          <editor></editor>
         </field>
       </panel>
     </panel>
@@ -257,7 +259,7 @@
       <field name="note" showTitle="false"/>
     </panel>
     <panel-tabs name="mainPanelTab"
-      hideIf="!partner || ($enableTradingNamesManagement &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
+      hideIf="!partner || ($enableTradingNamesManagement &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0 &amp;&amp; tradingName == null)">
       <panel title="Content" name="contentPanel">
         <panel name="contractLineListPanel" hidden="true"
           showIf="isInvoicingManagement &amp;&amp; targetTypeSelect &lt;= 2" colSpan="12">
@@ -405,8 +407,7 @@
           <field name="isGroupedInvoicing" widget="boolean-switch" colSpan="4"/>
           <spacer/>
           <field name="isConsumptionManagement"
-            if="__config__.app.getApp('contract')?.isConsumptionManagement"
-            onChange="action-contract-record-update-field-in-version" widget="boolean-switch"
+            if="__config__.app.getApp('contract')?.isConsumptionManagement" widget="boolean-switch"
             colSpan="4" hideIf="targetTypeSelect > 2"/>
           <field name="currentContractVersion"
             if="__config__.app.getApp('contract')?.isConsumptionManagement" showTitle="false"
@@ -433,10 +434,9 @@
             </field>
             <field name="currentContractVersion" showTitle="false" colSpan="12"
               x-show-icons="false">
-              <editor x-viewer="true" x-show-on-new="true" x-show-titles="true"
-                onNew="action-record-contract-version-default-record">
+              <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                 <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"
-                  hidden="true" showIf="$contractTypeSelect == 1"/>
+                  hidden="true"/>
                 <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
                   <field name="invoicingDuration" domain="self.applicationTypeSelect = 2"
                     colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
@@ -444,7 +444,6 @@
                   <field name="isVersionProratedInvoice" hidden="true"
                     showIf="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                 </panel>
-                <field name="$contractTypeSelect" hidden="true"/>
               </editor>
             </field>
           </panel>
@@ -551,6 +550,7 @@
     <action name="action-contract-record-default"/>
     <action name="action-contract-attrs-partner-payment-config"/>
     <action name="action-contract-record-get-trading-names-management-config"/>
+    <action name="action-contract-attrs-hide-is-periodic-invoicing"/>
     <action name="action-contract-attrs-set-invoicing-management-title"/>
   </action-group>
 
@@ -561,6 +561,7 @@
     <action name="action-contract-method-contract-line-list-on-change"/>
     <action name="action-contract-method-additional-contract-line-list-on-change"/>
     <action name="action-contract-record-get-trading-names-management-config"/>
+    <action name="action-contract-attrs-hide-is-periodic-invoicing"/>
     <action name="action-contract-attrs-set-invoicing-management-title"/>
   </action-group>
 
@@ -598,8 +599,12 @@
   <action-record name="action-record-contract-version-default-record"
     model="com.axelor.apps.contract.db.ContractVersion">
     <field name="statusSelect" expr="eval: 1"/>
-    <field name="$contractTypeSelect" expr="eval: __parent__?.contractTypeSelect"/>
   </action-record>
+
+  <action-attrs name="action-contract-attrs-hide-is-periodic-invoicing">
+    <attribute name="hidden" for="currentContractVersion.isPeriodicInvoicing"
+      expr="eval: contractTypeSelect != 1"/>
+  </action-attrs>
 
   <action-record model="com.axelor.apps.contract.db.Contract"
     name="action-contract-record-reset-booleans-config-sub-panel">

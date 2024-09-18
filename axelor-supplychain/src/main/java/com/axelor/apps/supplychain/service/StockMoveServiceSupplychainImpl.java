@@ -44,8 +44,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -60,6 +60,7 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -97,7 +98,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected PartnerSupplychainService partnerSupplychainService;
   protected FixedAssetRepository fixedAssetRepository;
   protected PfpService pfpService;
-  protected SaleOrderWorkflowService saleOrderWorkflowService;
   protected SaleOrderConfirmService saleOrderConfirmService;
   protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
 
@@ -123,7 +123,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       PartnerSupplychainService partnerSupplychainService,
       FixedAssetRepository fixedAssetRepository,
       PfpService pfpService,
-      SaleOrderWorkflowService saleOrderWorkflowService,
       SaleOrderConfirmService saleOrderConfirmService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
     super(
@@ -147,7 +146,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     this.partnerSupplychainService = partnerSupplychainService;
     this.fixedAssetRepository = fixedAssetRepository;
     this.pfpService = pfpService;
-    this.saleOrderWorkflowService = saleOrderWorkflowService;
     this.saleOrderConfirmService = saleOrderConfirmService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
   }
@@ -332,6 +330,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
    * @param saleOrder
    */
   protected void terminateOrConfirmSaleOrderStatus(SaleOrder saleOrder) throws AxelorException {
+    // have to use Beans.get because of circular dependency
+    SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
     if (saleOrder.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_DELIVERED
         && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
       saleOrderWorkflowService.completeSaleOrder(saleOrder);

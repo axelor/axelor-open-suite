@@ -84,6 +84,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -377,10 +378,10 @@ public class InvoiceController {
 
       String viewTitle = AccountExceptionMessage.INVOICE_GENERATED_INVOICE_REFUND;
       if (InvoiceToolService.isRefund(refund)) {
-        if (refund.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT) {
-          viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND;
-        } else {
+        if (refund.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
           viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT;
+        } else {
+          viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND;
         }
       }
 
@@ -1033,8 +1034,7 @@ public class InvoiceController {
 
   public void showCustomerInvoiceLines(ActionRequest request, ActionResponse response) {
     try {
-      String idList =
-          StringHelper.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      String idList = getIdListString(request);
       response.setView(
           ActionView.define(I18n.get("Customer Invoice Line"))
               .model(InvoiceLine.class.getName())
@@ -1049,6 +1049,16 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  protected String getIdListString(ActionRequest request) {
+    return Optional.ofNullable((List<Integer>) request.getContext().get("_ids"))
+        .map(idList -> idList.stream().map(String::valueOf).collect(Collectors.joining(",")))
+        .orElseGet(
+            () ->
+                StringHelper.getIdListString(
+                    request.getCriteria().createQuery(Invoice.class).fetch()));
   }
 
   public void checkInvoiceLinesAnalyticDistribution(
@@ -1097,8 +1107,7 @@ public class InvoiceController {
 
   public void showSupplierInvoiceLines(ActionRequest request, ActionResponse response) {
     try {
-      String idList =
-          StringHelper.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      String idList = getIdListString(request);
       response.setView(
           ActionView.define(I18n.get("Supplier Invoice Line"))
               .model(InvoiceLine.class.getName())

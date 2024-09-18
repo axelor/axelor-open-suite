@@ -81,7 +81,7 @@
           name="manufOrderSetPanel"/>
 
         <panel-related field="projectTaskSet" colSpan="12" canNew="false"
-          canEdit="false" canSelect="false" form-view="project-task-form"
+          canEdit="false" canSelect="false" form-view="business-project-task-form"
           grid-view="project-task-invoicing-project-grid"
           showIf="projectTaskSet &amp;&amp; projectTaskSet.length &gt; 0" readonlyIf="invoice"
           name="ProjectTaskSetPanel"/>
