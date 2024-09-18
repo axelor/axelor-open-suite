@@ -16,37 +16,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.cartline;
+package com.axelor.apps.supplychain.service.cartline;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
+import com.axelor.apps.sale.service.cartline.CartLinePriceService;
+import com.axelor.apps.sale.service.cartline.CartLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.google.inject.Inject;
-import java.util.HashMap;
 import java.util.Map;
 
-public class CartLineProductServiceImpl implements CartLineProductService {
+public class CartLineProductSupplychainServiceImpl extends CartLineProductServiceImpl {
 
-  protected SaleOrderLineProductService saleOrderLineProductService;
-  protected CartLinePriceService cartLinePriceService;
+  protected CartLineAvailabilityService cartLineAvailabilityService;
 
   @Inject
-  public CartLineProductServiceImpl(
+  public CartLineProductSupplychainServiceImpl(
       SaleOrderLineProductService saleOrderLineProductService,
-      CartLinePriceService cartLinePriceService) {
-    this.saleOrderLineProductService = saleOrderLineProductService;
-    this.cartLinePriceService = cartLinePriceService;
+      CartLinePriceService cartLinePriceService,
+      CartLineAvailabilityService cartLineAvailabilityService) {
+    super(saleOrderLineProductService, cartLinePriceService);
+    this.cartLineAvailabilityService = cartLineAvailabilityService;
   }
 
   @Override
   public Map<String, Object> getProductInformation(Cart cart, CartLine cartLine)
       throws AxelorException {
-    Map<String, Object> cartLineMap = new HashMap<>();
-    cartLine.setUnit(saleOrderLineProductService.getSaleUnit(cartLine.getProduct()));
-    cartLine.setPrice(cartLinePriceService.getSalePrice(cart, cartLine));
-    cartLineMap.put("unit", cartLine.getUnit());
-    cartLineMap.put("price", cartLine.getPrice());
+    Map<String, Object> cartLineMap = super.getProductInformation(cart, cartLine);
+    cartLineMap.putAll(cartLineAvailabilityService.setAvailableStatus(cart, cartLine));
     return cartLineMap;
   }
 }

@@ -32,18 +32,18 @@ public class CartLineCreateServiceImpl implements CartLineCreateService {
 
   protected ProductRepository productRepository;
   protected SaleOrderLineProductService saleOrderLineProductService;
-  protected CartLineProductService cartLineProductService;
+  protected CartLinePriceService cartLinePriceService;
   protected CartLineRepository cartLineRepository;
 
   @Inject
   public CartLineCreateServiceImpl(
       ProductRepository productRepository,
       SaleOrderLineProductService saleOrderLineProductService,
-      CartLineProductService cartLineProductService,
+      CartLinePriceService cartLinePriceService,
       CartLineRepository cartLineRepository) {
     this.productRepository = productRepository;
     this.saleOrderLineProductService = saleOrderLineProductService;
-    this.cartLineProductService = cartLineProductService;
+    this.cartLinePriceService = cartLinePriceService;
     this.cartLineRepository = cartLineRepository;
   }
 
@@ -53,7 +53,7 @@ public class CartLineCreateServiceImpl implements CartLineCreateService {
     CartLine cartLine = new CartLine();
     cartLine.setProduct(productRepository.find(product.getId()));
     cartLine.setUnit(saleOrderLineProductService.getSaleUnit(cartLine.getProduct()));
-    cartLine.setPrice(cartLineProductService.getSalePrice(cart, cartLine));
+    cartLine.setPrice(cartLinePriceService.getSalePrice(cart, cartLine));
     cartLine.setCart(cart);
     return cartLineRepository.save(cartLine);
   }

@@ -21,12 +21,13 @@ package com.axelor.apps.supplychain.service.cartline;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import java.util.List;
+import java.util.Map;
 
 public interface CartLineAvailabilityService {
 
   void setAvailableStatus(Cart cart);
 
-  CartLine setAvailableStatus(Cart cart, CartLine cartLine);
+  Map<String, Object> setAvailableStatus(Cart cart, CartLine cartLine);
 
   List<CartLine> getAvailableCartLineList(Cart cart, List<CartLine> cartLineList);
 }

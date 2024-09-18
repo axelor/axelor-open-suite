@@ -16,26 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.web;
+package com.axelor.apps.sale.service.cartline;
 
-import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
-import com.axelor.apps.supplychain.service.cartline.CartLineAvailabilityService;
-import com.axelor.inject.Beans;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
+import java.math.BigDecimal;
 
-public class CartLineController {
+public interface CartLinePriceService {
 
-  public void setAvailableStatus(ActionRequest request, ActionResponse response) {
-    try {
-      CartLine cartLine = request.getContext().asType(CartLine.class);
-      Cart cart = request.getContext().getParent().asType(Cart.class);
-      response.setValues(
-          Beans.get(CartLineAvailabilityService.class).setAvailableStatus(cart, cartLine));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
+  BigDecimal getSalePrice(Cart cart, CartLine cartLine) throws AxelorException;
 }

@@ -29,7 +29,9 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 
 public class CartLineAvailabilityServiceImpl implements CartLineAvailabilityService {
@@ -56,7 +58,7 @@ public class CartLineAvailabilityServiceImpl implements CartLineAvailabilityServ
   }
 
   @Override
-  public CartLine setAvailableStatus(Cart cart, CartLine cartLine) {
+  public Map<String, Object> setAvailableStatus(Cart cart, CartLine cartLine) {
     Product product = cartLine.getProduct();
     if (product != null && product.getIsModel() && cartLine.getVariantProduct() != null) {
       product = cartLine.getVariantProduct();
@@ -76,7 +78,10 @@ public class CartLineAvailabilityServiceImpl implements CartLineAvailabilityServ
       cartLine.setAvailableStatus(I18n.get("Missing") + " (" + missingQty + ")");
       cartLine.setAvailableStatusSelect(SaleOrderLineRepository.STATUS_MISSING);
     }
-    return cartLine;
+    Map<String, Object> cartLineMap = new HashMap<>();
+    cartLineMap.put("availableStatus", cartLine.getAvailableStatus());
+    cartLineMap.put("availableStatusSelect", cartLine.getAvailableStatusSelect());
+    return cartLineMap;
   }
 
   @Override
