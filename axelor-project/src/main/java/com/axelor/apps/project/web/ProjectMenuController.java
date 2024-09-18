@@ -30,6 +30,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import java.util.Optional;
 
 public class ProjectMenuController {
@@ -84,7 +85,14 @@ public class ProjectMenuController {
   public void allProjectRelatedTasks(ActionRequest request, ActionResponse response) {
 
     try {
-      Project project = request.getContext().asType(Project.class);
+      Project project =
+          Optional.ofNullable(request.getContext())
+              .map(Context::getParent)
+              .map(c -> c.asType(Project.class))
+              .orElse(null);
+      if (project == null) {
+        return;
+      }
       project = Beans.get(ProjectRepository.class).find(project.getId());
       response.setView(Beans.get(ProjectMenuService.class).getAllProjectRelatedTasks(project));
     } catch (Exception e) {
