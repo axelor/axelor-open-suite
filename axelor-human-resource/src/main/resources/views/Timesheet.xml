@@ -334,7 +334,7 @@
     <action name="action-timesheet-prefill-lines"
       if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet')?.getCreateLinesForLeaves() || __config__.app.getApp('timesheet')?.getCreateLinesForHolidays())"/>
     <action name="action-timesheet-attrs-title-project"/>
-    <action name="action-timesheet-attrs-from-date-on-new"/>
+    <action name="action-timesheet-attrs-from-date"/>
     <action name="action-timesheet-attrs-panels"/>
   </action-group>
 
@@ -488,11 +488,6 @@
   <action-attrs name="action-timesheet-attrs-generate-lines-panel-hidden-false">
     <attribute name="hidden" for="generateLinesPanel" expr="false"/>
     <attribute name="value" for="$product" expr="eval:user?.employee?.product"/>
-  </action-attrs>
-
-  <action-attrs name="action-timesheet-attrs-from-date-on-new">
-    <attribute name="readonly" for="fromDate"
-      expr="eval: __repo__(Timesheet).all().filter('self.employee.user.id = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__.id, TimesheetRepository.STATUS_CANCELED).fetchOne() != null"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-from-date">
