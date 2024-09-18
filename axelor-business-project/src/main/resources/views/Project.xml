@@ -1297,4 +1297,8 @@
       method="getAnalyticDistributionTemplate"/>
   </action-method>
 
+  <action-method name="action-project-method-on-change-sprint">
+    <call class="com.axelor.apps.businessproject.web.ProjectController" method="sprintOnChange"/>
+  </action-method>
+
 </object-views>

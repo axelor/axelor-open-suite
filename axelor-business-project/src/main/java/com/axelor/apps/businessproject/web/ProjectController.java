@@ -29,6 +29,7 @@ import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlService;
 import com.axelor.apps.businessproject.service.BusinessProjectService;
+import com.axelor.apps.businessproject.service.BusinessProjectSprintAllocationLineService;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectHistoryService;
@@ -36,7 +37,9 @@ import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateS
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.translation.ITranslation;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.common.StringUtils;
@@ -49,6 +52,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -276,5 +280,21 @@ public class ProjectController {
             .domain("self.isBusinessProject = true");
     response.setCanClose(true);
     response.setView(builder.map());
+  }
+
+  @SuppressWarnings("unchecked")
+  public void sprintOnChange(ActionRequest request, ActionResponse response) {
+
+    Project project = request.getContext().asType(Project.class);
+
+    Object sprintContext = request.getContext().get("sprint");
+
+    if (sprintContext != null) {
+      Long sprintId =
+          Long.valueOf(((LinkedHashMap<String, Object>) sprintContext).get("id").toString());
+      Sprint sprint = Beans.get(SprintRepository.class).find(sprintId);
+
+      Beans.get(BusinessProjectSprintAllocationLineService.class).sprintOnChange(project, sprint);
+    }
   }
 }

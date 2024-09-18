@@ -145,6 +145,10 @@
   <form model="com.axelor.apps.project.db.Project" title="Sprint" name="sprint-project-form">
 
     <panel name="sprintPanel" title="Sprint">
+      <field name="sprint" type="many-to-one" target="com.axelor.apps.project.db.Sprint"
+        title="Sprint" x-dirty="false" domain="self.project.id = :id"
+        onChange="action-project-method-on-change-sprint,action-project-attrs-on-change-sprint"
+        colSpan="6"/>
       <panel-dashlet action="action-project-view-sprint-allocation-lines"
         name="sprintAllocationLinePanel" colSpan="12"/>
       <panel-dashlet action="action-project-view-sprints-summary"
@@ -172,6 +176,10 @@
   <action-method name="action-project-method-tasks-per-sprint">
     <call class="com.axelor.apps.project.web.ProjectController" method="viewTasksPerSprint"/>
   </action-method>
+
+  <action-attrs name="action-project-attrs-on-change-sprint">
+    <attribute name="refresh" for="sprintAllocationLinePanel" expr="eval: true"/>
+  </action-attrs>
 
   <form name="incl-project-overview-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
