@@ -28,10 +28,12 @@
       <field name="accountManagement.bankDetails" form-view="bank-details-form"
         grid-view="bank-details-grid"/>
       <field name="accountManagement.journal" grid-view="journal-grid"
-        form-view="journal-form"/>
+        form-view="journal-form" hideIf="partnerFetchMethodSelect == 3"/>
       <field name="accountManagement.interbankCodeLine" colspan="3"
-        form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
-      <field name="accountManagement.interbankCodeLine.code" colspan="3"/>
+        hideIf="partnerFetchMethodSelect == 3" form-view="interbank-code-line-form"
+        grid-view="interbank-code-line-grid"/>
+      <field name="accountManagement.interbankCodeLine.code" colspan="3"
+        hideIf="partnerFetchMethodSelect == 3"/>
       <field name="accountManagement.company" hidden="true"/>
     </panel>
     <panel name="bankStatementMainPanel" title="Search and accounting rule Config."
@@ -52,7 +54,7 @@
       <field name="counterpartAccount" hideIf="partnerFetchMethodSelect == 3"
         onSelect="action-bank-statement-rule-attrs-set-counterpart-account-domain"/>
       <field name="searchLabel" hideIf="partnerFetchMethodSelect == 3"/>
-      <field name="letterToInvoice" requiredIf="partnerFetchMethodSelect == 3"/>
+      <field name="letterToInvoice" readonlyIf="partnerFetchMethodSelect == 3"/>
       <field name="specificTax"/>
       <field name="moveLineBankStatementQuery" requiredIf="letterToInvoice"
         showIf="letterToInvoice" hidden="true" domain="self.ruleTypeSelect = 3"/>

@@ -774,6 +774,7 @@ public class BankReconciliationMoveGenerationServiceImpl
             .all()
             .filter(
                 "self.ruleTypeSelect = :ruleTypeSelect"
+                    + " AND self.partnerFetchMethodSelect = :partnerFetchMethodSelect"
                     + " AND self.accountManagement.company = :company"
                     + " AND self.accountManagement.bankDetails = :bankDetails"
                     + " AND self.letterToInvoice = true")
