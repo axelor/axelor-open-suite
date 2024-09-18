@@ -99,6 +99,7 @@ public class BatchContractRevaluate extends BatchStrategy {
       idsReevaluated.addAll(
           ids.get("REEVALUATED").stream().map(Contract::getId).collect(Collectors.toList()));
       JPA.clear();
+      findBatch();
     }
     LOG.debug("{} Reevaluated contracts : {}", idsReevaluated.size(), idsReevaluated);
   }

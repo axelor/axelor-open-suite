@@ -125,7 +125,6 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 
     List<Invoice> invoiceList;
     while (!(invoiceList = query.fetch(getFetchLimit())).isEmpty()) {
-      findBatch();
       if (!JPA.em().contains(companyBankDetails)) {
         companyBankDetails = bankDetailsRepo.find(companyBankDetails.getId());
       }
@@ -149,6 +148,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
         }
       }
       JPA.clear();
+      findBatch();
     }
 
     return doneList;

@@ -78,7 +78,6 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
 
     List<StockMove> stockMoveList;
     while (!(stockMoveList = query.getResultList()).isEmpty()) {
-      findBatch();
       for (StockMove stockMove : stockMoveList) {
         try {
           stockMoveInvoiceService.createInvoiceFromStockMove(stockMove, null);
@@ -92,6 +91,7 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
         }
       }
       JPA.clear();
+      findBatch();
     }
   }
 

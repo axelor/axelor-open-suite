@@ -53,7 +53,6 @@ public class BatchInvoicing extends BatchStrategy {
     List<SaleOrder> saleOrders = subscriptionInvoiceService.getSubscriptionOrders(getFetchLimit());
 
     while (!saleOrders.isEmpty()) {
-      findBatch();
       for (SaleOrder saleOrder : saleOrders) {
         try {
           subscriptionInvoiceService.generateSubscriptionInvoice(saleOrder);
@@ -76,6 +75,7 @@ public class BatchInvoicing extends BatchStrategy {
         }
       }
       JPA.clear();
+      findBatch();
       saleOrders = subscriptionInvoiceService.getSubscriptionOrders(getFetchLimit());
     }
   }

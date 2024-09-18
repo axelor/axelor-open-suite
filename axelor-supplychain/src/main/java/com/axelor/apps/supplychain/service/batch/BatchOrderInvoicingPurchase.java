@@ -115,7 +115,6 @@ public class BatchOrderInvoicingPurchase extends BatchOrderInvoicing {
     List<PurchaseOrder> purchaseOrderList;
 
     while (!(purchaseOrderList = query.fetch(getFetchLimit())).isEmpty()) {
-      findBatch();
       for (PurchaseOrder purchaseOrder : purchaseOrderList) {
         if (treatedSet.contains(purchaseOrder.getId())) {
           throw new IllegalArgumentException("Invoice generation error");
@@ -136,6 +135,7 @@ public class BatchOrderInvoicingPurchase extends BatchOrderInvoicing {
         }
       }
       JPA.clear();
+      findBatch();
     }
   }
 }

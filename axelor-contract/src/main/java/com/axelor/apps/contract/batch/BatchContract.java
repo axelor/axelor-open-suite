@@ -69,7 +69,6 @@ public class BatchContract extends BatchStrategy {
       List<Contract> contracts;
 
       while (!(contracts = query.fetch(getFetchLimit())).isEmpty()) {
-        findBatch();
         for (Contract contract : contracts) {
           try {
             factory.process(contract);
@@ -80,6 +79,7 @@ public class BatchContract extends BatchStrategy {
           }
         }
         JPA.clear();
+        findBatch();
       }
     } catch (Exception e) {
       TraceBackService.trace(e);

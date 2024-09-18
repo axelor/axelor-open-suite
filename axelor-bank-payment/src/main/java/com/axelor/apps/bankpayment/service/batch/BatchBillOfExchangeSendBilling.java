@@ -131,6 +131,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
       sortInvoicesPerPartner(invoicesList, mapPartnerInvoices);
       offSet += getFetchLimit();
       JPA.clear();
+      findBatch();
     }
 
     try {

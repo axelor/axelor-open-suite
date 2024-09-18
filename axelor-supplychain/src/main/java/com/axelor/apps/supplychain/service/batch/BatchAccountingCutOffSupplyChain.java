@@ -107,7 +107,6 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
 
     while (!(stockMoveList = stockMoveQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
 
-      findBatch();
       accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
       company = accountingBatch.getCompany();
 
@@ -122,6 +121,7 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
       }
 
       JPA.clear();
+      findBatch();
     }
   }
 

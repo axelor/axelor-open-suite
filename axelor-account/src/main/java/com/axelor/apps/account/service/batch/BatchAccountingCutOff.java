@@ -83,7 +83,6 @@ public class BatchAccountingCutOff extends PreviewBatch {
 
     while (!(moveList = moveQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
 
-      findBatch();
       accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
       company = accountingBatch.getCompany();
       journalSet = accountingBatch.getJournalSet();
@@ -98,6 +97,7 @@ public class BatchAccountingCutOff extends PreviewBatch {
       }
 
       JPA.clear();
+      findBatch();
     }
   }
 

@@ -88,6 +88,7 @@ public class BatchIncrementLeave extends BatchStrategy {
         incrementLeaveService.updateEmployeeLeaveLines(leaveReason, employee);
       }
       JPA.clear();
+      findBatch();
     }
   }
 

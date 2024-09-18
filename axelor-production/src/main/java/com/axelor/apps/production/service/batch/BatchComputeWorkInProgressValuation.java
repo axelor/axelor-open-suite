@@ -90,7 +90,6 @@ public class BatchComputeWorkInProgressValuation extends BatchStrategy {
 
     while (!(manufOrderList = manufOrderQuery.order("id").fetch(getFetchLimit(), offset))
         .isEmpty()) {
-      findBatch();
       for (ManufOrder manufOrder : manufOrderList) {
         ++offset;
         try {
@@ -103,6 +102,7 @@ public class BatchComputeWorkInProgressValuation extends BatchStrategy {
         }
       }
       JPA.clear();
+      findBatch();
     }
   }
 

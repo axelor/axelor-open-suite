@@ -75,9 +75,9 @@ public class BatchCheckStockComplianceWithStockRules extends BatchStrategy {
       if (ObjectUtils.isEmpty(stockLocationLinesByStockRules)) {
         offset += getFetchLimit();
         JPA.clear();
+        findBatch();
         continue;
       }
-      findBatch();
       for (Map.Entry<StockRules, List<StockLocationLine>> stockLocationsByStockRule :
           stockLocationLinesByStockRules.entrySet()) {
         StockRules stockRule = stockLocationsByStockRule.getKey();
@@ -93,6 +93,7 @@ public class BatchCheckStockComplianceWithStockRules extends BatchStrategy {
         }
         offset += getFetchLimit();
         JPA.clear();
+        findBatch();
       }
     }
   }

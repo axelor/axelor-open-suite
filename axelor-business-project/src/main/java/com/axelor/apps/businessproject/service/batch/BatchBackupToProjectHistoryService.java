@@ -53,7 +53,6 @@ public class BatchBackupToProjectHistoryService extends BatchStrategy {
             .order("id")
             .filter("self.isBusinessProject = true AND self.projectStatus.isCompleted = false");
     while (!(projectList = projectQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
-      findBatch();
       for (Project project : projectList) {
         ++offset;
         try {
@@ -70,6 +69,7 @@ public class BatchBackupToProjectHistoryService extends BatchStrategy {
         }
       }
       JPA.clear();
+      findBatch();
     }
   }
 

@@ -121,7 +121,6 @@ public class BatchBillOfExchange extends BatchStrategy {
     List<Invoice> invoicesList = null;
     while (!(invoicesList = query.bind("anomalyList", anomalyList).fetch(getFetchLimit()))
         .isEmpty()) {
-      findBatch();
       accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
       for (Invoice invoice : invoicesList) {
         try {
@@ -136,6 +135,7 @@ public class BatchBillOfExchange extends BatchStrategy {
         }
       }
       JPA.clear();
+      findBatch();
     }
   }
 
