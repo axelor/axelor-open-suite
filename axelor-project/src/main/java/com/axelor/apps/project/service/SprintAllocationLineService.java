@@ -18,9 +18,9 @@
  */
 package com.axelor.apps.project.service;
 
-import com.axelor.apps.project.db.SprintAllocationLine;
+import com.axelor.apps.project.db.Sprint;
 
 public interface SprintAllocationLineService {
 
-  public void updateSprintTotals(SprintAllocationLine sprintAllocationLine);
+  public void updateSprintTotals(Sprint sprint);
 }

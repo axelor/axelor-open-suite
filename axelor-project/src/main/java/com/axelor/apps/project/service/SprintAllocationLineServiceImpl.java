@@ -42,9 +42,7 @@ public class SprintAllocationLineServiceImpl implements SprintAllocationLineServ
 
   @Override
   @Transactional
-  public void updateSprintTotals(SprintAllocationLine sprintAllocationLine) {
-
-    Sprint sprint = sprintAllocationLine.getSprint();
+  public void updateSprintTotals(Sprint sprint) {
 
     List<SprintAllocationLine> sprintAllocationLineList =
         sprintAllocationLineRepo.all().filter("self.sprint = ?1", sprint).fetch();

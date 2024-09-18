@@ -76,21 +76,26 @@ public class BusinessProjectSprintAllocationLineServiceImpl extends SprintAlloca
           sprintAllocationLineRepo.all().filter("self.sprint = ?1", sprint).fetch();
 
       for (User member : membersUserSet) {
+        SprintAllocationLine sprintAllocationLine =
+            sprintAllocationLineList.stream()
+                .filter(line -> line.getUser().equals(member))
+                .findFirst()
+                .orElse(null);
 
-        if (!sprintAllocationLineList.stream().anyMatch(line -> line.getUser().equals(member))) {
-          SprintAllocationLine sprintAllocationLine = new SprintAllocationLine();
+        if (sprintAllocationLine == null) {
+          sprintAllocationLine = new SprintAllocationLine();
           sprintAllocationLine.setSprint(sprint);
           sprintAllocationLine.setUser(member);
-
-          HashMap<String, BigDecimal> valueMap =
-              computeValueMap(sprint, member, sprintAllocationLine);
-
-          sprintAllocationLine.setLeaves(valueMap.get("leaves"));
-          sprintAllocationLine.setPlannedTime(valueMap.get("plannedTime"));
-          sprintAllocationLine.setRemainingTime(valueMap.get("remainingTime"));
-
-          sprintAllocationLineRepo.save(sprintAllocationLine);
         }
+
+        HashMap<String, BigDecimal> valueMap =
+            computeValueMap(sprint, member, sprintAllocationLine);
+
+        sprintAllocationLine.setLeaves(valueMap.get("leaves"));
+        sprintAllocationLine.setPlannedTime(valueMap.get("plannedTime"));
+        sprintAllocationLine.setRemainingTime(valueMap.get("remainingTime"));
+
+        sprintAllocationLineRepo.save(sprintAllocationLine);
       }
     }
   }

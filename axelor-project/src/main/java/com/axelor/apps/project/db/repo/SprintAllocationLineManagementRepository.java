@@ -27,7 +27,7 @@ public class SprintAllocationLineManagementRepository extends SprintAllocationLi
   @Override
   public SprintAllocationLine save(SprintAllocationLine entity) {
 
-    Beans.get(SprintAllocationLineService.class).updateSprintTotals(entity);
+    Beans.get(SprintAllocationLineService.class).updateSprintTotals(entity.getSprint());
 
     return super.save(entity);
   }
@@ -37,6 +37,6 @@ public class SprintAllocationLineManagementRepository extends SprintAllocationLi
 
     super.remove(entity);
 
-    Beans.get(SprintAllocationLineService.class).updateSprintTotals(entity);
+    Beans.get(SprintAllocationLineService.class).updateSprintTotals(entity.getSprint());
   }
 }

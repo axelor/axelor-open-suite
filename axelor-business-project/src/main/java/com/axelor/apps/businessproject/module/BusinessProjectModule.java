@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.businessproject.db.repo.AppBusinessProjectManagementRepository;
+import com.axelor.apps.businessproject.db.repo.BusinessProjectPlanningTimeRepository;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
@@ -118,6 +119,7 @@ import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingV
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
+import com.axelor.apps.hr.db.repo.ProjectPlanningTimeHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.hr.event.ICalendarEventObserver;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
@@ -237,5 +239,6 @@ public class BusinessProjectModule extends AxelorModule {
         .to(BusinessProjectSprintAllocationLineServiceImpl.class);
     bind(BusinessProjectSprintAllocationLineService.class)
         .to(BusinessProjectSprintAllocationLineServiceImpl.class);
+    bind(ProjectPlanningTimeHRRepository.class).to(BusinessProjectPlanningTimeRepository.class);
   }
 }
