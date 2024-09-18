@@ -669,6 +669,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         if (invoice != null) {
           invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
         }
+
+        if (companyAmountRemaining.signum() <= 0) {
+          companyAmountRemaining = BigDecimal.ZERO;
+        }
       }
 
       invoiceTerm.setAmountRemaining(amountRemaining);
@@ -1565,46 +1569,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTermList.add(lastInvoiceTerm);
 
     return invoiceTermList;
-  }
-
-  @Override
-  public BigDecimal adjustAmountInCompanyCurrency(
-      List<InvoiceTerm> invoiceTermList,
-      BigDecimal companyAmountRemaining,
-      BigDecimal amountToPayInCompanyCurrency,
-      BigDecimal amountToPay,
-      BigDecimal currencyRate,
-      Company company) {
-    int companyScale = currencyScaleService.getCompanyCurrencyScale(company);
-    BigDecimal moveLineAmountRemaining =
-        companyAmountRemaining.abs().subtract(amountToPayInCompanyCurrency);
-    BigDecimal diff = BigDecimal.ZERO;
-
-    BigDecimal invoiceTermAmountRemaining =
-        invoiceTermList.stream()
-            .map(InvoiceTerm::getAmountRemaining)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-    BigDecimal invoiceCurrencyRate =
-        BigDecimal.ZERO.compareTo(currencyRate) == 0
-            ? companyAmountRemaining.divide(invoiceTermAmountRemaining, 5, RoundingMode.HALF_UP)
-            : currencyRate;
-
-    if (!Objects.equals(amountToPay, amountToPayInCompanyCurrency)) {
-      if (BigDecimal.ONE.compareTo(invoiceCurrencyRate.abs()) != 0) {
-        invoiceTermAmountRemaining =
-            invoiceTermAmountRemaining.subtract(amountToPay).multiply(invoiceCurrencyRate);
-      } else {
-        invoiceTermAmountRemaining =
-            invoiceTermAmountRemaining.subtract(amountToPayInCompanyCurrency);
-      }
-
-      diff =
-          moveLineAmountRemaining.subtract(
-              invoiceTermAmountRemaining.setScale(companyScale, RoundingMode.HALF_UP));
-    }
-
-    return amountToPayInCompanyCurrency.add(diff).setScale(companyScale, RoundingMode.HALF_UP);
   }
 
   @Override

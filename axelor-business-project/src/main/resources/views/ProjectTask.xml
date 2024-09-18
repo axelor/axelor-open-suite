@@ -23,6 +23,39 @@
     <field name="project.completedTaskStatus.id" hidden="true"/>
   </grid>
 
+  <grid name="business-project-task-project-grid" title="Tasks"
+    model="com.axelor.apps.project.db.ProjectTask" edit-icon="true" groupBy="typeSelect"
+    orderBy="-priority.technicalTypeSelect">
+    <toolbar>
+      <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
+        icon="fa-plus" onClick="action-business-project-add-task"/>
+      <button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left"
+        icon="fa-plus" onClick="action-project-add-ticket" if-module="axelor-business-support"
+        if="__config__.app.isApp('business-support')"/>
+      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/>
+      <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
+        icon="fa-tasks" onClick="save,action-business-project-view-show-related-tasks"/>
+    </toolbar>
+    <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
+    <field name="name" width="700"/>
+    <field name="taskDate" width="120"/>
+    <field name="initial" width="120"/>
+    <field name="forecast" width="120"/>
+    <field name="real" width="120"/>
+    <field name="assignedTo" width="120"/>
+    <field name="typeSelect" hidden="true"/>
+    <field name="priority.technicalTypeSelect" hidden="true"/>
+    <button name="createSubtaskBtn" icon="fa-plus"
+      onClick="save, action-business-project-view-add-subtask"/>
+    <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
+      onClick="save, action-project-task-method-generate-purchase-order"/>
+    <button name="deleteTaskBtn" icon="fa-times-circle"
+      onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+  </grid>
+
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="business-project-project-task-grid" orderBy="-taskDate">
     <toolbar>
@@ -36,9 +69,9 @@
     <field name="progress" widget="SelectProgress" if="isShowProgress"/>
     <field name="exTaxTotal"/>
     <field name="invoicingType"/>
-    <field name="taskDuration" if="isShowTimeSpent"/>
+    <field name="taskDuration" if="manageTimeSpent"/>
     <field name="$durationForCustomer" title="Duration adjust for customer" type="decimal"
-      if="isShowTimeSpent"/>
+      if="manageTimeSpent"/>
     <field name="toInvoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" readonly="true"
@@ -99,7 +132,8 @@
     <panel name="mainPanel" colSpan="12">
       <panel name="statusPanel" stacked="true" colSpan="6">
         <field name="status" widget="NavSelect" showTitle="false"
-          showIf="project.isShowStatus" x-order="sequence"/>
+          hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
+          x-order="sequence"/>
         <field name="typeSelect" hidden="true"/>
       </panel>
       <panel name="viewerTagsPanel" colSpan="4">
@@ -122,10 +156,6 @@
           </viewer>
         </field>
       </panel>
-      <button name="timeSpentBtn" title="Log time"
-        onClick="save,action-project-task-validate-check-employee,action-project-task-view-time-spent"
-        colSpan="2" hidden="true"/>
-      <field name="project.isShowTimeSpent" hidden="true"/>
       <field name="$provider" hidden="true" type="string"/>
       <panel name="projectDetailsPanel" colSpan="12">
         <panel name="detailsPanel" colSpan="8">
@@ -217,13 +247,15 @@
     <panel-tabs name="mainPanelTab">
       <panel name="timeFollowUpPanel" title="Time follow-up"
         if="__config__.app.isApp('business-project')" showIf="timeUnit">
+        <field name="budgetedTime" colSpan="4"
+          onChange="action-project-task-method-update-sold-time">
+        </field>
         <field name="soldTime" readonlyIf="saleOrderLine" hidden="true" showIf="!parentTask"
-          onChange="action-project-task-method-update-updated-time" colSpan="3"/>
-        <field name="updatedTime" showIf="!parentTask" colSpan="3"
+          onChange="action-project-task-method-update-updated-time" colSpan="4"/>
+        <field name="updatedTime" showIf="!parentTask" colSpan="4"
           onChange="action-project-task-method-update-quantity"/>
-        <spacer/>
-        <field name="plannedTime" readonly="true" colSpan="3"/>
-        <field name="spentTime" readonly="true" colSpan="3"/>
+        <field name="plannedTime" readonly="true" colSpan="4"/>
+        <field name="spentTime" readonly="true" colSpan="4"/>
         <panel name="reportingPanel" showIf="!parentTask" colSpan="12">
           <panel-dashlet action="action-project-task-view-percentage-progress-custom"
             colSpan="3" showTitle="false" height="125"/>
@@ -241,13 +273,6 @@
 
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
         if-module="axelor-human-resource" showIf="project.isShowPlanning">
-        <field name="budgetedTime" colSpan="4"
-          onChange="action-project-task-method-update-sold-time">
-          <viewer><![CDATA[
-                   	<><span>{$fmt('budgetedTime')} </span><span>{_t('hours')}</span></>
-       			]]></viewer>
-        </field>
-        <spacer name="budgetedTimeSpacer" colSpan="4"/>
         <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
           x-show-bars="false" action="action-project-task-dashlet-project-planning-time"
           colSpan="12" canSearch="true"/>
@@ -275,7 +300,7 @@
           <field name="product" colSpan="3" canEdit="false"
             onChange="action-business-project-project-task-group-product-onchange"
             onSelect="action-project-task-attrs-set-product-domain" form-view="product-form"
-            grid-view="product-grid" readonlyIf="saleOrderLine"/>
+            grid-view="product-grid"/>
           <field name="quantity" colSpan="3"
             onChange="action-project-task-method-update-financial-datas" readonlyIf="saleOrderLine"/>
           <field name="unitPrice" colSpan="3"
@@ -396,7 +421,7 @@
       </panel>
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
+        if="__config__.app.isApp('timesheet')" showIf="project.manageTimeSpent">
         <panel-dashlet name="validatedTimesheetLinesPanel"
           action="action-project-task-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true"
@@ -444,9 +469,6 @@
     <column name="real" type="decimal"/>
     <column name="landing" type="decimal"/>
     <column name="assignedTo" type="reference"/>
-    <column name="createSubtaskBtn" type="button"/>
-    <column name="generatePurchaseOrderBtn" type="button"/>
-    <column name="deleteTaskBtn" type="button"/>
     <column name="openTaskBtn" type="button"/>
     <node model="com.axelor.apps.project.db.ProjectTask"
       onClick="action-business-project-task-view-task" domain="self.project.id = :_id"
@@ -459,12 +481,6 @@
       <field name="landingMarkup" as="landing"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
-      <button name="createSubtaskBtn" icon="fa-plus"
-        onClick="save, action-business-project-view-add-subtask"/>
-      <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
-        onClick="save, action-project-task-method-generate-purchase-order"/>
-      <button name="deleteTaskBtn" icon="fa-times-circle"
-        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
       <button name="openTaskBtn" icon="fa-external-link"
         onClick="action-business-project-task-open-task"/>
     </node>
@@ -474,12 +490,6 @@
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
-      <button name="createSubtaskBtn" icon="fa-plus"
-        onClick="save, action-business-project-view-add-subtask"/>
-      <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
-        onClick="save, action-project-task-method-generate-purchase-order"/>
-      <button name="deleteTaskBtn" icon="fa-times-circle"
-        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
       <button name="openTaskBtn" icon="fa-external-link"
         onClick="action-business-project-task-open-task"/>
     </node>
@@ -670,7 +680,8 @@
 
   <action-group name="action-project-task-group-assigned-to-on-change">
     <action name="action-project-task-attrs-hide-time-spent-button"/>
-    <action name="action-project-task-group-set-product-and-update"/>
+    <action name="action-project-task-group-set-product-and-update"
+      if="invoicingType == 1 &amp;&amp; !frameworkCustomerContract &amp;&amp; !frameworkSupplierContract"/>
   </action-group>
 
   <action-method name="action-project-task-method-get-employee-product">
@@ -697,6 +708,7 @@
     model="com.axelor.apps.project.db.ProjectTask" title="Task">
     <view name="business-project-task-form" type="form"/>
     <view name="business-project-task-grid" type="grid"/>
+    <view-param name="details-view" value="true"/>
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>

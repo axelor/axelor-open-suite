@@ -24,7 +24,7 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.translation.ITranslation;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
+import com.axelor.apps.sale.service.saleorder.opportunity.OpportunitySaleOrderService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;

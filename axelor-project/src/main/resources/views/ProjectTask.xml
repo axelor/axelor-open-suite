@@ -24,6 +24,31 @@
     <field name="project.completedTaskStatus.id" hidden="true"/>
   </grid>
 
+  <grid name="project-task-project-grid" title="Tasks"
+    model="com.axelor.apps.project.db.ProjectTask" edit-icon="true"
+    orderBy="-priority.technicalTypeSelect">
+    <toolbar>
+      <button name="newLineBtn" title="New line" icon="fa-plus"
+        onClick="action-project-add-task"/>
+      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/>
+      <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
+        icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
+    </toolbar>
+    <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
+    <field name="name" width="850"/>
+    <field name="projectTaskCategory" width="200"/>
+    <field name="taskDate" width="100"/>
+    <field name="status" width="100"/>
+    <field name="priority.technicalTypeSelect" hidden="true"/>
+    <button name="createSubtaskBtn" icon="fa-plus"
+      onClick="save, action-project-view-add-subtask"/>
+    <button name="deleteTaskBtn" icon="fa-times-circle"
+      onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
+  </grid>
+
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
     width="large">
@@ -33,7 +58,7 @@
       <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
         showIf="project.taskStatusManagementSelect != 1"/>
       <button name="logTimeBtn" icon="clock-history"
-        onClick="save,action-timesheet-line-method-log-time" showIf="project.isShowTimeSpent"
+        onClick="save,action-timesheet-line-method-log-time" showIf="project.manageTimeSpent"
         if="__config__.app.isApp('timesheet')"/>
     </toolbar>
     <menubar>
@@ -51,14 +76,14 @@
     <panel name="mainPanel" colSpan="12">
       <panel name="statusPanel" stacked="true" colSpan="6">
         <field name="status" widget="NavSelect" showTitle="false"
-          showIf="project.taskStatusManagementSelect != 1" x-order="sequence"
-          onChange="action-project-task-method-auto-change-progress"/>
+          hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
+          x-order="sequence" onChange="action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
       </panel>
       <button name="timeSpentBtn" title="Log time"
         onClick="save,action-project-task-validate-check-employee,action-project-task-view-time-spent"
         colSpan="2" hidden="true"/>
-      <field name="project.isShowTimeSpent" hidden="true"/>
+      <field name="project.manageTimeSpent" hidden="true"/>
       <field name="$provider" hidden="true" type="string"/>
       <panel name="projectDetailsPanel" colSpan="12">
         <panel name="detailsPanel" colSpan="8">
@@ -103,11 +128,7 @@
 
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
         if-module="axelor-human-resource" showIf="project.isShowPlanning">
-        <field name="budgetedTime" colSpan="4">
-          <viewer><![CDATA[
-                   	<><span>{$fmt('budgetedTime')} </span><span>{_t('hours')}</span></>
-       			]]></viewer>
-        </field>
+        <field name="budgetedTime" colSpan="4"/>
         <spacer name="budgetedTimeSpacer" colSpan="4"/>
         <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
           x-show-bars="false" action="action-project-task-dashlet-project-planning-time"
@@ -136,7 +157,7 @@
       </panel>
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
+        if="__config__.app.isApp('timesheet')" showIf="project.manageTimeSpent">
         <panel-dashlet name="validatedTimesheetLinesPanel"
           action="action-project-task-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true"
@@ -556,6 +577,7 @@
     <field name="assignedTo" expr="eval:__user__"/>
     <field name="taskDate" expr="#{__config__.date}"/>
     <field name="project" expr="eval:_project"/>
+    <field name="project" expr="eval: __user__?.activeProject" if="!_project"/>
     <field name="parentTask" expr="eval:_parentTask"/>
   </action-record>
 
@@ -686,6 +708,10 @@
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="deleteProjectTask"/>
   </action-method>
 
+  <action-method name="action-project-task-method-delete-project-tasks">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="deleteProjectTasks"/>
+  </action-method>
+
   <action-view name="action-project-task-dashlet-project-planning-time"
     title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-time-grid"/>
@@ -738,7 +764,7 @@
 
   <action-attrs name="action-project-task-attrs-hide-time-spent-button">
     <attribute name="hidden" for="timeSpentBtn"
-      expr="!(project?.isShowTimeSpent &amp;&amp; assignedTo?.employee == __user__.employee)"/>
+      expr="!(project?.manageTimeSpent &amp;&amp; assignedTo?.employee == __user__.employee)"/>
   </action-attrs>
 
   <action-attrs name="action-project-task-attrs-set-site-domain">

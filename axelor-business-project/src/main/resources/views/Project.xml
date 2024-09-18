@@ -36,13 +36,13 @@
   </form>
 
   <form name="business-project-form" title="Business project"
-    model="com.axelor.apps.project.db.Project"
+    model="com.axelor.apps.project.db.Project" width="large"
     onLoad="action-business-project-project-group-on-load"
     onNew="action-business-project-project-group-on-new"
     onSave="action-project-method-check-resource-availibility">
     <toolbar>
       <button name="logTimeBtn" icon="clock-history"
-        onClick="save,action-timesheet-line-method-log-time" showIf="isShowTimeSpent"
+        onClick="save,action-timesheet-line-method-log-time" showIf="manageTimeSpent"
         if="__config__.app.isApp('timesheet')"/>
     </toolbar>
     <menubar>
@@ -95,7 +95,7 @@
           <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
             onChange="action-business-project-group-project-status-on-change"/>
         </panel>
-        <field name="$viewerProjectTags" showTitle="false" colSpan="4" readonly="true">
+        <field name="$viewerProjectTags" showTitle="false" colSpan="1" readonly="true">
           <viewer depends="isBusinessProject,$toInvoiceCounter,id">
             <![CDATA[
 								<>
@@ -113,68 +113,49 @@
 							]]>
           </viewer>
         </field>
+        <spacer colSpan="1"/>
+        <panel name="statusChangeBtn" colSpan="2">
+          <button name="finishBtn" icon="check-circle" title="Finish" colSpan="12"
+            showIf="id &amp;&amp; !projectStatus.isCompleted"
+            onClick="action-business-project-group-finish-project"/>
+          <button name="cancelBtn" title="Cancel" css="btn-danger" colSpan="12"
+            hideIf="projectStatus.id == $canceledProjectStatusId || !id" icon="x-circle"
+            onClick="action-project-group-status-canceled"/>
+          <button name="resetBtn" title="Reset" css="btn-warning" colSpan="12"
+            showIf="id &amp;&amp; projectStatus.id == $canceledProjectStatusId"
+            icon="skip-backward-fill" onClick="action-project-record-status-new,save"/>
+          <field name="projectStatus.isCompleted" hidden="true"/>
+        </panel>
       </panel>
 
       <panel-include view="incl-information-panel-form"/>
     </panel>
-    <panel name="detailsPanel">
-      <panel name="generalInfoPanel" colSpan="12">
-        <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"
-          canEdit="false" if-module="axelor-business-project"/>
-        <field name="clientPartner"
-          domain="self.isCustomer = true AND :company member of self.companySet"
-          onChange="action-project-method-get-partner-data" required="true" form-view="partner-form"
-          grid-view="partner-grid" colSpan="3" if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project"/>
-        <field name="currency" colSpan="3" if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project" canEdit="false"/>
-        <field name="priceList" colSpan="3" if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project" canEdit="false"/>
-        <field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner"
-          form-view="partner-form" grid-view="partner-grid" colSpan="6"
-          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-        <field name="customerAddress" grid-view="address-grid" form-view="address-form"
-          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-          domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
-      </panel>
-      <field name="description" colSpan="12" widget="html"/>
-      <field name="siteSet" colSpan="12" grid-view="site-project-grid" form-view="site-form"
-        if="__config__.app.getApp('base')?.enableSiteManagementForProject"
-        domain="self.isUsableOnProject = true" canEdit="false"/>
+    <panel name="generalInfoPanel" colSpan="12" title="General information" canCollapse="true"
+      collapseIf="id">
+      <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"
+        canEdit="false" if-module="axelor-business-project"/>
+      <field name="clientPartner"
+        domain="self.isCustomer = true AND :company member of self.companySet"
+        onChange="action-project-method-get-partner-data" required="true" form-view="partner-form"
+        grid-view="partner-grid" colSpan="3" if="__config__.app.isApp('business-project')"
+        if-module="axelor-business-project"/>
+      <field name="currency" colSpan="3" if="__config__.app.isApp('business-project')"
+        if-module="axelor-business-project" canEdit="false"/>
+      <field name="priceList" colSpan="3" if="__config__.app.isApp('business-project')"
+        if-module="axelor-business-project" canEdit="false"/>
+      <field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner"
+        form-view="partner-form" grid-view="partner-grid" colSpan="6"
+        if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+      <field name="customerAddress" grid-view="address-grid" form-view="address-form"
+        if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+        domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
-      <panel title="Task Tree" name="taskTreePanel">
-        <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
-          icon="fa-plus" onClick="save,action-business-project-add-task"/>
-        <button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left"
-          icon="fa-plus" onClick="save,action-project-add-ticket"
-          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-        <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-          icon="fa-tasks" onClick="save,action-business-project-view-show-related-tasks"/>
-        <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
-          colSpan="12" action="action-view-show-business-project-task-tree"/>
-        <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
-          colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
-          if="__config__.app.isApp('business-project')" canSearch="true"/>
-      </panel>
-      <panel-include view="incl-member-panel-form"/>
-      <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
-        if="__config__.app.isApp('employee')"/>
-      <panel title="HoldBacks" name="projectHoldBacksPanel">
-        <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"
-          title="HoldBacks lines" colSpan="12" form-view="project-hold-back-line-form"
-          grid-view="project-hold-back-line-grid" editable="true"/>
-      </panel>
-      <panel-include if-module="axelor-human-resource"
-        view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
-      <panel name="reportingPanel" title="Reporting">
-        <panel name="dashboardPanel" title="Dashboard" colSpan="12" canCollapse="true"
-          collapseIf="true">
-          <panel-dashlet name="dashboardPanelDashlet"
-            action="project.reporting.projects.dashboard" colSpan="12"/>
-        </panel>
 
+      <panel-include view="incl-project-overview-panel-form"/>
+
+      <panel name="reportingPanel" title="Reporting">
         <panel title="Time follow-up" colSpan="12" canCollapse="true" collapseIf="true">
           <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
             showTitle="false" height="125"/>
@@ -264,6 +245,21 @@
             canRemove="false" title=""/>
         </panel>
       </panel>
+
+      <panel title="Tasks" name="taskTreePanel">
+        <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
+          colSpan="12" action="action-view-show-business-project-task" x-show-bars="true"/>
+        <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
+          colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
+          if="__config__.app.isApp('business-project')" canSearch="true"/>
+      </panel>
+      <panel-include view="incl-project-structure-panel-form"/>
+      <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
+        if="__config__.app.isApp('employee')"/>
+
+      <panel-include if-module="axelor-human-resource"
+        view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
+
       <panel title="Sales" name="salesPanel"
         if="__config__.app.isApp('business-project')
 				&amp;&amp; __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject()"
@@ -338,8 +334,6 @@
         <panel-dashlet name="supplierArrivalsPanel"
           action="action-project-dashlet-supplier-arrivals" colSpan="12"/>
       </panel>
-      <panel-include view="incl-resource-booking-panel-form"
-        if="__config__.app.getApp('project')?.resourceManagement"/>
 
       <panel title="Expenses" name="expensesPanel"
         if="__config__.app.isApp('business-project')
@@ -374,162 +368,7 @@
         <panel-dashlet name="expenseLinePanel"
           action="action-project-view-show-validated-expense-lines" colSpan="12" canSearch="true"/>
       </panel>
-      <panel title="Production" name="productionPanel" if-module="axelor-business-production"
-        if="__config__.app.isApp('business-project')
-				 &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()">
-        <button name="showProductionOrdersBtn" title="Show production orders"
-          css="btn-custom text-left" icon="fa-cogs"
-          onClick="action-project-view-show-production-orders"/>
-        <panel-related colSpan="12" field="productionOrderList" canSelect="true"
-          canNew="false" canEdit="false" canSearch="true" name="productionOrderList"/>
-      </panel>
-      <panel title="Invoicing" name="invoicingPanel"
-        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-        <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
-        <field name="toInvoice" colSpan="3"
-          onChange="action-project-attrs-set-invoicing-sequence"/>
-        <field name="isInvoicingTimesheet" colSpan="3" showIf="isShowTimeSpent"/>
-        <field name="isInvoicingExpenses" colSpan="3"/>
-        <field name="isInvoicingPurchases" colSpan="3"/>
-        <field name="invoicingSequenceSelect" showIf="toInvoice" requiredIf="toInvoice"
-          selection-in="[1,2]" colSpan="6"/>
-        <field name="consolidatePhaseWhenInvoicing"
-          title="Consolidate sub project when invoicing" colSpan="4"/>
-        <spacer name="invoicingSequenceSelectSpacer" colSpan="2"/>
-        <button name="showInvoicingProjectsBtn" title="Create invoicing project"
-          css="btn-custom" icon="fa-file-text-o"
-          onClick="save,action-project-view-show-invoicing-projects"/>
-        <panel name="analyticDistributionPanel" title="Analytics"
-          if-module="axelor-business-project" colSpan="12"
-          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
-          <help colSpan="12"><![CDATA[This analytic distribution template will be filled with partner or assigned user configuration according to Business Project module configuration.]]></help>
-          <field name="analyticDistributionTemplate"
-            grid-view="analytic-distribution-template-grid"
-            form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
-            domain="self.company = :company AND self.isSpecific = false"/>
-        </panel>
-        <field name="invoicingComment" colSpan="12"/>
-        <panel-related name="manualElementListPanel" colSpan="12"
-          field="manualElementList" form-view="manual-element-form" grid-view="manual-element-grid"/>
-        <panel-dashlet name="allinvoicingProjectsPanel"
-          action="action-dashlet-project-show-all-invoicing-project" colSpan="12"/>
-        <panel-dashlet name="customerInvoicePanel"
-          action="action-project-dashlet-customer-invoices" colSpan="12"
-          if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()"
-          canSearch="true"/>
-        <button name="selectNewCustomerInvoiceLinesBtn" title="Select new lines"
-          css="btn-custom text-left"
-          onClick="save,action-project-attrs-customer-invoice-line-select-lines"
-          hideIf="$popup() || $readonly()" colSpan="3"
-          if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()"/>
-        <button name="manageCustomerInvoiceLinesBtn" title="Manage lines"
-          css="btn-custom text-left"
-          onClick="save,action-project-attrs-customer-invoice-line-manage-lines"
-          hideIf="$popup() || $readonly()" colSpan="3"
-          if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()"/>
-        <field name="$customerInvoiceLineSet" hidden="true" type="many-to-many"
-          widget="TagSelect" title="Customer Invoice lines" colSpan="12"
-          target="com.axelor.apps.account.db.InvoiceLine" canEdit="false" canNew="false"
-          grid-view="invoice-line-project-grid" form-view="invoice-line-form"/>
-        <button-group name="customerInvoiceLinesBtnGroup" colSpan="4">
-          <button name="addSelectedCustomerInvoiceLinesBtn" hidden="true"
-            title="Add selected lines"
-            onClick="action-invoice-line-method-set-customer-invoice-line-project"/>
-          <button name="unlinkSelectedCustomerInvoiceLinesBtn" hidden="true"
-            title="Unlink selected lines"
-            onClick="action-validate-unset-project,action-invoice-line-method-unset-customer-invoice-line-project"/>
-        </button-group>
-        <button name="cancelManageCustomerInvoiceLinesBtn" colSpan="4" hidden="true"
-          title="Cancel" onClick="action-project-attrs-customer-invoice-line-cancel-manage-lines"/>
-        <panel-dashlet name="customerInvoiceLinePanel"
-          action="action-project-view-show-sale-invoice-lines" colSpan="12"
-          if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()"
-          canSearch="true"/>
-        <panel-dashlet name="supplierInvoicePanel"
-          action="action-project-dashlet-supplier-invoices" colSpan="12"
-          if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()"
-          canSearch="true"/>
-        <button name="selectNewSupplierInvoiceLinesBtn" title="Select new lines"
-          css="btn-custom text-left"
-          onClick="save,action-project-attrs-supplier-invoice-line-select-lines"
-          hideIf="$popup() || $readonly()" colSpan="3"
-          if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()"/>
-        <button name="manageSupplierInvoiceLinesBtn" title="Manage lines"
-          css="btn-custom text-left"
-          onClick="save,action-project-attrs-supplier-invoice-line-manage-lines"
-          hideIf="$popup() || $readonly()" colSpan="3"
-          if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()"/>
-        <field name="$supplierInvoiceLineSet" hidden="true" type="many-to-many"
-          widget="TagSelect" title="Supplier Invoice lines" colSpan="12"
-          target="com.axelor.apps.account.db.InvoiceLine" canEdit="false" canNew="false"
-          grid-view="invoice-line-project-grid" form-view="invoice-line-form"/>
-        <button-group name="supplierInvoiceLinesBtnGroup" colSpan="4">
-          <button name="addSelectedSupplierInvoiceLinesBtn" hidden="true"
-            title="Add selected lines"
-            onClick="action-invoice-line-method-set-supplier-invoice-line-project"/>
-          <button name="unlinkSelectedSupplierInvoiceLinesBtn" hidden="true"
-            title="Unlink selected lines"
-            onClick="action-validate-unset-project,action-invoice-line-method-unset-supplier-invoice-line-project"/>
-        </button-group>
-        <button name="cancelManageSupplierInvoiceLinesBtn" colSpan="4" hidden="true"
-          title="Cancel" onClick="action-project-attrs-supplier-invoice-line-cancel-manage-lines"/>
-        <panel-dashlet name="supplierInvoiceLinePanel"
-          action="action-project-view-show-purchase-invoice-lines" colSpan="12"
-          if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()"
-          canSearch="true"/>
-        <panel-dashlet name="advancePaymentInvoicesDashletPanel"
-          action="action-project-dashlet-advance-payment-invoices" colSpan="12"
-          if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()"
-          canSearch="true"/>
-      </panel>
-      <panel title="Analytic" name="analyticPanel"
-        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-        <panel-dashlet name="analyticDashletPanel"
-          action="action-project-dashlet-analytic-move-lines" colSpan="12"/>
-      </panel>
-      <panel-include view="incl-wiki-panel-form"/>
-      <panel title="Roadmap" name="roadmapPanel" if-module="axelor-business-support"
-        if="__config__.app.isApp('business-support')">
-        <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
-          form-view="project-version-form">
-          <field name="title"/>
-          <field name="projectStatus"/>
-          <field name="testingServerDate"/>
-          <field name="productionServerDate"/>
-        </panel-related>
-      </panel>
-      <panel name="announcementPanel" title="Announcement" if-module="axelor-business-support"
-        if="__config__.app.isApp('business-support')">
-        <panel-related name="announcementListPanel" field="announcementList"
-          colSpan="12" form-view="project-announcement-form">
-          <field name="title"/>
-          <field name="date"/>
-          <field name="content"/>
-        </panel-related>
-      </panel>
-      <panel title="Configurations" name="configurationsPanel">
-        <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
-          name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
-          domain="self.isActivity = true AND self.dtype = 'Product'"
-          form-view="product-activity-form" grid-view="product-activity-grid"/>
-        <field name="projectFolderSet" colSpan="12" widget="TagSelect"
-          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-        <field name="projectTimeUnit"/>
-        <field name="numberHoursADay" if="__config__.app.isApp('business-project')"/>
-        <field name="spentTimeCostComputationMethod"
-          if="__config__.app.isApp('business-project')"/>
-        <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
-          if-module="axelor-human-resource"/>
-        <field name="childProjectList" hidden="true"/>
-        <field name="sequence" hidden="true"/>
-        <field name="imputable" colSpan="4" widget="boolean-switch"
-          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
-          if-module="axelor-human-resource"
-          onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
-        <spacer colSpan="3"/>
-        <field name="allowToGetPricesFromFrameworkContract"/>
-        <panel-include view="incl-fields-to-display-panel-form"/>
-      </panel>
+
       <panel title="Contracts" name="contractPanel"
         if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
         <panel name="frameworkContractPanel" showIf="allowToGetPricesFromFrameworkContract"
@@ -554,53 +393,145 @@
         <panel-dashlet name="contractInvoicePanel" title="Invoices"
           action="action-project-dashlet-contract-invoices" colSpan="12"/>
       </panel>
-      <panel-include view="incl-custom-fields-to-display-panel-form"/>
-      <panel title="Activities" name="activityPanel"
-        onTabSelect="action-project-activity-dashboard-method-on-new" showIf="id">
-        <panel-include view="project-activity-dashboard-form"/>
+
+      <panel title="Production" name="productionPanel" if-module="axelor-business-production"
+        if="__config__.app.isApp('business-project')
+				 &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()">
+        <button name="showProductionOrdersBtn" title="Show production orders"
+          css="btn-custom text-left" icon="fa-cogs"
+          onClick="action-project-view-show-production-orders"/>
+        <panel-related colSpan="12" field="productionOrderList" canSelect="true"
+          canNew="false" canEdit="false" canSearch="true" name="productionOrderList"/>
+      </panel>
+      <panel title="Invoicing" name="invoicingPanel">
+        <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
+        <field name="toInvoice" colSpan="3"
+          onChange="action-project-attrs-set-invoicing-sequence"/>
+        <field name="isInvoicingTimesheet" colSpan="3" showIf="manageTimeSpent"/>
+        <field name="isInvoicingExpenses" colSpan="3"/>
+        <field name="isInvoicingPurchases" colSpan="3"/>
+        <field name="invoicingSequenceSelect" showIf="toInvoice" requiredIf="toInvoice"
+          selection-in="[1,2]" colSpan="6"/>
+        <field name="consolidatePhaseWhenInvoicing"
+          title="Consolidate sub project when invoicing" colSpan="4"/>
+        <spacer name="invoicingSequenceSelectSpacer" colSpan="2"/>
+        <button name="showInvoicingProjectsBtn" title="Create invoicing project"
+          css="btn-custom" icon="fa-file-text-o"
+          onClick="save,action-project-view-show-invoicing-projects"/>
+
+        <panel name="analyticPanel" title="Analytics" colSpan="12"
+          if="__config__.app.getApp('account').getManageAnalyticAccounting()" canCollapse="true"
+          collapseIf="true">
+          <help colSpan="12"><![CDATA[This analytic distribution template will be filled with partner or assigned user configuration according to Business Project module configuration.]]></help>
+          <field name="analyticDistributionTemplate"
+            grid-view="analytic-distribution-template-grid"
+            form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
+            domain="self.company = :company AND self.isSpecific = false"/>
+          <panel-dashlet name="analyticDashletPanel"
+            action="action-project-dashlet-analytic-move-lines" colSpan="12"/>
+        </panel>
+
+        <panel title="HoldBacks" name="projectHoldBacksPanel" colSpan="12" canCollapse="true"
+          collapseIf="true">
+          <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"
+            title="HoldBacks lines" colSpan="12" form-view="project-hold-back-line-form"
+            grid-view="project-hold-back-line-grid" editable="true"/>
+        </panel>
+
+        <panel title="Invoicing reports" name="invoicingReportPanel" colSpan="12"
+          canCollapse="true" collapseIf="true">
+
+          <field name="invoicingComment" colSpan="12"/>
+          <panel-related name="manualElementListPanel" colSpan="12"
+            field="manualElementList" form-view="manual-element-form"
+            grid-view="manual-element-grid"/>
+          <panel-dashlet name="allinvoicingProjectsPanel"
+            action="action-dashlet-project-show-all-invoicing-project" colSpan="12"/>
+          <panel-dashlet name="customerInvoicePanel"
+            action="action-project-dashlet-customer-invoices" colSpan="12"
+            if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()"
+            canSearch="true"/>
+          <button name="selectNewCustomerInvoiceLinesBtn" title="Select new lines"
+            css="btn-custom text-left"
+            onClick="save,action-project-attrs-customer-invoice-line-select-lines"
+            hideIf="$popup() || $readonly()" colSpan="3"
+            if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()"/>
+          <button name="manageCustomerInvoiceLinesBtn" title="Manage lines"
+            css="btn-custom text-left"
+            onClick="save,action-project-attrs-customer-invoice-line-manage-lines"
+            hideIf="$popup() || $readonly()" colSpan="3"
+            if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()"/>
+          <field name="$customerInvoiceLineSet" hidden="true" type="many-to-many"
+            widget="TagSelect" title="Customer Invoice lines" colSpan="12"
+            target="com.axelor.apps.account.db.InvoiceLine" canEdit="false" canNew="false"
+            grid-view="invoice-line-project-grid" form-view="invoice-line-form"/>
+          <button-group name="customerInvoiceLinesBtnGroup" colSpan="4">
+            <button name="addSelectedCustomerInvoiceLinesBtn" hidden="true"
+              title="Add selected lines"
+              onClick="action-invoice-line-method-set-customer-invoice-line-project"/>
+            <button name="unlinkSelectedCustomerInvoiceLinesBtn" hidden="true"
+              title="Unlink selected lines"
+              onClick="action-validate-unset-project,action-invoice-line-method-unset-customer-invoice-line-project"/>
+          </button-group>
+          <button name="cancelManageCustomerInvoiceLinesBtn" colSpan="4" hidden="true"
+            title="Cancel" onClick="action-project-attrs-customer-invoice-line-cancel-manage-lines"/>
+          <panel-dashlet name="customerInvoiceLinePanel"
+            action="action-project-view-show-sale-invoice-lines" colSpan="12"
+            if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()"
+            canSearch="true"/>
+          <panel-dashlet name="supplierInvoicePanel"
+            action="action-project-dashlet-supplier-invoices" colSpan="12"
+            if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()"
+            canSearch="true"/>
+          <button name="selectNewSupplierInvoiceLinesBtn" title="Select new lines"
+            css="btn-custom text-left"
+            onClick="save,action-project-attrs-supplier-invoice-line-select-lines"
+            hideIf="$popup() || $readonly()" colSpan="3"
+            if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()"/>
+          <button name="manageSupplierInvoiceLinesBtn" title="Manage lines"
+            css="btn-custom text-left"
+            onClick="save,action-project-attrs-supplier-invoice-line-manage-lines"
+            hideIf="$popup() || $readonly()" colSpan="3"
+            if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()"/>
+          <field name="$supplierInvoiceLineSet" hidden="true" type="many-to-many"
+            widget="TagSelect" title="Supplier Invoice lines" colSpan="12"
+            target="com.axelor.apps.account.db.InvoiceLine" canEdit="false" canNew="false"
+            grid-view="invoice-line-project-grid" form-view="invoice-line-form"/>
+          <button-group name="supplierInvoiceLinesBtnGroup" colSpan="4">
+            <button name="addSelectedSupplierInvoiceLinesBtn" hidden="true"
+              title="Add selected lines"
+              onClick="action-invoice-line-method-set-supplier-invoice-line-project"/>
+            <button name="unlinkSelectedSupplierInvoiceLinesBtn" hidden="true"
+              title="Unlink selected lines"
+              onClick="action-validate-unset-project,action-invoice-line-method-unset-supplier-invoice-line-project"/>
+          </button-group>
+          <button name="cancelManageSupplierInvoiceLinesBtn" colSpan="4" hidden="true"
+            title="Cancel" onClick="action-project-attrs-supplier-invoice-line-cancel-manage-lines"/>
+          <panel-dashlet name="supplierInvoiceLinePanel"
+            action="action-project-view-show-purchase-invoice-lines" colSpan="12"
+            if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()"
+            canSearch="true"/>
+          <panel-dashlet name="advancePaymentInvoicesDashletPanel"
+            action="action-project-dashlet-advance-payment-invoices" colSpan="12"
+            if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()"
+            canSearch="true"/>
+        </panel>
+      </panel>
+
+      <panel title="Configurations" name="configurationsPanel">
+        <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
+          canCollapse="true" collapseIf="false">
+          <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
+          <field name="projectTimeUnit"/>
+          <field name="numberHoursADay"/>
+          <field name="spentTimeCostComputationMethod"/>
+          <field name="allowToGetPricesFromFrameworkContract"/>
+        </panel>
+        <panel-include view="incl-project-config-panel-form"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
-    </panel>
-    <panel name="actionsPanel" colSpan="2" sidebar="true">
-      <button name="finishBtn" title="Finish" colSpan="12" icon="fa-check"
-        showIf="!projectStatus.isCompleted" onClick="action-business-project-group-finish-project"
-        hidden="true"/>
-      <button name="cancelBtn" title="Cancel" colSpan="12" css="btn-danger"
-        hideIf="projectStatus.id == $canceledProjectStatusId" icon="fa-times-circle"
-        onClick="action-project-group-status-canceled"/>
-      <button name="resetBtn" title="Reset" hidden="true"
-        showIf="projectStatus.id == $canceledProjectStatusId" colSpan="12" css="btn-danger"
-        icon="fa-file" onClick="action-project-record-status-new,save"/>
-      <field name="projectStatus.isCompleted" hidden="true"/>
-    </panel>
-    <panel name="characteristicsPanel" title="Characteristics" colSpan="12" sidebar="true"
-      canCollapse="true">
-      <panel name="configPanel" colSpan="12">
-        <field name="isShowPhasesElements" colSpan="12" widget="boolean-switch"/>
-        <field if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project" name="$toInvoiceCounter" showTitle="false"
-          type="integer" hidden="true" colSpan="6"/>
-      </panel>
-      <panel name="projectPanel" colSpan="12">
-        <field name="parentProject" canEdit="false" form-view="business-project-form"
-          grid-view="project-grid" onSelect="action-project-attrs-set-parent-project-domain"/>
-        <spacer name="childProjectSpacer" colSpan="6"/>
-        <field name="childProjectList" readonly="true" colSpan="12"
-          form-view="business-project-form" grid-view="project-child-grid"
-          showIf="isShowPhasesElements"/>
-      </panel>
-    </panel>
-    <panel name="followUpPanel" colSpan="12" title="Follow-up" sidebar="true"
-      canCollapse="true">
-      <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
-        canEdit="false" onChange="action-business-project-group-assigned-to-onchange"
-        form-view="user-form" grid-view="user-grid"/>
-    </panel>
-    <panel name="datePanel" title="Dates" colSpan="12" sidebar="true" canCollapse="true">
-      <field name="fromDate" colSpan="6"/>
-      <field name="toDate" colSpan="6"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -718,12 +649,13 @@
     model="com.axelor.apps.project.db.ProjectTask" title="Ticket">
     <view name="business-project-task-form" type="form"/>
     <view name="business-project-task-grid" type="grid"/>
+    <view-param name="details-view" value="true"/>
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="forceTitle" value="true"/>
-    <context name="_project" expr="eval:__this__"/>
+    <context name="_project" expr="eval:__parent__"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
   </action-view>
@@ -732,18 +664,19 @@
     model="com.axelor.apps.project.db.ProjectTask" title="Task">
     <view name="business-project-task-form" type="form"/>
     <view name="business-project-task-grid" type="grid"/>
+    <view-param name="details-view" value="true"/>
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_project" expr="eval:__this__"/>
+    <context name="_project" expr="eval:__parent__"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
   </action-view>
 
-  <action-view name="action-view-show-business-project-task-tree"
-    title="Project Task Tree" model="com.axelor.apps.project.db.ProjectTask">
-    <view type="tree" name="business-project-project-task-tree"/>
+  <action-view name="action-view-show-business-project-task" title="Project Tasks"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="business-project-task-project-grid"/>
     <view type="form" name="business-project-task-form"/>
     <domain>self.project.id = :_id AND self.parentTask = null</domain>
     <context name="_id" expr="eval: id"/>
