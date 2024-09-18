@@ -24,8 +24,10 @@ import com.axelor.apps.project.db.SprintPeriod;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.SprintPeriodRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -67,12 +69,19 @@ public class SprintServiceImpl implements SprintService {
                         sprintPeriodRepo.find(Long.valueOf(sprintPeriod.get("id").toString())))
                 .collect(Collectors.toSet());
 
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d");
+
     projects.forEach(
         project -> {
           sprintPeriods.forEach(
               sprintPeriod -> {
                 Sprint sprint = new Sprint();
-                sprint.setName("Sprint for " + sprintPeriod.getName());
+                sprint.setName(
+                    I18n.get("Sprint")
+                        + " "
+                        + formatter.format(sprintPeriod.getFromDate())
+                        + " to "
+                        + formatter.format(sprintPeriod.getToDate()));
                 sprint.setSprintPeriod(sprintPeriod);
                 sprint.setProject(project);
                 sprintRepo.save(sprint);

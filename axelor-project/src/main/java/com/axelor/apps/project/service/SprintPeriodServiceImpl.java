@@ -23,9 +23,11 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.project.db.SprintPeriod;
 import com.axelor.apps.project.db.repo.SprintPeriodRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class SprintPeriodServiceImpl implements SprintPeriodService {
 
@@ -56,6 +58,7 @@ public class SprintPeriodServiceImpl implements SprintPeriodService {
     Company company = companyRepo.find(companyId);
 
     LocalDate currentDate = fromDate;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d");
 
     while (!currentDate.isAfter(toDate)) {
       int daysCount = 0;
@@ -77,7 +80,12 @@ public class SprintPeriodServiceImpl implements SprintPeriodService {
       }
 
       SprintPeriod period = new SprintPeriod();
-      period.setName("Period from " + currentDate + " to " + endDate);
+      period.setName(
+          I18n.get("Period")
+              + " "
+              + formatter.format(currentDate)
+              + " to "
+              + formatter.format(endDate));
       period.setCompany(company);
       period.setFromDate(currentDate);
       period.setToDate(endDate);
