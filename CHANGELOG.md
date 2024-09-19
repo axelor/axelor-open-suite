@@ -1,3 +1,14 @@
+## [6.5.42] (2024-09-19)
+
+### Fixes
+#### Base
+
+* Partner: fixed convert contact into individual partner error when address is null.
+
+#### CRM
+
+* CRM: added missing action for 'Calls monitoring' dashboard.
+
 ## [6.5.41] (2024-09-05)
 
 ### Fixes
@@ -1523,6 +1534,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.42]: https://github.com/axelor/axelor-open-suite/compare/v6.5.41...v6.5.42
 [6.5.41]: https://github.com/axelor/axelor-open-suite/compare/v6.5.40...v6.5.41
 [6.5.40]: https://github.com/axelor/axelor-open-suite/compare/v6.5.39...v6.5.40
 [6.5.39]: https://github.com/axelor/axelor-open-suite/compare/v6.5.38...v6.5.39
