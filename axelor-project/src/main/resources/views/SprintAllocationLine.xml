@@ -9,7 +9,7 @@
     <field name="status" title="Status"/>
     <field name="sprint" title="Sprint"
       onChange="action-sprint-allocation-line-method-on-change-compute"/>
-    <field name="user" title="User"
+    <field name="user" title="User" required="true"
       onChange="action-sprint-allocation-line-method-on-change-compute"/>
     <field name="allocated" title="Allocated"
       onChange="action-sprint-allocation-line-method-on-change-compute"/>
@@ -21,15 +21,12 @@
   </grid>
 
   <grid name="project-sprint-allocation-line-grid" title="Sprint allocation lines"
-    model="com.axelor.apps.project.db.SprintAllocationLine" editable="true">
+    model="com.axelor.apps.project.db.SprintAllocationLine"
+    onNew="action-sprint-allocation-line-attrs-onnew" editable="true">
 
-    <toolbar>
-      <button name="createAllocationLines" title="Create sprint allocation lines"
-        onClick="action-sprint-allocation-line-view-create-wizard"/>
-    </toolbar>
     <field name="status" title="Status"/>
-    <field name="user" title="User"
-      onChange="action-sprint-allocation-line-method-on-change-compute"/>
+    <field name="user" title="User" required="true"
+      onChange="action-sprint-allocation-line-validate-user-and-sprint,action-sprint-allocation-line-method-on-change-compute"/>
     <field name="allocated" title="Allocated"
       onChange="action-sprint-allocation-line-method-on-change-compute"/>
     <field name="leaves" title="Leaves" readonly="true"/>
@@ -45,9 +42,9 @@
     <panel name="mainPanel">
       <field name="status" widget="NavSelect" showTitle="false" x-order="sequence"
         colSpan="12"/>
-      <field name="sprint" title="Sprint"
+      <field name="sprint" title="Sprint" required="true"
         onChange="action-sprint-allocation-line-method-on-change-compute"/>
-      <field name="user" title="User"
+      <field name="user" title="User" required="true"
         onChange="action-sprint-allocation-line-method-on-change-compute"/>
       <field name="allocated" title="Allocated" colSpan="3"
         onChange="action-sprint-allocation-line-method-on-change-compute"/>
@@ -58,5 +55,17 @@
     </panel>
 
   </form>
+
+  <action-attrs name="action-sprint-allocation-line-attrs-onnew">
+    <attribute name="value" for="sprint" expr="eval: _parent"
+      if="_parent._model == 'com.axelor.apps.project.db.Sprint'"/>
+    <attribute name="value" for="sprint" expr="eval: _parent.sprint"
+      if="_parent._model == 'com.axelor.apps.project.db.Project'"/>
+  </action-attrs>
+
+  <action-validate name="action-sprint-allocation-line-validate-user-and-sprint">
+    <error message="Sprint allocation line already created for selected user and sprint"
+      if="user &amp;&amp; sprint &amp;&amp; __repo__(SprintAllocationLine).all().filter('self.sprint = ?1 AND self.user = ?2', sprint, user).count() > 0"/>
+  </action-validate>
 
 </object-views>
