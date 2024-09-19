@@ -1,3 +1,24 @@
+## [7.1.30] (2024-09-19)
+
+### Fixes
+#### Base
+
+* Partner: fixed convert contact into individual partner error when address is null.
+* Request: fixed french translation for 'Request'.
+
+#### Account
+
+* CutOff/Analytic: fixed cut off batch when using analytic on credit move line.
+
+#### Business Project
+
+* Project: prevented an error during project totals computation when parent task had no time unit.
+* Project: prevented an error during project totals computation when spent time percentages were too low.
+
+#### CRM
+
+* CRM: added missing action for 'Calls monitoring' dashboard.
+
 ## [7.1.29] (2024-09-05)
 
 ### Fixes
@@ -1359,6 +1380,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.30]: https://github.com/axelor/axelor-open-suite/compare/v7.1.29...v7.1.30
 [7.1.29]: https://github.com/axelor/axelor-open-suite/compare/v7.1.28...v7.1.29
 [7.1.28]: https://github.com/axelor/axelor-open-suite/compare/v7.1.27...v7.1.28
 [7.1.27]: https://github.com/axelor/axelor-open-suite/compare/v7.1.26...v7.1.27
