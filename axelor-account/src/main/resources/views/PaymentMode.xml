@@ -16,7 +16,7 @@
       <attribute name="onChange"
         value="action-payment-mode-group-empty,action-payment-mode-record-accounting-trigger-init-cheque-in"/>
       <insert position="after">
-        <field name="interestRate"/>
+        <field name="interestRate" colSpan="3"/>
       </insert>
     </extend>
     <extend target="//panel[@name='mainPanel']">
