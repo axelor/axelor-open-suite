@@ -1,3 +1,35 @@
+## [8.0.15] (2024-09-19)
+
+### Fixes
+#### Base
+
+* Update axelor-studio dependency to 2.0.6.
+* Partner: fixed convert contact into individual partner error when address is null.
+* Advanced export: fix export when multiple fields contain same sub path.
+* Request: fixed french translation for 'Request'.
+
+#### Account
+
+* CutOff/Analytic: fixed cut off batch when using analytic on credit move line.
+
+#### Budget
+
+* Budget level: fixed scales in the tree view.
+* Global budget: fixed duplication without budget level.
+
+#### Business Project
+
+* Project: prevented an error during project totals computation when parent task had no time unit.
+* Project: prevented an error during project totals computation when spent time percentages were too low.
+
+#### CRM
+
+* CRM: added missing action for 'Calls monitoring' dashboard.
+
+#### Purchase
+
+* Purchase order line tax: fixed reverse charge feature on purchase order.
+
 ## [8.0.14] (2024-09-05)
 
 ### Fixes
@@ -1030,6 +1062,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.15]: https://github.com/axelor/axelor-open-suite/compare/v8.0.14...v8.0.15
 [8.0.14]: https://github.com/axelor/axelor-open-suite/compare/v8.0.13...v8.0.14
 [8.0.13]: https://github.com/axelor/axelor-open-suite/compare/v8.0.12...v8.0.13
 [8.0.12]: https://github.com/axelor/axelor-open-suite/compare/v8.0.11...v8.0.12
