@@ -218,7 +218,7 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
     if (paymentMode == null || paymentMode.getInterestRate() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_NO_PAYMENT_MODE));
+          I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_NO_PAYMENT_MODE_RATE));
     }
     BigDecimal interestRate =
         paymentMode

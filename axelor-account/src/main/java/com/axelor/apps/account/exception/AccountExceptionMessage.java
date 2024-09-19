@@ -1773,4 +1773,7 @@ public final class AccountExceptionMessage {
 
   public static final String LATE_PAYMENT_INTEREST_NO_PAYMENT_MODE = /*$$(*/
       "There is no payment mode in invoice term." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_NO_PAYMENT_MODE_RATE = /*$$(*/
+      "There is no interest rate defined in invoice term payment mode." /*)*/;
 }
