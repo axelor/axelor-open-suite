@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 
 public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInterestInvoiceService {
 
-  AppAccountService appAccountService;
-  InvoiceRepository invoiceRepository;
+  protected AppAccountService appAccountService;
+  protected InvoiceRepository invoiceRepository;
 
   @Inject
   public LatePaymentInterestInvoiceServiceImpl(
@@ -33,7 +33,7 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
     this.invoiceRepository = invoiceRepository;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public Invoice generateLatePaymentInterestInvoice(Invoice invoice) throws AxelorException {
 
