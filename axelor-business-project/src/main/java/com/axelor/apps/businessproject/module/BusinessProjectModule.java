@@ -135,7 +135,6 @@ import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.project.service.ProjectTemplateServiceImpl;
-import com.axelor.apps.project.service.SprintAllocationLineServiceImpl;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
@@ -235,8 +234,6 @@ public class BusinessProjectModule extends AxelorModule {
 
     bind(ProjectTaskGroupService.class).to(ProjectTaskGroupServiceImpl.class);
     bind(ProjectTaskComputeService.class).to(ProjectTaskComputeServiceImpl.class);
-    bind(SprintAllocationLineServiceImpl.class)
-        .to(BusinessProjectSprintAllocationLineServiceImpl.class);
     bind(BusinessProjectSprintAllocationLineService.class)
         .to(BusinessProjectSprintAllocationLineServiceImpl.class);
     bind(ProjectPlanningTimeHRRepository.class).to(BusinessProjectPlanningTimeRepository.class);

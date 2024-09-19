@@ -18,30 +18,27 @@
  */
 package com.axelor.apps.project.db.repo;
 
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
-import java.math.BigDecimal;
-import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
+import com.axelor.apps.project.service.SprintService;
+import com.axelor.inject.Beans;
+import java.util.Map;
 
 public class SprintManagementRepository extends SprintRepository {
 
   @Override
-  public Sprint save(Sprint sprint) {
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
 
-    List<ProjectTask> projectTaskList = sprint.getProjectTaskList();
+    if (json != null && json.get("id") != null) {
+      SprintService sprintService = Beans.get(SprintService.class);
 
-    if (CollectionUtils.isNotEmpty(projectTaskList)) {
-      BigDecimal totalEstimatedTime =
-          projectTaskList.stream()
-              .map(ProjectTask::getBudgetedTime)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      Sprint sprint = find((Long) json.get("id"));
 
-      sprint.setTotalEstimatedTime(totalEstimatedTime);
-    } else {
-      sprint.setTotalEstimatedTime(BigDecimal.ZERO);
+      json.put("totalAllocatedTime", sprintService.computeTotalAllocatedTime(sprint));
+      json.put("totalEstimatedTime", sprintService.computeTotalEstimatedTime(sprint));
+      json.put("totalPlannedTime", sprintService.computeTotalPlannedTime(sprint));
+      json.put("totalRemainingTime", sprintService.computeTotalRemainingTime(sprint));
     }
 
-    return super.save(sprint);
+    return super.populate(json, context);
   }
 }

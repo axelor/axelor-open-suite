@@ -19,35 +19,43 @@
 package com.axelor.apps.project.service;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.SprintAllocationLine;
 import com.axelor.apps.project.db.SprintPeriod;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.SprintAllocationLineRepository;
 import com.axelor.apps.project.db.repo.SprintPeriodRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SprintServiceImpl implements SprintService {
 
   public ProjectRepository projectRepo;
   public SprintPeriodRepository sprintPeriodRepo;
   public SprintRepository sprintRepo;
+  public SprintAllocationLineRepository sprintAllocationLineRepo;
 
   @Inject
   public SprintServiceImpl(
       ProjectRepository projectRepo,
       SprintPeriodRepository sprintPeriodRepo,
-      SprintRepository sprintRepo) {
+      SprintRepository sprintRepo,
+      SprintAllocationLineRepository sprintAllocationLineRepo) {
 
     this.projectRepo = projectRepo;
     this.sprintPeriodRepo = sprintPeriodRepo;
     this.sprintRepo = sprintRepo;
+    this.sprintAllocationLineRepo = sprintAllocationLineRepo;
   }
 
   @SuppressWarnings("unchecked")
@@ -87,5 +95,76 @@ public class SprintServiceImpl implements SprintService {
                 sprintRepo.save(sprint);
               });
         });
+  }
+
+  @Override
+  public BigDecimal computeTotalAllocatedTime(Sprint sprint) {
+
+    BigDecimal totalAllocatedTime = BigDecimal.ZERO;
+
+    List<SprintAllocationLine> sprintAllocationLineList =
+        sprintAllocationLineRepo.all().filter("self.sprint = ?1", sprint).fetch();
+
+    if (CollectionUtils.isNotEmpty(sprintAllocationLineList)) {
+      totalAllocatedTime =
+          sprintAllocationLineList.stream()
+              .map(SprintAllocationLine::getAllocated)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    return totalAllocatedTime;
+  }
+
+  @Override
+  public BigDecimal computeTotalEstimatedTime(Sprint sprint) {
+
+    BigDecimal totalEstimatedTime = BigDecimal.ZERO;
+
+    List<ProjectTask> projectTaskList = sprint.getProjectTaskList();
+
+    if (CollectionUtils.isNotEmpty(projectTaskList)) {
+      totalEstimatedTime =
+          projectTaskList.stream()
+              .map(ProjectTask::getBudgetedTime)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    return totalEstimatedTime;
+  }
+
+  @Override
+  public BigDecimal computeTotalPlannedTime(Sprint sprint) {
+
+    BigDecimal totalPlannedTime = BigDecimal.ZERO;
+
+    List<SprintAllocationLine> sprintAllocationLineList =
+        sprintAllocationLineRepo.all().filter("self.sprint = ?1", sprint).fetch();
+
+    if (CollectionUtils.isNotEmpty(sprintAllocationLineList)) {
+      totalPlannedTime =
+          sprintAllocationLineList.stream()
+              .map(SprintAllocationLine::getPlannedTime)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    return totalPlannedTime;
+  }
+
+  @Override
+  public BigDecimal computeTotalRemainingTime(Sprint sprint) {
+
+    BigDecimal totalRemainingTime = BigDecimal.ZERO;
+
+    List<SprintAllocationLine> sprintAllocationLineList =
+        sprintAllocationLineRepo.all().filter("self.sprint = ?1", sprint).fetch();
+
+    if (CollectionUtils.isNotEmpty(sprintAllocationLineList)) {
+      totalRemainingTime =
+          sprintAllocationLineList.stream()
+              .map(SprintAllocationLine::getRemainingTime)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    return totalRemainingTime;
   }
 }

@@ -27,8 +27,6 @@ import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
-import com.axelor.apps.project.db.repo.SprintAllocationLineManagementRepository;
-import com.axelor.apps.project.db.repo.SprintAllocationLineRepository;
 import com.axelor.apps.project.db.repo.SprintManagementRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.db.repo.TaskTemplateManagementRepository;
@@ -61,8 +59,6 @@ import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.apps.project.service.ProjectToolServiceImpl;
 import com.axelor.apps.project.service.ResourceBookingService;
 import com.axelor.apps.project.service.ResourceBookingServiceImpl;
-import com.axelor.apps.project.service.SprintAllocationLineService;
-import com.axelor.apps.project.service.SprintAllocationLineServiceImpl;
 import com.axelor.apps.project.service.SprintPeriodService;
 import com.axelor.apps.project.service.SprintPeriodServiceImpl;
 import com.axelor.apps.project.service.SprintService;
@@ -123,8 +119,6 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectToolService.class).to(ProjectToolServiceImpl.class);
     bind(SprintPeriodService.class).to(SprintPeriodServiceImpl.class);
     bind(SprintService.class).to(SprintServiceImpl.class);
-    bind(SprintAllocationLineService.class).to(SprintAllocationLineServiceImpl.class);
-    bind(SprintAllocationLineRepository.class).to(SprintAllocationLineManagementRepository.class);
     bind(SprintRepository.class).to(SprintManagementRepository.class);
   }
 }

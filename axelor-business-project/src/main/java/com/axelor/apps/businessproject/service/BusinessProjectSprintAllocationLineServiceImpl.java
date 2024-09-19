@@ -27,8 +27,6 @@ import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.SprintAllocationLine;
 import com.axelor.apps.project.db.SprintPeriod;
 import com.axelor.apps.project.db.repo.SprintAllocationLineRepository;
-import com.axelor.apps.project.db.repo.SprintRepository;
-import com.axelor.apps.project.service.SprintAllocationLineServiceImpl;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -39,23 +37,22 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BusinessProjectSprintAllocationLineServiceImpl extends SprintAllocationLineServiceImpl
+public class BusinessProjectSprintAllocationLineServiceImpl
     implements BusinessProjectSprintAllocationLineService {
 
   public LeaveRequestService leaveRequestService;
   public WeeklyPlanningService weeklyPlanningService;
+  public SprintAllocationLineRepository sprintAllocationLineRepo;
 
   @Inject
   public BusinessProjectSprintAllocationLineServiceImpl(
-      SprintAllocationLineRepository sprintAllocationLineRepo,
-      SprintRepository sprintRepo,
       LeaveRequestService leaveRequestService,
-      WeeklyPlanningService weeklyPlanningService) {
-
-    super(sprintAllocationLineRepo, sprintRepo);
+      WeeklyPlanningService weeklyPlanningService,
+      SprintAllocationLineRepository sprintAllocationLineRepo) {
 
     this.leaveRequestService = leaveRequestService;
     this.weeklyPlanningService = weeklyPlanningService;
+    this.sprintAllocationLineRepo = sprintAllocationLineRepo;
   }
 
   @Override

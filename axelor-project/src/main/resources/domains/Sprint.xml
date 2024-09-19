@@ -14,10 +14,6 @@
     <string name="description" title="Description" large="true"/>
     <one-to-many name="projectTaskList" ref="com.axelor.apps.project.db.ProjectTask"
       title="Tasks" mappedBy="sprint"/>
-    <decimal name="totalAllocatedTime" title="Total allocated time"/>
-    <decimal name="totalEstimatedTime" title="Total estimated time"/>
-    <decimal name="totalPlannedTime" title="Total planned time"/>
-    <decimal name="totalRemainingTime" title="Total remaining time"/>
     <integer name="sequence" title="Sequence"/>
 
   </entity>

@@ -18,7 +18,18 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.project.db.Sprint;
+import java.math.BigDecimal;
+
 public interface SprintService {
 
   public void sprintGenerate(Object projectsContext, Object sprintPeriodsContext);
+
+  public BigDecimal computeTotalAllocatedTime(Sprint sprint);
+
+  public BigDecimal computeTotalEstimatedTime(Sprint sprint);
+
+  public BigDecimal computeTotalPlannedTime(Sprint sprint);
+
+  public BigDecimal computeTotalRemainingTime(Sprint sprint);
 }

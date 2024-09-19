@@ -104,6 +104,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   private ProjectPlanningTimeService projectPlanningTimeService;
   private ProjectPlanningTimeRepository projectPlanningTimeRepo;
   private BusinessProjectSprintAllocationLineService businessProjectSprintAllocationLineService;
+  private SprintRepository sprintRepo;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -115,7 +116,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       AppProjectService appProjectService,
       TaskStatusToolService taskStatusToolService,
       TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository,
-      SprintRepository sprintRepo,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
@@ -124,7 +124,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       AppBusinessProjectService appBusinessProjectService,
       ProjectPlanningTimeService projectPlanningTimeService,
       ProjectPlanningTimeRepository projectPlanningTimeRepo,
-      BusinessProjectSprintAllocationLineService businessProjectSprintAllocationLineService) {
+      BusinessProjectSprintAllocationLineService businessProjectSprintAllocationLineService,
+      SprintRepository sprintRepo) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -133,8 +134,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         projectRepository,
         appProjectService,
         taskStatusToolService,
-        taskStatusProgressByCategoryRepository,
-        sprintRepo);
+        taskStatusProgressByCategoryRepository);
     this.priceListLineRepo = priceListLineRepo;
     this.priceListService = priceListService;
     this.partnerPriceListService = partnerPriceListService;
@@ -144,6 +144,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.projectPlanningTimeService = projectPlanningTimeService;
     this.projectPlanningTimeRepo = projectPlanningTimeRepo;
     this.businessProjectSprintAllocationLineService = businessProjectSprintAllocationLineService;
+    this.sprintRepo = sprintRepo;
   }
 
   @Override

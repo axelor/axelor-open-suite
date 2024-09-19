@@ -57,7 +57,6 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       AppProjectService appProjectService,
       TaskStatusToolService taskStatusToolService,
       TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository,
-      SprintRepository sprintRepo,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
@@ -66,7 +65,8 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       AppBusinessProjectService appBusinessProjectService,
       ProjectPlanningTimeService projectPlanningTimeService,
       ProjectPlanningTimeRepository projectPlanningTimeRepo,
-      BusinessProjectSprintAllocationLineService businessProjectSprintAllocationLineService) {
+      BusinessProjectSprintAllocationLineService businessProjectSprintAllocationLineService,
+      SprintRepository sprintRepo) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -76,7 +76,6 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
         appProjectService,
         taskStatusToolService,
         taskStatusProgressByCategoryRepository,
-        sprintRepo,
         priceListLineRepo,
         priceListService,
         partnerPriceListService,
@@ -85,7 +84,8 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
         appBusinessProjectService,
         projectPlanningTimeService,
         projectPlanningTimeRepo,
-        businessProjectSprintAllocationLineService);
+        businessProjectSprintAllocationLineService,
+        sprintRepo);
   }
 
   @Override

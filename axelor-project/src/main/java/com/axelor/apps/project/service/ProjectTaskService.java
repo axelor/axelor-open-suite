@@ -56,6 +56,4 @@ public interface ProjectTaskService {
   public void fillSubtask(ProjectTask projectTask);
 
   void changeProgress(ProjectTask projectTask, Project project);
-
-  public void updateSprintTotals(ProjectTask projectTask);
 }
