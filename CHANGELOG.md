@@ -1,3 +1,25 @@
+## [7.2.22] (2024-09-19)
+
+### Fixes
+#### Base
+
+* Partner: fixed convert contact into individual partner error when address is null.
+* Advanced export: fix export when multiple fields contain same sub path.
+* Request: fixed french translation for 'Request'.
+
+#### Account
+
+* CutOff/Analytic: fixed cut off batch when using analytic on credit move line.
+
+#### Business Project
+
+* Project: prevented an error during project totals computation when parent task had no time unit.
+* Project: prevented an error during project totals computation when spent time percentages were too low.
+
+#### CRM
+
+* CRM: added missing action for 'Calls monitoring' dashboard.
+
 ## [7.2.21] (2024-09-05)
 
 ### Fixes
@@ -1150,6 +1172,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.22]: https://github.com/axelor/axelor-open-suite/compare/v7.2.21...v7.2.22
 [7.2.21]: https://github.com/axelor/axelor-open-suite/compare/v7.2.20...v7.2.21
 [7.2.20]: https://github.com/axelor/axelor-open-suite/compare/v7.2.19...v7.2.20
 [7.2.19]: https://github.com/axelor/axelor-open-suite/compare/v7.2.18...v7.2.19
