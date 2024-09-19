@@ -421,18 +421,19 @@
       </panel>
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')" showIf="project.manageTimeSpent">
-        <panel-dashlet name="validatedTimesheetLinesPanel"
+        if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
+        <panel-dashlet name="validatedTimesheetLinesPanel" x-show-bars="true"
           action="action-project-task-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
-        <panel-dashlet name="waitingTimesheetLinesPanel"
+        <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
           action="action-project-task-dashlet-waiting-timesheet-lines"
           title="Waiting Timesheet lines" colSpan="12" canSearch="true"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
-        <panel-dashlet name="allTimesheetLinesPanel"
+        <panel-dashlet name="allTimesheetLinesPanel" x-show-bars="true"
           action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
           colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
+        <field name="project.isShowTimeSpent" hidden="true"/>
       </panel>
 
       <panel name="timerPanel" title="Timer" showIf="id" hidden="true"

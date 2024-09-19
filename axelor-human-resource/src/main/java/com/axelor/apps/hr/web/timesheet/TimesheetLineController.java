@@ -24,12 +24,14 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -193,28 +195,31 @@ public class TimesheetLineController {
 
     if (Project.class.equals(context.getContextClass())) {
       project = context.asType(Project.class);
-      if (project.getId() != null) {
-        employee =
-            Optional.of(project)
-                .map(Project::getAssignedTo)
-                .map(User::getEmployee)
-                .orElse(employee);
-      } else {
-        project = null;
-      }
     } else if (ProjectTask.class.equals(context.getContextClass())) {
       projectTask = context.asType(ProjectTask.class);
-      if (projectTask.getId() != null) {
-        project = projectTask.getProject();
-        employee =
-            Optional.ofNullable(project)
-                .map(Project::getAssignedTo)
-                .map(User::getEmployee)
-                .orElse(employee);
-      } else {
-        projectTask = null;
-      }
+    } else if (Project.class.equals(context.getParent().getContextClass())) {
+      project = context.getParent().asType(Project.class);
+    } else if (ProjectTask.class.equals(context.getParent().getContextClass())) {
+      projectTask = context.getParent().asType(ProjectTask.class);
     }
+
+    if (projectTask != null) {
+      project = projectTask.getProject();
+    }
+
+    if (project != null && project.getId() == null) {
+      project = null;
+    }
+
+    if (projectTask != null && projectTask.getId() == null) {
+      projectTask = null;
+    }
+
+    employee =
+        Optional.ofNullable(project)
+            .map(Project::getAssignedTo)
+            .map(User::getEmployee)
+            .orElse(employee);
 
     response.setView(
         ActionView.define(I18n.get("Create Timesheet line"))
@@ -228,5 +233,16 @@ public class TimesheetLineController {
             .context("_projectTask", projectTask)
             .context("_employee", employee)
             .map());
+  }
+
+  public void removeProjectTimeSheetLines(ActionRequest request, ActionResponse response) {
+
+    List<Integer> projectTimeSheetLineIds = (List<Integer>) request.getContext().get("_ids");
+
+    if (!ObjectUtils.isEmpty(projectTimeSheetLineIds)) {
+      Beans.get(TimesheetLineRemoveService.class).removeTimesheetLines(projectTimeSheetLineIds);
+    }
+
+    response.setReload(true);
   }
 }

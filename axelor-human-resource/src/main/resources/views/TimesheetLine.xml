@@ -6,6 +6,12 @@
   <grid name="timesheet-line-project-grid" title="Log Times"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
     onNew="action-timesheet-line-group-project-grid-on-new" orderBy="-date">
+    <toolbar>
+      <button name="newLineBtn" title="New line" icon="fa-plus"
+        onClick="action-timesheet-line-method-log-time"/>
+      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+        onClick="action-timesheet-line-method-remove-timesheet-lines"/>
+    </toolbar>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="projectTask" onChange="action-timesheet-line-method-set-product"
       form-view="project-task-form" grid-view="project-task-grid"/>
@@ -32,6 +38,12 @@
   <grid name="timesheet-line-project-task-grid" title="Log Times"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
     onNew="action-timesheet-line-group-project-grid-on-new" orderBy="-date">
+    <toolbar>
+      <button name="newLineBtn" title="New line" icon="fa-plus"
+        onClick="action-timesheet-line-method-log-time"/>
+      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+        onClick="action-timesheet-line-method-remove-timesheet-lines"/>
+    </toolbar>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="date" onChange="action-timesheet-line-method-check-daily-limit"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
@@ -518,6 +530,11 @@
 
   <action-method name="action-timesheet-line-method-log-time">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController" method="logTime"/>
+  </action-method>
+
+  <action-method name="action-timesheet-line-method-remove-timesheet-lines">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController"
+      method="removeProjectTimeSheetLines"/>
   </action-method>
 
   <action-validate name="action-project-task-validate-check-employee">
