@@ -75,20 +75,31 @@ public class ProjectMenuController {
   }
 
   public void allProjectRelatedTasks(ActionRequest request, ActionResponse response) {
-    Project project =
-        Optional.ofNullable(request.getContext())
+    Project project = null;
+    if (Project.class.equals(request.getContext().getContextClass())) {
+      project = request.getContext().asType(Project.class);
+    } else if (Project.class.equals(
+        Optional.of(request.getContext())
             .map(Context::getParent)
-            .map(c -> c.asType(Project.class))
-            .orElse(null);
+            .map(Context::getContextClass)
+            .orElse(null))) {
+      project =
+          Optional.ofNullable(request.getContext())
+              .map(Context::getParent)
+              .map(c -> c.asType(Project.class))
+              .orElse(null);
+    }
+
     if (project == null) {
       return;
     }
+
     ActionView.ActionViewBuilder builder =
         ActionView.define(I18n.get("Related Tasks"))
             .model(ProjectTask.class.getName())
+            .add("grid", "project-task-grid")
             .add("tree", "business-project-project-task-tree")
             .add("kanban", "project-task-kanban")
-            .add("grid", "project-task-grid")
             .add("form", "business-project-task-form")
             .param("details-view", "true")
             .domain("self.typeSelect = :_typeSelect AND self.project.id = :_id")
