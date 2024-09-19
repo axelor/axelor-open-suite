@@ -1,10 +1,10 @@
 package com.axelor.apps.sale.rest.dto;
 
 import com.axelor.utils.api.RequestStructure;
+import javax.validation.constraints.NotNull;
 
-public class SaleOrderPutRequest extends RequestStructure {
-
-  SaleOrderLinePostRequest saleOrderLine;
+public class SaleOrderAddLinePutRequest extends RequestStructure {
+  @NotNull SaleOrderLinePostRequest saleOrderLine;
 
   public SaleOrderLinePostRequest getSaleOrderLine() {
     return saleOrderLine;

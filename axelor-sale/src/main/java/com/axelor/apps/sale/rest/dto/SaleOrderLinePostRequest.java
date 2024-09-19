@@ -20,12 +20,12 @@ package com.axelor.apps.sale.rest.dto;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.utils.api.ObjectFinder;
-import com.axelor.utils.api.RequestStructure;
+import com.axelor.utils.api.RequestPostStructure;
 import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class SaleOrderLinePostRequest extends RequestStructure {
+public class SaleOrderLinePostRequest extends RequestPostStructure {
   @NotNull
   @Min(0)
   private Long productId;

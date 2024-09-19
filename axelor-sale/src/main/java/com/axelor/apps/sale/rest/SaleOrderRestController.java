@@ -22,9 +22,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.rest.dto.SaleOrderAddLinePutRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderLineResponse;
 import com.axelor.apps.sale.rest.dto.SaleOrderPostRequest;
-import com.axelor.apps.sale.rest.dto.SaleOrderPutRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
 import com.axelor.apps.sale.service.SaleOrderRestService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
@@ -85,15 +85,18 @@ public class SaleOrderRestController {
 
   @Operation(
       summary = "Create an Sale order line",
-      tags = {"Sale order line"})
+      tags = {"Sale order"})
   @Path("add-line/{saleOrderId}")
   @PUT
   @HttpExceptionHandler
   public Response createSaleOrderLine(
-      @PathParam("saleOrderId") Long saleOrderId, SaleOrderPutRequest requestBody)
+      @PathParam("saleOrderId") Long saleOrderId, SaleOrderAddLinePutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().createAccess(SaleOrderLine.class).writeAccess(SaleOrder.class).check();
+    new SecurityCheck()
+        .createAccess(SaleOrderLine.class)
+        .writeAccess(SaleOrder.class, saleOrderId)
+        .check();
     SaleOrder saleOrder = ObjectFinder.find(SaleOrder.class, saleOrderId, ObjectFinder.NO_VERSION);
     SaleOrderLineGeneratorService saleorderLineCreateService =
         Beans.get(SaleOrderLineGeneratorService.class);
