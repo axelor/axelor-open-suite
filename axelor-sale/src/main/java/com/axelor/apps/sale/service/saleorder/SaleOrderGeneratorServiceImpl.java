@@ -47,8 +47,6 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   protected SaleOrderDomainService saleOrderDomainService;
   protected PartnerRepository partnerRepository;
 
-  protected SaleConfigRepository saleConfigRepository;
-
   @Inject
   public SaleOrderGeneratorServiceImpl(
       SaleOrderRepository saleOrderRepository,
@@ -58,8 +56,7 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
       SaleOrderOnChangeService saleOrderOnChangeService,
       SaleOrderDomainService saleOrderDomainService,
       PartnerRepository partnerRepository,
-      SaleConfigService saleConfigService,
-      SaleConfigRepository saleConfigRepository) {
+      SaleConfigService saleConfigService) {
     this.saleOrderRepository = saleOrderRepository;
     this.appSaleService = appSaleService;
     this.companyService = companyService;
@@ -68,7 +65,6 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     this.saleOrderDomainService = saleOrderDomainService;
     this.partnerRepository = partnerRepository;
     this.saleConfigService = saleConfigService;
-    this.saleConfigRepository = saleConfigRepository;
   }
 
   @Transactional(rollbackOn = {Exception.class})
