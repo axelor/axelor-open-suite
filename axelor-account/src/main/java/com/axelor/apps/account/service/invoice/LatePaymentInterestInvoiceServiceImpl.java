@@ -3,6 +3,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -17,11 +18,16 @@ import com.axelor.studio.db.AppAccount;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInterestInvoiceService {
+
+  public static final int INTEREST_SCALE = 2;
 
   protected AppAccountService appAccountService;
   protected InvoiceRepository invoiceRepository;
@@ -196,11 +202,36 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
     };
   }
 
-  protected BigDecimal computeLatePaymentInterest(List<InvoiceTerm> invoiceTermList) {
+  protected BigDecimal computeLatePaymentInterest(List<InvoiceTerm> invoiceTermList)
+      throws AxelorException {
     BigDecimal latePaymentAmount = BigDecimal.ZERO;
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      latePaymentAmount = latePaymentAmount.add(invoiceTerm.getAmountRemaining());
+      latePaymentAmount = latePaymentAmount.add(computeInterestFromInvoiceTerm(invoiceTerm));
     }
     return latePaymentAmount;
+  }
+
+  protected BigDecimal computeInterestFromInvoiceTerm(InvoiceTerm invoiceTerm)
+      throws AxelorException {
+    PaymentMode paymentMode = invoiceTerm.getPaymentMode();
+
+    if (paymentMode == null || paymentMode.getInterestRate() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_NO_PAYMENT_MODE));
+    }
+    BigDecimal interestRate =
+        paymentMode
+            .getInterestRate()
+            .divide(new BigDecimal("100"), INTEREST_SCALE, RoundingMode.HALF_UP);
+    BigDecimal daysRatio =
+        new BigDecimal(String.valueOf(numberOfDaySinceDueDate(invoiceTerm.getDueDate())))
+            .divide(new BigDecimal("365"), INTEREST_SCALE, RoundingMode.HALF_UP);
+
+    return invoiceTerm.getAmountRemaining().multiply(interestRate).multiply(daysRatio);
+  }
+
+  protected long numberOfDaySinceDueDate(LocalDate dueDate) {
+    return ChronoUnit.DAYS.between(dueDate, appAccountService.getTodayDate(null));
   }
 }
