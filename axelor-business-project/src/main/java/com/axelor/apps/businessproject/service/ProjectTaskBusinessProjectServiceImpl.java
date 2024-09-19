@@ -501,7 +501,9 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     BigDecimal plannedTime;
     BigDecimal spentTime = BigDecimal.ZERO;
 
-    Unit timeUnit = projectTask.getTimeUnit();
+    Unit timeUnit =
+        Optional.ofNullable(projectTask.getTimeUnit())
+            .orElse(projectTask.getProject().getProjectTimeUnit());
 
     plannedTime =
         projectTask.getProjectPlanningTimeList().stream()
