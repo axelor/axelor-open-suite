@@ -16,26 +16,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.db.repo;
+package com.axelor.apps.businessproject.db.repo;
 
-import com.axelor.apps.project.db.Sprint;
-import com.axelor.apps.project.service.SprintService;
+import com.axelor.apps.businessproject.service.BusinessProjectSprintAllocationLineService;
+import com.axelor.apps.project.db.SprintAllocationLine;
+import com.axelor.apps.project.db.repo.SprintAllocationLineRepository;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-public class SprintManagementRepository extends SprintRepository {
+public class BusinessProjectSprintAllocationLineRepository extends SprintAllocationLineRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
 
-    if (json != null && json.get("id") != null) {
-      SprintService sprintService = Beans.get(SprintService.class);
-
-      Sprint sprint = find((Long) json.get("id"));
-
-      json.put("totalAllocatedTime", sprintService.computeTotalAllocatedTime(sprint));
-      json.put("totalEstimatedTime", sprintService.computeTotalEstimatedTime(sprint));
+    if (Objects.isNull(json) || Objects.isNull(json.get("id"))) {
+      return super.populate(json, context);
     }
+
+    SprintAllocationLine sprintAllocationLine = find((Long) json.get("id"));
+
+    HashMap<String, BigDecimal> valueMap =
+        Beans.get(BusinessProjectSprintAllocationLineService.class)
+            .computeFields(sprintAllocationLine);
+
+    json.put("leaves", valueMap.get("leaveDayCount"));
+    json.put("plannedTime", valueMap.get("plannedTime"));
+    json.put("remainingTime", valueMap.get("remainingTime"));
 
     return super.populate(json, context);
   }

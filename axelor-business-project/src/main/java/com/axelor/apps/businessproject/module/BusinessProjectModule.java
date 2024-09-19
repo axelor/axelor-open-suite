@@ -24,6 +24,8 @@ import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidat
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.businessproject.db.repo.AppBusinessProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectPlanningTimeRepository;
+import com.axelor.apps.businessproject.db.repo.BusinessProjectSprintAllocationLineRepository;
+import com.axelor.apps.businessproject.db.repo.BusinessProjectSprintRepository;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
@@ -131,6 +133,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeServiceImpl;
+import com.axelor.apps.project.db.repo.SprintAllocationLineRepository;
+import com.axelor.apps.project.db.repo.SprintManagementRepository;
 import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
@@ -237,5 +241,8 @@ public class BusinessProjectModule extends AxelorModule {
     bind(BusinessProjectSprintAllocationLineService.class)
         .to(BusinessProjectSprintAllocationLineServiceImpl.class);
     bind(ProjectPlanningTimeHRRepository.class).to(BusinessProjectPlanningTimeRepository.class);
+    bind(SprintManagementRepository.class).to(BusinessProjectSprintRepository.class);
+    bind(SprintAllocationLineRepository.class)
+        .to(BusinessProjectSprintAllocationLineRepository.class);
   }
 }

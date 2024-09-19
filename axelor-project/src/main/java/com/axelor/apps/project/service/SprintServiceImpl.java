@@ -131,40 +131,4 @@ public class SprintServiceImpl implements SprintService {
 
     return totalEstimatedTime;
   }
-
-  @Override
-  public BigDecimal computeTotalPlannedTime(Sprint sprint) {
-
-    BigDecimal totalPlannedTime = BigDecimal.ZERO;
-
-    List<SprintAllocationLine> sprintAllocationLineList =
-        sprintAllocationLineRepo.all().filter("self.sprint = ?1", sprint).fetch();
-
-    if (CollectionUtils.isNotEmpty(sprintAllocationLineList)) {
-      totalPlannedTime =
-          sprintAllocationLineList.stream()
-              .map(SprintAllocationLine::getPlannedTime)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    return totalPlannedTime;
-  }
-
-  @Override
-  public BigDecimal computeTotalRemainingTime(Sprint sprint) {
-
-    BigDecimal totalRemainingTime = BigDecimal.ZERO;
-
-    List<SprintAllocationLine> sprintAllocationLineList =
-        sprintAllocationLineRepo.all().filter("self.sprint = ?1", sprint).fetch();
-
-    if (CollectionUtils.isNotEmpty(sprintAllocationLineList)) {
-      totalRemainingTime =
-          sprintAllocationLineList.stream()
-              .map(SprintAllocationLine::getRemainingTime)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    return totalRemainingTime;
-  }
 }

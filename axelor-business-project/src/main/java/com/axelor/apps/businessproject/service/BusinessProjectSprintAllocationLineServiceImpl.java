@@ -58,49 +58,12 @@ public class BusinessProjectSprintAllocationLineServiceImpl
   @Override
   public HashMap<String, BigDecimal> computeFields(SprintAllocationLine sprintAllocationLine) {
 
-    return computeValueMap(
-        sprintAllocationLine.getSprint(), sprintAllocationLine.getUser(), sprintAllocationLine);
-  }
-
-  @Override
-  @Transactional
-  public void sprintOnChange(Project project, Sprint sprint) {
-
-    Set<User> membersUserSet = project.getMembersUserSet();
-
-    if (CollectionUtils.isNotEmpty(membersUserSet)) {
-      List<SprintAllocationLine> sprintAllocationLineList =
-          sprintAllocationLineRepo.all().filter("self.sprint = ?1", sprint).fetch();
-
-      for (User member : membersUserSet) {
-        SprintAllocationLine sprintAllocationLine =
-            sprintAllocationLineList.stream()
-                .filter(line -> line.getUser().equals(member))
-                .findFirst()
-                .orElse(null);
-
-        if (sprintAllocationLine == null) {
-          sprintAllocationLine = new SprintAllocationLine();
-          sprintAllocationLine.setSprint(sprint);
-          sprintAllocationLine.setUser(member);
-        }
-
-        HashMap<String, BigDecimal> valueMap =
-            computeValueMap(sprint, member, sprintAllocationLine);
-
-        sprintAllocationLine.setLeaves(valueMap.get("leaves"));
-        sprintAllocationLine.setPlannedTime(valueMap.get("plannedTime"));
-        sprintAllocationLine.setRemainingTime(valueMap.get("remainingTime"));
-
-        sprintAllocationLineRepo.save(sprintAllocationLine);
-      }
-    }
-  }
-
-  public HashMap<String, BigDecimal> computeValueMap(
-      Sprint sprint, User user, SprintAllocationLine sprintAllocationLine) {
+    Sprint sprint = sprintAllocationLine.getSprint();
+    User user = sprintAllocationLine.getUser();
 
     HashMap<String, BigDecimal> valueMap = new HashMap<>();
+    valueMap.put("plannedTime", BigDecimal.ZERO);
+    valueMap.put("remainingTime", BigDecimal.ZERO);
 
     if (sprint != null && user != null && sprint.getSprintPeriod() != null) {
       SprintPeriod sprintPeriod = sprint.getSprintPeriod();
@@ -138,5 +101,33 @@ public class BusinessProjectSprintAllocationLineServiceImpl
     }
 
     return valueMap;
+  }
+
+  @Override
+  @Transactional
+  public void sprintOnChange(Project project, Sprint sprint) {
+
+    Set<User> membersUserSet = project.getMembersUserSet();
+
+    if (CollectionUtils.isNotEmpty(membersUserSet)) {
+      List<SprintAllocationLine> sprintAllocationLineList =
+          sprintAllocationLineRepo.all().filter("self.sprint = ?1", sprint).fetch();
+
+      for (User member : membersUserSet) {
+        SprintAllocationLine sprintAllocationLine =
+            sprintAllocationLineList.stream()
+                .filter(line -> line.getUser().equals(member))
+                .findFirst()
+                .orElse(null);
+
+        if (sprintAllocationLine == null) {
+          sprintAllocationLine = new SprintAllocationLine();
+          sprintAllocationLine.setSprint(sprint);
+          sprintAllocationLine.setUser(member);
+        }
+
+        sprintAllocationLineRepo.save(sprintAllocationLine);
+      }
+    }
   }
 }

@@ -28,8 +28,4 @@ public interface SprintService {
   public BigDecimal computeTotalAllocatedTime(Sprint sprint);
 
   public BigDecimal computeTotalEstimatedTime(Sprint sprint);
-
-  public BigDecimal computeTotalPlannedTime(Sprint sprint);
-
-  public BigDecimal computeTotalRemainingTime(Sprint sprint);
 }
