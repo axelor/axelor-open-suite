@@ -40,11 +40,6 @@
   <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-method-check-resource-availibility" width="large">
-    <toolbar>
-      <button name="logTimeBtn" icon="clock-history"
-        onClick="save,action-timesheet-line-method-log-time" showIf="manageTimeSpent"
-        if="__config__.app.isApp('timesheet')"/>
-    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -227,20 +222,19 @@
 
   <form name="incl-log-times-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel title="Log Times" name="logTimesPanel" showIf="manageTimeSpent">
-      <panel-dashlet name="validatedTimesheetsPanel"
+    <panel title="Log Times" name="logTimesPanel" showIf="isShowTimeSpent">
+      <panel-dashlet name="validatedTimesheetsPanel" x-show-bars="true"
         if="__config__.app.getApp('timesheet')?.needValidation"
         action="action-project-dashlet-validated-timesheet-lines" title="Validated Timesheet lines"
         colSpan="12" canSearch="true"/>
-      <panel-dashlet name="waitingTimesheetLinesPanel"
+      <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
         if="__config__.app.getApp('timesheet')?.needValidation"
         action="action-project-dashlet-project-waiting-timesheet-lines"
         title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
-      <panel-dashlet name="allTimesheetsLinesPanel"
+      <panel-dashlet name="allTimesheetsLinesPanel" x-show-bars="true"
         if="!__config__.app.getApp('timesheet')?.needValidation"
         action="action-project-dashlet-project-all-timesheet-lines" title="TimesheetLine.timeSpent"
-        colSpan="12" canSearch="true"
-        help="To create new timespent lines, you need to do it via project task or via the HR &quot;Complete my Timesheet&quot; menu."/>
+        colSpan="12" canSearch="true"/>
     </panel>
   </form>
 

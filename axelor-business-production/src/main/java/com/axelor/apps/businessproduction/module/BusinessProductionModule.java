@@ -43,9 +43,11 @@ import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductio
 import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductionServiceImpl;
 import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessService;
 import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessServiceImpl;
+import com.axelor.apps.businessproduction.service.TimesheetLineRemoveBusinessProductionServiceImpl;
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessService;
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
@@ -94,5 +96,7 @@ public class BusinessProductionModule extends AxelorModule {
     bind(TimesheetLineCreateBusinessService.class).to(TimesheetLineCreateBusinessServiceImpl.class);
     bind(TimesheetLineUpdateBusinessService.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
     bind(TimesheetLineUpdateServiceImpl.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
+    bind(TimesheetLineRemoveServiceImpl.class)
+        .to(TimesheetLineRemoveBusinessProductionServiceImpl.class);
   }
 }
