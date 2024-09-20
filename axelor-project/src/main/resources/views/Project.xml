@@ -26,9 +26,11 @@
     <field name="assignedTo"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <button name="openGanttBtn" title="Gantt" icon="fa-tasks"
-      onClick="action-project-open-gantt"/>
     <field name="projectStatus"/>
+    <button name="openGanttBtn" title="Gantt" icon="bar-chart-steps"
+      onClick="action-project-open-gantt"/>
+    <button name="openTasks" onClick="action-project-view-show-related-tasks"
+      icon="list-task"/>
   </grid>
 
   <grid name="project-child-grid" title="Projects" model="com.axelor.apps.project.db.Project"
