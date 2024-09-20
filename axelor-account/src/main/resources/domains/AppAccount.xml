@@ -55,7 +55,8 @@
       title="Flat fee product"/>
     <many-to-one name="latePaymentInterestProduct" ref="com.axelor.apps.base.db.Product"
       title="Late payment product"/>
-
+    <decimal name="thresholdAmount" title="Threshold amount"
+      help="Threshold amount to generate late interest invoice"/>
 
     <extra-code><![CDATA[
 

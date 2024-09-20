@@ -41,6 +41,7 @@
         <field name="latePaymentInterestProduct" showIf="enableLatePaymentInterest"/>
         <field name="flatFeeProduct" showIf="enableLatePaymentInterest"/>
         <field name="latePaymentInterestFlatFee" showIf="enableLatePaymentInterest"/>
+        <field name="thresholdAmount" showIf="enableLatePaymentInterest"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
