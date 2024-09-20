@@ -59,10 +59,13 @@
         showIf="project.taskStatusManagementSelect != 1"/>
     </toolbar>
     <menubar>
-      <menu name="projectTaskMenu" title="Tools"
-        if="__config__.app.getApp('project')?.resourceManagement">
+      <menu name="projectTaskMenu" title="Tools">
         <item name="bookResourceItem" title="Book resource"
-          action="save,action-project-task-book-resource"/>
+          action="save,action-project-task-book-resource"
+          if="__config__.app.getApp('project')?.resourceManagement"/>
+        <item title="Show planning" action="action-project-task-view-show-planning"
+          if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
+          showIf="project.isShowPlanning"/>
       </menu>
     </menubar>
 
@@ -76,6 +79,8 @@
           hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
           x-order="sequence" onChange="action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
+        <field name="project.isShowPlanning" hidden="true"/>
+
       </panel>
       <field name="$provider" hidden="true" type="string"/>
       <panel name="projectDetailsPanel" colSpan="12">
@@ -101,15 +106,24 @@
     <panel-tabs name="mainPanelTab">
       <panel-include view="incl-overview-project-task-panel-form"/>
 
-      <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
-        if-module="axelor-human-resource" showIf="project.isShowPlanning">
-        <field name="budgetedTime" colSpan="4"/>
-        <spacer name="budgetedTimeSpacer" colSpan="4"/>
-        <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-          x-show-bars="false" action="action-project-task-dashlet-project-planning-time"
-          colSpan="12" canSearch="true"/>
-        <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
-        <field name="project.isShowPlanning" hidden="true"/>
+      <panel name="treeViewPanel" title="Tree view" colSpan="12" showIf="id">
+        <panel-dashlet name="taskTreePanel" title="Task Tree" colSpan="12"
+          action="action-view-show-task-tree"/>
+        <panel-related name="finishToStartSetPanel" field="finishToStartSet"
+          colSpan="12">
+          <field name="name"/>
+        </panel-related>
+      </panel>
+
+      <panel name="frequencyPanel" title="Frequency" showIf="project.isShowFrequency">
+        <field name="frequency"
+          onChange="action-project-task-record-set-date-or-frequency-changed" domain="1 &lt;&gt; 1"
+          canNew="true" grid-view="frequency-grid" form-view="frequency-form"/>
+        <field name="nextProjectTask" hidden="true" showIf="nextProjectTask"/>
+        <field name="isFirst" hidden="true"/>
+        <field name="doUpdateNextTasks" hidden="true"/>
+        <field name="hasDateOrFrequencyChanged" hidden="true"/>
+        <field name="project.isShowFrequency" hidden="true"/>
       </panel>
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
@@ -280,6 +294,20 @@
         <field name="attrs" colSpan="12"/>
       </panel>
       <field name="project.customFieldManagementSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="incl-planning-panel-task-form" title="Planning"
+    model="com.axelor.apps.project.db.ProjectTask" width="large">
+    <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
+      if-module="axelor-human-resource" showIf="project.isShowPlanning">
+      <field name="budgetedTime" colSpan="4"/>
+      <spacer name="budgetedTimeSpacer" colSpan="4"/>
+      <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
+        x-show-bars="false" action="action-project-task-dashlet-project-planning-time" colSpan="12"
+        canSearch="true"/>
+      <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
+      <field name="project.isShowPlanning" hidden="true"/>
     </panel>
   </form>
 
@@ -548,6 +576,12 @@
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <context name="_project" expr="eval:__parent__"
       if="_model == 'com.axelor.apps.project.db.Project'"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-show-planning" title="Planning"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="form" name="incl-planning-panel-task-form"/>
+    <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
   <action-record name="action-project-task-record-set-default"
