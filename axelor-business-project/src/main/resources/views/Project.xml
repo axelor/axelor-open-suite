@@ -15,6 +15,8 @@
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="fromDate"/>
     <field name="toDate"/>
+    <button name="openTasks" onClick="action-business-project-view-show-related-tasks"
+      icon="list-task"/>
   </grid>
 
   <grid name="folder-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
