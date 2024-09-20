@@ -115,7 +115,7 @@
         onClick="action-project-task-record-assigned-yourself,save"/>
       <button name="doneBtn" icon="fa-check"
         onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
-        showIf="project.isShowStatus"/>
+        showIf="project.taskStatusManagementSelect != 1"/>
     </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
@@ -127,6 +127,7 @@
 
     <panel showIf="nextProjectTask">
       <field name="doApplyToAllNextTasks" widget="InlineCheckbox" colSpan="12"/>
+      <field name="project.taskStatusManagementSelect" hidden="true"/>
     </panel>
 
     <panel name="mainPanel" colSpan="12">
@@ -174,43 +175,6 @@
                 required="true"/>
             </editor>
           </field>
-          <field name="ticketNumber"
-            if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
-          <field name="project" colSpan="6"
-            onChange="action-business-project-task-group-project-onchange"
-            domain="self.projectStatus.isCompleted = false" required="true"/>
-          <field name="parentTask" readonlyIf="project == null" colSpan="6"
-            onChange="action-project-task-record-get-parent-timeunit"
-            onSelect="action-project-task-attrs-project-parent-task-configurations"/>
-          <field name="frameworkCustomerContract" hidden="true"
-            onSelect="action-project-task-method-set-customer-contract-domain"
-            showIf="project.allowToGetPricesFromFrameworkContract"
-            onChange="action-project-task-group-set-price-from-contract"/>
-          <field name="frameworkSupplierContract" hidden="true"
-            onSelect="action-project-task-method-set-supplier-contract-domain"
-            showIf="project.allowToGetPricesFromFrameworkContract"
-            onChange="action-project-task-group-set-price-from-contract"/>
-          <field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false"
-            canView="false" canEdit="false"
-            onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true"
-            form-view="user-form" grid-view="user-grid"
-            onChange="action-project-task-group-assigned-to-on-change"/>
-          <field name="saleOrderLine" readonly="true" showIf="saleOrderLine"
-            form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
-          <field name="project.allowToGetPricesFromFrameworkContract" hidden="true"/>
-          <field name="site" onSelect="action-project-task-attrs-set-site-domain"
-            form-view="site-form" grid-view="site-grid"
-            if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
-          <field name="customerReferral"
-            onSelect="action-project-task-attrs-customer-referral-domain" hidden="true"
-            showIf="typeSelect == 'ticket'" if="__config__.app.isApp('business-project')"/>
-          <field name="isPrivate" hidden="true" showIf="typeSelect == 'ticket'" colSpan="6"
-            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-          <field name="isOrderAccepted" colSpan="3" hidden="true"
-            showIf="typeSelect == 'ticket'" if-module="axelor-business-support"
-            if="__config__.app.isApp('business-support')"/>
-          <field name="isOrderProposed" hidden="true" colSpan="3"
-            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
         </panel>
         <panel name="actionPanel" colSpan="4">
           <button name="acceptOrderBtn" title="Accept Order" hidden="true"
@@ -227,36 +191,25 @@
             showIf="assignment == 2 &amp;&amp; typeSelect == 'ticket'"/>
         </panel>
       </panel>
-      <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
-        <panel-include view="incl-characteristics-panel-form"/>
-        <field name="targetVersion" if-module="axelor-business-support"
-          if="__config__.app.isApp('business-support')" domain=":project member of self.projectSet"
-          colSpan="4" form-view="project-version-form" grid-view="project-version-grid"/>
-        <field name="assignment" hidden="true" showIf="typeSelect == 'ticket'"
-          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
-          colSpan="4"/>
-        <field name="invoicingProgress" readonly="true" colSpan="6"
-          showIf="invoicingType == 4"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel-include view="incl-overview-business-project-task-panel-form"/>
+
+      <panel name="timeFollowUpPanel" title="Time follow-up">
         <field name="timeUnit" colSpan="4" readonlyIf="saleOrderLine || parentTask"
           onSelect="action-project-task-attrs-set-time-unit-domain"
-          onChange="action-project-task-method-update-budgeted-time, save"
-          if="__config__.app.isApp('business-project')"/>
-      </panel>
-    </panel>
-    <panel-include view="incl-customized-field-panel-form"/>
-    <panel-tabs name="mainPanelTab">
-      <panel name="timeFollowUpPanel" title="Time follow-up"
-        if="__config__.app.isApp('business-project')" showIf="timeUnit">
+          onChange="action-project-task-method-update-budgeted-time, save"/>
         <field name="budgetedTime" colSpan="4"
           onChange="action-project-task-method-update-sold-time">
         </field>
         <field name="soldTime" readonlyIf="saleOrderLine" hidden="true" showIf="!parentTask"
           onChange="action-project-task-method-update-updated-time" colSpan="4"/>
-        <field name="updatedTime" showIf="!parentTask" colSpan="4"
+        <field name="updatedTime" hidden="true" colSpan="4"
           onChange="action-project-task-method-update-quantity"/>
         <field name="plannedTime" readonly="true" colSpan="4"/>
         <field name="spentTime" readonly="true" colSpan="4"/>
-        <panel name="reportingPanel" showIf="!parentTask" colSpan="12">
+        <panel name="reportingPanel" showIf="!parentTask" title="Reporting" colSpan="12"
+          canCollapse="true" collapseIf="false">
           <panel-dashlet action="action-project-task-view-percentage-progress-custom"
             colSpan="3" showTitle="false" height="125"/>
           <panel-dashlet
@@ -265,10 +218,22 @@
           <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
             colSpan="3" showTitle="false" height="125"/>
         </panel>
-      </panel>
-      <panel name="internalDescriptionPanel" title="Internal Description"
-        if="__config__.app.isApp('business-support')" if-module="axelor-business-support">
-        <field name="internalDescription" colSpan="12" widget="html"/>
+        <panel name="timerPanel" title="Timer" showIf="id" colSpan="12"
+          if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')" canCollapse="true"
+          collapseIf="false">
+          <panel name="actionsPanel" title="Actions">
+            <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12"
+              hidden="true" onClick="action-project-task-method-start-timer"/>
+            <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="12"
+              hidden="true" onClick="action-project-task-method-stop-timer"/>
+            <button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="12"
+              hidden="true" onClick="action-project-task-method-cancel-timer"/>
+          </panel>
+          <panel name="durationPanel">
+            <field name="$_totalTimerDuration" type="decimal" readonly="true"
+              title="Total duration (Hours)" colSpan="12"/>
+          </panel>
+        </panel>
       </panel>
 
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
@@ -279,24 +244,9 @@
         <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
         <field name="project.isShowPlanning" hidden="true"/>
       </panel>
-      <panel name="treeViewPanel" title="Tree view" colSpan="12" showIf="id">
-        <panel-dashlet name="taskTreePanel" title="Task Tree" colSpan="12"
-          action="action-business-view-show-task-tree"/>
-        <panel-related name="finishToStartSetPanel" field="finishToStartSet"
-          colSpan="12">
-          <field name="name"/>
-        </panel-related>
-      </panel>
-      <panel name="purchasePanel" title="Purchase" colSpan="12"
-        if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
-        <button name="generatePurchaseOrderBtn" title="Generate Purchase Order"
-          onClick="action-project-task-method-generate-purchase-order"/>
-        <field name="purchaseOrderList" colSpan="12" canNew="false"/>
-        <field name="purchaseOrderLineList" colSpan="12" canNew="false"/>
-      </panel>
-      <panel name="financialDataPanel" title="Financial Data" colSpan="12"
-        if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
-        <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true">
+
+      <panel name="financialDataPanel" title="Financial Data" colSpan="12">
+        <panel name="contentPanel" title="Content" colSpan="12">
           <field name="product" colSpan="3" canEdit="false"
             onChange="action-business-project-project-task-group-product-onchange"
             onSelect="action-project-task-attrs-set-product-domain" form-view="product-form"
@@ -351,6 +301,24 @@
           <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
             width="120" widget="Image"/>
         </panel>
+      </panel>
+
+      <panel name="taskPanel" title="Tasks" colSpan="12">
+        <panel-dashlet name="taskTreePanel" title="Sub task tree" colSpan="12"
+          action="action-business-view-show-task-tree"/>
+        <panel-related name="finishToStartSetPanel" field="finishToStartSet"
+          colSpan="12">
+          <field name="name"/>
+        </panel-related>
+        <panel-include view="incl-frequency-panel-task-form"/>
+      </panel>
+
+      <panel name="purchasePanel" title="Purchase" colSpan="12"
+        if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
+        <button name="generatePurchaseOrderBtn" title="Generate Purchase Order"
+          onClick="action-project-task-method-generate-purchase-order"/>
+        <field name="purchaseOrderList" colSpan="12" canNew="false"/>
+        <field name="purchaseOrderLineList" colSpan="12" canNew="false"/>
       </panel>
       <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
         <panel-dashlet action="action-project-task-view-turnover-custom" colSpan="3"
@@ -409,17 +377,6 @@
         <field name="landingMarkup" hidden="true"/>
       </panel>
 
-      <panel name="frequencyPanel" title="Frequency" showIf="project.isShowFrequency">
-        <field name="frequency"
-          onChange="action-project-task-record-set-date-or-frequency-changed" domain="1 &lt;&gt; 1"
-          canNew="true" grid-view="frequency-grid" form-view="frequency-form"/>
-        <field name="nextProjectTask" hidden="true" showIf="nextProjectTask"/>
-        <field name="isFirst" hidden="true"/>
-        <field name="doUpdateNextTasks" hidden="true"/>
-        <field name="hasDateOrFrequencyChanged" hidden="true"/>
-        <field name="project.isShowFrequency" hidden="true"/>
-      </panel>
-
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
         if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
         <panel-dashlet name="validatedTimesheetLinesPanel" x-show-bars="true"
@@ -436,21 +393,6 @@
         <field name="project.isShowTimeSpent" hidden="true"/>
       </panel>
 
-      <panel name="timerPanel" title="Timer" showIf="id" hidden="true"
-        if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')">
-        <panel name="actionsPanel" title="Actions">
-          <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12"
-            hidden="true" onClick="action-project-task-method-start-timer"/>
-          <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="12" hidden="true"
-            onClick="action-project-task-method-stop-timer"/>
-          <button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="12"
-            hidden="true" onClick="action-project-task-method-cancel-timer"/>
-        </panel>
-        <panel name="durationPanel">
-          <field name="$_totalTimerDuration" type="decimal" readonly="true"
-            title="Total duration (Hours)" colSpan="12"/>
-        </panel>
-      </panel>
       <panel-include view="incl-links-panel-form"/>
     </panel-tabs>
     <panel name="attrsPanel">
@@ -460,6 +402,65 @@
       <mail-messages/>
       <mail-followers/>
     </panel-mail>
+  </form>
+
+  <form name="incl-overview-business-project-task-panel-form" title="Overview"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <panel name="overviewPanel" title="Overview">
+      <field name="ticketNumber"
+        if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
+      <field name="project" colSpan="6"
+        onChange="action-business-project-task-group-project-onchange"
+        domain="self.projectStatus.isCompleted = false" required="true"/>
+      <field name="parentTask" readonlyIf="project == null" colSpan="6"
+        onChange="action-project-task-record-get-parent-timeunit"
+        onSelect="action-project-task-attrs-project-parent-task-configurations"/>
+      <field name="frameworkCustomerContract"
+        onSelect="action-project-task-method-set-customer-contract-domain"
+        showIf="project.allowToGetPricesFromFrameworkContract"
+        onChange="action-project-task-group-set-price-from-contract"/>
+      <field name="frameworkSupplierContract"
+        onSelect="action-project-task-method-set-supplier-contract-domain"
+        showIf="project.allowToGetPricesFromFrameworkContract"
+        onChange="action-project-task-group-set-price-from-contract"/>
+      <field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false"
+        canView="false" canEdit="false"
+        onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true"
+        form-view="user-form" grid-view="user-grid"
+        onChange="action-project-task-group-assigned-to-on-change"/>
+      <field name="saleOrderLine" readonly="true" showIf="saleOrderLine"
+        form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
+      <field name="project.allowToGetPricesFromFrameworkContract" hidden="true"/>
+      <field name="site" onSelect="action-project-task-attrs-set-site-domain"
+        form-view="site-form" grid-view="site-grid"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+      <field name="customerReferral"
+        onSelect="action-project-task-attrs-customer-referral-domain"
+        showIf="typeSelect == 'ticket'" if="__config__.app.isApp('business-project')"/>
+      <field name="isPrivate" showIf="typeSelect == 'ticket'" colSpan="6"
+        if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+      <field name="isOrderAccepted" colSpan="3" showIf="typeSelect == 'ticket'"
+        if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+      <field name="isOrderProposed" hidden="true" colSpan="3"
+        if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+
+      <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
+        collapseIf="true" canCollapse="true">
+        <panel-include view="incl-characteristics-panel-form"/>
+        <field name="targetVersion" if-module="axelor-business-support"
+          if="__config__.app.isApp('business-support')" domain=":project member of self.projectSet"
+          colSpan="4" form-view="project-version-form" grid-view="project-version-grid"/>
+        <field name="assignment" hidden="true" showIf="typeSelect == 'ticket'"
+          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
+          colSpan="4"/>
+        <field name="invoicingProgress" readonly="true" colSpan="4"
+          showIf="invoicingType == 4"/>
+        <field name="description" colSpan="12" widget="html"/>
+        <field name="internalDescription" colSpan="12" widget="html"
+          if="__config__.app.isApp('business-support')" if-module="axelor-business-support"/>
+      </panel>
+      <panel-include view="incl-customized-field-panel-form"/>
+    </panel>
   </form>
 
   <tree name="business-project-project-task-tree" title="Task">
