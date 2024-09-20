@@ -155,32 +155,32 @@
       <panel name="reportingPanel" title="Reporting">
         <panel title="Time follow-up" colSpan="12" canCollapse="true" collapseIf="true">
           <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
-            showTitle="false" height="125"/>
+            showTitle="false" height="125" canSearch="true"/>
           <panel-dashlet action="action-project-view-updated-time-custom" colSpan="3"
-            showTitle="false" height="125"/>
+            showTitle="false" height="125" canSearch="true"/>
           <panel-dashlet action="action-project-view-planned-time-custom" colSpan="3"
-            showTitle="false" height="125"/>
+            showTitle="false" height="125" canSearch="true"/>
           <panel-dashlet action="action-project-view-spent-time-custom" colSpan="3"
-            showTitle="false" height="125"/>
+            showTitle="false" height="125" canSearch="true"/>
 
           <panel-dashlet action="action-project-view-percentage-progress-custom"
-            colSpan="3" showTitle="false" height="125"/>
+            colSpan="3" showTitle="false" height="125" canSearch="true"/>
           <panel-dashlet action="action-project-view-percentage-consumption-custom"
-            colSpan="3" showTitle="false" height="125"/>
+            colSpan="3" showTitle="false" height="125" canSearch="true"/>
           <panel-dashlet action="action-project-view-remaining-to-do-custom"
-            colSpan="3" showTitle="false" height="125"/>
+            colSpan="3" showTitle="false" height="125" canSearch="true"/>
         </panel>
 
         <panel title="Financial follow-up" colSpan="12" canCollapse="true" collapseIf="true">
           <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
             <panel-dashlet action="action-project-view-turnover-custom" colSpan="3"
-              height="125"/>
+              height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-initial-costs-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-initial-margin-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-initial-markup-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <field name="turnover" hidden="true"/>
             <field name="initialCosts" hidden="true"/>
             <field name="initialMargin" hidden="true"/>
@@ -188,24 +188,24 @@
           </panel>
           <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
             <panel-dashlet action="action-project-view-forecast-costs-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-forecast-margin-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-forecast-markup-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <field name="forecastCosts" hidden="true"/>
             <field name="forecastMargin" hidden="true"/>
             <field name="forecastMarkup" hidden="true"/>
           </panel>
           <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
             <panel-dashlet action="action-project-view-real-turnover-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-real-costs-custom" colSpan="3"
-              height="125"/>
+              height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-real-margin-custom" colSpan="3"
-              height="125"/>
+              height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-real-markup-custom" colSpan="3"
-              height="125"/>
+              height="125" canSearch="true"/>
             <field name="realTurnover" hidden="true"/>
             <field name="realCosts" hidden="true"/>
             <field name="realMargin" hidden="true"/>
@@ -213,24 +213,24 @@
           </panel>
           <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
             <panel-dashlet action="action-project-view-landing-costs-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-landing-margin-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-landing-markup-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <field name="landingCosts" hidden="true"/>
             <field name="landingMargin" hidden="true"/>
             <field name="landingMarkup" hidden="true"/>
           </panel>
           <panel name="invoicingPanel" title="Invoicing (excl. VAT)" colSpan="12">
             <panel-dashlet action="action-project-view-total-invoiced-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-invoiced-this-month-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-invoiced-last-month-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-total-paid-custom" colSpan="3"
-              height="125"/>
+              height="125" canSearch="true"/>
             <field name="totalInvoiced" hidden="true"/>
             <field name="invoicedThisMonth" hidden="true"/>
             <field name="invoicedLastMonth" hidden="true"/>
@@ -245,7 +245,8 @@
 
       <panel title="Tasks" name="taskTreePanel">
         <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
-          colSpan="12" action="action-view-show-business-project-task" x-show-bars="true"/>
+          colSpan="12" action="action-view-show-business-project-task" x-show-bars="true"
+          canSearch="true"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
           colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
@@ -290,7 +291,7 @@
           onClick="action-project-attrs-sales-order-line-cancel-manage-lines"/>
         <panel-dashlet name="saleOrderLinePanel"
           action="action-project-view-show-confirmed-sale-order-lines" colSpan="12" canSearch="true"/>
-        <panel-dashlet name="customerDeliveriesPanel"
+        <panel-dashlet name="customerDeliveriesPanel" canSearch="true"
           action="action-project-dashlet-customer-deliveries" colSpan="12"/>
       </panel>
       <panel title="Purchases" name="purchasesPanel"
@@ -328,7 +329,7 @@
         <panel-dashlet name="purchaseOrderLinePanel"
           action="action-project-view-show-confirmed-purchase-order-lines" colSpan="12"
           canSearch="true"/>
-        <panel-dashlet name="supplierArrivalsPanel"
+        <panel-dashlet name="supplierArrivalsPanel" canSearch="true"
           action="action-project-dashlet-supplier-arrivals" colSpan="12"/>
       </panel>
 
@@ -345,7 +346,7 @@
           action="action-project-dashlet-expense-validated" colSpan="12" canSearch="true"/>
         <button name="selectNewExpenseLinesBtn" title="Select new lines"
           css="btn-custom text-left" onClick="save,action-project-attrs-expense-line-select-lines"
-          hideIf="$popup() || $readonly()" colSpan="3"/>
+          hideIf="$popup() || $readonly()" colSpan="3" canSearch="true"/>
         <button name="manageExpenseLinesBtn" title="Manage lines" css="btn-custom text-left"
           onClick="save,action-project-attrs-expense-line-manage-lines"
           hideIf="$popup() || $readonly()" colSpan="3"/>
@@ -387,7 +388,7 @@
           action="action-project-dashlet-customer-contracts" colSpan="12" canSearch="true"/>
         <panel-dashlet name="supplierContractPanel" title="Supplier contracts"
           action="action-project-dashlet-supplier-contracts" colSpan="12" canSearch="true"/>
-        <panel-dashlet name="contractInvoicePanel" title="Invoices"
+        <panel-dashlet name="contractInvoicePanel" title="Invoices" canSearch="true"
           action="action-project-dashlet-contract-invoices" colSpan="12"/>
       </panel>
 
@@ -424,7 +425,7 @@
             grid-view="analytic-distribution-template-grid"
             form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
             domain="self.company = :company AND self.isSpecific = false"/>
-          <panel-dashlet name="analyticDashletPanel"
+          <panel-dashlet name="analyticDashletPanel" canSearch="true"
             action="action-project-dashlet-analytic-move-lines" colSpan="12"/>
         </panel>
 
@@ -442,7 +443,7 @@
           <panel-related name="manualElementListPanel" colSpan="12"
             field="manualElementList" form-view="manual-element-form"
             grid-view="manual-element-grid"/>
-          <panel-dashlet name="allinvoicingProjectsPanel"
+          <panel-dashlet name="allinvoicingProjectsPanel" canSearch="true"
             action="action-dashlet-project-show-all-invoicing-project" colSpan="12"/>
           <panel-dashlet name="customerInvoicePanel"
             action="action-project-dashlet-customer-invoices" colSpan="12"
