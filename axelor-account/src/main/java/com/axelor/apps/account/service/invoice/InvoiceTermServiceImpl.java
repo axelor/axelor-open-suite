@@ -695,7 +695,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
 
-      if (invoiceTermPayment.getCompanyPaidAmount().equals(foreignExchangeAmount)) {
+      if (invoiceTermPayment.getCompanyPaidAmount().compareTo(foreignExchangeAmount) == 0) {
         return BigDecimal.ZERO;
       }
     }
