@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="business-project-grid" title="Projects"
     model="com.axelor.apps.project.db.Project">
@@ -25,10 +25,20 @@
       <attribute name="onNew" value="action-business-project-project-group-on-new"/>
       <attribute name="onLoad" value="action-business-project-project-group-on-load"/>
     </extend>
-    <extend target="//field[@name='projectFolderSet']">
+    <extend target="//field[@name='assignedTo']">
+      <attribute name="onChange"
+        value="action-business-project-group-assigned-to-onchange"/>
+    </extend>
+    <extend target="//button[@name='finishBtn']">
+      <attribute name="onClick" value="action-business-project-group-finish-project"/>
+    </extend>
+    <extend target="//field[@name='projectStatus']">
+      <attribute name="onChange"
+        value="action-business-project-group-project-status-on-change"/>
+    </extend>
+    <extend target="//field[@name='projectTimeUnit']">
       <insert position="after">
         <field name="numberHoursADay" if="__config__.app.isApp('business-project')"/>
-        <field name="projectTimeUnit" if="__config__.app.isApp('business-project')"/>
         <field name="spentTimeCostComputationMethod"
           if="__config__.app.isApp('business-project')"/>
       </insert>
@@ -38,6 +48,20 @@
         <item title="Compute project totals"
           action="save,action-project-method-compute-project-totals"
           if="__config__.app.isApp('business-project')" showIf="id &amp;&amp;isBusinessProject"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='invoicingPanel']/field[@name='invoicingComment']">
+      <insert position="before">
+        <panel name="analyticDistributionPanel" title="Analytics"
+          if-module="axelor-business-project"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+          hidden="true" showIf="isBusinessProject" colSpan="12">
+          <help colSpan="12"><![CDATA[This analytic distribution template will be filled with partner or assigned user configuration according to Business Project module configuration.]]></help>
+          <field name="analyticDistributionTemplate"
+            grid-view="analytic-distribution-template-grid"
+            form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
+            domain="self.company = :company AND self.isSpecific = false"/>
+        </panel>
       </insert>
     </extend>
     <extend target="//panel[@name='salesPanel']">
@@ -135,17 +159,42 @@
         </panel>
       </insert>
     </extend>
+    <extend target="//field[@name='imputable']">
+      <insert position="after">
+        <spacer colSpan="3"/>
+        <field name="allowToGetPricesFromFrameworkContract" hidden="true"
+          showIf="isBusinessProject"/>
+      </insert>
+    </extend>
+    <extend target="//button[@name='createNewCustomerContract']">
+      <insert position="before">
+        <panel name="frameworkContractPanel" hidden="true"
+          showIf="allowToGetPricesFromFrameworkContract" colSpan="12">
+          <field name="frameworkCustomerContractSet" colSpan="12"
+            domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 1"/>
+          <field name="defaultFrameworkCustomerContract"
+            onSelect="action-project-attrs-set-default-customer-contract-domain"/>
+          <field name="frameworkSupplierContractSet" colSpan="12"
+            domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 2"/>
+          <field name="defaultFrameworkSupplierContract"
+            onSelect="action-project-attrs-set-default-supplier-contract-domain"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <action-group name="action-business-project-project-group-on-new">
     <action name="action-project-group-on-new-project"/>
     <action name="action-business-project-project-attrs-defaults"/>
     <action name="action-project-attrs-set-time-unit-domain"/>
+    <action name="action-business-project-method-get-analytic-distribution-template"/>
+    <action name="action-business-project-method-set-analytic-distribution-template-required"/>
   </action-group>
 
   <action-group name="action-business-project-project-group-on-load">
     <action name="action-project-on-load-group"/>
     <action name="action-project-attrs-set-time-unit-domain"/>
+    <action name="action-business-project-method-set-analytic-distribution-template-required"/>
   </action-group>
 
   <action-method name="action-project-method-generate-quotation">
@@ -713,6 +762,54 @@
   <action-method name="action-project-method-compute-project-totals">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="computeProjectTotals"/>
+  </action-method>
+
+  <action-group name="action-business-project-group-finish-project">
+    <action name="action-business-project-method-check-project-state"
+      if="__config__.app.isApp('business-project') &amp;&amp; isBusinessProject"/>
+    <action name="action-project-group-finish-project"/>
+  </action-group>
+
+  <action-group name="action-business-project-group-project-status-on-change">
+    <action name="action-business-project-method-check-project-state"
+      if="__config__.app.isApp('business-project') &amp;&amp; isBusinessProject &amp;&amp; projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus.id"/>
+    <action name="action-project-group-finish-project"
+      if="__config__.app.isApp('business-project') &amp;&amp; isBusinessProject &amp;&amp; projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus.id"/>
+  </action-group>
+
+  <action-method name="action-business-project-method-check-project-state">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="checkProjectState"/>
+  </action-method>
+
+  <action-attrs name="action-project-attrs-set-default-customer-contract-domain">
+    <attribute for="defaultFrameworkCustomerContract" name="domain"
+      expr="eval: &quot;self.id IN (${frameworkCustomerContractSet?.collect{it.id}.join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-set-default-supplier-contract-domain">
+    <attribute for="defaultFrameworkSupplierContract" name="domain"
+      expr="eval: &quot;self.id IN (${frameworkSupplierContractSet?.collect{it.id}.join(',')})&quot;"/>
+  </action-attrs>
+
+  <!-- Analytic -->
+  <!-- Action group -->
+  <action-group name="action-business-project-group-assigned-to-onchange">
+    <action name="action-attrs-project-add-member"/>
+    <action name="action-business-project-method-get-analytic-distribution-template"/>
+  </action-group>
+
+  <!-- Action method -->
+  <action-method
+    name="action-business-project-method-set-analytic-distribution-template-required">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="setAnalyticDistributionTemplateRequired"/>
+  </action-method>
+
+  <action-method
+    name="action-business-project-method-get-analytic-distribution-template">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="getAnalyticDistributionTemplate"/>
   </action-method>
 
 </object-views>

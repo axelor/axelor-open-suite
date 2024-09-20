@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form name="tracking-number-form" title="Tracking number"
+    model="com.axelor.apps.stock.db.TrackingNumber" id="supplychain-tracking-number-form"
+    extension="true">
+    <extend target="//panel[@name='originPanel']//field[@name='originInventoryLine']">
+      <insert position="after">
+        <field name="originPurchaseOrderLine"/>
+        <field name="originSaleOrderLine"/>
+      </insert>
+    </extend>
+  </form>
+
+
+  <form name="tracking-number-stock-move-line-form" title="Tracking number"
+    id="supplychain-tracking-number-stock-move-line-form"
+    model="com.axelor.apps.stock.db.TrackingNumber" extension="true">
+    <extend target="//panel[@name='originPanel']//field[@name='originInventoryLine']">
+      <insert position="after">
+        <field name="originPurchaseOrderLine"/>
+        <field name="originSaleOrderLine"/>
+      </insert>
+    </extend>
+  </form>
 
   <search name="tracking-number-search" title="Tracking number search" limit="50"
     id="tracking-number-supplychain-search">
@@ -50,4 +73,26 @@
       </where>
     </select>
   </search>
+
+  <action-record name="action-tracking-number-record-set-origin"
+    model="com.axelor.apps.stock.db.TrackingNumber"
+    id="supplychain-action-tracking-number-record-set-origin">
+    <field name="originMoveTypeSelect" expr="eval: 1" if="__parent__ == null"/>
+    <field name="originMoveTypeSelect" expr="eval: 2"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
+    <field name="originInventoryLine" expr="eval: __parent__"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
+    <field name="originStockMoveLine" expr="eval: __parent__"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine'"/>
+    <field name="originMoveTypeSelect" expr="eval: 1"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; (__parent__?.stockMove?.typeSelect == 1)"/>
+    <field name="originMoveTypeSelect" expr="eval: 3"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; (__parent__?.saleOrderLine != null || __parent__?.stockMove?.typeSelect == 2)"/>
+    <field name="originSaleOrderLine" expr="eval: __parent__?.saleOrderLine"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; __parent__?.saleOrderLine != null"/>
+    <field name="originMoveTypeSelect" expr="eval: 4"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; (__parent__?.purchaseOrderLine != null || __parent__?.stockMove?.typeSelect == 3)"/>
+    <field name="originPurchaseOrderLine" expr="eval: __parent__?.purchaseOrderLine"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; __parent__?.purchaseOrderLine != null"/>
+  </action-record>
 </object-views>

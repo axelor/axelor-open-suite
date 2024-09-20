@@ -70,7 +70,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -323,16 +325,17 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
 
-      this.splitStockMoveLine(
-          stockMoveLine,
-          minQty,
-          trackingNumberService.getTrackingNumber(
-              product,
-              qtyByTracking,
-              stockMove.getCompany(),
-              stockMove.getEstimatedDate(),
-              stockMove.getOrigin(),
-              supplier));
+      StockMoveLine newStockMoveLine =
+          this.splitStockMoveLine(
+              stockMoveLine,
+              minQty,
+              trackingNumberService.getTrackingNumber(
+                  product,
+                  stockMove.getCompany(),
+                  stockMove.getEstimatedDate(),
+                  stockMove.getOrigin(),
+                  supplier));
+      this.fillOriginTrackingNumber(newStockMoveLine);
 
       generateTrakingNumberCounter++;
 
@@ -346,11 +349,22 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setTrackingNumber(
           trackingNumberService.getTrackingNumber(
               product,
-              qtyByTracking,
               stockMove.getCompany(),
               stockMove.getEstimatedDate(),
               stockMove.getOrigin(),
               supplier));
+      fillOriginTrackingNumber(stockMoveLine);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void fillOriginTrackingNumber(StockMoveLine stockMoveLine) {
+    TrackingNumber trackingNumber = stockMoveLine.getTrackingNumber();
+    if (trackingNumber != null) {
+      trackingNumber.setOriginMoveTypeSelect(0);
+      trackingNumber.setOriginStockMoveLine(stockMoveLine);
+
+      trackingNumberRepo.save(trackingNumber);
     }
   }
 
@@ -629,7 +643,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       StockMoveLine stockMoveLine,
       LocalDate date,
       String origin,
-      int toStatus) {
+      int toStatus)
+      throws AxelorException {
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
             stockLocation, stockMoveLine.getProduct());
@@ -818,22 +833,17 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
       TrackingNumber trackingNumber = stockMoveLine.getTrackingNumber();
-
-      if (trackingNumber == null) {
+      if (trackingNumber == null
+          || !trackingNumber.getCheckExpirationDateAtStockMoveRealization()) {
         continue;
       }
-
       Product product = trackingNumber.getProduct();
 
-      if (product == null || !product.getCheckExpirationDateAtStockMoveRealization()) {
-        continue;
-      }
-
-      if (product.getHasWarranty()
+      if (trackingNumber.getHasWarranty()
               && trackingNumber
                   .getWarrantyExpirationDate()
                   .isBefore(appBaseService.getTodayDate(stockMove.getCompany()))
-          || product.getIsPerishable()
+          || trackingNumber.getIsPerishable()
               && trackingNumber
                   .getPerishableExpirationDate()
                   .isBefore(appBaseService.getTodayDate(stockMove.getCompany()))) {
@@ -1246,7 +1256,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     startUnit = product.getMassUnit();
     if (startUnit == null) {
 
-      if (!checkMassesRequired(stockMove, stockMoveLine)) {
+      if (stockMove == null || !checkMassesRequired(stockMove, stockMoveLine)) {
         return product.getNetMass();
       }
 
@@ -1273,8 +1283,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     Address fromAddress = stockMoveToolService.getFromAddress(stockMove, stockMoveLine);
     Address toAddress = stockMoveToolService.getToAddress(stockMove, stockMoveLine);
 
-    Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
-    Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;
+    Country fromCountry = fromAddress != null ? fromAddress.getCountry() : null;
+    Country toCountry = toAddress != null ? toAddress.getCountry() : null;
 
     return fromCountry != null
         && toCountry != null
@@ -1315,11 +1325,22 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       if (trackingNumber == null) {
         trackingNumber = new TrackingNumber();
-        trackingNumber.setCounter(counter);
         trackingNumber.setTrackingNumberSeq(trackingNumberItem.get("trackingNumberSeq").toString());
+        boolean hasWarranty =
+            trackingNumberItem.get("hasWarranty") != null
+                && Boolean.parseBoolean(trackingNumberItem.get("hasWarranty").toString());
+        trackingNumber.setHasWarranty(hasWarranty);
         if (trackingNumberItem.get("warrantyExpirationDate") != null) {
           trackingNumber.setWarrantyExpirationDate(
               LocalDate.parse(trackingNumberItem.get("warrantyExpirationDate").toString()));
+        }
+        boolean isPerishable =
+            trackingNumberItem.get("isPerishable") != null
+                && Boolean.parseBoolean(trackingNumberItem.get("isPerishable").toString());
+        trackingNumber.setIsPerishable(isPerishable);
+        if (trackingNumberItem.get("perishableExpirationDate") != null) {
+          trackingNumber.setPerishableExpirationDate(
+              LocalDate.parse(trackingNumberItem.get("perishableExpirationDate").toString()));
         }
         if (trackingNumberItem.get("origin") != null) {
           trackingNumber.setOrigin(trackingNumberItem.get("origin").toString());
@@ -1693,15 +1714,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   public void splitStockMoveLineByTrackingNumber(StockMove stockMove) throws AxelorException {
     Integer type = stockMove.getTypeSelect();
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-    if (type == StockMoveRepository.TYPE_INTERNAL
-        || stockMoveLineList == null
-        || stockMoveLineList.isEmpty()) {
+    if (type == StockMoveRepository.TYPE_INTERNAL || CollectionUtils.isEmpty(stockMoveLineList)) {
       return;
     }
     // Does not manage the case where line is already splited
     // Works when generating a tracking number
     // But not when assigning one
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+    for (StockMoveLine stockMoveLine : new CopyOnWriteArrayList<>(stockMoveLineList)) {
       Product product = stockMoveLine.getProduct();
       if (product == null) {
         return;
@@ -1729,10 +1748,41 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine) {
+  public void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine)
+      throws AxelorException {
+    checkSplitConditions(stockMoveLine);
     StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, false);
     this.updateStockMoveLinesOfSplit(newStockMoveLine, stockMoveLine);
     stockMoveLineRepository.save(newStockMoveLine);
+  }
+
+  protected void checkSplitConditions(StockMoveLine stockMoveLine) throws AxelorException {
+    StockMove stockMove = stockMoveLine.getStockMove();
+    if (stockMove != null) {
+      Integer statusSelect = stockMove.getStatusSelect();
+      List<Integer> authorizedStatus = new ArrayList<>();
+      authorizedStatus.add(StockMoveRepository.STATUS_DRAFT);
+      authorizedStatus.add(StockMoveRepository.STATUS_PLANNED);
+      if (!authorizedStatus.contains(statusSelect)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_STATUS));
+      }
+
+      if (!stockMove.getTypeSelect().equals(StockMoveRepository.TYPE_INCOMING)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_TYPE));
+      }
+    }
+
+    BigDecimal realQty = stockMoveLine.getRealQty();
+    BigDecimal qty = stockMoveLine.getQty();
+    if (realQty != null && (realQty.signum() < 1 || realQty.compareTo(qty) >= 0)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_REAL_QTY));
+    }
   }
 
   protected void updateStockMoveLinesOfSplit(

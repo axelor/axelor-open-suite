@@ -19,22 +19,21 @@
 package com.axelor.apps.contract.service.attributes;
 
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.contract.db.Contract;
-import com.axelor.apps.contract.service.CurrencyScaleServiceContract;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ContractLineAttrsServiceImpl implements ContractLineAttrsService {
 
-  protected CurrencyScaleServiceContract currencyScaleServiceContract;
+  protected CurrencyScaleService currencyScaleService;
   protected AppAccountService appAccountService;
 
   @Inject
   public ContractLineAttrsServiceImpl(
-      CurrencyScaleServiceContract currencyScaleServiceContract,
-      AppAccountService appAccountService) {
-    this.currencyScaleServiceContract = currencyScaleServiceContract;
+      CurrencyScaleService currencyScaleService, AppAccountService appAccountService) {
+    this.currencyScaleService = currencyScaleService;
     this.appAccountService = appAccountService;
   }
 
@@ -85,7 +84,7 @@ public class ContractLineAttrsServiceImpl implements ContractLineAttrsService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     if (contract != null) {
-      int currencyScale = currencyScaleServiceContract.getScale(contract);
+      int currencyScale = currencyScaleService.getScale(contract);
 
       this.addAttr(this.computeField("exTaxTotal", prefix), "scale", currencyScale, attrsMap);
       this.addAttr(this.computeField("inTaxTotal", prefix), "scale", currencyScale, attrsMap);

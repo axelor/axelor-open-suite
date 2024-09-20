@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.AbstractContractRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
+import com.axelor.apps.contract.service.ContractInvoicingService;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
@@ -35,8 +36,11 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
 
   @Inject
   public BatchContractFactoryInvoicing(
-      ContractRepository repository, ContractService service, AppBaseService baseService) {
-    super(repository, service, baseService);
+      ContractRepository repository,
+      ContractService service,
+      ContractInvoicingService invoicingService,
+      AppBaseService baseService) {
+    super(repository, service, invoicingService, baseService);
   }
 
   @Override
@@ -53,7 +57,7 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
 
   @Override
   public void process(Contract contract) throws AxelorException {
-    Invoice invoice = service.invoicingContract(contract);
+    Invoice invoice = invoicingService.invoicingContract(contract);
     if (invoice != null && batch != null) {
       invoice.addBatchSetItem(batch);
     }

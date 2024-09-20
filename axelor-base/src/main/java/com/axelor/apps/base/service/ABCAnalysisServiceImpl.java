@@ -85,21 +85,17 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   public List<ABCAnalysisClass> initABCClasses() {
     List<ABCAnalysisClass> abcAnalysisClassList = new ArrayList<>();
 
-    abcAnalysisClassList.add(
-        createAbcClass("A", 0, BigDecimal.valueOf(80), BigDecimal.valueOf(20)));
-    abcAnalysisClassList.add(
-        createAbcClass("B", 1, BigDecimal.valueOf(15), BigDecimal.valueOf(30)));
-    abcAnalysisClassList.add(createAbcClass("C", 2, BigDecimal.valueOf(5), BigDecimal.valueOf(50)));
+    abcAnalysisClassList.add(createAbcClass("A", BigDecimal.valueOf(80), BigDecimal.valueOf(20)));
+    abcAnalysisClassList.add(createAbcClass("B", BigDecimal.valueOf(15), BigDecimal.valueOf(30)));
+    abcAnalysisClassList.add(createAbcClass("C", BigDecimal.valueOf(5), BigDecimal.valueOf(50)));
 
     return abcAnalysisClassList;
   }
 
-  protected ABCAnalysisClass createAbcClass(
-      String name, Integer sequence, BigDecimal worth, BigDecimal qty) {
+  protected ABCAnalysisClass createAbcClass(String name, BigDecimal worth, BigDecimal qty) {
     ABCAnalysisClass abcAnalysisClass = new ABCAnalysisClass();
 
     abcAnalysisClass.setName(name);
-    abcAnalysisClass.setSequence(sequence);
     abcAnalysisClass.setWorth(worth);
     abcAnalysisClass.setQty(qty);
 

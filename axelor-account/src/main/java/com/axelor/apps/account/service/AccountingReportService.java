@@ -67,7 +67,7 @@ public interface AccountingReportService {
 
   public BigDecimal getCreditBalanceType4();
 
-  public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException;
+  public boolean areThereTooManyLines(AccountingReport accountingReport) throws AxelorException;
 
   public void testReportedDateField(LocalDate reportedDate) throws AxelorException;
 
@@ -84,4 +84,6 @@ public interface AccountingReportService {
    */
   public Map<String, Object> getFieldsFromReportTypeModelAccountingReport(
       AccountingReport accountingReport) throws AxelorException;
+
+  void checkReportType(AccountingReport accountingReport) throws AxelorException;
 }

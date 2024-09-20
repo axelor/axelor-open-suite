@@ -26,6 +26,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 public interface FixedAssetLineMoveService {
 
@@ -64,7 +65,10 @@ public interface FixedAssetLineMoveService {
       throws AxelorException;
 
   void generateSaleMove(
-      FixedAsset fixedAsset, TaxLine taxLine, BigDecimal disposalAmount, LocalDate disposalDate)
+      FixedAsset fixedAsset,
+      Set<TaxLine> saleTaxLineSet,
+      BigDecimal disposalAmount,
+      LocalDate disposalDate)
       throws AxelorException;
 
   /**

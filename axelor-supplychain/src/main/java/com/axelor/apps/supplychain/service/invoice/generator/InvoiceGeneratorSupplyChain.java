@@ -120,7 +120,6 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         stockMove.getTradingName());
 
     this.groupProductsOnPrintings = stockMove.getGroupProductsOnPrintings();
-    this.saleOrder = stockMove.getSaleOrder();
   }
 
   @Override

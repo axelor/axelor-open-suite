@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -79,18 +79,6 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
-        <structure>
-            <property name="name">queryText</property>
-            <property name="id">4759</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">4759</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">4759</property>
-        </structure>
     </list-property>
     <property name="units">in</property>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
@@ -98,7 +86,6 @@
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
-    <property name="locale">fr_FR</property>
     <parameters>
         <scalar-parameter name="AccountingReportId" id="3544">
             <property name="hidden">true</property>
@@ -146,21 +133,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="Locale" id="3925">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -287,6 +259,12 @@
                     <text-property name="displayName">taxdebit</text-property>
                     <text-property name="heading">taxdebit</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -353,6 +331,11 @@
                         <property name="position">10</property>
                         <property name="name">taxdebit</property>
                         <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -429,6 +412,13 @@
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT MoveLine.name as moveLineName,
 MoveLine.date_val as moveLineDate,
@@ -467,7 +457,8 @@ Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
 			end
 		end
 	end
-end as taxDebit
+end as taxDebit,
+Currency.number_of_decimals
 FROM public.account_accounting_report as AccountingReport 
 CROSS JOIN public.account_move_line as MoveLine
 LEFT JOIN public.account_account as Account on (MoveLine.account = Account.id)
@@ -485,6 +476,8 @@ LEFT JOIN public.account_tax as Tax on (TaxLine.tax = Tax.id)
 LEFT JOIN Public.account_fiscal_position as FiscalPosition on (TaxPaymentMoveLine.fiscal_position = FiscalPosition.id)
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+left outer join public.base_company as Company on (AccountingReport.company = Company.id)
+left outer join public.base_currency as Currency on (Currency.id = Company.currency)
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
@@ -701,7 +694,7 @@ where AccountingReport.id = ?
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="dataType">string</property>
                     <property name="position">2</property>
                     <property name="isInput">true</property>
@@ -792,6 +785,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <text-property name="displayName">taxdebit</text-property>
                     <text-property name="heading">taxdebit</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -848,6 +847,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                         <property name="position">8</property>
                         <property name="name">taxdebit</property>
                         <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -910,6 +914,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT Tax.code as taxCode,
 Tax.name as taxName, 
@@ -946,7 +957,8 @@ SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
 			end
 		end
 	end
-end) as taxDebit
+end) as taxDebit,
+Currency.number_of_decimals
 FROM public.account_accounting_report as AccountingReport 
 CROSS JOIN public.account_move_line as MoveLine
 LEFT JOIN public.account_account as Account on (MoveLine.account = Account.id)
@@ -964,6 +976,8 @@ LEFT JOIN public.account_tax as Tax on (TaxLine.tax = Tax.id)
 LEFT JOIN public.account_fiscal_position as FiscalPosition on (TaxPaymentMoveLine.fiscal_position = FiscalPosition.id)
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+left outer join public.base_company as Company on (AccountingReport.company = Company.id)
+left outer join public.base_currency as Currency on (Currency.id = Company.currency)
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
@@ -983,7 +997,7 @@ AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or Ac
     or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
     or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account) 
 AND(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner)
-GROUP BY Tax.id ,TaxPaymentMoveLine.tax_rate, FiscalPosition.code
+GROUP BY Tax.id ,TaxPaymentMoveLine.tax_rate, FiscalPosition.code,Currency.number_of_decimals
 order by Tax.code ASC]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLinePaymentNotLetteredDS" id="4759">
@@ -1036,6 +1050,12 @@ order by Tax.code ASC]]></xml-property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">accountname</text-property>
                     <text-property name="heading">accountname</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -1092,6 +1112,11 @@ order by Tax.code ASC]]></xml-property>
                         <property name="position">8</property>
                         <property name="name">accountname</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1153,6 +1178,13 @@ order by Tax.code ASC]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select MoveLine.name as moveLineName,
 MoveLine.date_val as moveLineDate,
@@ -1161,7 +1193,8 @@ MoveLine.partner_full_name as partner,
 ABS(MoveLine.amount_remaining) as amounttoReconcile,
 MoveLine.amount_paid as reconciledAmount,
 Account.code as accountCode,
-Account.name as accountName
+Account.name as accountName,
+Currency.number_of_decimals
 FROM public.account_accounting_report as AccountingReport 
 CROSS JOIN public.account_move_line as MoveLine
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
@@ -1176,6 +1209,8 @@ LEFT JOIN public.account_move as Move on (MoveLine.move = Move.id)
 LEFT JOIN account_move_line as MoveLineTax on Move.id = MoveLineTax.move
 left join public.account_account as AccountTax on (MoveLineTax.account  = AccountTax.id )
 left join public.account_account_type as AccountTaxType on (AccountTax.account_type = AccountTaxType.id)
+left outer join public.base_company as Company on (AccountingReport.company = Company.id)
+left outer join public.base_currency as Currency on (Currency.id = Company.currency)
 
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
@@ -1255,6 +1290,12 @@ order by MoveLine.date_val ASC]]></xml-property>
                     <text-property name="displayName">accountname</text-property>
                     <text-property name="heading">accountname</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -1309,6 +1350,11 @@ order by MoveLine.date_val ASC]]></xml-property>
                         <property name="position">8</property>
                         <property name="name">accountname</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1370,6 +1416,13 @@ order by MoveLine.date_val ASC]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select MoveLine.name as moveLineName,
 MoveLine.date_val as moveLineDate,
@@ -1378,7 +1431,8 @@ MoveLine.partner_full_name as partner,
 MoveLine.amount_remaining as amounttoReconcile,
 MoveLine.amount_paid as reconciledAmount,
 Account.code as accountCode,
-Account.name as accountName
+Account.name as accountName,
+Currency.number_of_decimals
 FROM public.account_accounting_report as AccountingReport 
 CROSS JOIN public.account_move_line as MoveLine
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
@@ -1393,6 +1447,8 @@ LEFT JOIN public.account_payment_mode as PaymentMode on Move.payment_mode = Paym
 FULL JOIN public.account_invoice_payment as Payment on Move.id = Payment.move
 FULL JOIN public.account_invoice as Invoice on Payment.invoice = Invoice.id
 LEFT JOIN public.account_invoice as MoveInvoice on Move.invoice = MoveInvoice.id
+left outer join public.base_company as Company on (AccountingReport.company = Company.id)
+left outer join public.base_currency as Currency on (Currency.id = Company.currency)
 
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
@@ -2396,6 +2452,12 @@ balance
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">number_of_decimals</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <structure name="toc"/>
             <property name="pageBreakInterval">0</property>
@@ -3335,60 +3397,48 @@ balance
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="4199">
+                        <text id="5352">
                             <property name="fontSize">9pt</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">basecredit</property>
-                        </data>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["basecredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4005">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="4202">
+                        <text id="5353">
                             <property name="fontSize">9pt</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">taxcredit</property>
-                        </data>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["taxcredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4173">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="4201">
+                        <text id="5354">
                             <property name="fontSize">9pt</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">basedebit</property>
-                        </data>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["basedebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4179">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="4203">
+                        <text id="5355">
                             <property name="fontSize">9pt</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">taxdebit</property>
-                        </data>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["taxdebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
             </detail>
@@ -3456,16 +3506,13 @@ balance
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="4222">
+                        <text id="5356">
                             <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">totalTaxCreditAmount</property>
-                        </data>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalTaxCreditAmount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4174">
                         <property name="colSpan">2</property>
@@ -3474,16 +3521,13 @@ balance
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="4227">
+                        <text id="5357">
                             <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">totalTaxDebitAmount</property>
-                        </data>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalTaxDebitAmount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
                 <row id="4182">
@@ -3550,16 +3594,13 @@ balance
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="4225">
+                        <text id="5360">
                             <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">creditBalance</property>
-                        </data>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>if(row["creditBalance"]){Formatter.format(row["creditBalance"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))}</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4188">
                         <property name="colSpan">2</property>
@@ -3568,16 +3609,13 @@ balance
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="4226">
+                        <text id="5361">
                             <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">debitBalance</property>
-                        </data>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>if(row["debitBalance"]){Formatter.format(row["debitBalance"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))}</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
             </footer>
@@ -3706,6 +3744,12 @@ balance
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">number_of_decimals</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <structure name="toc"/>
@@ -4295,16 +4339,20 @@ balance
                             <property name="borderRightWidth">thin</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
-                            <data id="4982">
-                                <property name="fontSize">9pt</property>
+                            <text id="5348">
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
-                                <structure name="numberFormat">
-                                    <property name="category">Currency</property>
-                                    <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
-                                </structure>
                                 <property name="textAlign">right</property>
-                                <property name="resultSetColumn">totalBaseCreditAmount</property>
-                            </data>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">!row["totalBaseCreditAmount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <structure name="toc"/>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalBaseCreditAmount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            </text>
                         </cell>
                         <cell id="4981">
                             <property name="borderBottomStyle">solid</property>
@@ -4315,16 +4363,20 @@ balance
                             <property name="borderRightWidth">thin</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
-                            <data id="4978">
-                                <property name="fontSize">9pt</property>
+                            <text id="5349">
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
-                                <structure name="numberFormat">
-                                    <property name="category">Currency</property>
-                                    <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
-                                </structure>
                                 <property name="textAlign">right</property>
-                                <property name="resultSetColumn">totalTaxCreditAmount</property>
-                            </data>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">!row["totalTaxCreditAmount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <structure name="toc"/>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalTaxCreditAmount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            </text>
                         </cell>
                         <cell id="4973">
                             <property name="colSpan">1</property>
@@ -4337,16 +4389,20 @@ balance
                             <property name="borderRightWidth">thin</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
-                            <data id="4984">
-                                <property name="fontSize">9pt</property>
+                            <text id="5350">
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
-                                <structure name="numberFormat">
-                                    <property name="category">Currency</property>
-                                    <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
-                                </structure>
                                 <property name="textAlign">right</property>
-                                <property name="resultSetColumn">totalBaseDebitAmount</property>
-                            </data>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">!row["totalBaseDebitAmount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <structure name="toc"/>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalBaseDebitAmount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            </text>
                         </cell>
                         <cell id="4983">
                             <property name="borderBottomStyle">solid</property>
@@ -4357,16 +4413,20 @@ balance
                             <property name="borderRightWidth">thin</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
-                            <data id="4980">
-                                <property name="fontSize">9pt</property>
+                            <text id="5351">
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
-                                <structure name="numberFormat">
-                                    <property name="category">Currency</property>
-                                    <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
-                                </structure>
                                 <property name="textAlign">right</property>
-                                <property name="resultSetColumn">totalTaxDebitAmount</property>
-                            </data>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">!row["totalTaxDebitAmount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <structure name="toc"/>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalTaxDebitAmount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            </text>
                         </cell>
                     </row>
                 </footer>
@@ -4451,60 +4511,64 @@ balance
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="4193">
+                        <text id="5344">
                             <property name="fontSize">8pt</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
+                            <property name="fontWeight">normal</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">basecredit</property>
-                        </data>
+                            <structure name="toc"/>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["basecredit"] != null )
+Formatter.format(row["basecredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4154">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="4196">
+                        <text id="5345">
                             <property name="fontSize">8pt</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
+                            <property name="fontWeight">normal</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">taxcredit</property>
-                        </data>
+                            <structure name="toc"/>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["taxcredit"])
+Formatter.format(row["taxcredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4160">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="4195">
+                        <text id="5346">
                             <property name="fontSize">8pt</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
+                            <property name="fontWeight">normal</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">basedebit</property>
-                        </data>
+                            <structure name="toc"/>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["basedebit"] != null)
+Formatter.format(row["basedebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4166">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="4197">
+                        <text id="5347">
                             <property name="fontSize">8pt</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
+                            <property name="fontWeight">normal</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">taxdebit</property>
-                        </data>
+                            <structure name="toc"/>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["taxdebit"] != null)
+Formatter.format(row["taxdebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
             </detail>
@@ -4587,6 +4651,12 @@ balance
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">number_of_decimals</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <property name="pageBreakInterval">0</property>
@@ -5135,14 +5205,14 @@ balance
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="4805">
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
+                        <text id="5340">
+                            <property name="fontSize">8pt</property>
+                            <property name="fontWeight">normal</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">reconciledamount</property>
-                        </data>
+                            <structure name="toc"/>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["reconciledamount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="5126">
                         <property name="colSpan">1</property>
@@ -5155,14 +5225,14 @@ balance
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="4803">
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
+                        <text id="5341">
+                            <property name="fontSize">8pt</property>
+                            <property name="fontWeight">normal</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">amounttoreconcile</property>
-                        </data>
+                            <structure name="toc"/>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["amounttoreconcile"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
             </detail>
@@ -5243,6 +5313,12 @@ balance
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">number_of_decimals</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <structure name="toc"/>
@@ -5792,14 +5868,14 @@ balance
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="4857">
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
+                        <text id="5342">
+                            <property name="fontSize">8pt</property>
+                            <property name="fontWeight">normal</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">reconciledamount</property>
-                        </data>
+                            <structure name="toc"/>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["reconciledamount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="5138">
                         <property name="colSpan">1</property>
@@ -5813,13 +5889,14 @@ balance
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="textAlign">right</property>
-                        <data id="4855">
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
-                            </structure>
-                            <property name="resultSetColumn">amounttoreconcile</property>
-                        </data>
+                        <text id="5343">
+                            <property name="fontSize">8pt</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="textAlign">right</property>
+                            <structure name="toc"/>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["amounttoreconcile"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
             </detail>
@@ -5836,5 +5913,49 @@ balance
                 </row>
             </footer>
         </table>
+        <grid id="5139">
+            <property name="dataSet">MoveLineDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">row.__rownum != -1</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">movelinename</property>
+                    <text-property name="displayName">movelinename</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["movelinename"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="5140"/>
+            <row id="5141">
+                <cell id="5142">
+                    <text id="5143">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReport.noEntry'
+</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+        </grid>
     </body>
 </report>

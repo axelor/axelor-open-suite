@@ -21,24 +21,11 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
-import com.axelor.apps.account.service.move.MoveToolService;
-import com.axelor.apps.account.service.move.MoveValidateService;
-import com.axelor.apps.account.service.moveline.MoveLineCreateService;
-import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.project.db.ProjectTask;
@@ -54,46 +41,20 @@ import javax.xml.datatype.DatatypeConfigurationException;
 public class InvoicePaymentValidateProjectServiceImpl
     extends InvoicePaymentValidateServiceBankPayImpl {
 
-  private InvoicingProjectRepository invoicingProjectRepo;
+  protected InvoicingProjectRepository invoicingProjectRepo;
 
   @Inject
   public InvoicePaymentValidateProjectServiceImpl(
-      PaymentModeService paymentModeService,
-      MoveCreateService moveCreateService,
-      MoveValidateService moveValidateService,
-      MoveToolService moveToolService,
-      MoveLineCreateService moveLineCreateService,
-      AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
-      ReconcileService reconcileService,
       InvoicePaymentToolService invoicePaymentToolService,
-      InvoiceTermService invoiceTermService,
-      AppAccountService appAccountService,
-      AccountManagementAccountService accountManagementAccountService,
-      BankOrderCreateService bankOrderCreateService,
-      BankOrderService bankOrderService,
-      InvoicingProjectRepository invoicingProjectRepo,
-      DateService dateService,
-      MoveLineInvoiceTermService moveLineInvoiceTermService,
-      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
+      InvoicePaymentMoveCreateService invoicePaymentMoveCreateService,
+      PaymentModeService paymentModeService,
+      InvoicingProjectRepository invoicingProjectRepo) {
     super(
-        paymentModeService,
-        moveCreateService,
-        moveValidateService,
-        moveToolService,
-        moveLineCreateService,
-        accountConfigService,
         invoicePaymentRepository,
-        reconcileService,
         invoicePaymentToolService,
-        invoiceTermService,
-        appAccountService,
-        accountManagementAccountService,
-        bankOrderCreateService,
-        bankOrderService,
-        dateService,
-        moveLineInvoiceTermService,
-        moveLineFinancialDiscountService);
+        invoicePaymentMoveCreateService,
+        paymentModeService);
     this.invoicingProjectRepo = invoicingProjectRepo;
   }
 

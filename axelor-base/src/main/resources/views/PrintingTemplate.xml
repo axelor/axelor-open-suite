@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="printing-template-grid" title="Printing templates"
+    model="com.axelor.apps.base.db.PrintingTemplate">
+    <field name="name"/>
+    <field name="metaModel"/>
+    <field name="statusSelect"/>
+    <field name="toAttach"/>
+  </grid>
+
+  <form name="printing-template-form" title="Printing template"
+    model="com.axelor.apps.base.db.PrintingTemplate">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="metaModel"/>
+      <field name="statusSelect"/>
+      <field name="toAttach"/>
+      <panel-related name="printingTemplateLineListPanel"
+        field="printingTemplateLineList" grid-view="printing-template-line-grid"
+        form-view="printing-template-line-form" colSpan="12"/>
+    </panel>
+  </form>
+
+  <form title="Select template" name="printing-template-print-config-wizard"
+    model="com.axelor.utils.db.Wizard" onNew="action-attrs-printing-template-config-wizard-onnew"
+    canSave="false">
+    <panel name="mainPanel" colSpan="12">
+      <field name="$printingTemplate" title="Template"
+        target="com.axelor.apps.base.db.PrintingTemplate" target-name="name" type="many-to-one"
+        required="true"/>
+      <button name="printBtn" title="Print"
+        onClick="action-method-printing-template-config-wizard-print,close"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-attrs-printing-template-config-wizard-onnew">
+    <attribute name="domain" for="$printingTemplate"
+      expr="eval:&quot;self.id in (${_printingTemplateIdList.join(',')}) AND self.statusSelect = 2&quot;"/>
+  </action-attrs>
+
+  <action-group name="action-group-print-template">
+    <action name="action-method-print-template" if="id"/>
+    <action name="action-method-print-template-list" if="!id"/>
+  </action-group>
+
+  <action-method name="action-method-print-template">
+    <call class="com.axelor.apps.base.web.PrintingTemplateController" method="print"/>
+  </action-method>
+
+  <action-method name="action-method-print-template-list">
+    <call class="com.axelor.apps.base.web.PrintingTemplateController" method="printList"/>
+  </action-method>
+
+  <action-method name="action-method-printing-template-config-wizard-print">
+    <call class="com.axelor.apps.base.web.PrintingTemplateController" method="printFromWizard"/>
+  </action-method>
+
+</object-views>

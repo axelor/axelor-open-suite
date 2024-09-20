@@ -165,7 +165,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
               + noOfPersonalizedBOM
               + ")";
       personalizedBOM.setName(name);
-      personalizedBOM.setFullName(name);
       personalizedBOM.setPersonalized(true);
       List<BillOfMaterialLine> billOfMaterialLineList = billOfMaterial.getBillOfMaterialLineList();
 

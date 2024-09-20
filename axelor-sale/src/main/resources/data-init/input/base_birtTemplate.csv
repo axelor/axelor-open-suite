@@ -1,2 +1,4 @@
 "importId";"name";"templateLink";"modelName";"templateEngineSelect";"format";"attach"
-"26";"SaleOrder";"SaleOrder.rptdesign";"com.axelor.apps.sale.db.SaleOrder";2;"pdf";false
+"26";"SaleOrder PDF";"SaleOrder.rptdesign";"com.axelor.apps.sale.db.SaleOrder";2;"pdf";false
+"124";"SaleOrder XLSX";"SaleOrder.rptdesign";"com.axelor.apps.sale.db.SaleOrder";2;"xlsx";false
+"125";"SaleOrder DOC";"SaleOrder.rptdesign";"com.axelor.apps.sale.db.SaleOrder";2;"doc";false

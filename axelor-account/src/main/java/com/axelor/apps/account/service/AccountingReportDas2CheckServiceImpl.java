@@ -115,21 +115,21 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
           String.format(
               I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS),
               companyName));
-    } else if (companyPartnerMainAddress.getAddressL7Country() == null) {
+    } else if (companyPartnerMainAddress.getCountry() == null) {
       errorList.add(
           String.format(
               I18n.get(
                   AccountExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7),
               companyName));
     } else {
-      if (Strings.isNullOrEmpty(companyPartnerMainAddress.getAddressL7Country().getAlpha2Code())) {
+      if (Strings.isNullOrEmpty(companyPartnerMainAddress.getCountry().getAlpha2Code())) {
         errorList.add(
             String.format(
                 I18n.get(
                     AccountExceptionMessage
                         .ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7_A2CODE),
                 companyName));
-      } else if ("FR".equals(companyPartnerMainAddress.getAddressL7Country().getAlpha2Code())) {
+      } else if ("FR".equals(companyPartnerMainAddress.getCountry().getAlpha2Code())) {
         if (companyPartnerMainAddress.getCity() == null) {
           errorList.add(
               String.format(
@@ -239,8 +239,8 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
       return;
     }
 
-    if (partnerMainAddress.getAddressL7Country() != null
-        && "FR".equals(partnerMainAddress.getAddressL7Country().getAlpha2Code())) {
+    if (partnerMainAddress.getCountry() != null
+        && "FR".equals(partnerMainAddress.getCountry().getAlpha2Code())) {
       if (partnerMainAddress.getCity() == null) {
         errorList.add(
             String.format(
@@ -262,7 +262,7 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
 
     if (partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_COMPANY) {
 
-      if (!partnerMainAddress.getAddressL7Country().getAlpha2Code().equals("FR")) {
+      if (!partnerMainAddress.getCountry().getAlpha2Code().equals("FR")) {
         errorList.add(
             String.format(
                 I18n.get(

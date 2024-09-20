@@ -19,7 +19,6 @@
 package com.axelor.apps.mobilesettings.rest;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.mobilesettings.db.MobileChart;
 import com.axelor.apps.mobilesettings.db.MobileDashboard;
 import com.axelor.apps.mobilesettings.rest.dto.MobileDashboardResponse;
 import com.axelor.apps.mobilesettings.service.MobileDashboardResponseComputeService;
@@ -28,9 +27,7 @@ import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import java.util.Optional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -41,7 +38,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import wslite.json.JSONException;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/mobiledashboard")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -54,7 +50,7 @@ public class MobileDashboardRestController {
   @HttpExceptionHandler
   public Response getMobileDashboard(@PathParam("mobileDashboardId") Long mobileDashboardId)
       throws AxelorException, JSONException {
-    new SecurityCheck().writeAccess(MobileChart.class).createAccess(MobileChart.class).check();
+    new SecurityCheck().readAccess(MobileDashboard.class, mobileDashboardId).check();
     MobileDashboard mobileDashboard =
         ObjectFinder.find(MobileDashboard.class, mobileDashboardId, ObjectFinder.NO_VERSION);
 

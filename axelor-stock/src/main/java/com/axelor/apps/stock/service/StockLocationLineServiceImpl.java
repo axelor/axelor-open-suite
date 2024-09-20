@@ -53,6 +53,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -523,6 +524,21 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
+  public List<StockLocationLine> getDetailLocationLines(
+      Product product, TrackingNumber trackingNumber) {
+    return stockLocationLineRepo
+        .all()
+        .filter(
+            "self.product.id = :_productId "
+                + "AND self.trackingNumber.id = :_trackingNumberId "
+                + "AND self.detailsStockLocation.typeSelect = :internalType")
+        .bind("_productId", product.getId())
+        .bind("_trackingNumberId", trackingNumber.getId())
+        .bind("internalType", StockLocationRepository.TYPE_INTERNAL)
+        .fetch();
+  }
+
+  @Override
   public StockLocationLine createLocationLine(StockLocation stockLocation, Product product) {
 
     LOG.debug(
@@ -592,6 +608,23 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
     if (detailStockLocationLine != null) {
       availableQty = detailStockLocationLine.getCurrentQty();
+    }
+    return availableQty;
+  }
+
+  @Override
+  public BigDecimal getTrackingNumberAvailableQty(TrackingNumber trackingNumber) {
+    List<StockLocationLine> detailStockLocationLines =
+        getDetailLocationLines(trackingNumber.getProduct(), trackingNumber);
+
+    BigDecimal availableQty = BigDecimal.ZERO;
+
+    if (detailStockLocationLines != null) {
+      availableQty =
+          detailStockLocationLines.stream()
+              .map(StockLocationLine::getCurrentQty)
+              .filter(Objects::nonNull)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
     return availableQty;
   }
@@ -795,13 +828,15 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
-  public void updateWap(StockLocationLine stockLocationLine, BigDecimal wap) {
+  public void updateWap(StockLocationLine stockLocationLine, BigDecimal wap)
+      throws AxelorException {
     updateWap(stockLocationLine, wap, null);
   }
 
   @Override
   public void updateWap(
-      StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine) {
+      StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine)
+      throws AxelorException {
 
     LocalDateTime dateT =
         appBaseService
@@ -828,7 +863,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       BigDecimal wap,
       StockMoveLine stockMoveLine,
       LocalDate date,
-      String origin) {
+      String origin)
+      throws AxelorException {
     if (origin == null) {
       origin =
           Optional.ofNullable(stockMoveLine)
@@ -862,7 +898,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockMoveLine stockMoveLine,
       LocalDateTime dateT,
       String origin,
-      String typeSelect) {
+      String typeSelect)
+      throws AxelorException {
 
     if (origin == null) {
       origin =

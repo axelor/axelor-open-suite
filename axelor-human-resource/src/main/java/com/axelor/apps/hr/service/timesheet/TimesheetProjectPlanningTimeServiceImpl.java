@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -118,6 +119,10 @@ public class TimesheetProjectPlanningTimeServiceImpl
     if (project.getIsShowTimeSpent()) {
       timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
+      Site site = projectPlanningTime.getSite();
+      if (site != null && site.getIsUsableOnTimesheet()) {
+        timesheetLine.setSite(site);
+      }
     }
     LocalDateTime startDateTime = projectPlanningTime.getStartDateTime();
     if (!Objects.isNull(startDateTime)) {

@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -32,7 +31,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.utils.helpers.ListHelper;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -45,27 +44,24 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AccountConfigService accountConfigService;
   protected AnalyticAccountRepository analyticAccountRepository;
-  protected ListHelper listHelper;
   protected AnalyticToolService analyticToolService;
   protected AppAccountService appAccountService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public MoveLineComputeAnalyticServiceImpl(
       AnalyticMoveLineService analyticMoveLineService,
       AccountConfigService accountConfigService,
       AnalyticAccountRepository analyticAccountRepository,
-      ListHelper listHelper,
       AnalyticToolService analyticToolService,
       AppAccountService appAccountService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountConfigService = accountConfigService;
     this.analyticAccountRepository = analyticAccountRepository;
-    this.listHelper = listHelper;
     this.analyticToolService = analyticToolService;
     this.appAccountService = appAccountService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -78,7 +74,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     } else {
       LocalDate date = moveLine.getDate();
       BigDecimal amount =
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               moveLine, moveLine.getDebit().add(moveLine.getCredit()));
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(analyticMoveLine, amount, date);
@@ -118,7 +114,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             moveLine.getAnalyticDistributionTemplate(),
-            currencyScaleServiceAccount.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 moveLine, moveLine.getDebit().add(moveLine.getCredit())),
             AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
             moveLine.getDate());
@@ -132,7 +128,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             moveLine.getAnalyticDistributionTemplate(),
-            currencyScaleServiceAccount.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 moveLine, moveLine.getDebit().add(moveLine.getCredit())),
             AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
             moveLine.getDate());

@@ -21,7 +21,9 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -74,12 +76,11 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
           HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE);
     }
     if (product == null) {
-      product = userHrService.getTimesheetProduct(employee);
+      product = userHrService.getTimesheetProduct(employee, projectTask);
     }
     timesheetLineCheckService.checkActivity(project, product);
     TimesheetLine timesheetLine =
-        timesheetLineService.createTimesheetLine(
-            project, product, employee, date, timesheet, duration, comments);
+        createTimesheetLine(project, product, employee, date, timesheet, duration, comments);
     timesheetLine.setProjectTask(projectTask);
     timesheetLine.setToInvoice(toInvoice);
     return timesheetLineRepository.save(timesheetLine);
@@ -95,5 +96,81 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINE_INVALID_DATE));
     }
+  }
+
+  /**
+   * Creates a timesheet line.
+   *
+   * @param project
+   * @param product
+   * @param employee
+   * @param date
+   * @param timesheet
+   * @param hours
+   * @param comments
+   * @return the created timesheet line.
+   */
+  @Override
+  public TimesheetLine createTimesheetLine(
+      Project project,
+      Product product,
+      Employee employee,
+      LocalDate date,
+      Timesheet timesheet,
+      BigDecimal hours,
+      String comments) {
+
+    TimesheetLine timesheetLine = new TimesheetLine();
+
+    timesheetLine.setDate(date);
+    timesheetLine.setComments(comments);
+    timesheetLine.setProduct(product);
+    timesheetLine.setProject(project);
+    timesheetLine.setEmployee(employee);
+    timesheetLine.setHoursDuration(hours);
+    try {
+      timesheetLine.setDuration(timesheetLineService.computeHoursDuration(timesheet, hours, false));
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+    }
+
+    timesheet.addTimesheetLineListItem(timesheetLine);
+    return timesheetLine;
+  }
+
+  @Override
+  public TimesheetLine createTimesheetLine(
+      Employee employee, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments) {
+    return createTimesheetLine(null, null, employee, date, timesheet, hours, comments);
+  }
+
+  /**
+   * Creates a timesheet line without project and product. Used to generate timesheet lines for
+   * holidays or day leaves.
+   *
+   * @param employee
+   * @param date
+   * @param timesheet
+   * @param hours
+   * @param comments
+   * @return the created timesheet line.
+   */
+  @Override
+  public TimesheetLine createTimesheetLine(
+      Project project,
+      ProjectTask projectTask,
+      Product product,
+      Employee employee,
+      LocalDate date,
+      Timesheet timesheet,
+      BigDecimal hours,
+      String comments,
+      TSTimer timer) {
+    TimesheetLine timesheetLine =
+        createTimesheetLine(project, product, employee, date, timesheet, hours, comments);
+    timesheetLine.setProjectTask(projectTask);
+    timesheetLine.setTimer(timer);
+
+    return timesheetLine;
   }
 }

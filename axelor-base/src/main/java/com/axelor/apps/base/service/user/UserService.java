@@ -23,12 +23,15 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.User;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaPermissionRule;
 import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.mail.MessagingException;
@@ -114,8 +117,6 @@ public interface UserService {
   @Transactional
   public void createPartner(User user);
 
-  public String getLanguage();
-
   public String getLocalizationCode();
 
   /**
@@ -187,4 +188,10 @@ public interface UserService {
   public Partner setUserPartner(Partner partner, User user);
 
   public void generateRandomPasswordForUser(User user);
+
+  List<Permission> getPermissions(User user);
+
+  List<MetaPermissionRule> getMetaPermissionRules(User user);
+
+  void setActiveCompany(User user, Company company);
 }

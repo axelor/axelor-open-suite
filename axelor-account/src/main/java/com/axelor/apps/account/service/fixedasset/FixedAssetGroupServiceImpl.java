@@ -41,17 +41,17 @@ public class FixedAssetGroupServiceImpl implements FixedAssetGroupService {
 
   @Override
   public Map<String, Object> getDisposalWizardValuesMap(
-      FixedAsset fixedAsset, int disposalTypeSelect) {
-    fixedAssetRecordService.resetAssetDisposalReason(fixedAsset);
-    fixedAssetRecordService.setDisposalQtySelect(fixedAsset, disposalTypeSelect);
+      FixedAsset disposal, FixedAsset fixedAsset, int disposalTypeSelect) {
+    fixedAssetRecordService.resetAssetDisposalReason(disposal);
+    fixedAssetRecordService.setDisposalQtySelect(disposal, disposalTypeSelect);
 
     Map<String, Object> valuesMap = new HashMap<>();
 
     valuesMap.put(
         "disposalAmount",
         fixedAssetRecordService.setDisposalAmount(fixedAsset, disposalTypeSelect));
-    valuesMap.put("assetDisposalReason", fixedAsset.getAssetDisposalReason());
-    valuesMap.put("disposalQtySelect", fixedAsset.getDisposalQtySelect());
+    valuesMap.put("assetDisposalReason", disposal.getAssetDisposalReason());
+    valuesMap.put("disposalQtySelect", disposal.getDisposalQtySelect());
 
     return valuesMap;
   }

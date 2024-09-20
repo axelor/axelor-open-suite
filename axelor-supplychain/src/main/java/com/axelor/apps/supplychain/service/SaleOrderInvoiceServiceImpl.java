@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
@@ -39,12 +40,12 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
@@ -61,6 +62,7 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -103,7 +105,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected CommonInvoiceService commonInvoiceService;
   protected InvoiceLineOrderService invoiceLineOrderService;
   protected SaleInvoicingStateService saleInvoicingStateService;
-  protected CurrencyScaleServiceSale currencyScaleServiceSale;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -120,7 +122,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
-      CurrencyScaleServiceSale currencyScaleServiceSale) {
+      CurrencyScaleService currencyScaleService) {
 
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
@@ -135,7 +137,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.commonInvoiceService = commonInvoiceService;
     this.invoiceLineOrderService = invoiceLineOrderService;
     this.saleInvoicingStateService = saleInvoicingStateService;
-    this.currencyScaleServiceSale = currencyScaleServiceSale;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -206,7 +208,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
 
     // fill default advance payment invoice
-    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    if (InvoiceToolService.isRefund(invoice)
+        || invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT) {
       invoice.setAdvancePaymentInvoiceSet(invoiceService.getDefaultAdvancePaymentInvoice(invoice));
     }
 
@@ -337,6 +340,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoiceGenerator.populate(invoice, invoiceLinesList);
 
     invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
+    invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
 
     invoice.setOperationSubTypeSelect(operationSubTypeSelect);
 
@@ -693,11 +697,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     if (saleAmount != null) {
       invoicedAmount =
-          currencyScaleServiceSale.getScaledValue(saleOrder, invoicedAmount.add(saleAmount));
+          currencyScaleService.getScaledValue(saleOrder, invoicedAmount.add(saleAmount));
     }
     if (refundAmount != null) {
       invoicedAmount =
-          currencyScaleServiceSale.getScaledValue(saleOrder, invoicedAmount.subtract(refundAmount));
+          currencyScaleService.getScaledValue(saleOrder, invoicedAmount.subtract(refundAmount));
     }
 
     if (!saleOrder.getCurrency().equals(saleOrder.getCompany().getCurrency())
@@ -705,8 +709,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       BigDecimal rate =
           invoicedAmount.divide(saleOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
       invoicedAmount =
-          currencyScaleServiceSale.getScaledValue(
-              saleOrder, saleOrder.getExTaxTotal().multiply(rate));
+          currencyScaleService.getScaledValue(saleOrder, saleOrder.getExTaxTotal().multiply(rate));
     }
 
     log.debug(
@@ -862,10 +865,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             .filter(
                 " self.saleOrder.id = :saleOrderId "
                     + "AND self.statusSelect != :invoiceStatus "
-                    + "AND self.operationSubTypeSelect != :advancePaymentSubType")
+                    + "AND self.operationSubTypeSelect != :advancePaymentSubType "
+                    + "AND self.operationTypeSelect = :operationTypeSelect")
             .bind("saleOrderId", saleOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
             .bind("advancePaymentSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             .fetchOne();
     List<Integer> operationSelectList = new ArrayList<>();
     if (exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
@@ -901,7 +906,18 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             .fetch();
 
     BigDecimal sumInvoices = commonInvoiceService.computeSumInvoices(invoices);
-    sumInvoices = sumInvoices.add(amountToInvoice);
+    BigDecimal computedAmountToInvoice = amountToInvoice;
+    if (isPercent) {
+      computedAmountToInvoice =
+          saleOrder
+              .getExTaxTotal()
+              .multiply(amountToInvoice)
+              .divide(
+                  new BigDecimal("100"),
+                  currencyScaleService.getScale(saleOrder),
+                  RoundingMode.HALF_UP);
+    }
+    sumInvoices = sumInvoices.add(computedAmountToInvoice);
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
@@ -950,5 +966,55 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       }
     }
     return sumInvoices;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public List<Invoice> generateInvoicesFromSaleOrderLines(
+      Map<SaleOrder, Map<Long, BigDecimal>> priceMaps,
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyToInvoiceMaps,
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyMaps,
+      Map<SaleOrder, BigDecimal> amountToInvoiceMap,
+      boolean isPercent,
+      int operationSelect)
+      throws AxelorException {
+
+    List<Invoice> invoiceList = new ArrayList<>();
+    for (Map.Entry<SaleOrder, BigDecimal> entry : amountToInvoiceMap.entrySet()) {
+      SaleOrder saleOrder = entry.getKey();
+      entry.setValue(
+          computeAmountToInvoice(
+              entry.getValue(),
+              operationSelect,
+              saleOrder,
+              qtyToInvoiceMaps.get(saleOrder),
+              priceMaps.get(saleOrder),
+              qtyMaps.get(saleOrder),
+              isPercent));
+
+      displayErrorMessageIfSaleOrderIsInvoiceable(saleOrder, entry.getValue(), isPercent);
+
+      Invoice invoice =
+          generateInvoice(
+              saleOrder,
+              operationSelect,
+              entry.getValue(),
+              isPercent,
+              qtyToInvoiceMaps.get(saleOrder),
+              new ArrayList<>());
+
+      invoiceList.add(invoice);
+    }
+    return invoiceList;
+  }
+
+  @Override
+  public List<Map<String, Object>> getSaleOrderLineList(SaleOrder saleOrder) {
+    List<Map<String, Object>> saleOrderLineList = new ArrayList<>();
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
+      saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
+      saleOrderLineList.add(saleOrderLineMap);
+    }
+    return saleOrderLineList;
   }
 }

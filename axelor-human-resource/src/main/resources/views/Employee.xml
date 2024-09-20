@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee"
     orderBy="contactPartner.simpleFullName">
@@ -37,8 +37,6 @@
     <toolbar>
       <button name="annualReportBtn" title="Show expenses annual report" showIf="id"
         onClick="action-employee-view-annual-report-wizard"/>
-      <button name="employeeReportBtn" title="Print" showIf="id"
-        onClick="save,action-method-print-birt"/>
       <button onClick="action-employee-view-employee-planning" name="employeePlanningBtn"
         title="Employee planning" if="__config__.app.getApp('production')?.getEmployeeScheduling()"/>
     </toolbar>
@@ -113,6 +111,7 @@
       <field name="dependentChildren" colSpan="4"/>
       <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
+      <field name="$employeeStatus" hidden="true"/>
     </panel>
 
     <panel name="emergencyContactSBSPanel" title="Contact in case of emergency"
@@ -226,8 +225,8 @@
             	<Box d="flex" justifyContent="center" gap="4">
             		{hrManager && <Badge style={{ backgroundColor: "#84429f" }}>{_t('HR manager')}</Badge>}
             		{external && <Badge style={{ backgroundColor: "#2b9cff" }}>{_t('External')}</Badge>}
-            		{!leavingDate && $moment(hireDate) > $moment().subtract(30, 'days') && <Badge style={{ backgroundColor: "#20BCB5" }}>{_t('New employee')}</Badge>}
-            		{leavingDate && $moment(leavingDate) < $moment() && <Badge style={{ backgroundColor: "#a1a1a1" }}>{_t('Former employee')}</Badge>}
+            		{$employeeStatus == "new" && <Badge style={{ backgroundColor: "#20BCB5" }}>{_t('New employee')}</Badge>}
+            		{$employeeStatus == "former" && <Badge style={{ backgroundColor: "#a1a1a1" }}>{_t('Former employee')}</Badge>}
             	</Box>
             </>
 	        ]]>
@@ -518,6 +517,8 @@
             grid-view="employee-advance-employee-grid"
             if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getAdvanceManagement()"
             readonly="false"/>
+          <panel-related name="bankCardPanel" title="Bank cards" field="bankCardList"
+            colSpan="12" form-view="bank-card-form-from-employee" grid-view="bank-card-grid"/>
         </panel>
 
         <panel name="vehiclePanel" title="Vehicle" if="__config__.app.isApp('expense')"
@@ -564,7 +565,7 @@
 
       <panel name="employeeFileListPanel" title="Files" colSpan="12">
         <panel-related field="employeeFileList" showTitle="false"
-          grid-view="employee-file-grid" form-view="employee-file-form" colSpan="12"/>
+          grid-view="employee-file-grid" form-view="file-form" colSpan="12"/>
       </panel>
 
       <panel name="medicalVisitPanel" title="Medical visit" colSpan="12"
@@ -668,21 +669,20 @@
     <field name="contactPartner.mobilePhone"/>
     <field name="mainEmploymentContract.payCompany"/>
     <field name="mainEmploymentContract.companyDepartment"/>
-    <field name="hireDate"/>
-    <field name="leavingDate"/>
     <field name="hrManager"/>
     <field name="external"/>
+    <field name="$employeeStatus"/>
     <template><![CDATA[
 		<>
-			<Box style={{ height: 180, margin: "-1rem", ...(hrManager && { borderStyle: "inset" }), ...(external && { backgroundColor: "#7dc2ff" }), ...(leavingDate && $moment(leavingDate) < $moment() && { backgroundColor: "#c9c9c9" }) }}>
+			<Box style={{ height: 180, margin: "-1rem", ...(hrManager && { borderStyle: "inset" }), ...(external && { backgroundColor: "#7dc2ff" }), ...($employeeStatus == "former" && { backgroundColor: "#c9c9c9" }) }}>
 			    <Box d="grid" gridTemplateColumns="35% 65%" style={{ height: 150 }}>
 			        <Box d="flex" flexDirection="column" alignItems="center" justifyContent="center">
 			            <Image src={$image('contactPartner.picture', 'content')} style={{ width: 128, height: 64 }}></Image>
-			            <Box as="strong" mt={2}>{contactPartner.firstName} {contactPartner.name}</Box>
+			            <Box as="strong" mt={2} style={{ ...((external || $employeeStatus == "former") && { color: "black" }) }}>{contactPartner.firstName} {contactPartner.name}</Box>
 			        </Box>
 			        <Box position="absolute" ps={4} style={{ width: "60%", height: "100%", left: "35%", top: 0 }}>
 			            <Box d="flex" alignItems="center" borderStart borderWidth={2} w={100} h={100} style={{ transform: "skew(-20deg, 0deg)" }}>
-			                <Box style={{ height: "60%", width: "2rem", boxShadow: "rgb(0 0 0 / 25%) 3px 3px 8px", backgroundColor: "#ddd", ...(!leavingDate && $moment(hireDate) > $moment().subtract(30, 'days') && { backgroundColor: "#20BCB5" }), ...(external && { backgroundColor: "#2b9cff" }), ...(hrManager && { backgroundColor: "#84429f" }) }} />
+			                <Box style={{ height: "60%", width: "2rem", boxShadow: "rgb(0 0 0 / 25%) 3px 3px 8px", backgroundColor: "#ddd", ...($employeeStatus == "new" && { backgroundColor: "#20BCB5" }), ...(external && { backgroundColor: "#2b9cff" }), ...(hrManager && { backgroundColor: "#84429f" }) }} />
 
 			                <Box d="flex" alignItems="center" w={100} style={{ position: "absolute", top: "20%", left: "0.25rem", minHeight: "60%" }}>
 			                    <Box as="ul" m={0} p={0} w={100} style={{ listStyle: "none" }}>
@@ -690,8 +690,8 @@
 			                            const renderItem = (icon, value, title) => {
 			                                return value && String(value).trim() && (
 			                                    <Box as="li" d="flex" gap={24} style={{ transform: "skew(20deg, 0deg)" }}>
-			                                        <Icon icon={icon} color={(hrManager || (!leavingDate && $moment(hireDate) > $moment().subtract(30, 'days'))) ? "white" : "black"}/>
-			                                        <span>{title && <strong>{title} : </strong>} {value}</span>
+			                                        <Icon icon={icon} color={(hrManager || $employeeStatus == "new") ? "white" : "black"}/>
+			                                        <Box as="span" style={{ ...((external || $employeeStatus == "former") && { color: "black" }) }}>{title && <strong>{title} : </strong>} {value}</Box>
 			                                    </Box>
 			                                );
 			                            };
@@ -712,8 +712,8 @@
 			    <Box d="flex" justifyContent="flex-end" gap="4" alignItems="center" me={1}>
 			        {hrManager && <Badge style={{ backgroundColor: "#84429f" }}>{_t('HR manager')}</Badge>}
 			        {external && <Badge style={{ backgroundColor: "#2b9cff" }}>{_t('External')}</Badge>}
-			        {!leavingDate && $moment(hireDate) > $moment().subtract(30, 'days') && <Badge style={{ backgroundColor: "#20BCB5" }}>{_t('New employee')}</Badge>}
-			        {leavingDate && $moment(leavingDate) < $moment() && <Badge style={{ backgroundColor: "#707070" }}>{_t('Former employee')}</Badge>}
+                    {$employeeStatus == "new" && <Badge style={{ backgroundColor: "#20BCB5" }}>{_t('New employee')}</Badge>}
+			        {$employeeStatus == "former" && <Badge style={{ backgroundColor: "#707070" }}>{_t('Former employee')}</Badge>}
 			    </Box>
 			</Box>
 		</>

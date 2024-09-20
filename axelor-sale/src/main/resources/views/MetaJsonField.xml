@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="sale-json-field-form" onLoad="action-configurator-json-field-onload"
     title="Custom field" model="com.axelor.meta.db.MetaJsonField"
@@ -151,7 +151,7 @@
 
   <action-attrs name="action-configurator-json-field-onload">
     <attribute name="value" for="$simpleName"
-      expr="eval: name.substring(0, name.indexOf('_'))"
+      expr="eval: org.apache.commons.lang3.StringUtils.substringBeforeLast(name, '_' + __parent__?.id)"
       if="__parent__._model == 'com.axelor.apps.sale.db.ConfiguratorCreator'"/>
     <attribute name="value" for="$showedOnChange"
       expr="eval: onChange.substring(0, onChange.indexOf(','))"

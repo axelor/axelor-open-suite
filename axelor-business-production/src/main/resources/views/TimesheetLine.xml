@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="timesheet-line-timesheet-manuf-order-grid" title="Timesheet Lines"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
-    onNew="action-hr-default-timesheet-line-timesheet" orderBy="date">
+    onNew="action-timesheet-line-group-timesheet-grid-on-new" orderBy="date">
     <field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
     <field name="manufOrder" width="200"
       onChange="action-timesheet-line-group-manuf-order-onchange" form-view="manuf-order-form"
@@ -26,7 +26,7 @@
 
   <grid name="timesheet-line-timesheet-operation-order-grid" title="Timesheet Lines"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
-    onNew="action-hr-default-timesheet-line-timesheet" orderBy="date">
+    onNew="action-timesheet-line-group-timesheet-grid-on-new" orderBy="date">
     <hilite if="$get('timesheet.statusSelect') == 5" color="danger"/>
     <field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
     <field name="employee" canEdit="false" canView="false"/>
@@ -42,8 +42,8 @@
   </grid>
 
   <grid name="timesheet-line-timesheet-readonly-manuf-order-grid" title="Timesheet Lines"
-    model="com.axelor.apps.hr.db.TimesheetLine" onNew="action-hr-default-timesheet-line-timesheet"
-    orderBy="date">
+    model="com.axelor.apps.hr.db.TimesheetLine"
+    onNew="action-timesheet-line-group-timesheet-grid-on-new" orderBy="date">
     <field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
     <field name="manufOrder" width="200"
       onChange="action-timesheet-line-group-manuf-order-onchange" form-view="manuf-order-form"
@@ -66,7 +66,7 @@
 
   <form name="timesheet-line-timesheet-manuf-order-form" title="Timesheet Line"
     model="com.axelor.apps.hr.db.TimesheetLine"
-    onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
+    onNew="action-timesheet-line-group-timesheet-form-on-new"
     onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
     width="large">
     <panel name="overviewPanel" title="Overview">

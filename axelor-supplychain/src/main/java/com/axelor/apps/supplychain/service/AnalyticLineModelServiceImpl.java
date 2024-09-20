@@ -24,13 +24,13 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
@@ -57,7 +57,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   protected AnalyticToolService analyticToolService;
   protected SaleConfigService saleConfigService;
   protected PurchaseConfigService purchaseConfigService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public AnalyticLineModelServiceImpl(
@@ -68,7 +68,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
       AnalyticToolService analyticToolService,
       SaleConfigService saleConfigService,
       PurchaseConfigService purchaseConfigService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.appBaseService = appBaseService;
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
@@ -76,7 +76,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     this.analyticToolService = analyticToolService;
     this.saleConfigService = saleConfigService;
     this.purchaseConfigService = purchaseConfigService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -123,8 +123,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
     analyticMoveLine.setDate(appBaseService.getTodayDate(company));
     analyticMoveLine.setAmount(
-        currencyScaleServiceAccount.getScaledValue(
-            analyticMoveLine, analyticLineModel.getExTaxTotal()));
+        currencyScaleService.getScaledValue(
+            analyticMoveLine, analyticLineModel.getCompanyExTaxTotal()));
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
 
     return analyticMoveLine;
@@ -171,7 +171,6 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     Product product = analyticLineModel.getProduct();
     return analyticToolService.isManageAnalytic(analyticLineModel.getCompany())
         && product != null
-        && product.getProductFamily() != null
         && accountManagementAccountService
             .getProductAccount(
                 product,
@@ -197,7 +196,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine,
-            currencyScaleServiceAccount.getScaledValue(
+            currencyScaleService.getScaledValue(
                 analyticMoveLine, analyticLineModel.getCompanyExTaxTotal()),
             date);
       }
@@ -216,8 +215,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             analyticLineModel.getAnalyticDistributionTemplate(),
-            currencyScaleServiceAccount.getCompanyScaledValue(
-                analyticLineModel.getCompany(), analyticLineModel.getExTaxTotal()),
+            currencyScaleService.getCompanyScaledValue(
+                analyticLineModel.getCompany(), analyticLineModel.getCompanyExTaxTotal()),
             AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
             appBaseService.getTodayDate(this.getCompany(analyticLineModel)));
 

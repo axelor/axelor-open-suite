@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid model="com.axelor.apps.base.db.AdvancedExport" title="Advance Fields Export"
     name="advanced-export-grid">
@@ -33,11 +33,11 @@
       form-view="advanced-export-line-form" canMove="true" orderBy="sequence"/>
     <panel name="actionsPanel">
       <button name="exportPDFBtn" title="Export PDF" icon="fa-reply" colSpan="3"
-        onClick="save,action-export-pdf-method,save"/>
+        onClick="save,action-export-pdf-method"/>
       <button name="exportExcelBtn" title="Export Excel" icon="fa-reply" colSpan="3"
-        onClick="save,action-export-excel-method,save"/>
+        onClick="save,action-export-excel-method"/>
       <button name="exportCSVBtn" title="advanced.export.button.export.csv" icon="fa-reply"
-        colSpan="3" onClick="save,action-export-csv-method,save"/>
+        colSpan="3" onClick="save,action-export-csv-method"/>
     </panel>
   </form>
 

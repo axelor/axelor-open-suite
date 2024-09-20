@@ -55,7 +55,7 @@ public interface BudgetInvoiceService {
    */
   public boolean isBudgetInLines(Invoice invoice);
 
-  public void updateBudgetLinesFromInvoice(Invoice invoice);
+  public void updateBudgetLinesFromInvoice(Invoice invoice) throws AxelorException;
 
   public void generateBudgetDistribution(Invoice invoice);
 
@@ -78,7 +78,8 @@ public interface BudgetInvoiceService {
    * @param budgetDistribution, invoice
    */
   public void updateLineWithPO(
-      BudgetDistribution budgetDistribution, Invoice invoice, InvoiceLine invoiceLine);
+      BudgetDistribution budgetDistribution, Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException;
 
   void autoComputeBudgetDistribution(Invoice invoice) throws AxelorException;
 }

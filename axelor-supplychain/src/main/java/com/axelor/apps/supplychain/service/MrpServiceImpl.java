@@ -129,6 +129,8 @@ public class MrpServiceImpl implements MrpService {
 
   protected List<StockLocation> stockLocationList;
   protected Map<Long, Integer> productMap;
+  protected Map<Long, Integer> productMapToBeAssigned;
+  protected Integer currentLevel;
   protected Mrp mrp;
   protected LocalDate today;
 
@@ -269,6 +271,15 @@ public class MrpServiceImpl implements MrpService {
     this.createStockHistoryMrpLines();
   }
 
+  protected void fillMrpLinesForProductMap(Map<Long, Integer> productMap) throws AxelorException {
+    // Get the stock for each product on each stock location
+    this.createAvailableStockMrpLines(productMap);
+    this.createPurchaseMrpLines(productMap);
+    this.createSaleOrderMrpLines(productMap);
+    this.createSaleForecastMrpLines(productMap);
+    this.createStockHistoryMrpLines(productMap);
+  }
+
   protected void doCalculation(Mrp mrp) throws AxelorException {
 
     log.debug("Do calculation");
@@ -294,10 +305,13 @@ public class MrpServiceImpl implements MrpService {
   protected void checkInsufficientCumulativeQty() throws AxelorException {
 
     for (int level = 0; level <= this.getMaxLevel(); level++) {
-
+      this.currentLevel = level;
+      this.productMapToBeAssigned = new HashMap<>();
       for (Product product : this.getProductList(level)) {
-
         this.checkInsufficientCumulativeQty(product);
+      }
+      if (productMapToBeAssigned != null && !this.productMapToBeAssigned.isEmpty()) {
+        this.fillMrpLinesForProductMap(productMapToBeAssigned);
       }
     }
   }
@@ -414,7 +428,7 @@ public class MrpServiceImpl implements MrpService {
             || (mrpLine.getMrpLineType().getElementSelect()
                     == MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK
                 && firstPass))
-        && cumulativeQty.compareTo(mrpLine.getMinQty()) < 0) {
+        && cumulativeQty.compareTo(minQty) < 0) {
 
       Company company = null;
       StockLocation stockLocation = mrpLine.getStockLocation();
@@ -514,7 +528,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void createProposalMrpLine(
+  protected MrpLine createProposalMrpLine(
       Mrp mrp,
       Product product,
       MrpLineType mrpLineType,
@@ -609,6 +623,7 @@ public class MrpServiceImpl implements MrpService {
     }
 
     this.copyMrpLineOrigins(mrpLine, mrpLineOriginList);
+    return mrpLine;
   }
 
   protected boolean getWarnDelayFromSupplier(MrpLine mrpLine, LocalDate initialMaturityDate) {
@@ -751,6 +766,10 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createPurchaseMrpLines() throws AxelorException {
+    this.createPurchaseMrpLines(this.productMap);
+  }
+
+  protected void createPurchaseMrpLines(Map<Long, Integer> productMap) throws AxelorException {
     MrpLineType purchaseOrderMrpLineType =
         mrpLineTypeService.getMrpLineType(
             MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER, mrp.getMrpTypeSelect());
@@ -773,7 +792,7 @@ public class MrpServiceImpl implements MrpService {
             .filter(
                 "self.product.id in (?1) AND self.purchaseOrder.stockLocation in (?2) AND self.receiptState != ?3 "
                     + "AND self.purchaseOrder.statusSelect IN (?4)",
-                this.productMap.keySet(),
+                productMap.keySet(),
                 this.stockLocationList,
                 PurchaseOrderRepository.STATE_RECEIVED,
                 statusList)
@@ -837,6 +856,10 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createSaleOrderMrpLines() throws AxelorException {
+    this.createSaleOrderMrpLines(this.productMap);
+  }
+
+  protected void createSaleOrderMrpLines(Map<Long, Integer> productMap) throws AxelorException {
     List<MrpLineType> saleOrderMrpLineTypeList =
         mrpLineTypeService.getMrpLineTypeList(
             MrpLineTypeRepository.ELEMENT_SALE_ORDER, mrp.getMrpTypeSelect());
@@ -876,7 +899,7 @@ public class MrpServiceImpl implements MrpService {
                 .all()
                 .filter(
                     filter,
-                    this.productMap.keySet(),
+                    productMap.keySet(),
                     this.stockLocationList,
                     SaleOrderLineRepository.DELIVERY_STATE_DELIVERED,
                     statusList)
@@ -1000,6 +1023,10 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createSaleForecastMrpLines() throws AxelorException {
+    this.createSaleForecastMrpLines(this.productMap);
+  }
+
+  protected void createSaleForecastMrpLines(Map<Long, Integer> productMap) throws AxelorException {
 
     MrpLineType saleForecastMrpLineType =
         mrpLineTypeService.getMrpLineType(
@@ -1020,7 +1047,7 @@ public class MrpServiceImpl implements MrpService {
               .all()
               .filter(
                   "self.product.id in (?1) AND self.stockLocation in (?2) AND self.forecastDate >= ?3 AND self.statusSelect = ?4",
-                  this.productMap.keySet(),
+                  productMap.keySet(),
                   this.stockLocationList,
                   today,
                   MrpForecastRepository.STATUS_CONFIRMED)
@@ -1041,6 +1068,10 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createStockHistoryMrpLines() throws AxelorException {
+    this.createStockHistoryMrpLines(this.productMap);
+  }
+
+  protected void createStockHistoryMrpLines(Map<Long, Integer> productMap) throws AxelorException {
     MrpLineType stockHistoryMrpLineType =
         mrpLineTypeService.getMrpLineType(
             MrpLineTypeRepository.ELEMENT_STOCK_HISTORY, mrp.getMrpTypeSelect());
@@ -1051,7 +1082,7 @@ public class MrpServiceImpl implements MrpService {
 
     this.mrp = mrpRepository.find(mrp.getId());
 
-    for (Long productId : this.productMap.keySet()) {
+    for (Long productId : productMap.keySet()) {
       Product product = productRepository.find(productId);
       Mrp mrp = mrpRepository.find(this.mrp.getId());
       this.createStockHistoryWeigthedLine(
@@ -1273,6 +1304,11 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createAvailableStockMrpLines() throws AxelorException {
+    this.createAvailableStockMrpLines(this.productMap);
+  }
+
+  protected void createAvailableStockMrpLines(Map<Long, Integer> productMap)
+      throws AxelorException {
 
     MrpLineType availableStockMrpLineType =
         mrpLineTypeService.getMrpLineType(
@@ -1282,7 +1318,7 @@ public class MrpServiceImpl implements MrpService {
       return;
     }
 
-    for (Long productId : this.productMap.keySet()) {
+    for (Long productId : productMap.keySet()) {
       Mrp mrp = mrpRepository.find(this.mrp.getId());
       if (mrp.getComputeWithSubStockLocation()) {
         for (StockLocation stockLocation : this.stockLocationList) {
@@ -1481,11 +1517,9 @@ public class MrpServiceImpl implements MrpService {
             product.getFullName());
       }
       if (!this.productMap.containsKey(product.getId())) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(SupplychainExceptionMessage.MRP_NO_PRODUCT_ID),
-            product.getCode(),
-            product.getName());
+        int nextLevel = currentLevel + 1;
+        this.productMap.put(product.getId(), nextLevel);
+        this.productMapToBeAssigned.put(product.getId(), nextLevel);
       }
       return mrpLineService.createMrpLine(
           mrp,

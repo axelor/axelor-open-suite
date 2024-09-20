@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="contract" package="com.axelor.apps.contract.db"/>
 
-  <entity name="ContractTemplate">
+  <entity name="ContractTemplate" implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <integer name="periodNumber" title="Number of finished periods" default="0"/>
     <integer name="targetTypeSelect" title="Type" selection="contract.target.type.select"
       default="1" required="true"/>
+    <integer name="contractTypeSelect" title="Contract type"
+      selection="contract.contract.type.select" required="true"
+      help="A billing contract is used to generate invoices, whereas a framework contract is used to generate orders. Invoices from framework contracts are generated either from orders, stock move or business project."/>
     <integer name="invoicingMomentSelect"
       selection="contract.version.invoicing.moment.select" title="Invoicing moment" default="1"/>
 
@@ -17,7 +20,7 @@
     <string name="note" multiline="true" large="true" title="Notes"/>
     <string name="name" title="Name" required="true" namecolumn="true"/>
 
-    <boolean name="isInvoicingManagement" title="Manage invoices"/>
+    <boolean name="isInvoicingManagement" title="Product management"/>
     <boolean name="isGroupedInvoicing" title="Grouped Invoicing" default="false"/>
     <boolean name="isConsumptionManagement" title="Consumption management"/>
     <boolean name="isAdditionaBenefitManagement" title="Additional benefit management"/>
@@ -54,10 +57,16 @@
       ref="com.axelor.apps.base.db.Duration"/>
 
     <one-to-many name="additionalBenefitContractLineList"
-      ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
+      ref="com.axelor.apps.contract.db.ContractLine" title="Additional products"/>
     <one-to-many name="contractLineList" ref="com.axelor.apps.contract.db.ContractLine"
-      title="Invoicing content"/>
+      title="Recurring product"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
 
   </entity>
 

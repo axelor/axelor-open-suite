@@ -27,7 +27,7 @@ import DragIcon from '@material-ui/icons/DragIndicator';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
-import { getStatus, getCompletedStatus, translate } from '../../utils';
+import { getStatus, translate } from '../../utils';
 import { updateTask } from '../../Services/api';
 import { useTaskEditor } from '../list/Context';
 import ConfirmationDialog from '../../Components/ConfirmationDialog';
@@ -116,7 +116,7 @@ export function Card({ record, onEdit, newSubtaskId, setNewSubtaskId, isFullScre
       if (isCompleted) {
         status = record.statusBeforeComplete;
       } else {
-        status = getCompletedStatus(selectedProject);
+        status = selectedProject?.completedTaskStatus;
       }
       setState(state => ({
         ...state,

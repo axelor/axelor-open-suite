@@ -35,6 +35,7 @@ import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetDomainService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
@@ -78,7 +79,7 @@ public class TimesheetController {
   public void prefillLines(ActionRequest request, ActionResponse response) {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
-      Beans.get(TimesheetService.class).prefillLines(timesheet);
+      Beans.get(TimesheetLeaveService.class).prefillLines(timesheet);
       response.setValues(timesheet);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -128,7 +129,7 @@ public class TimesheetController {
                 .find(((Integer) productContext.get("id")).longValue());
       }
       if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
-        product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getEmployee());
+        product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getEmployee(), null);
       }
 
       timesheet =
@@ -573,7 +574,6 @@ public class TimesheetController {
       BigDecimal periodTotal =
           Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet);
 
-      response.setAttr("periodTotal", "value", periodTotal);
       response.setAttr("$periodTotalConvert", "hidden", false);
       response.setAttr(
           "$periodTotalConvert",

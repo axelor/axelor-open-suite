@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <menuitem name="menu-project-root" order="-1400" title="Project" icon="fa-tasks"
     if="__config__.app.isApp('project')" icon-background="#3f6bb9"/>
@@ -192,6 +192,26 @@
     model="com.axelor.apps.project.db.WikiFolder">
     <view type="grid" name="wiki-folder-grid"/>
     <view type="form" name="wiki-folder-form"/>
+  </action-view>
+
+  <!-- HOLDBACK -->
+  <menuitem name="project-project-hold-back" parent="project-configurations"
+    title="HoldBacks" action="project.root.project.hold.back.all" order="1400"/>
+
+  <action-view name="project.root.project.hold.back.all" title="HoldBacks"
+    model="com.axelor.apps.project.db.ProjectHoldBack">
+    <view type="grid" name="project-hold-back-grid"/>
+    <view type="form" name="project-hold-back-form"/>
+  </action-view>
+
+  <menuitem name="project-sites" parent="project-configurations" title="Sites"
+    action="project.sites" order="110"
+    if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+
+  <action-view name="project.sites" title="Sites" model="com.axelor.apps.base.db.Site">
+    <view type="grid" name="site-grid"/>
+    <view type="form" name="site-form"/>
+    <context name="_isFromProject" expr="eval: true"/>
   </action-view>
 
 </object-views>

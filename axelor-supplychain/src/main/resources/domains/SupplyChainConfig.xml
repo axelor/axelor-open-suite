@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
@@ -10,7 +10,8 @@
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       unique="true"/>
 
-    <boolean name="hasOutSmForStorableProduct" title="Generate out. moves for products"/>
+    <boolean name="hasOutSmForStorableProduct" title="Generate out. moves for products"
+      default="true"/>
     <boolean name="hasOutSmForNonStorableProduct" title="Generate out. moves for services"/>
     <boolean name="hasInSmForStorableProduct" title="Generate inc. moves for products"/>
     <boolean name="hasInSmForNonStorableProduct" title="Generate inc. moves for services"/>
@@ -45,11 +46,12 @@
     <boolean name="activateOutStockMovePartialInvoicing"
       title="Activate partial invoicing for outgoing moves" default="false"/>
 
-    <many-to-one name="declarationOfExchGoodsBirtTemplate"
-      title="Declaration of exchanges of goods template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="declarationOfExchServicesBirtTemplate"
+    <many-to-one name="declarationOfExchGoodsPrintTemplate"
+      title="Declaration of exchanges of goods template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="declarationOfExchServicesPrintTemplate"
       title="Declaration of exchanges of services template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
     <extra-code><![CDATA[
 
@@ -88,8 +90,8 @@
       <field name="numberOfDaysForPurchaseOrder" on="UPDATE"/>
       <field name="activateIncStockMovePartialInvoicing" on="UPDATE"/>
       <field name="activateOutStockMovePartialInvoicing" on="UPDATE"/>
-      <field name="declarationOfExchGoodsBirtTemplate" on="UPDATE"/>
-      <field name="declarationOfExchServicesBirtTemplate" on="UPDATE"/>
+      <field name="declarationOfExchGoodsPrintTemplate" on="UPDATE"/>
+      <field name="declarationOfExchServicesPrintTemplate" on="UPDATE"/>
     </track>
 
   </entity>

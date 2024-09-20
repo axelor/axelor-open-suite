@@ -22,12 +22,16 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -43,6 +47,7 @@ import org.slf4j.LoggerFactory;
 
 public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
   protected final Logger log = LoggerFactory.getLogger(getClass());
+  protected boolean end = false;
 
   private AccountConfigService accountConfigService;
   private AppBaseService appBaseService;
@@ -59,9 +64,36 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
   }
 
   @Override
+  protected void start() throws IllegalAccessException {
+    super.start();
+
+    try {
+      AccountConfig config =
+          accountConfigService.getAccountConfig(batch.getAccountingBatch().getCompany());
+      if (!config.getHasLatePaymentAccountBlocking()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_NOT_ACTIVATED));
+      }
+
+    } catch (AxelorException e) {
+      TraceBackService.trace(new AxelorException(e, e.getCategory(), ""), null, batch.getId());
+      incrementAnomaly();
+      end = true;
+    }
+    checkPoint();
+  }
+
+  @Override
   protected void process() {
+    if (end) {
+      return;
+    }
     try {
       String result = blockCustomersWithLatePayments();
+      if (StringUtils.isEmpty(result)) {
+        result = I18n.get(AccountExceptionMessage.BATCH_BLOCK_CUSTOMER_RESULT_EMPTY);
+      }
       addComment(result);
     } catch (Exception e) {
       TraceBackService.trace(e, ExceptionOriginRepository.IMPORT, batch.getId());
@@ -76,7 +108,10 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
     List<Long> customerToUnblock = new ArrayList<Long>();
     int offset = 0;
     Query<DebtRecovery> query =
-        debtRecoveryRepository.all().filter("self.archived = false or self.archived is null");
+        debtRecoveryRepository
+            .all()
+            .filter("self.archived = false or self.archived is null")
+            .order("id");
     while (!(debtRecoveries = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       for (DebtRecovery debtRecovery : debtRecoveries) {
         ++offset;
@@ -174,5 +209,20 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
       return invoice.getPartner();
     }
     return null;
+  }
+
+  @Override
+  protected void stop() {
+    if (!end) {
+      return;
+    }
+    String comment = I18n.get(AccountExceptionMessage.BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT);
+    comment +=
+        String.format(
+            "\t* %s " + I18n.get(AccountExceptionMessage.BATCH_DEBT_RECOVERY_2), batch.getDone());
+    comment += String.format(I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
+
+    super.stop();
+    addComment(comment);
   }
 }

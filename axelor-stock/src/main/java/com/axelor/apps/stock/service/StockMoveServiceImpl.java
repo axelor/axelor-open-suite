@@ -562,6 +562,10 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
   }
 
+  public void sendSupplierCancellationMail(StockMove stockMove, Template template)
+      throws AxelorException {
+    sendMailForStockMove(stockMove, template);
+  }
   /**
    * Generate and send mail. Throws exception if the template is not found or if there is an error
    * while generating the message.
@@ -1103,9 +1107,10 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockMoveLine originalStockMoveLine,
       StockMoveLine modifiedStockMoveLine) {
 
-    StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(modifiedStockMoveLine, false);
+    StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(originalStockMoveLine, false);
     newStockMoveLine.setQty(modifiedStockMoveLine.getQty());
     newStockMoveLine.setRealQty(modifiedStockMoveLine.getQty());
+    newStockMoveLine.setUnitPriceUntaxed(modifiedStockMoveLine.getUnitPriceUntaxed());
 
     // Update quantity in original stock move.
     // If the remaining quantity is 0, remove the stock move line

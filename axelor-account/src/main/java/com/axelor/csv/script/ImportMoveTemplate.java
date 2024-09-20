@@ -20,7 +20,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
-import com.axelor.apps.account.service.move.MoveTemplateService;
+import com.axelor.apps.account.service.move.template.MoveTemplateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;

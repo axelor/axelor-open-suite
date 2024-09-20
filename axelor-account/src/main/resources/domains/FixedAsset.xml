@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="FixedAsset" cacheable="true">
+  <entity name="FixedAsset" cacheable="true"
+    implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <string name="reference" title="Reference" readonly="true"/>
     <string name="name" title="Name" required="true"/>
@@ -74,7 +75,8 @@
     <integer name="originSelect" title="Origin" selection="account.fixed.asset.origin"/>
 
     <date name="firstServiceDate" title="First Service Date"/>
-    <date name="importDepreciationDate" title="Depreciation Import Date"/>
+    <date name="importDepreciationDate" title="Depreciation Import Date"
+      help="Date on which the depreciation are supposed to be recalculated. This date should correspond to the last depreciation date (on the other software) + the depreciation period. (e.g. if on the other software the acquisition date is 01/07/2022, first depreciation was 31/12/2022 and already have been depreciated once, then the depreciation import date will be set to 31/12/2022 + 1 year thus the 31/12/2023). The first depreciation line will be generated according to this date."/>
     <decimal name="accountingValue" title="Accounting value" precision="20" scale="3"/>
     <decimal name="correctedAccountingValue" title="Corrected Accounting Value"
       precision="20" scale="3"/>
@@ -154,6 +156,22 @@
       ref="com.axelor.apps.account.db.AssetDisposalReason" title="Disposal Reason"/>
 
     <integer name="initialPeriodicityInMonth" title="Initial periodicity in month"/>
+
+    <integer name="moveGenerationException" title="Moves generation exception"
+      selection="account.fixed.asset.move.generation.exception" default="0"/>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return this.getCompanyCurrency();
+	    ]]>
+    </many-to-one>
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
+
     <extra-code><![CDATA[
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
@@ -198,6 +216,11 @@
 		// Split type
 		public static final int SPLIT_TYPE_QUANTITY = 1;
 		public static final int SPLIT_TYPE_AMOUNT = 2;
+
+		// Moves generation exception
+		public static final int MOVE_GENERATION_EXCEPTION_NONE = 0;
+		public static final int MOVE_GENERATION_NO_DISPOSAL = 1;
+		public static final int MOVE_GENERATION_NO_MOVES = 2;
 
 	]]></extra-code>
 

@@ -24,7 +24,7 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 import { updateTask } from '../../Services/api';
-import { getStatus, getCompletedStatus } from '../../utils';
+import { getStatus } from '../../utils';
 import { useTaskEditor } from '../list/Context';
 
 const useStyles = makeStyles(theme => ({
@@ -85,7 +85,7 @@ export default function Card({ record, onEdit }) {
       if (isCompleted) {
         status = record.statusBeforeComplete;
       } else {
-        status = getCompletedStatus(selectedProject);
+        status = selectedProject?.completedTaskStatus;
       }
       setState(state => ({
         ...state,

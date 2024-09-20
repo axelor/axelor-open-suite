@@ -232,28 +232,6 @@ public class LeadServiceImpl implements LeadService {
     lead.setLostReasonStr(lostReasonStr);
   }
 
-  public String processFullName(String enterpriseName, String name, String firstName) {
-    StringBuilder fullName = new StringBuilder();
-
-    if (!Strings.isNullOrEmpty(enterpriseName)) {
-      fullName.append(enterpriseName);
-      if (!Strings.isNullOrEmpty(name) || !Strings.isNullOrEmpty(firstName)) fullName.append(", ");
-    }
-    if (!Strings.isNullOrEmpty(name) && !Strings.isNullOrEmpty(firstName)) {
-      fullName.append(firstName);
-      fullName.append(" ");
-      fullName.append(name);
-    } else if (!Strings.isNullOrEmpty(firstName)) fullName.append(firstName);
-    else if (!Strings.isNullOrEmpty(name)) fullName.append(name);
-
-    return fullName.toString();
-  }
-
-  @Override
-  public LeadStatus getDefaultLeadStatus() throws AxelorException {
-    return appCrmService.getLeadDefaultStatus();
-  }
-
   @Override
   public boolean computeIsLost(Lead lead) throws AxelorException {
     return appCrmService.getLostLeadStatus().equals(lead.getLeadStatus());

@@ -44,7 +44,6 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
-import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
@@ -75,12 +74,13 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected OperationOrderService operationOrderService;
   protected AppProductionService appProductionService;
   protected ProductionConfigService productionConfigService;
-  protected OperationOrderPlanningService operationOrderPlanningService;
   protected ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService;
   protected ManufOrderService manufOrderService;
   protected SequenceService sequenceService;
   protected ManufOrderOutsourceService manufOrderOutsourceService;
   protected OperationOrderOutsourceService operationOrderOutsourceService;
+  protected ProductService productService;
+  protected ManufOrderTrackingNumberService manufOrderTrackingNumberService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -93,12 +93,13 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       OperationOrderService operationOrderService,
       AppProductionService appProductionService,
       ProductionConfigService productionConfigService,
-      OperationOrderPlanningService operationOrderPlanningService,
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
       ManufOrderOutsourceService manufOrderOutsourceService,
-      OperationOrderOutsourceService operationOrderOutsourceService) {
+      OperationOrderOutsourceService operationOrderOutsourceService,
+      ProductService productService,
+      ManufOrderTrackingNumberService manufOrderTrackingNumberService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.manufOrderRepo = manufOrderRepo;
@@ -108,12 +109,13 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.operationOrderService = operationOrderService;
     this.appProductionService = appProductionService;
     this.productionConfigService = productionConfigService;
-    this.operationOrderPlanningService = operationOrderPlanningService;
     this.manufOrderOutgoingStockMoveService = manufOrderOutgoingStockMoveService;
     this.manufOrderService = manufOrderService;
     this.sequenceService = sequenceService;
     this.manufOrderOutsourceService = manufOrderOutsourceService;
     this.operationOrderOutsourceService = operationOrderOutsourceService;
+    this.productService = productService;
+    this.manufOrderTrackingNumberService = manufOrderTrackingNumberService;
   }
 
   @Override
@@ -233,19 +235,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
           product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
     }
 
-    // update costprice in product
-    if (((Integer) productCompanyService.get(product, "costTypeSelect", company))
-        == ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE) {
-      productCompanyService.set(
-          product,
-          "costPrice",
-          (BigDecimal) productCompanyService.get(product, "lastProductionPrice", company),
-          company);
-      if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
-        Beans.get(ProductService.class).updateSalePrice(product, company);
-      }
-    }
-
     manufOrder.setRealEndDateT(
         Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FINISHED);
@@ -255,9 +244,24 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
 
+    updateProductCostPrice(manufOrder, product, company);
+
     manufOrderOutgoingStockMoveService.setManufOrderOnOutgoingMove(manufOrder);
+    manufOrderTrackingNumberService.setParentTrackingNumbers(manufOrder);
 
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
+  }
+
+  protected void updateProductCostPrice(ManufOrder manufOrder, Product product, Company company)
+      throws AxelorException {
+    // update costprice in product
+    if (((Integer) productCompanyService.get(product, "costTypeSelect", company))
+        == ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE) {
+      productCompanyService.set(product, "costPrice", manufOrder.getCostPrice(), company);
+      if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
+        productService.updateSalePrice(product, company);
+      }
+    }
   }
 
   /** Return the cost price for one unit in a manufacturing order. */

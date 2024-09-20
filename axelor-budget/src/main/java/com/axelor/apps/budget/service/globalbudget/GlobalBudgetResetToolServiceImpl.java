@@ -18,13 +18,13 @@
  */
 package com.axelor.apps.budget.service.globalbudget;
 
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.service.BudgetLevelResetToolService;
 import com.axelor.apps.budget.service.BudgetResetToolService;
-import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -35,15 +35,15 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
 
   protected BudgetLevelResetToolService budgetLevelResetToolService;
   protected BudgetResetToolService budgetResetToolService;
-  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public GlobalBudgetResetToolServiceImpl(
       BudgetLevelResetToolService budgetLevelResetToolService,
-      CurrencyScaleServiceBudget currencyScaleServiceBudget,
+      CurrencyScaleService currencyScaleService,
       BudgetResetToolService budgetResetToolService) {
     this.budgetLevelResetToolService = budgetLevelResetToolService;
-    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
+    this.currencyScaleService = currencyScaleService;
     this.budgetResetToolService = budgetResetToolService;
   }
 
@@ -54,10 +54,10 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
 
     globalBudget.setTotalAmountCommitted(BigDecimal.ZERO);
     globalBudget.setTotalAmountAvailable(
-        currencyScaleServiceBudget.getCompanyScaledValue(
+        currencyScaleService.getCompanyScaledValue(
             globalBudget, globalBudget.getTotalAmountExpected()));
     globalBudget.setAvailableAmountWithSimulated(
-        currencyScaleServiceBudget.getCompanyScaledValue(
+        currencyScaleService.getCompanyScaledValue(
             globalBudget, globalBudget.getTotalAmountExpected()));
     globalBudget.setRealizedWithNoPo(BigDecimal.ZERO);
     globalBudget.setRealizedWithPo(BigDecimal.ZERO);
@@ -66,11 +66,11 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
     globalBudget.setTotalAmountPaid(BigDecimal.ZERO);
     globalBudget.setActiveVersion(null);
     globalBudget.clearBudgetVersionList();
-    globalBudget.clearBudgetList();
     List<BudgetLevel> budgetLevelList = globalBudget.getBudgetLevelList();
     List<Budget> budgetList = globalBudget.getBudgetList();
 
     if (!ObjectUtils.isEmpty(budgetLevelList)) {
+      globalBudget.clearBudgetList();
       budgetLevelList.forEach(budgetLevelResetToolService::resetBudgetLevel);
     } else if (ObjectUtils.isEmpty(budgetList)) {
       budgetList.forEach(budgetResetToolService::resetBudget);

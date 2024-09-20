@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
@@ -37,6 +38,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -60,6 +62,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
@@ -99,6 +102,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
           valuesMap,
           valuesMapByColumn,
           valuesMapByLine,
+          companySet,
           configAnalyticAccount,
           startDate,
           endDate,
@@ -115,6 +119,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       Map<String, AccountingReportValue> valuesMap,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
@@ -156,6 +161,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
+          companySet,
           configAnalyticAccount,
           valuesMap.get(code),
           totalValue,
@@ -175,6 +181,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       AccountingReportValue baseValue,
       AccountingReportValue totalValue,
@@ -231,6 +238,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
         result,
         valuesMapByColumn,
         valuesMapByLine,
+        companySet,
         configAnalyticAccount,
         lineCode,
         analyticCounter);

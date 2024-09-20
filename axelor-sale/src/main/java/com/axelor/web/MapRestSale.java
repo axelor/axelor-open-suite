@@ -64,7 +64,7 @@ public class MapRestSale {
 
     for (SaleOrder so : orders) {
 
-      Country country = so.getMainInvoicingAddress().getAddressL7Country();
+      Country country = so.getMainInvoicingAddress().getCountry();
       BigDecimal value = so.getExTaxTotal();
 
       if (country != null) {

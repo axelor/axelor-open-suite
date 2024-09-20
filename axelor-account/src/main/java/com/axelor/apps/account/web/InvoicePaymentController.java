@@ -27,8 +27,8 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCustAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentComputeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -210,7 +210,7 @@ public class InvoicePaymentController {
               (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
 
       List<Long> invoiceTermIdList =
-          Beans.get(InvoicePaymentFinancialDiscountService.class)
+          Beans.get(InvoicePaymentComputeService.class)
               .computeDataForFinancialDiscount(invoicePayment, invoiceId);
 
       response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, invoiceTermIdList));
@@ -228,6 +228,11 @@ public class InvoicePaymentController {
               (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
       Pair<List<Long>, Boolean> result =
           Beans.get(InvoicePaymentToolService.class).changeAmount(invoicePayment, invoiceId);
+
+      if (result == null) {
+        response.setAttr("amountErrorPanel", "hidden", true);
+        return;
+      }
 
       response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, result.getLeft()));
       response.setAttr("amountErrorPanel", "hidden", result.getRight());
@@ -309,6 +314,7 @@ public class InvoicePaymentController {
       response.setValue(
           "applyFinancialDiscount",
           Beans.get(InvoicePaymentToolService.class).applyFinancialDiscount(invoicePayment));
+      response.setValue("manualChange", true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

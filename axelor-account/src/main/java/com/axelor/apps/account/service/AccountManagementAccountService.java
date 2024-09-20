@@ -89,6 +89,7 @@ public interface AccountManagementAccountService extends AccountManagementServic
       Tax tax,
       Company company,
       Journal journal,
+      Account originalAccount,
       int vatSystemSelect,
       int functionalOrigin,
       boolean isFixedAssets)

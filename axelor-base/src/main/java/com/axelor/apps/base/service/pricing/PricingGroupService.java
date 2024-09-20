@@ -27,4 +27,6 @@ public interface PricingGroupService {
   String computeFormulaField(Product product, ProductCategory productCategory);
 
   Map<String, Object> clearFieldsRelatedToFormula(Pricing pricing);
+
+  String getConcernedModelDomain(Pricing pricing);
 }
