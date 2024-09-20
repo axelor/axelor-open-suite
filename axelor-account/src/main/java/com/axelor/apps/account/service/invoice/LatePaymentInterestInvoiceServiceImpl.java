@@ -53,6 +53,17 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
           I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_INVOICE_NO_LATE));
     }
 
+    BigDecimal remainingAmount =
+        lateInvoiceTerms.stream()
+            .map(InvoiceTerm::getAmountRemaining)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    if (remainingAmount.compareTo(appAccountService.getAppAccount().getThresholdAmount()) < 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_BELOW_THRESHOLD));
+    }
+
     InvoiceGenerator invoiceGenerator = getLatePaymentInterestInvoiceGenerator(invoice);
 
     Invoice latePaymentInvoice = invoiceGenerator.generate();
