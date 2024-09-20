@@ -64,6 +64,9 @@
         <item name="bookResourceItem" title="Book resource"
           if=" __config__.app.getApp('project')?.resourceManagement"
           action="save,action-project-book-resource"/>
+        <item title="Show planning" action="action-project-view-show-planning-panel"
+          if-module="axelor-human-resource" if="__config__.app.isApp('employee')"
+          showIf="isShowPlanning &amp;&amp; id"/>
         <item name="taskEditorItem" action="save,action-project-open-task-editor"
           title="Task editor"/>
         <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
@@ -252,8 +255,6 @@
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
       <panel-include view="incl-project-structure-panel-form"/>
-      <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
-        if="__config__.app.isApp('employee')"/>
 
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>

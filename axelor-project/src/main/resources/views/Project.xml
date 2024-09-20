@@ -63,6 +63,9 @@
         <item name="bookResourceItem" title="Book resource"
           if=" __config__.app.getApp('project')?.resourceManagement"
           action="save,action-project-book-resource"/>
+        <item title="Show planning" action="action-project-view-show-planning-panel"
+          if-module="axelor-human-resource" if="__config__.app.isApp('employee')"
+          showIf="isShowPlanning &amp;&amp; id"/>
         <item name="taskEditorItem" action="save,action-project-open-task-editor"
           title="Task editor"/>
         <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
@@ -117,8 +120,6 @@
       </panel>
 
       <panel-include view="incl-project-structure-panel-form"/>
-      <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
-        if="__config__.app.isApp('employee')"/>
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
 
@@ -214,8 +215,8 @@
   </form>
 
   <form name="incl-planning-panel-form" title="Project"
-    model="com.axelor.apps.project.db.Project">
-    <panel title="Planning" name="planningPanel" colSpan="12" hideIf="!isShowPlanning || !id">
+    model="com.axelor.apps.project.db.Project" width="large">
+    <panel title="Planning" name="planningPanel" colSpan="12">
       <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
         x-show-bars="true" action="action-project-dashlet-project-planning-time" colSpan="12"
         canSearch="true"/>
@@ -777,6 +778,12 @@
     <view type="form" name="project-task-form"/>
     <domain>self.project.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-project-view-show-planning-panel" title="Planning"
+    model="com.axelor.apps.project.db.Project">
+    <view type="form" name="incl-planning-panel-form"/>
+    <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
   <!-- ACTION VALIDATE -->
