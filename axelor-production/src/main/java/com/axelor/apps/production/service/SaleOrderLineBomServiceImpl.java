@@ -80,29 +80,31 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     // Easiest cases where a line has been added or modified.
     logger.debug("Updating {}", saleOrderLine);
     var bom = saleOrderLine.getBillOfMaterial();
-    for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
-      if (!saleOrderLineBomLineMappingService.isSyncWithBomLine(subSaleOrderLine)) {
-        var bomLine = subSaleOrderLine.getBillOfMaterialLine();
-        // Updating the existing one
-        if (bomLine != null) {
-          logger.debug("Updating bomLine {} with subSaleOrderLine {}", bomLine, subSaleOrderLine);
-          bomLine.setQty(subSaleOrderLine.getQty());
-          bomLine.setProduct(subSaleOrderLine.getProduct());
-          bomLine.setUnit(subSaleOrderLine.getUnit());
-          bomLine.setBillOfMaterial(subSaleOrderLine.getBillOfMaterial());
-          bom.addBillOfMaterialLineListItem(bomLine);
-        }
-        // Creating a new one
-        else {
-          logger.debug(
-              "Creating bomLine from subSaleOrderLine {} and adding it to bom {}",
-              subSaleOrderLine,
-              bom);
-          bomLine = createBomLineFrom(subSaleOrderLine);
-          logger.debug("Created bomLine {}", bomLine);
-          bom.addBillOfMaterialLineListItem(bomLine);
-          subSaleOrderLine.setBillOfMaterialLine(bomLine);
-          billOfMaterialLineRepository.save(bomLine);
+    if (saleOrderLine.getSubSaleOrderLineList() != null) {
+      for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
+        if (!saleOrderLineBomLineMappingService.isSyncWithBomLine(subSaleOrderLine)) {
+          var bomLine = subSaleOrderLine.getBillOfMaterialLine();
+          // Updating the existing one
+          if (bomLine != null) {
+            logger.debug("Updating bomLine {} with subSaleOrderLine {}", bomLine, subSaleOrderLine);
+            bomLine.setQty(subSaleOrderLine.getQty());
+            bomLine.setProduct(subSaleOrderLine.getProduct());
+            bomLine.setUnit(subSaleOrderLine.getUnit());
+            bomLine.setBillOfMaterial(subSaleOrderLine.getBillOfMaterial());
+            bom.addBillOfMaterialLineListItem(bomLine);
+          }
+          // Creating a new one
+          else {
+            logger.debug(
+                "Creating bomLine from subSaleOrderLine {} and adding it to bom {}",
+                subSaleOrderLine,
+                bom);
+            bomLine = createBomLineFrom(subSaleOrderLine);
+            logger.debug("Created bomLine {}", bomLine);
+            bom.addBillOfMaterialLineListItem(bomLine);
+            subSaleOrderLine.setBillOfMaterialLine(bomLine);
+            billOfMaterialLineRepository.save(bomLine);
+          }
         }
       }
     }
@@ -180,15 +182,17 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     personalizedBOM.setPersonalized(true);
     saleOrderLine.setBillOfMaterial(personalizedBOM);
 
-    for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
-      var bomLine = createBomLineFrom(subSaleOrderLine);
-      // If it is not personalized, we will customize, else just use the personalized one.
-      if (subSaleOrderLine.getIsToProduce() && !bomLine.getBillOfMaterial().getPersonalized()) {
-        subSaleOrderLine.setBillOfMaterial(customizeBomOf(subSaleOrderLine, depth + 1));
+    if (saleOrderLine.getSubSaleOrderLineList() != null) {
+      for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
+        var bomLine = createBomLineFrom(subSaleOrderLine);
+        // If it is not personalized, we will customize, else just use the personalized one.
+        if (subSaleOrderLine.getIsToProduce() && !bomLine.getBillOfMaterial().getPersonalized()) {
+          subSaleOrderLine.setBillOfMaterial(customizeBomOf(subSaleOrderLine, depth + 1));
+        }
+        // Relink billOfMaterialLine
+        subSaleOrderLine.setBillOfMaterialLine(bomLine);
+        personalizedBOM.addBillOfMaterialLineListItem(bomLine);
       }
-      // Relink billOfMaterialLine
-      subSaleOrderLine.setBillOfMaterialLine(bomLine);
-      personalizedBOM.addBillOfMaterialLineListItem(bomLine);
     }
 
     // Copy components lines

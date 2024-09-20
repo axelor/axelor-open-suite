@@ -36,11 +36,12 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
     if (!saleOrderLine.getIsToProduce()) {
       return;
     }
-
     // First we sync sub lines, because if a change occurs is one of them
     // We take it into account when sync the current sale order line
-    for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
-      syncSaleOrderLine(subSaleOrderLine);
+    if (saleOrderLine.getSubSaleOrderLineList() != null) {
+      for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
+        syncSaleOrderLine(subSaleOrderLine);
+      }
     }
 
     // if bom lines list is same size as sub line list (checking if more line or less)
