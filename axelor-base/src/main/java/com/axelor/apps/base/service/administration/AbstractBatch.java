@@ -306,7 +306,7 @@ public abstract class AbstractBatch {
 
     // if not value, default will be 1
     if (defaultBatchFetchLimit == 0) {
-      defaultBatchFetchLimit = 1;
+      defaultBatchFetchLimit = FETCH_LIMIT;
     }
     return defaultBatchFetchLimit;
   }

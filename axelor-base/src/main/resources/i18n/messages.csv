@@ -734,7 +734,7 @@
 "Default Partner Localization",,,
 "Default address",,,
 "Default batch fetch limit",,,
-"Default fetch limit for batches",,,
+"Default fetch limit for batches. 0 will not be taken into account. In this case, the default value (10) will be used.",,,
 "Default home action.",,,
 "Default if not found",,,
 "Default mail message template for notifications",,,

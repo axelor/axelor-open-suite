@@ -180,7 +180,8 @@
       help="This configuration allows quick access to the active company change"/>
 
     <integer name="defaultBatchFetchLimit" title="Default batch fetch limit"
-      help="Default fetch limit for batches" min="0"/>
+      help="Default fetch limit for batches. 0 will not be taken into account. In this case, the default value (10) will be used."
+      min="0"/>
 
     <extra-code>
 	   		<![CDATA[
