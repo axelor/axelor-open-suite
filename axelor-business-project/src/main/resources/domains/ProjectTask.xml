@@ -68,6 +68,8 @@
     <decimal name="totalCosts" title="Total cost" readonly="true"/>
     <decimal name="invoicingProgress" title="Invoicing progress"/>
 
+    <many-to-one ref="com.axelor.apps.project.db.Sprint" name="sprint" title="Sprint"/>
+
     <extra-code>
 			<![CDATA[
 				public static final Integer INVOICING_TYPE_TIME_SPENT= 1;
