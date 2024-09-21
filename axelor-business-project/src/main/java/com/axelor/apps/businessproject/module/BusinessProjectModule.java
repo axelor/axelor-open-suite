@@ -113,6 +113,10 @@ import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUp
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingServiceImpl;
+import com.axelor.apps.businessproject.service.sprint.SprintPeriodService;
+import com.axelor.apps.businessproject.service.sprint.SprintPeriodServiceImpl;
+import com.axelor.apps.businessproject.service.sprint.SprintService;
+import com.axelor.apps.businessproject.service.sprint.SprintServiceImpl;
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
@@ -230,5 +234,8 @@ public class BusinessProjectModule extends AxelorModule {
 
     bind(ProjectTaskGroupService.class).to(ProjectTaskGroupServiceImpl.class);
     bind(ProjectTaskComputeService.class).to(ProjectTaskComputeServiceImpl.class);
+
+    bind(SprintPeriodService.class).to(SprintPeriodServiceImpl.class);
+    bind(SprintService.class).to(SprintServiceImpl.class);
   }
 }
