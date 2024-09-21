@@ -181,6 +181,7 @@
         </panel>
       </panel>
       <panel-include view="incl-links-panel-form"/>
+      <panel-include view="sprint-project-task-form"/>
     </panel-tabs>
 
     <panel-mail name="mailPanel">

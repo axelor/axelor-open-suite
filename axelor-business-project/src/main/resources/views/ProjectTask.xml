@@ -452,6 +452,7 @@
         </panel>
       </panel>
       <panel-include view="incl-links-panel-form"/>
+      <panel-include view="sprint-project-task-form"/>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -460,6 +461,15 @@
       <mail-messages/>
       <mail-followers/>
     </panel-mail>
+  </form>
+
+  <form model="com.axelor.apps.project.db.ProjectTask" title="Sprint"
+    name="sprint-project-task-form">
+
+    <panel name="sprintPanel" title="Sprint">
+      <field name="sprint" title="Sprint" domain="self.project = :project"/>
+    </panel>
+
   </form>
 
   <tree name="business-project-project-task-tree" title="Task">

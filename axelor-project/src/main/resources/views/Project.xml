@@ -107,6 +107,7 @@
 
     <panel-tabs name="mainPanelTab">
 
+      <panel-include view="sprint-project-form"/>
       <panel-include view="incl-project-overview-panel-form"/>
 
       <panel title="Tasks" name="taskPanel">

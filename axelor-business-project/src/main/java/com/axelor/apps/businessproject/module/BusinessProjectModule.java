@@ -28,6 +28,7 @@ import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementReposit
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
+import com.axelor.apps.businessproject.db.repo.SprintAllocationLineManagementRepository;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlService;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlServiceImpl;
 import com.axelor.apps.businessproject.service.BusinessProjectService;
@@ -113,6 +114,8 @@ import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUp
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingServiceImpl;
+import com.axelor.apps.businessproject.service.sprint.SprintAllocationLineService;
+import com.axelor.apps.businessproject.service.sprint.SprintAllocationLineServiceImpl;
 import com.axelor.apps.businessproject.service.sprint.SprintPeriodService;
 import com.axelor.apps.businessproject.service.sprint.SprintPeriodServiceImpl;
 import com.axelor.apps.businessproject.service.sprint.SprintService;
@@ -131,6 +134,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeServiceImpl;
+import com.axelor.apps.project.db.repo.SprintAllocationLineRepository;
 import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
@@ -237,5 +241,7 @@ public class BusinessProjectModule extends AxelorModule {
 
     bind(SprintPeriodService.class).to(SprintPeriodServiceImpl.class);
     bind(SprintService.class).to(SprintServiceImpl.class);
+    bind(SprintAllocationLineService.class).to(SprintAllocationLineServiceImpl.class);
+    bind(SprintAllocationLineRepository.class).to(SprintAllocationLineManagementRepository.class);
   }
 }
