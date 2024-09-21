@@ -40,6 +40,10 @@
     onLoad="action-business-project-project-group-on-load"
     onNew="action-business-project-project-group-on-new"
     onSave="action-project-method-check-resource-availibility">
+    <toolbar>
+      <button onClick="action-project-view-attach-tasks-to-sprint"
+        name="attachTasksToSprintBtn" title="Attach tasks to sprint"/>
+    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -559,6 +563,46 @@
         x-dirty="false" domain="self.project.id = :id" colSpan="6"/>
       <panel-dashlet action="action-project-view-sprint-allocation-lines"
         name="sprintAllocationLinePanel" colSpan="12"/>
+      <panel-dashlet action="action-project-method-tasks-per-sprint"
+        name="tasksPerSprintPanel" colSpan="12"/>
+    </panel>
+
+  </form>
+
+  <kanban columnBy="sprint" model="com.axelor.apps.project.db.ProjectTask"
+    sequenceBy="sequence" title="Tasks per sprint" name="project-task-sprint-kanban"
+    draggable="true">
+
+    <field name="name"/>
+    <field name="assignedTo.name"/>
+    <field name="totalPlannedHrs"/>
+
+    <template>
+		<![CDATA[
+			<>
+				<strong>{name}</strong><br /><br />
+				<strong>User:</strong> {assignedTo.name}<br />
+				<strong>Total planned time:</strong> {totalPlannedHrs}
+			</>
+		]]>
+    </template>
+
+  </kanban>
+
+  <form model="com.axelor.utils.db.Wizard" title="Attach tasks to sprint"
+    name="attach-tasks-to-sprint-wizard-form">
+
+    <panel name="mainPanel">
+      <field name="sprint" title="Sprint" type="many-to-one"
+        target="com.axelor.apps.project.db.Sprint" domain="self.project.id = :_projectId"
+        colSpan="6"/>
+      <field name="projectTasks" title="Project tasks" type="many-to-many"
+        target="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :_projectId"
+        form-view="business-project-task-form" grid-view="business-project-task-grid" canNew="false"
+        colSpan="12"/>
+      <button onClick="action-project-method-attach-tasks-to-sprint"
+        name="attachTasksToSprintBtn" title="Attach tasks to sprint"
+        readonlyIf="!sprint || !projectTasks"/>
     </panel>
 
   </form>
@@ -1314,5 +1358,26 @@
   <action-attrs name="action-project-attrs-on-change-sprint">
     <attribute name="refresh" for="sprintAllocationLinePanel" expr="eval: true"/>
   </action-attrs>
+
+  <action-method name="action-project-method-tasks-per-sprint">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="viewTasksPerSprint"/>
+  </action-method>
+
+  <action-view name="action-project-view-attach-tasks-to-sprint"
+    title="Attach tasks to sprint" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="attach-tasks-to-sprint-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup" value="reload"/>
+    <context name="_projectId" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-project-method-attach-tasks-to-sprint">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="attachTasksToSprint"/>
+  </action-method>
 
 </object-views>

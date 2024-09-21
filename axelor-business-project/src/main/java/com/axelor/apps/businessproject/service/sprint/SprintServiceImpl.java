@@ -19,8 +19,10 @@
 package com.axelor.apps.businessproject.service.sprint;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.SprintPeriod;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -36,11 +38,13 @@ import org.apache.commons.collections.CollectionUtils;
 public class SprintServiceImpl implements SprintService {
 
   public SprintRepository sprintRepo;
+  public ProjectTaskRepository projectTaskRepo;
 
   @Inject
-  public SprintServiceImpl(SprintRepository sprintRepo) {
+  public SprintServiceImpl(SprintRepository sprintRepo, ProjectTaskRepository projectTaskRepo) {
 
     this.sprintRepo = sprintRepo;
+    this.projectTaskRepo = projectTaskRepo;
   }
 
   @Override
@@ -87,5 +91,17 @@ public class SprintServiceImpl implements SprintService {
         });
 
     return sprintList;
+  }
+
+  @Override
+  @Transactional
+  public void attachTasksToSprint(Sprint sprint, List<ProjectTask> projectTasks) {
+
+    projectTasks.stream()
+        .forEach(
+            task -> {
+              task.setSprint(sprint);
+              projectTaskRepo.save(task);
+            });
   }
 }

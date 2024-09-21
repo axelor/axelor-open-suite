@@ -23,7 +23,8 @@
       <field name="sprintPeriod" requiredIf="!isBacklog" colSpan="5"/>
       <field name="description" colSpan="12"/>
       <field name="projectTaskList" canSelect="true" canNew="false" canEdit="false"
-        domain="self.project=:project" showIf="id" colSpan="12"/>
+        domain="self.project=:project" showIf="id" form-view="business-project-task-form"
+        grid-view="business-project-task-grid" colSpan="12"/>
       <field name="sprintAllocationLineList" grid-view="sprint-allocation-line-sprint-grid"
         form-view="sprint-allocation-line-form" showIf="id" colSpan="12"/>
     </panel>

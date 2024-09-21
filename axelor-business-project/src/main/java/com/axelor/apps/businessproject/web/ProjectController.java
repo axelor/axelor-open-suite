@@ -35,10 +35,13 @@ import com.axelor.apps.businessproject.service.ProjectHistoryService;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.sprint.SprintAllocationLineService;
+import com.axelor.apps.businessproject.service.sprint.SprintService;
 import com.axelor.apps.businessproject.translation.ITranslation;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -56,6 +59,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -296,5 +300,57 @@ public class ProjectController {
 
       Beans.get(SprintAllocationLineService.class).sprintOnChange(project, sprint);
     }
+  }
+
+  public void viewTasksPerSprint(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Project project = request.getContext().asType(Project.class);
+
+    ActionView.ActionViewBuilder actionViewBuilder =
+        ActionView.define(I18n.get("Tasks per sprint"));
+
+    actionViewBuilder.model(ProjectTask.class.getName());
+    actionViewBuilder.add("kanban", "project-task-sprint-kanban");
+    actionViewBuilder.add("form", "business-project-task-form");
+    actionViewBuilder.param(
+        "kanban-hide-columns",
+        Beans.get(SprintRepository.class)
+            .all()
+            .filter("self.project.id != ?1", project.getId())
+            .fetchStream()
+            .map(sprint -> String.valueOf(sprint.getId()))
+            .collect(Collectors.joining(",")));
+    actionViewBuilder.domain("self.project.id = :_projectId");
+    actionViewBuilder.context("_projectId", project.getId());
+
+    response.setView(actionViewBuilder.map());
+  }
+
+  @SuppressWarnings("unchecked")
+  public void attachTasksToSprint(ActionRequest request, ActionResponse response) {
+
+    List<LinkedHashMap<String, Object>> projectTaskMaps =
+        (List<LinkedHashMap<String, Object>>) request.getContext().get("projectTasks");
+
+    Long sprintId =
+        Long.valueOf(
+            ((LinkedHashMap<String, Object>) request.getContext().get("sprint"))
+                .get("id")
+                .toString());
+
+    Sprint sprint = Beans.get(SprintRepository.class).find(sprintId);
+
+    ProjectTaskRepository projectTaskRepo = Beans.get(ProjectTaskRepository.class);
+
+    List<ProjectTask> projectTasks =
+        projectTaskMaps.stream()
+            .map(task -> Long.valueOf(task.get("id").toString()))
+            .map(projectTaskRepo::find)
+            .collect(Collectors.toList());
+
+    Beans.get(SprintService.class).attachTasksToSprint(sprint, projectTasks);
+
+    response.setCanClose(true);
   }
 }

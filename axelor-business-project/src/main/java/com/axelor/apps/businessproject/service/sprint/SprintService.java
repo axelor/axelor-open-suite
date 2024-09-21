@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.service.sprint;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.SprintPeriod;
 import java.util.List;
@@ -29,4 +30,6 @@ public interface SprintService {
   public String sprintPeriodDomain(Set<Project> projects);
 
   public List<Sprint> generateSprints(Set<Project> projects, Set<SprintPeriod> sprintPeriods);
+
+  public void attachTasksToSprint(Sprint sprint, List<ProjectTask> projectTasks);
 }
