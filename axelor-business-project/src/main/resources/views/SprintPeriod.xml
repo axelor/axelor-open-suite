@@ -17,10 +17,10 @@
     model="com.axelor.apps.project.db.SprintPeriod" width="large">
 
     <panel name="mainPanel">
-      <field name="name"/>
-      <field name="company"/>
-      <field name="fromDate"/>
-      <field name="toDate"/>
+      <field name="name" required="true"/>
+      <field name="company" required="true"/>
+      <field name="fromDate" required="true"/>
+      <field name="toDate" required="true"/>
     </panel>
 
   </form>

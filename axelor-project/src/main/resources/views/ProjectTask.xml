@@ -124,8 +124,8 @@
         <field name="budgetedTime" colSpan="4"/>
         <spacer name="budgetedTimeSpacer" colSpan="4"/>
         <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-          x-show-bars="false" action="action-project-task-dashlet-project-planning-time"
-          colSpan="12" canSearch="true"/>
+          x-show-bars="true" action="action-project-task-dashlet-project-planning-time" colSpan="12"
+          canSearch="true"/>
         <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
         <field name="project.isShowPlanning" hidden="true"/>
       </panel>
