@@ -44,16 +44,19 @@ public class SprintServiceImpl implements SprintService {
   public SprintRepository sprintRepo;
   public ProjectTaskRepository projectTaskRepo;
   public ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
+  public SprintAllocationLineService sprintAllocationLineService;
 
   @Inject
   public SprintServiceImpl(
       SprintRepository sprintRepo,
       ProjectTaskRepository projectTaskRepo,
-      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
+      SprintAllocationLineService sprintAllocationLineService) {
 
     this.sprintRepo = sprintRepo;
     this.projectTaskRepo = projectTaskRepo;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
+    this.sprintAllocationLineService = sprintAllocationLineService;
   }
 
   @Override

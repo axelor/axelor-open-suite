@@ -32,6 +32,7 @@ import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -134,9 +135,9 @@ public class SprintAllocationLineServiceImpl implements SprintAllocationLineServ
               .subtract(sprintAllocationLine.getAllocated());
     }
 
-    valueMap.put("leaves", leaveDayCount);
-    valueMap.put("plannedTime", plannedTime);
-    valueMap.put("remainingTime", remainingTime);
+    valueMap.put("leaves", leaveDayCount.setScale(2, RoundingMode.HALF_UP));
+    valueMap.put("plannedTime", plannedTime.setScale(2, RoundingMode.HALF_UP));
+    valueMap.put("remainingTime", remainingTime.setScale(2, RoundingMode.HALF_UP));
 
     return valueMap;
   }
