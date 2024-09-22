@@ -22,8 +22,12 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.SprintPeriod;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -76,4 +80,14 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   boolean isTimeUnitValid(Unit unit);
 
   BigDecimal verifiedLimitFollowUp(BigDecimal value, BigDecimal limit);
+
+  public List<ProjectPlanningTime> updateProjectPlanningTime(
+      ProjectTask projectTask, ProjectTask projectTaskDb);
+
+  public ProjectPlanningTime createProjectPlanningTime(ProjectTask projectTask, Sprint sprint);
+
+  public List<ProjectPlanningTime> getExistingPlanningTime(
+      List<ProjectPlanningTime> projectPlanningTimeList,
+      Employee employee,
+      SprintPeriod sprintPeriod);
 }

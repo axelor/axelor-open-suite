@@ -109,7 +109,8 @@
   <form name="business-project-task-form" title="Task"
     model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-business-project-project-task-group-on-new"
-    onLoad="action-business-project-project-task-group-on-load" width="large">
+    onLoad="action-business-project-project-task-group-on-load"
+    onSave="action-project-task-method-update-project-planning-time" width="large">
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
@@ -239,7 +240,7 @@
           showIf="invoicingType == 4"/>
         <field name="timeUnit" colSpan="4" readonlyIf="saleOrderLine || parentTask"
           onSelect="action-project-task-attrs-set-time-unit-domain"
-          onChange="action-project-task-method-update-budgeted-time, save"
+          onChange="action-project-task-method-update-budgeted-time" requiredIf="sprint"
           if="__config__.app.isApp('business-project')"/>
       </panel>
     </panel>
@@ -752,5 +753,10 @@
     <domain>self.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
+
+  <action-method name="action-project-task-method-update-project-planning-time">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="updateProjectPlanningTime"/>
+  </action-method>
 
 </object-views>

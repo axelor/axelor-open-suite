@@ -30,17 +30,21 @@ import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
 import com.axelor.apps.businessproject.service.PurchaseOrderProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupService;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
+import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -265,5 +269,50 @@ public class ProjectTaskController {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
     response.setValues(Beans.get(ProjectTaskGroupService.class).updateFinancialDatas(projectTask));
+  }
+
+  public void updateProjectPlanningTime(ActionRequest request, ActionResponse response) {
+
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    Sprint sprint = projectTask.getSprint();
+    User assignedTo = projectTask.getAssignedTo();
+
+    ProjectTaskBusinessProjectService projectTaskBusinessProjectService =
+        Beans.get(ProjectTaskBusinessProjectService.class);
+
+    if (projectTask.getId() != null) {
+      ProjectTask projectTaskDb = Beans.get(ProjectTaskRepository.class).find(projectTask.getId());
+      Sprint sprintDb = projectTaskDb.getSprint();
+      User assignedToDb = projectTaskDb.getAssignedTo();
+
+      boolean isSprintChanged = (sprintDb != null && !sprintDb.equals(sprint));
+      boolean isAssignedToChanged = !assignedToDb.equals(assignedTo);
+
+      if (isSprintChanged || isAssignedToChanged) {
+        response.setValue(
+            "projectPlanningTimeList",
+            projectTaskBusinessProjectService.updateProjectPlanningTime(
+                projectTask, projectTaskDb));
+      } else if (sprintDb == null && sprint != null) {
+        List<ProjectPlanningTime> projectPlanningTimeList =
+            projectTask.getProjectPlanningTimeList();
+        ProjectPlanningTime projectPlanningTime =
+            Beans.get(ProjectTaskBusinessProjectService.class)
+                .createProjectPlanningTime(projectTask, sprint);
+
+        if (projectPlanningTime != null) {
+          projectPlanningTimeList.add(projectPlanningTime);
+        }
+
+        response.setValue("projectPlanningTimeList", projectPlanningTimeList);
+      }
+    } else if (sprint != null) {
+      List<ProjectPlanningTime> projectPlanningTimeList = new ArrayList<>();
+      projectPlanningTimeList.add(
+          projectTaskBusinessProjectService.createProjectPlanningTime(projectTask, sprint));
+
+      response.setValue("projectPlanningTimeList", projectPlanningTimeList);
+    }
   }
 }

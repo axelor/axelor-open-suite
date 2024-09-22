@@ -18,7 +18,10 @@
  */
 package com.axelor.apps.businessproject.service.sprint;
 
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.SprintPeriod;
@@ -28,6 +31,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +43,17 @@ public class SprintServiceImpl implements SprintService {
 
   public SprintRepository sprintRepo;
   public ProjectTaskRepository projectTaskRepo;
+  public ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
 
   @Inject
-  public SprintServiceImpl(SprintRepository sprintRepo, ProjectTaskRepository projectTaskRepo) {
+  public SprintServiceImpl(
+      SprintRepository sprintRepo,
+      ProjectTaskRepository projectTaskRepo,
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
 
     this.sprintRepo = sprintRepo;
     this.projectTaskRepo = projectTaskRepo;
+    this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
   }
 
   @Override
@@ -97,11 +106,44 @@ public class SprintServiceImpl implements SprintService {
   @Transactional
   public void attachTasksToSprint(Sprint sprint, List<ProjectTask> projectTasks) {
 
-    projectTasks.stream()
-        .forEach(
-            task -> {
-              task.setSprint(sprint);
-              projectTaskRepo.save(task);
+    if (sprint.getSprintPeriod() == null) {
+      return;
+    }
+
+    for (ProjectTask task : projectTasks) {
+      Sprint currentSprint = task.getSprint();
+      Employee assignedEmployee = task.getAssignedTo().getEmployee();
+      LocalDateTime sprintStart = sprint.getSprintPeriod().getFromDate().atStartOfDay();
+      LocalDateTime sprintEnd = sprint.getSprintPeriod().getToDate().atStartOfDay();
+
+      if (task.getTimeUnit() == null || assignedEmployee == null) {
+        continue;
+      }
+
+      task.setSprint(sprint);
+
+      List<ProjectPlanningTime> projectPlanningTimeList =
+          projectTaskBusinessProjectService.getExistingPlanningTime(
+              task.getProjectPlanningTimeList(),
+              assignedEmployee,
+              currentSprint != null ? currentSprint.getSprintPeriod() : null);
+
+      if (CollectionUtils.isNotEmpty(projectPlanningTimeList)) {
+        projectPlanningTimeList.forEach(
+            planning -> {
+              planning.setStartDateTime(sprintStart);
+              planning.setEndDateTime(sprintEnd);
             });
+      } else {
+        ProjectPlanningTime planningTime =
+            projectTaskBusinessProjectService.createProjectPlanningTime(task, sprint);
+
+        if (planningTime != null) {
+          task.addProjectPlanningTimeListItem(planningTime);
+        }
+      }
+
+      projectTaskRepo.save(task);
+    }
   }
 }

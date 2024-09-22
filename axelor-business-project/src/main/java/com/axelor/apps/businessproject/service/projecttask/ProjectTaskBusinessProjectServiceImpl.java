@@ -42,6 +42,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -51,6 +52,8 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.SprintPeriod;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -75,12 +78,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
@@ -739,5 +744,148 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       return limit.negate();
     }
     return value;
+  }
+
+  @Override
+  public List<ProjectPlanningTime> updateProjectPlanningTime(
+      ProjectTask projectTask, ProjectTask projectTaskDb) {
+
+    List<ProjectPlanningTime> projectPlanningTimeList = projectTask.getProjectPlanningTimeList();
+
+    if (CollectionUtils.isEmpty(projectPlanningTimeList)) {
+      ProjectPlanningTime projectPlanningTime =
+          createProjectPlanningTime(projectTask, projectTask.getSprint());
+
+      if (projectPlanningTime != null) {
+        projectPlanningTimeList.add(projectPlanningTime);
+      }
+
+      return projectPlanningTimeList;
+    }
+
+    if (isInvalidInput(projectTask, projectTaskDb)) {
+      return projectPlanningTimeList;
+    }
+
+    Employee employee = projectTask.getAssignedTo().getEmployee();
+    Employee dbEmployee = projectTaskDb.getAssignedTo().getEmployee();
+    SprintPeriod sprintPeriod = projectTask.getSprint().getSprintPeriod();
+    SprintPeriod dbSprintPeriod = projectTaskDb.getSprint().getSprintPeriod();
+
+    LocalDateTime fromDateTime = sprintPeriod.getFromDate().atStartOfDay();
+    LocalDateTime toDateTime = sprintPeriod.getToDate().atStartOfDay();
+
+    boolean updated =
+        projectPlanningTimeList.stream()
+                .filter(
+                    planningTime ->
+                        shouldUpdatePlanningTime(planningTime, dbEmployee, dbSprintPeriod))
+                .peek(
+                    planningTime ->
+                        updateProjectPlanningTime(planningTime, employee, fromDateTime, toDateTime))
+                .count()
+            > 0;
+
+    if (!updated) {
+      ProjectPlanningTime projectPlanningTime =
+          createProjectPlanningTime(projectTask, projectTask.getSprint());
+
+      if (projectPlanningTime != null) {
+        projectPlanningTimeList.add(projectPlanningTime);
+      }
+    }
+
+    return projectPlanningTimeList;
+  }
+
+  private boolean isInvalidInput(ProjectTask projectTask, ProjectTask projectTaskDb) {
+
+    return projectTask.getSprint() == null
+        || projectTaskDb.getSprint() == null
+        || projectTask.getSprint().getSprintPeriod() == null
+        || projectTaskDb.getSprint().getSprintPeriod() == null
+        || projectTask.getAssignedTo().getEmployee() == null
+        || projectTaskDb.getAssignedTo().getEmployee() == null;
+  }
+
+  private boolean shouldUpdatePlanningTime(
+      ProjectPlanningTime planningTime, Employee employee, SprintPeriod sprintPeriod) {
+
+    return planningTime.getEmployee().equals(employee)
+        && planningTime.getStartDateTime().toLocalDate().equals(sprintPeriod.getFromDate())
+        && planningTime.getEndDateTime().toLocalDate().equals(sprintPeriod.getToDate());
+  }
+
+  private void updateProjectPlanningTime(
+      ProjectPlanningTime planningTime,
+      Employee employee,
+      LocalDateTime fromDateTime,
+      LocalDateTime toDateTime) {
+
+    planningTime.setEmployee(employee);
+    planningTime.setStartDateTime(fromDateTime);
+    planningTime.setEndDateTime(toDateTime);
+  }
+
+  @Override
+  public ProjectPlanningTime createProjectPlanningTime(ProjectTask projectTask, Sprint sprint) {
+
+    SprintPeriod sprintPeriod = sprint.getSprintPeriod();
+    Employee assignedEmployee = projectTask.getAssignedTo().getEmployee();
+
+    if (sprintPeriod == null || assignedEmployee == null || projectTask.getTimeUnit() == null) {
+      return null;
+    }
+
+    List<ProjectPlanningTime> projectPlanningTimeList = projectTask.getProjectPlanningTimeList();
+
+    if (CollectionUtils.isEmpty(projectPlanningTimeList)) {
+      return createProjectPlanningTime(projectTask);
+    }
+
+    boolean planningTimeExists =
+        projectPlanningTimeList.stream()
+            .filter(p -> p.getEmployee().equals(assignedEmployee))
+            .anyMatch(
+                p ->
+                    p.getStartDateTime().toLocalDate().equals(sprintPeriod.getFromDate())
+                        && p.getEndDateTime().toLocalDate().equals(sprintPeriod.getToDate()));
+
+    if (!planningTimeExists) {
+      return createProjectPlanningTime(projectTask);
+    }
+
+    return null;
+  }
+
+  private ProjectPlanningTime createProjectPlanningTime(ProjectTask projectTask) {
+
+    ProjectPlanningTime planningTime = new ProjectPlanningTime();
+
+    Unit timeUnit = projectTask.getTimeUnit();
+    Employee assignedEmployee = projectTask.getAssignedTo().getEmployee();
+    SprintPeriod sprintPeriod = projectTask.getSprint().getSprintPeriod();
+
+    planningTime.setProjectTask(projectTask);
+    planningTime.setProject(projectRepository.find(projectTask.getProject().getId()));
+    planningTime.setTimeUnit(timeUnit);
+    planningTime.setDisplayTimeUnit(timeUnit);
+    planningTime.setEmployee(assignedEmployee);
+    planningTime.setProduct(assignedEmployee.getProduct());
+    planningTime.setStartDateTime(sprintPeriod.getFromDate().atStartOfDay());
+    planningTime.setEndDateTime(sprintPeriod.getToDate().atStartOfDay());
+
+    return planningTime;
+  }
+
+  @Override
+  public List<ProjectPlanningTime> getExistingPlanningTime(
+      List<ProjectPlanningTime> projectPlanningTimeList,
+      Employee employee,
+      SprintPeriod sprintPeriod) {
+
+    return Optional.ofNullable(projectPlanningTimeList).orElseGet(Collections::emptyList).stream()
+        .filter(planningTime -> shouldUpdatePlanningTime(planningTime, employee, sprintPeriod))
+        .collect(Collectors.toList());
   }
 }
