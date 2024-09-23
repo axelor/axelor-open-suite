@@ -86,6 +86,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   @Inject protected PurchaseOrderSequenceService purchaseOrderSequenceService;
 
+  @Inject protected PurchaseOrderLineTaxService purchaseOrderLineTaxService;
+
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
       throws AxelorException {
@@ -202,9 +204,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   public void initPurchaseOrderLineTax(PurchaseOrder purchaseOrder) {
 
     if (purchaseOrder.getPurchaseOrderLineTaxList() == null) {
-      purchaseOrder.setPurchaseOrderLineTaxList(new ArrayList<PurchaseOrderLineTax>());
+      purchaseOrder.setPurchaseOrderLineTaxList(new ArrayList<>());
     } else {
+      List<PurchaseOrderLineTax> purchaseOrderLineTaxList =
+          purchaseOrderLineTaxService.getUpdatedPurchaseOrderLineTax(purchaseOrder);
       purchaseOrder.getPurchaseOrderLineTaxList().clear();
+      purchaseOrder.getPurchaseOrderLineTaxList().addAll(purchaseOrderLineTaxList);
     }
   }
 
