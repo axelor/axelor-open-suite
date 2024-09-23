@@ -77,7 +77,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
 
         MoveLine debitMoveLineToReconcile;
         MoveLine creditMoveLineToReconcile;
-        if (foreignExchangeGapToolService.isGain(creditMoveLine, debitMoveLine)) {
+        if (foreignExchangeDebitMoveLine.getAccount().equals(debitMoveLine.getAccount())) {
           debitMoveLineToReconcile = foreignExchangeDebitMoveLine;
           creditMoveLineToReconcile = creditMoveLine;
         } else {

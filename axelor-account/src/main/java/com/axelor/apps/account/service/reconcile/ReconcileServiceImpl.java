@@ -857,6 +857,12 @@ public class ReconcileServiceImpl implements ReconcileService {
           invoicePaymentRepository.save(invoicePayment);
 
           reconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
+          reconcile.setAmount(
+              reconcile
+                  .getCreditMoveLine()
+                  .getAmountRemaining()
+                  .abs()
+                  .min(reconcile.getDebitMoveLine().getAmountRemaining().abs()));
         }
       }
     }
