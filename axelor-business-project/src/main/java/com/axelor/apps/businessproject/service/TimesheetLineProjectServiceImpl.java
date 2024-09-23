@@ -40,7 +40,6 @@ import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     implements TimesheetLineBusinessService {
@@ -152,9 +151,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
 
   @Override
   public Product getDefaultProduct(TimesheetLine timesheetLine) {
-    return Optional.ofNullable(timesheetLine)
-        .map(TimesheetLine::getProjectTask)
-        .map(ProjectTask::getProduct)
-        .orElse(super.getDefaultProduct(timesheetLine));
+    return userHrService.getTimesheetProduct(
+        timesheetLine.getEmployee(), timesheetLine.getProjectTask());
   }
 }
