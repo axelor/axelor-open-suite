@@ -19,22 +19,33 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.project.db.Project;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.time.LocalDate;
+import java.util.Optional;
 
-/** @author axelor */
+/**
+ * @author axelor
+ */
 public class TimesheetServiceImpl implements TimesheetService {
   protected TimesheetLineService timesheetLineService;
+  protected TimesheetRepository timesheetRepository;
 
   @Inject
-  public TimesheetServiceImpl(TimesheetLineService timesheetLineService) {
+  public TimesheetServiceImpl(
+      TimesheetLineService timesheetLineService, TimesheetRepository timesheetRepository) {
     this.timesheetLineService = timesheetLineService;
+    this.timesheetRepository = timesheetRepository;
   }
 
   @Override
@@ -75,5 +86,26 @@ public class TimesheetServiceImpl implements TimesheetService {
                 timesheet, timesheetLine.getHoursDuration(), false));
       }
     }
+  }
+
+  @Override
+  public Query<Timesheet> getTimesheetQuery(TimesheetLine timesheetLine) {
+    return getTimesheetQuery(
+        timesheetLine.getEmployee(),
+        Optional.of(timesheetLine)
+            .map(TimesheetLine::getProject)
+            .map(Project::getCompany)
+            .orElse(null),
+        timesheetLine.getDate());
+  }
+
+  protected Query<Timesheet> getTimesheetQuery(Employee employee, Company company, LocalDate date) {
+    return timesheetRepository
+        .all()
+        .filter(
+            "self.employee = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
+            employee,
+            company,
+            date);
   }
 }

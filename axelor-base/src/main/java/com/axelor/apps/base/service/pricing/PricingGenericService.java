@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.db.Model;
 import java.util.List;
+import java.util.Map;
 
 public interface PricingGenericService {
   <T extends Model> void usePricings(Company company, Class<?> modelClass, Long modelId)
@@ -45,6 +46,7 @@ public interface PricingGenericService {
 
   List<String> getUnavailableModels();
 
-  List<StringBuilder> computePricingProcess(Company company, Model model, String typeSelect)
+  List<StringBuilder> computePricingProcess(
+      Company company, Model model, String typeSelect, Map<String, Object> contextMap)
       throws AxelorException;
 }

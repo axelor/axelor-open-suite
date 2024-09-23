@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="supplychain-stock-details-by-product-form" title="Stock details by product"
     model="com.axelor.utils.db.Wizard" canSave="false" width="large" canNew="false" canCopy="false"
     onNew="action-group-stock-details-by-product-on-new">
+    <toolbar>
+      <button name="addToCartBtn" title="Add to cart"
+        onClick="action-supplychain-method-product-add-to-cart" icon="cart-plus-fill"
+        if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"/>
+    </toolbar>
     <panel name="MainFilters" itemSpan="4" colSpan="12">
       <field name="$product" title="Product" canEdit="false"
         target="com.axelor.apps.base.db.Product" type="many-to-one" form-view="product-form"
@@ -237,6 +242,10 @@
   <action-method name="action-supplychain-method-projected-stock">
     <call class="com.axelor.apps.supplychain.web.ProjectedStockController"
       method="showProjectedStock"/>
+  </action-method>
+
+  <action-method name="action-supplychain-method-product-add-to-cart">
+    <call class="com.axelor.apps.supplychain.web.ProjectedStockController" method="addToCart"/>
   </action-method>
 
 </object-views>

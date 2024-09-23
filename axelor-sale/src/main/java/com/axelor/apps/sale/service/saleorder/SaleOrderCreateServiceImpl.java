@@ -34,6 +34,9 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
@@ -109,7 +112,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       Team team,
       TaxNumber taxNumber,
       String internalNote,
-      FiscalPosition fiscalPosition)
+      FiscalPosition fiscalPosition,
+      TradingName tradingName)
       throws AxelorException {
     SaleOrder saleOrder =
         createSaleOrder(
@@ -125,8 +129,9 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             team,
             taxNumber,
             fiscalPosition,
-            null);
+            tradingName);
     saleOrder.setInternalNote(internalNote);
+    saleOrder.setTradingName(tradingName);
     return saleOrder;
   }
 

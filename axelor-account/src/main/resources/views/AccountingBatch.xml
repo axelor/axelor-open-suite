@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="accounting-batch-grid" title="Accounting batches"
     model="com.axelor.apps.account.db.AccountingBatch">
@@ -28,14 +28,14 @@
         requiredIf="actionSelect &amp;&amp; actionSelect == 19 &amp;&amp; creditTransferTypeSelect == 2 &amp;&amp; paymentMode.typeSelect == 9 &amp;&amp; paymentMode.inOutSelect == 2"
         widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"/>
-      <field name="company.tradingNameSet" colSpan="12" hidden="true"/>
+      <field name="company.tradingNameList" colSpan="12" hidden="true"/>
       <field name="isDebtRecoveryByTradingName"
-        readonlyIf="company.tradingNameSet == null || company.tradingNameSet.length == 0"
+        readonlyIf="company.tradingNameList == null || company.tradingNameList.length == 0"
         onChange="action-attrs-accounting-batch-hide-trading-name-set" hidden="true"
         if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
         showIf="actionSelect == 14"/>
       <field name="tradingNameSet" colSpan="12" grid-view="trading-name-grid"
-        widget="TagSelect" form-view="trading-name-form" domain=":company member of self.companySet"
+        widget="TagSelect" form-view="trading-name-form" domain="self.company = :company"
         canNew="false" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
         hidden="true" canEdit="false"/>
       <field name="archived" title="Archived"/>
@@ -134,17 +134,19 @@
         <field name="year.reportedBalanceDate" showIf="openYear" hidden="true" colSpan="3"/>
         <field name="year"
           domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)"
-          canEdit="false" requiredIf="actionSelect == 21"/>
+          canEdit="false" requiredIf="actionSelect == 21"
+          onChange="action-accounting-batch-close-open-method-check-daybook"/>
         <field name="allocatePerPartner" colSpan="3"/>
         <field name="generatedMoveStatusSelect" colSpan="3" selection-in="[2,3,5]"
           requiredIf="actionSelect == 21"/>
+        <label name="daybookRemainingLabel" hidden="true" css="label-danger" colSpan="12"/>
         <field name="moveDescription" colSpan="12"/>
         <panel-related field="closureAccountSet" form-view="account-form"
-          grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false"
+          grid-view="account-grid" canNew="false" canEdit="false"
           domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'charge', 'income', 'asset')"
           showIf="closeYear"/>
         <panel-related field="openingAccountSet" form-view="account-form"
-          grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false"
+          grid-view="account-grid" canNew="false" canEdit="false"
           domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'asset')"
           showIf="openYear"/>
         <field name="generateResultMove" showIf="openYear"/>
@@ -308,6 +310,7 @@
   <!-- ACTION GROUP -->
   <action-group name="action-accounting-batch-group-close-annual-accounts">
     <action name="action-accounting-batch-validate-batchlist-not-empty"/>
+    <action name="action-accounting-batch-method-validate-daybook-moves"/>
     <action name="action-accounting-batch-method-action-close-annual-accounts"/>
     <action name="action-accounting-batch-method-print-report"/>
   </action-group>
@@ -327,6 +330,8 @@
     <action name="action-accounting-batch-attrs-show-label"/>
     <action name="action-method-accounting-batch-generated-move-status-domain"
       if="[21,26].contains(actionSelect)"/>
+    <action name="action-accounting-batch-close-open-method-check-daybook"
+      if="actionSelect == 21"/>
   </action-group>
 
   <action-group name="action-accounting-batch-group-accounting-cut-off">
@@ -547,6 +552,16 @@
   <action-method name="action-method-accounting-batch-generated-move-status-domain">
     <call class="com.axelor.apps.account.web.AccountingBatchController"
       method="setGeneratedStatusDomain"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-close-open-method-check-daybook">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="checkDaybookMovesOnFiscalYearLabel"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-method-validate-daybook-moves">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="checkDaybookMovesOnFiscalYearWarning"/>
   </action-method>
 
   <!-- ACTION VALIDATE -->

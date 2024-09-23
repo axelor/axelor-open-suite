@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="analytic-move-line-grid" title="Analytic Move Lines"
     model="com.axelor.apps.account.db.AnalyticMoveLine">
@@ -104,9 +104,11 @@
       <field name="amount" x-scale="currency.numberOfDecimals"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
-      <field name="project" domain="self.imputable = true AND self.isBusinessProject = true"
-        if-module="axelor-business-project" form-view="project-form" grid-view="project-grid"
-        if="__config__.app.isApp('business-project')" title="Business project"/>
+      <field name="project"
+        domain="self.analyticDistributionTemplate != null AND self.isBusinessProject = true"
+        if-module="axelor-business-project" form-view="business-project-form"
+        grid-view="project-grid" if="__config__.app.isApp('business-project')"
+        title="Business project"/>
       <field name="account" onSelect="action-analytic-move-line-attrs-account-domain"
         onChange="action-analytic-move-line-record-account-onchange"/>
       <field name="accountType"
@@ -147,7 +149,7 @@
       <field name="originalPieceAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
       <field name="amount" colSpan="4" readonly="true" x-scale="currency.numberOfDecimals"/>
       <field name="date" colSpan="4"/>
-      <field name="project" grid-view="project-grid" form-view="project-form"
+      <field name="project" grid-view="project-grid" form-view="business-project-form"
         if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
       <field name="typeSelect"/>
       <field name="currency" hidden="true" grid-view="currency-grid" form-view="currency-form"/>

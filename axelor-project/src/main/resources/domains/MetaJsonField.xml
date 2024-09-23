@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="meta" package="com.axelor.meta.db"/>
 
@@ -9,6 +9,13 @@
 
     <many-to-one name="selectionRef" title="Select" ref="com.axelor.meta.db.MetaSelect"
       readonly="true"/>
+
+    <many-to-one name="project" title="Project" ref="com.axelor.apps.project.db.Project"
+      readonly="true"/>
+    <many-to-one name="appProject" title="App project"
+      ref="com.axelor.studio.db.AppProject" readonly="true"/>
+    <many-to-one name="projectTaskCategory" title="Project task category"
+      ref="com.axelor.apps.project.db.ProjectTaskCategory" readonly="true"/>
 
   </entity>
 

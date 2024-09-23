@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.user.UserHrService;
@@ -49,6 +50,8 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   protected TimesheetLineService timesheetLineService;
   protected TimesheetRepository timesheetRepository;
   protected TimesheetLineCreateService timesheetLineCreateService;
+  protected TimesheetService timesheetService;
+  protected EmployeeRepository employeeRepository;
 
   @Inject
   public TimesheetCreateServiceImpl(
@@ -56,22 +59,26 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
       ProjectRepository projectRepository,
       TimesheetLineService timesheetLineService,
       TimesheetRepository timesheetRepository,
-      TimesheetLineCreateService timesheetLineCreateService) {
+      TimesheetLineCreateService timesheetLineCreateService,
+      TimesheetService timesheetService,
+      EmployeeRepository employeeRepository) {
     this.userHrService = userHrService;
     this.projectRepository = projectRepository;
     this.timesheetLineService = timesheetLineService;
     this.timesheetRepository = timesheetRepository;
     this.timesheetLineCreateService = timesheetLineCreateService;
+    this.timesheetService = timesheetService;
+    this.employeeRepository = employeeRepository;
   }
 
   @Transactional
   @Override
   public Timesheet createTimesheet(Employee employee, LocalDate fromDate, LocalDate toDate) {
     Timesheet timesheet = new Timesheet();
-    timesheet.setEmployee(employee);
 
     Company company = null;
     if (employee != null) {
+      employee = employeeRepository.find(employee.getId());
       if (employee.getMainEmploymentContract() != null) {
         company = employee.getMainEmploymentContract().getPayCompany();
       } else if (employee.getUser() != null) {
@@ -86,6 +93,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
     timesheet.setFromDate(fromDate);
     timesheet.setToDate(toDate);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
+    timesheet.setEmployee(employee);
 
     return timesheetRepository.save(timesheet);
   }
@@ -125,10 +133,9 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
         projectRepository
             .all()
             .filter(
-                "self.membersUserSet.id = ?1 and "
-                    + "self.imputable = true "
+                "self.membersUserSet.id = ?1 "
                     + "and self.projectStatus.isCompleted = false "
-                    + "and self.isShowTimeSpent = true",
+                    + "and self.manageTimeSpent = true",
                 user.getId())
             .fetch();
 
@@ -146,5 +153,32 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
     }
 
     return lines;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public TimesheetLine getOrCreateTimesheet(TimesheetLine timesheetLine) {
+    Timesheet timesheet = timesheetService.getTimesheetQuery(timesheetLine).order("id").fetchOne();
+    if (timesheet == null) {
+      Timesheet lastTimesheet =
+          timesheetRepository
+              .all()
+              .filter(
+                  "self.employee = ?1 AND self.statusSelect != ?2 AND self.toDate is not null",
+                  timesheetLine.getEmployee(),
+                  TimesheetRepository.STATUS_CANCELED)
+              .order("-toDate")
+              .fetchOne();
+      timesheet =
+          createTimesheet(
+              timesheetLine.getEmployee(),
+              lastTimesheet != null && lastTimesheet.getToDate() != null
+                  ? lastTimesheet.getToDate().plusDays(1)
+                  : timesheetLine.getDate(),
+              null);
+      timesheet = timesheetRepository.save(timesheet);
+    }
+    timesheetLine.setTimesheet(timesheet);
+    return timesheetLine;
   }
 }

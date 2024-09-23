@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid id="purchase-order-line-purchase-order-supplychain-grid"
+    name="purchase-order-line-purchase-order-grid" title="PO lines"
+    model="com.axelor.apps.purchase.db.PurchaseOrderLine" extension="true">
+    <extend target="//field[@name='sequence']">
+      <insert position="after">
+        <button name="addToCartBtn" title="Add to cart"
+          onClick="action-purchase-order-line-method-add-to-cart" icon="cart-plus-fill"
+          if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
+          readonlyIf="!product || isTitleLine"/>
+        <field name="product" hidden="true"/>
+      </insert>
+    </extend>
+  </grid>
 
   <form name="purchase-order-line-form" title="PO line"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine" id="purchase-order-line-supplychain-form"
@@ -138,6 +152,11 @@
   <action-method name="action-purchase-order-line-method-create-distribution">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
       method="createAnalyticDistributionWithTemplate"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-line-method-add-to-cart">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="addToCart"/>
   </action-method>
 
 </object-views>

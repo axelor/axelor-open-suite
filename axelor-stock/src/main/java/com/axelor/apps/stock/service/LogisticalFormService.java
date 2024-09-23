@@ -30,7 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/** @author axelor */
+/**
+ * @author axelor
+ */
 public interface LogisticalFormService {
 
   /**

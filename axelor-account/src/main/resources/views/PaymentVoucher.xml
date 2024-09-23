@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="payment-voucher-grid" title="Payment vouchers"
     model="com.axelor.apps.account.db.PaymentVoucher" orderBy="-paymentDate">
@@ -391,7 +391,7 @@
 
   <action-attrs name="action-payment-voucher-set-trading-name-domain">
     <attribute name="domain" for="tradingName"
-      expr="eval: &quot;self.id IN (${company?.tradingNameSet?.collect{it.id}.join(',')})&quot;"/>
+      expr="eval: &quot;self.id IN (${company?.tradingNameList?.collect{it.id}.join(',')})&quot;"/>
   </action-attrs>
 
   <action-method name="action-method-payment-voucher-load-selected-lines">

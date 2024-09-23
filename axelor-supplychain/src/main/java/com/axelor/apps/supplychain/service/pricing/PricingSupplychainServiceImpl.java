@@ -8,6 +8,8 @@ import com.axelor.apps.base.service.pricing.PricingGenericService;
 import com.axelor.db.Model;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PricingSupplychainServiceImpl implements PricingSupplychainService {
 
@@ -27,8 +29,14 @@ public class PricingSupplychainServiceImpl implements PricingSupplychainService 
     if (appBase != null
         && appBase.getEnablePricingScale()
         && appBase.getUsePricingForFiscalPosition()) {
+      Map<String, Object> contextMap = new HashMap<>();
+      contextMap.put("company", company);
+
       pricingGenericService.computePricingProcess(
-          company, model, PricingRepository.PRICING_TYPE_SELECT_FISCAL_POSITION_PRICING);
+          company,
+          model,
+          PricingRepository.PRICING_TYPE_SELECT_FISCAL_POSITION_PRICING,
+          contextMap);
     }
 
     return model;

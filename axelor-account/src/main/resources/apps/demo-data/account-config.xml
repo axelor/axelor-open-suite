@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.1.xsd">
 
   <input file="account_accountType.csv" separator=";"
     type="com.axelor.apps.account.db.AccountType"/>
@@ -216,8 +216,26 @@
   <input file="account_analyticJournal.csv" separator=";"
     type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId"/>
 
-  <input file="account_accountConfig.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId">
+  <input file="account_accountConfig_accounts.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountConfig">
+    <bind column="clearanceAccountSet" to="clearanceAccountSet"
+      search="self.code in :clearanceAccountSet" eval="clearanceAccountSet.split('\\|') as List"/>
+  </input>
+
+  <input file="account_accountConfig_journal.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true">
+  </input>
+
+  <input file="account_accountConfig_payments.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true">
+  </input>
+
+  <input file="account_accountConfig_invoicing.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true">
+  </input>
+
+  <input file="account_accountConfig_misc.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true">
     <bind column="temporaryClosureAuthorizedRoleList" to="temporaryClosureAuthorizedRoleList"
       search="self.name in :temporaryClosureAuthorizedRoleList"
       eval="temporaryClosureAuthorizedRoleList.split('\\|') as List"/>
@@ -227,8 +245,6 @@
     <bind column="closureAuthorizedRoleList" to="closureAuthorizedRoleList"
       search="self.name in :closureAuthorizedRoleList"
       eval="closureAuthorizedRoleList.split('\\|') as List"/>
-    <bind column="clearanceAccountSet" to="clearanceAccountSet"
-      search="self.code in :clearanceAccountSet" eval="clearanceAccountSet.split('\\|') as List"/>
   </input>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
@@ -368,4 +384,13 @@
       search="self.importId = :accountConfig_importId"/>
   </input>
 
+  <input file="meta_metaTranslation.csv" separator=";"
+    type="com.axelor.meta.db.MetaTranslation" search="self.key = :key AND self.language = :language"/>
+
+  <input file="account_bankDetails.csv" separator=";" search="self.importId = :importId"
+    update="true" type="com.axelor.apps.base.db.BankDetails">
+    <bind to="currency" column="currency_code" search="self.code=: currency_code"/>
+    <bind to="bankAccount" column="bankAccount_code" search="self.code = :bankAccount_code"/>
+    <bind to="journal" column="journal_code" search="self.code=:journal_code" if="journal_code"/>
+  </input>
 </csv-inputs>

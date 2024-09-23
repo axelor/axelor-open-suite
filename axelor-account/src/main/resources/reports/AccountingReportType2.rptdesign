@@ -200,6 +200,26 @@
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_3</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">3</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
             </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -321,7 +341,25 @@
                     <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Account.id as account_id, MoveLine.account_code as account_code, MoveLine.account_name as account_name, Account.parent_account as parent_account_id,
+            <xml-property name="queryText"><![CDATA[WITH RECURSIVE account_hierarchy AS (
+    SELECT a.id, a.parent_account
+    FROM public.account_account a
+    WHERE a.id IN (
+        SELECT account_set
+        FROM public.account_accounting_report_account_set
+        WHERE account_accounting_report = ?
+    )
+    UNION ALL
+    SELECT a.id, a.parent_account
+    FROM public.account_account a
+    JOIN account_hierarchy ah ON a.parent_account = ah.id
+),
+account_set_count AS (
+    SELECT COUNT(*) AS count
+    FROM public.account_accounting_report_account_set
+    WHERE account_accounting_report = ?
+)
+select Account.id as account_id, MoveLine.account_code as account_code, MoveLine.account_name as account_name, Account.parent_account as parent_account_id,
 CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle",
 SUM(MoveLine.debit) as debit, SUM(MoveLine.credit) as credit, SUM(MoveLine.debit - MoveLine.credit) as balance, Currency.number_of_decimals
 
@@ -339,23 +377,31 @@ left outer join public.account_account_config as AccountConfig on (AccountConfig
 left outer join public.base_currency as Currency on (Currency.id = Company.currency)
 left outer join public.base_period as Period on (Move.period = Period.id)
 left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
-left outer join public.account_account as ParentAccount on (Account.parent_account  = ParentAccount.id )
-left outer join public.account_account as ParentAccount2 on (ParentAccount.parent_account  = ParentAccount2.id )
-left outer join public.account_account as ParentAccount3 on (ParentAccount2.parent_account  = ParentAccount3.id )
-left outer join public.account_account as ParentAccount4 on (ParentAccount3.parent_account  = ParentAccount4.id )
-left outer join public.account_account as ParentAccount5 on (ParentAccount4.parent_account  = ParentAccount5.id )
-left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
-left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
+
+left outer join public.account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.account_tag_set)
+left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+left outer join public.base_partner_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.partner_tag_set)
+
 where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND
 Move.company = AccountingReport.company AND
-(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
-or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
-or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
-or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account)
+((SELECT count FROM account_set_count) = 0 OR
+    Account.id IN (
+        SELECT ah.id
+        FROM account_hierarchy ah
+    ) OR
+    EXISTS (
+        SELECT 1
+        FROM account_hierarchy ah
+        WHERE ah.id = Account.parent_account
+    )
+)
+AND (ReportAccountTagSet.account_tag_set IS NULL OR AccountTagSet.account_account IN (SELECT ah.id FROM account_hierarchy ah))
+AND (ReportPartnerTagSet.partner_tag_set IS NULL OR PartnerTagSet.base_partner = MoveLine.partner)
 
 AND ((AccountingReport.exclude_view_account is true AND AccountType.technical_type_select != 'view') OR AccountingReport.exclude_view_account is false)
 AND ((AccountingReport.exclude_commitment_special_account is true AND AccountType.technical_type_select != 'commitment' AND AccountType.technical_type_select != 'special')
@@ -459,13 +505,6 @@ order by MoveLine.account_code]]></xml-property>
                     <text-property name="heading">global</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">global_by_date</property>
-                    <property name="alias">global_by_date</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">global_by_date</text-property>
-                    <text-property name="heading">global_by_date</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">payment_mode</property>
                     <property name="alias">payment_mode</property>
                     <property name="analysis">dimension</property>
@@ -557,21 +596,16 @@ order by MoveLine.account_code]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">12</property>
-                        <property name="name">global_by_date</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
                         <property name="name">payment_mode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">14</property>
                         <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -658,27 +692,20 @@ order by MoveLine.account_code]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
-                    <property name="name">global_by_date</property>
-                    <property name="nativeName">global_by_date</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">13</property>
                     <property name="name">payment_mode</property>
                     <property name="nativeName">payment_mode</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">14</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
@@ -690,7 +717,7 @@ Company.height as logo_height,
 Company.width as logo_width,
 AccountingReport.date_from, AccountingReport.date_to, AccountingReport.date_val as report_date,
 AccountingReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path,
-Period.name as period_name, Journal.name as journal_name, AccountingReport.global, AccountingReport.global_by_date,
+Period.name as period_name, Journal.name as journal_name, AccountingReport.global,
 PaymentMode.name as payment_mode, Currency.code as currency, AccountingReport.ref
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
@@ -900,12 +927,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                             <property name="name">global</property>
                             <text-property name="displayName">global</text-property>
                             <expression name="expression" type="javascript">dataSetRow["global"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
-                            <property name="name">global_by_date</property>
-                            <text-property name="displayName">global_by_date</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["global_by_date"]</expression>
                             <property name="dataType">integer</property>
                         </structure>
                         <structure>
@@ -1127,12 +1148,6 @@ this.height=row["logo_height"];]]></method>
                     <property name="name">global</property>
                     <text-property name="displayName">global</text-property>
                     <expression name="expression" type="javascript">dataSetRow["global"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">global_by_date</property>
-                    <text-property name="displayName">global_by_date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["global_by_date"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>

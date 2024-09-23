@@ -92,6 +92,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected ProductCompanyService productCompanyService;
   protected ShippingCoefService shippingCoefService;
   protected StockLocationLineHistoryService stockLocationLineHistoryService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
+  protected TrackingNumberCreateService trackingNumberCreateService;
 
   @Inject
   public StockMoveLineServiceImpl(
@@ -106,7 +108,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       TrackingNumberRepository trackingNumberRepo,
       ProductCompanyService productCompanyService,
       ShippingCoefService shippingCoefService,
-      StockLocationLineHistoryService stockLocationLineHistoryService) {
+      StockLocationLineHistoryService stockLocationLineHistoryService,
+      StockLocationLineFetchService stockLocationLineFetchService,
+      TrackingNumberCreateService trackingNumberCreateService) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
@@ -119,6 +123,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     this.productCompanyService = productCompanyService;
     this.shippingCoefService = shippingCoefService;
     this.stockLocationLineHistoryService = stockLocationLineHistoryService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
+    this.trackingNumberCreateService = trackingNumberCreateService;
   }
 
   @Override
@@ -329,7 +335,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           this.splitStockMoveLine(
               stockMoveLine,
               minQty,
-              trackingNumberService.getTrackingNumber(
+              trackingNumberCreateService.getTrackingNumber(
                   product,
                   stockMove.getCompany(),
                   stockMove.getEstimatedDate(),
@@ -347,7 +353,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
     if (stockMoveLine.getTrackingNumber() == null) {
       stockMoveLine.setTrackingNumber(
-          trackingNumberService.getTrackingNumber(
+          trackingNumberCreateService.getTrackingNumber(
               product,
               stockMove.getCompany(),
               stockMove.getEstimatedDate(),
@@ -1103,7 +1109,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       StockMoveLine stockMoveLine, StockLocation stockLocation) throws AxelorException {
     Optional<StockLocationLine> stockLocationLine =
         Optional.ofNullable(
-            stockLocationLineService.getStockLocationLine(
+            stockLocationLineFetchService.getStockLocationLine(
                 stockLocation, stockMoveLine.getProduct()));
     BigDecimal priceFromLocation = BigDecimal.ZERO;
     if (stockLocationLine.isPresent()) {
@@ -1424,7 +1430,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
         if (stockMoveLine.getTrackingNumber() != null) {
           StockLocationLine stockLocationLine =
-              stockLocationLineService.getDetailLocationLine(
+              stockLocationLineFetchService.getDetailLocationLine(
                   stockLocation, stockMoveLine.getProduct(), stockMoveLine.getTrackingNumber());
 
           if (stockLocationLine != null) {
@@ -1434,7 +1440,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
         if (availableQty.compareTo(stockMoveLine.getRealQty()) < 0) {
           StockLocationLine stockLocationLineForProduct =
-              stockLocationLineService.getStockLocationLine(
+              stockLocationLineFetchService.getStockLocationLine(
                   stockLocation, stockMoveLine.getProduct());
 
           if (stockLocationLineForProduct != null) {
@@ -1443,7 +1449,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         }
       } else {
         StockLocationLine stockLocationLine =
-            stockLocationLineService.getStockLocationLine(
+            stockLocationLineFetchService.getStockLocationLine(
                 stockLocation, stockMoveLine.getProduct());
 
         if (stockLocationLine != null) {
@@ -1554,7 +1560,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
       Optional<StockLocationLine> stockLocationLineOpt =
           Optional.ofNullable(
-              stockLocationLineService.getStockLocationLine(
+              stockLocationLineFetchService.getStockLocationLine(
                   stockLocation, stockMoveLine.getProduct()));
 
       stockLocationLineOpt.ifPresent(
@@ -1748,10 +1754,41 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine) {
+  public void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine)
+      throws AxelorException {
+    checkSplitConditions(stockMoveLine);
     StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, false);
     this.updateStockMoveLinesOfSplit(newStockMoveLine, stockMoveLine);
     stockMoveLineRepository.save(newStockMoveLine);
+  }
+
+  protected void checkSplitConditions(StockMoveLine stockMoveLine) throws AxelorException {
+    StockMove stockMove = stockMoveLine.getStockMove();
+    if (stockMove != null) {
+      Integer statusSelect = stockMove.getStatusSelect();
+      List<Integer> authorizedStatus = new ArrayList<>();
+      authorizedStatus.add(StockMoveRepository.STATUS_DRAFT);
+      authorizedStatus.add(StockMoveRepository.STATUS_PLANNED);
+      if (!authorizedStatus.contains(statusSelect)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_STATUS));
+      }
+
+      if (!stockMove.getTypeSelect().equals(StockMoveRepository.TYPE_INCOMING)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_TYPE));
+      }
+    }
+
+    BigDecimal realQty = stockMoveLine.getRealQty();
+    BigDecimal qty = stockMoveLine.getQty();
+    if (realQty != null && (realQty.signum() < 1 || realQty.compareTo(qty) >= 0)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_REAL_QTY));
+    }
   }
 
   protected void updateStockMoveLinesOfSplit(

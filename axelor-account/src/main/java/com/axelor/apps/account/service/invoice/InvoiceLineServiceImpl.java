@@ -35,7 +35,6 @@ import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsServic
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -46,6 +45,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
@@ -79,6 +79,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected InternationalService internationalService;
   protected InvoiceLineAttrsService invoiceLineAttrsService;
   protected CurrencyScaleService currencyScaleService;
+  protected ProductPriceService productPriceService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -94,7 +95,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       TaxService taxService,
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      ProductPriceService productPriceService) {
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
@@ -108,6 +110,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.internationalService = internationalService;
     this.invoiceLineAttrsService = invoiceLineAttrsService;
     this.currencyScaleService = currencyScaleService;
+    this.productPriceService = productPriceService;
   }
 
   @Override
@@ -160,35 +163,26 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       boolean resultInAti)
       throws AxelorException {
     Product product = invoiceLine.getProduct();
-
-    BigDecimal price = null;
-    Currency productCurrency;
+    Company company = invoice.getCompany();
 
     if (isPurchase) {
-      price =
-          (BigDecimal) productCompanyService.get(product, "purchasePrice", invoice.getCompany());
-      productCurrency =
-          (Currency) productCompanyService.get(product, "purchaseCurrency", invoice.getCompany());
+      return productPriceService.getPurchaseUnitPrice(
+          company,
+          product,
+          taxLineSet,
+          resultInAti,
+          invoice.getInvoiceDate(),
+          invoice.getCurrency());
+
     } else {
-      price = (BigDecimal) productCompanyService.get(product, "salePrice", invoice.getCompany());
-      productCurrency =
-          (Currency) productCompanyService.get(product, "saleCurrency", invoice.getCompany());
+      return productPriceService.getSaleUnitPrice(
+          company,
+          product,
+          taxLineSet,
+          resultInAti,
+          invoice.getInvoiceDate(),
+          invoice.getCurrency());
     }
-
-    if ((Boolean) productCompanyService.get(product, "inAti", invoice.getCompany())
-        != resultInAti) {
-      price =
-          taxService.convertUnitPrice(
-              (Boolean) productCompanyService.get(product, "inAti", invoice.getCompany()),
-              taxLineSet,
-              price,
-              AppBaseService.COMPUTATION_SCALING);
-    }
-
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(
-            productCurrency, invoice.getCurrency(), price, invoice.getInvoiceDate())
-        .setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
   @Override
@@ -702,7 +696,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
   @Override
   public Map<String, String> getProductDescriptionAndNameTranslation(
-      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException {
+      Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
 
     Product product = invoiceLine.getProduct();
 
@@ -711,7 +705,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
 
     return internationalService.getProductDescriptionAndNameTranslation(
-        product, invoice.getPartner(), userLanguage);
+        product, invoice.getPartner());
   }
 
   @Override

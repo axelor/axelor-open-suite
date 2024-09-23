@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <!-- VUE GENERALE -->
 
@@ -434,6 +434,7 @@
 	                        		{operationSubTypeSelect == 7 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Periodic contract')}</Badge>}
 	                        		{operationSubTypeSelect == 1 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Standard credit note')}</Badge>}
 	                        		{operationSubTypeSelect == 2 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Advance payment credit note')}</Badge>}
+	                        		{operationSubTypeSelect == 9 && operationTypeSelect == 3 && <Badge bg="info">{_t('Late payment interest invoice')}</Badge>}
 
 	                        		{(operationTypeSelect == 3 || operationTypeSelect == 4) && partner.factorizedCustomer && <Badge bg="info">{_t('Factorized customer')}</Badge>}
 	                        	</Box>
@@ -499,8 +500,8 @@
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="statusSelect != 1"
           onChange="action-invoice-method-printing-settings-default-values"
-          domain=":company MEMBER OF self.companySet"
-          requiredIf="statusSelect == 1 &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
+          domain="self.company = :company"
+          requiredIf="statusSelect == 1 &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0"
           form-view="trading-name-form" grid-view="trading-name-grid" colSpan="4"/>
         <field name="inAti" onChange="action-invoice-attrs-in-ati" hidden="true"
           readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" colSpan="2"/>
@@ -515,7 +516,7 @@
           <field name="createdByInterco" readonly="true"/>
         </panel>
       </panel>
-      <field name="company.tradingNameSet"
+      <field name="company.tradingNameList"
         if="__config__.app.getApp('base')?.enableTradingNamesManagement" hidden="true" colSpan="12"/>
     </panel>
 
@@ -622,8 +623,11 @@
           grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change"
           canMove="true" orderBy="sequence" height="30"/>
       </panel>
-      <panel name="invoiceTaxPanel" title="Tax" showTitle="false">
-        <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
+      <panel name="invoiceTaxPanel" title="Tax" showTitle="false"
+        readonlyIf="statusSelect != 1">
+        <panel-related name="invoiceLineTaxListPanel" readonlyIf="statusSelect != 1"
+          field="invoiceLineTaxList" canRemove="false" canNew="false"
+          onChange="action-invoice-method-compute,action-invoice-method-generate-invoice-terms"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
       <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
@@ -666,7 +670,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         title="Business project" colSpan="12" if-module="axelor-business-project">
         <field name="project" onSelect="action-invoice-attrs-domain-project"
-          form-view="project-form" grid-view="project-grid" colSpan="6"/>
+          form-view="business-project-form" grid-view="project-grid" colSpan="6"/>
         <button name="updateLinesBtn" title="Update lines with selected project"
           onClick="save,action-invoice-business-project-method-update-lines,save" colSpan="6"
           readonlyIf="!project"/>
@@ -819,8 +823,10 @@
         <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
         <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
           <field name="financialDiscountRate" readonly="true"/>
-          <field name="financialDiscountTotalAmount" readonly="true"/>
-          <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+          <field name="financialDiscountTotalAmount" readonly="true"
+            x-scale="currency.numberOfDecimals"/>
+          <field name="remainingAmountAfterFinDiscount" readonly="true"
+            x-scale="currency.numberOfDecimals"/>
         </panel>
       </panel>
       <panel name="blockingsPanel" title="Blockings" showIf="statusSelect == 3"
@@ -857,6 +863,11 @@
         </panel>
       </panel>
       <panel name="invoicePaymentPanel" title="Payments details" showIf="statusSelect != 1">
+        <button name="Generate late payment interest invoice"
+          title="Generate late payment interest invoice"
+          onClick="action-invoice-method-generate-late-payment-invoice"
+          showIf="operationTypeSelect == 3 &amp;&amp; operationSubTypeSelect != 9"
+          if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
         <panel name="pfpValidationPanel" colSpan="12"
           if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
           showIf="pfpValidateStatusSelect > 0">
@@ -871,6 +882,9 @@
           field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid"
           form-view="invoice-payment-form" canNew="false" canRemove="false"/>
         <field name="amountPaid" hidden="true"/>
+        <panel-dashlet action="action-invoice-view-late-interest-invoices"
+          showIf="operationTypeSelect == 3 &amp;&amp; operationSubTypeSelect != 9" colSpan="12"
+          if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
       </panel>
       <panel name="pfpAccountConfigPanel"
         if="__config__.app.getApp('account')?.getActivatePassedForPayment()" hidden="true">
@@ -901,7 +915,7 @@
         onClick="action-invoice-group-on-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="action-invoice-group-ventilate-button"
+        onClick="action-invoice-group-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-validate-and-ventilate-onclick"/>
@@ -968,7 +982,7 @@
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
       <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
         <viewer
-          depends="typeSelect,statusSelect,id,paymentDate,amount,totalAmountWithFinancialDiscount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount,currency.numberOfDecimals">
+          depends="move,typeSelect,statusSelect,id,paymentDate,amount,totalAmountWithFinancialDiscount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount,currency.numberOfDecimals">
                 <![CDATA[
 				<>
 					<Box d="flex" flexDirection="column">
@@ -1074,8 +1088,11 @@
     <panel-stack name="otherDetailsPanel" sidebar="true" hideIf="partner == null">
       <panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6"
         canCollapse="true" collapseIf="true">
-        <field name="internalReference"/>
-        <field name="externalReference"/>
+        <field name="internalReference" widget="string"/>
+        <field name="externalReference" widget="string"/>
+        <field name="latePaymentInterestSourceInvoice" grid-view="invoice-grid"
+          form-view="invoice-form" showIf="operationSubTypeSelect == 9"
+          if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true"
         collapseIf="true">
@@ -1171,7 +1188,7 @@
         onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1"
         form-view="currency-form" grid-view="currency-grid"/>
       <field name="project" if-module="axelor-business-project"
-        onSelect="action-invoice-attrs-domain-project" form-view="project-form"
+        onSelect="action-invoice-attrs-domain-project" form-view="business-project-form"
         grid-view="project-grid" if="__config__.app.isApp('project')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"/>
     </panel>
@@ -1238,8 +1255,8 @@
 
     <panel-stack name="otherDetailsPanel" sidebar="true">
       <panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6">
-        <field name="internalReference"/>
-        <field name="externalReference"/>
+        <field name="internalReference" widget="string"/>
+        <field name="externalReference" widget="string"/>
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
         <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"/>
@@ -1254,7 +1271,7 @@
         onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="action-invoice-group-ventilate-button"
+        onClick="action-invoice-group-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
         <button name="cancelBtn" title="Cancel"
@@ -1528,6 +1545,16 @@
     </panel>
   </form>
 
+  <form name="supplier-invoice-wizard-form" title="Supplier invoice"
+    model="com.axelor.apps.account.db.Invoice"
+    onLoad="action-invoice-record-set-initial-invoicenb-origin-date"
+    onSave="action-invoice-validate-check-origin-date,action-invoice-group-ventilate-button">
+    <panel name="mainPanel" colSpan="12">
+      <field name="supplierInvoiceNb" colSpan="6" required="true"/>
+      <field name="originDate" colSpan="6" required="true"/>
+    </panel>
+  </form>
+
   <action-group name="action-account-invoice-onnew-group">
     <action name="action-invoice-record-default"/>
     <action name="action-invoice-method-payment-mode-condition" if="company != null"/>
@@ -1639,7 +1666,6 @@
       if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect > 0"/>
     <action name="action-invoice-record-set-dummy-field-localization"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
-    <action name="action-invoice-record-set-payment-condition"/>
     <action name="action-method-invoice-address-str"/>
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect) &amp;&amp; operationSubTypeSelect != 2"/>
@@ -1673,6 +1699,13 @@
     <action name="action-invoice-group-before-ventilate"/>
     <action name="save"/>
     <action name="action-invoice-method-ventilate"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-ventilate">
+    <action name="action-invoice-method-set-supplier-invoice-number-and-origin-date"
+      if="(!supplierInvoiceNb || !originDate) &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2)"/>
+    <action name="action-invoice-group-ventilate-button"
+      if="(supplierInvoiceNb &amp;&amp; originDate &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2)) || (operationTypeSelect == 3 || operationTypeSelect == 4)"/>
   </action-group>
 
   <action-group name="action-invoice-group-before-ventilate">
@@ -1906,7 +1939,6 @@
 
   <action-record name="action-invoice-record-partner-change"
     model="com.axelor.apps.account.db.Invoice">
-    <field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
     <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"/>
     <field name="address"
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
@@ -2014,6 +2046,13 @@
     model="com.axelor.apps.account.db.Invoice">
     <field name="thirdPartyPayerPartner"
       expr="call: com.axelor.apps.account.service.PartnerAccountService:getPayedByPartner(partner)"/>
+  </action-record>
+
+  <action-record name="action-invoice-record-set-initial-invoicenb-origin-date"
+    model="com.axelor.apps.account.db.Invoice">
+    <field name="supplierInvoiceNb" expr="eval: _supplierInvoiceNb"/>
+    <field name="originDate" expr="eval: _originDate" if="_originDate"/>
+    <field name="originDate" expr="eval: __config__.date" if="!_originDate"/>
   </action-record>
 
   <!-- ACTION ATTRS -->
@@ -2186,6 +2225,12 @@
     <alert message="At least one pfp validator is missing, do you wish to continue ?"
       if="com.axelor.inject.Beans.get(com.axelor.apps.account.service.invoice.InvoiceTermService.class).getPfpValidatorUserCondition(__this__, null)
           &amp;&amp; invoiceTermList.any{it -> !it.pfpValidatorUser}"/>
+  </action-validate>
+
+
+  <action-validate name="action-invoice-validate-check-origin-date">
+    <error message="Invoice date of origin can't be in the future."
+      if="originDate?.isAfter(__config__.date)"/>
   </action-validate>
 
   <!-- ACTION METHOD -->
@@ -2446,6 +2491,12 @@
 
   <action-method name="action-invoice-method-manage-refund-titles">
     <call class="com.axelor.apps.account.web.InvoiceController" method="manageRefundFields"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-method-set-supplier-invoice-number-and-origin-date">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setSupplierInvoiceNbAndOriginDate"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
@@ -2846,5 +2897,17 @@
     <action name="action-invoice-group-report-print"/>
     <action name="close"/>
   </action-group>
+
+  <action-method name="action-invoice-method-generate-late-payment-invoice">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="generateLatePaymentInvoice"/>
+  </action-method>
+
+  <action-view name="action-invoice-view-late-interest-invoices"
+    title="Late interest invoices" model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="invoice-grid"/>
+    <view type="form" name="invoice-form"/>
+    <domain>self.latePaymentInterestSourceInvoice.id = :id</domain>
+  </action-view>
 
 </object-views>

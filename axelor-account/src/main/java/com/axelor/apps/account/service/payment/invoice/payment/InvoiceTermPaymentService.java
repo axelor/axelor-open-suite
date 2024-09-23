@@ -18,11 +18,13 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface InvoiceTermPaymentService {
@@ -35,7 +37,8 @@ public interface InvoiceTermPaymentService {
    * @return
    */
   public InvoicePayment initInvoiceTermPayments(
-      InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermsToPay);
+      InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermsToPay, LocalDate paymentDate)
+      throws AxelorException;
 
   /**
    * Method to init invoiceTermPayments based on invoiceTerm to pay and inserted amount
@@ -49,7 +52,9 @@ public interface InvoiceTermPaymentService {
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
       BigDecimal availableAmount,
-      BigDecimal reconcileAmount);
+      BigDecimal currencyAvailableAmount,
+      BigDecimal reconcileAmount)
+      throws AxelorException;
 
   /**
    * Method to create invoiceTermPayments for an invoicePayment
@@ -69,7 +74,10 @@ public interface InvoiceTermPaymentService {
    * @return
    */
   public InvoiceTermPayment createInvoiceTermPayment(
-      InvoicePayment invoicePayment, InvoiceTerm invoiceTermToPay, BigDecimal paidAmount);
+      InvoicePayment invoicePayment,
+      InvoiceTerm invoiceTermToPay,
+      BigDecimal paidAmount,
+      BigDecimal companyPaidAmount);
 
   /**
    * Method to compute total paid amount of invoiceTermPayments
@@ -79,7 +87,7 @@ public interface InvoiceTermPaymentService {
    * @return
    */
   public BigDecimal computeInvoicePaymentAmount(
-      InvoicePayment invoicePayment, List<InvoiceTermPayment> invoiceTermPayments)
+      InvoicePayment invoicePayment, List<InvoiceTermPayment> invoiceTermPayments, Invoice invoice)
       throws AxelorException;
 
   /**
@@ -88,11 +96,17 @@ public interface InvoiceTermPaymentService {
    * @param invoicePayment
    * @return
    */
-  public InvoicePayment updateInvoicePaymentAmount(InvoicePayment invoicePayment)
+  public InvoicePayment updateInvoicePaymentAmount(InvoicePayment invoicePayment, Invoice invoice)
       throws AxelorException;
 
   public void manageInvoiceTermFinancialDiscount(
       InvoiceTermPayment invoiceTermPayment,
       InvoiceTerm invoiceTerm,
       boolean applyFinancialDiscount);
+
+  List<Long> initializeInvoiceTermPaymentWithoutDiscount(InvoicePayment invoicePayment)
+      throws AxelorException;
+
+  List<Long> applyFinancialDiscount(InvoicePayment invoicePayment, Long invoiceId)
+      throws AxelorException;
 }

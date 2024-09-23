@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="project-task-link-grid" title="Project task relations"
+    model="com.axelor.apps.project.db.ProjectTaskLink" editable="true">
+    <field name="projectTaskLinkType" form-view="project-task-link-type-form"
+      grid-view="project-task-link-type-grid"/>
+    <field name="relatedTask" form-view="project-task-form" grid-view="project-task-grid"/>
+    <field name="relatedTask.project" form-view="project-form" grid-view="project-grid"/>
+    <button name="trashBtn" title="Delete" icon="fa-trash"
+      onClick="action-project-task-link-method-remove-link"/>
+  </grid>
+
+  <form name="project-task-link-form" title="Project task relation"
+    model="com.axelor.apps.project.db.ProjectTaskLink">
+    <panel name="mainPanel" itemSpan="4" readonly="true">
+      <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
+      <field name="projectTaskLinkType" form-view="project-task-link-type-form"
+        grid-view="project-task-link-type-grid"/>
+      <field name="relatedTask" form-view="project-task-form" grid-view="project-task-grid"/>
+    </panel>
+  </form>
+
+  <action-method name="action-project-task-link-method-remove-link">
+    <call class="com.axelor.apps.project.web.ProjectTaskLinkController" method="removeLink"/>
+  </action-method>
+
+</object-views>

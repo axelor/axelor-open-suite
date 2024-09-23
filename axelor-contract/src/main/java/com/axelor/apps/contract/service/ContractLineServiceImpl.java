@@ -217,7 +217,7 @@ public class ContractLineServiceImpl implements ContractLineService {
               product,
               contract.getCompany(),
               contractLine.getFiscalPosition(),
-              false);
+              contract.getTargetTypeSelect() == ContractRepository.SUPPLIER_CONTRACT);
     }
 
     return taxLineSet;
@@ -383,8 +383,7 @@ public class ContractLineServiceImpl implements ContractLineService {
         && contract != null
         && contract.getTradingName() != null
         && contract.getCompany() != null
-        && contract.getCompany().getTradingNameSet() != null
-        && !contract.getCompany().getTradingNameSet().isEmpty()) {
+        && !CollectionUtils.isEmpty(contract.getCompany().getTradingNameList())) {
       domain +=
           " AND " + contract.getTradingName().getId() + " member of self.tradingNameSellerSet";
     }

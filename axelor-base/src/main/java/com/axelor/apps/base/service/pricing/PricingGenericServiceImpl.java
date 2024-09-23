@@ -36,7 +36,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -96,7 +98,8 @@ public class PricingGenericServiceImpl implements PricingGenericService {
               I18n.get(model.getClass().getSimpleName())));
     }
 
-    List<StringBuilder> logsList = computePricingProcess(company, model, typeSelect);
+    List<StringBuilder> logsList =
+        computePricingProcess(company, model, typeSelect, new HashMap<>());
 
     updatePricingScaleLogs(logsList, model);
 
@@ -154,18 +157,22 @@ public class PricingGenericServiceImpl implements PricingGenericService {
   }
 
   @Override
-  public List<StringBuilder> computePricingProcess(Company company, Model model, String typeSelect)
+  public List<StringBuilder> computePricingProcess(
+      Company company, Model model, String typeSelect, Map<String, Object> contextMap)
       throws AxelorException {
     List<StringBuilder> logsList = new ArrayList<>();
 
     List<Pricing> pricingList = getPricings(company, model, typeSelect);
 
     if (ObjectUtils.isEmpty(pricingList)) {
+      pricingObserver.computationStarted(model);
+      pricingObserver.computationFinished();
       return logsList;
     }
 
     for (Pricing pricing : pricingList) {
       PricingComputer pricingComputer = PricingComputer.of(pricing, model);
+      pricingComputer = fillPricingCompute(pricingComputer, contextMap);
       pricingComputer.subscribe(pricingObserver);
       pricingComputer.apply();
 
@@ -173,6 +180,19 @@ public class PricingGenericServiceImpl implements PricingGenericService {
     }
 
     return logsList;
+  }
+
+  protected PricingComputer fillPricingCompute(
+      PricingComputer pricingComputer, Map<String, Object> contextMap) {
+    if (ObjectUtils.isEmpty(contextMap) || pricingComputer == null) {
+      return pricingComputer;
+    }
+
+    for (Map.Entry<String, Object> context : contextMap.entrySet()) {
+      pricingComputer = pricingComputer.putInContext(context.getKey(), context.getValue());
+    }
+
+    return pricingComputer;
   }
 
   protected String computePricingLogs(List<StringBuilder> logsList) {

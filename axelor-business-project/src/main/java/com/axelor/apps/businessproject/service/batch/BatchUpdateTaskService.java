@@ -24,9 +24,9 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
-import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.ProjectTask;
@@ -86,8 +86,13 @@ public class BatchUpdateTaskService extends AbstractBatch {
 
   protected void updateTasks() {
     List<Long> projectTaskIdList =
-        projectTaskBusinessProjectService.getTaskInvoicingFilter().build().order("id").select("id")
-            .fetch(0, 0).stream()
+        projectTaskBusinessProjectService
+            .getTaskInvoicingFilter()
+            .build()
+            .order("id")
+            .select("id")
+            .fetch(0, 0)
+            .stream()
             .map(m -> (Long) m.get("id"))
             .collect(Collectors.toList());
 
@@ -168,8 +173,13 @@ public class BatchUpdateTaskService extends AbstractBatch {
   protected void updateTimesheetLines(Map<String, Object> contextValues) {
     List<Object> updatedTimesheetLineList = new ArrayList<>();
     List<Long> timesheetLineIdList =
-        timesheetLineBusinessService.getTimesheetLineInvoicingFilter().build().order("id")
-            .select("id").fetch(0, 0).stream()
+        timesheetLineBusinessService
+            .getTimesheetLineInvoicingFilter()
+            .build()
+            .order("id")
+            .select("id")
+            .fetch(0, 0)
+            .stream()
             .map(m -> (Long) m.get("id"))
             .collect(Collectors.toList());
 

@@ -44,7 +44,7 @@ public class ProjectTemplateController {
     try {
       ProjectTemplate projectTemplate = request.getContext().asType(ProjectTemplate.class);
       Map<String, Object> projectTemplateView =
-          Beans.get(ProjectService.class).createProjectFromTemplateView(projectTemplate);
+          Beans.get(ProjectTemplateService.class).createProjectFromTemplateView(projectTemplate);
       response.setView(projectTemplateView);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -84,7 +84,7 @@ public class ProjectTemplateController {
               .model(Project.class.getName())
               .add("form", "project-form")
               .add("grid", "project-grid")
-              .param("search-filters", "project-filters")
+              .param("search-filters", "project-project-filters")
               .context("_showRecord", project.getId())
               .map());
     } catch (AxelorException e) {

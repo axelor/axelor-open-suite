@@ -1,0 +1,3 @@
+---
+title: "Company: fixed display of intervention config button on company when module is uninstalled."
+module: axelor-intervention

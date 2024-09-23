@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-mobile-settings-config-form" title="App mobile"
     model="com.axelor.studio.db.AppMobileSettings" width="large"
@@ -22,6 +22,10 @@
         <field name="isQualityAppEnabled" widget="boolean-switch"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
         <field name="isInterventionAppEnabled" widget="boolean-switch"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
+        <field name="isSaleAppEnabled" widget="boolean-switch"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
+        <field name="isProjectAppEnabled" widget="boolean-switch"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
       </panel>
       <panel name="qrCodePanel" colSpan="2">
@@ -64,6 +68,10 @@
           showIf="isQualityAppEnabled" onClick="action.quality.config.view"/>
         <button name="interventionAppBtn" title="Config Intervention" hidden="true"
           showIf="isInterventionAppEnabled" onClick="action.intervention.config.view"/>
+        <button name="saleAppBtn" title="Config Sale" hidden="true" showIf="isSaleAppEnabled"
+          onClick="action.sale.config.view"/>
+        <button name="projectAppBtn" title="Config Project" hidden="true"
+          showIf="isProjectAppEnabled" onClick="action.project.config.view"/>
       </panel>
     </panel>
     <panel-tabs name="appConfigPanelTab">
@@ -136,6 +144,12 @@
           <field name="isTimesheetProjectInvoicingEnabled" widget="boolean-switch"/>
           <field name="fieldsToShowOnTimesheet" widget="MultiSelect" placeholder="All"/>
         </panel>
+      </panel>
+      <panel name="saleConfigPanel" title="Sale" itemSpan="12" showIf="isSaleAppEnabled">
+        <field name="productTypesToDisplaySelect" widget="MultiSelect" placeholder="All"
+          colSpan="4"/>
+        <field name="isGenericProductShown" widget="boolean-switch" colSpan="4"/>
+        <field name="isConfiguratorProductShown" widget="boolean-switch" colSpan="4"/>
       </panel>
     </panel-tabs>
 
@@ -229,6 +243,26 @@
       expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-intervention').fetchOne()?.id"/>
   </action-view>
 
+  <action-view name="action.sale.config.view" title="Sale config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-sale').fetchOne()?.id"/>
+  </action-view>
+
+  <action-view name="action.project.config.view" title="Project config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-project').fetchOne()?.id"/>
+  </action-view>
+
   <action-view name="action.hr.config.mobile.dashboards.view" title="Mobile dashboards"
     model="com.axelor.apps.mobilesettings.db.MobileDashboard">
     <view type="grid" name="mobile-dashboard-grid"/>
@@ -255,6 +289,9 @@
       expr="!__config__.app.isApp('quality')"/>
     <attribute for="isInterventionAppEnabled" name="readonly"
       expr="!__config__.app.isApp('intervention')"/>
+    <attribute for="isSaleAppEnabled" name="readonly" expr="!__config__.app.isApp('sale')"/>
+    <attribute for="isProjectAppEnabled" name="readonly"
+      expr="!__config__.app.isApp('project')"/>
   </action-attrs>
 
   <action-group name="action-app-mobile-settings-config-group-on-load">

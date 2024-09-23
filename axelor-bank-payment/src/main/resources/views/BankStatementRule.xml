@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="bank-statement-rule-grid" title="Bank statement rules"
     model="com.axelor.apps.bankpayment.db.BankStatementRule" edit-icon="true"
@@ -53,6 +53,12 @@
       <field name="specificTax"/>
       <field name="moveLineBankStatementQuery" requiredIf="letterToInvoice"
         showIf="letterToInvoice" hidden="true" domain="self.ruleTypeSelect = 3"/>
+    </panel>
+    <panel name="customizedLabelsPanel" title="Generated entry customized labels">
+      <field name="entryOriginComputation" widget="code-editor" x-code-syntax="groovy"
+        height="80" x-code-theme="groovy" colSpan="12"/>
+      <field name="entryDescriptionComputation" widget="code-editor" x-code-syntax="groovy"
+        height="150" x-code-theme="groovy" colSpan="12"/>
     </panel>
   </form>
 

@@ -130,6 +130,7 @@ public final class BaseExceptionMessage {
   public static final String INDICATOR_GENERATOR_GROUPING_3 = /*$$(*/
       "Error while creating the file" /*)*/;
   public static final String INDICATOR_GENERATOR_GROUPING_4 = /*$$(*/ "Result exported" /*)*/;
+
   /** Indicator generator service */
   public static final String INDICATOR_GENERATOR_1 = /*$$(*/
       "Error : a request has to be set for the indicatior generator %s" /*)*/;
@@ -137,6 +138,7 @@ public final class BaseExceptionMessage {
   public static final String INDICATOR_GENERATOR_2 = /*$$(*/
       "Error : incorrect request for the indicatior generator %s" /*)*/;
   public static final String INDICATOR_GENERATOR_3 = /*$$(*/ "Request performed" /*)*/;
+
   /** Base batch service */
   public static final String BASE_BATCH_1 = /*$$(*/ "Unknown action %s for the %s treatment" /*)*/;
 
@@ -330,7 +332,8 @@ public final class BaseExceptionMessage {
       "Invalid Serial Number '%s' for '%s' barcode type.It must be only number or only alphabets" /*)*/;
   public static final String BARCODE_GENERATOR_9 = /*$$(*/ "Barcode format not supported" /*)*/;
 
-  public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;;
+  public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;
+  ;
   public static final String MAP_GOOGLE_MAPS_API_KEY_MISSING = /*$$(*/
       "Google Maps API key is missing in configuration." /*)*/;
 
@@ -613,8 +616,7 @@ public final class BaseExceptionMessage {
   public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
       "Error while accessing certificate information." /*)*/;
 
-  public static final String RESEARCH_RESULT_NO_VIEW_CONFIGURED = /*$$(*/
-      "No view configured for model %s." /*)*/;
+  public static final String VIEW_NOT_FOUND = /*$$(*/ "No view configured for model %s." /*)*/;
 
   public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
       "The file could not be generated." /*)*/;
@@ -652,4 +654,15 @@ public final class BaseExceptionMessage {
 
   public static final String FACTORY_NO_FOUND = /*$$(*/
       "Factory not found this type of generator" /*)*/;
+
+  public static final String MISSING_BIRT_PARAMETER = /*$$(*/ "Missing %s parameter(s)" /*)*/;
+
+  public static final String PRINTING_TEMPLATE_SCRIPT_ERROR = /*$$(*/
+      "Error when computing the printing filename, using template %s: %s" /*)*/;
+
+  public static final String NO_QUANTITY_PROVIDED = /*$$(*/
+      "This product comes in multiple quantities, so please specify a quantity that is a multiple of at least one from the list %s." /*)*/;
+
+  public static final String QUANTITY_NOT_MULTIPLE = /*$$(*/
+      "This product comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
 }

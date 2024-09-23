@@ -213,7 +213,7 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
   }
 
   protected void generatePendingPaymentFromInvoiceTerm(
-      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) throws AxelorException {
     MoveLine placementMoveLine = invoiceTerm.getPlacementMoveLine();
     if (placementMoveLine == null
         || ObjectUtils.isEmpty(placementMoveLine.getInvoiceTermList())

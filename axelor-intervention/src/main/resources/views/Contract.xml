@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form id="intervention-contract-form" name="contract-form" title="Contract"
     model="com.axelor.apps.contract.db.Contract" extension="true">
@@ -31,29 +31,45 @@
           <panel name="contractualSectionPanel" title="Contractual" colSpan="12">
             <field name="onCallManagement" widget="BooleanRadio" x-true-text="Yes"
               x-false-text="No"/>
-            <field name="onCallPlanning" hidden="true" showIf="onCallManagement"/>
+            <field name="onCallPlanning" hidden="true" showIf="onCallManagement"
+              requiredIf="onCallManagement"/>
             <field name="guaranteedInterventionTime" colSpan="4" widget="duration"
               x-big="true"/>
             <field name="guaranteedRecoveryTime" colSpan="4" widget="duration" x-big="true"/>
             <field name="delayToSendTheQuotation" colSpan="4" widget="duration" x-big="true"/>
           </panel>
 
-          <panel-dashlet name="relatedInterventionsPanel"
-            title="Related Interventions"
-            action="action-contract-view-display-related-interventions" readonly="true" colSpan="12"/>
+          <panel name="relatedInterventionsPanel" title="Related Interventions" colSpan="12"
+            canCollapse="true" collapseIf="true">
+            <panel-dashlet name="relatedInterventionsDashletPanel" colSpan="12"
+              action="action-contract-view-display-related-interventions" readonly="true"/>
+          </panel>
+
+          <panel name="relatedEquipmentsPanel" title="Related Equipments" colSpan="12"
+            canCollapse="true" collapseIf="true">
+            <panel-dashlet name="relatedEquipmentsDashletPanel" colSpan="12"
+              action="action-contract-view-display-related-equipments" readonly="true"/>
+          </panel>
         </panel>
       </insert>
     </extend>
   </form>
 
-  <action-view name="action-contract-view-display-related-interventions"
-    title="Contract related interventions" model="com.axelor.apps.intervention.db.Intervention">
+  <action-view name="action-contract-view-display-related-interventions" title=""
+    model="com.axelor.apps.intervention.db.Intervention">
     <view type="grid" name="intervention-grid"/>
     <view type="form" name="intervention-form"/>
     <domain><![CDATA[
         self.contract.id = :_id
       ]]>
     </domain>
+  </action-view>
+
+  <action-view name="action-contract-view-display-related-equipments" title=""
+    model="com.axelor.apps.intervention.db.Equipment">
+    <view type="grid" name="equipment-grid"/>
+    <view type="form" name="equipment-form"/>
+    <domain>self.contract.id = :_id</domain>
   </action-view>
 
   <action-view model="com.axelor.utils.db.Wizard"
