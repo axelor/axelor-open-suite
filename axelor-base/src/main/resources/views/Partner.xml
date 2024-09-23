@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -26,7 +26,8 @@
     <field name="fiscalPosition.code" title="Fiscal position"/>
     <field name="registrationCode"/>
     <field name="mainAddress"/>
-    <field name="companyStr" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
@@ -58,7 +59,8 @@
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
     <field name="user"/>
-    <field name="companyStr" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
@@ -92,7 +94,8 @@
     <field name="fiscalPosition.code" title="Fiscal position"/>
     <field name="registrationCode"/>
     <field name="mainAddress"/>
-    <field name="companyStr" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="das2Activity" hidden="true" if="__config__.app.isApp('account')"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
@@ -166,8 +169,6 @@
     </toolbar>
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
-          readonlyIf="!id"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="!id"
           showIf="isCustomer" if-module="axelor-account"/>
@@ -331,6 +332,7 @@
           form-view="partner-category-form" grid-view="partner-category-grid"/>
         <field name="industrySector" colSpan="6" widget="SuggestBox"
           hideIf="partnerTypeSelect== 2"/>
+
         <field name="source" canEdit="false" colSpan="6" widget="SuggestBox"
           form-view="source-form" grid-view="source-grid"/>
         <field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
@@ -339,16 +341,19 @@
             onChange="action-record-base-partner-set-business-card"/>
           <field name="functionBusinessCard"/>
         </panel>
+        <field name="partnerTagSet" widget="TagSelect" x-color-field="colorSelect"
+          grid-view="tag-simplified-grid" form-view="tag-form"
+          onSelect="action-partner-attrs-set-partner-tag-domain"/>
       </panel>
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
-          onChange="action-method-partner-registration-code-onChange"/>
-        <field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
-        <field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
+          onChange="action-group-partner-registration-code-onChange"/>
+        <field name="siren" colSpan="4" readonly="true" hidden="true"/>
+        <field name="nic" colSpan="4" readonly="true" hidden="true"/>
         <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
         <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
           form-view="main-activity-form"/>
-        <field name="taxNbr" hideIf="partnerTypeSelect== 2"/>
+        <field name="taxNbr" hidden="true"/>
         <field name="paymentDelay" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')"/>
         <field name="parentPartner" hideIf="partnerTypeSelect != 1"
@@ -378,22 +383,8 @@
       <panel name="informationPanel" title="Information">
         <panel name="employeeAddressPanel" title="Contact address" colSpan="12"
           showIf="isEmployee">
-          <field name="mainAddress" form-view="address-form" grid-view="address-grid">
-            <editor x-show-titles="false" x-viewer="true">
-              <field name="addressL2" x-bind="{{addressL2|uppercase}}"
-                placeholder="e.g. Financial department, CEO"/>
-              <field name="addressL3" x-bind="{{addressL3|uppercase}}"
-                placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
-              <field name="addressL4" x-bind="{{addressL4|uppercase}}"/>
-              <field name="addressL5" x-bind="{{addressL5|uppercase}}"
-                placeholder="e.g. POB 254"/>
-              <field name="city" canNew="true" onChange="action-address-change-city"
-                form-view="city-form" grid-view="city-grid"/>
-              <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true"/>
-              <field name="addressL7Country" required="true" form-view="country-form"
-                grid-view="country-grid"/>
-            </editor>
-          </field>
+          <field name="mainAddress" form-view="address-form" grid-view="address-grid"
+            canNew="true" colSpan="12"/>
         </panel>
         <panel name="postalAddressesPanel" title="Postal addresses" colSpan="12"
           hideIf="isEmployee">
@@ -427,7 +418,7 @@
             </editor>
           </field>
           <spacer/>
-          <field name="headOfficeAddress"
+          <field name="headOfficeAddress" if-module="axelor-account"
             if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"
             colSpan="12"/>
         </panel>
@@ -472,34 +463,8 @@
           <field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
         </panel>
       </panel>
-      <panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact"
-        if-module="axelor-account" colSpan="12" if="__config__.app.isApp('invoice')">
-        <panel-include view="incl-invoice-payment-partner-form"/>
-        <panel-include if-module="axelor-account"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
-          view="incl-sepa-direct-debit-partner-form"/>
-        <panel name="invoiceCommentsPanel" title="Comment to display on invoice" colSpan="12">
-          <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
-        </panel>
-        <panel name="descriptionToDisplayOnProformaPanel"
-          title="Comment to display on proforma" colSpan="12">
-          <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
-        </panel>
-      </panel>
-      <panel name="accountingSituationPanel" if-module="axelor-account"
-        if="__config__.app.isApp('account')" title="Accounting situation" hideIf="isContact"
-        onSelect="action-account-accounting-situation-method-update-customer-account">
-        <field name="isCompensation" colSpan="12" widget="boolean-switch"
-          showIf="isCustomer &amp;&amp; isSupplier"/>
-        <panel-related name="accountingSituationListPanel"
-          field="accountingSituationList" title="Accounting situation" hideIf="isContact"
-          colSpan="12" grid-view="accounting-situation-partner-grid"
-          form-view="accounting-situation-partner-form"/>
-      </panel>
-      <panel-include if-module="axelor-account" view="incl-blocking-partner-form"
-        if="__config__.app.isApp('account')"/>
-      <panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm"
-        hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="eventPanel" title="Events" showIf="id != null &amp;&amp; !isEmployee"
+        if-module="axelor-crm" hidden="true" if="__config__.app.isApp('crm')">
         <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
           onClick="save,action-partner-view-meeting-event" colSpan="3"/>
         <button name="callBtn" title="Create a call" link="" icon="fa-phone"
@@ -512,14 +477,15 @@
           icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null"/>
         <panel-include view="incl-activities-partner-form"/>
       </panel>
-      <panel name="opportunitiesPanel" title="Opportunities" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="opportunitiesPanel" title="Opportunities"
+        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        if="__config__.app.isApp('crm')">
         <button name="createOpportunityBtn" title="Create opportunity"
           onClick="save,action-partner-view-create-opportunity" link="" colSpan="3"/>
         <panel-include view="incl-opportunities-partner-form"/>
       </panel>
-      <panel name="emailPanel" title="Emails" showIf="id != null" if-module="axelor-crm"
-        hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="emailPanel" title="Emails" showIf="id != null &amp;&amp; !isEmployee"
+        if-module="axelor-crm" if="__config__.app.isApp('crm')">
         <button name="emailBtn" title="Create an email" icon="fa-envelope-o" link=""
           onClick="save,action-send-by-email-with-template" colSpan="3"/>
         <panel-dashlet name="sentEmailsPanel" title="Sent emails"
@@ -527,8 +493,9 @@
         <panel-dashlet name="receivedEmailsPanel" title="Received emails"
           action="action-partner-method-view-received-emails" colSpan="12" height="550"/>
       </panel>
-      <panel name="marketingCampaignPanel" title="Marketing campaigns" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('marketing')">
+      <panel name="marketingCampaignPanel" title="Marketing campaigns"
+        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        if="__config__.app.isApp('marketing')">
         <panel-dashlet name="marketingCampaignsPanel"
           action="action-partner-view-marketing-campaigns" colSpan="12" height="800"/>
       </panel>
@@ -538,7 +505,7 @@
         <field name="payerQuality" if-module="axelor-account"
           if="__config__.app.isApp('account')" hideIf="isEmployee"/>
         <field name="salePartnerPriceList" canEdit="false" domain="self.typeSelect = 1"
-          form-view="sale-partner-price-list-form" grid-view="partner-price-list-grid"/>
+          form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"
           if="__config__.app.isApp('business-project')"/>
         <field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3"
@@ -576,7 +543,7 @@
         showIf="isSupplier || isSubcontractor" if="__config__.app.isApp('purchase')">
         <field name="purchaseOrderInformation"/>
         <field name="purchasePartnerPriceList" canEdit="false" domain="self.typeSelect = 2"
-          form-view="purchase-partner-price-list-form" grid-view="partner-price-list-grid"/>
+          form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="supplierCatalogList" colSpan="12" x-can-copy="true"
           form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"
           if-module="axelor-purchase"
@@ -634,6 +601,13 @@
           <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
       </panel>
+      <panel name="projectPanel" title="Projects"
+        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+        <panel-dashlet name="projectPanel" title="Projects"
+          action="action-partner-view-related-projects" colSpan="12"/>
+        <panel-dashlet name="invoicingProjectPanel" title="Invoicing projects"
+          action="action-partner-view-related-invoicing-projects" colSpan="12"/>
+      </panel>
     </panel-tabs>
     <panel name="partnerAttrsPanel">
       <field name="partnerAttrs" colSpan="12"/>
@@ -655,8 +629,6 @@
     </toolbar>
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
-          readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>
@@ -758,8 +730,9 @@
         <panel-include view="incl-activities-contact-form"/>
       </panel>
       <panel-dashlet name="contactOpportunitiesPanel" title="Opportunity" colSpan="12"
-        action="action-contact-view-opportunities" height="550" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')"/>
+        action="action-contact-view-opportunities" height="550"
+        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        if="__config__.app.isApp('crm')"/>
       <panel name="saleOrderContactPanel" title="Sales orders" showIf="id != null"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
         <panel-include view="incl-sales-contact-form"/>
@@ -954,8 +927,6 @@
     onSave="save,action-partner-method-set-user-partner">
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
-          readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>
@@ -1088,12 +1059,13 @@
     <action name="action-partner-account-attrs-hide-customer-account"/>
     <action name="action-partner-account-attrs-hide-employee-account"/>
     <action name="action-partner-record-set-balance" if="__config__.app.isApp('account')"/>
-    <action name="action-partner-record-set-positive-balance"
+    <action name="action-partner-method-set-positive-balance"
       if="__config__.app.isApp('account')"/>
     <action name="action-partner-attrs-name-balance"/>
     <action name="action-partner-attrs-partner-seq-editable"/>
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
+    <action name="action-method-partner-siren-nic-onload"/>
   </action-group>
 
   <action-group name="action-group-base-partner-onnew">
@@ -1161,17 +1133,14 @@
 
   <action-group name="action-partner-group-onsave">
     <action name="action-partner-iban-check-on-save"/>
-    <action name="action-partner-validate-registration-code"
-      if="__config__.app.getApp('base')?.getCheckRegistrationCode()"/>
-    <action name="action-method-partner-check-registration-code"
-      if="__config__.app.getApp('base')?.getCheckRegistrationCode()"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
+    <action name="action-method-partner-check-registration-code"/>
   </action-group>
 
   <action-validate name="action-partner-validate-registration-code">
     <error message="Registration code is required."
-      if="partnerAddressList?.findAll{it.address?.addressL7Country?.alpha2Code == 'FR'}?.size() &gt; 0 &amp;&amp; partnerTypeSelect == 1 &amp;&amp; !registrationCode"/>
+      if="partnerAddressList?.findAll{it.address?.country?.alpha2Code == 'FR'}?.size() &gt; 0 &amp;&amp; partnerTypeSelect == 1 &amp;&amp; !registrationCode"/>
   </action-validate>
 
   <action-record name="action-partner-record-factor-supplier-customer-no-error"
@@ -1211,6 +1180,11 @@
     <field name="isSupplier" expr="eval:true"/>
     <field name="supplierCantBeRemoved" expr="eval:false"/>
   </action-record>
+
+  <action-method name="action-method-partner-siren-nic-onload">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="getHideFieldOnPartnerTypeSelect"/>
+  </action-method>
 
   <action-method name="action-partner-method-check-company-account-config">
     <call class="com.axelor.apps.account.web.PartnerController"
@@ -1320,6 +1294,10 @@
     <action name="action-partner-attrs-set-customer"/>
   </action-group>
 
+  <action-group name="action-group-partner-registration-code-onChange">
+    <action name="action-method-partner-registration-code-onChange"/>
+  </action-group>
+
   <action-record name="action-partner-empty-first-name"
     model="com.axelor.apps.base.db.Partner">
     <field name="firstName" expr="eval: null"/>
@@ -1375,21 +1353,11 @@
   <action-record name="action-partner-record-set-balance"
     model="com.axelor.apps.base.db.Partner">
     <field name="$balance"
-      expr="#{accountingSituationList.stream().map(
-                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? (x -> x.balanceDueDebtRecoveryCustAccount)
-                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? (x -> x.balanceDueCustAccount)
-                    : (x -> x.balanceCustAccount)
-                ).sum()}"/>
-  </action-record>
-
-  <action-record name="action-partner-record-set-positive-balance"
-    model="com.axelor.apps.base.db.Partner">
-    <field name="$positiveBalanceBtn"
-      expr="eval: balance &lt; 0 ?
-		java.text.NumberFormat.getInstance(new Locale(__user__.localization?.code)).format(balance * -1) :
-		java.text.NumberFormat.getInstance(new Locale(__user__.localization?.code)).format(balance)"
-      if="balance != null"/>
-    <field name="$positiveBalanceBtn" expr="eval: 0" if="balance == null"/>
+      expr="eval: accountingSituationList?.collect{
+                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? it.balanceDueDebtRecoveryCustAccount
+                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? it.balanceDueCustAccount
+                    : it.balanceCustAccount
+                }.sum()"/>
   </action-record>
 
   <action-record name="action-partner-record-employee"
@@ -1538,6 +1506,10 @@
     <call class="com.axelor.apps.base.web.PartnerController" method="checkRegistrationCode"/>
   </action-method>
 
+  <action-method name="action-partner-method-set-positive-balance">
+    <call class="com.axelor.apps.base.web.PartnerController" method="setPositiveBalance"/>
+  </action-method>
+
   <action-view name="action-contact-partner-dashlet" title="Partners"
     model="com.axelor.apps.base.db.Partner">
     <view type="grid" name="partner-grid"/>
@@ -1608,7 +1580,7 @@
 
   <search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner"
     title="Partner filters">
-    <field name="companyStr" hidden="true"
+    <field name="companySet" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="isFactor" hidden="true"
       if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors)"/>
@@ -1683,7 +1655,7 @@
 
   <search-filters name="contact-filters" model="com.axelor.apps.base.db.Partner"
     title="Contact filters">
-    <field name="companyStr" hidden="true"
+    <field name="companySet" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="isFactor" hidden="true"
       if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors)"/>
@@ -1769,5 +1741,24 @@
     <attribute name="hidden" for="$company"
       expr="eval: __repo__(Company).all().count() == 1"/>
   </action-attrs>
+
+  <action-attrs name="action-partner-attrs-set-partner-tag-domain">
+    <attribute name="domain" for="partnerTagSet"
+      expr="eval: &quot; ${__repo__(MetaModel).findByName('Partner')?.id} member of self.concernedModelSet AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
+  </action-attrs>
+
+  <action-view name="action-partner-view-related-projects" title="Projects"
+    model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="project-grid"/>
+    <view type="form" name="project-form"/>
+    <domain>self.clientPartner = :id</domain>
+  </action-view>
+
+  <action-view name="action-partner-view-related-invoicing-projects"
+    title="Invoicing projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
+    <view type="grid" name="invoicing-project-grid"/>
+    <view type="form" name="invoicing-project-form"/>
+    <domain>self.project.clientPartner = :id</domain>
+  </action-view>
 
 </object-views>

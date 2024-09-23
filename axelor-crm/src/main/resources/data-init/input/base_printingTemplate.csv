@@ -1,0 +1,2 @@
+"importId";"name";"modelName";"statusSelect";"toAttach";"scriptFieldName"
+"8";"Lead";"com.axelor.apps.crm.db.Lead";"2";"false";"${__i18n__.get('Lead') + ' ' + Lead.name + (Lead.firstName ? ' ' + Lead.firstName : '') + (Lead.enterpriseName ? '-' + Lead.enterpriseName : '') + '-' + date}"

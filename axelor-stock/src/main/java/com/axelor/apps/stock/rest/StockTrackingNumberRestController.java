@@ -23,15 +23,13 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.rest.dto.StockTrackingNumberPostRequest;
 import com.axelor.apps.stock.rest.dto.StockTrackingNumberResponse;
-import com.axelor.apps.stock.service.TrackingNumberService;
+import com.axelor.apps.stock.service.TrackingNumberCreateService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -39,7 +37,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/stock-tracking-number")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -61,7 +58,7 @@ public class StockTrackingNumberRestController {
     new SecurityCheck().createAccess(TrackingNumber.class).check();
 
     TrackingNumber trackingNumber =
-        Beans.get(TrackingNumberService.class)
+        Beans.get(TrackingNumberCreateService.class)
             .generateTrackingNumber(
                 requestBody.fetchProduct(),
                 requestBody.fetchCompany(),

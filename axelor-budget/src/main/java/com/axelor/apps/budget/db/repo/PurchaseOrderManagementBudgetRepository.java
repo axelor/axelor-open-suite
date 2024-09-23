@@ -19,15 +19,19 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,14 +41,22 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupplychainRepository {
 
+  @Inject
+  public PurchaseOrderManagementBudgetRepository(
+      AppBaseService appBaseService, PurchaseOrderSequenceService purchaseOrderSequenceService) {
+    super(appBaseService, purchaseOrderSequenceService);
+  }
+
   @Override
   public PurchaseOrder save(PurchaseOrder purchaseOrder) {
+    if (!Beans.get(AppBudgetService.class).isApp("budget")) {
+      return super.save(purchaseOrder);
+    }
     try {
 
       Beans.get(PurchaseOrderBudgetService.class).generateBudgetDistribution(purchaseOrder);
 
       purchaseOrder = super.save(purchaseOrder);
-
       Beans.get(PurchaseOrderBudgetService.class)
           .validatePurchaseAmountWithBudgetDistribution(purchaseOrder);
 
@@ -65,10 +77,16 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
   // be calculated again, which is done in cancel method.
   @Override
   public void remove(PurchaseOrder entity) {
+    if (!Beans.get(AppBudgetService.class).isApp("budget")) {
+      super.remove(entity);
+      return;
+    }
+
     List<Budget> budgetList = new ArrayList<>();
     if (entity.getStatusSelect() >= PurchaseOrderRepository.STATUS_REQUESTED) {
       budgetList = cancelPurchaseOrder(entity);
     }
+
     super.remove(entity);
     resetBudgets(budgetList);
   }

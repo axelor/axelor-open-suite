@@ -19,12 +19,15 @@
 package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.exception.HandleExceptionResponse;
+import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorInitService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -38,6 +41,7 @@ import org.slf4j.LoggerFactory;
 public class ConfiguratorCreatorController {
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   /**
    * Called from the configurator creator form on formula changes
    *
@@ -45,7 +49,6 @@ public class ConfiguratorCreatorController {
    * @param response
    * @throws AxelorException
    */
-  @HandleExceptionResponse
   public void updateAndActivate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
@@ -65,7 +68,6 @@ public class ConfiguratorCreatorController {
    * @param response
    * @throws IOException
    */
-  @HandleExceptionResponse
   public void importConfiguratorCreators(ActionRequest request, ActionResponse response)
       throws IOException {
     String pathDiff = (String) ((Map) request.getContext().get("dataFile")).get("filePath");
@@ -74,11 +76,24 @@ public class ConfiguratorCreatorController {
     response.setValue("importLog", importLog);
   }
 
-  @HandleExceptionResponse
   public void updateAttributes(ActionRequest request, ActionResponse response) {
     ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
     creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
     Beans.get(ConfiguratorCreatorService.class).updateAttributes(creator);
     response.setReload(true);
+  }
+
+  public void openTestConfiguratorView(ActionRequest request, ActionResponse response) {
+    ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+    creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
+    Configurator configurator = Beans.get(ConfiguratorInitService.class).create(creator);
+    response.setView(
+        ActionView.define(I18n.get("Configurator"))
+            .model(Configurator.class.getName())
+            .add("form", "configurator-form")
+            .add("grid", "configurator-grid")
+            .param("forceEdit", "true")
+            .context("_showRecord", configurator.getId())
+            .map());
   }
 }

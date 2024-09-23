@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrder" implements="com.axelor.apps.base.interfaces.PricedOrder">
+  <entity name="SaleOrder"
+    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable">
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>
     <string name="fullName" namecolumn="true" title="Full name"/>
     <string name="saleOrderSeq" title="Internal Number" readonly="true"/>
-    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
-      massUpdate="true"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <string name="externalReference" title="Customer reference"/>
     <date name="creationDate" title="Creation date" required="true" readonly="true"/>
     <datetime name="confirmationDateTime" title="Confirmation date" readonly="true"/>
@@ -24,7 +24,7 @@
 
     <!-- Onglet Coordonnées client -->
     <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner"
-      title="Customer" massUpdate="true"/>
+      title="Customer"/>
     <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner"
       title="Customer contact"/>
     <many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address"
@@ -50,8 +50,7 @@
 
     <!-- Ligne de Taxe -->
     <one-to-many name="saleOrderLineTaxList"
-      ref="com.axelor.apps.sale.db.SaleOrderLineTax" mappedBy="saleOrder" title="Tax Lines"
-      readonly="true"/>
+      ref="com.axelor.apps.sale.db.SaleOrderLineTax" mappedBy="saleOrder" title="Tax Lines"/>
 
     <decimal name="exTaxTotal" title="Total W.T." scale="3" precision="20" readonly="true"/>
     <decimal name="taxTotal" title="Total tax" scale="3" precision="20" readonly="true"/>
@@ -79,9 +78,8 @@
 
     <!-- Onglet Autres informations -->
     <many-to-one name="salespersonUser" ref="com.axelor.auth.db.User"
-      title="Salesperson" massUpdate="true"/>
-    <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"
-      massUpdate="true"/>
+      title="Salesperson"/>
+    <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
 
     <!-- Onglet description -->
     <string name="description" title="Comment to display" large="true"/>
@@ -165,6 +163,13 @@
 
     <many-to-one name="taxNumber" title="Tax number"
       ref="com.axelor.apps.account.db.TaxNumber"/>
+
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <unique-constraint columns="saleOrderSeq,company"/>
 

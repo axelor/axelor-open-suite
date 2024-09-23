@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
-  <menuitem name="gdpr-root" title="GDPR" icon="fa-gavel" icon-background="#004aad"
+  <menuitem name="gdpr-root" title="GDPR" icon="shield-lock" icon-background="#004aad"
     if="__config__.app.isApp('gdpr')" order="-200"/>
 
-  <menuitem name="gdpr-root-request" parent="gdpr-root" title="Request"
+  <menuitem name="gdpr-root-request" parent="gdpr-root" title="GDPRRequest.title"
     action="action.gdpr.view.request" order="100"/>
 
-  <action-view name="action.gdpr.view.request" title="Request"
+  <action-view name="action.gdpr.view.request" title="GDPRRequest.title"
     model="com.axelor.apps.gdpr.db.GDPRRequest">
     <view type="grid" name="gdpr-request-grid"/>
     <view type="form" name="gdpr-request-form"/>

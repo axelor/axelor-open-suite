@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <!-- ASSETS MANAGEMENT -->
+  <menuitem name="assets-management-root" title="Assets management" order="-1300"
+    if="__config__.app.isApp('intervention')" icon-background="#4caf50" icon="wrench" left="true"/>
+
+  <menuitem name="assets-management-root-equipment-tree" title="Equipments tree"
+    parent="assets-management-root" icon-background="grey" icon="fa-sitemap" left="true"
+    action="assets.management.root.equipment.tree" order="1"/>
+
+  <action-view name="assets.management.root.equipment.tree" title="Equipments tree"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="equipment-tree-partner-filter-form"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showSingle" expr="true"/>
+  </action-view>
+
+  <menuitem name="assets-management-root-equipment" title="Equipments"
+    parent="assets-management-root" icon-background="grey" icon="fa-microchip" left="true"
+    action="assets.management.root.equipment" order="2"/>
+
+  <action-view name="assets.management.root.equipment" title="Equipments"
+    model="com.axelor.apps.intervention.db.Equipment">
+    <view type="grid" name="equipment-grid"/>
+    <view type="form" name="equipment-form"/>
+    <view-param name="search-filters" value="equipment-filters"/>
+  </action-view>
+
+  <menuitem name="assets-management-root-equipment-line" title="Equipment lines"
+    parent="assets-management-root" icon-background="grey" icon="fa-qrcode" left="true"
+    action="assets.management.root.equipment.line" order="3"/>
+
+  <action-view name="assets.management.root.equipment.line" title="Equipment lines"
+    model="com.axelor.apps.intervention.db.EquipmentLine">
+    <view type="grid" name="equipment-line-grid"/>
+    <view type="form" name="equipment-line-form"/>
+    <view-param name="search-filters" value="equipment-line-filters"/>
+  </action-view>
+
+  <menuitem name="assets-management-root-park-model" title="Park models"
+    parent="assets-management-root" icon-background="grey" icon="fa-qrcode" left="true"
+    action="assets.management.root.park.model" order="4"/>
+
+  <action-view name="assets.management.root.park.model" title="Park models"
+    model="com.axelor.apps.intervention.db.ParkModel">
+    <view type="grid" name="park-model-grid"/>
+    <view type="form" name="park-model-form"/>
+  </action-view>
+
+  <menuitem name="assets-management-root-conf" title="Configuration"
+    parent="assets-management-root" icon-background="grey" icon="fa-cogs" order="99"/>
+
+  <menuitem name="assets-management-root-conf-equipment-families"
+    title="Equipment families" parent="assets-management-root-conf"
+    action="assets.management.root.conf.equipment.families"/>
+
+  <action-view name="assets.management.root.conf.equipment.families"
+    title="Equipment families" model="com.axelor.apps.intervention.db.EquipmentFamily">
+    <view type="grid" name="equipment-family-grid"/>
+    <view type="form" name="equipment-family-form"/>
+  </action-view>
+
+  <!-- INTERVENTIONS -->
+  <menuitem title="Intervention" name="intervention-root" icon="tools"
+    icon-background="#e59331" order="-1200" if="__config__.app.isApp('intervention')"/>
+
+  <menuitem name="intervention-root-interventions" title="Interventions"
+    parent="intervention-root" icon="tools" icon-background="#e59331"
+    action="intervention.root.interventions" tag-count="true" order="0"/>
+
+  <action-view name="intervention.root.interventions" title="Interventions"
+    model="com.axelor.apps.intervention.db.Intervention">
+    <view type="grid" name="intervention-grid"/>
+    <view type="form" name="intervention-form"/>
+  </action-view>
+
+  <menuitem name="intervention-root-customer-requests" title="Customer requests"
+    parent="intervention-root" icon="fa-ticket" icon-background="#e59331"
+    action="intervention.root.customer.requests" tag-count="true" order="10"/>
+
+  <action-view model="com.axelor.apps.intervention.db.CustomerRequest"
+    title="Customer requests" name="intervention.root.customer.requests">
+    <view type="grid" name="customer-request-grid"/>
+    <view type="form" name="customer-request-form"/>
+  </action-view>
+
+  <!-- INTERVENTION CONFIG -->
+  <menuitem title="Configuration" name="intervention-root-configuration" icon="fa-cog"
+    icon-background="#e59331" parent="intervention-root" order="999"/>
+
+  <menuitem title="Questions" name="intervention-root-configuration-question"
+    parent="intervention-root-configuration" action="intervention.root.configuration.question"/>
+
+  <action-view model="com.axelor.apps.intervention.db.Question" title="Questions"
+    name="intervention.root.configuration.question">
+    <view type="grid" name="question-grid"/>
+    <view type="form" name="question-form"/>
+  </action-view>
+
+  <menuitem title="Ranges" name="intervention-root-configuration-range"
+    parent="intervention-root-configuration" action="intervention.root.configuration.range"/>
+
+  <action-view model="com.axelor.apps.intervention.db.Range" title="Ranges"
+    name="intervention.root.configuration.range">
+    <view type="grid" name="range-grid"/>
+    <view type="form" name="range-form"/>
+  </action-view>
+
+  <menuitem title="Intervention types"
+    name="intervention-root-configuration-intervention-type"
+    parent="intervention-root-configuration"
+    action="intervention.root.configuration.intervention.type"/>
+
+  <action-view model="com.axelor.apps.intervention.db.InterventionType"
+    title="Intervention types" name="intervention.root.configuration.intervention.type">
+    <view type="grid" name="intervention-type-grid"/>
+    <view type="form" name="intervention-type-form"/>
+  </action-view>
+
+  <menuitem title="Answer types" name="intervention-root-configuration-answer-type"
+    parent="intervention-root-configuration" action="intervention.root.configuration.answer.type"/>
+
+  <action-view model="com.axelor.apps.intervention.db.AnswerType" title="Answer types"
+    name="intervention.root.configuration.answer.type">
+    <view type="grid" name="answer-type-grid"/>
+    <view type="form" name="answer-type-form"/>
+  </action-view>
+
+  <menuitem title="Range types" name="intervention-root-configuration-range-type"
+    parent="intervention-root-configuration" action="intervention.root.configuration.range.type"/>
+
+  <action-view model="com.axelor.apps.intervention.db.RangeType" title="Range types"
+    name="intervention.root.configuration.range.type">
+    <view type="grid" name="range-type-grid"/>
+    <view type="form" name="range-type-form"/>
+  </action-view>
+
+  <menuitem title="Intervention categories"
+    name="intervention-root-configuration-intervention-category"
+    parent="intervention-root-configuration"
+    action="intervention.root.configuration.intervention.category"/>
+
+  <action-view model="com.axelor.apps.intervention.db.InterventionCategory"
+    title="Intervention categories" name="intervention.root.configuration.intervention.category">
+    <view type="grid" name="intervention-category-grid"/>
+    <view type="form" name="intervention-category-form"/>
+  </action-view>
+
+  <menuitem title="Request source" name="intervention-root-configuration-request-source"
+    parent="intervention-root-configuration" action="intervention.root.configuration.request.source"/>
+
+  <action-view model="com.axelor.apps.intervention.db.RequestSource"
+    title="Request source" name="intervention.root.configuration.request.source">
+    <view type="grid" name="request-source-grid"/>
+    <view type="form" name="request-source-form"/>
+  </action-view>
+
+  <menuitem title="Request subject" name="intervention-root-configuration-request-subject"
+    parent="intervention-root-configuration"
+    action="intervention.root.configuration.request.subject"/>
+
+  <action-view model="com.axelor.apps.intervention.db.RequestSubject"
+    title="Request subject" name="intervention.root.configuration.request.subject">
+    <view type="grid" name="request-subject-grid"/>
+    <view type="form" name="request-subject-form"/>
+  </action-view>
+
+  <menuitem title="Justification" name="intervention-root-configuration-justification"
+    parent="intervention-root-configuration" action="intervention.root.configuration.justification"/>
+
+  <action-view model="com.axelor.apps.intervention.db.Justification"
+    title="Justification" name="intervention.root.configuration.justification">
+    <view type="grid" name="justification-grid"/>
+    <view type="form" name="justification-form"/>
+  </action-view>
+
+  <menuitem title="Rescheduling reason"
+    name="intervention-root-configuration-rescheduling-reason"
+    parent="intervention-root-configuration"
+    action="intervention.root.configuration.rescheduling.reason"/>
+
+  <action-view model="com.axelor.apps.intervention.db.ReschedulingReason"
+    title="Rescheduling reason" name="intervention.root.configuration.rescheduling.reason">
+    <view type="grid" name="rescheduling-reason-grid"/>
+    <view type="form" name="rescheduling-reason-form"/>
+  </action-view>
+
+  <menuitem name="intervention-root-configuration-duration" title="Durations"
+    parent="intervention-root-configuration" action="intervention.root.configuration.duration"/>
+
+  <action-view name="intervention.root.configuration.duration" title="Duration"
+    model="com.axelor.apps.base.db.Duration">
+    <view type="grid" name="duration-intervention-grid"/>
+    <view type="form" name="duration-intervention-form"/>
+    <domain>self.applicationTypeSelect = 3</domain>
+    <context name="_applicatioTypeSelect" expr="3"/>
+  </action-view>
+
+  <menuitem title="Intervention note types" parent="intervention-root-configuration"
+    name="intervention-root-configuration-intervention-note-type"
+    action="intervention.root.configuration.intervention.note.type"/>
+
+  <action-view name="intervention.root.configuration.intervention.note.type"
+    title="Intervention note types" model="com.axelor.apps.intervention.db.InterventionNoteType">
+    <view type="grid" name="intervention-note-type-grid"/>
+    <view type="form" name="intervention-note-type-form"/>
+  </action-view>
+
+  <!-- BATCH -->
+  <menuitem name="admin-root-batch-intervention" parent="admin-root-batch"
+    if="__config__.app.isApp('intervention')" if-module="axelor-intervention"
+    title="Intervention batches" action="admin.root.batch.intervention" order="1500"/>
+
+  <action-view name="admin.root.batch.intervention" title="Intervention batches"
+    model="com.axelor.apps.intervention.db.InterventionBatch">
+    <view type="grid" name="intervention-batch-grid"/>
+    <view type="form" name="intervention-batch-form"/>
+  </action-view>
+
+</object-views>

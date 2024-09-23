@@ -18,18 +18,18 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.User;
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface InvoiceTermPfpService {
-  void validatePfp(InvoiceTerm invoiceTerm, User currenctUser);
-
-  Integer massValidatePfp(List<Long> invoiceTermIds);
 
   Integer massRefusePfp(
       List<Long> invoiceTermIds, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
@@ -44,17 +44,19 @@ public interface InvoiceTermPfpService {
       PfpPartialReason partialReason)
       throws AxelorException;
 
-  Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList);
+  InvoiceTerm createPfpInvoiceTerm(
+      InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) throws AxelorException;
 
-  int getPfpValidateStatusSelect(InvoiceTerm invoiceTerm);
+  Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList);
 
   boolean getUserCondition(User pfpValidatorUser, User user);
 
   boolean getInvoiceTermsCondition(List<InvoiceTerm> invoiceTermList);
 
-  void initPftPartialValidation(
-      InvoiceTerm originalInvoiceTerm, BigDecimal grantedAmount, PfpPartialReason partialReason);
-
   boolean generateInvoiceTermsAfterPfpPartial(List<InvoiceTerm> invoiceTermList)
+      throws AxelorException;
+
+  void validatePfpValidatedAmount(
+      MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, Company company)
       throws AxelorException;
 }

@@ -52,6 +52,7 @@ public class ExpenseInvoiceLineServiceProjectImpl extends ExpenseInvoiceLineServ
       invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine, priority * 100 + count));
       count++;
       invoiceLineList.get(invoiceLineList.size() - 1).setProject(expenseLine.getProject());
+      invoiceLineList.get(invoiceLineList.size() - 1).setExpenseLine(expenseLine);
     }
 
     return invoiceLineList;

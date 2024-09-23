@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -12,6 +12,8 @@
   	  public static final String IMPORT = "import";
 
   	  public static final String PASSWORD_CHANGE = "passwordChange";
+
+  	  public static final String ADDRESS_RECOMPUTE = "addressRecompute";
   	  ]]>
     </extra-code>
   </entity>

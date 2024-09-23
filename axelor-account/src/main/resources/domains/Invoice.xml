@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity sequential="true" name="Invoice"
-    implements="com.axelor.apps.base.interfaces.PricedOrder">
+    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable">
 
     <!-- NOT DISPLAY -->
     <many-to-one name="canceledPaymentSchedule"
@@ -43,8 +43,8 @@
 
     <string name="addressStr" title="Address" large="true" multiline="true"/>
     <string name="deliveryAddressStr" title="Delivery address" large="true" multiline="true"/>
-    <string name="internalReference" title="Internal Ref."/>
-    <string name="externalReference" title="External Ref."/>
+    <string name="internalReference" title="Internal Ref." large="true"/>
+    <string name="externalReference" title="External Ref." large="true"/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList"
       title="Price list"/>
     <boolean name="hideDiscount" title="Hide Discount on prints"/>
@@ -80,7 +80,7 @@
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice"
       title="Invoice Lines"/>
     <one-to-many name="invoiceLineTaxList" ref="InvoiceLineTax" mappedBy="invoice"
-      title="Tax Lines" readonly="true"/>
+      title="Tax Lines"/>
 
     <!-- Configuration -->
     <boolean name="alreadyPrintedOk" title="Already printed" default="true"/>
@@ -248,11 +248,20 @@
 	      id]]>
     </integer>
 
+    <many-to-one name="latePaymentInterestSourceInvoice"
+      ref="com.axelor.apps.account.db.Invoice" title="Late payment interest source invoice"/>
 
     <!-- Invoice terms -->
     <integer name="paymentProgress" title="Payment progress" default="0"/>
     <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
       mappedBy="invoice" title="Invoice terms"/>
+
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <unique-constraint columns="invoiceId,company"/>
 
@@ -285,6 +294,7 @@
 	    public static final int OPERATION_SUB_TYPE_DEFAULT = 1;
 	    public static final int OPERATION_SUB_TYPE_ADVANCE = 2;
 	    public static final int OPERATION_SUB_TYPE_BALANCE = 3;
+	    public static final int OPERATION_SUB_TYPE_LATE_PAYMENT = 9;
 
 	    // REPORT TYPE
 		public static final int REPORT_TYPE_PROFORMA = 1;

@@ -61,7 +61,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
 
   protected BankOrderRepository bankOrderRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
-  protected BankOrderService bankOrderService;
+  protected BankOrderComputeService bankOrderComputeService;
   protected InvoiceRepository invoiceRepository;
   protected PaymentScheduleLineRepository paymentScheduleLineRepository;
 
@@ -69,13 +69,13 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
   public BankOrderMergeServiceImpl(
       BankOrderRepository bankOrderRepo,
       InvoicePaymentRepository invoicePaymentRepo,
-      BankOrderService bankOrderService,
+      BankOrderComputeService bankOrderComputeService,
       InvoiceRepository invoiceRepository,
       PaymentScheduleLineRepository paymentScheduleLineRepository) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
-    this.bankOrderService = bankOrderService;
+    this.bankOrderComputeService = bankOrderComputeService;
     this.invoiceRepository = invoiceRepository;
     this.paymentScheduleLineRepository = paymentScheduleLineRepository;
   }
@@ -129,7 +129,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       consolidatePerPartner(bankOrder);
     }
 
-    bankOrderService.updateTotalAmounts(bankOrder);
+    bankOrderComputeService.updateTotalAmounts(bankOrder);
 
     return bankOrderRepo.save(bankOrder);
   }
@@ -344,6 +344,9 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       BankOrder bankOrder = invoicePayment.getBankOrder();
 
       if (bankOrder != null) {
+        if (bankOrder.getId() != null) {
+          bankOrder = bankOrderRepo.find(bankOrder.getId());
+        }
         invoicePaymentsWithBankOrders.add(invoicePayment);
         bankOrders.add(bankOrder);
       }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <menuitem name="invoice-root" title="Invoicing" order="-1000"
-    if="__config__.app.isApp('invoice')" icon="fa-file-text-o" icon-background="#31b4a9"/>
+    if="__config__.app.isApp('invoice')" icon="file-text" icon-background="#31b4a9"/>
 
   <menuitem name="invoice-root-custinvoices" parent="invoice-root" order="100"
     title="Cust. Invoices" action="invoice.root.custinvoices"/>
@@ -29,6 +29,7 @@
     <view-param name="search-filters" value="customer-refunds-filters"/>
     <domain>self.operationTypeSelect = 4</domain>
     <context name="_operationTypeSelect" expr="eval:4"/>
+    <context name="_operationSubTypeSelect" expr="eval:1"/>
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
@@ -94,6 +95,7 @@
     <view-param name="search-filters" value="supplier-refunds-filters"/>
     <domain>self.operationTypeSelect = 2</domain>
     <context name="_operationTypeSelect" expr="eval:2"/>
+    <context name="_operationSubTypeSelect" expr="eval:1"/>
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
@@ -137,7 +139,7 @@
     icon="fa-bar-chart" title="Reportings"/>
 
   <menuitem name="account-root" title="Accounting" order="-900"
-    if="__config__.app.isApp('account')" icon="fa-calculator" icon-background="#2fa042"/>
+    if="__config__.app.isApp('account')" icon="calculator-fill" icon-background="#2fa042"/>
   <menuitem name="account-root-move" parent="account-root" title="Moves" order="100"/>
 
   <menuitem name="account-root-move-move" parent="account-root-move" title="Moves"
@@ -456,7 +458,21 @@
     <view type="grid" name="accounting-report-grid"/>
     <view type="form" name="accounting-report-form"/>
     <view-param name="search-filters" value="accounting-report-filters"/>
-    <domain>self.reportType.typeSelect &lt; 1000 or self.reportType.typeSelect &gt;= 2000</domain>
+    <domain>self.reportType.typeSelect &lt; 1000 OR self.reportType.typeSelect BETWEEN 2000 AND 2999</domain>
+    <context name="_isCustom" expr="eval: false"/>
+  </action-view>
+
+  <menuitem name="account-root-accounting-custom-accounting-reports"
+    parent="account-root-accounting" title="Custom accounting reports"
+    action="account.root.accounting.custom.accounting.reports" order="250"/>
+
+  <action-view name="account.root.accounting.custom.accounting.reports"
+    title="Custom accounting reports" model="com.axelor.apps.account.db.AccountingReport">
+    <view type="grid" name="accounting-report-grid"/>
+    <view type="form" name="accounting-report-form"/>
+    <view-param name="search-filters" value="accounting-report-filters"/>
+    <domain>self.reportType.typeSelect = 3000</domain>
+    <context name="_isCustom" expr="eval: true"/>
   </action-view>
 
   <menuitem name="account-root-accounting-accounting-exports"
@@ -684,6 +700,16 @@
     <view type="form" name="tax-form"/>
     <view-param name="search-filters" value="tax-filters"/>
   </action-view>
+
+  <menuitem name="account-conf-financial-tax-type" parent="account-conf-financial"
+    title="Tax types" action="account.conf.financial.tax.type" order="1050"/>
+
+  <action-view name="account.conf.financial.tax.type" title="Tax types"
+    model="com.axelor.apps.account.db.TaxType">
+    <view type="grid" name="tax-type-grid"/>
+    <view type="form" name="tax-type-form"/>
+  </action-view>
+
   <menuitem name="account-conf-financial-service-types" parent="account-conf-financial"
     title="Service types" action="account.conf.financial.service.types" order="1100"/>
 
@@ -849,6 +875,7 @@
     <view type="form" name="invoice-form"/>
     <view-param name="search-filters" value="customer-refunds-filters"/>
     <domain>self.operationTypeSelect = 4</domain>
+    <context name="_operationSubTypeSelect" expr="eval:1"/>
     <context name="_operationTypeSelect" expr="eval:4"/>
   </action-view>
 
@@ -875,6 +902,7 @@
     <view-param name="search-filters" value="supplier-refunds-filters"/>
     <domain>self.operationTypeSelect = 2</domain>
     <context name="_operationTypeSelect" expr="eval:2"/>
+    <context name="_operationSubTypeSelect" expr="eval:1"/>
   </action-view>
 
   <menuitem name="menu-account-sale-invoice-dashboard-1" parent="invoice-root-report"
@@ -948,6 +976,10 @@
     <view-param name="width" value="800"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="show-toolbar" value="false"/>
+    <context name="_company" expr="eval: company?.id"/>
+    <context name="_moveTemplateType" expr="eval: moveTemplateType?.id"/>
+    <context name="_moveTemplateId" expr="eval: id"/>
+    <context name="_isPopup" expr="eval: false"/>
   </action-view>
 
   <menuitem name="move-template-root" title="Move Templates" parent="account-conf"

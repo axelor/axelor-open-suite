@@ -130,6 +130,7 @@ public final class BaseExceptionMessage {
   public static final String INDICATOR_GENERATOR_GROUPING_3 = /*$$(*/
       "Error while creating the file" /*)*/;
   public static final String INDICATOR_GENERATOR_GROUPING_4 = /*$$(*/ "Result exported" /*)*/;
+
   /** Indicator generator service */
   public static final String INDICATOR_GENERATOR_1 = /*$$(*/
       "Error : a request has to be set for the indicatior generator %s" /*)*/;
@@ -137,6 +138,7 @@ public final class BaseExceptionMessage {
   public static final String INDICATOR_GENERATOR_2 = /*$$(*/
       "Error : incorrect request for the indicatior generator %s" /*)*/;
   public static final String INDICATOR_GENERATOR_3 = /*$$(*/ "Request performed" /*)*/;
+
   /** Base batch service */
   public static final String BASE_BATCH_1 = /*$$(*/ "Unknown action %s for the %s treatment" /*)*/;
 
@@ -330,7 +332,8 @@ public final class BaseExceptionMessage {
       "Invalid Serial Number '%s' for '%s' barcode type.It must be only number or only alphabets" /*)*/;
   public static final String BARCODE_GENERATOR_9 = /*$$(*/ "Barcode format not supported" /*)*/;
 
-  public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;;
+  public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;
+  ;
   public static final String MAP_GOOGLE_MAPS_API_KEY_MISSING = /*$$(*/
       "Google Maps API key is missing in configuration." /*)*/;
 
@@ -549,11 +552,6 @@ public final class BaseExceptionMessage {
   public static final String COMPANY_LOCALE_MISSING = /*$$(*/
       "Please fill locale for the company %s" /*)*/;
 
-  public static final String SWAGGER_DISABLED = /*$$(*/ "Swagger is not enabled." /*)*/;
-
-  public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
-      "Swagger is enabled but not resource packages is specified." /*)*/;
-
   public static final String FAKER_METHOD_DOES_NOT_EXIST = /*$$(*/
       "The method '%s' doesn't exist in the Faker API." /*)*/;
 
@@ -598,7 +596,7 @@ public final class BaseExceptionMessage {
   public static final String PRODUCT_MISSING_UNITS_TO_CONVERT = /*$$(*/
       "The product %s is missing stock unit or purchase unit to make the conversion of last purchase price." /*)*/;
 
-  public static final String BIRT_TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
+  public static final String TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
       "The configuration to print this model has not been found" /*)*/;
 
   public static final String SIGNING_PDF_ERROR = /*$$(*/ "Error while signing pdf : %s" /*)*/;
@@ -618,8 +616,7 @@ public final class BaseExceptionMessage {
   public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
       "Error while accessing certificate information." /*)*/;
 
-  public static final String RESEARCH_RESULT_NO_VIEW_CONFIGURED = /*$$(*/
-      "No view configured for model %s." /*)*/;
+  public static final String VIEW_NOT_FOUND = /*$$(*/ "No view configured for model %s." /*)*/;
 
   public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
       "The file could not be generated." /*)*/;
@@ -628,11 +625,14 @@ public final class BaseExceptionMessage {
 
   public static final String ADDRESS_TEMPLATE_ERROR = /*$$(*/
       "An error occurred while generating the address template: '%s'" /*)*/;
-  public static final String PRICING_BUTTON_ERROR = /*$$(*/
-      "There was an error while trying to add the pricing button : %s" /*)*/;
+
+  public static final String ADDRESS_FIELD_TEMPLATE_ERROR = /*$$(*/
+      "An error occurred while generating the address template: '%s' - '%s'" /*)*/;
 
   public static final String PRICING_UNAVAILABLE_FOR_THIS_CLASS = /*$$(*/
       "Pricing process unavailable for this class : %s" /*)*/;
+  public static final String REGISTRATION_CODE_EMPTY_FOR_COMPANIES = /*$$(*/
+      "Registration code is required for companies" /*)*/;
 
   /** Import Configuration */
   public static final String IMPORT_CONFIGURATION_ERROR_MESSAGE = /*$$(*/
@@ -640,4 +640,29 @@ public final class BaseExceptionMessage {
 
   public static final String IMPORT_CONFIGURATION_CLOSING_MESSAGE = /*$$(*/
       "The import configuration executed successfully." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_BINDING_FILE_TYPE_MESSAGE = /*$$(*/
+      "The binding file should be only an XML file." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_CSV_MESSAGE = /*$$(*/
+      "The data file should be only a CSV or ZIP file." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_XML_MESSAGE = /*$$(*/
+      "The data file should be only an XML or ZIP file." /*)*/;
+
+  public static final String MISSING_ADDRESS_FIELD = /*$$(*/ "Address Field is missing : %s" /*)*/;
+
+  public static final String FACTORY_NO_FOUND = /*$$(*/
+      "Factory not found this type of generator" /*)*/;
+
+  public static final String MISSING_BIRT_PARAMETER = /*$$(*/ "Missing %s parameter(s)" /*)*/;
+
+  public static final String PRINTING_TEMPLATE_SCRIPT_ERROR = /*$$(*/
+      "Error when computing the printing filename, using template %s: %s" /*)*/;
+
+  public static final String NO_QUANTITY_PROVIDED = /*$$(*/
+      "This product comes in multiple quantities, so please specify a quantity that is a multiple of at least one from the list %s." /*)*/;
+
+  public static final String QUANTITY_NOT_MULTIPLE = /*$$(*/
+      "This product comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
 }

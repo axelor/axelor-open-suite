@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -45,6 +46,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SupplierCatalogServiceImpl implements SupplierCatalogService {
 
@@ -54,6 +56,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   protected ProductCompanyService productCompanyService;
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected TaxService taxService;
+  protected ProductPriceService productPriceService;
 
   @Inject
   public SupplierCatalogServiceImpl(
@@ -62,13 +65,15 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       CurrencyService currencyService,
       ProductCompanyService productCompanyService,
       PurchaseOrderLineService purchaseOrderLineService,
-      TaxService taxService) {
+      TaxService taxService,
+      ProductPriceService productPriceService) {
     this.appBaseService = appBaseService;
     this.appPurchaseService = appPurchaseService;
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.taxService = taxService;
+    this.productPriceService = productPriceService;
   }
 
   @SuppressWarnings("unchecked")
@@ -189,7 +194,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       Company company,
       Currency currency,
       LocalDate localDate,
-      TaxLine taxLine,
+      Set<TaxLine> taxLineSet,
       boolean resultInAti)
       throws AxelorException {
     BigDecimal purchasePrice = new BigDecimal(0);
@@ -201,22 +206,20 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       purchaseCurrency = supplierCatalog.getSupplierPartner().getCurrency();
     } else {
       if (product != null) {
-        purchasePrice = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
-        purchaseCurrency =
-            (Currency) productCompanyService.get(product, "purchaseCurrency", company);
+        return productPriceService.getPurchaseUnitPrice(
+            company, product, taxLineSet, resultInAti, localDate, currency);
       }
     }
 
-    Boolean inAti = (Boolean) productCompanyService.get(product, "inAti", company);
-    BigDecimal price =
-        (inAti == resultInAti)
-            ? purchasePrice
-            : taxService.convertUnitPrice(
-                inAti, taxLine, purchasePrice, AppBaseService.COMPUTATION_SCALING);
-
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(purchaseCurrency, currency, price, localDate)
-        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    return productPriceService.getConvertedPrice(
+        company,
+        product,
+        taxLineSet,
+        resultInAti,
+        localDate,
+        purchasePrice,
+        purchaseCurrency,
+        currency);
   }
 
   @Override
@@ -234,13 +237,13 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   public BigDecimal getMinQty(Product product, Partner supplierPartner, Company company)
       throws AxelorException {
     SupplierCatalog supplierCatalog = getSupplierCatalog(product, supplierPartner, company);
-    return supplierCatalog != null ? supplierCatalog.getMinQty() : BigDecimal.ONE;
+    return supplierCatalog != null ? supplierCatalog.getMinQty() : null;
   }
 
   protected BigDecimal getMaxQty(Product product, Partner supplierPartner, Company company)
       throws AxelorException {
     SupplierCatalog supplierCatalog = getSupplierCatalog(product, supplierPartner, company);
-    return supplierCatalog != null ? supplierCatalog.getMaxQty() : BigDecimal.ONE;
+    return supplierCatalog != null ? supplierCatalog.getMaxQty() : null;
   }
 
   @Override
@@ -254,14 +257,13 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       throws AxelorException {
 
     BigDecimal minQty = this.getMinQty(product, supplierPartner, company);
-    boolean isBreakMinQtyLimit = qty.compareTo(minQty) < 0;
+    boolean isBreakMinQtyLimit = minQty != null && qty.compareTo(minQty) < 0;
     setQtyLimitMessage(
         isBreakMinQtyLimit,
         request,
         response,
         PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY,
         minQty);
-
     return isBreakMinQtyLimit;
   }
 
@@ -276,7 +278,8 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       throws AxelorException {
 
     BigDecimal maxQty = this.getMaxQty(product, supplierPartner, company);
-    boolean isBreakMaxQtyLimit = maxQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(maxQty) > 0;
+    boolean isBreakMaxQtyLimit =
+        maxQty != null && maxQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(maxQty) > 0;
     setQtyLimitMessage(
         isBreakMaxQtyLimit,
         request,

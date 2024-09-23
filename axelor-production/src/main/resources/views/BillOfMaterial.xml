@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="bill-of-material-grid" title="Bills of material"
     model="com.axelor.apps.production.db.BillOfMaterial">
@@ -53,10 +53,6 @@
     onNew="action-bill-of-material-group-on-new" onLoad="action-bill-of-material-group-on-load">
 
     <menubar>
-      <menu name="bomReportsMenu" title="Reports">
-        <item name="printItem" title="Print" action="save,action-method-print-birt"/>
-      </menu>
-
       <menu name="bomOptionsMenu" title="Options">
         <item name="generateNewVersionItem" title="Generate new version"
           action="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"

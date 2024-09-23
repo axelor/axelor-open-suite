@@ -46,4 +46,15 @@ public interface ITranslation {
 
   public static final String PRICING_OBSERVER_NO_PRICING = /*$$(*/
       "No pricing scale used for this record"; /*)*/
+
+  public static final String ALL_META_FIELD_EXIST = /*$$(*/
+      "All MetaField seem to be existing."; /*)*/
+
+  public static final String ALL_META_MODEL_EXIST = /*$$(*/
+      "All MetaModel seem to be existing."; /*)*/
+
+  public static final String PRINTING_TEMPLATE_PRINT_BTN = /*$$(*/ "Print"; /*)*/
+  public static final String PRODUCT_PRICE_INFORMATION = /*$$(*/
+      "Price product fetch was successful"; /*)*/
+  public static final String EMPTY_CART = /*$$(*/ "The cart was emptied successfully."; /*)*/
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -23,6 +23,10 @@
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="tax" ref="com.axelor.apps.account.db.Tax" title="Tax"/>
     <boolean name="isValid" title="Valid"/>
+
+    <finder-method name="findByAccount" using="account" all="true"/>
+
+
     <extra-code><![CDATA[
 
 	// DEBIT CREDIT SELECT

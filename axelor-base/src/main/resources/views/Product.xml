@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product"
     orderBy="code,name" x-row-height="80">
@@ -86,8 +86,8 @@
     onNew="action-group-base-product-onnew" onSave="action-group-product-onsave"
     onLoad="action-group-product-onload" width="large">
     <toolbar>
-      <button name="showProductSheetBtn" title="Product sheet" icon="fa-print"
-        onClick="save,action-product-validate-user-active-company,action-method-print-birt"/>
+      <button name="printBtn" title="Product sheet" icon="fa-print"
+        onClick="save,action-product-validate-user-active-company,action-method-print-template"/>
       <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
         onClick="action-send-by-email-with-template"/>
     </toolbar>
@@ -157,8 +157,7 @@
       </panel>
       <panel name="productInfoPanel" colSpan="10">
 
-        <panel name="productTypologyPanel" title="Product typology" colSpan="6"
-          colWidths="30%,70%">
+        <panel name="productTypologyPanel" title="Product typology" colSpan="6">
           <field name="productTypeSelect" required="true" colSpan="12"
             onChange="action-group-base-product-producttype-onchange"/>
           <field name="productSubTypeSelect" colSpan="12"
@@ -176,8 +175,7 @@
             showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true"
             if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         </panel>
-        <panel name="categorizationPanel" title="Categorization" colSpan="6"
-          colWidths="30%,70%">
+        <panel name="categorizationPanel" title="Categorization" colSpan="6">
           <field name="productFamily" canEdit="false" colSpan="12"
             form-view="product-family-form" grid-view="product-family-grid"/>
           <field name="productCategory" canEdit="false" colSpan="12"
@@ -359,7 +357,7 @@
             action="action-stock-history-report-for-product" showIf="id &amp;&amp; stockManaged"/>
           <panel-dashlet action="action-stock-view-stock-rule" name="stockRulePanel"
             colSpan="12"/>
-          <panel-dashlet action="action-stock-view-stock-history-line"
+          <panel-dashlet action="action-stock-view-stock-location-line-history"
             name="stockHistoryLinePanel" colSpan="12" showIf="productTypeSelect == 'storable'"/>
         </panel>
       </panel>
@@ -368,7 +366,8 @@
         showIf="productTypeSelect == 'storable' &amp;&amp; ((procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce') || (productSubTypeSelect == 3 || productSubTypeSelect == 2))"
         onTabSelect="action-product-attrs-readonly-create-production-order"
         if-module="axelor-production" if="__config__.app.isApp('production')">
-        <field name="costSheetGroup" showIf="productSubTypeSelect == 3"
+        <field name="costSheetGroup"
+          showIf="productSubTypeSelect == 3 || productSubTypeSelect == 2"
           if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
         <field name="economicManufOrderQty"
           showIf="productSubTypeSelect == 1 || (productSubTypeSelect == 2 &amp;&amp; procurementMethodSelect == 'buy')"/>
@@ -481,8 +480,8 @@
           domain="self.parentTaskTemplate = null or self.parentTaskTemplate in :taskTemplateSet"/>
       </panel>
       <panel name="linksPanel" title="Links" if-module="axelor-stock"
-        if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct || !stockManaged"
-        showIf="id">
+        if="__config__.app.isApp('stock')" hidden="true"
+        showIf="id &amp;&amp; !isShippingCostsProduct &amp;&amp; stockManaged">
         <panel-dashlet name="StockMoveLineIncomingPLannedPanel" colSpan="12"
           action="action-product-view-stock-move-line-incoming-planned" showIf="id"/>
         <panel-dashlet name="StockMoveLineConsumptionPLannedPanel" colSpan="12"
@@ -506,14 +505,14 @@
         </panel>
         <panel name="articleDimensionPanel" title="Article dimension" colSpan="6">
           <field name="lengthUnit" canEdit="false" domain="self.unitTypeSelect = 2"/>
-          <field name="length" readonlyIf="diameter > 0"
-            onChange="action-product-record-calculate-volume-length"/>
-          <field name="width" readonlyIf="diameter > 0"
-            onChange="action-product-record-calculate-volume-length"/>
-          <field name="height"
-            onChange="action-product-record-calculate-volume-length, action-product-record-calculate-volume-diameter"/>
-          <field name="diameter" readonlyIf="length > 0 || width > 0"
-            onChange="action-product-record-calculate-volume-diameter"/>
+          <field name="length"
+            onChange="action-product-record-calculate-volume-width,action-product-record-calculate-volume-diameter"/>
+          <field name="width" onChange="action-product-record-calculate-volume-width"
+            readonlyIf="diameter > 0"/>
+          <field name="height" onChange="action-product-record-calculate-volume-width"
+            readonlyIf="diameter > 0"/>
+          <field name="diameter" onChange="action-product-record-calculate-volume-diameter"
+            readonlyIf="width > 0 || height > 0"/>
           <field name="articleVolume" readonly="true"/>
         </panel>
         <panel name="DEBPanel" if-module="axelor-stock" if="__config__.app.isApp('stock')">
@@ -586,13 +585,11 @@
 
   <action-group name="action-group-base-product-onnew">
     <action name="action-product-attrs-scale-and-precision"/>
-    <action name="action-product-attrs-scale-and-precision-production"/>
     <action name="action-product-attrs-scale-and-precision-stock"/>
     <action name="action-product-group-default-new"/>
     <action name="action-product-record-sale-supply-select"/>
     <action name="action-product-record-in-ati"/>
     <action name="action-product-attrs-in-ati"/>
-    <action name="action-product-record-default-production"/>
     <action name="action-product-record-sellable"/>
     <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
     <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
@@ -632,7 +629,6 @@
 
   <action-group name="action-group-product-onload">
     <action name="action-product-attrs-scale-and-precision"/>
-    <action name="action-product-attrs-scale-and-precision-production"/>
     <action name="action-product-attrs-scale-and-precision-stock"/>
     <action name="action-product-attrs-title-unit"/>
     <action name="action-product-attrs-in-ati"/>
@@ -645,7 +641,6 @@
     <action name="action-product-attrs-set-cost-type-select"/>
     <action name="action-product-attrs-set-required-procurement-method-select"/>
   </action-group>
-
 
   <action-method name="action-product-method-update-cost-price">
     <call class="com.axelor.apps.base.web.ProductController" method="updateCostPrice"/>
@@ -783,13 +778,14 @@
 
   <action-record name="action-product-record-calculate-volume-diameter"
     model="com.axelor.apps.base.db.Product">
-    <field name="articleVolume" if="diameter > 0.00"
-      expr="eval: (((diameter/2)*(diameter/2))*Math.PI)*height"/>
+    <field name="articleVolume" if="diameter > 0 || (0 >= diameter &amp;&amp; 0 >= width)"
+      expr="eval: (((diameter/2)*(diameter/2))*Math.PI)*length"/>
   </action-record>
 
-  <action-record name="action-product-record-calculate-volume-length"
+  <action-record name="action-product-record-calculate-volume-width"
     model="com.axelor.apps.base.db.Product">
-    <field name="articleVolume" if="length > 0" expr="eval: length * width * height"/>
+    <field name="articleVolume" if="width > 0 || (0 >= width &amp;&amp; 0 >= diameter)"
+      expr="eval: length * width * height"/>
   </action-record>
 
   <action-validate name="action-product-validate-sale-supply-select">
@@ -914,12 +910,6 @@
     <field name="controlOnReceipt" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="avgPrice" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="economicManufOrderQty" hidden="true" if="!__config__.app.isApp('production')"/>
-    <field name="hasWarranty" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="warrantyNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="isPerishable" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="perishableNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="checkExpirationDateAtStockMoveRealization" hidden="true"
-      if="!__config__.app.isApp('stock')"/>
     <field name="trackingNumberConfiguration" hidden="true"
       if="!__config__.app.isApp('stock')"/>
     <field name="usedInDEB" hidden="true" if="!__config__.app.isApp('stock')"/>

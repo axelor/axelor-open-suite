@@ -61,6 +61,7 @@ public class ImportAccountingConfigTemplate {
           "account_fiscalPosition.csv",
           "account_accountEquiv.csv",
           "account_accountType.csv",
+          "account_taxType.csv",
           "account_tax.csv",
           "account_accountManagement.csv",
           "account_taxEquiv.csv",

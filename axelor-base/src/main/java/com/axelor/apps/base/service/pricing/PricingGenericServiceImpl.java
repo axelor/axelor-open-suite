@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.base.service.pricing;
 
 import com.axelor.apps.base.AxelorException;
@@ -18,7 +36,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,7 +64,7 @@ public class PricingGenericServiceImpl implements PricingGenericService {
       throws AxelorException {
 
     Model model = JPA.find((Class<T>) modelClass, modelId);
-    usePricings(company, model);
+    usePricings(company, model, PricingRepository.PRICING_TYPE_SELECT_DEFAULT);
   }
 
   @Override
@@ -58,15 +78,16 @@ public class PricingGenericServiceImpl implements PricingGenericService {
   }
 
   @Override
-  public void usePricings(Company company, Model model) throws AxelorException {
-    computePricingsOnModel(company, model);
+  public void usePricings(Company company, Model model, String typeSelect) throws AxelorException {
+    computePricingsOnModel(company, model, typeSelect);
 
-    computePricingsOnChildren(company, model);
+    computePricingsOnChildren(company, model, typeSelect);
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void computePricingsOnModel(Company company, Model model) throws AxelorException {
+  public void computePricingsOnModel(Company company, Model model, String typeSelect)
+      throws AxelorException {
     List<String> unavailableModels = getUnavailableModels();
     if (!ObjectUtils.isEmpty(unavailableModels)
         && unavailableModels.contains(model.getClass().getSimpleName())) {
@@ -77,33 +98,21 @@ public class PricingGenericServiceImpl implements PricingGenericService {
               I18n.get(model.getClass().getSimpleName())));
     }
 
-    List<Pricing> pricingList = getPricings(company, model);
-
-    if (ObjectUtils.isEmpty(pricingList)) {
-      return;
-    }
-
-    List<StringBuilder> logsList = new ArrayList<>();
-    for (Pricing pricing : pricingList) {
-      PricingComputer pricingComputer = PricingComputer.of(pricing, model);
-      pricingComputer.subscribe(pricingObserver);
-      pricingComputer.apply();
-
-      logsList.add(pricingObserver.getLogs());
-    }
+    List<StringBuilder> logsList =
+        computePricingProcess(company, model, typeSelect, new HashMap<>());
 
     updatePricingScaleLogs(logsList, model);
 
-    JpaRepository.of(EntityHelper.getEntityClass(model)).save(model);
+    JpaRepository.of(EntityHelper.getEntityClass(model)).save(EntityHelper.getEntity(model));
   }
 
   @Override
-  public List<Pricing> getPricings(Company company, Model model) {
+  public List<Pricing> getPricings(Company company, Model model, String typeSelect) {
     List<Pricing> pricingList = new ArrayList<>();
     if (appBaseService.getAppBase().getIsPricingComputingOrder()) {
-      pricingList = pricingService.getPricings(company, model, null);
+      pricingList = pricingService.getPricings(company, model, null, typeSelect);
     } else {
-      List<Pricing> resultList = pricingService.getAllPricings(company, model);
+      List<Pricing> resultList = pricingService.getAllPricings(company, model, typeSelect);
 
       Set<Long> pricingsPointedTo =
           resultList.stream()
@@ -124,7 +133,8 @@ public class PricingGenericServiceImpl implements PricingGenericService {
   }
 
   @Override
-  public void computePricingsOnChildren(Company company, Model model) throws AxelorException {
+  public void computePricingsOnChildren(Company company, Model model, String typeSelect)
+      throws AxelorException {
     // overridden in other modules
   }
 
@@ -144,6 +154,45 @@ public class PricingGenericServiceImpl implements PricingGenericService {
         PricingRepository.PRICING_RESTRICT_MOVE_LINE,
         PricingRepository.PRICING_RESTRICT_INVOICE,
         PricingRepository.PRICING_RESTRICT_INVOICE_LINE);
+  }
+
+  @Override
+  public List<StringBuilder> computePricingProcess(
+      Company company, Model model, String typeSelect, Map<String, Object> contextMap)
+      throws AxelorException {
+    List<StringBuilder> logsList = new ArrayList<>();
+
+    List<Pricing> pricingList = getPricings(company, model, typeSelect);
+
+    if (ObjectUtils.isEmpty(pricingList)) {
+      pricingObserver.computationStarted(model);
+      pricingObserver.computationFinished();
+      return logsList;
+    }
+
+    for (Pricing pricing : pricingList) {
+      PricingComputer pricingComputer = PricingComputer.of(pricing, model);
+      pricingComputer = fillPricingCompute(pricingComputer, contextMap);
+      pricingComputer.subscribe(pricingObserver);
+      pricingComputer.apply();
+
+      logsList.add(pricingObserver.getLogs());
+    }
+
+    return logsList;
+  }
+
+  protected PricingComputer fillPricingCompute(
+      PricingComputer pricingComputer, Map<String, Object> contextMap) {
+    if (ObjectUtils.isEmpty(contextMap) || pricingComputer == null) {
+      return pricingComputer;
+    }
+
+    for (Map.Entry<String, Object> context : contextMap.entrySet()) {
+      pricingComputer = pricingComputer.putInContext(context.getKey(), context.getValue());
+    }
+
+    return pricingComputer;
   }
 
   protected String computePricingLogs(List<StringBuilder> logsList) {

@@ -123,7 +123,7 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
           createNextLeaveManagement(employee, leaveLine, leaveReason, hrBatch.getComments());
           leaveManagementService.reset(
               leaveLine,
-              employeeService.getUser(employee),
+              employee.getUser(),
               hrBatch.getComments(),
               null,
               hrBatch.getStartDate(),

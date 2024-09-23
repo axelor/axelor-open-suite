@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
@@ -8,8 +26,11 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCreateBarcodeService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderResidualProductService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
@@ -37,7 +58,10 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
       ProductionConfigService productionConfigService,
       AppBaseService appBaseService,
       AppProductionService appProductionService,
-      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService) {
+      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
+      ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
+      ManufOrderResidualProductService manufOrderResidualProductService,
+      ManufOrderCreateBarcodeService manufOrderCreateBarcodeService) {
     super(
         manufOrderRepo,
         manufOrderService,
@@ -51,7 +75,10 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
         productionConfigService,
         appBaseService,
         appProductionService,
-        manufOrderCreatePurchaseOrderService);
+        manufOrderCreatePurchaseOrderService,
+        manufOrderPlanStockMoveService,
+        manufOrderResidualProductService,
+        manufOrderCreateBarcodeService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

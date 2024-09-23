@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form id="budget-move-form" name="move-form" title="Account move"
     model="com.axelor.apps.account.db.Move" extension="true">
@@ -40,6 +40,7 @@
   <action-group name="action-account-move-group-compute-budget-distribution">
     <action name="action-validate-budget-recompute-budget-distribution"/>
     <action name="action-method-budget-move-compute-budget-distribution"/>
+    <action name="action-method-budget-move-compute-budget-remaining-amount"/>
   </action-group>
 
   <action-group name="action-budget-move-accounting-click">
@@ -57,6 +58,11 @@
 
   <action-method name="action-move-method-budget-validate-accounting">
     <call class="com.axelor.apps.budget.web.MoveController" method="validateAccounting"/>
+  </action-method>
+
+  <action-method name="action-method-budget-move-compute-budget-remaining-amount">
+    <call class="com.axelor.apps.budget.web.MoveController"
+      method="computeMoveBudgetRemainingAmountToAllocate"/>
   </action-method>
 
 </object-views>

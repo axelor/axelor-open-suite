@@ -36,9 +36,7 @@ import com.axelor.utils.api.RequestStructure;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import java.util.Arrays;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -49,7 +47,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/stock-product")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -70,7 +67,7 @@ public class StockProductRestController {
       @PathParam("productId") long productId, StockProductGetRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().readAccess(Product.class).check();
+    new SecurityCheck().readAccess(Product.class, productId).check();
 
     Product product = ObjectFinder.find(Product.class, productId, requestBody.getVersion());
 
@@ -95,7 +92,7 @@ public class StockProductRestController {
       @PathParam("productId") Long productId, StockProductPutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Product.class).check();
+    new SecurityCheck().writeAccess(Product.class, productId).check();
 
     Product product = ObjectFinder.find(Product.class, productId, requestBody.getVersion());
 
@@ -122,12 +119,10 @@ public class StockProductRestController {
     RequestValidator.validateBody(requestBody);
 
     new SecurityCheck()
+        .readAccess(Product.class, productId)
         .readAccess(
             Arrays.asList(
-                Product.class,
-                ProductVariant.class,
-                ProductVariantAttr.class,
-                ProductVariantValue.class))
+                ProductVariant.class, ProductVariantAttr.class, ProductVariantValue.class))
         .check();
 
     Product product = ObjectFinder.find(Product.class, productId, requestBody.getVersion());

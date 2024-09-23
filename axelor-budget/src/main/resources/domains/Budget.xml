@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module package="com.axelor.apps.budget.db" name="budget"/>
 
-  <entity name="Budget">
+  <entity name="Budget" implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <integer name="statusSelect" selection="budget.budget.status.select" default="1"/>
 
@@ -87,6 +87,19 @@
             return code + " " + name;
          ]]>
     </string>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return companyCurrency;
+	    ]]>
+    </many-to-one>
+
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <unique-constraint columns="code,fromDate,toDate,budgetLevel"/>
 

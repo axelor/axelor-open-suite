@@ -26,23 +26,29 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class PurchaseRequestManagementRepository extends PurchaseRequestRepository {
+
+  protected SequenceService sequenceService;
+
+  @Inject
+  public PurchaseRequestManagementRepository(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
 
   @Override
   public PurchaseRequest save(PurchaseRequest entity) {
     try {
       if (entity.getPurchaseRequestSeq() == null) {
         String seq =
-            Beans.get(SequenceService.class)
-                .getSequenceNumber(
-                    SequenceRepository.PURCHASE_REQUEST,
-                    entity.getCompany(),
-                    PurchaseRequest.class,
-                    "purchaseRequestSeq",
-                    entity);
+            sequenceService.getSequenceNumber(
+                SequenceRepository.PURCHASE_REQUEST,
+                entity.getCompany(),
+                PurchaseRequest.class,
+                "purchaseRequestSeq",
+                entity);
         if (seq == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="leave-request-grid" title="Leave Requests"
     model="com.axelor.apps.hr.db.LeaveRequest" orderBy="-fromDateT,-startOnSelect">
@@ -86,7 +86,7 @@
         title="Reason" canEdit="false" canNew="false" widget="SuggestBox" required="true"
         onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change,action-leave-request-methode-compute-duration"
         form-view="leave-reason-form" grid-view="leave-reason-grid"/>
-      <field name="isPayrollInput"/>
+      <field name="isPayrollInput" showIf="employee.hrManager"/>
       <panel name="quantityPanel" showIf="leaveReason.leaveReasonTypeSelect != 2">
         <field name="$leavequantity" title="Available quantity (acquired)"
           showIf="statusSelect != 3" colSpan="12" readonly="true" type="decimal"/>
@@ -132,6 +132,7 @@
       <field name="leaveReason.unitSelect" readonly="true"/>
 
       <field name="comments" colSpan="12"/>
+      <field name="employee.hrManager" hidden="true"/>
     </panel>
     <panel name="validationDetailsPanel"
       showIf="validatedBy || refusedBy || validationDateTime || refusalDateTime || statusSelect == 4">
@@ -180,9 +181,6 @@
     <action name="action-leave-request-validate-dates-on-save"/>
     <action name="save"/>
     <action name="action-leave-request-method-sent-leave-request"/>
-    <action name="action-leave-request-attrs-buttons"/>
-    <action name="action-leave-request-attrs-send"/>
-    <action name="save"/>
   </action-group>
 
   <action-group name="action-leave-request-group-validate">

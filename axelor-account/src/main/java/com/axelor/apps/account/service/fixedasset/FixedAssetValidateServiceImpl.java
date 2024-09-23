@@ -23,9 +23,9 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -45,7 +45,7 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
 
   protected FixedAssetRepository fixedAssetRepo;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public FixedAssetValidateServiceImpl(
@@ -53,12 +53,12 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
       FixedAssetGenerationService fixedAssetGenerationService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       FixedAssetRepository fixedAssetRepo,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetRepo = fixedAssetRepo;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   /**
@@ -107,12 +107,11 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
               fixedAsset, FixedAssetLineRepository.STATUS_REALIZED, 0);
       if (lastRealizedLine.isPresent()) {
         fixedAsset.setAccountingValue(
-            currencyScaleServiceAccount.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 fixedAsset, lastRealizedLine.get().getAccountingValue()));
       } else if (fixedAsset.getIsEqualToFiscalDepreciation()) {
         fixedAsset.setAccountingValue(
-            currencyScaleServiceAccount.getCompanyScaledValue(
-                fixedAsset, fixedAsset.getGrossValue()));
+            currencyScaleService.getCompanyScaledValue(fixedAsset, fixedAsset.getGrossValue()));
       } else if (fixedAsset.getDepreciationPlanSelect().isEmpty()
           || fixedAsset
               .getDepreciationPlanSelect()
@@ -120,7 +119,7 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
         fixedAsset.setAccountingValue(BigDecimal.ZERO);
       } else {
         fixedAsset.setAccountingValue(
-            currencyScaleServiceAccount.getCompanyScaledValue(
+            currencyScaleService.getCompanyScaledValue(
                 fixedAsset, fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue())));
       }
     }

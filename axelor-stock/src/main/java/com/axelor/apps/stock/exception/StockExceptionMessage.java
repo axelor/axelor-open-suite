@@ -245,7 +245,9 @@ public final class StockExceptionMessage {
       "A cancel reason must be selected" /*)*/;
   public static final String CANCEL_REASON_BAD_TYPE = /*$$(*/
       "The type of cancel reason doesn't match with stock move" /*)*/;
-
+  public static final String STOCK_LOCATION_UNIT_NULL = /*$$(*/
+      "The unit is missing on a stock location line" /*)*/;
+  ;
   /*
    * Declaration of exchanges
    */
@@ -296,10 +298,46 @@ public final class StockExceptionMessage {
       "Same from stock location and to stock location" /*)*/;
   public static final String STOCK_MOVE_MERGE_ERROR_STATUS = /*$$(*/
       "Status must be planned or draft" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_SALE_ORDER = /*$$(*/ "Same sale order" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_PURCHASE_ORDER = /*$$(*/
-      "Same purchase order" /*)*/;
   public static final String STOCK_MOVE_MERGE_ERROR_MANUF_ORDER = /*$$(*/ "Same manuf order" /*)*/;
   public static final String STOCK_MOVE_DIFF_SHIPMENT_FIELDS = /*$$(*/
       "Fields linked to the shipment are differents, the value of the oldest will be kept." /*)*/;
+
+  public static final String STOCK_MOVE_TRACKING_NUMBER_DIMENSION_NOT_COMPUTED = /*$$(*/
+      "No dimension could be computed, please make sure that you have the necessary field to compute at least one field" /*)*/;
+  public static final String STOCK_MOVE_TRACKING_NUMBER_DIMENSION_EXPECTED_DECIMAL_RESULT = /*$$(*/
+      "Expected BigDecimal as result during the computation of field %s, please fix the corresponding formula." /*)*/;
+  public static final String STOCK_MOVE_TRACKING_NUMBER_PARENT_MAXIMUM_ITERATION_REACHED = /*$$(*/
+      "Maximum iteration for looking tracking numbers parent has been reached. Please check any circular parent dependencies." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_STATUS = /*$$(*/
+      "You can only split line in draft or planned stock move." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_TYPE = /*$$(*/
+      "You can only split line in incoming stock move." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_REAL_QTY = /*$$(*/
+      "Real quantity must not be equal to 0 and should be less than expected quantity." /*)*/;
+
+  public static final String STOCK_MOVE_MASS_MOVED_QTY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "Moved qty is greater than current quantity (%s)" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_PRODUCT_NO_AVAILABLE_IN_STOCKLOCATION_SOURCE = /*$$(*/
+      "The product is not available in the stock location source indicated (%s)" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_MOVED_QUANTITY_IS_ZERO_OR_LESS = /*$$(*/
+      "Moved quantity is equal to 0 or less (%s)" /*)*/;
+  public static final String STOCK_MOVE_MASS_STOCK_MOVE_LINE_CANT_DELETE = /*$$(*/
+      "Can't delete a line linked to a realized stock move line." /*)*/;
+
+  public static final String STOCK_MOVE_MASS_FACTORY_UNKNOWN_OBJECT = /*$$(*/
+      "Unknown object, can not get service" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_PRODUCT_NO_STOCK_LOCATION_SOURCE_AVAILABLE = /*$$(*/
+      "The product %s is missing a stock location (source or dest). Please make sure that the cart stock location and stock location in the product is filled." /*)*/;
+
+  public static final String STOCK_MOVE_MASS_ALREADY_STORED_PRODUCT = /*$$(*/
+      "The product %s have already been stored" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_NO_SEQUENCE = /*$$(*/
+      "There's no configured sequence for mass stock move for the company %s" /*)*/;
 }

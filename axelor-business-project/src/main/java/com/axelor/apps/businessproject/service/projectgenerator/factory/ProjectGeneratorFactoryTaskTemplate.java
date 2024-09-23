@@ -25,12 +25,14 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
-import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -62,6 +64,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   private final ProductCompanyService productCompanyService;
 
   private final AppBusinessProjectService appBusinessProjectService;
+  protected final SequenceService sequenceService;
 
   @Inject
   public ProjectGeneratorFactoryTaskTemplate(
@@ -71,7 +74,8 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       ProjectTaskRepository projectTaskRepository,
       ProductTaskTemplateService productTaskTemplateService,
       ProductCompanyService productCompanyService,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      SequenceService sequenceService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
@@ -79,12 +83,20 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     this.productTaskTemplateService = productTaskTemplateService;
     this.productCompanyService = productCompanyService;
     this.appBusinessProjectService = appBusinessProjectService;
+    this.sequenceService = sequenceService;
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsBusinessProject(true);
+    project = projectRepository.save(project);
+    try {
+      project.setCode(sequenceService.getDraftSequenceNumber(project));
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+    }
     return project;
   }
 
@@ -173,8 +185,8 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
 
     return ActionView.define(I18n.get("Tasks"))
         .model(ProjectTask.class.getName())
-        .add("grid", "project-task-grid")
-        .add("form", "project-task-form")
+        .add("grid", "business-project-task-grid")
+        .add("form", "business-project-task-form")
         .param("search-filters", "project-task-filters")
         .domain(
             "self.parentTask IN ("
@@ -202,7 +214,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       childTask.setTimeUnit(orderLineUnit);
     }
 
-    if (orderLine.getSaleOrder().getToInvoiceViaTask()) {
+    if (orderLine.getInvoicingModeSelect() == SaleOrderLineRepository.INVOICING_MODE_PACKAGE) {
       childTask.setToInvoice(true);
       childTask.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
     }

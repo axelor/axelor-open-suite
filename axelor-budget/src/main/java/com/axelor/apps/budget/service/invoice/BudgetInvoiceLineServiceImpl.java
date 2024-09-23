@@ -23,29 +23,16 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
-import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
-import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.InternationalService;
-import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
-import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -54,54 +41,32 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 
 @RequestScoped
-public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
-    implements BudgetInvoiceLineService {
+public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
 
+  protected InvoiceLineRepository invoiceLineRepo;
+  protected AppBaseService appBaseService;
   protected BudgetService budgetService;
   protected BudgetRepository budgetRepository;
   protected BudgetDistributionService budgetDistributionService;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public BudgetInvoiceLineServiceImpl(
-      CurrencyService currencyService,
-      PriceListService priceListService,
-      AppAccountService appAccountService,
-      AccountManagementAccountService accountManagementAccountService,
-      ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigService accountConfigService,
-      InvoiceLineAnalyticService invoiceLineAnalyticService,
-      SupplierCatalogService supplierCatalogService,
-      TaxService taxService,
-      InternationalService internationalService,
-      InvoiceLineAttrsService invoiceLineAttrsService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount,
       BudgetService budgetService,
       BudgetRepository budgetRepository,
-      BudgetDistributionService budgetDistributionService) {
-    super(
-        currencyService,
-        priceListService,
-        appAccountService,
-        accountManagementAccountService,
-        productCompanyService,
-        invoiceLineRepo,
-        appBaseService,
-        accountConfigService,
-        invoiceLineAnalyticService,
-        supplierCatalogService,
-        taxService,
-        internationalService,
-        invoiceLineAttrsService,
-        currencyScaleServiceAccount);
+      BudgetDistributionService budgetDistributionService,
+      BudgetToolsService budgetToolsService) {
+    this.appBaseService = appBaseService;
+    this.invoiceLineRepo = invoiceLineRepo;
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
     this.budgetDistributionService = budgetDistributionService;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -157,33 +122,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
   }
 
   @Override
-  public void computeBudgetDistributionSumAmount(InvoiceLine invoiceLine, Invoice invoice) {
-    List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
-    PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
-    BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
-    LocalDate computeDate =
-        invoice.getInvoiceDate() != null
-            ? invoice.getInvoiceDate()
-            : appBaseService.getTodayDate(invoice.getCompany());
-
-    if (purchaseOrderLine != null && purchaseOrderLine.getPurchaseOrder().getOrderDate() != null) {
-      computeDate = purchaseOrderLine.getPurchaseOrder().getOrderDate();
-    }
-
-    if (budgetDistributionList != null && !budgetDistributionList.isEmpty()) {
-
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        budgetDistributionSumAmount =
-            budgetDistributionSumAmount.add(budgetDistribution.getAmount());
-        budgetDistributionService.computeBudgetDistributionSumAmount(
-            budgetDistribution, computeDate);
-      }
-    }
-    invoiceLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
-  }
-
-  @Override
-  public String getBudgetDomain(Invoice invoice, InvoiceLine invoiceLine) {
+  public String getBudgetDomain(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
     Company company = null;
     LocalDate date = null;
     if (invoice != null) {
@@ -203,7 +142,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
             .orElse(null);
 
     return budgetDistributionService.getBudgetDomain(
-        company, date, technicalTypeSelect, new HashSet<>());
+        company, date, technicalTypeSelect, invoiceLine.getAccount(), new HashSet<>());
   }
 
   @Override
@@ -217,6 +156,8 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
         budgetDistribution.setAmount(budgetDistribution.getAmount().negate());
       }
     }
-    computeBudgetDistributionSumAmount(invoiceLine, invoice);
+    invoiceLine.setBudgetRemainingAmountToAllocate(
+        budgetToolsService.getBudgetRemainingAmountToAllocate(
+            invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
   }
 }

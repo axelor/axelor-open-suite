@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
@@ -43,15 +42,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
 public interface InvoiceService {
-
-  /**
-   * Fetches the journal to apply to an invoice, based on the operationType and A.T.I amount
-   *
-   * @param invoice Invoice to fetch the journal for.
-   * @return The suitable journal or null (!) if invoice's company is empty.
-   * @throws AxelorException If operationTypeSelect is empty
-   */
-  Journal getJournal(Invoice invoice) throws AxelorException;
 
   /**
    * Fonction permettant de calculer l'intégralité d'une facture :
@@ -93,6 +83,8 @@ public interface InvoiceService {
    * @throws AxelorException
    */
   void validateAndVentilate(Invoice invoice) throws AxelorException;
+
+  void checkPreconditions(Invoice invoice) throws AxelorException;
 
   /**
    * Annuler une facture. (Transaction)
@@ -231,6 +223,7 @@ public interface InvoiceService {
    * @return
    */
   List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice);
+
   /**
    * Filter a set of advance payment invoice. If the amount of the payment is greater than the total
    * of the invoice, we filter it. If there is no remaining amount in the move lines of the advance
@@ -303,8 +296,6 @@ public interface InvoiceService {
   void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice);
-
-  public void validatePfp(Long invoiceId) throws AxelorException;
 
   void updateUnpaidInvoiceTerms(Invoice invoice);
 

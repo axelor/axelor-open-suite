@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.1.xsd">
 
   <input file="studio_appTimesheet.csv" separator=";" type="com.axelor.studio.db.AppTimesheet"
     search="self.app.code = :code"/>
@@ -27,10 +27,12 @@
 
   <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
-    <bind column="birtTemplateSet_importId" to="birtTemplateSet"
-      search="self.importId in :birtTemplateSet_importId"
-      eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
+    <bind column="printTemplateSet_importId" to="printTemplateSet"
+      search="self.importId in :printTemplateSet_importId"
+      eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
   </input>
 
+  <input file="base_unitConversion.csv" separator=";"
+    type="com.axelor.apps.base.db.UnitConversion" search="self.importId = :importId"/>
 </csv-inputs>
 

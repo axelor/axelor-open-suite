@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid model="com.axelor.apps.intervention.db.Intervention" title="Intervention"
+    name="intervention-grid">
+    <field name="sequence"/>
+    <field name="statusSelect"/>
+    <field name="planningPreferenceSelect"/>
+    <field name="assignedTo"/>
+    <field name="planifStartDateTime"/>
+    <field name="planifEndDateTime"/>
+    <field name="priority"/>
+    <field name="rescheduledIntervention"/>
+    <field name="commercialFollowUp"/>
+    <field name="afterSaleServiceSaleOrderFollowUp"/>
+    <field name="technicalFollowUp"/>
+    <field name="startDateTime"/>
+    <field name="endDateTime"/>
+    <field name="lastStartDateTime"/>
+    <field name="estimatedDate" title="Estimated month"/>
+    <field name="estimatedDateMonth" title="Estimated month"/>
+    <field name="totalDuration"/>
+    <field name="deliveredPartner"/>
+    <field name="interventionType"/>
+    <button name="planBtn" icon="fa-calendar-plus-o"
+      onClick="save,action-intervention-view-confirm-planification" readonlyIf="statusSelect != 10"/>
+  </grid>
+
+  <grid model="com.axelor.apps.intervention.db.Intervention" title="Intervention"
+    name="intervention-partner-grid">
+    <field name="sequence"/>
+    <field name="statusSelect"/>
+    <field name="assignedTo"/>
+    <field name="planifStartDateTime"/>
+    <field name="planifEndDateTime"/>
+    <field name="priority"/>
+    <field name="rescheduledIntervention"/>
+    <field name="interventionType"/>
+  </grid>
+
+  <form model="com.axelor.apps.intervention.db.Intervention" title="Intervention"
+    name="intervention-form" width="large" onNew="action-intervention-group-on-new"
+    onLoad="action-intervention-group-on-load">
+    <menubar>
+      <menu name="interventionToolsMenu" title="Tools" icon="fa-wrench">
+        <item if-module="axelor-message" name="sendEmailItem" title="Send email"
+          readonlyIf="id == null" action="save,action-send-by-email-with-template"/>
+      </menu>
+    </menubar>
+    <panel name="mainPanel">
+      <field name="sequence" showTitle="false" hidden="true" showIf="sequence"
+        css="label-bold bold large" colSpan="4"/>
+      <field name="$viewerTags" showTitle="false" readonly="true" colSpan="8">
+        <viewer depends="nonConforming">
+          <![CDATA[
+              <h4 class="text-right">
+              	<span class="label label-info" ng-show="record.isSurveyGenerationRunning" x-translate>Survey generation in progress</span>
+              	<span class="label label-success" ng-show="record.following == true && record.statusSelect == 50" x-translate>Following : Yes</span>
+              	<span class="label label-important" ng-show="record.following  == false && record.statusSelect == 50" x-translate>Following : No</span>
+              	<span class="label label-important" ng-show="record.nonConforming > 0 && record.statusSelect == 50"><span x-translate>Non-conforming : </span><span>{{record.nonConforming}}</span></span>
+              </h4>
+            ]]>
+        </viewer>
+      </field>
+      <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
+
+      <separator title="Contact details" colSpan="12"/>
+      <field name="company" grid-view="company-grid" form-view="company-form"
+        onChange="action-intervention-record-emptying-trading-name" required="true" colSpan="4"/>
+      <field name="tradingName" grid-view="trading-name-grid" form-view="trading-name-form"
+        required="true" domain="self.company = :company"
+        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()" colSpan="4"/>
+      <field name="deliveredPartner" grid-view="partner-grid" form-view="partner-form"
+        onSelect="action-intervention-attrs-set-delivered-partner-domain"
+        onChange="action-intervention-group-onchange-delivered-partner" required="true" colSpan="4"/>
+      <field name="invoicedPartner" grid-view="partner-grid" form-view="partner-form"
+        required="true" onSelect="action-intervention-method-set-invoiced-partner-domain"
+        colSpan="4"/>
+      <field name="address" grid-view="address-grid" form-view="address-form" required="true"
+        onSelect="action-intervention-attrs-address-on-select-domain" colSpan="4"/>
+      <field name="contact" widget="SuggestBox" colSpan="4" form-view="partner-contact-form"
+        domain="self.isContact IS TRUE AND (self in :deliveredPartner$contactPartnerSet OR self in :invoicedPartner$contactPartnerSet)"/>
+      <separator title="Customer request" colSpan="12"/>
+      <field name="requestSource" grid-view="request-source-grid"
+        form-view="request-source-form"/>
+      <field name="requestSubject" grid-view="request-subject-grid"
+        form-view="request-subject-form"/>
+      <field name="userInCharge" grid-view="user-grid" form-view="user-form"/>
+      <field name="outsourcing" widget="boolean-switch"
+        onChange="action-intervention-record-outsourcing-on-change"/>
+      <field name="supplierPartner" grid-view="partner-grid" form-view="partner-form"
+        hidden="true" showIf="outsourcing"
+        domain="self.isContact = false AND self.isSupplier = true"/>
+      <field name="description" colSpan="12"/>
+    </panel>
+
+    <panel name="actionsPanel" sidebar="true">
+      <button name="openSurvey" title="Open survey"
+        onClick="save,action.intervention.question.view.intervention" css="btn-success"
+        readonlyIf="statusSelect &lt; 30 || isSurveyGenerationRunning === true"/>
+      <button name="planBtn" title="Plan" icon="fa-calendar-plus-o"
+        onClick="save,action-intervention-view-confirm-planification" hidden="true"
+        showIf="statusSelect == 10"/>
+      <button name="startBtn" title="Start" onClick="save,action-intervention-method-start"
+        hidden="true" showIf="[20,40].includes(statusSelect)"/>
+      <button name="rescheduleBtn" title="Reschedule" icon="fa-calendar-minus-o"
+        onClick="save,action-intervention-method-reschedule" hidden="true"
+        showIf="[20,60].includes(statusSelect)"/>
+      <button name="suspendBtn" title="Suspend"
+        onClick="save,action-intervention-method-suspend" hidden="true" showIf="statusSelect == 30"/>
+      <button name="finishBtn" title="Finish"
+        onClick="save,action-intervention-method-finish" hidden="true"
+        showIf="[30,40].includes(statusSelect)"/>
+      <button name="cancelBtn" title="Cancel"
+        onClick="save,action-intervention-method-cancel" css="btn-danger" hidden="true"
+        showIf="[10,20,30,40].includes(statusSelect)"/>
+    </panel>
+    <panel-tabs>
+      <panel name="interventionPanelTab" title="Intervention">
+        <field name="interventionCategory" grid-view="intervention-category-grid"
+          form-view="intervention-category-form" required="true"
+          onChange="action-intervention-method-fill-intervention-type"/>
+        <field name="interventionType" grid-view="intervention-type-grid"
+          form-view="intervention-type-form"
+          onSelect="action-intervention-method-select-intervention-type"
+          onChange="action-intervention-group-intervention-type-on-change" required="true"/>
+        <field name="planningPreferenceSelect" colSpan="4"/>
+
+        <field name="priority" colSpan="4"/>
+        <field name="contract" grid-view="contract-grid" form-view="contract-form" colSpan="4"
+          edit-window="blank" domain="self.partner = :deliveredPartner AND self.statusSelect = 2"
+          onChange="action-intervention-method-fill-from-contract"/>
+        <field name="customerRequest" grid-view="customer-request-grid"
+          form-view="customer-request-form" colSpan="4" readonly="true"
+          onChange="action-intervention-method-fill-from-request" edit-window="blank"/>
+        <field name="$_xFaultyEquipmentsNbr" title="Faulty equipments number" type="long"
+          readonly="true" colSpan="3"/>
+        <field name="$_xUnderContractEquipmentsNbr" title="Under contract equipments number"
+          type="long" readonly="true" colSpan="3"/>
+        <field name="rescheduledIntervention" colSpan="3"/>
+        <field name="justification" grid-view="justification-grid"
+          form-view="justification-form" hidden="true" showIf="rescheduledIntervention"
+          requiredIf="rescheduledInterventions" colSpan="3"/>
+
+        <separator title="Planification" colSpan="12"/>
+        <panel colSpan="8" itemSpan="4">
+          <field name="assignedTo" readonly="true"/>
+          <field name="planifStartDateTime" readonly="true"/>
+          <field name="planifEndDateTime" readonly="true"/>
+          <field name="estimatedDate" readonlyIf="statusSelect &gt;= 30"/>
+          <field name="estimatedDateMonth"/>
+        </panel>
+      </panel>
+      <panel name="reportPanelTab" title="Report">
+        <field name="commercialFollowUp" widget="boolean-switch"
+          onChange="action-intervention-record-commercial-follow-up-change" colSpan="2"/>
+        <panel name="commercialFollowUpPanel" colSpan="10" hidden="true"
+          showIf="commercialFollowUp">
+          <field name="commercialUser" grid-view="user-grid" form-view="user-form"
+            onSelect="action-intervention-attrs-commercial-user-domain"
+            requiredIf="commercialFollowUp"/>
+          <field name="opportunity"
+            domain="self.partner = :invoicedPartner OR self.partner = :deliveredPartner"/>
+        </panel>
+        <field name="afterSaleServiceSaleOrderFollowUp" widget="boolean-switch" colSpan="2"/>
+        <panel name="afterSaleServiceSaleOrderFollowUpPanel" colSpan="10" hidden="true"
+          showIf="afterSaleServiceSaleOrderFollowUp">
+          <field name="linkedSaleOrder" grid-view="sale-order-grid"
+            form-view="sale-order-form" edit-window="blank"/>
+          <button name="generateSaleOrder" title="Generate sale order"
+            onClick="save,action-intervention-method-generate-sale-order"
+            readonlyIf="linkedSaleOrder"/>
+        </panel>
+        <field name="technicalFollowUp" widget="boolean-switch" colSpan="2"/>
+        <panel name="technicalFollowUpPanel" colSpan="10" hidden="true"
+          showIf="technicalFollowUp">
+          <field name="linkedIntervention" grid-view="intervention-grid"
+            form-view="intervention-form"
+            domain="self.deliveredPartner = :deliveredPartner AND self.statusSelect &lt; 50"
+            canNew="true"/>
+          <field name="reschedulingReason" grid-view="rescheduling-reason-grid"
+            form-view="rescheduling-reason-form"/>
+        </panel>
+        <field name="startDateTime"/>
+        <field name="endDateTime"/>
+        <field name="lastStartDateTime"/>
+        <field name="totalDuration" widget="duration" x-big="true"/>
+
+        <panel-dashlet title="Recap" colSpan="12"
+          action="action-intervention-view-question-summary"/>
+        <panel-dashlet title="Following questions" colSpan="12"
+          action="action-intervention-view-question-following"/>
+        <panel-dashlet title="Non conforming questions" colSpan="12"
+          action="action-intervention-view-question-non-conforming"/>
+      </panel>
+      <panel name="equipmentContractPanelTab" title="Equipment / Contract">
+        <field name="equipmentSet" grid-view="equipment-grid" form-view="equipment-form"
+          colSpan="12" edit-window="blank"
+          domain="self.partner = :deliveredPartner AND self.typeSelect = 'equipment'"
+          readonlyIf="isSurveyGenerationRunning"/>
+      </panel>
+      <panel name="gitGrtPanel" title="GIT / GRT" hidden="true"
+        showIf="customerRequest != null">
+        <field name="customerRequest.maxGitDateTime"/>
+        <field name="customerRequest.maxGrtDateTime"/>
+        <field name="customerRequest.realGit" widget="duration" x-big="true"/>
+        <field name="customerRequest.realGrt" widget="duration" x-big="true"/>
+      </panel>
+      <panel-related field="deliveredPartner.interventionNoteList"
+        title="Intervention notes" form-view="intervention-note-form"
+        grid-view="intervention-note-grid" x-show-bars="true" hidden="true"
+        showIf="deliveredPartner.isContact != true"/>
+    </panel-tabs>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="isSurveyGenerationRunning"/>
+      <field name="customerReturn"/>
+      <field name="tradingName.defaultScheduler"
+        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+      <field name="deliveredPartner.isContact"/>
+      <field name="following"/>
+      <field name="nonConforming"/>
+    </panel>
+    <panel-mail name="mailsPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-group name="action-intervention-group-on-new">
+    <action name="action-intervention-method-fill-default"/>
+  </action-group>
+
+  <action-group name="action-intervention-group-on-load">
+    <action name="action-intervention-method-compute-under-contract-equipments-nbr"/>
+  </action-group>
+
+  <action-group name="action-intervention-group-intervention-type-on-change">
+    <action name="action-intervention-record-intervention-type-on-change"/>
+  </action-group>
+  <action-view model="com.axelor.apps.intervention.db.InterventionQuestion"
+    title="Intervention questions" name="action.intervention.question.view.intervention">
+    <view type="grid" name="intervention-question-grid"/>
+    <view type="form" name="intervention-question-form"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="details-view" value="true"/>
+    <domain>self.interventionRange.intervention.id = :_interventionId</domain>
+    <context name="_interventionId" expr="eval: __this__?.id"/>
+  </action-view>
+
+  <action-validate name="action-intervention-validate-remove-stock-move-lines">
+    <alert message="Are you sure wants to remove selected lines?"/>
+  </action-validate>
+
+  <action-view name="action-intervention-view-confirm-planification"
+    title="Confirm planification" model="com.axelor.apps.intervention.db.Intervention">
+    <view name="confirm-planification-form" type="form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <form title="Confirm planification" name="confirm-planification-form"
+    model="com.axelor.apps.intervention.db.Intervention" onSave="action-intervention-method-plan">
+    <panel name="mainPanel">
+      <field name="_xTechnicianUser" title="Technician" type="many-to-one"
+        target="com.axelor.auth.db.User" grid-view="user-grid" form-view="user-form" canNew="false"
+        colSpan="3" required="true" onSelect="action-intervention-attrs-technician-user-domain"/>
+      <field name="_xPlanificationDateTime" title="Planification date time" type="datetime"
+        colSpan="3" required="true"
+        onChange="action-intervention-method-compute-estimated-end-date-time"/>
+      <field name="_xPlannedInterventionDuration" title="Planned intervention duration"
+        colSpan="3" required="true" domain="self.applicationTypeSelect = 3" type="many-to-one"
+        target="com.axelor.apps.base.db.Duration"
+        onChange="action-intervention-method-compute-estimated-end-date-time"/>
+      <field name="_xEstimatedEndDateTime" title="Estimated end date time" type="datetime"
+        colSpan="3" required="true"/>
+    </panel>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="company"/>
+      <field name="tradingName"
+        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+    </panel>
+  </form>
+
+  <action-method name="action-intervention-method-plan">
+    <call class="com.axelor.apps.intervention.web.InterventionController" method="plan"/>
+  </action-method>
+
+  <action-method name="action-intervention-method-reschedule">
+    <call class="com.axelor.apps.intervention.web.InterventionController" method="reschedule"/>
+  </action-method>
+
+  <action-method name="action-intervention-method-start">
+    <call class="com.axelor.apps.intervention.web.InterventionController" method="start"/>
+  </action-method>
+
+  <action-method name="action-intervention-method-suspend">
+    <call class="com.axelor.apps.intervention.web.InterventionController" method="suspend"/>
+  </action-method>
+
+  <action-method name="action-intervention-method-finish">
+    <call class="com.axelor.apps.intervention.web.InterventionController" method="finish"/>
+  </action-method>
+
+  <action-method name="action-intervention-method-cancel">
+    <call class="com.axelor.apps.intervention.web.InterventionController" method="cancel"/>
+  </action-method>
+
+  <action-method name="action-intervention-method-fill-default">
+    <call class="com.axelor.apps.intervention.web.InterventionController" method="fillDefault"/>
+  </action-method>
+
+  <action-method name="action-intervention-method-fill-from-contract">
+    <call class="com.axelor.apps.intervention.web.InterventionController"
+      method="fillFromContract"/>
+  </action-method>
+
+  <action-method name="action-intervention-method-fill-from-request">
+    <call class="com.axelor.apps.intervention.web.InterventionController"
+      method="fillFromRequest"/>
+  </action-method>
+
+  <action-method name="action-intervention-method-compute-estimated-end-date-time">
+    <call class="com.axelor.apps.intervention.web.InterventionController"
+      method="computeEstimatedEndDateTime"/>
+  </action-method>
+
+  <action-method
+    name="action-intervention-method-compute-under-contract-equipments-nbr">
+    <call class="com.axelor.apps.intervention.web.InterventionController"
+      method="computeUnderContractEquipmentsNbr"/>
+  </action-method>
+
+  <action-method name="action-intervention-method-set-invoiced-partner-domain">
+    <call class="com.axelor.apps.intervention.web.InterventionController"
+      method="setInvoicedPartnerDomain"/>
+  </action-method>
+
+  <action-record name="action-intervention-record-outsourcing-on-change"
+    model="com.axelor.apps.intervention.db.Intervention">
+    <field name="supplierPartner" expr="eval: null" if="!outsourcing"/>
+  </action-record>
+
+  <action-record name="action-intervention-record-intervention-type-on-change"
+    model="com.axelor.apps.intervention.db.Intervention">
+    <field name="plannedInterventionDuration"
+      expr="eval:
+    interventionType?.defaultPrevisionalDuration"/>
+  </action-record>
+
+  <action-record name="action-intervention-record-commercial-follow-up-change"
+    model="com.axelor.apps.intervention.db.Intervention">
+    <field name="commercialUser"
+      expr="eval: commercialFollowUp ? contract?.commercialUser : null"/>
+  </action-record>
+
+  <action-record name="action-intervention-record-fill-address"
+    model="com.axelor.apps.intervention.db.Intervention">
+    <field name="address"
+      expr="eval: deliveredPartner?.partnerAddressList?.size() == 1 ? deliveredPartner?.partnerAddressList[0]?.address
+    : null"/>
+  </action-record>
+
+  <action-record name="action-intervention-record-emptying-trading-name"
+    model="com.axelor.apps.intervention.db.Intervention">
+    <field name="tradingName" expr="eval: null"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+  </action-record>
+
+  <action-method name="action-intervention-method-select-intervention-type">
+    <call class="com.axelor.apps.intervention.web.InterventionController"
+      method="selectInterventionType"/>
+  </action-method>
+
+  <action-method name="action-intervention-method-generate-sale-order">
+    <call class="com.axelor.apps.intervention.web.InterventionController"
+      method="generateSaleOrder"/>
+  </action-method>
+
+  <action-attrs name="action-intervention-attrs-address-on-select-domain">
+    <attribute for="address" name="domain"
+      expr="eval:
+    &quot; self.id IN (${deliveredPartner?.partnerAddressList == null || deliveredPartner?.partnerAddressList.size()
+    == 0 ? 0 : deliveredPartner?.partnerAddressList?.address?.id.join(',')}) &quot;"/>
+  </action-attrs>
+
+  <action-method name="action-intervention-method-fill-intervention-type">
+    <call class="com.axelor.apps.intervention.web.InterventionController"
+      method="fillInterventionType"/>
+  </action-method>
+
+  <action-group name="action-intervention-group-onchange-delivered-partner">
+    <action name="action-intervention-record-fill-address"/>
+    <action name="action-intervention-record-empty-invoiced-partner"/>
+    <action name="action-intervention-method-set-default-invoiced-partner"/>
+    <action name="action-intervention-record-empty-contact"/>
+  </action-group>
+
+  <action-record name="action-intervention-record-empty-contact"
+    model="com.axelor.apps.intervention.db.Intervention">
+    <field name="contact" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-intervention-record-empty-invoiced-partner"
+    model="com.axelor.apps.intervention.db.Intervention">
+    <field name="invoicedPartner" expr="eval: null"/>
+  </action-record>
+
+  <action-method name="action-intervention-method-set-default-invoiced-partner">
+    <call class="com.axelor.apps.intervention.web.InterventionController"
+      method="setDefaultInvoicedPartner"/>
+  </action-method>
+
+  <action-view name="action-intervention-view-question-summary" title="Recap questions"
+    model="com.axelor.apps.intervention.db.InterventionQuestion">
+    <view type="grid" name="intervention-question-grid-dashlet"/>
+    <view type="form" name="intervention-question-form"/>
+    <domain>self.interventionRange.intervention.id
+      = :_interventionId AND self.summary IS TRUE</domain>
+    <context name="_interventionId" expr="eval: __id__"/>
+  </action-view>
+
+  <action-view name="action-intervention-view-question-following"
+    title="Following questions" model="com.axelor.apps.intervention.db.InterventionQuestion">
+    <view type="grid" name="intervention-question-grid-dashlet"/>
+    <view type="form" name="intervention-question-form"/>
+    <domain>self.interventionRange.intervention.id
+      = :_interventionId AND self.listAnswer.following
+      IS TRUE</domain>
+    <context name="_interventionId" expr="eval:
+    __id__"/>
+  </action-view>
+
+  <action-view name="action-intervention-view-question-non-conforming"
+    title="Non conforming questions" model="com.axelor.apps.intervention.db.InterventionQuestion">
+    <view type="grid" name="intervention-question-grid-dashlet"/>
+    <view type="form" name="intervention-question-form"/>
+    <domain>self.interventionRange.intervention.id
+      = :_interventionId AND
+      self.listAnswer.nonConforming IS TRUE</domain>
+    <context name="_interventionId" expr="eval: __id__"/>
+  </action-view>
+
+  <action-attrs name="action-intervention-attrs-set-delivered-partner-domain">
+    <attribute for="deliveredPartner" name="domain"
+      expr="(self.isContact IS FALSE OR self.isContact IS NULL) AND self.isCustomer IS TRUE AND self.tradingName = :tradingName"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+    <attribute for="deliveredPartner" name="domain"
+      expr="(self.isContact IS FALSE OR self.isContact IS NULL) AND self.isCustomer IS TRUE"
+      if="!__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+  </action-attrs>
+
+  <action-attrs name="action-intervention-attrs-commercial-user-domain">
+    <attribute for="commercialUser" name="domain" expr="self.tradingName = :tradingName"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+  </action-attrs>
+
+  <action-attrs name="action-intervention-attrs-technician-user-domain">
+    <attribute for="_xTechnicianUser" name="domain"
+      expr="self.activeCompany = :company AND self.tradingName = :tradingName"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+    <attribute for="_xTechnicianUser" name="domain" expr="self.activeCompany = :company"
+      if="!__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+  </action-attrs>
+
+</object-views>

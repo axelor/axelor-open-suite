@@ -34,7 +34,6 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -43,9 +42,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,60 +166,6 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   }
 
   @Override
-  public TimesheetLine createTimesheetLine(
-      Project project,
-      Product product,
-      Employee employee,
-      LocalDate date,
-      Timesheet timesheet,
-      BigDecimal hours,
-      String comments) {
-
-    TimesheetLine timesheetLine = new TimesheetLine();
-
-    timesheetLine.setDate(date);
-    timesheetLine.setComments(comments);
-    timesheetLine.setProduct(product);
-    timesheetLine.setProject(project);
-    timesheetLine.setEmployee(employee);
-    timesheetLine.setHoursDuration(hours);
-    try {
-      timesheetLine.setDuration(computeHoursDuration(timesheet, hours, false));
-    } catch (AxelorException e) {
-      log.error(e.getLocalizedMessage());
-      TraceBackService.trace(e);
-    }
-    timesheet.addTimesheetLineListItem(timesheetLine);
-
-    return timesheetLine;
-  }
-
-  @Override
-  public TimesheetLine createTimesheetLine(
-      Employee employee, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments) {
-    return createTimesheetLine(null, null, employee, date, timesheet, hours, comments);
-  }
-
-  @Override
-  public TimesheetLine createTimesheetLine(
-      Project project,
-      ProjectTask projectTask,
-      Product product,
-      Employee employee,
-      LocalDate date,
-      Timesheet timesheet,
-      BigDecimal hours,
-      String comments,
-      TSTimer timer) {
-    TimesheetLine timesheetLine =
-        createTimesheetLine(project, product, employee, date, timesheet, hours, comments);
-    timesheetLine.setProjectTask(projectTask);
-    timesheetLine.setTimer(timer);
-
-    return timesheetLine;
-  }
-
-  @Override
   public TimesheetLine updateTimesheetLine(
       TimesheetLine timesheetLine,
       Project project,
@@ -267,28 +211,6 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     return Duration.ofSeconds(totalSecDuration);
   }
 
-  @Override
-  public Map<Project, BigDecimal> getProjectTimeSpentMap(List<TimesheetLine> timesheetLineList) {
-    Map<Project, BigDecimal> projectTimeSpentMap = new HashMap<>();
-
-    if (timesheetLineList != null) {
-
-      for (TimesheetLine timesheetLine : timesheetLineList) {
-        Project project = timesheetLine.getProject();
-        BigDecimal hoursDuration = timesheetLine.getHoursDuration();
-
-        if (project != null) {
-          if (projectTimeSpentMap.containsKey(project)) {
-            hoursDuration = hoursDuration.add(projectTimeSpentMap.get(project));
-          }
-          projectTimeSpentMap.put(project, hoursDuration);
-        }
-      }
-    }
-
-    return projectTimeSpentMap;
-  }
-
   public void checkDailyLimit(
       Timesheet timesheet, TimesheetLine currentTimesheetLine, BigDecimal hoursDuration)
       throws AxelorException {
@@ -305,7 +227,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     }
   }
 
-  protected Integer getDailyLimitFromApp() {
+  @Override
+  public Integer getDailyLimitFromApp() {
     return appHumanResourceService.getAppTimesheet().getDailyLimit();
   }
 
@@ -320,7 +243,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
-  protected boolean isExceedingDailyLimit(
+  @Override
+  public boolean isExceedingDailyLimit(
       BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit) {
     return totalHoursDuration.add(hoursDuration).compareTo(new BigDecimal(dailyLimit)) > 0;
   }
@@ -333,5 +257,28 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
             I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINES_EXCEED_DAILY_LIMIT),
             dailyLimit,
             date.format(dateService.getDateFormat())));
+  }
+
+  @Override
+  public Product getDefaultProduct(TimesheetLine timesheetLine) {
+    if (timesheetLine == null) {
+      return null;
+    }
+
+    if (timesheetLine.getProduct() == null) {
+      return Optional.of(timesheetLine)
+          .map(TimesheetLine::getEmployee)
+          .map(Employee::getProduct)
+          .orElse(null);
+    }
+    return timesheetLine.getProduct();
+  }
+
+  @Override
+  public void resetTimesheetLineTimer(TSTimer tsTimer) {
+    TimesheetLine timesheetLine = tsTimer.getTimesheetLine();
+    if (timesheetLine != null) {
+      timesheetLine.setTimer(null);
+    }
   }
 }

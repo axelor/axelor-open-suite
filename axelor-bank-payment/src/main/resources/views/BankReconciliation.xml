@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="bank-reconciliation-grid" title="Bank reconciliations"
     model="com.axelor.apps.bankpayment.db.BankReconciliation"
@@ -13,8 +13,8 @@
     <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
     <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
     <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
-    <field name="startingBalance"/>
-    <field name="endingBalance"/>
+    <field name="startingBalance" x-scale="currency.numberOfDecimals"/>
+    <field name="endingBalance" x-scale="currency.numberOfDecimals"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -22,9 +22,6 @@
   <form name="bank-reconciliation-form" title="Bank reconciliation"
     model="com.axelor.apps.bankpayment.db.BankReconciliation" width="large"
     onNew="action-bank-reconciliation-onnew-group" onLoad="action-bank-reconciliation-onload-group">
-    <toolbar>
-      <button name="printBtn" title="Print" onClick="save,action-method-print-birt"/>
-    </toolbar>
     <panel name="mainPanel" colSpan="12">
       <spacer colSpan="10"/>
       <button name="correctBtn" title="Correct" hidden="true"
@@ -86,17 +83,18 @@
       readonlyIf="statusSelect == 2" colSpan="12"
       showIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0">
       <panel name="balancePanel" title="Balance" colSpan="12">
-        <field name="totalPaid" colSpan="3"/>
-        <field name="totalCashed" colSpan="3"/>
-        <field name="startingBalance" readonlyIf="bankStatement" colSpan="3"/>
-        <field name="endingBalance" colSpan="3"/>
+        <field name="totalPaid" colSpan="3" x-scale="currency.numberOfDecimals"/>
+        <field name="totalCashed" colSpan="3" x-scale="currency.numberOfDecimals"/>
+        <field name="startingBalance" readonlyIf="bankStatement" colSpan="3"
+          x-scale="currency.numberOfDecimals"/>
+        <field name="endingBalance" colSpan="3" x-scale="currency.numberOfDecimals"/>
       </panel>
       <label name="infoCorrection"
         title="Each (un)reconciliation with the status 'Under correction' updates immediately the reconciled amount of the relevant line"
         showIf="statusSelect == 3" colSpan="12"/>
       <panel-related name="bankReconciliationLineListPanel" colSpan="12"
         field="bankReconciliationLineList" form-view="bank-reconciliation-line-form"
-        grid-view="bank-reconciliation-line-grid" editable="true"
+        grid-view="bank-reconciliation-line-bank-reconciliation-grid" editable="true"
         onChange="action-group-bankreconciliation-compute-click" x-can-copy="true"
         orderBy="effectDate" height="12"/>
       <button name="autoReconcileBtn" title="Auto reconcile"
@@ -130,6 +128,7 @@
         <field name="hasBeenCorrected" hidden="true"/>
         <field name="correctedDateTime" hidden="true"/>
         <field name="correctedUser" hidden="true"/>
+        <field name="currency.numberOfDecimals" hidden="true"/>
       </panel>
       <panel name="mainBalancePanel" colSpan="6"
         showIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0">
@@ -139,28 +138,30 @@
         <spacer colSpan="4"/>
         <label name="accountingLabel" title="Accounting" colSpan="4"/>
         <field name="statementReconciledLineBalance" showTitle="false" colSpan="4"
-          readonly="true"/>
+          readonly="true" x-scale="currency.numberOfDecimals"/>
         <label name="alreadyPointedLabel" title="Already reconciled" colSpan="4"/>
-        <field name="movesReconciledLineBalance" showTitle="false" colSpan="4" readonly="true"/>
+        <field name="movesReconciledLineBalance" showTitle="false" colSpan="4" readonly="true"
+          x-scale="currency.numberOfDecimals"/>
         <field name="statementUnreconciledLineBalance" showTitle="false" colSpan="4"
-          readonly="true"/>
+          readonly="true" x-scale="currency.numberOfDecimals"/>
         <label name="notPointedLabel" title="Not reconciled and onGoing" colSpan="4"/>
         <field name="movesUnreconciledLineBalance" showTitle="false" colSpan="4"
-          readonly="true"/>
+          readonly="true" x-scale="currency.numberOfDecimals"/>
         <field name="statementOngoingReconciledBalance" showTitle="false" colSpan="4"
-          readonly="true"/>
+          readonly="true" x-scale="currency.numberOfDecimals"/>
         <label name="balanceLabel" title="BankReconciliation.ongoing" colSpan="4"/>
         <field name="movesOngoingReconciledBalance" showTitle="false" colSpan="4"
-          readonly="true"/>
+          readonly="true" x-scale="currency.numberOfDecimals"/>
         <field name="statementAmountRemainingToReconcile" showTitle="false" colSpan="4"
-          readonly="true"/>
+          readonly="true" x-scale="currency.numberOfDecimals"/>
         <label name="selectedLabel" title="Remains to be reconciled" colSpan="4"/>
         <field name="movesAmountRemainingToReconcile" showTitle="false" colSpan="4"
-          readonly="true"/>
+          readonly="true" x-scale="currency.numberOfDecimals"/>
         <field name="statementTheoreticalBalance" showTitle="false" colSpan="4"
-          readonly="true"/>
+          readonly="true" x-scale="currency.numberOfDecimals"/>
         <label name="newBankBalanceLabel" title="New theoretical balance" colSpan="4"/>
-        <field name="movesTheoreticalBalance" showTitle="false" colSpan="4" readonly="true"/>
+        <field name="movesTheoreticalBalance" showTitle="false" colSpan="4" readonly="true"
+          x-scale="currency.numberOfDecimals"/>
         <label name="balanceEqualLabel"
           title="Computed balance in accounting and Ending Balance of the statement should be equal to validate the Statement"
           showIf="$number(computedBalance) != $number(movesTheoreticalBalance)" colSpan="12"
@@ -177,16 +178,18 @@
         <field name="$bankStatementDate" title="Date" type="date" readonly="true"/>
         <panel>
           <field name="$bankStatementDebit" title="Debit" type="decimal" readonly="true"
-            showIf="$bankStatementDebit &gt; 0"/>
+            showIf="$bankStatementDebit &gt; 0" x-scale="$currencyNumberOfDecimals"/>
           <field name="$bankStatementCredit" title="Credit" type="decimal" readonly="true"
-            showIf="$bankStatementCredit &gt; 0"/>
+            showIf="$bankStatementCredit &gt; 0" x-scale="$currencyNumberOfDecimals"/>
         </panel>
         <field name="$bankStatementName" title="Name" type="String" readonly="true"/>
         <field name="$bankStatementReference" title="Reference" type="String" readonly="true"/>
         <field name="$bankStatementAmountRemainToReconcile"
-          title="Amount remaining to reconcile" type="decimal" readonly="true"/>
+          title="Amount remaining to reconcile" type="decimal" readonly="true"
+          x-scale="$currencyNumberOfDecimals"/>
 
         <field name="_selectedBankReconciliationLine" hidden="true"/>
+        <field name="$currencyNumberOfDecimals" hidden="true"/>
       </panel>
       <panel-related name="$toReconcileMoveLineSetPanel"
         field="$toReconcileMoveLineSet" title="Select move lines to reconciles" colSpan="12"
@@ -195,7 +198,7 @@
         canEdit="false" form-view="move-line-form" grid-view="move-line-grid"
         onChange="action-bank-reconciliation-method-multiple-reconcile-wizard-compute-total-of-selected-move-lines"/>
       <field name="$selectedMoveLineTotal" title="Total of selected move lines" type="decimal"
-        readonly="true"/>
+        readonly="true" x-scale="$currencyNumberOfDecimals"/>
       <button name="validateBtn" title="Validate" hideIf="statusSelect == 2"
         onClick="action-bank-reconciliation-method-validate-multiple-reconciles"
         showIf="$selectedMoveLineTotal &gt; 0"/>
@@ -359,6 +362,8 @@
       expr="eval: _selectedBankReconciliationLine.reference"/>
     <attribute name="value" for="$bankStatementAmountRemainToReconcile"
       expr="eval: _selectedBankReconciliationLine.bankStatementLine.amountRemainToReconcile"/>
+    <attribute for="$currencyNumberOfDecimals" name="value"
+      expr="eval: _selectedBankReconciliationLine.bankReconciliation.currency.numberOfDecimals"/>
   </action-attrs>
 
   <action-validate name="action-bank-reconciliation-validate-lines-selected">

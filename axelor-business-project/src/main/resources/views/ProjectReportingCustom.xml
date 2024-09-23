@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <!-- time follow up -->
   <action-view name="action-project-view-sold-time-custom" title="Sold time">
@@ -149,7 +149,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.turnover} <Icon icon={first.turnoverProgress} fontSize={first.turnoverProgress == 'equal' ? "24px" : "14px"} color={first.turnoverProgress == 'arrow-90deg-up' ? "success" : first.turnoverProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.turnover} {first.turnoverProgress && <Icon icon={first.turnoverProgress} fontSize={first.turnoverProgress == 'equal' ? "24px" : "14px"} color={first.turnoverProgress == 'arrow-90deg-up' ? "success" : first.turnoverProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -165,7 +165,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.initialCosts} <Icon icon={first.initialCostsProgress} fontSize={first.initialCostsProgress == 'equal' ? "24px" : "14px"} color={first.initialCostsProgress == 'arrow-90deg-up' ? "success" : first.initialCostsProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.initialCosts} {first.initialCostsProgress && <Icon icon={first.initialCostsProgress} fontSize={first.initialCostsProgress == 'equal' ? "24px" : "14px"} color={first.initialCostsProgress == 'arrow-90deg-up' ? "success" : first.initialCostsProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -181,7 +181,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.initialMargin} <Icon icon={first.initialMarginProgress} fontSize={first.initialMarginProgress == 'equal' ? "24px" : "14px"} color={first.initialMarginProgress == 'arrow-90deg-up' ? "success" : first.initialMarginProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.initialMargin} {first.initialMarginProgress && <Icon icon={first.initialMarginProgress} fontSize={first.initialMarginProgress == 'equal' ? "24px" : "14px"} color={first.initialMarginProgress == 'arrow-90deg-up' ? "success" : first.initialMarginProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -197,7 +197,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<Icon icon="percent" fontSize="30px"/> {first.initialMarkup} <Icon icon={first.initialMarkupProgress} fontSize={first.initialMarkupProgress == 'equal' ? "24px" : "14px"} color={first.initialMarkupProgress == 'arrow-90deg-up' ? "success" : first.initialMarkupProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<Icon icon="percent" fontSize="30px"/> {first.initialMarkup} {first.initialMarkupProgress && <Icon icon={first.initialMarkupProgress} fontSize={first.initialMarkupProgress == 'equal' ? "24px" : "14px"} color={first.initialMarkupProgress == 'arrow-90deg-up' ? "success" : first.initialMarkupProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -213,7 +213,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.realTurnover} <Icon icon={first.realTurnoverProgress} fontSize={first.realTurnoverProgress == 'equal' ? "24px" : "14px"} color={first.realTurnoverProgress == 'arrow-90deg-up' ? "success" : first.realTurnoverProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.realTurnover} {first.realTurnoverProgress && <Icon icon={first.realTurnoverProgress} fontSize={first.realTurnoverProgress == 'equal' ? "24px" : "14px"} color={first.realTurnoverProgress == 'arrow-90deg-up' ? "success" : first.realTurnoverProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -229,7 +229,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.realCosts} <Icon icon={first.realCostsProgress} fontSize={first.realCostsProgress == 'equal' ? "24px" : "14px"} color={first.realCostsProgress == 'arrow-90deg-up' ? "success" : first.realCostsProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.realCosts} {first.realCostsProgress && <Icon icon={first.realCostsProgress} fontSize={first.realCostsProgress == 'equal' ? "24px" : "14px"} color={first.realCostsProgress == 'arrow-90deg-up' ? "success" : first.realCostsProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -245,7 +245,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.realMargin} <Icon icon={first.realMarginProgress} fontSize={first.realMarginProgress == 'equal' ? "24px" : "14px"} color={first.realMarginProgress == 'arrow-90deg-up' ? "success" : first.realMarginProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.realMargin} {first.realMarginProgress && <Icon icon={first.realMarginProgress} fontSize={first.realMarginProgress == 'equal' ? "24px" : "14px"} color={first.realMarginProgress == 'arrow-90deg-up' ? "success" : first.realMarginProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -261,7 +261,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<Icon icon="percent" fontSize="30px"/> {first.realMarkup} <Icon icon={first.realMarkupProgress} fontSize={first.realMarkupProgress == 'equal' ? "24px" : "14px"} color={first.realMarkupProgress == 'arrow-90deg-up' ? "success" : first.realMarkupProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<Icon icon="percent" fontSize="30px"/> {first.realMarkup} {first.realMarkupProgress && <Icon icon={first.realMarkupProgress} fontSize={first.realMarkupProgress == 'equal' ? "24px" : "14px"} color={first.realMarkupProgress == 'arrow-90deg-up' ? "success" : first.realMarkupProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -279,7 +279,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.forecastCosts} <Icon icon={first.forecastCostsProgress} fontSize={first.forecastCostsProgress == 'equal' ? "24px" : "14px"} color={first.forecastCostsProgress == 'arrow-90deg-up' ? "success" : first.forecastCostsProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.forecastCosts} {first.forecastCostsProgress && <Icon icon={first.forecastCostsProgress} fontSize={first.forecastCostsProgress == 'equal' ? "24px" : "14px"} color={first.forecastCostsProgress == 'arrow-90deg-up' ? "success" : first.forecastCostsProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -295,7 +295,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.forecastMargin} <Icon icon={first.forecastMarginProgress} fontSize={first.forecastMarginProgress == 'equal' ? "24px" : "14px"} color={first.forecastMarginProgress == 'arrow-90deg-up' ? "success" : first.forecastMarginProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.forecastMargin} {first.forecastMarginProgress && <Icon icon={first.forecastMarginProgress} fontSize={first.forecastMarginProgress == 'equal' ? "24px" : "14px"} color={first.forecastMarginProgress == 'arrow-90deg-up' ? "success" : first.forecastMarginProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -311,7 +311,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<Icon icon="percent" fontSize="30px"/> {first.forecastMarkup} <Icon icon={first.forecastMarkupProgress} fontSize={first.forecastMarkupProgress == 'equal' ? "24px" : "14px"} color={first.forecastMarkupProgress == 'arrow-90deg-up' ? "success" : first.forecastMarkupProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<Icon icon="percent" fontSize="30px"/> {first.forecastMarkup} {first.forecastMarkupProgress && <Icon icon={first.forecastMarkupProgress} fontSize={first.forecastMarkupProgress == 'equal' ? "24px" : "14px"} color={first.forecastMarkupProgress == 'arrow-90deg-up' ? "success" : first.forecastMarkupProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -328,7 +328,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.landingCosts} <Icon icon={first.landingCostsProgress} fontSize={first.landingCostsProgress == 'equal' ? "24px" : "14px"} color={first.landingCostsProgress == 'arrow-90deg-up' ? "success" : first.landingCostsProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.landingCosts} {first.landingCostsProgress && <Icon icon={first.landingCostsProgress} fontSize={first.landingCostsProgress == 'equal' ? "24px" : "14px"} color={first.landingCostsProgress == 'arrow-90deg-up' ? "success" : first.landingCostsProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -344,7 +344,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.landingMargin} <Icon icon={first.landingMarginProgress} fontSize={first.landingMarginProgress == 'equal' ? "24px" : "14px"} color={first.landingMarginProgress == 'arrow-90deg-up' ? "success" : first.landingMarginProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.landingMargin} {first.landingMarginProgress && <Icon icon={first.landingMarginProgress} fontSize={first.landingMarginProgress == 'equal' ? "24px" : "14px"} color={first.landingMarginProgress == 'arrow-90deg-up' ? "success" : first.landingMarginProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -360,7 +360,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<Icon icon="percent" fontSize="30px"/> {first.landingMarkup} <Icon icon={first.landingMarkupProgress} fontSize={first.landingMarkupProgress == 'equal' ? "24px" : "14px"} color={first.landingMarkupProgress == 'arrow-90deg-up' ? "success" : first.landingMarkupProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<Icon icon="percent" fontSize="30px"/> {first.landingMarkup} {first.landingMarkupProgress && <Icon icon={first.landingMarkupProgress} fontSize={first.landingMarkupProgress == 'equal' ? "24px" : "14px"} color={first.landingMarkupProgress == 'arrow-90deg-up' ? "success" : first.landingMarkupProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -376,7 +376,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.totalInvoiced} <Icon icon={first.totalInvoicedProgress} fontSize={first.totalInvoicedProgress == 'equal' ? "24px" : "14px"} color={first.totalInvoicedProgress == 'arrow-90deg-up' ? "success" : first.totalInvoicedProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.totalInvoiced} {first.totalInvoicedProgress && <Icon icon={first.totalInvoicedProgress} fontSize={first.totalInvoicedProgress == 'equal' ? "24px" : "14px"} color={first.totalInvoicedProgress == 'arrow-90deg-up' ? "success" : first.totalInvoicedProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -392,7 +392,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.invoicedThisMonth} <Icon icon={first.invoicedThisMonthProgress} fontSize={first.invoicedThisMonthProgress == 'equal' ? "24px" : "14px"} color={first.invoicedThisMonthProgress == 'arrow-90deg-up' ? "success" : first.invoicedThisMonthProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.invoicedThisMonth} {first.invoicedThisMonthProgress && <Icon icon={first.invoicedThisMonthProgress} fontSize={first.invoicedThisMonthProgress == 'equal' ? "24px" : "14px"} color={first.invoicedThisMonthProgress == 'arrow-90deg-up' ? "success" : first.invoicedThisMonthProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -408,7 +408,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.invoicedLastMonth} <Icon icon={first.invoicedLastMonthProgress} fontSize={first.invoicedLastMonthProgress == 'equal' ? "24px" : "14px"} color={first.invoicedLastMonthProgress == 'arrow-90deg-up' ? "success" : first.invoicedLastMonthProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.invoicedLastMonth} {first.invoicedLastMonthProgress && <Icon icon={first.invoicedLastMonthProgress} fontSize={first.invoicedLastMonthProgress == 'equal' ? "24px" : "14px"} color={first.invoicedLastMonthProgress == 'arrow-90deg-up' ? "success" : first.invoicedLastMonthProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>
@@ -423,7 +423,7 @@
         <>
         	<Box ms={3}>
         		<h1>
-        			<b>{first.currencySymbol}</b> {first.totalPaid} <Icon icon={first.totalPaidProgress} fontSize={first.totalPaidProgress == 'equal' ? "24px" : "14px"} color={first.totalPaidProgress == 'arrow-90deg-up' ? "success" : first.totalPaidProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        			<b>{first.currencySymbol}</b> {first.totalPaid} {first.totalPaidProgress && <Icon icon={first.totalPaidProgress} fontSize={first.totalPaidProgress == 'equal' ? "24px" : "14px"} color={first.totalPaidProgress == 'arrow-90deg-up' ? "success" : first.totalPaidProgress == 'arrow-90deg-down' ? "danger" : "body"}/>}
         		</h1>
         	</Box>
         </>

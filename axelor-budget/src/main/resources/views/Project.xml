@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
-  <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
-    extension="true" id="budget-project-form">
+  <form name="business-project-form" title="Project" model="com.axelor.apps.project.db.Project"
+    extension="true" id="budget-business-project-form">
 
     <extend target="//panel[@name='datePanel']">
       <insert position="after">

@@ -23,15 +23,14 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.axelor.utils.helpers.ListHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -48,19 +47,17 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
-      ListHelper listHelper,
       AppAccountService appAccountService,
       AnalyticLineModelService analyticLineModelService,
       AnalyticMoveLineRepository analyticMoveLineRepository,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     super(
         analyticAccountRepository,
         analyticMoveLineService,
         analyticToolService,
         accountConfigService,
-        listHelper,
         appAccountService,
-        currencyScaleServiceAccount);
+        currencyScaleService);
     this.analyticLineModelService = analyticLineModelService;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }

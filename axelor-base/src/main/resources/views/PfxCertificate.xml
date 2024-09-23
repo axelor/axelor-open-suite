@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="pfx-certificate-form" title="PFX Certificate"
     model="com.axelor.apps.base.db.PfxCertificate">
@@ -10,7 +10,7 @@
       <field name="certificate" widget="binary-link" colSpan="6"
         onChange="action-pfx-certificate-group-certificate-onchange"/>
       <field name="password" colSpan="6" readonlyIf="!certificate"
-        onChange="action-pfx-certificate-method-get-validity-dates"/>
+        onChange="action-pfx-certificate-method-get-validity-dates" hideIf="fromValidityDate"/>
       <spacer colSpan="6"/>
       <field name="fromValidityDate" colSpan="6"/>
       <field name="toValidityDate" colSpan="6"/>

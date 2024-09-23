@@ -49,6 +49,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 /** Classe de création de ligne de facture abstraite. */
 public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerator {
@@ -71,7 +72,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       String description,
       BigDecimal qty,
       Unit unit,
-      TaxLine taxLine,
+      Set<TaxLine> taxLineSet,
       int sequence,
       BigDecimal discountAmount,
       int discountTypeSelect,
@@ -91,7 +92,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         description,
         qty,
         unit,
-        taxLine,
+        taxLineSet,
         sequence,
         discountAmount,
         discountTypeSelect,
@@ -138,7 +139,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         this.unit = saleOrderLine.getUnit();
       }
       this.priceDiscounted = saleOrderLine.getPriceDiscounted();
-      this.taxLine = saleOrderLine.getTaxLine();
+      this.taxLineSet = saleOrderLine.getTaxLineSet();
       this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
       this.typeSelect = saleOrderLine.getTypeSelect();
     } else if (purchaseOrderLine != null) {
@@ -155,7 +156,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         this.unit = purchaseOrderLine.getUnit();
       }
       this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
-      this.taxLine = purchaseOrderLine.getTaxLine();
+      this.taxLineSet = purchaseOrderLine.getTaxLineSet();
       this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
     } else if (stockMoveLine != null) {
       this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
@@ -198,37 +199,40 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     List<AnalyticMoveLine> analyticMoveLineList;
 
-    if (this.manageAnalytic()) {
-      if (saleOrderLine != null) {
-        switch (saleOrderLine.getTypeSelect()) {
-          case SaleOrderLineRepository.TYPE_END_OF_PACK:
-            invoiceLine.setIsHideUnitAmounts(saleOrderLine.getIsHideUnitAmounts());
-            invoiceLine.setIsShowTotal(saleOrderLine.getIsShowTotal());
-            break;
+    boolean manageAnalytic = this.manageAnalytic();
+    if (saleOrderLine != null) {
+      switch (saleOrderLine.getTypeSelect()) {
+        case SaleOrderLineRepository.TYPE_END_OF_PACK:
+          invoiceLine.setIsHideUnitAmounts(saleOrderLine.getIsHideUnitAmounts());
+          invoiceLine.setIsShowTotal(saleOrderLine.getIsShowTotal());
+          break;
 
-          case SaleOrderLineRepository.TYPE_NORMAL:
+        case SaleOrderLineRepository.TYPE_NORMAL:
+          if (manageAnalytic) {
             invoiceLineAnalyticService.setInvoiceLineAnalyticInfo(
                 invoiceLine, invoice, new AnalyticLineModel(saleOrderLine, null));
-            break;
+          }
+          break;
 
-          default:
-            return invoiceLine;
-        }
-      } else if (purchaseOrderLine != null) {
-        if (purchaseOrderLine.getIsTitleLine()) {
+        default:
           return invoiceLine;
-        }
+      }
+    } else if (purchaseOrderLine != null) {
+      if (purchaseOrderLine.getIsTitleLine()) {
+        return invoiceLine;
+      }
 
+      if (manageAnalytic) {
         invoiceLineAnalyticService.setInvoiceLineAnalyticInfo(
             invoiceLine, invoice, new AnalyticLineModel(purchaseOrderLine, null));
+      }
 
-        invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
+      invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
-        if (product != null && purchaseOrderLine.getFixedAssets()) {
-          FixedAssetCategory fixedAssetCategory =
-              accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
-          invoiceLine.setFixedAssetCategory(fixedAssetCategory);
-        }
+      if (product != null && purchaseOrderLine.getFixedAssets()) {
+        FixedAssetCategory fixedAssetCategory =
+            accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
+        invoiceLine.setFixedAssetCategory(fixedAssetCategory);
       }
     }
 
@@ -254,9 +258,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setPrice(price);
       invoiceLine.setInTaxPrice(inTaxPrice);
 
-      analyticMoveLineList =
-          invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-      analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
+      invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
     }
 
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();

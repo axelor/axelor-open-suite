@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <grid name="project-task-category-grid" title="Category"
@@ -12,7 +12,9 @@
   </grid>
 
   <form title="Category" name="project-task-category-form"
-    model="com.axelor.apps.project.db.ProjectTaskCategory">
+    model="com.axelor.apps.project.db.ProjectTaskCategory"
+    onNew="action-project-task-category-record-status-new,action-category-method-fill-progress-by-category"
+    onLoad="action-project-task-category-method-validate-progress">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="defaultProduct"
@@ -21,8 +23,71 @@
         if-module="axelor-business-project"/>
       <field name="defaultInvoicingType" if="__config__.app.isApp('business-project')"
         if-module="axelor-business-project" validIf="$number(defaultInvoicingType) > 0"/>
+      <spacer/>
+      <field name="projectTaskStatusSet" widget="TagSelect"
+        requiredIf="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
+        if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
+        onChange="action-category-group-task-status-onchange,action-project-task-category-method-validate-progress"/>
+      <field name="completedTaskStatus"
+        requiredIf="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
+        form-view="task-status-form" grid-view="task-status-grid"
+        if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
+        onSelect="action-project-task-category-attrs-set-completed-task-status-domain"/>
+      <panel-related field="taskCustomFieldsList" colSpan="12" showIf="id"
+        form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
     </panel>
+    <panel name="progressPanel"
+      if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask &amp;&amp; __config__.app.getApp('project')?.enableStatusManagementByTaskCategory">
+      <label colSpan="12"
+        title="There is a potential inconsistency between the progression values configured."
+        name="inconsistencyLabel" css="label-danger" hidden="true"/>
+      <panel-related field="taskStatusProgressByCategoryList" colSpan="12"
+        form-view="task-status-progress-by-category-form"
+        grid-view="task-status-progress-by-category-grid" canNew="false" canRemove="false"
+        onChange="action-project-task-category-method-validate-progress"/>
+    </panel>
+
   </form>
+
+  <action-group name="action-category-group-task-status-onchange">
+    <action name="action-project-task-category-method-manage-completed-task-status"/>
+    <action name="action-category-method-fill-progress-by-category"/>
+  </action-group>
+
+  <action-attrs
+    name="action-project-task-category-attrs-set-completed-task-status-domain">
+    <attribute name="domain" for="completedTaskStatus"
+      expr="eval: 'self.isCompleted = true AND self.id IN (' + projectTaskStatusSet?.collect{ it.id }?.join(',') + ')'"
+      if="projectTaskStatusSet?.collect{it.id}?.size &gt; 0"/>
+    <attribute name="domain" for="completedTaskStatus" expr="eval: 'self.id = 0'"
+      if="projectTaskStatusSet?.collect{it.id}?.size == 0"/>
+  </action-attrs>
+
+  <action-record name="action-project-task-category-record-status-new"
+    model="com.axelor.apps.project.db.ProjectTaskCategory">
+    <field name="projectTaskStatusSet"
+      expr="eval: __config__.app.getApp('project')?.getDefaultTaskStatusSet()"
+      if="__config__.app.getApp('project')?.getEnableStatusManagementByTaskCategory()"/>
+    <field name="completedTaskStatus"
+      expr="eval: __config__.app.getApp('project')?.getCompletedTaskStatus()"
+      if="__config__.app.getApp('project')?.getEnableStatusManagementByTaskCategory()"/>
+  </action-record>
+
+  <action-method
+    name="action-project-task-category-method-manage-completed-task-status">
+    <call class="com.axelor.apps.project.web.ProjectTaskCategoryController"
+      method="manageCompletedTaskStatus"/>
+  </action-method>
+
+  <action-method name="action-category-method-fill-progress-by-category">
+    <call class="com.axelor.apps.project.web.ProjectTaskCategoryController"
+      method="fillProgressByCategory"/>
+  </action-method>
+
+  <action-method name="action-project-task-category-method-validate-progress">
+    <call class="com.axelor.apps.project.web.ProjectTaskCategoryController"
+      method="validateProgress"/>
+  </action-method>
 
   <search-filters name="project-task-category-filters"
     model="com.axelor.apps.project.db.ProjectTaskCategory" title="Project task category filters">

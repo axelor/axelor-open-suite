@@ -19,12 +19,12 @@
 package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.PrintFromBirtTemplateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pdf.PdfService;
-import com.axelor.apps.base.utils.PdfHelper;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
@@ -33,6 +33,7 @@ import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
   protected MetaFiles metaFiles;
   protected AppBaseService appBaseService;
   protected HRConfigService hrConfigService;
-  protected PrintFromBirtTemplateService printFromBirtTemplateService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
   protected PdfService pdfService;
 
   @Inject
@@ -58,12 +59,12 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
       MetaFiles metaFiles,
       AppBaseService appBaseService,
       HRConfigService hrConfigService,
-      PrintFromBirtTemplateService printFromBirtTemplateService,
+      PrintingTemplatePrintService printFromBirtTemplateService,
       PdfService pdfService) {
     this.metaFiles = metaFiles;
     this.appBaseService = appBaseService;
     this.hrConfigService = hrConfigService;
-    this.printFromBirtTemplateService = printFromBirtTemplateService;
+    this.printingTemplatePrintService = printFromBirtTemplateService;
     this.pdfService = pdfService;
   }
 
@@ -100,21 +101,22 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
     return PdfHelper.mergePdf(fileList);
   }
 
-  protected File getReportFile(Expense expense) throws AxelorException, IOException {
-    BirtTemplate birtTemplate = getBirtTemplate(expense);
-    return printFromBirtTemplateService.generateBirtTemplate(birtTemplate, expense);
+  protected File getReportFile(Expense expense) throws AxelorException {
+    PrintingTemplate expensePrintTemplate = getExpensePrintingTemplate(expense);
+    return printingTemplatePrintService.getPrintFile(
+        expensePrintTemplate, new PrintingGenFactoryContext(expense));
   }
 
-  protected BirtTemplate getBirtTemplate(Expense expense) throws AxelorException {
-    BirtTemplate birtTemplate =
-        hrConfigService.getHRConfig(expense.getCompany()).getExpenseReportBirtTemplate();
-    if (birtTemplate == null) {
+  protected PrintingTemplate getExpensePrintingTemplate(Expense expense) throws AxelorException {
+    PrintingTemplate expenseReportPrintTemplate =
+        hrConfigService.getHRConfig(expense.getCompany()).getExpenseReportPrintTemplate();
+    if (expenseReportPrintTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_BIRT_TEMPLATE_MISSING));
     }
 
-    return birtTemplate;
+    return expenseReportPrintTemplate;
   }
 
   protected List<MetaFile> getExpenseLinePdfJustificationFiles(Expense expense) {

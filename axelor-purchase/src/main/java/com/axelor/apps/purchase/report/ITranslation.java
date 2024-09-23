@@ -95,4 +95,10 @@ public interface ITranslation {
       "PurchaseOrder.productStandard"; /*)*/
   public static final String PURCHASE_ORDER_PRODUCT_LINE_SEQUENCE = /*$$(*/
       "PurchaseOrder.productSequence"; /*)*/
+  public static final String PURCHASE_ORDER_TYPE = /*$$(*/ "PurchaseOrder.type"; /*)*/
+  public static final String PURCHASE_ORDER_TAXES = /*$$(*/ "PurchaseOrder.taxes"; /*)*/
+  public static final String PURCHASE_ORDER_TAX_CODE = /*$$(*/ "PurchaseOrder.taxCode"; /*)*/
+  ;
+  public static final String PURCHASE_ORDER_TOTAL_TAXES = /*$$(*/ "PurchaseOrder.totalTaxes"; /*)*/
+  ;
 }

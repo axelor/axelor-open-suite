@@ -3,18 +3,6 @@
     <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
-            <property name="name">queryText</property>
-            <property name="id">210</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">210</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">210</property>
-        </structure>
-        <structure>
             <property name="name">odaURL</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DBName"].value</expression>
@@ -85,23 +73,6 @@
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="Locale" id="4050">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">true</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
             <property name="controlType">text-box</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
@@ -200,10 +171,8 @@
                 </structure>
                 <structure>
                     <property name="columnName">debit</property>
-                    <property name="alias">debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">debit</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">debit</text-property>
                 </structure>
                 <structure>
@@ -302,6 +271,18 @@
                     <text-property name="heading">origin</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">cc_number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">cc_number_of_decimals</text-property>
+                    <text-property name="heading">cc_number_of_decimals</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">showProvisionTitle</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">showProvisionTitle</text-property>
@@ -322,7 +303,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -440,6 +421,16 @@
                     </structure>
                     <structure>
                         <property name="position">22</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">23</property>
+                        <property name="name">cc_number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
                         <property name="name">showProvisionTitle</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -601,6 +592,20 @@
                 </structure>
                 <structure>
                     <property name="position">22</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">23</property>
+                    <property name="name">cc_number_of_decimals</property>
+                    <property name="nativeName">cc_number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">24</property>
                     <property name="name">showProvisionTitle</property>
                     <property name="nativeName">showProvisionTitle</property>
                     <property name="dataType">integer</property>
@@ -623,6 +628,8 @@ Move.currency_code,
 MoveLine.currency_rate,
 MoveLine.origin_date,
 MoveLine.origin,
+Currency.number_of_decimals,
+CompanyCurrency.number_of_decimals as cc_number_of_decimals,
 CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle"
 from public.account_accounting_report as AccountingReport
 left outer join public.account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
@@ -641,8 +648,15 @@ left outer join public.account_account as ParentAccount6 on (ParentAccount5.pare
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
+left outer join public.account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.account_tag_set)
+left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+left outer join public.base_partner_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.partner_tag_set)
+
 left outer join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join public.account_account_config as AccountConfig on (AccountConfig.company = Company.id)
+left outer join public.base_currency as Currency on (Currency.id = Move.currency)
+left outer join public.base_currency as CompanyCurrency on (CompanyCurrency.id = Company.currency)
 left outer join public.base_period as Period on (Move.period = Period.id) 
 left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
 left outer join (SELECT cast(meta_select_item.value as int) AS select_value, meta_select_item.title AS select_title 
@@ -662,6 +676,8 @@ Move.company = AccountingReport.company AND
     or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
     or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
     or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account) AND(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
+(ReportAccountTagSet.account_tag_set IS NULL OR AccountTagSet.account_account IN (Account.id, ParentAccount.id, ParentAccount2.id, ParentAccount3.id, ParentAccount4.id, ParentAccount5.id, ParentAccount6.id, ParentAccount6.parent_account)) AND
+(ReportPartnerTagSet.partner_tag_set IS NULL OR PartnerTagSet.base_partner = MoveLine.partner) AND
 (AccountingReport.period IS NULL OR AccountingReport.period  = Move.period) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode))
@@ -675,7 +691,7 @@ AND (AccountingReport.display_opening_accounting_moves is true
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND (ABS(MoveLine.amount_remaining) > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
-group by MoveLine.id, ReconcileGroup.code, Journal.code, Account.code, Account.name, Move.reference, MetaTranslation.message_value, Meta.select_title, Move.currency_code
+group by MoveLine.id, ReconcileGroup.code, Journal.code, Account.code, Account.name, Move.reference, MetaTranslation.message_value, Meta.select_title, Move.currency_code, Currency.number_of_decimals,CompanyCurrency.number_of_decimals
 order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -757,13 +773,6 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">global</text-property>
                     <text-property name="heading">global</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">global_by_date</property>
-                    <property name="alias">global_by_date</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">global_by_date</text-property>
-                    <text-property name="heading">global_by_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">payment_mode</property>
@@ -894,51 +903,46 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">12</property>
-                        <property name="name">global_by_date</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
                         <property name="name">payment_mode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">14</property>
                         <property name="name">report_type</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">15</property>
                         <property name="name">display_code_account</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">16</property>
                         <property name="name">display_move_line_sequence</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">17</property>
                         <property name="name">display_name_account</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">18</property>
                         <property name="name">display_only_not_completely_lettered_move_lines</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">19</property>
                         <property name="name">display_cumulative_balance</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">21</property>
+                        <property name="position">20</property>
                         <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -1014,60 +1018,54 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
-                    <property name="name">global_by_date</property>
-                    <property name="nativeName">global_by_date</property>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="position">13</property>
                     <property name="name">payment_mode</property>
                     <property name="nativeName">payment_mode</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">14</property>
                     <property name="name">report_type</property>
                     <property name="nativeName">report_type</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">15</property>
                     <property name="name">display_code_account</property>
                     <property name="nativeName">display_code_account</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">16</property>
                     <property name="name">display_move_line_sequence</property>
                     <property name="nativeName">display_move_line_sequence</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">17</property>
                     <property name="name">display_name_account</property>
                     <property name="nativeName">display_name_account</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">18</property>
                     <property name="name">display_only_not_completely_lettered_move_lines</property>
                     <property name="nativeName">display_only_not_completely_lettered_move_lines</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">20</property>
+                    <property name="position">19</property>
                     <property name="name">display_cumulative_balance</property>
                     <property name="nativeName">display_cumulative_balance</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">21</property>
+                    <property name="position">20</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
@@ -1085,7 +1083,6 @@ MetaFile.file_path as logo_path,
 Period.name as period_name, 
 Journal.name as journal_name, 
 AccountingReport.global, 
-AccountingReport.global_by_date,
 PaymentMode.name as payment_mode, 
 Currency.code as currency,
 ReportType.type_select as report_type,
@@ -1132,7 +1129,7 @@ where AccountingReport.id = ? ]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">-1</property>
@@ -1304,12 +1301,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                             <property name="name">global</property>
                             <text-property name="displayName">global</text-property>
                             <expression name="expression" type="javascript">dataSetRow["global"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
-                            <property name="name">global_by_date</property>
-                            <text-property name="displayName">global_by_date</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["global_by_date"]</expression>
                             <property name="dataType">integer</property>
                         </structure>
                         <structure>
@@ -1525,12 +1516,6 @@ this.height=row["logo_height"];]]></method>
                     <property name="name">global</property>
                     <text-property name="displayName">global</text-property>
                     <expression name="expression" type="javascript">dataSetRow["global"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">global_by_date</property>
-                    <text-property name="displayName">global_by_date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["global_by_date"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
@@ -2378,6 +2363,18 @@ else {
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">cc_number_of_decimals</property>
+                                <text-property name="displayName">cc_number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["cc_number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
                             </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
@@ -3253,37 +3250,31 @@ else {
                                     <cell id="5229"/>
                                     <cell id="4110"/>
                                     <cell id="4112">
-                                        <data id="4139">
+                                        <text id="5332">
                                             <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">sum_debit</property>
-                                        </data>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sum_debit"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="4113">
-                                        <data id="4138">
+                                        <text id="5335">
                                             <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">sum_credit</property>
-                                        </data>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sum_credit"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="4151">
-                                        <data id="4156">
+                                        <text id="5342">
                                             <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
                                                 <structure>
@@ -3291,8 +3282,10 @@ else {
                                                     <expression name="valueExpr" type="javascript">row["sum_balance"]==0</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">sum_balance</property>
-                                        </data>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sum_balance"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="5186"/>
                                     <cell id="5144">
@@ -3417,43 +3410,31 @@ else {
                                     </data>
                                 </cell>
                                 <cell id="4078">
-                                    <data id="4079">
+                                    <text id="5331">
                                         <property name="fontSize">6pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">debit</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["debit"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4080">
-                                    <data id="4081">
+                                    <text id="5334">
                                         <property name="fontSize">6pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">credit</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["credit"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4150">
-                                    <data id="4155">
+                                    <text id="5339">
                                         <property name="fontSize">6pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["balance"]==0</expression>
-                                            </structure>
-                                        </list-property>
-                                        <property name="resultSetColumn">balance</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["balance"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5185">
                                     <data id="5190">
@@ -3465,27 +3446,23 @@ else {
                                 </cell>
                                 <cell id="5143">
                                     <property name="backgroundColor">silver</property>
-                                    <data id="5168">
+                                    <text id="5337">
                                         <property name="fontSize">6pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">currencyDebit</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["currencyDebit"],row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5158">
                                     <property name="backgroundColor">silver</property>
-                                    <data id="5169">
+                                    <text id="5338">
                                         <property name="fontSize">6pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">currencyCredit</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(Math.abs(row["currencyCredit"]),row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5194">
                                     <property name="backgroundColor">silver</property>
@@ -3523,37 +3500,43 @@ else {
                                 <cell id="5230"/>
                                 <cell id="4086"/>
                                 <cell id="4088">
-                                    <data id="5327">
+                                    <text id="5333">
                                         <property name="fontSize">6pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">total_debit</property>
-                                    </data>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["total_debit"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["total_debit"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4089">
-                                    <data id="5328">
+                                    <text id="5336">
                                         <property name="fontSize">6pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">total_credit</property>
-                                    </data>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["total_credit"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["total_credit"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4152">
-                                    <data id="5329">
+                                    <text id="5343">
                                         <property name="fontSize">6pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
                                         <list-property name="visibility">
                                             <structure>
@@ -3561,8 +3544,11 @@ else {
                                                 <expression name="valueExpr" type="javascript">row["total_debit"] == row["total_credit"]</expression>
                                             </structure>
                                         </list-property>
-                                        <property name="resultSetColumn">total_balance</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["total_balance"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5187"/>
                                 <cell id="5145">
@@ -3580,6 +3566,55 @@ else {
                             </row>
                         </footer>
                     </table>
+                </cell>
+            </row>
+        </grid>
+        <grid id="5334">
+            <property name="dataSet">MoveLineDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">row.__rownum != -1</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">moveline_id</property>
+                    <text-property name="displayName">moveline_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["moveline_id"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <column id="5335"/>
+            <row id="5336">
+                <cell id="5337">
+                    <text id="5331">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReport.noEntry'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
             </row>
         </grid>

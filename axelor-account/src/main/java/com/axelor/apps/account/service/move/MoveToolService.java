@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -195,7 +196,7 @@ public interface MoveToolService {
 
   List<Move> getMovesWithDuplicatedOrigin(Move move);
 
-  List<Move> findDaybookAndAccountingByYear(Set<Year> yearList);
+  List<Move> findMoveByYear(Set<Year> yearList, List<Integer> statusList);
 
   @CallMethod
   boolean isSimulatedMovePeriodClosed(Move move);
@@ -204,9 +205,25 @@ public interface MoveToolService {
 
   void setDescriptionOnMoveLineList(Move move);
 
-  BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit);
-
   boolean isMultiCurrency(Move move);
 
+  @CallMethod
+  List<Integer> getMoveStatusSelectWithoutAccounted(
+      String moveStatusSelect, Set<Company> companySet);
+
+  List<Integer> getMoveStatusSelect(String moveStatusSelect, Set<Company> companySet);
+
+  @CallMethod
+  List<Integer> getMoveStatusSelectWithoutAccounted(String moveStatusSelect, Company company);
+
   List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company);
+
+  List<Integer> getMoveStatusSelection(Company company, Journal journal) throws AxelorException;
+
+  Integer computeFunctionalOriginSelect(Journal journal, Integer massEntryStatus);
+
+  List<MoveLine> getRefundAdvancePaymentMoveLines(InvoicePayment invoicePayment)
+      throws AxelorException;
+
+  List<InvoiceTerm> _getInvoiceTermList(Move move);
 }

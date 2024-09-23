@@ -39,6 +39,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.PurchaseOrderCreateSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
@@ -57,17 +58,37 @@ public class PurchaseOrderSupplierService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private PurchaseOrderSupplierLineService purchaseOrderSupplierLineService;
+  protected PurchaseOrderSupplierLineService purchaseOrderSupplierLineService;
+  protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+  protected PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService;
+  protected PurchaseOrderService purchaseOrderService;
+  protected PurchaseOrderLineService purchaseOrderLineService;
+  protected PurchaseOrderRepository poRepo;
+  protected SupplierCatalogService supplierCatalogService;
+  protected AppBaseService appBaseService;
+  protected PartnerPriceListService partnerPriceListService;
 
-  @Inject private PurchaseOrderSupplychainService purchaseOrderSupplychainService;
-
-  @Inject private PurchaseOrderService purchaseOrderService;
-
-  @Inject private PurchaseOrderLineService purchaseOrderLineService;
-
-  @Inject protected PurchaseOrderRepository poRepo;
-
-  @Inject protected SupplierCatalogService supplierCatalogService;
+  @Inject
+  public PurchaseOrderSupplierService(
+      PurchaseOrderSupplierLineService purchaseOrderSupplierLineService,
+      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService,
+      PurchaseOrderService purchaseOrderService,
+      PurchaseOrderLineService purchaseOrderLineService,
+      PurchaseOrderRepository poRepo,
+      SupplierCatalogService supplierCatalogService,
+      AppBaseService appBaseService,
+      PartnerPriceListService partnerPriceListService) {
+    this.purchaseOrderSupplierLineService = purchaseOrderSupplierLineService;
+    this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
+    this.purchaseOrderCreateSupplychainService = purchaseOrderCreateSupplychainService;
+    this.purchaseOrderService = purchaseOrderService;
+    this.purchaseOrderLineService = purchaseOrderLineService;
+    this.poRepo = poRepo;
+    this.supplierCatalogService = supplierCatalogService;
+    this.appBaseService = appBaseService;
+    this.partnerPriceListService = partnerPriceListService;
+  }
 
   @Transactional(rollbackOn = {Exception.class})
   public void generateAllSuppliersRequests(PurchaseOrder purchaseOrder) throws AxelorException {
@@ -186,7 +207,7 @@ public class PurchaseOrderSupplierService {
         supplierPartner.getFullName());
 
     PurchaseOrder purchaseOrder =
-        purchaseOrderSupplychainService.createPurchaseOrder(
+        purchaseOrderCreateSupplychainService.createPurchaseOrder(
             AuthUtils.getUser(),
             parentPurchaseOrder.getCompany(),
             null,
@@ -194,11 +215,11 @@ public class PurchaseOrderSupplierService {
             null,
             parentPurchaseOrder.getPurchaseOrderSeq(),
             parentPurchaseOrder.getExternalReference(),
-            Beans.get(PurchaseOrderSupplychainService.class)
-                .getStockLocation(supplierPartner, parentPurchaseOrder.getCompany()),
-            Beans.get(AppBaseService.class).getTodayDate(parentPurchaseOrder.getCompany()),
-            Beans.get(PartnerPriceListService.class)
-                .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
+            purchaseOrderSupplychainService.getStockLocation(
+                supplierPartner, parentPurchaseOrder.getCompany()),
+            appBaseService.getTodayDate(parentPurchaseOrder.getCompany()),
+            partnerPriceListService.getDefaultPriceList(
+                supplierPartner, PriceListRepository.TYPE_PURCHASE),
             supplierPartner,
             parentPurchaseOrder.getTradingName());
 

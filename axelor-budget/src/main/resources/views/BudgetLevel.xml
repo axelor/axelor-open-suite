@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Sections" name="budget-level-grid"
     orderBy="code" canNew="false">
@@ -139,7 +139,6 @@
   </action-group>
 
   <action-group name="action-budget-level-template-group-onnew">
-    <action name="action-budget-level-group-onnew"/>
     <action name="action-budget-level-template-record-onnew"/>
     <action name="action-budget-level-template-record-scenario"/>
   </action-group>
@@ -205,10 +204,11 @@
 
   <action-record name="action-budget-level-template-record-onnew"
     model="com.axelor.apps.budget.db.BudgetLevel">
-    <field name="globalBudgetTemplate" expr="eval: __parent__"
-      if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.GlobalBudgetTemplate'"/>
-    <field name="fromDate" expr="eval: fromDate == null ? __parent__?.fromDate : fromDate"/>
-    <field name="toDate" expr="eval: toDate == null ? __parent__?.toDate : toDate"/>
+    <field name="budgetStructure" expr="eval: __parent__"
+      if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetStructure'"/>
+    <field name="parentBudgetLevel" expr="eval: __parent__"
+      if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
+    <field name="company" expr="eval: __parent__.company" if="__parent__"/>
   </action-record>
 
   <action-record name="action-budget-level-template-record-scenario"

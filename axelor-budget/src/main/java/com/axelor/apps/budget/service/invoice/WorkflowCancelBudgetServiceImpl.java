@@ -21,19 +21,21 @@ package com.axelor.apps.budget.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class WorkflowCancelBudgetServiceImpl extends WorkflowCancelServiceProjectImpl {
 
   protected BudgetInvoiceService budgetInvoiceService;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public WorkflowCancelBudgetServiceImpl(
@@ -43,7 +45,8 @@ public class WorkflowCancelBudgetServiceImpl extends WorkflowCancelServiceProjec
       PurchaseOrderRepository purchaseOrderRepository,
       ConsumptionLineRepository consumptionLineRepo,
       InvoicingProjectRepository invoicingProjectRepo,
-      BudgetInvoiceService budgetInvoiceService) {
+      BudgetInvoiceService budgetInvoiceService,
+      AppBudgetService appBudgetService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -52,12 +55,17 @@ public class WorkflowCancelBudgetServiceImpl extends WorkflowCancelServiceProjec
         consumptionLineRepo,
         invoicingProjectRepo);
     this.budgetInvoiceService = budgetInvoiceService;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void afterCancel(Invoice invoice) throws AxelorException {
     super.afterCancel(invoice);
+
+    if (!appBudgetService.isApp("budget")) {
+      return;
+    }
 
     budgetInvoiceService.updateBudgetLinesFromInvoice(invoice);
 

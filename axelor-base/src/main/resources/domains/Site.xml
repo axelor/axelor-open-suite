@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Site" cacheable="true">
+
+    <string name="name" title="Name" required="true"/>
+    <string name="code" title="Code" required="true" unique="true"/>
+    <string name="fullName" namecolumn="true"/>
+    <integer name="typeSelect" title="Type" required="true"
+      selection="base.site.type.select" default="1"/>
+    <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-one name="address" title="Address" ref="com.axelor.apps.base.db.Address"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
+      required="true"/>
+    <many-to-one name="tradingName" title="Trading name"
+      ref="com.axelor.apps.base.db.TradingName"/>
+
+    <extra-code><![CDATA[
+
+	   	// TYPE SELECT
+		public static final int TYPE_INTERNAL = 1;
+		public static final int TYPE_EXTERNAL = 2;
+
+	]]></extra-code>
+
+    <entity-listener class="com.axelor.apps.base.db.repo.SiteListener"/>
+  </entity>
+
+</domain-models>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,43 +19,38 @@
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
-import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 public class BankReconciliationLineServiceImpl implements BankReconciliationLineService {
 
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
-  protected MoveLineRepository moveLineRepository;
-  protected MoveLineService moveLineService;
+  protected CurrencyScaleService currencyScaleService;
+  protected MoveLinePostedNbrService moveLinePostedNbrService;
 
   @Inject
   public BankReconciliationLineServiceImpl(
       BankReconciliationLineRepository bankReconciliationLineRepository,
-      MoveLineRepository moveLineRepository,
-      MoveLineService moveLineService) {
+      CurrencyScaleService currencyScaleService,
+      MoveLinePostedNbrService moveLinePostedNbrService) {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
-    this.moveLineRepository = moveLineRepository;
-    this.moveLineService = moveLineService;
+    this.currencyScaleService = currencyScaleService;
+    this.moveLinePostedNbrService = moveLinePostedNbrService;
   }
 
   @Override
@@ -81,7 +76,9 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
         bankReconciliationLine = bankReconciliationLineRepository.save(bankReconciliationLine);
       }
       bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
-      moveLine = setMoveLinePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
+      moveLine =
+          moveLinePostedNbrService.setMoveLinePostedNbr(
+              moveLine, bankReconciliationLine.getPostedNbr());
     }
     if (debit.compareTo(BigDecimal.ZERO) == 0) {
       bankReconciliationLine.setTypeSelect(BankReconciliationLineRepository.TYPE_SELECT_CUSTOMER);
@@ -118,22 +115,29 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
 
   @Override
   public void checkAmount(BankReconciliationLine bankReconciliationLine) throws AxelorException {
-
     MoveLine moveLine = bankReconciliationLine.getMoveLine();
 
-    BigDecimal bankDebit = bankReconciliationLine.getDebit();
-    BigDecimal bankCredit = bankReconciliationLine.getCredit();
+    BigDecimal bankDebit =
+        currencyScaleService.getScaledValue(
+            bankReconciliationLine, bankReconciliationLine.getDebit());
+    BigDecimal bankCredit =
+        currencyScaleService.getScaledValue(
+            bankReconciliationLine, bankReconciliationLine.getCredit());
     boolean isDebit = bankDebit.compareTo(bankCredit) > 0;
 
-    BigDecimal moveLineDebit;
-    BigDecimal moveLineCredit;
+    BigDecimal moveLineDebit =
+        currencyScaleService.getCompanyScaledValue(moveLine, moveLine.getDebit());
+    BigDecimal moveLineCredit =
+        currencyScaleService.getCompanyScaledValue(moveLine, moveLine.getCredit());
 
-    if (isDebit) {
-      moveLineCredit = moveLine.getCurrencyAmount().abs();
-      moveLineDebit = moveLine.getDebit();
-    } else {
-      moveLineDebit = moveLine.getCurrencyAmount().abs();
-      moveLineCredit = moveLine.getCredit();
+    if (moveLine.getMove().getCurrency().equals(bankReconciliationLine.getCurrency())) {
+      if (isDebit) {
+        moveLineCredit =
+            currencyScaleService.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
+      } else {
+        moveLineDebit =
+            currencyScaleService.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
+      }
     }
 
     if (bankDebit.add(bankCredit).compareTo(BigDecimal.ZERO) == 0) {
@@ -149,11 +153,17 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
 
     if (!(bankDebit.compareTo(BigDecimal.ZERO) > 0
             && moveLineCredit.compareTo(BigDecimal.ZERO) > 0
-            && bankDebit.compareTo(moveLineCredit.subtract(moveLine.getBankReconciledAmount()))
+            && bankDebit.compareTo(
+                    currencyScaleService.getScaledValue(
+                        bankReconciliationLine,
+                        moveLineCredit.subtract(moveLine.getBankReconciledAmount())))
                 == 0)
         && !(bankCredit.compareTo(BigDecimal.ZERO) > 0
             && moveLineDebit.compareTo(BigDecimal.ZERO) > 0
-            && bankCredit.compareTo(moveLineDebit.subtract(moveLine.getBankReconciledAmount()))
+            && bankCredit.compareTo(
+                    currencyScaleService.getScaledValue(
+                        bankReconciliationLine,
+                        moveLineDebit.subtract(moveLine.getBankReconciledAmount())))
                 == 0)) {
       throw new AxelorException(
           bankReconciliationLine,
@@ -173,7 +183,9 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
     bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
     bankReconciliationLine.setConfidenceIndex(
         BankReconciliationLineRepository.CONFIDENCE_INDEX_GREEN);
-    moveLine = setMoveLinePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
+    moveLine =
+        moveLinePostedNbrService.setMoveLinePostedNbr(
+            moveLine, bankReconciliationLine.getPostedNbr());
     moveLine.setIsSelectedBankReconciliation(false);
     bankReconciliationLine.setIsSelectedBankReconciliation(false);
     bankReconciliationLine.setMoveLine(moveLine);
@@ -182,18 +194,6 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
       bankStatementLine.setMoveLine(bankReconciliationLine.getMoveLine());
     }
     return bankReconciliationLine;
-  }
-
-  @Override
-  public MoveLine setMoveLinePostedNbr(MoveLine moveLine, String postedNbr) {
-    String posted = moveLine.getPostedNbr();
-    if (StringUtils.notEmpty(posted)) {
-      List<String> postedNbrs = new ArrayList<String>(Arrays.asList(posted.split(",")));
-      postedNbrs.add(postedNbr);
-      posted = String.join(",", postedNbrs);
-    } else posted = postedNbr;
-    moveLine.setPostedNbr(posted);
-    return moveLine;
   }
 
   @Override
@@ -219,60 +219,22 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
 
   @Override
   public void updateBankReconciledAmounts(BankReconciliationLine bankReconciliationLine) {
-
     BigDecimal bankReconciledAmount =
-        bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit());
+        currencyScaleService.getScaledValue(
+            bankReconciliationLine,
+            bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit()));
 
     BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
     if (bankStatementLine != null) {
       bankStatementLine.setAmountRemainToReconcile(
-          bankStatementLine.getAmountRemainToReconcile().subtract(bankReconciledAmount));
+          currencyScaleService.getScaledValue(
+              bankReconciliationLine,
+              bankStatementLine.getAmountRemainToReconcile().subtract(bankReconciledAmount)));
     }
 
     MoveLine moveLine = bankReconciliationLine.getMoveLine();
 
     moveLine.setBankReconciledAmount(bankReconciledAmount);
-  }
-
-  @Override
-  public void unreconcileLines(List<BankReconciliationLine> bankReconciliationLines) {
-    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-      if (StringUtils.notEmpty((bankReconciliationLine.getPostedNbr()))) {
-        unreconcileLine(bankReconciliationLine);
-      }
-    }
-  }
-
-  @Override
-  @Transactional
-  public void unreconcileLine(BankReconciliationLine bankReconciliationLine) {
-    bankReconciliationLine.setBankStatementQuery(null);
-    bankReconciliationLine.setIsSelectedBankReconciliation(false);
-
-    String query = "self.postedNbr LIKE '%%s%'";
-    query = query.replace("%s", bankReconciliationLine.getPostedNbr());
-    List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
-    for (MoveLine moveLine : moveLines) {
-      moveLineService.removePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
-      moveLine.setIsSelectedBankReconciliation(false);
-    }
-    boolean isUnderCorrection =
-        bankReconciliationLine.getBankReconciliation().getStatusSelect()
-            == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
-    if (isUnderCorrection) {
-      MoveLine moveLine = bankReconciliationLine.getMoveLine();
-      BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
-      if (bankStatementLine != null) {
-        bankStatementLine.setAmountRemainToReconcile(
-            bankStatementLine.getAmountRemainToReconcile().add(moveLine.getBankReconciledAmount()));
-      }
-      moveLine.setBankReconciledAmount(BigDecimal.ZERO);
-      moveLineRepository.save(moveLine);
-      bankReconciliationLine.setIsPosted(false);
-    }
-    bankReconciliationLine.setMoveLine(null);
-    bankReconciliationLine.setConfidenceIndex(0);
-    bankReconciliationLine.setPostedNbr(null);
   }
 
   @Override

@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -42,6 +41,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
@@ -70,7 +70,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
   protected BatchRepository batchRepository;
   protected BankDetailsService bankDetailsService;
   protected FixedAssetDateService fixedAssetDateService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected CurrencyScaleService currencyScaleService;
   private Batch batch;
 
   @Inject
@@ -84,7 +84,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       BatchRepository batchRepository,
       BankDetailsService bankDetailsService,
       FixedAssetDateService fixedAssetDateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleService currencyScaleService) {
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
@@ -94,7 +94,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     this.batchRepository = batchRepository;
     this.bankDetailsService = bankDetailsService;
     this.fixedAssetDateService = fixedAssetDateService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -192,7 +192,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     if (fixedAssetDerogatoryLine.getFixedAsset().getGrossValue().signum() < 0) {
       amount = amount.negate();
     }
-    return currencyScaleServiceAccount.getCompanyScaledValue(
+    return currencyScaleService.getCompanyScaledValue(
         fixedAssetDerogatoryLine.getFixedAsset(), amount);
   }
 
@@ -224,6 +224,9 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       LocalDate disposalDate)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
+    if (fixedAsset.getMoveGenerationException() == FixedAssetRepository.MOVE_GENERATION_NO_MOVES) {
+      return null;
+    }
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();

@@ -19,7 +19,6 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -29,7 +28,10 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
 import com.axelor.inject.Beans;
@@ -43,19 +45,23 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 
   @Inject
   public OperationOrderServiceBusinessImpl(
-      BarcodeGeneratorService barcodeGeneratorService,
       AppProductionService appProductionService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ProdProcessLineService prodProcessLineService,
       OperationOrderRepository operationOrderRepository,
-      OperationOrderOutsourceService operationOrderOutsourceService) {
+      OperationOrderOutsourceService operationOrderOutsourceService,
+      ManufOrderCheckStockMoveLineService manufOrderCheckStockMoveLineService,
+      ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
+      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService) {
     super(
-        barcodeGeneratorService,
         appProductionService,
         manufOrderStockMoveService,
         prodProcessLineService,
         operationOrderRepository,
-        operationOrderOutsourceService);
+        operationOrderOutsourceService,
+        manufOrderCheckStockMoveLineService,
+        manufOrderPlanStockMoveService,
+        manufOrderUpdateStockMoveService);
   }
 
   @Override

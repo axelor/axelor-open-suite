@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="bank-details-grid" title="Bank details"
     model="com.axelor.apps.base.db.BankDetails">
@@ -74,6 +74,8 @@
       <field name="bank.country.alpha2Code" hidden="true"/>
       <field name="fullName" hidden="true"/>
     </panel>
+    <panel-related name="bankCardPanel" title="Bank cards" field="bankCardList"
+      colSpan="12" form-view="bank-card-form-from-bank-details" grid-view="bank-card-grid"/>
     <panel name="specificNotesPanel" title="Specific notes" colSpan="12"
       if-module="axelor-account">
       <field name="specificNoteOnInvoice" widget="html" colSpan="12"/>

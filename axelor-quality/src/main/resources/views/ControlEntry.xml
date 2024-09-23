@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="control-entry-grid" title="Control entries"
     model="com.axelor.apps.quality.db.ControlEntry">
@@ -27,7 +27,7 @@
     <panel-related name="controlEntrySamplesPanel" field="controlEntrySamplesList"
       colSpan="12" grid-view="control-entry-sample-grid" form-view="control-entry-sample-form"
       showIf="controlEntrySamplesList != null &amp;&amp; controlEntrySamplesList.length > 0"
-      readonlyIf="statusSelect > 2"/>
+      readonlyIf="statusSelect > 2" onChange="save"/>
     <panel name="actionPanel" showTitle="false" sidebar="true">
       <button name="createSamplesBtn"
         onClick="save,action-method-quality-control-entry-create-samples"

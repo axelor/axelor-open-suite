@@ -1,27 +1,34 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.quality.db.repo;
 
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.quality.db.ControlEntryPlanLine;
-import com.axelor.apps.quality.service.ControlEntryPlanLineService;
-import com.axelor.apps.quality.service.ControlEntrySampleService;
-import com.axelor.inject.Beans;
 
 public class ControlEntryPlanLineManagementRepository extends ControlEntryPlanLineRepository {
 
   @Override
-  public ControlEntryPlanLine save(ControlEntryPlanLine entity) {
+  public ControlEntryPlanLine copy(ControlEntryPlanLine entity, boolean deep) {
+    ControlEntryPlanLine copy = super.copy(entity, deep);
 
-    try {
-      if (TYPE_ENTRY_SAMPLE_LINE == entity.getTypeSelect()) {
-        Beans.get(ControlEntryPlanLineService.class).conformityEval(entity);
-      }
-      if (entity.getControlEntrySample() != null) {
-        Beans.get(ControlEntrySampleService.class).updateResult(entity.getControlEntrySample());
-      }
-    } catch (Exception e) {
-      TraceBackService.traceExceptionFromSaveMethod(e);
-    }
+    copy.setEntryAttrs(null);
+    copy.setPlanAttrs(null);
 
-    return super.save(entity);
+    return copy;
   }
 }

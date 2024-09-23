@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -17,9 +17,14 @@
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
     <long name="durationPerCycle" title="Duration / cycle (hhh:mm:ss)"/>
+    <long name="setupDuration" title="Duration between two cycles (hhh:mm:ss)"/>
+    <long name="startingDuration" title="Starting duration (hhh:mm:ss)"/>
+    <long name="endingDuration" title="Ending duration (hhh:mm:ss)"/>
     <long name="humanDuration" title="Human Duration (hh:mm:ss)"/>
     <decimal name="durationPerCycleDecimal" title="Duration / cycle (in hours)"/>
     <decimal name="humanDurationDecimal" title="Human Duration (in hours)"/>
+    <long name="timeBeforeNextOperation" title="Time before next operation"
+      help="Time before the next operation of the same manufacturing order."/>
     <boolean name="outsourcing" title="Outsourced"/>
     <boolean name="outsourcable" title="Outsourcable"/>
     <many-to-one name="outsourcingPartner" ref="com.axelor.apps.base.db.Partner"
@@ -43,9 +48,8 @@
     <many-to-one name="workCenterGroup"
       ref="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"/>
     <integer name="sequence" title="Sequence"/>
-    <boolean name="useLineInGeneratedPurchaseOrder"
-      title="Use this line in the generated purchase order"
-      help="Products associated with the work center will be used"/>
+    <many-to-many name="generatedPurchaseOrderProductSet"
+      ref="com.axelor.apps.base.db.Product" title="Products for generated purchase order"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <integer name="costTypeSelect" title="Cost type"
       selection="iproduction.work.center.cost.type.select"/>
@@ -54,6 +58,7 @@
     <integer name="hrCostTypeSelect" title="Cost type"
       selection="iproduction.work.center.cost.type.select"/>
     <decimal name="hrCostAmount" title="Cost (W.T.)"/>
+    <long name="outsourcingDuration" title="Outsourcing duration" nullable="true"/>
 
     <track>
       <field name="prodProcess"/>

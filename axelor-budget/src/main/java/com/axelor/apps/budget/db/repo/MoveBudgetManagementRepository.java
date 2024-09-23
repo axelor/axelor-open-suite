@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
@@ -35,23 +36,28 @@ public class MoveBudgetManagementRepository extends MoveBankPaymentRepository {
 
   @Override
   public Move save(Move move) {
-    try {
-      if (!CollectionUtils.isEmpty(move.getMoveLineList())
-          && move.getStatusSelect() != MoveRepository.STATUS_CANCELED) {
-        MoveLineBudgetService moveLineBudgetService = Beans.get(MoveLineBudgetService.class);
+    if (Beans.get(AppBudgetService.class).isApp("budget")) {
+      try {
+        if (!CollectionUtils.isEmpty(move.getMoveLineList())
+            && move.getStatusSelect() != MoveRepository.STATUS_CANCELED) {
+          MoveLineBudgetService moveLineBudgetService = Beans.get(MoveLineBudgetService.class);
+          moveLineBudgetService.manageMonoBudget(move);
 
-        for (MoveLine moveLine : move.getMoveLineList()) {
-          moveLineBudgetService.checkAmountForMoveLine(moveLine);
-          moveLineBudgetService.negateAmount(moveLine, move);
+          for (MoveLine moveLine : move.getMoveLineList()) {
+            moveLineBudgetService.checkAmountForMoveLine(moveLine);
+            moveLineBudgetService.negateAmount(moveLine, move);
+          }
         }
-      }
 
-    } catch (AxelorException e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+        Beans.get(BudgetService.class).updateBudgetLinesFromMove(move, false);
+
+      } catch (AxelorException e) {
+        throw new PersistenceException(e.getLocalizedMessage());
+      }
     }
 
     super.save(move);
-    Beans.get(BudgetService.class).updateBudgetLinesFromMove(move, false);
+
     return move;
   }
 
@@ -59,7 +65,8 @@ public class MoveBudgetManagementRepository extends MoveBankPaymentRepository {
   public Move copy(Move entity, boolean deep) {
     Move copy = super.copy(entity, deep);
 
-    if (!CollectionUtils.isEmpty(copy.getMoveLineList())) {
+    if (!CollectionUtils.isEmpty(copy.getMoveLineList())
+        && Beans.get(AppBudgetService.class).isApp("budget")) {
       BudgetDistributionService budgetDistributionService =
           Beans.get(BudgetDistributionService.class);
       for (MoveLine ml : copy.getMoveLineList()) {

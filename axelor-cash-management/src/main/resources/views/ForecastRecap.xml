@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="forecast-recap-grid" title="Forecast Recaps"
     model="com.axelor.apps.cash.management.db.ForecastRecap">
@@ -14,10 +14,6 @@
   <form name="forecast-recap-form" title="Forecast Recap"
     model="com.axelor.apps.cash.management.db.ForecastRecap"
     onNew="action-forecast-recap-group-on-new" width="large">
-    <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
-        onClick="save,action-method-print-birt"/>
-    </toolbar>
     <panel name="mainPanel">
       <panel name="seqPanel" colSpan="12">
         <field name="forecastRecapSeq" showTitle="false" colSpan="12"

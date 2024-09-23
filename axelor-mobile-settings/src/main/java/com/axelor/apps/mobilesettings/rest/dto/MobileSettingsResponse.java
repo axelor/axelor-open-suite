@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.mobilesettings.rest.dto;
 
 import com.axelor.utils.api.ResponseStructure;
@@ -27,7 +45,14 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isEditionOfDateAllowed;
   protected final Boolean isTimesheetProjectInvoicingEnabled;
   protected final Boolean isStockLocationManagementEnabled;
+  protected final Boolean isOneLineShortcut;
+  protected final String minimalRequiredMobileAppVersion;
   protected final List<String> fieldsToShowOnTimesheet;
+  protected final List<Long> dashboardIdList;
+  protected final List<MobileShortcutResponse> mobileShortcutList;
+  protected final Boolean isGenericProductShown;
+  protected final Boolean isConfiguratorProductShown;
+  protected final List<String> productTypesToDisplay;
 
   public MobileSettingsResponse(
       Integer version,
@@ -52,7 +77,14 @@ public class MobileSettingsResponse extends ResponseStructure {
       Boolean isEditionOfDateAllowed,
       Boolean isTimesheetProjectInvoicingEnabled,
       Boolean isStockLocationManagementEnabled,
-      List<String> fieldsToShowOnTimesheet) {
+      Boolean isOneLineShortcut,
+      String minimalRequiredMobileAppVersion,
+      List<String> fieldsToShowOnTimesheet,
+      List<Long> dashboardIdList,
+      List<MobileShortcutResponse> mobileShortcutList,
+      Boolean isGenericProductShown,
+      Boolean isConfiguratorProductShown,
+      List<String> productTypesToDisplay) {
     super(version);
     this.apps = apps;
     this.isLoginUserQrcodeEnabled = isLoginUserQrcodeEnabled;
@@ -75,7 +107,14 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.isEditionOfDateAllowed = isEditionOfDateAllowed;
     this.isTimesheetProjectInvoicingEnabled = isTimesheetProjectInvoicingEnabled;
     this.isStockLocationManagementEnabled = isStockLocationManagementEnabled;
+    this.isOneLineShortcut = isOneLineShortcut;
+    this.minimalRequiredMobileAppVersion = minimalRequiredMobileAppVersion;
     this.fieldsToShowOnTimesheet = fieldsToShowOnTimesheet;
+    this.dashboardIdList = dashboardIdList;
+    this.mobileShortcutList = mobileShortcutList;
+    this.isGenericProductShown = isGenericProductShown;
+    this.isConfiguratorProductShown = isConfiguratorProductShown;
+    this.productTypesToDisplay = productTypesToDisplay;
   }
 
   public List<MobileConfigResponse> getApps() {
@@ -182,8 +221,41 @@ public class MobileSettingsResponse extends ResponseStructure {
     return isStockLocationManagementEnabled;
   }
 
+  @JsonProperty(value = "isOneLineShortcut")
+  public Boolean getIsOneLineShortcut() {
+    return isOneLineShortcut;
+  }
+
+  @JsonProperty(value = "minimalRequiredMobileAppVersion")
+  public String getMinimalRequiredMobileAppVersion() {
+    return minimalRequiredMobileAppVersion;
+  }
+
   @JsonProperty(value = "fieldsToShowOnTimesheet")
   public List<String> getFieldsToShowOnTimesheet() {
     return fieldsToShowOnTimesheet;
+  }
+
+  public List<Long> getDashboardIdList() {
+    return dashboardIdList;
+  }
+
+  public List<MobileShortcutResponse> getMobileShortcutList() {
+    return mobileShortcutList;
+  }
+
+  @JsonProperty(value = "isGenericProductShown")
+  public Boolean getGenericProductShown() {
+    return isGenericProductShown;
+  }
+
+  @JsonProperty(value = "isConfiguratorProductShown")
+  public Boolean getConfiguratorProductShown() {
+    return isConfiguratorProductShown;
+  }
+
+  @JsonProperty(value = "productTypesToDisplay")
+  public List<String> getProductTypesToDisplay() {
+    return productTypesToDisplay;
   }
 }

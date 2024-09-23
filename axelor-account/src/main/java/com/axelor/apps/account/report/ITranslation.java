@@ -126,6 +126,8 @@ public interface ITranslation {
   public static final String INVOICE_REFUND_PART_2 = /*$$(*/ "Invoice.refundInvoicePart2"; /*)*/
   public static final String INVOICE_NO_DISCOUNT_EARLY_PAYMENT = /*$$(*/
       "Invoice.noDiscountEarlyPayment"; /*)*/
+  public static final String INVOICE_COEFIICIENT = /*$$(*/ "Invoice.coefficient"; /*)*/
+
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
   public static final String ACCOUNTING_REPORT_RECAP_BY_ACCOUNT = /*$$(*/
@@ -546,6 +548,9 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_2001_DESCRIPTION = /*$$(*/
       "AccountingReportType2001.description"; /*)*/
 
+  public static final String ACCOUNTING_REPORT_3000_ALL_COMPANIES = /*$$(*/
+      "AccountingReportType3000.allCompanies"; /*)*/
+
   public static final String SALE_INVOICE_DETAILS_REPORT_TITLE = /*$$(*/
       "SaleInvoicesDetails.title"; /*)*/
   public static final String SALE_INVOICE_DETAILS_REPORT_COMPANY = /*$$(*/
@@ -762,6 +767,8 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType17.acquisition"; /*)*/
   public static final String ACCOUNTING_REPORT_17_ASSET_DISPOSAL =
       /*$$(*/ "AccountingReportType17.asset_disposal"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_ASSET_SCRAP =
+      /*$$(*/ "AccountingReportType17.asset_scrap"; /*)*/
   public static final String ACCOUNTING_REPORT_17_YEAR_END_VALUE =
       /*$$(*/ "AccountingReportType17.year_end_value"; /*)*/
   public static final String ACCOUNTING_REPORT_17_DEPRECIATION =
@@ -802,6 +809,8 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_19_TO = /*$$(*/ "AccountingReportType19.to"; /*)*/
   public static final String ACCOUNTING_REPORT_19_TOTAL_REPORT =
       /*$$(*/ "AccountingReportType19.total_report"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_AMOUNT =
+      /*$$(*/ "AccountingReportType19.amount"; /*)*/
 
   public static final String ACCOUNTING_REPORT_20_ACCOUNT_CODE =
       /*$$(*/ "AccountingReportType20.accountCode"; /*)*/
@@ -1077,4 +1086,14 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType.date"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_USER =
       /*$$(*/ "AccountingReportType.user"; /*)*/
+
+  public static final String INVOICE_TYPE = /*$$(*/ "Invoice.type"; /*)*/
+  public static final String INVOICE_TAXES = /*$$(*/ "Invoice.taxes"; /*)*/
+  public static final String INVOICE_TOTAL_TAXES = /*$$(*/ "Invoice.totalTaxes"; /*)*/
+  public static final String INVOICE_TAX_CODE = /*$$(*/ "Invoice.taxCode"; /*)*/
+  public static final String INVOICE_EXPENSES_ON_RECEIPTS = /*$$(*/
+      "Invoice.expensesOnReceipts"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_NO_ACCOUTING_ENTRY = /*$$(*/
+      "AccountingReport.noEntry"; /*)*/
 }

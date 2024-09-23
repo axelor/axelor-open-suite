@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.InventoryLine;
+import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -239,6 +240,34 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
+  public StockMove createStockMove(
+      Address fromAddress,
+      Address toAddress,
+      Company company,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      LocalDate realDate,
+      LocalDate estimatedDate,
+      int typeSelect,
+      MassStockMove massStockMove)
+      throws AxelorException {
+    StockMove stockMove =
+        createStockMove(
+            fromAddress,
+            toAddress,
+            company,
+            fromStockLocation,
+            toStockLocation,
+            realDate,
+            estimatedDate,
+            null,
+            StockMoveRepository.TYPE_INTERNAL);
+    stockMove.setMassStockMove(massStockMove);
+
+    return stockMove;
+  }
+
+  @Override
   public StockMove createStockMoveMobility(
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
@@ -341,7 +370,17 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   public void plan(StockMove stockMove) throws AxelorException {
-    planStockMove(stockMove);
+    planStockMove(stockMove, true);
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getPlannedStockMoveAutomaticMail() != null
+        && stockMove.getPlannedStockMoveAutomaticMail()) {
+      sendMailForStockMove(stockMove, stockMove.getPlannedStockMoveMessageTemplate());
+    }
+  }
+
+  @Override
+  public void planWithNoSplit(StockMove stockMove) throws AxelorException {
+    planStockMove(stockMove, false);
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
         && stockMove.getPlannedStockMoveAutomaticMail() != null
         && stockMove.getPlannedStockMoveAutomaticMail()) {
@@ -350,7 +389,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void planStockMove(StockMove stockMove) throws AxelorException {
+  protected void planStockMove(StockMove stockMove, boolean splitByTrackingNumber)
+      throws AxelorException {
     if (stockMove.getStatusSelect() == null
         || stockMove.getStatusSelect() != StockMoveRepository.STATUS_DRAFT) {
       throw new AxelorException(
@@ -365,7 +405,11 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
     }
 
-    stockMoveLineService.splitStockMoveLineByTrackingNumber(stockMove);
+    // This call will split move line by tracking number
+    // But only works if the line has not been already splited
+    if (splitByTrackingNumber) {
+      stockMoveLineService.splitStockMoveLineByTrackingNumber(stockMove);
+    }
 
     String draftSeq;
 
@@ -545,6 +589,11 @@ public class StockMoveServiceImpl implements StockMoveService {
    */
   protected void setRealizedStatus(StockMove stockMove) {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
+  }
+
+  public void sendSupplierCancellationMail(StockMove stockMove, Template template)
+      throws AxelorException {
+    sendMailForStockMove(stockMove, template);
   }
 
   /**
@@ -1088,9 +1137,10 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockMoveLine originalStockMoveLine,
       StockMoveLine modifiedStockMoveLine) {
 
-    StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(modifiedStockMoveLine, false);
+    StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(originalStockMoveLine, false);
     newStockMoveLine.setQty(modifiedStockMoveLine.getQty());
     newStockMoveLine.setRealQty(modifiedStockMoveLine.getQty());
+    newStockMoveLine.setUnitPriceUntaxed(modifiedStockMoveLine.getUnitPriceUntaxed());
 
     // Update quantity in original stock move.
     // If the remaining quantity is 0, remove the stock move line

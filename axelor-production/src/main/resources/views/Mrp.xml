@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="mrp-manuf-order-form" model="com.axelor.apps.supplychain.db.Mrp" title="MPS"
     width="large" onLoad="action-attrs-mrp-generate-all-proposals"
     onNew="action-mrp-manuf-order-record-onnew">
+    <toolbar>
+      <button name="printBtn" hideIf="true" onClick=""/>
+    </toolbar>
     <menubar>
       <menu title="Tools" showTitle="true" icon="fa-wrench">
         <item name="runCalculationItem" title="Run calculation" showIf="statusSelect != 1"
@@ -78,6 +81,9 @@
   </form>
 
   <grid name="mrp-manuf-order-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MRP">
+    <toolbar>
+      <button name="printBtn" hideIf="true" onClick=""/>
+    </toolbar>
     <hilite if="statusSelect == 1" strong="true" color="warning"/>
     <hilite if="statusSelect == 2" strong="true" color="success"/>
     <field name="mrpSeq" title="MPS number"/>

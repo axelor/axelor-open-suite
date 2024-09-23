@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="localization-grid" title="Localization"
     model="com.axelor.apps.base.db.Localization">
@@ -9,8 +9,10 @@
     <field name="code" title="Code" required="true" readonly="true"/>
     <field name="country" title="Country"/>
     <field name="language" ref="com.axelor.apps.base.db.Language" title="Language"/>
-    <field name="dateFormat" title="Date Format" help="DD/MM/YYYY"/>
-    <field name="numbersFormat" title="Numbers Format" help="#,###.00"/>
+    <field name="dateFormat" title="Date Format" help="DD/MM/YYYY" hidden="true"
+      readonly="true"/>
+    <field name="numbersFormat" title="Numbers Format" help="#,###.00" hidden="true"
+      readonly="true"/>
   </grid>
 
   <form name="localization-form" title="Localization"
@@ -20,14 +22,21 @@
       <field name="code" title="Code" required="true" colSpan="6" readonly="true"
         x-bind="{{language.code + '_' + country.alpha2Code}}"/>
       <field name="country" title="Country" grid-view="country-grid" form-view="country-form"
-        colSpan="6" onChange="action-localization-record-generate-name-from-country-and-language"/>
+        colSpan="6" onChange="action-localization-group-set-name-and-formats-on-change"/>
       <field name="language" ref="com.axelor.apps.base.db.Language" title="Language"
-        colSpan="6" onChange="action-localization-record-generate-name-from-country-and-language"/>
-      <field name="dateFormat" title="Date Format" help="DD/MM/YYYY" colSpan="6"/>
-      <field name="numbersFormat" title="Numbers Format" help="#,###.00" colSpan="6"/>
+        colSpan="6" onChange="action-localization-group-set-name-and-formats-on-change"/>
+      <field name="dateFormat" title="Date Format" help="DD/MM/YYYY" colSpan="6"
+        readonly="true"/>
+      <field name="numbersFormat" title="Numbers Format" help="#,###.00" colSpan="6"
+        readonly="true"/>
       <field name="country.alpha2Code" hidden="true"/>
     </panel>
   </form>
+
+  <action-group name="action-localization-group-set-name-and-formats-on-change">
+    <action name="action-localization-record-generate-name-from-country-and-language"/>
+    <action name="action-localization-method-compute-date-and-numbers-format-pattern"/>
+  </action-group>
 
   <action-record
     name="action-localization-record-generate-name-from-country-and-language"
@@ -37,5 +46,11 @@
 
   <action-method name="action-localization-method-validate-locale">
     <call class="com.axelor.apps.base.web.LocalizationController" method="validateLocale"/>
+  </action-method>
+
+  <action-method
+    name="action-localization-method-compute-date-and-numbers-format-pattern">
+    <call class="com.axelor.apps.base.web.LocalizationController"
+      method="computeDateAndNumbersFormatPattern"/>
   </action-method>
 </object-views>

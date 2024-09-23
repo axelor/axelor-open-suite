@@ -47,7 +47,9 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
             ? InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
             : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
         saleOrder.getCompany(),
-        saleOrder.getPaymentCondition(),
+        isRefund
+            ? saleOrder.getClientPartner().getOutPaymentCondition()
+            : saleOrder.getPaymentCondition(),
         isRefund ? saleOrder.getClientPartner().getOutPaymentMode() : saleOrder.getPaymentMode(),
         saleOrder.getMainInvoicingAddress(),
         saleOrder.getInvoicedPartner() != null
@@ -120,7 +122,6 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         stockMove.getTradingName());
 
     this.groupProductsOnPrintings = stockMove.getGroupProductsOnPrintings();
-    this.saleOrder = stockMove.getSaleOrder();
   }
 
   @Override

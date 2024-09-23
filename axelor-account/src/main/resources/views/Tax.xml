@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax"
+    id="account-tax-form" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="action-account-group-tax-on-load"/>
+    </extend>
+    <extend target="//panel[@name='mainPanel']/field[@name='taxType']">
+      <insert position="after">
+        <field name="isNonDeductibleTax" widget="boolean-switch"
+          onChange="action-tax-attrs-display-purchase-accounts" if-module="axelor-account"
+          if="__config__.app.isApp('account')" colSpan="3"/>
+
+      </insert>
+    </extend>
+    <extend target="//panel-tabs">
+      <insert position="inside">
+        <panel-related name="accountManagementListPanel"
+          title="Accounting configuration" field="accountManagementList"
+          grid-view="account-management-tax-grid" form-view="account-management-form"
+          if-module="axelor-account" if="__config__.app.isApp('account')"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs name="action-tax-attrs-display-purchase-accounts">
+    <attribute name="hidden" for="accountManagementList.purchaseTaxVatSystem1Account"
+      expr="eval: isNonDeductibleTax"/>
+    <attribute name="hidden" for="accountManagementList.purchaseAccount"
+      expr="eval: !isNonDeductibleTax"/>
+  </action-attrs>
+
+  <action-group name="action-account-group-tax-on-load">
+    <action name="action-base-attrs-set-tax-line-list-scale"/>
+    <action name="action-tax-attrs-display-purchase-accounts"/>
+  </action-group>
+
+</object-views>

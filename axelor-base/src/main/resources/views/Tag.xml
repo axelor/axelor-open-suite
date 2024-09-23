@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid title="Tag" name="tag-grid" model="com.axelor.apps.base.db.Tag">
+    <field name="name"/>
+    <field name="colorSelect" widget="SingleSelect" x-color-field="colorSelect"/>
+    <field name="concernedModelSet" widget="TagSelect" canNew="false"/>
+    <field name="companySet" widget="TagSelect" canNew="false"/>
+    <field name="tradingNameSet" widget="TagSelect" canNew="false"/>
+  </grid>
+
+  <!-- This grid view should be called when we create a new menu entry -->
+  <grid title="Tag" name="tag-simplified-grid" model="com.axelor.apps.base.db.Tag">
+    <field name="name"/>
+    <field name="colorSelect" widget="SingleSelect" x-color-field="colorSelect"/>
+    <field name="companySet" widget="TagSelect" canNew="false"/>
+    <field name="tradingNameSet" widget="TagSelect" canNew="false"/>
+  </grid>
+
+  <form title="Tag" name="tag-form" model="com.axelor.apps.base.db.Tag"
+    onNew="action-tag-method-set-concerned-model">
+    <panel name="mainPanel" colSpan="12">
+      <field name="name"/>
+      <field name="concernedModelSet" placeholder="All" form-view="meta-model-form"
+        grid-view="meta-model-grid" widget="TagSelect" canNew="false"
+        onSelect="action-tag-method-concerned-model-onselect"/>
+      <field name="colorSelect" widget="SingleSelect" x-color-field="colorSelect"/>
+      <field name="companySet" if="__config__.app.getApp('base')?.getEnableMultiCompany()"
+        colSpan="6" canNew="false" widget="TagSelect" placeholder="All" form-view="company-form"
+        grid-view="company-grid"/>
+      <field name="tradingNameSet"
+        if="__config__.app.getApp('base')?.enableTradingNamesManagement" colSpan="6" canNew="false"
+        widget="TagSelect" placeholder="All" grid-view="trading-name-grid"
+        form-view="trading-name-form"/>
+    </panel>
+  </form>
+
+  <action-method name="action-tag-method-concerned-model-onselect">
+    <call class="com.axelor.apps.base.web.TagController" method="setConcernedModelsDomain"/>
+  </action-method>
+
+  <action-method name="action-tag-method-set-concerned-model">
+    <call class="com.axelor.apps.base.web.TagController" method="setDefaultConcernedModel"/>
+  </action-method>
+
+</object-views>

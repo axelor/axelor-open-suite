@@ -19,13 +19,15 @@
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.PrintingTemplate;
+import com.axelor.apps.base.db.repo.PrintingTemplateRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationPrintService;
-import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.utils.StockLocationUtilsService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -37,6 +39,7 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.birt.core.exception.BirtException;
 
@@ -52,6 +55,7 @@ public class StockLocationController {
    * @throws BirtException
    * @throws IOException
    */
+  @SuppressWarnings("unchecked")
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
       Context context = request.getContext();
@@ -75,22 +79,29 @@ public class StockLocationController {
               : new Long[] {Long.valueOf(stockLocationId)};
 
       String printTypeStr = (String) context.get("printingType");
-      String exportType = (String) context.get("exportTypeSelect");
+
+      PrintingTemplate stockLocationPrintTemplate = null;
+      if (context.get("stockLocationPrintTemplate") != null) {
+        stockLocationPrintTemplate =
+            Mapper.toBean(
+                PrintingTemplate.class,
+                (Map<String, Object>) context.get("stockLocationPrintTemplate"));
+        stockLocationPrintTemplate =
+            Beans.get(PrintingTemplateRepository.class).find(stockLocationPrintTemplate.getId());
+      }
 
       Integer printType = Integer.parseInt(printTypeStr);
       String financialDataDateTimeString = (String) context.get("financialDataDateTime");
 
-      ReportSettings reportSettings =
+      String fileLink =
           Beans.get(StockLocationPrintService.class)
               .print(
                   printType,
-                  exportType,
+                  stockLocationPrintTemplate,
                   financialDataDateTimeString,
                   withoutDetailsByStockLocation,
                   idsArray);
-
-      String fileLink = reportSettings.getFileLink();
-      String title = reportSettings.getOutputName();
+      String title = Beans.get(StockLocationPrintService.class).getOutputFileName(idsArray);
 
       response.setView(ActionView.define(title).add("html", fileLink).map());
       response.setCanClose(true);
@@ -105,7 +116,7 @@ public class StockLocationController {
     if (stockLocation.getIsValued()) {
       response.setValue(
           "stockLocationValue",
-          Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));
+          Beans.get(StockLocationUtilsService.class).getStockLocationValue(stockLocation));
     }
   }
 

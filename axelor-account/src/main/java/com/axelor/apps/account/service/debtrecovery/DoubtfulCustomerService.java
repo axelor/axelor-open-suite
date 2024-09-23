@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -39,6 +38,7 @@ import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -461,10 +461,16 @@ public class DoubtfulCustomerService {
       query.append("AND self.move.functionalOriginSelect = :functionalOriginSale");
     }
 
-    return moveLineRepo.all().filter(query.toString()).bind("company", company).bind("date", date)
+    return moveLineRepo
+        .all()
+        .filter(query.toString())
+        .bind("company", company)
+        .bind("date", date)
         .bind("doubtfulCustomerAccount", doubtfulCustomerAccount)
         .bind("functionalOriginSale", MoveRepository.FUNCTIONAL_ORIGIN_SALE)
-        .bind("operationTypeSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE).fetch().stream()
+        .bind("operationTypeSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        .fetch()
+        .stream()
         .map(MoveLine::getId)
         .collect(Collectors.toList());
   }

@@ -21,13 +21,18 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -72,20 +77,30 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
 
     for (TaskTemplate template : templates) {
       Product product = template.getProduct();
-      BigDecimal qtyTmp = (template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
 
-      while (qtyTmp.signum() > 0) {
+      BigDecimal templateQty = template.getQty();
+      if (templateQty.signum() <= 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(
+                I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_TEMPLATE_QUANTITY_ERROR),
+                template.getName()));
+      }
+      taskQty = qty.multiply(templateQty).setScale(2, RoundingMode.HALF_UP);
+
+      BigDecimal numberOfTasks =
+          template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : taskQty;
+
+      if (!template.getIsUniqueTaskForMultipleQuantity()) {
+        taskQty = BigDecimal.ONE;
+      }
+
+      while (numberOfTasks.signum() > 0) {
         LocalDateTime dateWithDelay = startDate.plusHours(template.getDelayToStart().longValue());
 
         ProjectTask task =
-            projectTaskBusinessProjectService.create(template, project, dateWithDelay, qty);
+            projectTaskBusinessProjectService.create(template, project, dateWithDelay, taskQty);
         task.setName(saleOrderLine.getSaleOrder().getSaleOrderSeq() + " - " + task.getName());
-
-        if (!template.getIsUniqueTaskForMultipleQuantity()) {
-          taskQty = BigDecimal.ONE;
-        } else {
-          taskQty = product != null ? template.getQty() : qty;
-        }
 
         fillProjectTask(project, taskQty, saleOrderLine, tasks, product, task, parent);
 
@@ -100,7 +115,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
                 saleOrderLine);
         tasks.addAll(children);
 
-        qtyTmp = qtyTmp.subtract(BigDecimal.ONE);
+        numberOfTasks = numberOfTasks.subtract(BigDecimal.ONE);
       }
     }
     return tasks;
@@ -141,7 +156,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
     }
 
     task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
-    if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
+    if (saleOrderLine.getInvoicingModeSelect() == SaleOrderLineRepository.INVOICING_MODE_PACKAGE) {
       task.setToInvoice(true);
       task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
     }

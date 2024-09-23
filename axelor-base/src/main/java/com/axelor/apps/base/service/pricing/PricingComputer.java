@@ -121,7 +121,7 @@ public class PricingComputer extends AbstractObservablePricing {
       throw new IllegalStateException("This instance has not been correctly initialized");
     }
     LOG.debug("Starting application of pricing {} with model {}", this.pricing, this.model);
-    notifyStarted();
+    notifyStarted(model);
     if (!applyPricing(this.pricing).isPresent()) {
       notifyFinished();
       return;
@@ -150,7 +150,7 @@ public class PricingComputer extends AbstractObservablePricing {
   protected Optional<Pricing> getPreviousPricing(Pricing pricing, Model model)
       throws AxelorException {
     List<Pricing> childPricings =
-        pricingService.getPricings(this.pricing.getCompany(), this.model, pricing);
+        pricingService.getPricings(this.pricing.getCompany(), this.model, pricing, null);
 
     if (childPricings.isEmpty()) {
       return Optional.empty();

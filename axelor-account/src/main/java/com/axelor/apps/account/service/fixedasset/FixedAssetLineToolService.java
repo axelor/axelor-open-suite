@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.interfaces.ArithmeticOperation;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -66,9 +67,5 @@ public interface FixedAssetLineToolService {
 
   boolean equals(BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset);
 
-  @FunctionalInterface
-  interface ArithmeticOperation {
-
-    BigDecimal operate(BigDecimal a, BigDecimal b);
-  }
+  int getCompanyScale(FixedAssetLine fixedAssetLine) throws AxelorException;
 }

@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -47,8 +48,9 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   protected MoveCounterPartService moveCounterPartService;
   protected MassEntryToolService massEntryToolService;
   protected CurrencyService currencyService;
-  protected InvoiceTermService invoiceTermService;
   protected AppAccountService appAccountService;
+  protected AppBaseService appBaseService;
+  protected InvoiceTermPfpToolService invoiceTermPfpToolService;
 
   @Inject
   public MoveLineMassEntryServiceImpl(
@@ -56,14 +58,16 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       MoveCounterPartService moveCounterPartService,
       MassEntryToolService massEntryToolService,
       CurrencyService currencyService,
-      InvoiceTermService invoiceTermService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      AppBaseService appBaseService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryToolService = massEntryToolService;
     this.currencyService = currencyService;
-    this.invoiceTermService = invoiceTermService;
     this.appAccountService = appAccountService;
+    this.appBaseService = appBaseService;
+    this.invoiceTermPfpToolService = invoiceTermPfpToolService;
   }
 
   @Override
@@ -117,7 +121,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   public User getPfpValidatorUserForInTaxAccount(
       Account account, Company company, Partner partner) {
     if (ObjectUtils.notEmpty(account) && account.getUseForPartnerBalance()) {
-      return invoiceTermService.getPfpValidatorUser(partner, company);
+      return invoiceTermPfpToolService.getPfpValidatorUser(partner, company);
     }
     return null;
   }
@@ -135,26 +139,28 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
     }
   }
 
-  protected void setDefaultValues(MoveLineMassEntry moveLine) {
+  protected void setDefaultValues(MoveLineMassEntry moveLine, Company company) {
+    LocalDate todayDate = appBaseService.getTodayDate(company);
+
     moveLine.setTemporaryMoveNumber(1);
     moveLine.setCounter(1);
-    moveLine.setDate(LocalDate.now());
-    moveLine.setOriginDate(LocalDate.now());
+    moveLine.setDate(todayDate);
+    moveLine.setOriginDate(todayDate);
     moveLine.setCurrencyRate(BigDecimal.ONE);
     moveLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
     moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
 
     if (appAccountService.getAppAccount().getManageCutOffPeriod()) {
-      moveLine.setCutOffStartDate(LocalDate.now());
-      moveLine.setCutOffEndDate(LocalDate.now());
-      moveLine.setDeliveryDate(LocalDate.now());
+      moveLine.setCutOffStartDate(todayDate);
+      moveLine.setCutOffEndDate(todayDate);
+      moveLine.setDeliveryDate(todayDate);
     }
   }
 
   @Override
-  public MoveLineMassEntry createMoveLineMassEntry() {
+  public MoveLineMassEntry createMoveLineMassEntry(Company company) {
     MoveLineMassEntry newMoveLine = new MoveLineMassEntry();
-    setDefaultValues(newMoveLine);
+    setDefaultValues(newMoveLine, company);
 
     return newMoveLine;
   }

@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="TrackingNumberConfiguration">
+
+    <boolean name="hasWarranty" title="Warranty"/>
+    <integer name="warrantyNbrOfMonths" title="Warranty length (in months)"/>
+    <boolean name="isPerishable" title="Perishable"/>
+    <integer name="perishableNbrOfDays" title="Time before expiry (in days)"/>
+    <boolean name="checkExpirationDateAtStockMoveRealization"
+      title="Check expiration date at stock move realization"/>
 
     <boolean name="isPurchaseTrackingManaged" title="Manage purchase tracking Nbr."/>
     <boolean name="isProductionTrackingManaged" title="Manage production tracking Nbr."/>
@@ -42,6 +49,10 @@
       ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
     <boolean name="useTrackingNumberSeqAsSerialNbr"
       title="Use tracking number seq as serial number"/>
+
+    <many-to-one name="trackingNumberConfigurationProfile"
+      ref="com.axelor.apps.stock.db.TrackingNumberConfigurationProfile" title="Profile"/>
+    <boolean name="isDimensional" title="Dimensional"/>
 
     <extra-code>
    		<![CDATA[

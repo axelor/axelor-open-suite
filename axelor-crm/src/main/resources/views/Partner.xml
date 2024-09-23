@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="partner-related-contact-grid" model="com.axelor.apps.base.db.Partner"
     title="Contacts">
@@ -44,7 +44,7 @@
           if-module="axelor-project" if="__config__.app.isApp('project')" hideIf="isContact"/>
         <item title="Customer recovery" name="customerRecoveryItem"
           action="action-partner-view-show-customer-debt-recovery"
-          if="__config__.app.isApp('account')"/>
+          if="__config__.app.isApp('account')" showIf="isCustomer"/>
         <item title="Create sale quotation" name="createSaleQuotationItem"
           action="save,action-partner-view-create-order" if="__config__.app.isApp('sale')"
           showIf="isCustomer"/>
@@ -128,9 +128,6 @@
     <extend target="//field[@name='source']">
       <attribute name="canNew" value="true"/>
     </extend>
-    <extend target="//field[@name='taxNbr']">
-      <attribute name="showIf" value="isCustomer"/>
-    </extend>
     <extend target="//field[@name='paymentDelay']">
       <attribute name="showIf" value="isCustomer"/>
     </extend>
@@ -162,12 +159,6 @@
     </extend>
     <extend target="//panel[@name='settingsPanel']">
       <replace/>
-    </extend>
-    <extend target="//panel[@name='paymentPanel']">
-      <attribute name="hideIf" value="isProspect"/>
-    </extend>
-    <extend target="//panel-related[@name='accountingSituationListPanel']">
-      <attribute name="hideIf" value="isProspect"/>
     </extend>
     <extend target="//button[@name='showAllEventsBtn']">
       <insert position="after">
@@ -361,7 +352,6 @@
     <hilite color="success" if="leadScoringSelect == 5.00"/>
     <template> <![CDATA[
 	         <>
-	         	{picture && <Image src={$image('picture', 'image')} w={25} h={25} style={{ objectFit: "contain" }}></Image>}
 	         	<dl>
 	         		{name &&
 	         			<Box>
@@ -388,6 +378,9 @@
 	         			</Box>
 	         		</Box>
 	         	</dl>
+	         	<Box d="flex" justifyContent="flex-end">
+	         		{picture && <Image src={$image('picture', 'image')} w={25} h={25} style={{ objectFit: "contain", width: "1.5rem", height: "1.5rem", borderRadius: "100%" }}></Image>}
+	         	</Box>
 	        	<Box className="card-summary popover">
 	       			<Box as="p" m={2}>
 	        			{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ wordBreak: "break-all", maxWidth: 250 }}></Box>}
@@ -421,7 +414,8 @@
     <field name="partnerCategory" form-view="partner-category-form"
       grid-view="partner-category-grid"/>
     <field name="user"/>
-    <field if="__config__.app.getApp('base').getEnableMultiCompany()" name="companyStr"/>
+    <field if="__config__.app.getApp('base').getEnableMultiCompany()" name="companySet"
+      widget="TagSelect"/>
     <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
     <button if="__config__.app.isApp('crm')" if-module="axelor-crm" name="scheduleEventBtn"
       title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event"/>
@@ -431,7 +425,7 @@
 
   <grid id="crm-partner-grid" name="partner-grid" title="Partners"
     model="com.axelor.apps.base.db.Partner" orderBy="name" extension="true">
-    <extend target="//field[@name='companyStr']">
+    <extend target="//field[@name='companySet']">
       <insert position="after">
         <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
       </insert>

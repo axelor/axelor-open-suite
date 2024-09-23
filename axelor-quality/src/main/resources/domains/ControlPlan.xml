@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="quality" package="com.axelor.apps.quality.db"/>
 
@@ -11,7 +11,7 @@
     <many-to-one name="controlPlanFrequency"
       ref="com.axelor.apps.quality.db.ControlPlanFrequency" title="Frequency"/>
     <string large="true" name="description" title="Description"/>
-    <many-to-many name="controlPlanLinesSet"
+    <one-to-many name="controlPlanLinesList"
       ref="com.axelor.apps.quality.db.ControlEntryPlanLine" title="Control plan lines"
       mappedBy="controlPlan"/>
     <integer name="statusSelect" selection="quality.control.plan.status.select"

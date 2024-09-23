@@ -20,7 +20,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.PaymentConditionToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -31,6 +31,8 @@ import com.axelor.apps.supplychain.db.TimetableTemplate;
 import com.axelor.apps.supplychain.db.TimetableTemplateLine;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -43,7 +45,17 @@ import java.util.List;
 
 public class TimetableServiceImpl implements TimetableService {
 
-  @Inject SaleOrderInvoiceService saleOrderInvoiceService;
+  SaleOrderInvoiceService saleOrderInvoiceService;
+  TimetableRepository timetableRepository;
+
+  public static final int FETCH_LIMIT = 10;
+
+  @Inject
+  public TimetableServiceImpl(
+      SaleOrderInvoiceService saleOrderInvoiceService, TimetableRepository timetableRepository) {
+    this.saleOrderInvoiceService = saleOrderInvoiceService;
+    this.timetableRepository = timetableRepository;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -106,7 +118,7 @@ public class TimetableServiceImpl implements TimetableService {
     for (TimetableTemplateLine templateLine : template.getTimetableTemplateLineList()) {
       Timetable timetable = new Timetable();
       timetable.setEstimatedDate(
-          InvoiceToolService.getDueDate(
+          PaymentConditionToolService.getDueDate(
               templateLine.getTypeSelect(),
               templateLine.getPaymentTime(),
               templateLine.getPeriodTypeSelect(),
@@ -120,5 +132,14 @@ public class TimetableServiceImpl implements TimetableService {
 
     timetables.sort(Comparator.comparing(Timetable::getEstimatedDate));
     return timetables;
+  }
+
+  @Override
+  public void deleteInvoiceTimeTable(Invoice invoice) {
+    JPA.em()
+        .createQuery(
+            "UPDATE Timetable self SET self.invoice = NULL WHERE self.invoice.id = :invoiceId")
+        .setParameter("invoiceId", invoice.getId())
+        .executeUpdate();
   }
 }

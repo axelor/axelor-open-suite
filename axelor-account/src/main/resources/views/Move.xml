@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="move-grid" orderBy="-date" canArchive="false" title="Account moves"
     model="com.axelor.apps.account.db.Move" canDelete="false">
@@ -76,8 +76,8 @@
     onNew="action-account-group-onnew" onLoad="action-account-move-method-onLoad"
     onSave="action-account-move-group-onsave">
     <toolbar>
-      <button name="printBtn" title="Print Move" icon="fa-print"
-        onClick="save,action-method-print-birt"/>
+      <button name="viewEntriesBtn" title="View entry lines"
+        onClick="action-move-view-show-move-lines"/>
       <button name="reverseBtn" title="Reverse" icon="fa-exchange"
 
         onClick="save,action-move-view-open-generate-reverse-wizard"
@@ -105,7 +105,7 @@
             onSelect="action-move-method-trading-name-onselect" colSpan="2"/>
           <spacer if="!__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
             colSpan="2"/>
-          <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
+          <field name="journal" onSelect="action-move-method-journal-onselect"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
             onChange="action-account-move-method-journal-onchange" colSpan="3"/>
@@ -113,6 +113,9 @@
             readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2 &amp;&amp; statusSelect != 5"
             colSpan="3"
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
+          <spacer showIf="$validateJournalRole"/>
+          <label name="$userNotAuthorizedOnJournal" showIf="$validateJournalRole"
+            title="Warning, you're not authorized to edit moves on this journal." css="label-danger"/>
           <panel name="datePanel" showFrame="false" colSpan="12">
             <field name="period" form-view="period-form" grid-view="period-grid"
               canEdit="false" canView="false" readonly="true" colSpan="4"/>
@@ -322,7 +325,7 @@
       <panel name="detailsPanel" title="Details">
         <panel name="relatedToPanel" title="Related to" readonly="true" colSpan="12"
           itemSpan="4" stacked="true"
-          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves &amp;&amp; !expense &amp;&amp; !expensePayment">
+          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves &amp;&amp; !expense &amp;&amp; !expensePayment &amp;&amp; !$isThereRelatedFixedAsset">
           <field name="invoice" hideIf="functionalOriginSelect == 5 || !invoice"
             readonlyIf="$validatePeriod" form-view="invoice-form" grid-view="invoice-grid"/>
           <field name="paymentVoucher" readonlyIf="$validatePeriod"
@@ -342,6 +345,9 @@
             name="relatedCutOffMovesPanel" title="Related cut off moves"
             showIf="$isThereRelatedCutOffMoves" colSpan="12"
             action="action-move-view-related-cut-off-moves"/>
+          <panel-dashlet action="action-move-method-show-related-fixed-asset"
+            showIf="$isThereRelatedFixedAsset" name="fixedAssetPanel" title="Related fixed assets"
+            colSpan="12" height="300"/>
         </panel>
         <panel name="accountingExportPanel" colSpan="12" itemSpan="3"
           title="Accounting export" hidden="true" readonly="true" hideIf="statusSelect == 1">
@@ -806,6 +812,14 @@
 
   <action-method name="action-move-method-company-onselect">
     <call class="com.axelor.apps.account.web.MoveController" method="onSelectCompany"/>
+  </action-method>
+
+  <action-method name="action-move-method-show-related-fixed-asset">
+    <call class="com.axelor.apps.account.web.MoveController" method="showRelatedFixedAsset"/>
+  </action-method>
+
+  <action-method name="action-move-method-journal-onselect">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSelectJournal"/>
   </action-method>
 
   <!-- ACTION VIEW -->

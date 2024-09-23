@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -92,7 +92,7 @@
     <boolean name="isKeyAccount" title="Key account"/>
     <many-to-one ref="com.axelor.apps.base.db.PartnerCategory" name="type"
       title="Category"/>
-    <many-to-many ref="com.axelor.apps.crm.db.LeadTag" name="leadTagSet" title="Tags"/>
+    <many-to-many ref="com.axelor.apps.base.db.Tag" name="leadTagSet" title="Tags"/>
     <integer name="sequence" title="Sequence"/>
     <extra-code>
     <![CDATA[

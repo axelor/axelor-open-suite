@@ -1,4 +1,0 @@
-title: Some products are not selectable in sale order line
-type: fix
-description:
-  If a product has field 'expense' as null product can still be selectable in a sale order line.

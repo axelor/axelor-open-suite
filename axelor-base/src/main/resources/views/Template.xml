@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="template-grid" id="template-grid-base" title="Templates"
     model="com.axelor.message.db.Template">
@@ -32,8 +32,8 @@
         </editor>
       </field>
       <field name="mediaTypeSelect"/>
-      <field name="localization" canEdit="false" form-view="localization-form"
-        grid-view="localization-grid"/>
+      <field name="localizationSet" widget="TagSelect" canEdit="false" canNew="false"
+        form-view="localization-form" grid-view="localization-grid"/>
       <field name="templateEngineSelect"/>
       <field name="isJson" onChange="action-template-record-is-json-change"/>
       <panel itemSpan="12">
@@ -47,18 +47,17 @@
         grid-view="template-context-grid" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel name="contentPanel" title="Contenu">
+      <panel name="contentPanel" title="Content">
         <panel name="recipientAddressPanel" title="Recipient address"
           showIf="mediaTypeSelect == 1">
           <field name="addressBlock" showTitle="false" colSpan="12" height="5" widget="html"
             x-lite="false"/>
         </panel>
-        <panel name="senderPanel" title="Sender" colSpan="12"
-          showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
+        <panel name="senderPanel" title="Sender" colSpan="12" showIf="mediaTypeSelect == 2">
           <field name="replyToRecipients" height="2"/>
         </panel>
-        <panel name="recipientsPanel" title="Recipients"
-          showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4" colSpan="12">
+        <panel name="recipientsPanel" title="Recipients" showIf="mediaTypeSelect == 2"
+          colSpan="12">
           <field name="toRecipients" colSpan="12" height="2"
             help="Please use ',' ';' or '|' as separator between two email addresses."/>
           <field name="ccRecipients" colSpan="12" height="2"
@@ -82,8 +81,8 @@
         <panel-related name="templateContextPanel" field="templateContextList"
           colSpan="12"/>
         <panel name="attachedFilesPanel" title="Attached files" colSpan="12">
-          <field name="birtTemplateSet" colSpan="12" widget="TagSelect" canEdit="false"
-            form-view="birt-template-form" grid-view="birt-template-grid"/>
+          <field name="printTemplateSet" colSpan="12" widget="TagSelect" canEdit="false"
+            form-view="printing-template-form" grid-view="printing-template-grid"/>
         </panel>
       </panel>
       <panel title="Configuration" name="configurationPanel">
@@ -100,8 +99,8 @@
 					<span>{_t('We can access direct/o2o/m2o fields of template model by specifying field path surrounded by')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$$</Box><Box/>
 					<span>{_t('Examples')}</span>:
 					<ul>
-						<li> <span>{_t('To access product\'s full name')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.fullName$</Box> </li>
-						<li> <span>{_t('To access product\'s ProductCategory')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.productCategory.name$</Box> </li>
+						<li> <span>{_t("To access product's full name")}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.fullName$</Box> </li>
+						<li> <span>{_t("To access product's ProductCategory")}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.productCategory.name$</Box> </li>
 					</ul>
 				</p>
 				<p>

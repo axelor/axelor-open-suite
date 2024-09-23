@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form title="Site" name="site-form" id="human-resource-site-form"
+    model="com.axelor.apps.base.db.Site" extension="true">
+    <extend target="//panel[@name='basePanel']">
+      <insert position="after">
+        <panel name="hrPanel" title="HR"
+          if="__config__.app.getApp('base')?.enableSiteManagementForProject">
+          <field name="isUsableOnExpense" widget="boolean-switch"/>
+          <field name="isUsableOnTimesheet" widget="boolean-switch"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs name="action-site-attrs-set-defaults"
+    id="human-resource-action-site-attrs-set-defaults">
+    <attribute for="company" name="value" expr="eval: __user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <attribute for="typeSelect" name="value" expr="1"/>
+    <attribute for="isUsableOnProject" name="value" expr="eval:_isFromProject"/>
+    <attribute for="isUsableOnExpense" name="value" expr="eval:_isFromProject"/>
+    <attribute for="isUsableOnTimesheet" name="value" expr="eval:_isFromProject"/>
+    <attribute for="isUsableOnProject" name="value" expr="eval: true"
+      if="__parent__?._model == 'com.axelor.studio.db.AppBase' || __parent__?._model == 'com.axelor.apps.project.db.Project'"/>
+  </action-attrs>
+
+</object-views>

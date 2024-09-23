@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="PrintingTemplate">
+
+    <string name="name" namecolumn="true" title="Name" translatable="true"/>
+    <many-to-one ref="com.axelor.meta.db.MetaModel" name="metaModel" title="Model"/>
+    <one-to-many name="printingTemplateLineList"
+      ref="com.axelor.apps.base.db.PrintingTemplateLine" mappedBy="printTemplate"
+      title="Printing template lines"/>
+    <integer name="statusSelect" default="1"
+      selection="base.printing.template.status.select"/>
+    <boolean name="toAttach" title="Attach" default="false"/>
+    <string name="scriptFieldName" title="Script field name" large="true"/>
+
+    <extra-code><![CDATA[
+		public static final Integer PRINTING_TEMPLATE_STATUS_SELECT_DRAFT = 1;
+		public static final Integer PRINTING_TEMPLATE_STATUS_SELECT_ACTIVE = 2;
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="country-grid" title="Countries" model="com.axelor.apps.base.db.Country">
     <field name="name"/>
@@ -21,6 +21,8 @@
       <field name="citizenship"/>
       <field name="addressTemplate" grid-view="address-template-grid"
         form-view="address-template-form"/>
+      <field name="registrationNumberTemplate" grid-view="registration-number-template-grid"
+        form-view="registration-number-template-form"/>
     </panel>
     <panel name="attributesPanel" title="Attributes">
       <field name="cog"/>

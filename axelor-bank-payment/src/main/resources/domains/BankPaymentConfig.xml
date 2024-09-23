@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
@@ -42,17 +42,18 @@
       help="If actived, on the bankReconciliation form, once the button Load Statement will be clicked, accounting of entries will be executed"/>
 
     <decimal name="bnkStmtAutoReconcileAmountMargin"
-      title="Amount of the semi-interval of confidence for the amounts" min="0.00" max="1000.00"/>
+      title="Amount of the semi-interval of confidence for the amounts" min="0.000" max="1000.000"
+      precision="20" scale="3"/>
     <integer name="bnkStmtAutoReconcileDateMargin"
       title="Duration (days) of the semi-interval of convidence for the dates" min="0" max="90"/>
 
     <!-- SEPA Direct Debit -->
     <string name="icsNumber" title="ICS Number" min="13" max="13"/>
 
-    <many-to-one name="bankStatementLinesBirtTemplate"
-      title="Bank statement lines template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="bankReconciliationStatementBirtTemplate"
-      title="Bank reconciliation statement template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="bankStatementLinesPrintTemplate"
+      title="Bank statement lines template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="bankReconciliationStatementPrintTemplate"
+      title="Bank reconciliation statement template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
     <track>
       <field name="company" on="UPDATE"/>
@@ -77,8 +78,8 @@
       <field name="bnkStmtAutoReconcileDateMargin" on="UPDATE"/>
 
       <field name="icsNumber" on="UPDATE"/>
-      <field name="bankStatementLinesBirtTemplate" on="UPDATE"/>
-      <field name="bankReconciliationStatementBirtTemplate" on="UPDATE"/>
+      <field name="bankStatementLinesPrintTemplate" on="UPDATE"/>
+      <field name="bankReconciliationStatementPrintTemplate" on="UPDATE"/>
     </track>
 
   </entity>

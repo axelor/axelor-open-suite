@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid model="com.axelor.apps.intervention.db.Range" title="Range" name="range-grid">
+    <field name="title"/>
+    <field name="tradingName" grid-view="trading-name-grid" form-view="trading-name-form"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+    <field name="rangeType" grid-view="range-type-grid" form-view="range-type-form"/>
+    <field name="isPrivate"/>
+    <field name="description"/>
+  </grid>
+
+  <form model="com.axelor.apps.intervention.db.Range" title="Range" name="range-form"
+    width="large">
+    <panel name="mainPanel">
+      <field name="title"/>
+      <field name="tradingName" grid-view="trading-name-grid" form-view="trading-name-form"
+        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+      <field name="rangeType" grid-view="range-type-grid" form-view="range-type-form"/>
+      <field name="isPrivate"/>
+      <field name="description" colSpan="12"/>
+      <button name="addRangeQuestionBtn" title="Create range question" css="btn-success"
+        onClick="save,action-range-view-add-range-question"/>
+      <button name="deleteRangeQuestionsBtn" title="Delete range questions" css="btn-danger"
+        onClick="save,action-range-view-delete-range-questions"/>
+    </panel>
+    <panel-dashlet action="action-range-view-range-questions" colSpan="12"
+      canEdit="true"/>
+    <panel-dashlet action="action-range-view-linked-intervention-types"
+      title="Linked intervention types" canEdit="true"/>
+    <panel-mail name="mailsPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <form title="Delete range questions" name="delete-range-questions-form"
+    model="com.axelor.apps.intervention.db.Range">
+    <panel name="mainPanel">
+      <field name="$_xRangeQuestionList" domain="self.rangeVal.id = :id" type="many-to-many"
+        target="com.axelor.apps.intervention.db.RangeQuestion" colSpan="12"
+        grid-view="range-question-grid" form-view="range-question-form" canEdit="false"
+        canNew="false" showTitle="false" title=""/>
+      <button name="deleteBtn" title="Delete" css="btn-danger" colOffset="6"
+        onClick="action-range-validate-remove-range-questions,action-range-method-remove-range-questions"/>
+    </panel>
+  </form>
+
+  <action-view name="action-range-view-linked-intervention-types"
+    title="Linked intervention types" model="com.axelor.apps.intervention.db.InterventionType">
+    <view type="grid" name="intervention-type-grid"/>
+    <view type="form" name="intervention-type-form"/>
+    <domain>
+      :rangeId in self.advancedStartupMonitoringRange.id
+      OR :rangeId in
+      self.headerRangeList.rangeVal.id
+      OR :rangeId in self.equipmentRangeList.rangeVal.id
+      OR :rangeId
+      in self.footerRangeList.rangeVal.id
+    </domain>
+    <context name="rangeId" expr="eval: id == null ? 0 : id"/>
+  </action-view>
+
+  <action-view name="action-range-view-range-questions" title="Range questions"
+    model="com.axelor.apps.intervention.db.RangeQuestion">
+    <view type="grid" name="range-question-grid"/>
+    <view type="form" name="range-question-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <domain>self.rangeVal = :__self__</domain>
+  </action-view>
+
+  <action-view name="action-range-view-add-range-question" title="Range question"
+    model="com.axelor.apps.intervention.db.RangeQuestion">
+    <view name="range-question-form" type="form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_rangeVal" expr="eval:__self__"/>
+  </action-view>
+
+  <action-view name="action-range-view-delete-range-questions"
+    title="Delete range questions" model="com.axelor.apps.intervention.db.Range">
+    <view name="delete-range-questions-form" type="form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-validate name="action-range-validate-remove-range-questions">
+    <alert message="Are you sure wants to remove selected questions?"/>
+  </action-validate>
+
+  <action-script name="action-range-script-remove-range-questions"
+    model="com.axelor.apps.intervention.db.Range">
+    <script language="groovy" transactional="true">
+      <![CDATA[
+        $em.createNativeQuery("DELETE FROM intervention_range_question brq WHERE brq.id IN :ids").setParameter("ids", $request.context.get("_xRangeQuestionList").id).executeUpdate()
+        $response.canClose = true
+      ]]>
+    </script>
+
+  </action-script>
+
+  <action-method name="action-range-method-remove-range-questions">
+    <call class="com.axelor.apps.intervention.web.RangeController"
+      method="removeRangeQuestions"/>
+  </action-method>
+</object-views>

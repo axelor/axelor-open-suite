@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -65,6 +65,11 @@
     <boolean name="isCostPerProcessLine" title="Cost per process line"/>
     <boolean name="employeeScheduling" title="Employee scheduling" default="false"/>
 
+    <boolean name="allowPersonalizedBOM" title="Allow to personalize bill of material"
+      default="true"/>
+    <boolean name="allowPersonalizedProdProcess"
+      title="Allow to personalize production process" default="true"/>
+
     <extra-code><![CDATA[
 		// OPERATION_CONTINUITY_SELECT
         public static final int OPERATION_CONTINUITY_SELECT_NO_CONTINUITY =0;
@@ -104,6 +109,8 @@
       <field name="manageWorkCenterGroup" on="UPDATE"/>
       <field name="isInputInHundredthHours" on="UPDATE"/>
 
+      <field name="allowPersonalizedBOM" on="UPDATE"/>
+      <field name="allowPersonalizedProdProcess" on="UPDATE"/>
     </track>
   </entity>
 

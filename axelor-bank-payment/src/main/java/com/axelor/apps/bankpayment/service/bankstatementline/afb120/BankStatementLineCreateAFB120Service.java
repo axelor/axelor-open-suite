@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementDateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineCreateAbstractService;
 import com.axelor.apps.base.AxelorException;
@@ -31,7 +32,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
-import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.utils.helpers.file.FileHelper;
 import com.google.common.collect.Lists;
@@ -54,6 +54,7 @@ public class BankStatementLineCreateAFB120Service extends BankStatementLineCreat
   protected BankDetailsRepository bankDetailsRepository;
   protected InterbankCodeLineRepository interbankCodeLineRepository;
   protected BankStatementLineMapperAFB120Service bankStatementLineMapperAFB120Service;
+  protected BankStatementDateService bankStatementDateService;
 
   @Inject
   public BankStatementLineCreateAFB120Service(
@@ -64,7 +65,8 @@ public class BankStatementLineCreateAFB120Service extends BankStatementLineCreat
       CurrencyRepository currencyRepository,
       BankDetailsRepository bankDetailsRepository,
       InterbankCodeLineRepository interbankCodeLineRepository,
-      BankStatementLineMapperAFB120Service bankStatementLineMapperAFB120Service) {
+      BankStatementLineMapperAFB120Service bankStatementLineMapperAFB120Service,
+      BankStatementDateService bankStatementDateService) {
     super(bankStatementRepository, bankStatementService);
     this.bankStatementLineCreationAFB120Service = bankStatementLineCreationAFB120Service;
     this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
@@ -72,6 +74,7 @@ public class BankStatementLineCreateAFB120Service extends BankStatementLineCreat
     this.bankDetailsRepository = bankDetailsRepository;
     this.interbankCodeLineRepository = interbankCodeLineRepository;
     this.bankStatementLineMapperAFB120Service = bankStatementLineMapperAFB120Service;
+    this.bankStatementDateService = bankStatementDateService;
   }
 
   @Transactional
@@ -130,34 +133,9 @@ public class BankStatementLineCreateAFB120Service extends BankStatementLineCreat
             structuredContentLine.getUnavailabilityIndexSelect(),
             structuredContentLine.getCommissionExemptionIndexSelect());
 
-    updateBankStatementDate(operationDate, lineType);
+    bankStatementDateService.updateBankStatementDate(bankStatement, operationDate, lineType);
 
     return bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
-  }
-
-  protected void updateBankStatementDate(LocalDate operationDate, int lineType) {
-    if (operationDate == null) {
-      return;
-    }
-
-    if (ObjectUtils.notEmpty(bankStatement.getFromDate())
-        && lineType == BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE) {
-      if (operationDate.isBefore(bankStatement.getFromDate()))
-        bankStatement.setFromDate(operationDate);
-    } else if (lineType == BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE) {
-      bankStatement.setFromDate(operationDate);
-    }
-
-    if (ObjectUtils.notEmpty(bankStatement.getToDate())
-        && lineType == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE) {
-      if (operationDate.isAfter(bankStatement.getToDate())) {
-        bankStatement.setToDate(operationDate);
-      }
-    } else {
-      if (lineType == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE) {
-        bankStatement.setToDate(operationDate);
-      }
-    }
   }
 
   protected List<StructuredContentLine> readFile() throws IOException, AxelorException {

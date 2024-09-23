@@ -18,13 +18,9 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -40,13 +36,11 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     implements TimesheetLineBusinessService {
@@ -84,28 +78,6 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   }
 
   @Override
-  public TimesheetLine createTimesheetLine(
-      Project project,
-      Product product,
-      Employee employee,
-      LocalDate date,
-      Timesheet timesheet,
-      BigDecimal hours,
-      String comments) {
-    TimesheetLine timesheetLine =
-        super.createTimesheetLine(project, product, employee, date, timesheet, hours, comments);
-
-    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")
-        && project != null
-        && (project.getIsInvoicingTimesheet()
-            || (project.getParentProject() != null
-                && project.getParentProject().getIsInvoicingTimesheet())))
-      timesheetLine.setToInvoice(true);
-
-    return timesheetLine;
-  }
-
-  @Override
   public TimesheetLine getDefaultToInvoice(TimesheetLine timesheetLine) {
     Project project =
         timesheetLine.getProject() != null
@@ -121,12 +93,9 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     if (projectTask == null && project != null) {
       toInvoice = project.getIsInvoicingTimesheet();
     } else if (projectTask != null) {
-      toInvoice = projectTask.getToInvoice();
-      if (projectTask.getParentTask() != null) {
-        toInvoice =
-            projectTask.getParentTask().getInvoicingType()
-                == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT;
-      }
+      toInvoice =
+          projectTask.getToInvoice()
+              && projectTask.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT;
     } else {
       toInvoice = false;
     }
@@ -142,42 +111,12 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     return timesheetLineRepo.save(timesheetLine);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  public TimesheetLine setTimesheet(TimesheetLine timesheetLine) throws AxelorException {
-    Timesheet timesheet = getTimesheetQuery(timesheetLine).order("id").fetchOne();
-    if (timesheet == null) {
-      Timesheet lastTimesheet =
-          timesheetRepo
-              .all()
-              .filter(
-                  "self.employee = ?1 AND self.statusSelect != ?2 AND self.toDate is not null",
-                  timesheetLine.getEmployee(),
-                  TimesheetRepository.STATUS_CANCELED)
-              .order("-toDate")
-              .fetchOne();
-      timesheet =
-          timesheetCreateService.createTimesheet(
-              timesheetLine.getEmployee(),
-              lastTimesheet != null && lastTimesheet.getToDate() != null
-                  ? lastTimesheet.getToDate().plusDays(1)
-                  : timesheetLine.getDate(),
-              null);
-      timesheet = timesheetRepo.save(timesheet);
-    }
-    timesheetLine.setTimesheet(timesheet);
-    return timesheetLine;
-  }
-
   @Override
   public QueryBuilder<TimesheetLine> getTimesheetLineInvoicingFilter() {
     QueryBuilder<TimesheetLine> timespentQueryBuilder =
         QueryBuilder.of(TimesheetLine.class)
-            .add(
-                "((self.projectTask.parentTask.invoicingType = :_invoicingType "
-                    + "AND self.projectTask.parentTask.toInvoice = :_teamTaskToInvoice) "
-                    + " OR (self.projectTask.parentTask IS NULL "
-                    + "AND self.projectTask.invoicingType = :_invoicingType "
-                    + "AND self.projectTask.toInvoice = :_projectTaskToInvoice))")
+            .add("self.projectTask.invoicingType = :_invoicingType")
+            .add("self.projectTask.toInvoice = :_projectTaskToInvoice")
             .add("self.projectTask.project.isBusinessProject = :_isBusinessProject")
             .add("self.toInvoice = :_toInvoice")
             .bind("_invoicingType", ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT)
@@ -212,13 +151,10 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   }
 
   @Override
-  public Query<Timesheet> getTimesheetQuery(TimesheetLine timesheetLine) {
-    return timesheetRepo
-        .all()
-        .filter(
-            "self.employee = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
-            timesheetLine.getEmployee(),
-            timesheetLine.getProject().getCompany(),
-            timesheetLine.getDate());
+  public Product getDefaultProduct(TimesheetLine timesheetLine) {
+    return Optional.ofNullable(timesheetLine)
+        .map(TimesheetLine::getProjectTask)
+        .map(ProjectTask::getProduct)
+        .orElse(super.getDefaultProduct(timesheetLine));
   }
 }

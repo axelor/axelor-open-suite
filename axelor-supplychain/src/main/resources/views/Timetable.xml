@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="timetable-grid" title="Timetables"
     model="com.axelor.apps.supplychain.db.Timetable" orderBy="estimatedDate" editable="true">
@@ -121,11 +121,8 @@
   <action-record name="action-timetable-record-on-percentage-change"
     model="com.axelor.apps.supplychain.db.Timetable">
     <field name="amount"
-      expr="eval: (__parent__.exTaxTotal != null) ? (__parent__.exTaxTotal * percentage / 100).setScale(saleOrder?.currency?.numberOfDecimals, java.math.RoundingMode.HALF_UP) : 0"
-      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
-    <field name="amount"
-      expr="eval: (__parent__.exTaxTotal != null) ? (__parent__.exTaxTotal * percentage / 100).setScale(purchaseOrder?.currency?.numberOfDecimals, java.math.RoundingMode.HALF_UP) : 0"
-      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+      expr="eval: (__parent__.exTaxTotal != null) ? (__parent__.exTaxTotal * percentage / 100).setScale(__parent__?.currency?.numberOfDecimals, java.math.RoundingMode.HALF_UP) : 0"
+      if="__parent__ != null &amp;&amp; (__parent__._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder')"/>
   </action-record>
 
   <action-method name="action-timetable-method-generate-invoice">

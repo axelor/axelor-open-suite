@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid title="Site" name="site-grid" model="com.axelor.apps.base.db.Site">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="typeSelect"/>
+    <field name="partner"/>
+    <field name="address"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+  </grid>
+
+  <form title="Site" name="site-form" model="com.axelor.apps.base.db.Site"
+    onNew="action-site-attrs-set-defaults">
+    <panel name="mainPanel">
+      <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
+        <editor x-show-titles="false">
+          <field name="code" showTitle="false" css="label-bold bold large" colSpan="3"/>
+          <field name="name" showTitle="false" css="label-bold bold large" colSpan="9"/>
+        </editor>
+      </field>
+      <field name="address" canNew="true" colSpan="4"/>
+      <field name="company" canNew="false" colSpan="4"/>
+      <field name="tradingName" canNew="false" colSpan="4" readonlyIf="!company"
+        domain="self.company = :company" form-view="trading-name-form" grid-view="trading-name-grid"
+        if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    </panel>
+    <panel-tabs>
+      <panel name="basePanel" hidden="true">
+        <!-- empty panel for extension -->
+      </panel>
+    </panel-tabs>
+    <panel name="siteTypePanel" sidebar="true">
+      <field name="typeSelect"/>
+      <field name="partner" hidden="true" showIf="typeSelect == 2"
+        requiredIf="typeSelect == 2"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-site-attrs-set-defaults">
+    <attribute for="company" name="value" expr="eval: __user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <attribute for="typeSelect" name="value" expr="1"/>
+  </action-attrs>
+
+</object-views>

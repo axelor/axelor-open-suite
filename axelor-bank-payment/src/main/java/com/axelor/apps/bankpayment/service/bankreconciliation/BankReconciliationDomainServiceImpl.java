@@ -1,13 +1,29 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -43,51 +59,49 @@ public class BankReconciliationDomainServiceImpl implements BankReconciliationDo
   public String getDomainForWizard(
       BankReconciliation bankReconciliation,
       BigDecimal bankStatementCredit,
+      BigDecimal bankStatementDebit)
+      throws AxelorException {
+    String query =
+        getMultipleReconcileQuery(bankReconciliation, bankStatementCredit, bankStatementDebit);
+    List<MoveLine> authorizedMoveLines =
+        moveLineRepository
+            .all()
+            .filter(query)
+            .bind(bankReconciliationQueryService.getBindRequestMoveLine(bankReconciliation))
+            .fetch();
+
+    return "self.id in (" + StringHelper.getIdListString(authorizedMoveLines) + ")";
+  }
+
+  protected String getMultipleReconcileQuery(
+      BankReconciliation bankReconciliation,
+      BigDecimal bankStatementCredit,
       BigDecimal bankStatementDebit) {
+    String query = "";
+
     if (bankReconciliation != null
         && bankReconciliation.getCompany() != null
         && bankStatementCredit != null
         && bankStatementDebit != null) {
-      String query =
-          "self.move.company.id = "
-              + bankReconciliation.getCompany().getId()
-              + " AND self.move.currency.id = "
-              + bankReconciliation.getCurrency().getId()
-              + " AND (self.move.statusSelect = "
-              + MoveRepository.STATUS_ACCOUNTED
-              + " OR self.move.statusSelect = "
-              + MoveRepository.STATUS_DAYBOOK
-              + ")"
-              + " AND abs(self.currencyAmount) > 0 AND self.bankReconciledAmount < abs(self.currencyAmount) ";
 
-      if (bankStatementCredit.signum() > 0) {
-        query = query.concat(" AND self.debit > 0");
-      }
-      if (bankStatementDebit.signum() > 0) {
-        query = query.concat(" AND self.credit > 0");
-      }
-      if (bankReconciliation.getCashAccount() != null) {
-        query =
-            query.concat(" AND self.account.id = " + bankReconciliation.getCashAccount().getId());
-      } else {
-        query =
-            query.concat(
-                " AND self.account.accountType.technicalTypeSelect LIKE '"
-                    + AccountTypeRepository.TYPE_CASH
-                    + "'");
-      }
-      if (bankReconciliation.getJournal() != null) {
-        query =
-            query.concat(" AND self.move.journal.id = " + bankReconciliation.getJournal().getId());
-      } else {
+      query = bankReconciliationQueryService.getRequestMoveLines();
+
+      if (bankReconciliation.getJournal() == null) {
         query =
             query.concat(
                 " AND self.move.journal.journalType.technicalTypeSelect = "
                     + JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY);
       }
-      return query;
+
+      if (bankStatementCredit.signum() > 0) {
+        query = query.concat(" AND self.debit > 0");
+      }
+
+      if (bankStatementDebit.signum() > 0) {
+        query = query.concat(" AND self.credit > 0");
+      }
     }
-    return "self id in (0)";
+    return query;
   }
 
   @Override
@@ -186,12 +200,5 @@ public class BankReconciliationDomainServiceImpl implements BankReconciliationDo
     journalIds = String.join(",", journalIdSet);
 
     return journalIds;
-  }
-
-  @Override
-  public String createDomainForBankDetails(BankReconciliation bankReconciliation) {
-
-    return bankDetailsService.getActiveCompanyBankDetails(
-        bankReconciliation.getCompany(), bankReconciliation.getCurrency());
   }
 }

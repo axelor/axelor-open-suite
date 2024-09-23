@@ -29,16 +29,20 @@ import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGeneratorService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Optional;
 
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
@@ -47,20 +51,26 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       AppBaseService appBaseService,
       ConfiguratorFormulaService configuratorFormulaService,
       ProductRepository productRepository,
-      SaleOrderLineService saleOrderLineService,
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderComputeService saleOrderComputeService,
       MetaFieldRepository metaFieldRepository,
-      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService) {
+      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService,
+      SaleOrderLineProductService saleOrderLineProductService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLineGeneratorService saleOrderLineGeneratorService,
+      SaleOrderRepository saleOrderRepository) {
     super(
         appBaseService,
         configuratorFormulaService,
         productRepository,
-        saleOrderLineService,
         saleOrderLineRepository,
         saleOrderComputeService,
         metaFieldRepository,
-        configuratorMetaJsonFieldService);
+        configuratorMetaJsonFieldService,
+        saleOrderLineProductService,
+        saleOrderLineComputeService,
+        saleOrderLineGeneratorService,
+        saleOrderRepository);
   }
 
   /**
@@ -120,8 +130,10 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
   }
 
   protected void setProductionInformation(SaleOrderLine saleOrderLine) {
-    saleOrderLine.setBillOfMaterial(getDefaultBOM(saleOrderLine));
-
+    BillOfMaterial defaultBOM = getDefaultBOM(saleOrderLine);
+    saleOrderLine.setBillOfMaterial(defaultBOM);
+    saleOrderLine.setProdProcess(
+        Optional.ofNullable(defaultBOM).map(BillOfMaterial::getProdProcess).orElse(null));
     if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PURCHASE
         || saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE) {
       saleOrderLine.setStandardDelay(saleOrderLine.getProduct().getStandardDelay());

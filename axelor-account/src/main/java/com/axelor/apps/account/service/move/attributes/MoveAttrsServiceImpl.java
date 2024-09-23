@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
@@ -37,11 +38,14 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.service.user.UserRoleToolService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,6 +62,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   protected AnalyticToolService analyticToolService;
   protected AnalyticAttrsService analyticAttrsService;
   protected CompanyRepository companyRepository;
+  protected JournalRepository journalRepository;
 
   @Inject
   public MoveAttrsServiceImpl(
@@ -68,7 +73,8 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       MovePfpService movePfpService,
       AnalyticToolService analyticToolService,
       AnalyticAttrsService analyticAttrsService,
-      CompanyRepository companyRepository) {
+      CompanyRepository companyRepository,
+      JournalRepository journalRepository) {
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.moveInvoiceTermService = moveInvoiceTermService;
@@ -77,6 +83,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     this.analyticToolService = analyticToolService;
     this.analyticAttrsService = analyticAttrsService;
     this.companyRepository = companyRepository;
+    this.journalRepository = journalRepository;
   }
 
   protected void addAttr(
@@ -137,16 +144,17 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   }
 
   @Override
-  public void addFunctionalOriginSelectDomain(
-      Move move, Map<String, Map<String, Object>> attrsMap) {
+  public Map<String, Map<String, Object>> addFunctionalOriginSelectDomain(Journal journal) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
     String selectionValue = null;
 
-    if (move.getJournal() != null) {
+    if (journal != null) {
       selectionValue =
-          Optional.ofNullable(move.getJournal().getAuthorizedFunctionalOriginSelect()).orElse("0");
+          Optional.ofNullable(journal.getAuthorizedFunctionalOriginSelect()).orElse("0");
     }
 
     this.addAttr("functionalOriginSelect", "selection-in", selectionValue, attrsMap);
+    return attrsMap;
   }
 
   @Override
@@ -201,9 +209,9 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     }
 
     String tradingNameIds =
-        CollectionUtils.isEmpty(move.getCompany().getTradingNameSet())
+        CollectionUtils.isEmpty(move.getCompany().getTradingNameList())
             ? "0"
-            : move.getCompany().getTradingNameSet().stream()
+            : move.getCompany().getTradingNameList().stream()
                 .map(TradingName::getId)
                 .map(Objects::toString)
                 .collect(Collectors.joining(","));
@@ -211,6 +219,33 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     String domain = String.format("self.id IN (%s)", tradingNameIds);
 
     this.addAttr("tradingName", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addJournalDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null || move.getCompany() == null) {
+      return;
+    }
+
+    List<Journal> journalList =
+        journalRepository
+            .all()
+            .filter(
+                String.format(
+                    "self.company.id = %d AND self.statusSelect = %d",
+                    move.getCompany().getId(), JournalRepository.STATUS_ACTIVE))
+            .fetch();
+    String journalIdList =
+        journalList.stream()
+            .filter(
+                journal ->
+                    UserRoleToolService.checkUserRolesPermissionIncludingEmpty(
+                        AuthUtils.getUser(), journal.getAuthorizedRoleSet()))
+            .map(Journal::getId)
+            .map(Objects::toString)
+            .collect(Collectors.joining(","));
+
+    this.addAttr("journal", "domain", String.format("self.id IN (%s)", journalIdList), attrsMap);
   }
 
   @Override
@@ -403,11 +438,12 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   public void addThirdPartyPayerPartnerReadonly(
       Move move, Map<String, Map<String, Object>> attrsMap) {
     boolean isReadonly =
-        move.getMoveLineList().stream()
-            .map(MoveLine::getInvoiceTermList)
-            .filter(CollectionUtils::isNotEmpty)
-            .flatMap(Collection::stream)
-            .allMatch(InvoiceTerm::getIsPaid);
+        CollectionUtils.isNotEmpty(move.getMoveLineList())
+            && move.getMoveLineList().stream()
+                .map(MoveLine::getInvoiceTermList)
+                .filter(CollectionUtils::isNotEmpty)
+                .flatMap(Collection::stream)
+                .allMatch(InvoiceTerm::getIsPaid);
 
     this.addAttr("thirdPartyPayerPartner", "readonly", isReadonly, attrsMap);
   }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch"
     id="account-batch-grid" extension="true" orderBy="-id" canEdit="false" canDelete="false"
@@ -67,6 +67,7 @@
     <view type="grid" name="trace-back-account-consistency-grid"/>
     <view type="form" name="trace-back-form"/>
     <domain>self.batchId = :id</domain>
+    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-method name="action-batch-show-move-method-consistency">

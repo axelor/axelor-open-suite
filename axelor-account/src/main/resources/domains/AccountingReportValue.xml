@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -10,6 +10,7 @@
     <integer name="columnNumber" initParam="true"/>
     <integer name="lineNumber" initParam="true"/>
     <integer name="periodNumber" initParam="true"/>
+    <integer name="companyNumber" initParam="true"/>
     <integer name="analyticOrder" initParam="true"/>
     <integer name="styleSelect" initParam="true"/>
     <integer name="groupStyleSelect" initParam="true"/>
@@ -19,6 +20,7 @@
     <string name="lineTitle" initParam="true"/>
     <string name="parentTitle" initParam="true"/>
     <string name="period" initParam="true"/>
+    <string name="company" initParam="true"/>
     <many-to-one name="accountingReport"
       ref="com.axelor.apps.account.db.AccountingReport" initParam="true"/>
     <many-to-one name="accountingReportConfigLine"

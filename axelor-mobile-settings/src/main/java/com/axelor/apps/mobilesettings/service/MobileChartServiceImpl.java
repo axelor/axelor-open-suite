@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.mobilesettings.service;
 
 import com.axelor.apps.base.AxelorException;
@@ -27,19 +45,25 @@ public class MobileChartServiceImpl implements MobileChartService {
     List<MobileChartValueResponse> mobileChartValueResponseList = new ArrayList<>();
     for (Object objectValues : resultList) {
 
-      String label = getLabel(((Object[]) objectValues)[0]);
-      double value = getDoubleValue(((Object[]) objectValues)[1]);
+      String label = getString(((Object[]) objectValues)[0]);
+      Object value;
+
+      if (((Object[]) objectValues)[1] instanceof String) {
+        value = getString(((Object[]) objectValues)[1]);
+      } else {
+        value = getDoubleValue(((Object[]) objectValues)[1]);
+      }
       mobileChartValueResponseList.add(new MobileChartValueResponse(label, value));
     }
     return mobileChartValueResponseList;
   }
 
-  protected String getLabel(Object label) {
-    if (label == null) {
+  protected String getString(Object value) {
+    if (value == null) {
       return "null";
     }
 
-    return label.toString();
+    return value.toString();
   }
 
   protected double getDoubleValue(Object value) {

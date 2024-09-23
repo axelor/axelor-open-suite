@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <menuitem name="sc-root-purchase" title="Purchases" order="-1800"
-    if="__config__.app.isApp('purchase')" icon="fa-shopping-cart" icon-background="#b6473f"/>
+    if="__config__.app.isApp('purchase')" icon="cart-fill" icon-background="#b6473f"/>
 
   <menuitem name="sc-root-purchase-suppliers" parent="sc-root-purchase" order="100"
     title="Suppliers" action="sc.root.purchase.suppliers"/>
@@ -53,7 +53,7 @@
   <!-- Purchase request menus -->
   <menuitem name="sc-root-purchase-request" parent="sc-root-purchase"
     if="__config__.app.isApp('purchase-request')" title="Internal purchase requests" order="400"
-    icon="fa-bullhorn" icon-background="#b6473f" action="sc.root.purchase.request.all"/>
+    icon="megaphone" icon-background="#b6473f" action="sc.root.purchase.request.all"/>
 
   <action-view name="sc.root.purchase.request.all"
     model="com.axelor.apps.purchase.db.PurchaseRequest" title="Internal purchase requests">
@@ -115,6 +115,7 @@
     <view type="form" name="purchase-order-form"/>
     <view-param name="search-filters" value="purchase-order-filters"/>
     <context name="_internalUser" expr="eval: __user__.id"/>
+    <context name="_status" expr="eval: [1,2,3,4,5]"/>
   </action-view>
 
   <menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings"
@@ -139,8 +140,9 @@
   <action-view name="sc.root.purchase.conf.partner.price.list"
     title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
     <view type="grid" name="partner-price-list-grid"/>
-    <view type="form" name="purchase-partner-price-list-form"/>
+    <view type="form" name="partner-price-list-form"/>
     <domain>self.typeSelect = 2</domain>
+    <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
 
   <menuitem name="sc-root-purchase-conf-price-list" parent="sc-root-purchase-conf"
@@ -149,12 +151,13 @@
   <action-view name="sc.root.purchase.conf.price.list" title="Price lists"
     model="com.axelor.apps.base.db.PriceList">
     <view type="grid" name="price-list-grid"/>
-    <view type="form" name="purchase-price-list-form"/>
+    <view type="form" name="price-list-form"/>
     <domain>self.typeSelect = 2 and self.id not in (select priceList.id from PriceList priceList
       where parentPriceList IS NOT NULL ) and self.id not in (select priceList.id from PriceList
       priceList join PartnerPriceList partnerPriceList on priceList member of
       partnerPriceList.priceListSet where priceList.typeSelect = 2 and partnerPriceList.isExclusive
       IS TRUE )</domain>
+    <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
 
   <!-- TOP MENU -->

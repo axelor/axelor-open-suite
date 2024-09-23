@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <menuitem name="stock-root" title="Stock management" order="-700"
-    if="__config__.app.isApp('stock')" icon="fa-cubes" icon-background="#b6473f"/>
+    if="__config__.app.isApp('stock')" icon="boxes" icon-background="#b6473f"/>
 
 
   <menuitem title="Deliveries" name="stock-root-deliveries" parent="stock-root" order="100"/>
@@ -254,6 +254,17 @@
     title="Tracking number configuration" action="stock.root.conf.tracking.number.config"
     order="700"/>
 
+  <menuitem name="stock-root-conf-tracking-number-config-profile" parent="stock-root-conf"
+    title="Tracking number configuration profile"
+    action="stock.root.conf.tracking.number.config.profile" order="701"/>
+
+  <action-view name="stock.root.conf.tracking.number.config.profile"
+    title="Tracking number configuration profile"
+    model="com.axelor.apps.stock.db.TrackingNumberConfigurationProfile">
+    <view type="grid" name="tracking-number-configuration-profile-grid"/>
+    <view type="form" name="tracking-number-configuration-profile-form"/>
+  </action-view>
+
   <action-view name="stock.root.conf.tracking.number.config"
     title="Tracking number configuration"
     model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
@@ -325,6 +336,16 @@
     model="com.axelor.apps.stock.db.StockBatch">
     <view type="grid" name="stock-batch-grid"/>
     <view type="form" name="stock-batch-form"/>
+  </action-view>
+
+
+  <menuitem name="stock-root-mass-moves" parent="stock-root" title="Mass moves"
+    action="stock.root.mass.moves" order="350"
+    if="__config__.app.getApp('stock')?.isMassStockMoveManaged"/>
+  <action-view name="stock.root.mass.moves" title="Mass move"
+    model="com.axelor.apps.stock.db.MassStockMove">
+    <view type="grid" name="mass-stock-move-grid"/>
+    <view type="form" name="mass-stock-move-form"/>
   </action-view>
 
 </object-views>

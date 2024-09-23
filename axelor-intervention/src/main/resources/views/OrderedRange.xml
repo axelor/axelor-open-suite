@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="ordered-range-grid" title="Ordered range" editable="true"
+    model="com.axelor.apps.intervention.db.OrderedRange" orderBy="sequence" canMove="true">
+    <field name="rangeVal" grid-view="range-form" form-view="range-form"/>
+    <field name="sequence"/>
+  </grid>
+
+  <form name="ordered-range-form" title="Ordered range"
+    model="com.axelor.apps.intervention.db.OrderedRange">
+    <panel name="mainPanel">
+      <field name="rangeVal" colSpan="12" form-view="range-form"/>
+    </panel>
+  </form>
+
+</object-views>

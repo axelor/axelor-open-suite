@@ -23,6 +23,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.inject.Beans;
@@ -37,8 +38,14 @@ public class TimesheetBusinessProductionWorkflowServiceImpl extends TimesheetWor
       AppHumanResourceService appHumanResourceService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
-      TimesheetRepository timesheetRepository) {
-    super(appHumanResourceService, hrConfigService, templateMessageService, timesheetRepository);
+      TimesheetRepository timesheetRepository,
+      TimesheetWorkflowCheckService timesheetWorkflowCheckService) {
+    super(
+        appHumanResourceService,
+        hrConfigService,
+        templateMessageService,
+        timesheetRepository,
+        timesheetWorkflowCheckService);
   }
 
   @Override
@@ -56,7 +63,7 @@ public class TimesheetBusinessProductionWorkflowServiceImpl extends TimesheetWor
 
   @Override
   @Transactional
-  public void validate(Timesheet timesheet) {
+  public void validate(Timesheet timesheet) throws AxelorException {
     super.validate(timesheet);
     AppProductionService appProductionService = Beans.get(AppProductionService.class);
 
@@ -69,7 +76,7 @@ public class TimesheetBusinessProductionWorkflowServiceImpl extends TimesheetWor
 
   @Override
   @Transactional
-  public void refuse(Timesheet timesheet) {
+  public void refuse(Timesheet timesheet) throws AxelorException {
     super.refuse(timesheet);
     AppProductionService appProductionService = Beans.get(AppProductionService.class);
 
@@ -82,7 +89,7 @@ public class TimesheetBusinessProductionWorkflowServiceImpl extends TimesheetWor
 
   @Override
   @Transactional
-  public void cancel(Timesheet timesheet) {
+  public void cancel(Timesheet timesheet) throws AxelorException {
     super.cancel(timesheet);
     AppProductionService appProductionService = Beans.get(AppProductionService.class);
 

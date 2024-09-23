@@ -21,7 +21,6 @@ package com.axelor.apps.production.db.repo;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,27 +28,21 @@ import java.util.List;
 public class BillOfMaterialManagementRepository extends BillOfMaterialRepository {
 
   protected BillOfMaterialLineRepository billOfMaterialLineRepository;
+  protected BillOfMaterialComputeNameService billOfMaterialComputeNameService;
 
   @Inject
   public BillOfMaterialManagementRepository(
-      BillOfMaterialLineRepository billOfMaterialLineRepository) {
+      BillOfMaterialLineRepository billOfMaterialLineRepository,
+      BillOfMaterialComputeNameService billOfMaterialComputeNameService) {
 
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
+    this.billOfMaterialComputeNameService = billOfMaterialComputeNameService;
   }
 
   @Override
   public BillOfMaterial save(BillOfMaterial billOfMaterial) {
     billOfMaterial = super.save(billOfMaterial);
-    billOfMaterial.setName(
-        Beans.get(BillOfMaterialComputeNameService.class).computeName(billOfMaterial));
-
-    if (billOfMaterial.getVersionNumber() != null && billOfMaterial.getVersionNumber() > 1) {
-      billOfMaterial.setFullName(
-          billOfMaterial.getName() + " - v" + billOfMaterial.getVersionNumber());
-    } else {
-      billOfMaterial.setFullName(billOfMaterial.getName());
-    }
-
+    billOfMaterial.setFullName(billOfMaterialComputeNameService.computeFullName(billOfMaterial));
     return billOfMaterial;
   }
 

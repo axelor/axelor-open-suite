@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid id="contract-file-grid" title="Files" name="file-grid"
+    model="com.axelor.apps.base.db.File" extension="true">
+    <extend target="//field[@name='dmsFile']">
+      <insert position="after">
+        <field name="contractVersion" if-module="axelor-contract"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <grid name="contract-file-grid" title="Files" model="com.axelor.apps.base.db.File">
+    <toolbar>
+      <button name="newLineBtn" title="New File" icon="fa-plus"
+        onClick="action-contract-file-view-add-file"/>
+      <button name="removeLineBtn" title="Remove files" icon="fa-trash"
+        onClick="action-contract-file-validate-confirm-remove, action-contract-file-method-remove"/>
+    </toolbar>
+    <field name="fileType"/>
+    <field name="metaFile"/>
+    <field name="recordDate"/>
+    <field name="expirationDate"/>
+    <field name="fileDescription"/>
+  </grid>
+
+  <form id="contract-file-form" title="File" name="file-form"
+    model="com.axelor.apps.base.db.File" extension="true">
+    <extend target="//field[@name='fileDescription']">
+      <insert position="before">
+        <field name="$contract" title="Contract" type="many-to-one"
+          target="com.axelor.apps.contract.db.Contract" hidden="true" showIf="_fileTypeSelect === 1"
+          if-module="axelor-contract" onChange="action-contract-record-set-contract-version"
+          requiredIf="_fileTypeSelect === 1"/>
+        <field name="contractVersion" hidden="true"/>
+      </insert>
+    </extend>
+
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-contract-record-set-file-type-select,action-contract-file-group-file-onnew"/>
+      <attribute name="onLoad" value="action-contract-file-group-file-onload"/>
+    </extend>
+  </form>
+
+  <action-record name="action-contract-record-set-file-type-select"
+    model="com.axelor.apps.base.db.File">
+    <field name="fileTypeSelect" expr="eval: _fileTypeSelect"/>
+  </action-record>
+
+  <action-record name="action-contract-record-set-contract-version"
+    model="com.axelor.apps.base.db.File">
+    <field name="contractVersion"
+      expr="eval: __repo__(Contract).find(contract?.id)?.currentContractVersion"
+      if="contract != null"/>
+  </action-record>
+
+  <action-view name="action-contract-file-view-add-file" title="New File"
+    model="com.axelor.apps.base.db.File">
+    <view type="form" name="file-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceTitle" value="true"/>
+    <context name="_contractVersion" expr="eval: __parent__?.currentContractVersion"/>
+  </action-view>
+
+  <action-validate name="action-contract-file-validate-confirm-remove">
+    <alert message="Are you sure you want to remove the selected lines?"/>
+  </action-validate>
+
+  <action-method name="action-contract-file-method-remove">
+    <call class="com.axelor.apps.contract.web.ContractFileController" method="remove"/>
+  </action-method>
+
+  <action-group name="action-contract-file-group-file-onnew">
+    <action name="action-contract-file-record-set-contract-version"/>
+    <action name="action-contract-file-record-set-file-type-select"/>
+  </action-group>
+
+  <action-record name="action-contract-file-record-set-contract-version"
+    model="com.axelor.apps.base.db.File">
+    <field name="contractVersion" expr="eval: _contractVersion" if="_fileTypeSelect != 1"/>
+  </action-record>
+
+  <action-record name="action-contract-file-record-set-file-type-select"
+    model="com.axelor.apps.base.db.File">
+    <field name="fileTypeSelect" expr="eval: 1"/>
+  </action-record>
+
+  <action-group name="action-contract-file-group-file-onload">
+    <action name="action-contract-record-set-contract-on-load"/>
+    <action name="action-base-file-group-file-onload"/>
+  </action-group>
+
+  <action-record name="action-contract-record-set-contract-on-load"
+    model="com.axelor.apps.base.db.File">
+    <field name="$contract" expr="eval: contractVersion?.contract"/>
+  </action-record>
+
+
+</object-views>

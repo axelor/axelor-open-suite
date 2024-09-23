@@ -21,28 +21,35 @@ package com.axelor.apps.hr.db.repo;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
-import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
-import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineComputeNameService;
+import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 
 public class TimesheetHRRepository extends TimesheetRepository {
 
-  @Inject private TimesheetCreateService timesheetCreateService;
-  @Inject private TimesheetLineService timesheetLineService;
-  @Inject private ProjectRepository projectRepository;
+  protected TimesheetLineComputeNameService timesheetLineComputeNameService;
+  protected TimesheetPeriodComputationService timesheetPeriodComputationService;
+
+  @Inject
+  public TimesheetHRRepository(
+      TimesheetLineComputeNameService timesheetLineComputeNameService,
+      TimesheetPeriodComputationService timesheetPeriodComputationService) {
+    this.timesheetLineComputeNameService = timesheetLineComputeNameService;
+    this.timesheetPeriodComputationService = timesheetPeriodComputationService;
+  }
 
   @Override
   public Timesheet save(Timesheet timesheet) {
     if (timesheet.getTimesheetLineList() != null) {
-      for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList())
-        Beans.get(TimesheetLineHRRepository.class).computeFullName(timesheetLine);
+      for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
+        timesheetLineComputeNameService.computeFullName(timesheetLine);
+      }
     }
+
+    timesheet.setPeriodTotal(timesheetPeriodComputationService.computePeriodTotal(timesheet));
     return super.save(timesheet);
   }
 
@@ -54,29 +61,12 @@ public class TimesheetHRRepository extends TimesheetRepository {
     if (json.get("id") == null) {
       Timesheet timesheet = create(json);
       if (timesheet.getTimesheetLineList() == null || timesheet.getTimesheetLineList().isEmpty()) {
-        timesheet.setTimesheetLineList(new ArrayList<TimesheetLine>());
+        TimesheetCreateService timesheetCreateService = Beans.get(TimesheetCreateService.class);
+        timesheet.setTimesheetLineList(new ArrayList<>());
         obj.put("timesheetLineList", timesheetCreateService.createDefaultLines(timesheet));
       }
     }
 
     return obj;
-  }
-
-  @Override
-  public void remove(Timesheet entity) {
-
-    if (entity.getStatusSelect() == TimesheetRepository.STATUS_VALIDATED
-        && entity.getTimesheetLineList() != null) {
-
-      Map<Project, BigDecimal> projectTimeSpentMap =
-          timesheetLineService.getProjectTimeSpentMap(entity.getTimesheetLineList());
-      Iterator<Project> projectIterator = projectTimeSpentMap.keySet().iterator();
-
-      while (projectIterator.hasNext()) {
-        Project project = projectIterator.next();
-        projectRepository.save(project);
-      }
-    }
-    super.remove(entity);
   }
 }

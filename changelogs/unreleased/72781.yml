@@ -1,2 +1,0 @@
-title: "ExpenseLine : fix a bug where Type was not properly required in kilometric expense line leading to total amount not calculated if distance is filled with api"
-type: fix

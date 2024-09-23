@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -76,7 +76,13 @@
   <selection name="supplychain.mrp.line.related.to.select"
     id="production.supplychain.mrp.line.related.to.select">
     <option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
-    <option value="com.axelor.apps.production.db.OperationOrder">Operation order</option>
+    <option value="com.axelor.apps.production.db.OperationOrder">Manufacturing operation</option>
+  </selection>
+
+  <selection
+    name="production.supplychain.mrp.line.type.supply.method.for.manufacturing.orders.select">
+    <option value="0">On operations start</option>
+    <option value="1">On order start</option>
   </selection>
 
   <selection name="production.cost.sheet.line.type.select">
@@ -123,6 +129,7 @@
 
   <selection name="production.batch.action.select">
     <option value="1">Compute work in progress valuation</option>
+    <option value="2">Fill SOP real values</option>
   </selection>
 
   <selection name="production.cost.sheet.calculation.type.select">
@@ -173,6 +180,11 @@
     <option value="1">Draft</option>
     <option value="2">Imported</option>
     <option value="3">Validated</option>
+  </selection>
+
+  <selection name="stock.tracking.number.origin.move.type.select"
+    id="production.stock.tracking.number.origin.move.type.select">
+    <option value="5">Manufacturing</option>
   </selection>
 
 </object-views>

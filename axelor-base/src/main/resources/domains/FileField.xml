@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -9,9 +9,9 @@
     <integer name="sequence" title="Sequence"/>
 
     <string name="columnTitle" title="Column title"/>
-    <string name="firstLine" title="First line"/>
-    <string name="secondLine" title="Second line"/>
-    <string name="thirdLine" title="Third line"/>
+    <string name="firstLine" title="First line" large="true"/>
+    <string name="secondLine" title="Second line" large="true"/>
+    <string name="thirdLine" title="Third line" large="true"/>
 
     <many-to-one name="importField" ref="com.axelor.meta.db.MetaField"
       title="Import field"/>

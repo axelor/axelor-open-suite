@@ -1,18 +1,48 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.auth.AuthUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.MapHelper;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMergingServiceImpl {
+public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMergingServiceImpl
+    implements PurchaseOrderMergingSupplychainService {
 
   protected static class CommonFieldsSupplyChainImpl extends CommonFieldsImpl {
     private StockLocation commonStockLocation = null;
@@ -50,15 +80,25 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
     }
   }
 
-  protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+  protected PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService;
 
   @Inject
   public PurchaseOrderMergingServiceSupplyChainImpl(
+      AppPurchaseService appPurchaseService,
       PurchaseOrderService purchaseOrderService,
+      PurchaseOrderCreateService purchaseOrderCreateService,
       PurchaseOrderRepository purchaseOrderRepository,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService) {
-    super(purchaseOrderService, purchaseOrderRepository);
-    this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
+      DMSService dmsService,
+      PurchaseOrderLineRepository purchaseOrderLineRepository,
+      PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService) {
+    super(
+        appPurchaseService,
+        purchaseOrderService,
+        purchaseOrderCreateService,
+        purchaseOrderRepository,
+        dmsService,
+        purchaseOrderLineRepository);
+    this.purchaseOrderCreateSupplychainService = purchaseOrderCreateSupplychainService;
   }
 
   @Override
@@ -108,19 +148,35 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
   }
 
   @Override
-  protected PurchaseOrder mergePurchaseOrders(
+  protected PurchaseOrder generatePurchaseOrder(
       List<PurchaseOrder> purchaseOrdersToMerge, PurchaseOrderMergingResult result)
       throws AxelorException {
-    CommonFieldsSupplyChainImpl commonFields = getCommonFields(result);
-    return purchaseOrderSupplychainService.mergePurchaseOrders(
-        purchaseOrdersToMerge,
-        commonFields.getCommonCurrency(),
-        commonFields.getCommonSupplierPartner(),
-        commonFields.getCommonCompany(),
-        commonFields.getCommonStockLocation(),
-        commonFields.getCommonContactPartner(),
-        commonFields.getCommonPriceList(),
-        commonFields.getCommonTradingName());
+
+    String numSeq =
+        computeConcatenatedString(purchaseOrdersToMerge, PurchaseOrder::getPurchaseOrderSeq, "-");
+    String externalRef =
+        computeConcatenatedString(purchaseOrdersToMerge, PurchaseOrder::getExternalReference, "|");
+    Company company = getCommonFields(result).getCommonCompany();
+
+    PurchaseOrder purchaseOrderMerged =
+        purchaseOrderCreateSupplychainService.createPurchaseOrder(
+            AuthUtils.getUser(),
+            company,
+            getCommonFields(result).getCommonContactPartner(),
+            getCommonFields(result).getCommonCurrency(),
+            null,
+            numSeq,
+            externalRef,
+            getCommonFields(result).getCommonStockLocation(),
+            appPurchaseService.getTodayDate(company),
+            getCommonFields(result).getCommonPriceList(),
+            getCommonFields(result).getCommonSupplierPartner(),
+            getCommonFields(result).getCommonTradingName(),
+            getCommonFields(result).getCommonFiscalPosition());
+
+    this.attachToNewPurchaseOrder(purchaseOrdersToMerge, purchaseOrderMerged);
+    purchaseOrderService.computePurchaseOrder(purchaseOrderMerged);
+    return purchaseOrderMerged;
   }
 
   @Override
@@ -130,5 +186,19 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
       getCommonFields(result)
           .setCommonStockLocation(MapHelper.get(context, StockLocation.class, "stockLocation"));
     }
+  }
+
+  @Override
+  public PurchaseOrder getDummyMergedPurchaseOrder(StockMove stockMove) throws AxelorException {
+    PurchaseOrderMergingResult result =
+        simulateMergePurchaseOrders(new ArrayList<>(stockMove.getPurchaseOrderSet()));
+
+    if (result.isConfirmationNeeded()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICING_ERROR),
+          stockMove.getStockMoveSeq());
+    }
+    return result.getPurchaseOrder();
   }
 }

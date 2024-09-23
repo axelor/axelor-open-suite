@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="account-config-grid" title="Account configurations"
     model="com.axelor.apps.account.db.AccountConfig">
@@ -194,9 +194,12 @@
 
         </panel>
         <panel name="managePeriodPanel" title="Period closure" colSpan="12">
-          <field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
-          <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
-          <field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
+          <field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"
+            placeholder="None"/>
+          <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"
+            placeholder="None"/>
+          <field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"
+            placeholder="None"/>
         </panel>
         <panel name="reconcileDifferencesPanel" title="Reconcile differences" colSpan="12">
           <field name="thresholdDistanceFromRegulation"/>
@@ -272,6 +275,7 @@
         <field name="generateMoveForInvoicePayment" widget="boolean-switch"/>
         <field name="invoiceInAtiSelect"/>
         <field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>
+        <field name="isInvoiceCoefficientEnabled" widget="boolean-switch"/>
         <field name="invoiceAutomaticMail" widget="boolean-switch"/>
         <field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail"
           showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
@@ -510,9 +514,10 @@
         <field name="$isCanNew" type="boolean" hidden="true"/>
       </panel>
       <panel name="printingsPanel" title="Printings" colSpan="12">
-        <field name="invoiceBirtTemplate"/>
-        <field name="purchaseInvoicesDetailsBirtTemplate"/>
-        <field name="chequeDepositSlipBirtTemplate"/>
+        <field name="invoicePrintTemplate"/>
+        <field name="chequeDepositSlipPrintTemplate"/>
+        <field name="saleInvoicesDetailsPrintTemplate"/>
+        <field name="purchaseInvoicesDetailsPrintTemplate"/>
       </panel>
     </panel-tabs>
 

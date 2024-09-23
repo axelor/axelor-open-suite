@@ -35,6 +35,7 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCorrectionService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationDomainService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineUnreconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLoadBankStatementService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationMoveGenerationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationQueryService;
@@ -82,7 +83,8 @@ public class BankReconciliationController {
       if (bankReconciliationLines.isEmpty()) {
         response.setInfo(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
       } else {
-        Beans.get(BankReconciliationLineService.class).unreconcileLines(bankReconciliationLines);
+        Beans.get(BankReconciliationLineUnreconciliationService.class)
+            .unreconcileLines(bankReconciliationLines);
         Beans.get(BankReconciliationService.class).mergeSplitedReconciliationLines(br);
         Beans.get(BankReconciliationBalanceComputationService.class).computeBalances(br);
         response.setReload(true);
@@ -263,16 +265,13 @@ public class BankReconciliationController {
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-      String domain =
+      response.setAttr(
+          "bankDetails",
+          "domain",
           Beans.get(BankDetailsService.class)
               .getActiveCompanyBankDetails(
-                  bankReconciliation.getCompany(), bankReconciliation.getCurrency());
-      // if nothing was found for the domain, we set it at a default value.
-      if (domain.equals("")) {
-        response.setAttr("bankDetails", "domain", "self.id IN (0)");
-      } else {
-        response.setAttr("bankDetails", "domain", domain);
-      }
+                  bankReconciliation.getCompany(), bankReconciliation.getCurrency()));
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

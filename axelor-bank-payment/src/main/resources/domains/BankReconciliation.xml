@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankReconciliation">
+  <entity name="BankReconciliation" implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <string name="name" title="Label" namecolumn="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
@@ -18,19 +18,22 @@
       title="Bank details"/>
     <many-to-one name="cashAccount" ref="com.axelor.apps.account.db.Account"
       title="Cash account"/>
-    <decimal name="startingBalance" title="Starting Balance"/>
-    <decimal name="endingBalance" title="Ending Balance" readonly="true"/>
-    <decimal name="accountBalance" title="Account balance"/>
+    <decimal name="startingBalance" title="Starting Balance" precision="20" scale="3"/>
+    <decimal name="endingBalance" title="Ending Balance" readonly="true" precision="20"
+      scale="3"/>
+    <decimal name="accountBalance" title="Account balance" precision="20" scale="3"/>
     <one-to-many name="bankReconciliationLineList"
       ref="com.axelor.apps.bankpayment.db.BankReconciliationLine" mappedBy="bankReconciliation"
       title="Bank Reconciliation Lines"/>
-    <decimal name="computedBalance" title="Computed Balance" readonly="true"/>
+    <decimal name="computedBalance" title="Computed Balance" readonly="true" precision="20"
+      scale="3"/>
     <integer name="statusSelect" title="Status"
       selection="bankpayment.bank.reconciliation.status.select" readonly="true" default="1"/>
     <many-to-one name="bankStatement" ref="com.axelor.apps.bankpayment.db.BankStatement"
       title="Bank statement"/>
-    <decimal name="totalPaid" title="Total paid" readonly="true"/>
-    <decimal name="totalCashed" title="Total cashed" readonly="true"/>
+    <decimal name="totalPaid" title="Total paid" readonly="true" precision="20" scale="3"/>
+    <decimal name="totalCashed" title="Total cashed" readonly="true" precision="20"
+      scale="3"/>
     <boolean name="includeOtherBankStatements" title="Include other bank statements"
       default="true"/>
     <many-to-one name="validatedByUser" title="Validated By"
@@ -43,21 +46,33 @@
 
     <!-- Balances -->
 
-    <decimal name="statementReconciledLineBalance" title="Statement reconciled line balance"/>
-    <decimal name="movesReconciledLineBalance" title="Moves reconciled line balance"/>
+    <decimal name="statementReconciledLineBalance" title="Statement reconciled line balance"
+      precision="20" scale="3"/>
+    <decimal name="movesReconciledLineBalance" title="Moves reconciled line balance"
+      precision="20" scale="3"/>
     <decimal name="statementUnreconciledLineBalance"
-      title="Statement unrereconciled line balance"/>
-    <decimal name="movesUnreconciledLineBalance" title="Moves unreconciled line balance"/>
+      title="Statement unrereconciled line balance" precision="20" scale="3"/>
+    <decimal name="movesUnreconciledLineBalance" title="Moves unreconciled line balance"
+      precision="20" scale="3"/>
     <decimal name="statementOngoingReconciledBalance"
-      title="Statement ongoing reconciled balance"/>
-    <decimal name="movesOngoingReconciledBalance" title="Moves ongoing reconciled balance"/>
+      title="Statement ongoing reconciled balance" precision="20" scale="3"/>
+    <decimal name="movesOngoingReconciledBalance" title="Moves ongoing reconciled balance"
+      precision="20" scale="3"/>
     <decimal name="statementAmountRemainingToReconcile"
-      title="Statement amount remaining to reconcile"/>
+      title="Statement amount remaining to reconcile" precision="20" scale="3"/>
     <decimal name="movesAmountRemainingToReconcile"
-      title="Moves amount remaining to reconcile"/>
-    <decimal name="statementTheoreticalBalance" title="Statement theoretical balance"/>
-    <decimal name="movesTheoreticalBalance" title="Moves theoretical balance"/>
+      title="Moves amount remaining to reconcile" precision="20" scale="3"/>
+    <decimal name="statementTheoreticalBalance" title="Statement theoretical balance"
+      precision="20" scale="3"/>
+    <decimal name="movesTheoreticalBalance" title="Moves theoretical balance" precision="20"
+      scale="3"/>
 
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
 
     <finder-method name="findByBankDetails" using="bankDetails" all="true"/>
     <finder-method name="findOneByBankDetails" using="bankDetails" orderBy="-id"/>

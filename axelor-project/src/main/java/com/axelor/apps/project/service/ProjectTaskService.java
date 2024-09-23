@@ -25,6 +25,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.auth.db.User;
 import com.axelor.meta.CallMethod;
+import java.util.List;
 
 public interface ProjectTaskService {
 
@@ -37,23 +38,25 @@ public interface ProjectTaskService {
    * <p>This method DOES NOT update potential parent.
    */
   void updateNextTask(ProjectTask projectTask);
+
   /** Removes all next tasks of given {@link ProjectTask}. */
   void removeNextTasks(ProjectTask projectTask);
 
   public ProjectTask create(String subject, Project project, User assignedTo);
 
   @CallMethod
-  public TaskStatus getDefaultCompletedStatus(Project project);
-
-  @CallMethod
-  public TaskStatus getStatus(Project project);
+  public TaskStatus getStatus(Project project, ProjectTask projectTask);
 
   @CallMethod
   public ProjectPriority getPriority(Project project);
 
   void deleteProjectTask(ProjectTask projectTask);
 
+  void deleteProjectTasks(List<Integer> projectTasksIds);
+
   public String getTaskLink(String value);
 
   public void fillSubtask(ProjectTask projectTask);
+
+  void changeProgress(ProjectTask projectTask, Project project);
 }

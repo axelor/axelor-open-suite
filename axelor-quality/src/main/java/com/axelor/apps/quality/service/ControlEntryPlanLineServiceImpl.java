@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.AxelorException;
@@ -21,13 +39,16 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
 
   protected ControlEntryPlanLineRepository controlEntryPlanLineRepository;
   protected ControlEntrySampleRepository controlEntrySampleRepository;
+  protected ControlEntrySampleUpdateService controlEntrySampleUpdateService;
 
   @Inject
   public ControlEntryPlanLineServiceImpl(
       ControlEntryPlanLineRepository controlEntryPlanLineRepository,
-      ControlEntrySampleRepository controlEntrySampleRepository) {
+      ControlEntrySampleRepository controlEntrySampleRepository,
+      ControlEntrySampleUpdateService controlEntrySampleUpdateService) {
     this.controlEntryPlanLineRepository = controlEntryPlanLineRepository;
     this.controlEntrySampleRepository = controlEntrySampleRepository;
+    this.controlEntrySampleUpdateService = controlEntrySampleUpdateService;
   }
 
   @Override
@@ -49,7 +70,15 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
         new Context(Mapper.toMap(controlEntryPlanLine), ControlEntryPlanLine.class);
     ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
 
-    Object result = scriptHelper.eval(formula);
+    Object result;
+
+    try {
+      result = scriptHelper.eval(formula);
+    } catch (IllegalArgumentException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(QualityExceptionMessage.EVAL_FORMULA_NULL_FIELDS));
+    }
 
     if (!(result instanceof Boolean)) {
       throw new AxelorException(
@@ -100,5 +129,23 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
     res.setEntryAttrs(controlEntryPlanLine.getEntryAttrs());
 
     return res;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void conformityEvalWithUpdate(ControlEntryPlanLine controlEntryPlanLine)
+      throws AxelorException {
+
+    Objects.requireNonNull(controlEntryPlanLine);
+
+    this.conformityEval(controlEntryPlanLine);
+
+    if (ControlEntryPlanLineRepository.TYPE_ENTRY_SAMPLE_LINE
+        == controlEntryPlanLine.getTypeSelect()) {
+
+      if (controlEntryPlanLine.getControlEntrySample() != null) {
+        controlEntrySampleUpdateService.updateResult(controlEntryPlanLine.getControlEntrySample());
+      }
+    }
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="journal-grid" title="Journal" model="com.axelor.apps.account.db.Journal">
     <toolbar>
@@ -35,6 +35,8 @@
         onChange="action-journal-record-reset-valid-account-set,action-journal-record-change-config-values"/>
       <field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
       <field name="authorizedFunctionalOriginSelect" widget="MultiSelect"/>
+      <field name="authorizedRoleSet" grid-view="role-grid" form-view="role-form"
+        canNew="false" canEdit="false" widget="tag-select" placeholder="All"/>
       <field name="journalType.isDisplayBalances" hidden="true"/>
       <field name="$isReadOnly" readonly="true" hidden="true"/>
       <field name="company.currency.symbol" hidden="true"/>

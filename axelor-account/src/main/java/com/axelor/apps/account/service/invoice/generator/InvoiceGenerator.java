@@ -25,17 +25,16 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
@@ -48,10 +47,11 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -62,6 +62,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,17 +266,10 @@ public abstract class InvoiceGenerator {
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    int atiChoice = accountConfig.getInvoiceInAtiSelect();
-
     if (inAti == null) {
       invoice.setInAti(accountConfigService.getInvoiceInAti(accountConfig));
-    } else if (atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT
-        || atiChoice == AccountConfigRepository.INVOICE_WT_DEFAULT) {
-      invoice.setInAti(inAti);
-    } else if (atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS) {
-      invoice.setInAti(true);
     } else {
-      invoice.setInAti(false);
+      invoice.setInAti(inAti);
     }
     if (companyBankDetails == null) {
       fillCompanyBankDetails(accountingSituation, accountConfig);
@@ -410,7 +404,9 @@ public abstract class InvoiceGenerator {
     if (invoice.getInvoiceLineTaxList() == null) {
       invoice.setInvoiceLineTaxList(new ArrayList<InvoiceLineTax>());
     } else {
+      List<InvoiceLineTax> invoiceLineTaxList = getUpdatedInvoiceLineTax(invoice);
       invoice.getInvoiceLineTaxList().clear();
+      invoice.getInvoiceLineTaxList().addAll(invoiceLineTaxList);
     }
   }
 
@@ -421,8 +417,7 @@ public abstract class InvoiceGenerator {
    * @throws AxelorException
    */
   public void computeInvoice(Invoice invoice) throws AxelorException {
-    CurrencyScaleServiceAccount currencyScaleServiceAccount =
-        Beans.get(CurrencyScaleServiceAccount.class);
+    CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
 
     // In the invoice currency
     invoice.setExTaxTotal(BigDecimal.ZERO);
@@ -442,12 +437,12 @@ public abstract class InvoiceGenerator {
 
       // In the invoice currency
       invoice.setExTaxTotal(
-          currencyScaleServiceAccount.getScaledValue(
+          currencyScaleService.getScaledValue(
               invoice, invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal())));
 
       // In the company accounting currency
       invoice.setCompanyExTaxTotal(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               invoice, invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal())));
     }
 
@@ -455,23 +450,23 @@ public abstract class InvoiceGenerator {
 
       // In the invoice currency
       invoice.setTaxTotal(
-          currencyScaleServiceAccount.getScaledValue(
+          currencyScaleService.getScaledValue(
               invoice, invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal())));
 
       // In the company accounting currency
       invoice.setCompanyTaxTotal(
-          currencyScaleServiceAccount.getCompanyScaledValue(
+          currencyScaleService.getCompanyScaledValue(
               invoice, invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal())));
     }
 
     // In the invoice currency
     invoice.setInTaxTotal(
-        currencyScaleServiceAccount.getScaledValue(
+        currencyScaleService.getScaledValue(
             invoice, invoice.getExTaxTotal().add(invoice.getTaxTotal())));
 
     // In the company accounting currency
     invoice.setCompanyInTaxTotal(
-        currencyScaleServiceAccount.getCompanyScaledValue(
+        currencyScaleService.getCompanyScaledValue(
             invoice, invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal())));
     invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
 
@@ -487,5 +482,25 @@ public abstract class InvoiceGenerator {
     logger.debug(
         "Invoice amounts : W.T. = {}, Tax = {}, A.T.I. = {}",
         new Object[] {invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal()});
+  }
+
+  protected List<InvoiceLineTax> getUpdatedInvoiceLineTax(Invoice invoice) {
+    List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<>();
+
+    if (ObjectUtils.isEmpty(invoice.getInvoiceLineTaxList())) {
+      return invoiceLineTaxList;
+    }
+
+    invoiceLineTaxList.addAll(
+        invoice.getInvoiceLineTaxList().stream()
+            .filter(
+                invoiceLineTax ->
+                    Beans.get(InvoiceLineTaxToolService.class).isManageByAmount(invoiceLineTax)
+                        && invoiceLineTax
+                                .getTaxTotal()
+                                .compareTo(invoiceLineTax.getPercentageTaxTotal())
+                            != 0)
+            .collect(Collectors.toList()));
+    return invoiceLineTaxList;
   }
 }

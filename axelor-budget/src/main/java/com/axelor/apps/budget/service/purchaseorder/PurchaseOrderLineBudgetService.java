@@ -19,10 +19,8 @@
 package com.axelor.apps.budget.service.purchaseorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import java.util.List;
 
 public interface PurchaseOrderLineBudgetService {
 
@@ -48,15 +46,6 @@ public interface PurchaseOrderLineBudgetService {
   public void fillBudgetStrOnLine(PurchaseOrderLine purchaseOrderLine, boolean multiBudget);
 
   /**
-   * If mono budget and budget not null, create a budget distribution line with budget link and ex
-   * tax total as amount
-   *
-   * @param purchaseOrderLine
-   * @return List BudgetDistribution
-   */
-  public List<BudgetDistribution> addBudgetDistribution(PurchaseOrderLine purchaseOrderLine);
-
-  /**
    * If multi budget, compute budget distribution line's budget name to fill budget name string
    * field Else, fill budget name string with the budget's name
    *
@@ -72,7 +61,8 @@ public interface PurchaseOrderLineBudgetService {
    * @param purchaseOrderLine, purchaseOrder
    * @return String
    */
-  public String getBudgetDomain(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
+  public String getBudgetDomain(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder)
+      throws AxelorException;
 
   /**
    * Take all budget distribution on this purchase order line and throw an error if the total amount
@@ -83,7 +73,4 @@ public interface PurchaseOrderLineBudgetService {
    */
   public void checkAmountForPurchaseOrderLine(PurchaseOrderLine purchaseOrderLine)
       throws AxelorException;
-
-  public void computeBudgetDistributionSumAmount(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
 }

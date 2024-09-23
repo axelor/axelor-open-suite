@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
     <field name="name"/>
@@ -100,7 +100,7 @@
           if="__config__.app.isApp('cash-management')"/>
         <field name="supplierPaymentDelay" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')"/>
-        <field name="tradingNameSet" canNew="true" form-view="trading-name-form"
+        <field name="tradingNameList" canNew="true" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="12"
           if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
         <field name="tradingNamePrintingSettingsList" canNew="true"
@@ -188,7 +188,7 @@
 
   <search-filters name="company-filters" model="com.axelor.apps.base.db.Company"
     title="Company filters">
-    <field name="tradingNameSet" hidden="true"
+    <field name="tradingNameList" hidden="true"
       if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="tradingNamePrintingSettingsList" hidden="true"
       if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>

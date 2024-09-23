@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.1.xsd">
 
   <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group"
     search="self.code = :code"/>
@@ -23,14 +23,20 @@
   <input file="base_birtTemplateParameter.csv" separator=";"
     type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
 
-  <input file="base_birtTemplateConfigLine.csv"
-    type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
-    search="self.importId = :importId">
-    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+  <input file="base_printingTemplate.csv" type="com.axelor.apps.base.db.PrintingTemplate"
+    separator=";" search="self.importId = :importId">
+    <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
+
+  <input file="base_printingTemplateLine.csv"
+    type="com.axelor.apps.base.db.PrintingTemplateLine" separator=";"
+    search="self.importId = :importId"/>
 
   <input file="base_templateContext.csv" separator=";"
     type="com.axelor.message.db.TemplateContext" search="self.name = :name"/>
+
+  <input file="base_registrationNumberTemplate.csv" separator=";"
+    type="com.axelor.apps.base.db.RegistrationNumberTemplate" search="self.importId = :importId"/>
 
   <input file="base_addressTemplate.csv" separator=";"
     type="com.axelor.apps.base.db.AddressTemplate" search="self.importId = :importId"/>
@@ -46,9 +52,9 @@
 
   <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
-    <bind column="birtTemplateSet_importId" to="birtTemplateSet"
-      search="self.importId in :birtTemplateSet_importId"
-      eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
+    <bind column="printTemplateSet_importId" to="printTemplateSet"
+      search="self.importId in :printTemplateSet_importId"
+      eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
     <bind to="templateContextList" search="self.name = :templateContext"
       if="templateContext != null &amp;&amp; !templateContext.empty"/>
   </input>
@@ -68,16 +74,14 @@
   <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
     <bind to="language" eval="'en'"/>
     <bind to="type" eval="'tooltip'"/>
-    <bind to="model"
-      eval="com.axelor.inject.Beans.get(com.axelor.meta.db.repo.MetaModelRepository.class).findByName(object)?.getFullName()"
+    <bind to="model" eval="__repo__(MetaModel).findByName(object)?.getFullName()"
       column="object"/>
   </input>
 
   <input file="meta_helpFR.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
     <bind to="language" eval="'fr'"/>
     <bind to="type" eval="'tooltip'"/>
-    <bind to="model"
-      eval="com.axelor.inject.Beans.get(com.axelor.meta.db.repo.MetaModelRepository.class).findByName(object)?.getFullName()"
+    <bind to="model" eval="__repo__(MetaModel).findByName(object)?.getFullName()"
       column="object"/>
   </input>
 
@@ -94,5 +98,15 @@
 
   <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"
     search="self.name = :name"/>
+
+  <input file="base_addressTemplate.csv" separator=";"
+    type="com.axelor.apps.base.db.AddressTemplate" search="self.importId = :importId"/>
+
+  <input file="base_addressTemplateLine.csv" separator=";"
+    type="com.axelor.apps.base.db.AddressTemplateLine" search="self.importId = :importId">
+    <bind to="metaField" column="metaField"
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+  </input>
+
 
 </csv-inputs>

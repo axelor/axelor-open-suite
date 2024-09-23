@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="quality-improvement-grid" title="Quality improvements"
     model="com.axelor.apps.quality.db.QualityImprovement" orderBy="sequence">
@@ -269,7 +269,7 @@
     <template>
     	<![CDATA[
   			<>
-	    		<h4>{sequence}</h4>
+	    		<strong>{sequence}</strong>
   				<Box as="dl" mt={4}>
   					{qiDetection.origin == 1 && qiIdentification.supplierPartner.fullName &&
   						<Box>
@@ -393,10 +393,10 @@
 
   <action-attrs name="action-quality-improvement-attrs-set-stock-move-domain">
     <attribute name="domain" for="stockMove"
-      expr="eval: &quot; self.saleOrder = :customerSaleOrder &quot;"
+      expr="eval: &quot; :customerSaleOrder MEMBER OF self.saleOrderSet  &quot;"
       if="qi?.qiDetection?.origin == 3"/>
     <attribute name="domain" for="stockMove"
-      expr="eval: &quot; self.purchaseOrder = :supplierPurchaseOrder &quot;"
+      expr="eval: &quot; :supplierPurchaseOrder MEMBER OF self.purchaseOrderSet &quot;"
       if="qi?.qiDetection?.origin == 1"/>
   </action-attrs>
 
@@ -629,7 +629,7 @@
 
   <action-validate name="action-quality-improvement-validate-manuf-order-on-change">
     <alert
-      message="The following fields will be reset: operation order line, manuf Order product to consume, consummed manuf order product , continue ?"
+      message="The following fields will be reset: manufacturing operation line, manuf Order product to consume, consummed manuf order product , continue ?"
       if="operationOrder != null || toConsumeProdProduct != null || consummedProdProduct != null"
       action="action-quality-improvement-attrs-on-validate-set-field-values"/>
   </action-validate>

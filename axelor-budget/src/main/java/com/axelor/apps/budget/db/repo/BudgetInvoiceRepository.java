@@ -21,25 +21,36 @@ package com.axelor.apps.budget.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.inject.Beans;
-import java.math.BigDecimal;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetInvoiceRepository extends InvoiceProjectRepository {
 
+  @Inject
+  public BudgetInvoiceRepository(AppBusinessProjectService appBusinessProjectService) {
+    super(appBusinessProjectService);
+  }
+
   @Override
   public Invoice copy(Invoice entity, boolean deep) {
     Invoice copy = super.copy(entity, deep);
 
-    if (deep) {
+    if (deep && Beans.get(AppBudgetService.class).isApp("budget")) {
       if (copy.getInvoiceLineList() != null && !copy.getInvoiceLineList().isEmpty()) {
+        BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
         for (InvoiceLine invoiceLine : copy.getInvoiceLineList()) {
           invoiceLine.setBudget(null);
-          invoiceLine.setBudgetDistributionSumAmount(BigDecimal.ZERO);
           invoiceLine.clearBudgetDistributionList();
+          invoiceLine.setBudgetRemainingAmountToAllocate(
+              budgetToolsService.getBudgetRemainingAmountToAllocate(
+                  invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
         }
       }
       copy.setBudgetDistributionGenerated(false);
@@ -51,7 +62,8 @@ public class BudgetInvoiceRepository extends InvoiceProjectRepository {
   @Override
   public Invoice save(Invoice invoice) {
     try {
-      if (!CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+      if (!CollectionUtils.isEmpty(invoice.getInvoiceLineList())
+          && Beans.get(AppBudgetService.class).isApp("budget")) {
         BudgetInvoiceLineService budgetInvoiceLineService =
             Beans.get(BudgetInvoiceLineService.class);
         boolean negateAmount =

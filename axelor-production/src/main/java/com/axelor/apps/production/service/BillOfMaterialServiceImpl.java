@@ -165,7 +165,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
               + noOfPersonalizedBOM
               + ")";
       personalizedBOM.setName(name);
-      personalizedBOM.setFullName(name);
       personalizedBOM.setPersonalized(true);
       List<BillOfMaterialLine> billOfMaterialLineList = billOfMaterial.getBillOfMaterialLineList();
 
@@ -489,7 +488,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       return Collections.emptyList();
     }
     String stringQuery =
-        "SELECT DISTINCT self.product.id from BillOfMaterial as self WHERE self.company.id in (?1)";
+        "SELECT DISTINCT self.product.id from BillOfMaterial as self WHERE self.company.id in (?1) AND self.product IS NOT NULL";
     Query query = JPA.em().createQuery(stringQuery, Long.class);
 
     query.setParameter(1, companySet.stream().map(Company::getId).collect(Collectors.toList()));

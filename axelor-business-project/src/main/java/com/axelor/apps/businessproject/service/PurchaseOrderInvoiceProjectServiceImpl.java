@@ -38,15 +38,16 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.service.CurrencyScaleServicePurchase;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
@@ -86,7 +87,8 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
       CommonInvoiceService commonInvoiceService,
       AddressService addressService,
       InvoiceLineOrderService invoiceLineOrderService,
-      CurrencyScaleServicePurchase currencyScaleServicePurchase,
+      CurrencyService currencyService,
+      CurrencyScaleService currencyScaleService,
       PriceListService priceListService,
       PurchaseOrderLineService purchaseOrderLineService,
       AppBusinessProjectService appBusinessProjectService,
@@ -101,7 +103,8 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
         commonInvoiceService,
         addressService,
         invoiceLineOrderService,
-        currencyScaleServicePurchase);
+        currencyService,
+        currencyScaleService);
     this.priceListService = priceListService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.appBusinessProjectService = appBusinessProjectService;

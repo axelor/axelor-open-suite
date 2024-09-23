@@ -1,0 +1,10 @@
+"importId";"name";"modelName";"statusSelect";"toAttach";"scriptFieldName"
+"6";"Inventory PDF";"com.axelor.apps.stock.db.Inventory";"1";false;"${__i18n__.get('Inventory') + '_' + Inventory.inventorySeq + '_' + __datetime__.date(Inventory.company).format('yyyyMMdd')}"
+"27";"StockLocation PDF";"com.axelor.apps.stock.db.StockLocation";"1";false;"${__i18n__.get('Stock location') + ' ' + StockLocation.name + '-' + date}"
+"28";"StockMove";"com.axelor.apps.stock.db.StockMove";"2";false;"${def t = [1: 'Internal stock move',2: 'Customer delivery',3: 'Supplier arrival']
+__i18n__.get(t[StockMove.typeSelect]) + ' ' + StockMove.stockMoveSeq}"
+"71";"PickingStockMove";"com.axelor.apps.stock.db.StockMove";"1";false;"${__i18n__.get('Stock Move') + ' ' + StockMove.stockMoveSeq + '-' + date}"
+"72";"ConformityCertificate";"com.axelor.apps.stock.db.StockMove";"1";false;"${__i18n__.get('Certificate of conformity') + ' ' + StockMove.stockMoveSeq + '-' + date}"
+"121";"Inventory XLSX";"com.axelor.apps.stock.db.Inventory";"1";false;"${__i18n__.get('Inventory') + '_' + Inventory.inventorySeq + '_' + __datetime__.date(Inventory.company).format('yyyyMMdd')}"
+"122";"Inventory ODS";"com.axelor.apps.stock.db.Inventory";"1";false;"${__i18n__.get('Inventory') + '_' + Inventory.inventorySeq + '_' + __datetime__.date(Inventory.company).format('yyyyMMdd')}"
+"123";"StockLocation XLSX";"com.axelor.apps.stock.db.StockLocation";"1";false;"${__i18n__.get('Stock location') + ' ' + StockLocation.name + '-' + date}"

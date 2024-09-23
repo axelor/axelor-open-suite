@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/domain-models"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="EquipmentLine">
+    <string name="comments" title="Comments"/>
+    <decimal name="quantity" title="Quantity"/>
+
+    <many-to-one name="trackingNumber" title="Tracking Number"
+      ref="com.axelor.apps.stock.db.TrackingNumber" copy="false"/>
+
+    <many-to-one name="equipment" title="Equipment"
+      ref="com.axelor.apps.intervention.db.Equipment" readonly="true"/>
+    <many-to-one name="product" title="Article" ref="com.axelor.apps.base.db.Product"/>
+
+    <many-to-one name="stockMove" title="Stock move"
+      ref="com.axelor.apps.stock.db.StockMove"/>
+
+    <string name="equipmentLineProductLabel" title="Equipment line Product label"
+      readonly="true" search="product,trackingNumber">
+      <![CDATA[
+        String equipmentLineProductLabel = "";
+        if (product != null) {
+          equipmentLineProductLabel = product.getFullName();
+        }
+        if (trackingNumber != null) {
+          equipmentLineProductLabel += " - " + trackingNumber.getTrackingNumberSeq();
+        }
+	  	return equipmentLineProductLabel;
+	  	]]>
+    </string>
+    <entity-listener
+      class="com.axelor.apps.intervention.events.EquipmentLineListener"/>
+  </entity>
+
+</domain-models>

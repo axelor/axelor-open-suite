@@ -27,13 +27,11 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
@@ -71,16 +69,12 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -94,9 +88,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.validation.ValidationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -116,12 +110,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected ManufOrderRepository manufOrderRepo;
   protected ProdProductRepository prodProductRepo;
   protected ProductCompanyService productCompanyService;
-  protected BarcodeGeneratorService barcodeGeneratorService;
   protected ProductStockLocationService productStockLocationService;
   protected UnitConversionService unitConversionService;
-  protected MetaFiles metaFiles;
   protected PartnerRepository partnerRepository;
   protected BillOfMaterialService billOfMaterialService;
+  protected StockMoveService stockMoveService;
+  protected ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService;
+  protected ManufOrderStockMoveService manufOrderStockMoveService;
+  protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
+  protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
 
   @Inject
   public ManufOrderServiceImpl(
@@ -135,12 +132,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       ManufOrderRepository manufOrderRepo,
       ProdProductRepository prodProductRepo,
       ProductCompanyService productCompanyService,
-      BarcodeGeneratorService barcodeGeneratorService,
       ProductStockLocationService productStockLocationService,
       UnitConversionService unitConversionService,
-      MetaFiles metaFiles,
       PartnerRepository partnerRepository,
-      BillOfMaterialService billOfMaterialService) {
+      BillOfMaterialService billOfMaterialService,
+      StockMoveService stockMoveService,
+      ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
+      ManufOrderStockMoveService manufOrderStockMoveService,
+      ManufOrderGetStockMoveService manufOrderGetStockMoveService,
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
     this.sequenceService = sequenceService;
     this.operationOrderService = operationOrderService;
     this.manufOrderPlanService = manufOrderPlanService;
@@ -151,12 +151,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.manufOrderRepo = manufOrderRepo;
     this.prodProductRepo = prodProductRepo;
     this.productCompanyService = productCompanyService;
-    this.barcodeGeneratorService = barcodeGeneratorService;
     this.productStockLocationService = productStockLocationService;
     this.unitConversionService = unitConversionService;
-    this.metaFiles = metaFiles;
     this.partnerRepository = partnerRepository;
     this.billOfMaterialService = billOfMaterialService;
+    this.stockMoveService = stockMoveService;
+    this.manufOrderOutgoingStockMoveService = manufOrderOutgoingStockMoveService;
+    this.manufOrderStockMoveService = manufOrderStockMoveService;
+    this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
+    this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
   }
 
   @Override
@@ -589,7 +592,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     ManufOrderStockMoveService manufOrderStockMoveService =
         Beans.get(ManufOrderStockMoveService.class);
     if (!manufOrder.getIsConsProOnOperation()) {
-      manufOrderStockMoveService.createNewConsumedStockMoveLineList(manufOrder, qtyToUpdate);
+      manufOrderCreateStockMoveLineService.createNewConsumedStockMoveLineList(
+          manufOrder, qtyToUpdate);
       updateDiffProdProductList(manufOrder);
     } else {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -599,7 +603,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       }
     }
 
-    manufOrderStockMoveService.createNewProducedStockMoveLineList(manufOrder, qtyToUpdate);
+    manufOrderCreateStockMoveLineService.createNewProducedStockMoveLineList(
+        manufOrder, qtyToUpdate);
   }
 
   @Override
@@ -683,145 +688,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       }
     }
     return diffConsumeList;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
-    this.updateDiffProdProductList(manufOrder);
-    List<StockMoveLine> consumedStockMoveLineList = manufOrder.getConsumedStockMoveLineList();
-    if (consumedStockMoveLineList == null) {
-      return;
-    }
-    updateStockMoveFromManufOrder(
-        consumedStockMoveLineList, getConsumedStockMoveFromManufOrder(manufOrder));
-  }
-
-  public StockMove getConsumedStockMoveFromManufOrder(ManufOrder manufOrder)
-      throws AxelorException {
-    ManufOrderStockMoveService manufOrderStockMoveService =
-        Beans.get(ManufOrderStockMoveService.class);
-    Optional<StockMove> stockMoveOpt =
-        manufOrderStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
-
-    if (stockMoveOpt.isPresent()) {
-      return stockMoveOpt.get();
-    } else {
-      return manufOrderStockMoveService
-          .createAndPlanToConsumeStockMove(manufOrder)
-          .map(
-              sm -> {
-                manufOrder.addInStockMoveListItem(sm);
-                return sm;
-              })
-          .orElse(null);
-    }
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
-    List<StockMoveLine> producedStockMoveLineList = manufOrder.getProducedStockMoveLineList();
-    if (producedStockMoveLineList == null) {
-      return;
-    }
-    updateStockMoveFromManufOrder(
-        producedStockMoveLineList, getProducedStockMoveFromManufOrder(manufOrder));
-  }
-
-  public StockMove getProducedStockMoveFromManufOrder(ManufOrder manufOrder)
-      throws AxelorException {
-    ManufOrderStockMoveService manufOrderStockMoveService =
-        Beans.get(ManufOrderStockMoveService.class);
-    Optional<StockMove> stockMoveOpt =
-        manufOrderStockMoveService.getPlannedStockMove(manufOrder.getOutStockMoveList());
-
-    Company company = manufOrder.getCompany();
-
-    StockMove stockMove;
-    if (stockMoveOpt.isPresent()) {
-      return stockMoveOpt.get();
-    } else {
-      return manufOrderStockMoveService
-          .createAndPlanToProduceStockMove(manufOrder)
-          .map(
-              sm -> {
-                manufOrder.addOutStockMoveListItem(sm);
-                return sm;
-              })
-          .orElse(null);
-    }
-  }
-
-  @Override
-  public void checkConsumedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
-      throws AxelorException {
-    checkRealizedStockMoveLineList(
-        manufOrder.getConsumedStockMoveLineList(), oldManufOrder.getConsumedStockMoveLineList());
-  }
-
-  @Override
-  public void checkProducedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
-      throws AxelorException {
-    checkRealizedStockMoveLineList(
-        manufOrder.getProducedStockMoveLineList(), oldManufOrder.getProducedStockMoveLineList());
-  }
-
-  @Override
-  public void checkRealizedStockMoveLineList(
-      List<StockMoveLine> stockMoveLineList, List<StockMoveLine> oldStockMoveLineList)
-      throws AxelorException {
-
-    List<StockMoveLine> realizedProducedStockMoveLineList =
-        stockMoveLineList.stream()
-            .filter(
-                stockMoveLine ->
-                    stockMoveLine.getStockMove() != null
-                        && stockMoveLine.getStockMove().getStatusSelect()
-                            == StockMoveRepository.STATUS_REALIZED)
-            .sorted(Comparator.comparingLong(StockMoveLine::getId))
-            .collect(Collectors.toList());
-    List<StockMoveLine> oldRealizedProducedStockMoveLineList =
-        oldStockMoveLineList.stream()
-            .filter(
-                stockMoveLine ->
-                    stockMoveLine.getStockMove() != null
-                        && stockMoveLine.getStockMove().getStatusSelect()
-                            == StockMoveRepository.STATUS_REALIZED)
-            .sorted(Comparator.comparingLong(StockMoveLine::getId))
-            .collect(Collectors.toList());
-
-    // the two lists must be equal
-    if (!realizedProducedStockMoveLineList.equals(oldRealizedProducedStockMoveLineList)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(ProductionExceptionMessage.CANNOT_DELETE_REALIZED_STOCK_MOVE_LINES));
-    }
-  }
-
-  @Override
-  public void updateStockMoveFromManufOrder(
-      List<StockMoveLine> stockMoveLineList, StockMove stockMove) throws AxelorException {
-    if (stockMoveLineList == null) {
-      return;
-    }
-
-    // add missing lines in stock move
-    stockMoveLineList.stream()
-        .filter(stockMoveLine -> stockMoveLine.getStockMove() == null)
-        .forEach(stockMove::addStockMoveLineListItem);
-
-    // remove lines in stock move removed in manuf order
-    if (stockMove.getStockMoveLineList() != null) {
-      stockMove
-          .getStockMoveLineList()
-          .removeIf(stockMoveLine -> !stockMoveLineList.contains(stockMoveLine));
-    }
-    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
-    // update stock location by cancelling then planning stock move.
-    stockMoveService.cancel(stockMove);
-    stockMoveService.goBackToDraft(stockMove);
-    stockMoveService.plan(stockMove);
   }
 
   /**
@@ -1232,27 +1098,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  public void createBarcode(ManufOrder manufOrder) {
-    String manufOrderSeq = manufOrder.getManufOrderSeq();
-
-    try (InputStream inStream =
-        barcodeGeneratorService.createBarCode(
-            manufOrderSeq, appProductionService.getAppProduction().getBarcodeTypeConfig(), true)) {
-
-      if (inStream != null) {
-        MetaFile barcodeFile =
-            metaFiles.upload(
-                inStream, String.format("ManufOrderBarcode%d.png", manufOrder.getId()));
-        manufOrder.setBarCode(barcodeFile);
-      }
-    } catch (IOException e) {
-      TraceBackService.trace(e);
-    } catch (AxelorException e) {
-      throw new ValidationException(e.getMessage());
-    }
-  }
-
-  @Override
   public List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder) {
     return manufOrderRepo
         .all()
@@ -1297,7 +1142,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             generateManufOrder(
                 product,
                 manufOrder.getQty().multiply(billOfMaterial.getQty()),
-                billOfMaterialService.getPriority(billOfMaterial),
+                manufOrder.getPrioritySelect(),
                 IS_TO_INVOICE,
                 billOfMaterial,
                 manufOrder.getPlannedStartDateT(),
@@ -1336,7 +1181,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           createDraftManufOrder(
               childBom.getProduct(),
               qtyRequested,
-              billOfMaterialService.getPriority(childBom),
+              parentMO.getPrioritySelect(),
               childBom,
               null,
               parentMO.getPlannedStartDateT());
@@ -1402,7 +1247,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       Product product = billOfMaterialLine.getProduct();
       BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
       BigDecimal qtyNeeded = billOfMaterialLine.getQty();
-      if (availableQty.compareTo(BigDecimal.ZERO) > 0 && qtyNeeded.compareTo(BigDecimal.ZERO) > 0) {
+      if (availableQty.compareTo(BigDecimal.ZERO) >= 0
+          && qtyNeeded.compareTo(BigDecimal.ZERO) > 0) {
         BigDecimal qtyToUse = availableQty.divideToIntegralValue(qtyNeeded);
         producibleQty = producibleQty == null ? qtyToUse : producibleQty.min(qtyToUse);
       }
@@ -1443,5 +1289,55 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(ProductionExceptionMessage.CHECK_BOM_AND_PROD_PROCESS));
     }
+  }
+
+  @Override
+  public Map<Product, BigDecimal> getMissingComponents(ManufOrder manufOrder)
+      throws AxelorException {
+    Map<Product, BigDecimal> missingProductsMap = new HashMap<>();
+    Company company = manufOrder.getCompany();
+    BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
+
+    if (company == null
+        || billOfMaterial == null
+        || billOfMaterial.getQty().compareTo(BigDecimal.ZERO) <= 0
+        || CollectionUtils.isEmpty(billOfMaterial.getBillOfMaterialLineList())) {
+      return missingProductsMap;
+    }
+
+    BigDecimal bomQty = billOfMaterial.getQty();
+    BigDecimal qty = manufOrder.getQty();
+
+    Map<Product, Pair<BigDecimal, Unit>> bomLineMap =
+        billOfMaterial.getBillOfMaterialLineList().stream()
+            .collect(
+                Collectors.toMap(
+                    BillOfMaterialLine::getProduct,
+                    line -> Pair.of(line.getQty(), line.getUnit()),
+                    (x, y) -> Pair.of(x.getLeft().add(y.getLeft()), x.getRight())));
+
+    for (Entry<Product, Pair<BigDecimal, Unit>> billOfMaterialLine : bomLineMap.entrySet()) {
+      Product product = billOfMaterialLine.getKey();
+      BigDecimal bomLineQty = billOfMaterialLine.getValue().getLeft();
+      Unit bomLineUnit = billOfMaterialLine.getValue().getRight();
+      BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
+      availableQty =
+          unitConversionService.convert(
+              product.getUnit(), bomLineUnit, availableQty, availableQty.scale(), product);
+      BigDecimal qtyNeeded =
+          qty.multiply(bomLineQty)
+              .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
+
+      if (availableQty.compareTo(BigDecimal.ZERO) >= 0
+          && qtyNeeded.compareTo(BigDecimal.ZERO) > 0
+          && qtyNeeded.compareTo(availableQty) > 0) {
+        BigDecimal missingQty =
+            qtyNeeded
+                .subtract(availableQty)
+                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
+        missingProductsMap.put(product, missingQty);
+      }
+    }
+    return missingProductsMap;
   }
 }

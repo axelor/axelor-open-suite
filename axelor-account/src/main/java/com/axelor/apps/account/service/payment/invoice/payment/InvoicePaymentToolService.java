@@ -26,7 +26,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -78,6 +77,10 @@ public interface InvoicePaymentToolService {
 
   List<Long> loadInvoiceTerms(InvoicePayment invoicePayment, Long invoiceId) throws AxelorException;
 
-  @CallMethod
-  boolean isPartialPayment(InvoicePayment invoicePayment);
+  BigDecimal computeCompanyAmount(
+      BigDecimal amountInCurrency,
+      Currency paymentCurrency,
+      Currency companyCurrency,
+      LocalDate paymentDate)
+      throws AxelorException;
 }

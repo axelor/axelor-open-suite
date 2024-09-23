@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form name="account-management-form" title="Account management"
+    id="contract-account-management-form" model="com.axelor.apps.account.db.AccountManagement"
+    extension="true">
+
+    <extend target="/">
+      <attribute name="onNew" value="action-contract-account-management-group-on-new"/>
+      <attribute name="onLoad" value="action-contract-account-management-group-on-load"/>
+    </extend>
+    <extend target="//panel[@name='purchaseConfig1Panel']/field[@name='purchaseTaxSet']">
+      <insert position="after">
+        <field name="yearEndBonusPurchaseAccount" if-module="axelor-contract"
+          form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('contract')"
+          canEdit="false" colSpan="6" hidden="true"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='saleConfig1Panel']/field[@name='saleTaxSet']">
+      <insert position="after">
+        <field name="yearEndBonusSaleAccount" if-module="axelor-contract"
+          form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('contract')"
+          canEdit="false" colSpan="6" hidden="true"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-contract-account-management-group-on-new">
+    <action name="action-account-management-group-onNew"/>
+    <action name="action-account-management-attrs-global-accounting-cash-account-title"/>
+    <action name="action-account-management-attrs-hide-yer-account"/>
+  </action-group>
+
+  <action-group name="action-contract-account-management-group-on-load">
+    <action name="account-action-account-management-group-onload"/>
+    <action name="action-account-management-attrs-global-accounting-cash-account-title"/>
+    <action name="action-account-management-attrs-hide-yer-account"/>
+  </action-group>
+
+  <action-attrs name="action-account-management-attrs-hide-yer-account">
+    <attribute for="yearEndBonusSaleAccount" name="hidden"
+      expr="eval: (typeSelect == __repo__(AccountManagement).TYPE_PRODUCT &amp;&amp; !__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.isYebAccountConfigByProductFamilyEnabled) &amp;&amp; (product != __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.yearEndBonusProduct)"/>
+    <attribute for="yearEndBonusPurchaseAccount" name="hidden"
+      expr="eval: (typeSelect == __repo__(AccountManagement).TYPE_PRODUCT &amp;&amp; !__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.isYebAccountConfigByProductFamilyEnabled) &amp;&amp; (product != __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.yearEndBonusProduct)"/>
+  </action-attrs>
+</object-views>

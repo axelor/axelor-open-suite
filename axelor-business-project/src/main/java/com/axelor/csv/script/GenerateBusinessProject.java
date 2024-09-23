@@ -61,9 +61,10 @@ public class GenerateBusinessProject {
 
     Project project = projectGeneratorFactory.generate(saleOrder, saleOrder.getUpdatedOn());
 
-    project.setIsShowTimeSpent(true);
+    project.setManageTimeSpent(true);
     project.setSpentTimeCostComputationMethod(ProjectRepository.COMPUTATION_METHOD_EMPLOYEE);
     project.setImportId("demo_project_" + saleOrder.getImportId());
+    project.setCode(project.getImportId());
     fillProjectTasks(saleOrder, project, type);
 
     projectBusinessService.computeProjectTotals(project);

@@ -47,4 +47,6 @@ public interface ExtraHoursService {
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
   public void compute(ExtraHours extraHours);
+
+  void updateLineEmployee(ExtraHours extraHours);
 }

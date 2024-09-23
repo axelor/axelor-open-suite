@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -49,6 +49,10 @@
     <boolean name="isFillOriginDate" title="Fill origin date"/>
     <boolean name="allowAccountingNewOnMassEntry"
       title="Allow generation with status new on mass entry" default="false"/>
+
+    <many-to-many name="authorizedRoleSet" ref="com.axelor.auth.db.Role"
+      title="Authorized roles"
+      help="Users with one of these roles are able to create and save moves based on this journal."/>
 
 
     <unique-constraint columns="company,code"/>

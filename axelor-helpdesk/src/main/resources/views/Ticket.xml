@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <grid name="ticket-grid" title="All tickets" model="com.axelor.apps.helpdesk.db.Ticket">
@@ -45,7 +45,7 @@
     <panel name="mainPanel" colSpan="12">
 
       <field name="ticketStatus" colSpan="12" readonly="true" showTitle="false"
-        widget="NavSelect" x-order="priority"/>
+        widget="NavSelect" x-order="sequence"/>
 
       <field name="slaPolicy.name" showTitle="false"
         hideIf="ticketStatus.priority >= slaPolicy.reachStageTicketStatus.priority" colSpan="4">
@@ -109,6 +109,7 @@
         <field name="realTotalDuration" colSpan="4"/>
         <field name="timerState" hidden="true" colSpan="4"/>
       </panel>
+
     </panel-tabs>
 
     <panel name="actionsPanel" sidebar="true">
@@ -184,7 +185,7 @@
     <template>
 	 <![CDATA[
  	 <>
- 	     <h4>{ticketSeq}</h4>
+ 	     <strong>{ticketSeq}</strong>
 	     <Box as="p" mt={2}>{subject}</Box>
  	     <Box as="dl">
 	 	     {progressSelect > 0 &&
@@ -407,8 +408,6 @@
     <call class="com.axelor.apps.helpdesk.web.TicketController" method="computeRealDuration"/>
   </action-method>
 
-
-
   <search-filters name="ticket-filters" model="com.axelor.apps.helpdesk.db.Ticket"
     title="Ticket filters">
     <field name="realTotalDuration" hidden="true"
@@ -416,4 +415,6 @@
     <field name="timerState" hidden="true"
       if="!__config__.app.getApp('helpdesk')?.getManageTimer()"/>
   </search-filters>
+
+
 </object-views>

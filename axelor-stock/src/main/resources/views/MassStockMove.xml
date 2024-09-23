@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="mass-stock-move-grid" title="Mass stock moves"
+    model="com.axelor.apps.stock.db.MassStockMove" onNew="action-mass-stock-move-method-on-new">
+    <field name="sequence"/>
+    <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
+    <field name="statusSelect" required="true"/>
+    <field name="cartStockLocation" domain="self.company = :company AND self.typeSelect != 3"/>
+    <field name="commonFromStockLocation"
+      omain="self.company = :company AND self.typeSelect != 3"/>
+    <field name="commonToStockLocation"
+      omain="self.company = :company AND self.typeSelect != 3"/>
+  </grid>
+
+  <form title="Mass stock move" name="mass-stock-move-form"
+    model="com.axelor.apps.stock.db.MassStockMove" onNew="action-mass-stock-move-method-on-new">
+    <panel name="statusPanel">
+      <field name="statusSelect" widget="NavSelect" required="true" readonly="true"
+        showTitle="false" colSpan="12"/>
+    </panel>
+    <panel name="identificationPanel" readonlyIf="statusSelect > 1">
+      <field name="sequence"/>
+      <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
+      <field name="cartStockLocation"
+        domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+    </panel>
+    <panel name="productNeedPanel">
+      <field name="commonFromStockLocation"
+        domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+      <field name="commonToStockLocation"
+        domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+      <panel-related field="productToMoveList" grid-view="mass-stock-move-need-grid"
+        form-view="mass-stock-move-need-form" colSpan="12" canNew="company != null"/>
+    </panel>
+    <panel name="pickedProductPanel">
+      <panel-related field="pickedProductList" grid-view="picked-product-grid"
+        form-view="picked-product-form" colSpan="12" canNew="company != null" onChange="save"/>
+      <button name="realizePickingBtn" title="Pick all / the rest"
+        onClick="save,action-mass-stock-move-method-realize-picking" icon="fa-play"/>
+      <button name="cancelPickingBtn" title="Cancel picking"
+        onClick="action-mass-stock-move-method-cancel-picking" icon="fa-undo"/>
+    </panel>
+    <panel name="storedProductPanel">
+      <panel-related field="storedProductList" grid-view="stored-product-grid"
+        form-view="stored-product-form" colSpan="12" canNew="company != null" onChange="save"/>
+      <button name="realizeStoringBtn" title="Store all / the rest"
+        onClick="save,action-mass-stock-move-method-realize-storing" icon="fa-play"/>
+      <button name="cancelStorageBtn" title="Cancel storage"
+        onClick="save,action-mass-stock-move-method-cancel-storing" icon="fa-undo"/>
+    </panel>
+  </form>
+
+  <action-method name="action-mass-stock-move-method-on-new">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController" method="onNew"/>
+  </action-method>
+
+  <action-record name="action-mass-stock-move-record-company-on-change"
+    model="com.axelor.apps.stock.db.MassStockMove">
+    <field name="cartStockLocation" expr="eval: company?.stockConfig?.cartStockLocation"/>
+  </action-record>
+
+  <action-method name="action-mass-stock-move-method-realize-picking">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController" method="realizeAllPicking"/>
+  </action-method>
+
+  <action-method name="action-mass-stock-move-method-realize-storing">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController" method="realizeAllStoring"/>
+  </action-method>
+
+  <action-method name="action-mass-stock-move-method-cancel-picking">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController" method="cancelAllPicking"/>
+  </action-method>
+
+  <action-method name="action-mass-stock-move-method-cancel-storing">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController" method="cancelAllStoring"/>
+  </action-method>
+
+</object-views>

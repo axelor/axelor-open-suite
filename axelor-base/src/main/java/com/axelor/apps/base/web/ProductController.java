@@ -19,7 +19,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -28,8 +28,9 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductUpdateService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
@@ -71,7 +72,7 @@ public class ProductController {
 
       Product newProduct = request.getContext().asType(Product.class);
 
-      if ((!newProduct.getSellable() || newProduct.getIsUnrenewed())
+      if ((!newProduct.getSellable() || newProduct.getIsUnrenewed() || !newProduct.getPurchasable())
           && Beans.get(ProductService.class).hasActivePriceList(newProduct)) {
         response.setAlert(I18n.get("Warning, this product is present in at least one price list"));
       }
@@ -86,7 +87,8 @@ public class ProductController {
       Product newProduct = request.getContext().asType(Product.class);
       // Set anomaly when a product exists in list Price
       if (newProduct.getId() != null) {
-        Beans.get(PriceListService.class).setPriceListLineAnomaly(newProduct);
+        Beans.get(PriceListService.class)
+            .setPriceListLineAnomaly(Beans.get(ProductRepository.class).find(newProduct.getId()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -108,25 +110,21 @@ public class ProductController {
   public void printProductCatalog(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    BirtTemplate productCatalogPGQLBirtTemplate =
-        Beans.get(AppBaseService.class).getAppBase().getProductCatalogPGQLBirtTemplate();
-    if (ObjectUtils.isEmpty(productCatalogPGQLBirtTemplate)) {
+    PrintingTemplate productCatalogPGQLPrintTemplate =
+        Beans.get(AppBaseService.class).getAppBase().getProductCatalogPGQLPrintTemplate();
+    if (ObjectUtils.isEmpty(productCatalogPGQLPrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String name = I18n.get("Product Catalog");
     String fileLink =
-        Beans.get(BirtTemplateService.class)
-            .generateBirtTemplateLink(
-                productCatalogPGQLBirtTemplate,
-                null,
-                Map.of("ProductIds", getSelectedOrAllRecordIds(request)),
-                name + "-${date}",
-                false,
-                productCatalogPGQLBirtTemplate.getFormat());
-
+        Beans.get(PrintingTemplatePrintService.class)
+            .getPrintLink(
+                productCatalogPGQLPrintTemplate,
+                new PrintingGenFactoryContext(
+                    Map.of("ProductIds", getSelectedOrAllRecordIds(request))));
     logger.debug("Printing " + name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());

@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
@@ -28,22 +46,26 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   protected HRConfigService hrConfigService;
   protected TemplateMessageService templateMessageService;
   protected TimesheetRepository timesheetRepository;
+  protected TimesheetWorkflowCheckService timesheetWorkflowCheckService;
 
   @Inject
   public TimesheetWorkflowServiceImpl(
       AppHumanResourceService appHumanResourceService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
-      TimesheetRepository timesheetRepository) {
+      TimesheetRepository timesheetRepository,
+      TimesheetWorkflowCheckService timesheetWorkflowCheckService) {
     this.appHumanResourceService = appHumanResourceService;
     this.hrConfigService = hrConfigService;
     this.templateMessageService = templateMessageService;
     this.timesheetRepository = timesheetRepository;
+    this.timesheetWorkflowCheckService = timesheetWorkflowCheckService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException {
+    timesheetWorkflowCheckService.confirmCheck(timesheet);
     this.fillToDate(timesheet);
     this.validateDates(timesheet);
 
@@ -76,8 +98,10 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   }
 
   @Override
-  @Transactional
-  public void validate(Timesheet timesheet) {
+  @Transactional(rollbackOn = Exception.class)
+  public void validate(Timesheet timesheet) throws AxelorException {
+    timesheetWorkflowCheckService.validateCheck(timesheet);
+
     timesheet.setIsCompleted(true);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
@@ -110,13 +134,21 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   }
 
   @Override
-  @Transactional
-  public void refuse(Timesheet timesheet) {
-
+  @Transactional(rollbackOn = Exception.class)
+  public void refuse(Timesheet timesheet) throws AxelorException {
+    timesheetWorkflowCheckService.refuseCheck(timesheet);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
     timesheet.setRefusedBy(AuthUtils.getUser());
     timesheet.setRefusalDateTime(
         appHumanResourceService.getTodayDateTime(timesheet.getCompany()).toLocalDateTime());
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  @Override
+  public void refuseAndSendRefusalEmail(Timesheet timesheet, String groundForRefusal)
+      throws AxelorException, JSONException, IOException, ClassNotFoundException {
+    timesheet.setGroundForRefusal(groundForRefusal);
+    refuseAndSendRefusalEmail(timesheet);
   }
 
   @Override
@@ -144,8 +176,9 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   }
 
   @Override
-  @Transactional
-  public void cancel(Timesheet timesheet) {
+  @Transactional(rollbackOn = Exception.class)
+  public void cancel(Timesheet timesheet) throws AxelorException {
+    timesheetWorkflowCheckService.cancelCheck(timesheet);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
   }
 
@@ -270,6 +303,23 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
       }
 
       timesheet.setToDate(timesheetLineLastDate);
+    }
+  }
+
+  @Override
+  public Message complete(Timesheet timesheet)
+      throws AxelorException, JSONException, IOException, ClassNotFoundException {
+    confirm(timesheet);
+    return validateAndSendValidationEmail(timesheet);
+  }
+
+  @Override
+  public void completeOrConfirm(Timesheet timesheet)
+      throws AxelorException, JSONException, IOException, ClassNotFoundException {
+    if (appHumanResourceService.getAppTimesheet().getNeedValidation()) {
+      confirmAndSendConfirmationEmail(timesheet);
+    } else {
+      complete(timesheet);
     }
   }
 }

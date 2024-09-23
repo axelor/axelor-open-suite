@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.imports.ImportService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -54,6 +55,7 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialImporter billOfMaterialImporter;
   protected final MetaFiles metaFiles;
+  protected final DMSService dmsService;
 
   @Inject
   public BillOfMaterialImportServiceImpl(
@@ -64,7 +66,8 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
       BillOfMaterialImportRepository billOfMaterialImportRepository,
       BillOfMaterialRepository billOfMaterialRepository,
       BillOfMaterialImporter billOfMaterialImporter,
-      MetaFiles metaFiles) {
+      MetaFiles metaFiles,
+      DMSService dmsService) {
     this.appBaseService = appBaseService;
     this.importService = importService;
     this.billOfMaterialLineService = billOfMaterialLineService;
@@ -73,6 +76,7 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialImporter = billOfMaterialImporter;
     this.metaFiles = metaFiles;
+    this.dmsService = dmsService;
   }
 
   @Override
@@ -127,18 +131,25 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
                 ProductionExceptionMessage.BOM_IMPORT_NO_MAIN_BILL_OF_MATERIALS_GENERATED));
 
     generateBillOfMaterialFromImportLine(billOfMaterialImportLineOp.get());
+    updateProducts(billOfMaterialImport.getMainBillOfMaterialGenerated());
 
     attachMetaFile(billOfMaterialImport);
   }
 
-  protected void attachMetaFile(BillOfMaterialImport billOfMaterialImport) {
+  protected void attachMetaFile(BillOfMaterialImport billOfMaterialImport) throws AxelorException {
     MetaFile metaFile = billOfMaterialImport.getDocumentMetaFile();
 
     if (metaFile != null) {
-      metaFiles.attach(
-          billOfMaterialImport.getDocumentMetaFile(),
-          billOfMaterialImport.getDocumentMetaFile().getFileName(),
-          billOfMaterialImport.getMainBillOfMaterialGenerated());
+      if (metaFile.getFileType().equals("application/zip")
+          || metaFile.getFileType().equals("application/x-zip-compressed")) {
+        String zipFilePath = MetaFiles.getPath(metaFile).toFile().getAbsolutePath();
+        dmsService.unzip(zipFilePath, billOfMaterialImport.getMainBillOfMaterialGenerated());
+      } else {
+        metaFiles.attach(
+            billOfMaterialImport.getDocumentMetaFile(),
+            billOfMaterialImport.getDocumentMetaFile().getFileName(),
+            billOfMaterialImport.getMainBillOfMaterialGenerated());
+      }
     }
   }
 
@@ -156,33 +167,7 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
     if (billOfMaterialImportLine.getBillOfMaterialImportLineList() != null) {
       for (BillOfMaterialImportLine billOfMaterialImportLineChild :
           billOfMaterialImportLine.getBillOfMaterialImportLineList()) {
-        generateBillOfMaterialFromImportLine(billOfMaterialImportLineChild)
-            .map(
-                bom -> {
-                  if (billOfMaterial.getProduct() != null
-                      && billOfMaterial.getProduct().getProductSubTypeSelect()
-                          == ProductRepository.PRODUCT_SUB_TYPE_COMPONENT) {
-                    billOfMaterial
-                        .getProduct()
-                        .setProductSubTypeSelect(
-                            ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT);
-                  }
-                  return bom;
-                })
-            .ifPresentOrElse(
-                childBom -> {
-                  billOfMaterial.addBillOfMaterialLineListItem(
-                      billOfMaterialLineService.createFromBillOfMaterial(childBom));
-                },
-                () ->
-                    billOfMaterial.addBillOfMaterialLineListItem(
-                        billOfMaterialLineService.createBillOfMaterialLine(
-                            billOfMaterialImportLineChild.getProduct(),
-                            billOfMaterial,
-                            billOfMaterialImportLineChild.getQuantity(),
-                            billOfMaterialImportLineChild.getUnit(),
-                            null,
-                            false)));
+        processChildLines(billOfMaterialImportLineChild, billOfMaterial);
       }
     }
 
@@ -194,6 +179,43 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
         .getBillOfMaterialImport()
         .setMainBillOfMaterialGenerated(billOfMaterial);
     return Optional.of(billOfMaterialRepository.save(billOfMaterial));
+  }
+
+  protected void processChildLines(
+      BillOfMaterialImportLine billOfMaterialImportLineChild, BillOfMaterial billOfMaterial) {
+    generateBillOfMaterialFromImportLine(billOfMaterialImportLineChild)
+        .ifPresentOrElse(
+            childBom -> {
+              billOfMaterial.addBillOfMaterialLineListItem(
+                  billOfMaterialLineService.createFromBillOfMaterial(childBom));
+            },
+            () ->
+                billOfMaterial.addBillOfMaterialLineListItem(
+                    billOfMaterialLineService.createBillOfMaterialLine(
+                        billOfMaterialImportLineChild.getProduct(),
+                        null,
+                        billOfMaterialImportLineChild.getQuantity(),
+                        billOfMaterialImportLineChild.getUnit(),
+                        null,
+                        false)));
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void updateProducts(BillOfMaterial billOfMaterial) {
+    if (billOfMaterial == null) {
+      return;
+    }
+    if (billOfMaterial.getProduct() != null
+        && billOfMaterial.getProduct().getProductSubTypeSelect()
+            == ProductRepository.PRODUCT_SUB_TYPE_COMPONENT) {
+      billOfMaterial
+          .getProduct()
+          .setProductSubTypeSelect(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT);
+    }
+
+    billOfMaterial
+        .getBillOfMaterialLineList()
+        .forEach(bomLine -> updateProducts(bomLine.getBillOfMaterial()));
   }
 
   protected void setBillOfMaterialFields(

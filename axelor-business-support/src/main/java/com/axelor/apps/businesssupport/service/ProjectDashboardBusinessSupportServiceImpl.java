@@ -22,7 +22,7 @@ import com.axelor.apps.businesssupport.db.ProjectAnnouncement;
 import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.project.service.ProjectToolService;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class ProjectDashboardBusinessSupportServiceImpl extends ProjectDashboardHRServiceImpl {
 
   @Inject protected ProjectRepository projectRepo;
-  @Inject protected ProjectService projectService;
+  @Inject protected ProjectToolService projectToolService;
 
   @Override
   public Map<String, Object> getData(Project project) {
@@ -47,7 +47,10 @@ public class ProjectDashboardBusinessSupportServiceImpl extends ProjectDashboard
     List<Map<String, Object>> newsList = new ArrayList<>();
     List<ProjectAnnouncement> announcementList = new ArrayList<>();
 
-    projectRepo.all().filter("self.id IN ?1", projectService.getContextProjectIds()).fetch()
+    projectRepo
+        .all()
+        .filter("self.id IN ?1", projectToolService.getRelatedProjectIds(project))
+        .fetch()
         .stream()
         .forEach(subProject -> announcementList.addAll(subProject.getAnnouncementList()));
 

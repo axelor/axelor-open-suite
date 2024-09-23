@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -37,13 +38,16 @@ import java.util.List;
 public class BankReconciliationServiceImpl implements BankReconciliationService {
   protected BankStatementLineRepository bankStatementLineRepository;
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BankReconciliationServiceImpl(
       BankStatementLineRepository bankStatementLineRepository,
-      BankReconciliationLineRepository bankReconciliationLineRepository) {
+      BankReconciliationLineRepository bankReconciliationLineRepository,
+      CurrencyScaleService currencyScaleService) {
     this.bankStatementLineRepository = bankStatementLineRepository;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -114,9 +118,13 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
           alreadyMergedBankReconciliationLineList.add(bankReconciliationLineToMerge);
         }
         if (bankReconciliationLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-          bankReconciliationLine.setCredit(bankStatementLine.getAmountRemainToReconcile());
+          bankReconciliationLine.setCredit(
+              currencyScaleService.getScaledValue(
+                  bankStatementLine, bankStatementLine.getAmountRemainToReconcile()));
         } else {
-          bankReconciliationLine.setDebit(bankStatementLine.getAmountRemainToReconcile());
+          bankReconciliationLine.setDebit(
+              currencyScaleService.getScaledValue(
+                  bankStatementLine, bankStatementLine.getAmountRemainToReconcile()));
         }
         bankReconciliationLineRepository.save(bankReconciliationLine);
       }

@@ -18,15 +18,23 @@
  */
 package com.axelor.apps.bankpayment.db.repo;
 
-import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.db.Query;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.google.inject.Inject;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
 
 public class BankPaymentBankStatementLineAFB120Repository
     extends BankStatementLineAFB120Repository {
+
+  protected CurrencyScaleService currencyScaleService;
+
+  @Inject
+  public BankPaymentBankStatementLineAFB120Repository(CurrencyScaleService currencyScaleService) {
+    this.currencyScaleService = currencyScaleService;
+  }
+
   public BankStatementLineAFB120 findLineBetweenDate(
       LocalDate fromDate,
       LocalDate toDate,
@@ -51,51 +59,13 @@ public class BankPaymentBankStatementLineAFB120Repository
         .fetchOne();
   }
 
-  public List<BankStatementLineAFB120> findLinesBetweenDate(
-      LocalDate fromDate, LocalDate toDate, int lineType, BankDetails bankDetails) {
-    return all()
-        .filter(
-            "operationDate >= :fromDate"
-                + " AND operationDate <= :toDate"
-                + " AND lineTypeSelect = :lineType"
-                + " AND bankDetails = :bankDetails")
-        .bind("fromDate", fromDate)
-        .bind("toDate", toDate)
-        .bind("lineType", lineType)
-        .bind("bankDetails", bankDetails)
-        .order("operationDate")
-        .fetch();
-  }
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    Long bankStatementLineAFB120Id = (Long) json.get("id");
+    BankStatementLineAFB120 bankStatementLineAFB120 = find(bankStatementLineAFB120Id);
 
-  public Query<BankStatementLineAFB120> findByBankStatementBankDetailsAndLineType(
-      BankStatement bankStatement, BankDetails bankDetails, int lineType) {
-    return all()
-        .filter(
-            "self.bankStatement = :bankStatement"
-                + " AND self.bankDetails = :bankDetails"
-                + " AND self.lineTypeSelect = :lineTypeSelect")
-        .bind("bankStatement", bankStatement)
-        .bind("bankDetails", bankDetails)
-        .bind("lineTypeSelect", lineType);
-  }
+    json.put("$currencyNumberOfDecimals", currencyScaleService.getScale(bankStatementLineAFB120));
 
-  public Query<BankStatementLineAFB120> findByBankStatementAndLineType(
-      BankStatement bankStatement, int lineType) {
-    return all()
-        .filter("self.bankStatement = :bankStatement AND self.lineTypeSelect = :lineTypeSelect")
-        .bind("bankStatement", bankStatement)
-        .bind("lineTypeSelect", lineType);
-  }
-
-  public Query<BankStatementLineAFB120> findByBankDetailsLineTypeExcludeBankStatement(
-      BankStatement bankStatement, BankDetails bankDetails, int lineType) {
-    return all()
-        .filter(
-            "self.bankStatement != :bankStatement"
-                + " AND self.bankDetails = :bankDetails"
-                + " AND self.lineTypeSelect = :lineTypeSelect")
-        .bind("bankStatement", bankStatement)
-        .bind("bankDetails", bankDetails)
-        .bind("lineTypeSelect", lineType);
+    return super.populate(json, context);
   }
 }

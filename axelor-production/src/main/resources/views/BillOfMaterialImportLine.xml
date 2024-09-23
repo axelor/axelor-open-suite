@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="bill-of-material-import-line-grid" title="Bill of materials import lines"
     model="com.axelor.apps.production.db.BillOfMaterialImportLine" editable="true"
@@ -22,7 +22,8 @@
     <panel name="namePanel">
       <field name="code"/>
       <field name="name"/>
-      <field name="product" canNew="true" canEdit="true"/>
+      <field name="product" canNew="true" canEdit="true"
+        onChange="action-bill-of-material-import-line-compute-is-created-product"/>
       <field name="quantity" colSpan="2"/>
       <field name="unit" colSpan="2"/>
       <field name="isCreatedProduct" colSpan="2" readonly="true"/>

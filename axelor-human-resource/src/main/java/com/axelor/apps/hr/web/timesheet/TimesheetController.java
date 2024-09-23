@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
@@ -36,13 +35,13 @@ import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetDomainService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetRemoveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
-import com.axelor.apps.hr.service.timesheet.TimesheetTimeComputationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
@@ -80,7 +79,7 @@ public class TimesheetController {
   public void prefillLines(ActionRequest request, ActionResponse response) {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
-      Beans.get(TimesheetService.class).prefillLines(timesheet);
+      Beans.get(TimesheetLeaveService.class).prefillLines(timesheet);
       response.setValues(timesheet);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -459,10 +458,6 @@ public class TimesheetController {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 
-      Beans.get(TimesheetLineGenerationService.class).checkEmptyPeriod(timesheet);
-
-      computeTimeSpent(request, response);
-
       Message message =
           Beans.get(TimesheetWorkflowService.class).validateAndSendValidationEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
@@ -471,8 +466,6 @@ public class TimesheetController {
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
       }
-      Beans.get(PeriodService.class)
-          .checkPeriod(timesheet.getCompany(), timesheet.getToDate(), timesheet.getFromDate());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {
@@ -485,10 +478,14 @@ public class TimesheetController {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
       // confirm
-      Beans.get(TimesheetWorkflowService.class).confirm(timesheet);
-
-      // validate
-      this.valid(request, response);
+      Message message = Beans.get(TimesheetWorkflowService.class).complete(timesheet);
+      if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
+        response.setInfo(
+            String.format(
+                I18n.get("Email sent to %s"),
+                Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
+      }
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -514,14 +511,6 @@ public class TimesheetController {
       TraceBackService.trace(response, e);
     } finally {
       response.setReload(true);
-    }
-  }
-
-  public void computeTimeSpent(ActionRequest request, ActionResponse response) {
-    Timesheet timesheet = request.getContext().asType(Timesheet.class);
-    timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
-    if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
-      Beans.get(TimesheetTimeComputationService.class).computeTimeSpent(timesheet);
     }
   }
 
@@ -585,7 +574,6 @@ public class TimesheetController {
       BigDecimal periodTotal =
           Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet);
 
-      response.setAttr("periodTotal", "value", periodTotal);
       response.setAttr("$periodTotalConvert", "hidden", false);
       response.setAttr(
           "$periodTotalConvert",
