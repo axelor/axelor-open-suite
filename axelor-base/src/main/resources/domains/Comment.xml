@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Comment">
+
+    <integer name="sequence" title="Sequence"/>
+    <many-to-one name="mailMessage" title="Message" ref="com.axelor.mail.db.MailMessage"/>
+    <string name="note" title="Note" large="true"/>
+    <one-to-many name="commentFileList" ref="com.axelor.apps.base.db.CommentFile"
+      mappedBy="relatedComment" title="Files"/>
+    <boolean name="isPrivateNote" title="Private note" default="false"/>
+    <many-to-one ref="com.axelor.apps.base.db.Comment" name="parentComment"
+      title="Parent comment"/>
+
+  </entity>
+
+</domain-models>

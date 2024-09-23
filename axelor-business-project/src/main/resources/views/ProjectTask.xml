@@ -456,10 +456,7 @@
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
     </panel>
-    <panel-mail name="mailPanel">
-      <mail-messages/>
-      <mail-followers/>
-    </panel-mail>
+    <panel-include view="project-task-history-form"/>
   </form>
 
   <tree name="business-project-project-task-tree" title="Task">

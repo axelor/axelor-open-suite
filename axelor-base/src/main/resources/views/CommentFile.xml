@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form name="comment-file-form" title="File" model="com.axelor.apps.base.db.CommentFile"
+    width="large">
+
+    <panel name="mainPanel">
+      <field name="attachmentFile" canSelect="false" canRemove="false" showTitle="false">
+        <editor>
+          <field name="fileName" colSpan="12"/>
+        </editor>
+      </field>
+      <field name="description" widget="string"/>
+    </panel>
+
+  </form>
+
+</object-views>

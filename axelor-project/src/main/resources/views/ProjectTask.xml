@@ -182,11 +182,47 @@
       </panel>
       <panel-include view="incl-links-panel-form"/>
     </panel-tabs>
+    <panel-include view="project-task-history-form"/>
+  </form>
 
-    <panel-mail name="mailPanel">
-      <mail-messages/>
-      <mail-followers/>
-    </panel-mail>
+  <form name="project-task-history-form" title="History"
+    model="com.axelor.apps.project.db.ProjectTask" width="large">
+
+    <panel name="commentPanel" showTitle="false" showIf="id" colSpan="12">
+      <panel name="editPanel" title="Edit" colSpan="12" showIf="!$readonly()">
+        <field name="privateNoteLabel" x-dirty="false" readonly="true" showTitle="false"
+          showIf="isPrivateNote">
+          <viewer>
+	          <![CDATA[
+		          <>
+		          	{<Badge style={{ backgroundColor: "red" }}>Private Note</Badge>}
+				  </>
+	          ]]>
+          </viewer>
+        </field>
+        <field name="note" colSpan="12" widget="html"/>
+        <field name="isPrivateNote" widget="boolean-switch"
+          onChange="action-comment-attrs-is-private-note-on-change"/>
+        <field name="commentFileList" title="Files" colSpan="12">
+          <editor>
+            <field name="attachmentFile" showTitle="false" widget="binary-link"/>
+            <field name="description" showTitle="false" widget="string"/>
+          </editor>
+        </field>
+        <button onClick="" name="submitBtn" title="Submit" colSpan="1"/>
+      </panel>
+      <panel name="historyPanel" title="History" showTitle="false" colSpan="12">
+        <panel-dashlet action="action-project-task-dashlet-show-history"
+          name="showHistoryPanel" colSpan="9"/>
+        <panel name="watchersPanel" title="Watchers" colSpan="3">
+          <field name="internalWatchers" title="Internal Watchers" colSpan="12"
+            widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid"/>
+          <field name="externalWatchers" title="External Watchers" colSpan="12"
+            widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid"/>
+        </panel>
+      </panel>
+    </panel>
+
   </form>
 
   <form name="incl-characteristics-panel-form" title="Characteristics"
@@ -807,5 +843,21 @@
     <field name="metaFile" hidden="true"
       if="!__config__.app.getApp('project')?.isEnableSignature"/>
   </search-filters>
+
+  <action-view name="action-project-task-dashlet-show-history" title="History"
+    model="com.axelor.apps.base.db.Comment">
+    <view type="cards" name="comment-card"/>
+    <view type="form" name="comment-form"/>
+    <view-param name="forceEdit" value="true"/>
+    <domain>self.projectTask.id = :id</domain>
+  </action-view>
+
+  <action-attrs id="project-task-action-comment-attrs-on-new"
+    name="action-comment-attrs-on-new">
+    <attribute name="value" for="parentComment" expr="eval: _parentComment"/>
+    <attribute name="value" for="projectTask" expr="eval: _projectTask"/>
+    <attribute name="value" for="sequence"
+      expr="eval: __repo__(Comment).all().filter('self.projectTask = ?1', _projectTask).count() + 1"/>
+  </action-attrs>
 
 </object-views>

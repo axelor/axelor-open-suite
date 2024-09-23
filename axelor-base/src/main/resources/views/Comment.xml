@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form name="comment-form" title="Comment" model="com.axelor.apps.base.db.Comment"
+    onNew="action-comment-attrs-on-new" onLoad="action-comment-attrs-is-private-note-on-change"
+    width="large">
+
+    <panel name="mainPanel">
+      <field name="mailMessage.body" showIf="mailMessage" showTitle="false" colSpan="12">
+        <viewer>
+		  <![CDATA[
+		    <>
+		      <Box as="dd">
+		        {JSON.parse(mailMessage.body).tracks
+		          .filter(track => track.title !== "Note")
+		          .map((track, index) => (
+		            <li key={index}>
+		              <strong>{track.title}</strong> :
+		              {track.oldDisplayValue && <span> {track.oldDisplayValue} &raquo; </span>}
+		              {track.oldValue && !track.oldDisplayValue && <span> {track.oldValue} &raquo; </span>}
+		              <span> {track.displayValue || track.value} </span>
+		            </li>
+		          ))}
+		      </Box>
+		    </>
+		  ]]>
+        </viewer>
+      </field>
+      <field name="parentComment" title="Reply on" showIf="parentComment" canRemove="false"
+        canSelect="false" canView="false" colSpan="12">
+        <editor x-viewer="true" readonly="true">
+          <field name="note" showTitle="false" widget="html" colSpan="12"/>
+        </editor>
+      </field>
+      <field name="privateNoteLabel" x-dirty="false" readonly="true" showTitle="false"
+        showIf="isPrivateNote">
+        <viewer>
+	          <![CDATA[
+		          <>
+		          	{<Badge style={{ backgroundColor: "red" }}>Private Note</Badge>}
+				  </>
+	          ]]>
+        </viewer>
+      </field>
+      <field name="note" title="Note" widget="html" hideIf="$readonly() &amp;&amp; !note"
+        colSpan="12"/>
+      <field name="isPrivateNote" widget="boolean-switch"
+        onChange="action-comment-attrs-is-private-note-on-change" showIf="!$readonly()"/>
+    </panel>
+
+  </form>
+
+  <cards name="comment-card" model="com.axelor.apps.base.db.Comment" title="Comment"
+    css="rect-image" width="100%" orderBy="-sequence" canEdit="false" canDelete="false">
+
+    <field name="sequence"/>
+    <field name="note"/>
+    <field name="isPrivateNote"/>
+    <field name="createdBy.name"/>
+    <field name="createdOn"/>
+    <field name="parentComment.note"/>
+    <field name="parentComment.createdBy.name"/>
+    <field name="mailMessage.body"/>
+
+    <template>
+		<![CDATA[
+			<>
+			  <Box>
+			    <Box as="dl">
+			      <Box as="dt" display="flex" justifyContent="space-between" style={{ borderBottom: isPrivateNote ? "1px dotted red" : "1px dotted #d3d3d3" }}>
+			        <span>
+			          Updated by{" "}
+			          <Link href={`#/ds/action-auth-users/edit/${createdBy.id}`} style={{ textDecoration: "none" }}>
+			            {createdBy.name}
+			          </Link>{" "}
+			          over{" "}
+			          <Link href="#" title={$moment(createdOn).format("MM/DD/YYYY HH:mm")} style={{ textDecoration: "none" }}>
+			            {$moment(createdOn).fromNow()}
+			          </Link>
+			          {isPrivateNote && <Badge style={{ backgroundColor: "red", marginLeft: "5px" }}>Private</Badge>}
+			        </span>
+			        <span>#{sequence}</span>
+			      </Box>
+
+			      {(() => {
+			        const renderHtml = (value) => <Box dangerouslySetInnerHTML={{ __html: value }} />;
+			        return (
+			          <>
+			            {parentComment.note && <Box as="dd"><strong>{parentComment.createdBy.name} wrote:</strong> <br />{renderHtml(parentComment.note)}</Box>}
+				        <Box as="dd">
+				          {JSON.parse(mailMessage.body).tracks
+				            .filter(track => track.title !== "Note")
+				            .map((track, index) => (
+				              <li key={index}>
+				                <strong>{track.title}</strong> :
+				                {track.oldDisplayValue && <span> {track.oldDisplayValue} &raquo; </span>}
+				                {track.oldValue && !track.oldDisplayValue && <span> {track.oldValue} &raquo; </span>}
+				                <span> {track.displayValue || track.value} </span>
+				              </li>
+				            ))}
+				        </Box>
+			            <Box as="dd" display="flex" justifyContent="space-between" alignItems="center">
+			              {renderHtml(note)}
+			              {note && (
+			                <Box>
+			                  <Button variant="link" onClick={$action("")}>
+			                    <Icon icon="quote" />
+			                  </Button>
+			                  <Button variant="link" onClick={$action("")}>
+			                    <Icon icon="edit" />
+			                  </Button>
+			                  <Button variant="link" onClick={$action("")}>
+			                    <Icon icon="delete" />
+			                  </Button>
+			                </Box>
+			              )}
+			            </Box>
+			          </>
+			        );
+			      })()}
+			    </Box>
+			  </Box>
+			</>
+		]]>
+    </template>
+
+  </cards>
+
+  <action-attrs name="action-comment-attrs-on-new">
+    <attribute name="value" for="parentComment" expr="eval: _parentComment"/>
+  </action-attrs>
+
+  <action-attrs name="action-comment-attrs-is-private-note-on-change">
+    <attribute name="title" for="note"
+      expr="eval: isPrivateNote ? '' : com.axelor.i18n.I18n.get('Note')"/>
+  </action-attrs>
+
+</object-views>

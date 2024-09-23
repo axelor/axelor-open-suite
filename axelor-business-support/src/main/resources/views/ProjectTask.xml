@@ -153,10 +153,7 @@
           colSpan="12" canSearch="true" readonly="true"/>
       </panel>
     </panel-tabs>
-    <panel-mail name="mailPanel">
-      <mail-messages/>
-      <mail-followers/>
-    </panel-mail>
+    <panel-include view="project-task-history-form"/>
   </form>
 
   <action-view name="action-dashlet-version-view-show-task" title="Ticket associated"
