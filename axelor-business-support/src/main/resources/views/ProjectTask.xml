@@ -41,7 +41,8 @@
 
   <form name="project-task-client-form" title="Ticket"
     model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-onnew"
-    onLoad="action-project-task-group-timer-process" width="large">
+    onLoad="action-project-task-group-timer-process" onSave="action-project-task-group-on-save"
+    width="large">
     <toolbar>
       <button name="logTimeBtn" icon="clock-history" showIf="project.manageTimeSpent"
         onClick="save,action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>

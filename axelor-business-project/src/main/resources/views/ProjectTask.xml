@@ -109,7 +109,8 @@
   <form name="business-project-task-form" title="Task"
     model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-business-project-project-task-group-on-new"
-    onLoad="action-business-project-project-task-group-on-load" width="large">
+    onLoad="action-business-project-project-task-group-on-load"
+    onSave="action-project-task-group-on-save" width="large">
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>

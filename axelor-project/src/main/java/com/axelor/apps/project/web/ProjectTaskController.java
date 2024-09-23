@@ -34,6 +34,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TimerProjectTaskService;
+import com.axelor.apps.project.service.comment.CommentProjectService;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -46,6 +47,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskController {
 
@@ -273,6 +275,21 @@ public class ProjectTaskController {
       response.setValue(
           "status", Beans.get(ProjectTaskService.class).getStatus(project, projectTask));
       manageStatus(request, response);
+    }
+  }
+
+  public void createCommentWithOnlyAttachment(ActionRequest request, ActionResponse response) {
+
+    try {
+      ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+      projectTask = Beans.get(ProjectTaskRepository.class).find(projectTask.getId());
+
+      if (CollectionUtils.isNotEmpty(projectTask.getCommentFileList())) {
+        Beans.get(CommentProjectService.class).createCommentWithOnlyAttachment(projectTask);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

@@ -51,7 +51,7 @@
 
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
-    width="large">
+    onSave="action-project-task-group-on-save" width="large">
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
@@ -209,7 +209,8 @@
             <field name="description" showTitle="false" widget="string"/>
           </editor>
         </field>
-        <button onClick="" name="submitBtn" title="Submit" colSpan="1"/>
+        <button onClick="action-project-task-group-on-save" name="submitBtn" title="Submit"
+          colSpan="1"/>
       </panel>
       <panel name="historyPanel" title="History" showTitle="false" colSpan="12">
         <panel-dashlet action="action-project-task-dashlet-show-history"
@@ -859,5 +860,15 @@
     <attribute name="value" for="sequence"
       expr="eval: __repo__(Comment).all().filter('self.projectTask = ?1', _projectTask).count() + 1"/>
   </action-attrs>
+
+  <action-group name="action-project-task-group-on-save">
+    <action name="save"/>
+    <action name="action-project-task-method-create-comment-with-only-attachment"/>
+  </action-group>
+
+  <action-method name="action-project-task-method-create-comment-with-only-attachment">
+    <call class="com.axelor.apps.project.web.ProjectTaskController"
+      method="createCommentWithOnlyAttachment"/>
+  </action-method>
 
 </object-views>
