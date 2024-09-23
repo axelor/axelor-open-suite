@@ -973,6 +973,14 @@
 		         ]]>
         </viewer>
       </field>
+      <field name="projectHoldBackATIList" hidden="true">
+        <editor x-show-on-new="false">
+          <panel>
+            <field name="name"/>
+            <field name="amount"/>
+          </panel>
+        </editor>
+      </field>
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
       <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
         <viewer

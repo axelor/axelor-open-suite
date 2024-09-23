@@ -239,14 +239,12 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
           public List<InvoiceLine> creates() throws AxelorException {
 
             InvoiceLine invoiceLine = this.createInvoiceLine();
-            if (holdBackInvoiceLine != null) {
-              invoiceLine.setProductName(
-                  I18n.get("HoldBack ")
-                      + holdBackInvoiceLine.getProductCode()
-                      + " "
-                      + holdBackInvoiceLine.getInvoice().getInvoiceDate());
-              invoiceLine.setRelatedProjectHoldBackLineInvoiceLine(holdBackInvoiceLine);
-            }
+            invoiceLine.setProductName(
+                String.format(
+                    I18n.get("HoldBack %s %s"),
+                    holdBackInvoiceLine.getProductCode(),
+                    holdBackInvoiceLine.getInvoice().getInvoiceDate()));
+            invoiceLine.setRelatedProjectHoldBackLineInvoiceLine(holdBackInvoiceLine);
             List<InvoiceLine> invoiceLines = new ArrayList<>();
             invoiceLines.add(invoiceLine);
 
@@ -292,12 +290,11 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
 
             if (projectHoldBackATI != null) {
               invoiceLine.setProductName(
-                  I18n.get("HoldBack ")
-                      + projectHoldBackATI.getName()
-                      + I18n.get(" for ")
-                      + projectHoldBackATI.getInvoice().getInvoiceId()
-                      + " "
-                      + projectHoldBackATI.getInvoice().getInvoiceDate());
+                  String.format(
+                      I18n.get("HoldBack %s for %s %s"),
+                      projectHoldBackATI.getName(),
+                      projectHoldBackATI.getInvoice().getInvoiceId(),
+                      projectHoldBackATI.getInvoice().getInvoiceDate()));
               invoiceLine.setRelatedProjectHoldBackATI(projectHoldBackATI);
             }
             List<InvoiceLine> invoiceLines = new ArrayList<>();
@@ -457,7 +454,7 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
       ProjectHoldBackATI projectHoldBackATI = new ProjectHoldBackATI();
       projectHoldBackATI.setProjectHoldBack(holdBack);
       projectHoldBackATI.setName(
-          I18n.get("HoldBack ") + holdBack.getName() + I18n.get(" total A.T.I."));
+          String.format(I18n.get(/*$$(*/ "HoldBack %s total A.T.I.") /*)*/, holdBack.getName()));
       projectHoldBackATI.setInvoice(invoice);
       BigDecimal amount = BigDecimal.ZERO;
       for (ProjectHoldBackLine line : holdBackLines) {

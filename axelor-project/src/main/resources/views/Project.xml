@@ -184,8 +184,8 @@
           canSearch="true"/>
       </panel>
       <panel title="HoldBacks" name="projectHoldBacksPanel">
-        <button name="invoiceReleasedProjectHoldBacksBtn" title="Invoice released holdBacks"
-          onClick="action-project-view-release-hold-backs"/>
+        <button name="invoiceReleasedProjectHoldBacksBtn"
+          title="Re-invoice selected holdBacks" onClick="action-project-view-release-hold-backs"/>
         <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"
           title="HoldBacks lines" colSpan="12" form-view="project-hold-back-line-form"
           grid-view="project-hold-back-line-grid" editable="true"/>
@@ -602,7 +602,8 @@
         grid-view="project-hold-back--selection-grid" form-view="project-hold-back-form"
         readonly="true" colSpan="12"/>
       <spacer colSpan="8"/>
-      <button name="invoiceSelectedProjectHoldBacksBtn" title="Re-invoice selected holdBacks"
+      <button name="invoiceSelectedProjectHoldBacksBtn" readonlyIf="!$projectHoldBackList"
+        title="Re-invoice selected holdBacks"
         onClick="action-business-project-method-invoice-released-hold-backs,close" colSpan="4"/>
     </panel>
   </form>
