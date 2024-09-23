@@ -27,6 +27,8 @@
         grid-view="account-management-bank-statement-rule-grid"/>
       <field name="accountManagement.bankDetails" form-view="bank-details-form"
         grid-view="bank-details-grid"/>
+      <label colSpan="12" showIf="ruleTypeSelect == 3"
+        title="For the rules of type 'Move line's fetching', the 'Payment account management' record selected is only used to select the right bank account and company on which the rule applies and doesn't take into account the payment mode."/>
       <field name="accountManagement.journal" grid-view="journal-grid"
         form-view="journal-form" hideIf="partnerFetchMethodSelect == 3"/>
       <field name="accountManagement.interbankCodeLine" colspan="3"

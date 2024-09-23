@@ -449,6 +449,7 @@
 "Final balance btn",,,
 "Financial Discount",,,
 "Financial Discount in value",,,
+"For the rules of type 'Move line's fetching', the 'Payment account management' record selected is only used to select the right bank account and company on which the rule applies and doesn't take into account the payment mode.",,,
 "From",,,
 "From Date",,,
 "From accounting entry",,,
