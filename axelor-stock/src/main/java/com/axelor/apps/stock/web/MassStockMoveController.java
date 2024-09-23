@@ -6,7 +6,6 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancelService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveNeedService;
@@ -78,11 +77,6 @@ public class MassStockMoveController {
     MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
     massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
 
-    if (massStockMove.getCommonToStockLocation() == null
-        && massStockMove.getCommonFromStockLocation() == null) {
-      response.setAlert(I18n.get(StockExceptionMessage.LOCATIONS_ARE_EMPTY));
-      return;
-    }
     response.setView(
         ActionView.define(I18n.get("Stock move lines to select"))
             .model(StockMoveLine.class.getName())
@@ -97,6 +91,16 @@ public class MassStockMoveController {
   }
 
   protected String buildDomain(MassStockMove massStockMove) {
+
+    if (massStockMove.getCommonToStockLocation() == null
+        && massStockMove.getCommonFromStockLocation() == null) {
+      return String.format(
+          "(self.stockMove.statusSelect = %d OR self.stockMove.statusSelect = %d) AND self.stockMove.company.id = %d",
+          StockMoveRepository.STATUS_PLANNED,
+          StockMoveRepository.STATUS_REALIZED,
+          massStockMove.getCompany().getId());
+    }
+
     String smRealizedAndFromStockLocation =
         "self.stockMove.statusSelect = "
             + StockMoveRepository.STATUS_REALIZED
