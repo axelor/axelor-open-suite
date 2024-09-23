@@ -21,7 +21,7 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.service.CartService;
+import com.axelor.apps.sale.service.cart.CartProductService;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.supplychain.service.StockLocationLineReservationService;
@@ -74,7 +74,7 @@ public class StockLocationLineController {
     try {
       StockLocationLine stockLocationLine = request.getContext().asType(StockLocationLine.class);
       Product product = stockLocationLine.getProduct();
-      Beans.get(CartService.class).addToCart(product);
+      Beans.get(CartProductService.class).addToCart(product);
       response.setNotify(
           String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
     } catch (Exception e) {

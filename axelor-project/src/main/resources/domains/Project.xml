@@ -45,10 +45,6 @@
     <decimal name="sequence" title="Sequence"/>
     <integer name="orderByState"/>
 
-    <boolean name="imputable" title="Imputable to HR timesheets" default="true"
-      massUpdate="true"
-      help="When this field is activated, it enables to choose the project when filling timesheet lines of the HR timesheet app."/>
-
     <many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.Project"
       title="Finish tasks to start"/>
     <many-to-many name="startToStartTaskSet" ref="com.axelor.apps.project.db.Project"
@@ -94,7 +90,7 @@
       help="Activates a Planification tab on the project-task-form allowing to record planned times on tasks, in order to compare with actual spent time."/>
     <boolean name="isShowFrequency" title="Task recurrence"
       help="Activate a panel tab, within a project-task-form related to the project, allowing to replicate a task following a date frequency defined by the user."/>
-    <boolean name="isShowTimeSpent" title="Time Spent?"
+    <boolean name="manageTimeSpent" title="Time Spent?" default="true"
       help="Allow to allocate Time spent from the project-task-form. A readonly logtimes paneltab will also appear on the related project-form. Note: if you use the HR timesheets, these log times will allocate HR Timesheet for the concerned colleague."/>
     <boolean name="isShowSection" title="Section?" default="true"
       help="Allow to activate an additional tasks classification, customizable according the the user needs. Section can be created in the Configuration sub-menu of the Project menu."/>

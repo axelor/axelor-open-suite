@@ -26,7 +26,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.service.CartService;
+import com.axelor.apps.sale.service.cart.CartProductService;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
@@ -257,7 +257,7 @@ public class StockMoveLineController {
     try {
       StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
       Product product = stockMoveLine.getProduct();
-      Beans.get(CartService.class).addToCart(product);
+      Beans.get(CartProductService.class).addToCart(product);
       response.setNotify(
           String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
     } catch (Exception e) {
