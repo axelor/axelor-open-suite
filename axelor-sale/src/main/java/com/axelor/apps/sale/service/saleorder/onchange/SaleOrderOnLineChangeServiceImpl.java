@@ -38,6 +38,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeService {
   protected AppSaleService appSaleService;
@@ -195,7 +196,31 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
         this.updateProductQtyWithPackHeaderQty(saleOrder);
       }
     }
+
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+        saleOrderLine.setPrice(computeSumSubLineList(subSaleOrderLineList, saleOrder));
+        saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+      }
+    }
+
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderMarginService.computeMarginSaleOrder(saleOrder);
+  }
+
+  protected BigDecimal computeSumSubLineList(
+      List<SaleOrderLine> subSaleOrderLineList, SaleOrder saleOrder) throws AxelorException {
+
+    for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
+      List<SaleOrderLine> subSubSaleOrderLineList = subSaleOrderLine.getSubSaleOrderLineList();
+      if (CollectionUtils.isNotEmpty(subSubSaleOrderLineList)) {
+        subSaleOrderLine.setPrice(computeSumSubLineList(subSubSaleOrderLineList, saleOrder));
+        saleOrderLineComputeService.computeValues(saleOrder, subSaleOrderLine);
+      }
+    }
+    return subSaleOrderLineList.stream()
+        .map(SaleOrderLine::getExTaxTotal)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 }
