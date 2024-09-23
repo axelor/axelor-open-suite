@@ -141,12 +141,6 @@
     model="com.axelor.apps.project.db.Project">
     <panel name="overviewPanel" title="Overview"
       onTabSelect="action-project-activity-dashboard-method-on-new">
-<<<<<<< HEAD
-      <field name="description" colSpan="12" widget="html"/>
-      <panel name="dashboardPanel" title="Dashboard" showTitle="false" colSpan="12"
-        canCollapse="true" collapseIf="false">
-        <panel-dashlet name="dashboardPanelDashlet" height="200%"
-=======
       <panel colSpan="10">
         <field name="description" colSpan="12" widget="html"/>
       </panel>
@@ -154,10 +148,29 @@
         <field name="fromDate" colSpan="12"/>
         <field name="toDate" colSpan="12"/>
       </panel>
+      <panel name="generalInfoPanel" colSpan="12" title="General information"
+        canCollapse="true" collapseIf="id" showIf="isBusinessProject">
+        <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"
+          canEdit="false" if-module="axelor-business-project"/>
+        <field name="clientPartner"
+          domain="self.isCustomer = true AND :company member of self.companySet"
+          onChange="action-project-method-get-partner-data" required="true" form-view="partner-form"
+          grid-view="partner-grid" colSpan="3" if="__config__.app.isApp('business-project')"
+          if-module="axelor-business-project"/>
+        <field name="currency" colSpan="3" if="__config__.app.isApp('business-project')"
+          if-module="axelor-business-project" canEdit="false"/>
+        <field name="priceList" colSpan="3" if="__config__.app.isApp('business-project')"
+          if-module="axelor-business-project" canEdit="false"/>
+        <field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner"
+          form-view="partner-form" grid-view="partner-grid" colSpan="6"
+          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+        <field name="customerAddress" grid-view="address-grid" form-view="address-form"
+          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+          domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
+      </panel>
       <panel name="dashboardPanel" title="Dashboard" showTitle="false" colSpan="12"
         canCollapse="true" collapseIf="false">
         <panel-dashlet name="dashboardPanelDashlet"
->>>>>>> 52829fd984 (84416 replace project structure panel by wiki)
           action="project.reporting.projects.dashboard" colSpan="12"/>
       </panel>
       <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
@@ -255,19 +268,6 @@
     </panel>
   </form>
 
-<<<<<<< HEAD
-  <form name="incl-resource-booking-panel-form" title="Project"
-    model="com.axelor.apps.project.db.Project">
-    <panel name="resourceBookingListPanel" title="Resource booking" canCollapse="true"
-      collapseIf="true" colSpan="12">
-      <panel-related name="resourceBookingListPanel" field="resourceBookingList"
-        form-view="resource-booking-form" grid-view="resource-booking-grid-incl-project"
-        colSpan="12" canSearch="true"/>
-    </panel>
-  </form>
-
-=======
->>>>>>> 52829fd984 (84416 replace project structure panel by wiki)
   <form name="incl-wiki-panel-form" title="Project" model="com.axelor.apps.project.db.Project">
     <panel title="Wiki" name="wikiPanel" canCollapse="true" collapseIf="true" colSpan="12">
       <panel-related name="wikiListPanel" field="wikiList" colSpan="12"
