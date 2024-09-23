@@ -59,7 +59,7 @@
     <integer name="daysSalesOutstanding" title="Days sales outstanding (DSO)" formula="true"
       readonly="true">
       <![CDATA[
-          SELECT SUM(inv.amount_remaining)/NULLIF(SUM(inv.in_tax_total), 0)
+          SELECT SUM(inv.company_in_tax_total_remaining)/NULLIF(SUM(inv.company_in_tax_total), 0)
             * (SELECT a.dso_computation_period FROM studio_app_account a LIMIT 1)
           FROM ACCOUNT_INVOICE inv JOIN studio_app_account a ON 1=1
           WHERE inv.partner = id AND inv.status_select = 3
