@@ -58,6 +58,10 @@
       <field name="bank" on="UPDATE"/>
       <field name="bankAddress" on="UPDATE"/>
       <field name="active" on="UPDATE"/>
+      <field name="bankCode" on="UPDATE"/>
+      <field name="sortCode" on="UPDATE"/>
+      <field name="accountNbr" on="UPDATE"/>
+      <field name="bbanKey" on="UPDATE"/>
     </track>
 
     <entity-listener class="com.axelor.apps.base.db.repo.BankDetailsListener"/>

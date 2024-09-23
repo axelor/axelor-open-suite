@@ -49,18 +49,34 @@
                   </dl>
               </>
         ]]></viewer>
-        <editor onNew="action-set-default-partner" x-show-on-new="false">
-          <field name="ownerName"/>
-          <field name="iban"/>
-          <field name="bank" canNew="true"/>
-          <field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
-            onSelect="action-attrs-account-bankdetails-bank-set-address-domain" canNew="true"
-            form-view="bank-address-form"/>
-          <field name="label"/>
+        <editor onNew="action-set-default-partner" x-show-on-new="false" colSpan="12">
+          <panel name="bankDetailsBasicInfoPanel" colSpan="12">
+            <field name="ownerName" colSpan="4"/>
+            <field name="bank" canNew="true" colSpan="4"/>
+            <field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
+              onSelect="action-attrs-account-bankdetails-bank-set-address-domain" canNew="true"
+              form-view="bank-address-form" colSpan="4"/>
+          </panel>
+          <panel colSpan="12">
+            <panel name="ibanPanel" colSpan="12"
+              showIf="bank.country.bankDetailsTemplate.bankDetailsTypeSelect == 1">
+              <field name="iban" colSpan="12"/>
+            </panel>
+            <panel name="bbanPanel" colSpan="12"
+              showIf="bank.country.bankDetailsTemplate.bankDetailsTypeSelect != 1">
+              <field name="bankCode" colSpan="3"/>
+              <field name="sortCode" colSpan="3"/>
+              <field name="accountNbr" colSpan="3"/>
+              <field name="bbanKey" colSpan="3"/>
+            </panel>
+          </panel>
+
+          <field name="label" colSpan="4"/>
           <field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star"
-            x-exclusive="true"/>
-          <field name="active" widget="boolean-switch"/>
+            x-exclusive="true" colSpan="4"/>
+          <field name="active" widget="boolean-switch" colSpan="4"/>
           <field name="ibanBic" hidden="true" x-bind="{{iban + ' ' + bank.code}}"/>
+          <field name="bank.country.bankDetailsTemplate.bankDetailsTypeSelect" hidden="true"/>
         </editor>
       </field>
     </panel>

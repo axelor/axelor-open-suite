@@ -125,6 +125,13 @@
     <bind column="cityName" to="city" search="self.name = :cityName" update="true"/>
   </input>
 
+  <input file="base_bankDetailsTemplate.csv" separator=";"
+    type="com.axelor.apps.base.db.BankDetailsTemplate" search="self.importId = :importId"/>
+
+  <input file="base_bankDetailsTemplateLine.csv" search="self.importId = :importId"
+    type="com.axelor.apps.base.db.BankDetailsTemplateLine" separator=";">
+  </input>
+
   <input file="base_currency.csv" separator=";" type="com.axelor.apps.base.db.Currency"
     search="self.code = :code"/>
 
