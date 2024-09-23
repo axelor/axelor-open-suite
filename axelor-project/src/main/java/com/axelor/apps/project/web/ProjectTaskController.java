@@ -284,6 +284,6 @@ public class ProjectTaskController {
                   company.getId()));
     }
 
-    response.setAttr("projectTaskTagSet", "domain", domain);
+    response.setAttr("tagSet", "domain", domain);
   }
 }
