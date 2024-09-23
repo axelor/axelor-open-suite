@@ -252,6 +252,7 @@
 
   <form name="incl-wiki-panel-form" title="Project" model="com.axelor.apps.project.db.Project">
     <panel title="Wiki" name="wikiPanel" canCollapse="true" collapseIf="true" colSpan="12">
+      <field name="wikiDescription" colSpan="12" widget="html"/>
       <panel-related name="wikiListPanel" field="wikiList" colSpan="12"
         form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
     </panel>
