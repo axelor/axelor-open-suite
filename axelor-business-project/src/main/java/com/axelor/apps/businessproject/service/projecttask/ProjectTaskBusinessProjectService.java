@@ -90,4 +90,6 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
       List<ProjectPlanningTime> projectPlanningTimeList,
       Employee employee,
       SprintPeriod sprintPeriod);
+
+  public BigDecimal calculatePlannedTime(ProjectTask projectTask);
 }

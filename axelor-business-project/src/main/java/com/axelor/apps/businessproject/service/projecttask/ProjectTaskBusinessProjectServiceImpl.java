@@ -825,6 +825,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     planningTime.setEmployee(employee);
     planningTime.setStartDateTime(fromDateTime);
     planningTime.setEndDateTime(toDateTime);
+    planningTime.setPlannedTime(calculatePlannedTime(planningTime.getProjectTask()));
   }
 
   @Override
@@ -874,8 +875,25 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     planningTime.setProduct(assignedEmployee.getProduct());
     planningTime.setStartDateTime(sprintPeriod.getFromDate().atStartOfDay());
     planningTime.setEndDateTime(sprintPeriod.getToDate().atStartOfDay());
+    planningTime.setPlannedTime(calculatePlannedTime(projectTask));
 
     return planningTime;
+  }
+
+  @Override
+  public BigDecimal calculatePlannedTime(ProjectTask projectTask) {
+
+    BigDecimal progress = projectTask.getProgress();
+    BigDecimal estimatedTime = projectTask.getBudgetedTime();
+
+    if (progress.compareTo(BigDecimal.ZERO) == 0) {
+      return estimatedTime.subtract(projectTask.getSpentTime());
+    } else {
+      BigDecimal hundred = new BigDecimal("100");
+      BigDecimal remainingPercentage = hundred.subtract(progress);
+
+      return remainingPercentage.multiply(estimatedTime).divide(hundred, RoundingMode.HALF_UP);
+    }
   }
 
   @Override

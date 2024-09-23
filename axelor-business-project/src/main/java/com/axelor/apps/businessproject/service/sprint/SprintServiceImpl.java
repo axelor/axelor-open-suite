@@ -136,6 +136,7 @@ public class SprintServiceImpl implements SprintService {
             planning -> {
               planning.setStartDateTime(sprintStart);
               planning.setEndDateTime(sprintEnd);
+              planning.setPlannedTime(projectTaskBusinessProjectService.calculatePlannedTime(task));
             });
       } else {
         ProjectPlanningTime planningTime =
