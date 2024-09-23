@@ -14,7 +14,8 @@
       help="This configuration allows you to group expenses by period on the project's invoice and to attach separate receipts for these expenses."/>
     <string name="groupingPeriodSelect" title="Grouping period"
       selection="business.project.invoice.grouping.period.select" default="month"/>
-
+    <one-to-many name="projectHoldBackATIList" mappedBy="invoice"
+      ref="com.axelor.apps.businessproject.db.ProjectHoldBackATI" title="HoldBack TTC"/>
 
     <extra-code>
       <![CDATA[

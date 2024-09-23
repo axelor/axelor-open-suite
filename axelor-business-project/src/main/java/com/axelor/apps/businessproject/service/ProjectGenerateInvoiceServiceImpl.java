@@ -80,6 +80,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
   protected AppBusinessProjectService appBusinessProjectService;
   protected InvoiceLineAnalyticService invoiceLineAnalyticService;
   protected AnalyticLineService analyticLineService;
+  protected final InvoiceServiceProject invoiceServiceProject;
 
   protected int sequence = 0;
 
@@ -99,7 +100,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       AppBusinessProjectService appBusinessProjectService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
-      AnalyticLineService analyticLineService) {
+      AnalyticLineService analyticLineService,
+      InvoiceServiceProject invoiceServiceProject) {
     this.invoicingProjectService = invoicingProjectService;
     this.partnerService = partnerService;
     this.invoicingProjectRepo = invoicingProjectRepo;
@@ -115,6 +117,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     this.appBusinessProjectService = appBusinessProjectService;
     this.invoiceLineAnalyticService = invoiceLineAnalyticService;
     this.analyticLineService = analyticLineService;
+    this.invoiceServiceProject = invoiceServiceProject;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -157,8 +160,10 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
     invoice.setIsExpenseLineOnInvoiceGrouped(appBusinessProject.getIsExpenseLineOnInvoiceGrouped());
     invoice.setGroupingPeriodSelect(appBusinessProject.getGroupingPeriodSelect());
-
-    invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
+    List<InvoiceLine> invoiceLineList = this.populate(invoice, invoicingProject);
+    invoiceGenerator.populate(invoice, invoiceLineList);
+    projectHoldBackLineService.generateHoldBackATIs(invoice);
+    invoiceServiceProject.computeProjectInvoice(invoice);
     invoiceRepository.save(invoice);
 
     invoicingProject.setInvoice(invoice);

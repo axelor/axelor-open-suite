@@ -952,7 +952,7 @@
         x-scale="currency.numberOfDecimals"/>
       <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals">
-        <viewer depends="exTaxTotal,taxTotal">
+        <viewer depends="exTaxTotal,taxTotal,projectHoldBackATIList">
         	<![CDATA[
 	                  <>
 	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
@@ -960,6 +960,12 @@
 	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
 	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
 	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+                             {projectHoldBackATIList.map((item, index) => (
+                              <>
+                                <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{item.name}</Box>
+                                <Box as="dd" m={0} px={3} py={1}>{item.amount}</Box>
+                              </>
+                              ))}
 	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
 	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
 	                     </Box>

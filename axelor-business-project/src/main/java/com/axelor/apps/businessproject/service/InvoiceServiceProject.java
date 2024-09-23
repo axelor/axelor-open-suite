@@ -19,8 +19,11 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.AxelorException;
 
 public interface InvoiceServiceProject {
 
   public Invoice updateLines(Invoice invoice);
+
+  void computeProjectInvoice(Invoice invoice) throws AxelorException;
 }

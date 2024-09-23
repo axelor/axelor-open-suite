@@ -599,11 +599,10 @@
     <panel name="mainPanel">
       <panel-related field="$projectHoldBackList" type="one-to-many"
         target="com.axelor.apps.project.db.ProjectHoldBack" title="HoldBacks"
-        grid-view="project-hold-back-grid" form-view="project-hold-back-form" readonly="true"
-        colSpan="12"/>
+        grid-view="project-hold-back--selection-grid" form-view="project-hold-back-form"
+        readonly="true" colSpan="12"/>
       <spacer colSpan="8"/>
-      <button name="invoiceSelectedProjectHoldBacksBtn"
-        title="Invoice released holdBacks"
+      <button name="invoiceSelectedProjectHoldBacksBtn" title="Re-invoice selected holdBacks"
         onClick="action-business-project-method-invoice-released-hold-backs,close" colSpan="4"/>
     </panel>
   </form>
