@@ -19,17 +19,30 @@
     onLoad="action-base-attrs-set-tax-line-scale" onNew="action-base-attrs-set-tax-line-scale">
     <panel name="mainPanel">
       <field name="taxLine" canEdit="false" grid-view="tax-line-grid"
-        form-view="tax-line-form"/>
-      <field name="taxType" grid-view="tax-type-grid" form-view="tax-type-form"/>
+        form-view="tax-line-form" readonly="true"/>
+      <field name="taxType" grid-view="tax-type-grid" form-view="tax-type-form"
+        readonly="true"/>
       <field name="taxLine.tax.name"/>
       <field name="taxLine.value"/>
-      <field name="exTaxBase" x-scale="purchaseOrder.currency.numberOfDecimals"/>
-      <field name="taxTotal" x-scale="purchaseOrder.currency.numberOfDecimals"/>
-      <field name="inTaxTotal" x-scale="purchaseOrder.currency.numberOfDecimals"/>
+      <field name="exTaxBase" x-scale="purchaseOrder.currency.numberOfDecimals"
+        readonly="true"/>
+      <field name="taxTotal" x-scale="purchaseOrder.currency.numberOfDecimals"
+        readonlyIf="!taxLine.tax.manageByAmount"
+        onChange="action-purchase-order-line-tax-method-recompute-amounts"/>
+      <field name="inTaxTotal" x-scale="purchaseOrder.currency.numberOfDecimals"
+        readonly="true"/>
+      <field name="percentageTaxTotal" showIf="taxLine.tax.manageByAmount"
+        x-scale="purchaseOrder.currency.numberOfDecimals" readonly="true"/>
       <field name="purchaseOrder" hidden="true"/>
       <field name="purchaseOrder.currency" hidden="true"/>
       <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
+      <field name="taxLine.tax.manageByAmount" hidden="true"/>
     </panel>
   </form>
+
+  <action-method name="action-purchase-order-line-tax-method-recompute-amounts">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderLineTaxController"
+      method="recomputeAmounts"/>
+  </action-method>
 
 </object-views>
