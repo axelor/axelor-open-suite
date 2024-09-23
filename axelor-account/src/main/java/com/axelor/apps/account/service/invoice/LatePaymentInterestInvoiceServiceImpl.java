@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInterestInvoiceService {
 
   public static final int INTEREST_SCALE = 2;
+  public static final int INTEREST_PERCENT_SCALE = 4;
 
   protected AppAccountService appAccountService;
   protected InvoiceRepository invoiceRepository;
@@ -223,12 +224,13 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
     BigDecimal interestRate =
         paymentMode
             .getInterestRate()
-            .divide(new BigDecimal("100"), INTEREST_SCALE, RoundingMode.HALF_UP);
-    BigDecimal daysRatio =
-        new BigDecimal(String.valueOf(numberOfDaySinceDueDate(invoiceTerm.getDueDate())))
-            .divide(new BigDecimal("365"), INTEREST_SCALE, RoundingMode.HALF_UP);
+            .divide(new BigDecimal("100"), INTEREST_PERCENT_SCALE, RoundingMode.HALF_UP);
 
-    return invoiceTerm.getAmountRemaining().multiply(interestRate).multiply(daysRatio);
+    return invoiceTerm
+        .getAmountRemaining()
+        .multiply(interestRate)
+        .multiply(new BigDecimal(String.valueOf(numberOfDaySinceDueDate(invoiceTerm.getDueDate()))))
+        .divide(new BigDecimal("365"), INTEREST_SCALE, RoundingMode.HALF_UP);
   }
 
   protected long numberOfDaySinceDueDate(LocalDate dueDate) {
