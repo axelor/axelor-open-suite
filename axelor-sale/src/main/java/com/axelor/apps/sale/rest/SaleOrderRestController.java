@@ -25,16 +25,21 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.rest.dto.SaleOrderAddLinePutRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderLineResponse;
 import com.axelor.apps.sale.rest.dto.SaleOrderPostRequest;
+import com.axelor.apps.sale.rest.dto.SaleOrderPutRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
 import com.axelor.apps.sale.service.SaleOrderRestService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGeneratorService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
+import com.axelor.web.ITranslation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import java.math.BigDecimal;
@@ -106,5 +111,27 @@ public class SaleOrderRestController {
         saleorderLineCreateService.createSaleOrderLine(saleOrder, product, quantity);
     return ResponseConstructor.buildCreateResponse(
         saleOrderLine, new SaleOrderLineResponse(saleOrderLine));
+  }
+
+  @Operation(
+      summary = "Update sale order status",
+      tags = {"Sale order"})
+  @Path("/status/{saleOrderId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response changeSaleOrderStatus(
+      SaleOrderPutRequest requestBody, @PathParam("saleOrderId") Long saleOrderId)
+      throws AxelorException {
+    new SecurityCheck().writeAccess(SaleOrder.class, saleOrderId).check();
+    RequestValidator.validateBody(requestBody);
+    String toStatus = requestBody.getToStatus();
+    SaleOrder saleOrder = ObjectFinder.find(SaleOrder.class, saleOrderId, requestBody.getVersion());
+    if (SaleOrderPutRequest.SALE_ORDER_UPDATE_FINALIZE.equals(toStatus)) {
+      Beans.get(SaleOrderFinalizeService.class).finalizeQuotation(saleOrder);
+    }
+    if (SaleOrderPutRequest.SALE_ORDER_UPDATE_CONFIRM.equals(toStatus)) {
+      Beans.get(SaleOrderConfirmService.class).confirmSaleOrder(saleOrder);
+    }
+    return ResponseConstructor.build(Response.Status.OK, I18n.get(ITranslation.STATUS_CHANGE));
   }
 }
