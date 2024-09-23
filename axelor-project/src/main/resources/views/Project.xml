@@ -26,10 +26,11 @@
     <field name="assignedTo"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="imputable" width="90"/>
-    <button name="openGanttBtn" title="Gantt" icon="fa-tasks"
-      onClick="action-project-open-gantt"/>
     <field name="projectStatus"/>
+    <button name="openGanttBtn" title="Gantt" icon="bar-chart-steps"
+      onClick="action-project-open-gantt"/>
+    <button name="openTasks" onClick="action-project-view-show-related-tasks"
+      icon="list-task"/>
   </grid>
 
   <grid name="project-child-grid" title="Projects" model="com.axelor.apps.project.db.Project"
@@ -41,11 +42,6 @@
   <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-method-check-resource-availibility" width="large">
-    <toolbar>
-      <button name="logTimeBtn" icon="clock-history"
-        onClick="save,action-timesheet-line-method-log-time" showIf="isShowTimeSpent"
-        if="__config__.app.isApp('timesheet')"/>
-    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -152,7 +148,10 @@
       <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject">
         <field name="siteSet" showTitle="false" colSpan="12" grid-view="site-project-grid"
-          form-view="site-form" domain="self.isUsableOnProject = true" canEdit="false"/>
+          form-view="site-form"
+          domain="(self.typeSelect = 1 AND self.isUsableOnProject = true AND self.company = :company)
+          OR (self.typeSelect = 2 AND self.isUsableOnProject = true AND self.company = :company AND self.partner = :clientPartner)"
+          canEdit="false"/>
       </panel>
       <panel title="Activities" name="activityPanel" canCollapse="true" collapseIf="true"
         colSpan="12" showIf="id">
@@ -229,19 +228,18 @@
   <form name="incl-log-times-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
     <panel title="Log Times" name="logTimesPanel" showIf="isShowTimeSpent">
-      <panel-dashlet name="validatedTimesheetsPanel"
+      <panel-dashlet name="validatedTimesheetsPanel" x-show-bars="true"
         if="__config__.app.getApp('timesheet')?.needValidation"
         action="action-project-dashlet-validated-timesheet-lines" title="Validated Timesheet lines"
         colSpan="12" canSearch="true"/>
-      <panel-dashlet name="waitingTimesheetLinesPanel"
+      <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
         if="__config__.app.getApp('timesheet')?.needValidation"
         action="action-project-dashlet-project-waiting-timesheet-lines"
         title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
-      <panel-dashlet name="allTimesheetsLinesPanel"
+      <panel-dashlet name="allTimesheetsLinesPanel" x-show-bars="true"
         if="!__config__.app.getApp('timesheet')?.needValidation"
         action="action-project-dashlet-project-all-timesheet-lines" title="TimesheetLine.timeSpent"
-        colSpan="12" canSearch="true"
-        help="To create new timespent lines, you need to do it via project task or via the HR &quot;Complete my Timesheet&quot; menu."/>
+        colSpan="12" canSearch="true"/>
     </panel>
   </form>
 
@@ -273,13 +271,9 @@
       <field name="projectTimeUnit"/>
       <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
         if-module="axelor-human-resource"/>
-      <field name="imputable" widget="boolean-switch"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
-        if-module="axelor-human-resource"
-        onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
-      <field name="isShowTimeSpent" widget="inline-checkbox"
-        onChange="action-project-record-is-show-timespent-reset-values"
-        if="__config__.app.isApp('timesheet')" readonlyIf="!imputable"/>
+      <field name="manageTimeSpent" widget="inline-checkbox"
+        onChange="action-project-record-manage-timespent-reset-values"
+        if="__config__.app.isApp('timesheet')"/>
     </panel>
     <panel name="taskConfigurationPanel" title="Task configuration" colSpan="12"
       canCollapse="true" collapseIf="false">
@@ -555,14 +549,9 @@
     <field name="clientPartner" expr="eval: __parent__?.clientPartner"/>
   </action-record>
 
-  <action-record name="action-project-record-is-show-timespent-reset-values"
+  <action-record name="action-project-record-manage-timespent-reset-values"
     model="com.axelor.apps.project.db.Project">
-    <field name="isInvoicingTimesheet" expr="eval: false" if="!isShowTimeSpent"/>
-  </action-record>
-
-  <action-record name="action-project-record-reset-value-is-show-timespent"
-    model="com.axelor.apps.project.db.Project">
-    <field name="isShowTimeSpent" expr="eval: false" if="!imputable"/>
+    <field name="isInvoicingTimesheet" expr="eval: false" if="!manageTimeSpent"/>
   </action-record>
 
   <action-record name="action-project-record-status-new"
@@ -821,7 +810,6 @@
       if="!__config__.app.getApp('project')?.resourceManagement"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
   </search-filters>
 
   <search-filters name="project-topic-filters"
@@ -867,7 +855,6 @@
     <field name="announcementList" hidden="true"
       if="!__config__.app.isApp('business-support')"/>
     <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="isBusinessProject" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
   </search-filters>

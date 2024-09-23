@@ -196,6 +196,7 @@
     <option value="1">Invoice.Standard</option>
     <option value="2">Invoice.AdvancePayment</option>
     <option value="3">Balance invoice</option>
+    <option value="9">Late payment interest invoice</option>
   </selection>
 
   <selection name='iaccount.account.schedule.export.type.select'>

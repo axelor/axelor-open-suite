@@ -219,6 +219,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolServiceImpl;
+import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceService;
+import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsServiceImpl;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineTaxAttrsService;
@@ -954,5 +956,7 @@ public class AccountModule extends AxelorModule {
     bind(ForeignExchangeGapService.class).to(ForeignExchangeGapServiceImpl.class);
 
     bind(ForeignExchangeGapToolService.class).to(ForeignExchangeGapToolServiceImpl.class);
+
+    bind(LatePaymentInterestInvoiceService.class).to(LatePaymentInterestInvoiceServiceImpl.class);
   }
 }

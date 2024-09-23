@@ -40,7 +40,7 @@ public class ProjectDashboardHRServiceImpl extends ProjectDashboardServiceImpl {
   public Map<String, Object> getData(Project project) {
     Map<String, Object> dataMap = super.getData(project);
     dataMap.put("$spentTime", getSpentTime(project));
-    dataMap.put("$isShowTimeSpent", project.getIsShowTimeSpent());
+    dataMap.put("$manageTimeSpent", project.getManageTimeSpent());
     return dataMap;
   }
 

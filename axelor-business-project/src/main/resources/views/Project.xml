@@ -15,6 +15,8 @@
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="fromDate"/>
     <field name="toDate"/>
+    <button name="openTasks" onClick="action-business-project-view-show-related-tasks"
+      icon="list-task"/>
   </grid>
 
   <grid name="folder-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
@@ -40,11 +42,6 @@
     onLoad="action-business-project-project-group-on-load"
     onNew="action-business-project-project-group-on-new"
     onSave="action-project-method-check-resource-availibility">
-    <toolbar>
-      <button name="logTimeBtn" icon="clock-history"
-        onClick="save,action-timesheet-line-method-log-time" showIf="isShowTimeSpent"
-        if="__config__.app.isApp('timesheet')"/>
-    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -407,7 +404,7 @@
         <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
         <field name="toInvoice" colSpan="3"
           onChange="action-project-attrs-set-invoicing-sequence"/>
-        <field name="isInvoicingTimesheet" colSpan="3" showIf="isShowTimeSpent"/>
+        <field name="isInvoicingTimesheet" colSpan="3" showIf="manageTimeSpent"/>
         <field name="isInvoicingExpenses" colSpan="3"/>
         <field name="isInvoicingPurchases" colSpan="3"/>
         <field name="invoicingSequenceSelect" showIf="toInvoice" requiredIf="toInvoice"

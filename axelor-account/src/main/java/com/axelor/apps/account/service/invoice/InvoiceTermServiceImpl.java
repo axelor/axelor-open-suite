@@ -36,6 +36,7 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.PaymentConditionToolService;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
@@ -494,7 +495,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public LocalDate computeDueDate(Move move, PaymentConditionLine paymentConditionLine) {
-    return InvoiceToolService.getDueDate(
+    return PaymentConditionToolService.getDueDate(
         paymentConditionLine, Optional.of(move).map(Move::getOriginDate).orElse(move.getDate()));
   }
 
@@ -525,7 +526,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       if (!invoiceTerm.getIsCustomized()) {
         LocalDate dueDate =
-            InvoiceToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
+            PaymentConditionToolService.getDueDate(
+                invoiceTerm.getPaymentConditionLine(), invoiceDate);
         invoiceTerm.setDueDate(dueDate);
 
         if (appAccountService.getAppAccount().getManageFinancialDiscount()
