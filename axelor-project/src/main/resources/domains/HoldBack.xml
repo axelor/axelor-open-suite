@@ -9,7 +9,7 @@
     <string name="name" required="true" unique="true" namecolumn="true"/>
     <decimal name="defaultPercentage" min="0" max="100" title="Default percentage"
       default="0"/>
-    <integer name="holdBackTypeSelect" title="Hold back type select" required="true"
+    <integer name="holdBackTypeSelect" title="Hold back type" required="true"
       selection="project.hold.back.type.select"/>
     <many-to-one name="projectHoldBackProduct" ref="com.axelor.apps.base.db.Product"
       title="HoldBack product" required="true"/>

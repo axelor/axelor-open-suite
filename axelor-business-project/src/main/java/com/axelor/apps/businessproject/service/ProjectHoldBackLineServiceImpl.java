@@ -457,7 +457,7 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
       ProjectHoldBackATI projectHoldBackATI = new ProjectHoldBackATI();
       projectHoldBackATI.setProjectHoldBack(holdBack);
       projectHoldBackATI.setName(
-          I18n.get("HoldBack ") + holdBack.getName() + I18n.get(" total A.T.I"));
+          I18n.get("HoldBack ") + holdBack.getName() + I18n.get(" total A.T.I."));
       projectHoldBackATI.setInvoice(invoice);
       BigDecimal amount = BigDecimal.ZERO;
       for (ProjectHoldBackLine line : holdBackLines) {
