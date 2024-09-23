@@ -31,7 +31,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
+import com.axelor.utils.helpers.ContextHelper;
 import java.util.Optional;
 
 public class ProjectMenuController {
@@ -90,17 +90,10 @@ public class ProjectMenuController {
     Project project = null;
     if (Project.class.equals(request.getContext().getContextClass())) {
       project = request.getContext().asType(Project.class);
-    } else if (Project.class.equals(
-        Optional.of(request.getContext())
-            .map(Context::getParent)
-            .map(Context::getContextClass)
-            .orElse(null))) {
-      project =
-          Optional.ofNullable(request.getContext())
-              .map(Context::getParent)
-              .map(c -> c.asType(Project.class))
-              .orElse(null);
+    } else {
+      project = ContextHelper.getContextParent(request.getContext(), Project.class, 1);
     }
+
     if (project == null) {
       return;
     }
