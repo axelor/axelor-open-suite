@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -32,6 +33,8 @@ import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,15 +54,18 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
   protected OrderLineTaxService orderLineTaxService;
   protected TaxService taxService;
   protected AppBaseService appBaseService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public PurchaseOrderLineTaxServiceImpl(
       OrderLineTaxService orderLineTaxService,
       TaxService taxService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      CurrencyScaleService currencyScaleService) {
     this.orderLineTaxService = orderLineTaxService;
     this.taxService = taxService;
     this.appBaseService = appBaseService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   /**
@@ -187,7 +193,30 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList) {
     for (PurchaseOrderLineTax purchaseOrderLineTax : map.values()) {
       // Dans la devise de la commande
-      orderLineTaxService.computeTax(purchaseOrderLineTax, currency);
+      BigDecimal exTaxBase =
+          purchaseOrderLineTax.getReverseCharged()
+              ? purchaseOrderLineTax.getExTaxBase().negate()
+              : purchaseOrderLineTax.getExTaxBase();
+      BigDecimal taxTotal = BigDecimal.ZERO;
+      int currencyScale = currencyScaleService.getCurrencyScale(currency);
+
+      if (purchaseOrderLineTax.getTaxLine() != null) {
+        taxTotal =
+            exTaxBase.multiply(
+                purchaseOrderLineTax
+                    .getTaxLine()
+                    .getValue()
+                    .divide(
+                        new BigDecimal(100),
+                        AppBaseService.COMPUTATION_SCALING,
+                        RoundingMode.HALF_UP));
+      }
+      purchaseOrderLineTax.setTaxTotal(
+          currencyScaleService.getScaledValue(taxTotal, currencyScale));
+      purchaseOrderLineTax.setInTaxTotal(
+          currencyScaleService.getScaledValue(
+              purchaseOrderLineTax.getExTaxBase().add(taxTotal), currencyScale));
+
       PurchaseOrderLineTax oldPurchaseOrderLineTax =
           getExistingPurchaseOrderLineTax(purchaseOrderLineTax, currentPurchaseOrderLineTaxList);
       if (oldPurchaseOrderLineTax == null) {

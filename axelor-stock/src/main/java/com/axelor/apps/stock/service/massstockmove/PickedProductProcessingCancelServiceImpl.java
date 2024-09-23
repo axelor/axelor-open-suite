@@ -4,6 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.StoredProduct;
+import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
@@ -30,8 +31,15 @@ public class PickedProductProcessingCancelServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void postCancel(PickedProduct movableProduct) throws AxelorException {
     movableProduct.setPickedQty(BigDecimal.ZERO);
+    var massStockMove = movableProduct.getMassStockMove();
+
+    if (massStockMove.getPickedProductList().stream()
+        .allMatch(storedProduct -> storedProduct.getStockMoveLine() == null)) {
+      massStockMove.setStatusSelect(MassStockMoveRepository.STATUS_CANCELED);
+    }
   }
 
   @Transactional(rollbackOn = Exception.class)

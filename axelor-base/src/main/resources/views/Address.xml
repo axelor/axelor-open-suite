@@ -17,7 +17,7 @@
   <form name="address-form" title="Address" model="com.axelor.apps.base.db.Address"
     width="large" onLoad="action-group-base-address-onload"
     onSave="action-group-base-address-onsave,save,action-base-address-method-update-lat-long"
-    onNew="action-group-base-address-onnnew">
+    onNew="action-group-base-address-onnnew" onCopy="action-group-base-address-onload">
     <panel name="mainPanel" title="Address details" colSpan="12">
       <field name="country" colSpan="12" canEdit="false"
         onChange="action-group-base-address-country-change" required="true" form-view="country-form"
@@ -42,15 +42,10 @@
         <field name="countrySubDivision" colSpan="12"
           x-bind="{{countrySubDivision|uppercase}}"/>
         <field name="city" colSpan="12" canNew="true" canEdit="false"
-          onChange="action-address-change-city" onSelect="action-address-attrs-update-domain-city"
-          form-view="city-form" grid-view="city-grid"/>
+          onChange="action-address-change-city, action-address-validate-change-city"
+          onSelect="action-address-attrs-update-domain-city" form-view="city-form"
+          grid-view="city-grid"/>
         <field name="zip" colSpan="12" onChange="action-address-method-autocomplete-address"/>
-        <field name="isInvoicingAddr" title="Invoicing address"
-          showIf="$popup() &amp;&amp; id == null" type="boolean"/>
-        <field name="isDeliveryAddr" title="Delivery address"
-          showIf="$popup() &amp;&amp; id == null" type="boolean"/>
-        <field name="isDefault" title="Default" showIf="$popup() &amp;&amp; id == null"
-          type="boolean"/>
 
       </panel>
     </panel>
@@ -200,10 +195,15 @@
   <action-record name="action-address-change-city"
     model="com.axelor.apps.base.db.Address">
     <field name="country" expr="eval: city?.country" if="city"/>
-    <field name="zip" expr="eval: city?.zip"/>
+    <field name="zip" expr="eval: city?.zip" if="!zip"/>
     <field name="street" expr="eval: null"/>
     <field name="townName" expr="eval: city?.name"/>
   </action-record>
+
+  <action-validate name="action-address-validate-change-city">
+    <alert message="City zip is different from address zip"
+      if="city &amp;&amp; zip &amp;&amp; city.zip != zip"/>
+  </action-validate>
 
   <action-record name="action-base-address-set-address-used"
     model="com.axelor.apps.base.db.Address">
@@ -234,9 +234,8 @@
   </action-method>
 
   <action-attrs name="action-address-attrs-update-domain-city">
-    <attribute name="domain" if="country || zip"
-      expr="eval: (country ? &quot;self.country = :country&quot; : &quot;&quot;) +        (country &amp;&amp; zip ? &quot; AND &quot; : &quot;&quot;) + (zip ? &quot;self.zip LIKE '${zip + '%'}' &quot; : &quot;&quot;)"
-      for="city"/>
+    <attribute name="domain" if="country"
+      expr="eval: (country ? &quot;self.country = :country&quot; : &quot;&quot;)" for="city"/>
     <attribute name="domain" if="!country &amp;&amp; !zip" expr="eval: null" for="city"/>
   </action-attrs>
 

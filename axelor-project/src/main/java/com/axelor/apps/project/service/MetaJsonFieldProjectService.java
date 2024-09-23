@@ -19,8 +19,13 @@
 package com.axelor.apps.project.service;
 
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.rpc.Context;
+import java.util.Map;
 
 public interface MetaJsonFieldProjectService {
 
   String computeSelectName(MetaJsonField jsonField, String typeSelect);
+
+  Map<String, Object> computeContextValues(
+      Map<String, Object> contextValues, Context parentContext);
 }

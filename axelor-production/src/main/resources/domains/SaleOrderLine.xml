@@ -16,6 +16,13 @@
       mappedBy="saleOrderLine" copy="false"/>
 
 
+    <boolean name="isToProduce" transient="true">
+      <![CDATA[
+		return (this.saleSupplySelect == 3 || this.saleSupplySelect == 4) && this.billOfMaterial != null;
+        ]]>
+    </boolean>
+
+
   </entity>
 
 </domain-models>

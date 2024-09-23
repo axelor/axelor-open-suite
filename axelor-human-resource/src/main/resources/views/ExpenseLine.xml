@@ -15,8 +15,8 @@
       onChange="action-expense-line-attrs-project-on-change"/>
     <field name="projectTask" canView="false"
       onSelect="action-expense-line-method-compute-project-task-domain"
-      onChange="action-expense-line-attrs-on-project-task-change" grid-view="project-task-grid"
-      form-view="project-task-form"/>
+      onChange="action-expense-line-attrs-on-project-task-change"
+      grid-view="business-project-task-grid" form-view="business-project-task-form"/>
     <field name="site" form-view="site-form" grid-view="site-grid"
       onSelect="action-expense-line-attrs-set-site-domain"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
@@ -52,7 +52,7 @@
     <field name="projectTask" canView="false"
       onSelect="action-expense-line-method-compute-project-task-domain"
       onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-attrs-fill-arrival-from-site"
-      grid-view="project-task-grid" form-view="project-task-form"/>
+      grid-view="business-project-task-grid" form-view="business-project-task-form"/>
     <field name="site" form-view="site-form" grid-view="site-grid"
       onSelect="action-expense-line-attrs-set-site-domain"
       onChange="action-expense-line-group-fill-arrival-and-compute"
@@ -120,8 +120,8 @@
         form-view="business-project-form" grid-view="project-grid"/>
       <field name="projectTask" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-method-compute-project-task-domain"
-        onChange="action-expense-line-attrs-on-project-task-change" form-view="project-task-form"
-        grid-view="project-task-grid"/>
+        onChange="action-expense-line-attrs-on-project-task-change"
+        form-view="business-project-task-form" grid-view="business-project-task-grid"/>
       <field name="site" form-view="site-form" grid-view="site-grid"
         onSelect="action-expense-line-attrs-set-site-domain"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
@@ -199,7 +199,7 @@
       <field name="projectTask" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-method-compute-project-task-domain"
         onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-attrs-fill-arrival-from-site"
-        form-view="project-task-form" grid-view="project-task-grid"/>
+        form-view="business-project-task-form" grid-view="business-project-task-grid"/>
       <field name="site" form-view="site-form" grid-view="site-grid"
         onSelect="action-expense-line-attrs-set-site-domain"
         onChange="action-expense-line-group-fill-arrival-and-compute"
@@ -491,9 +491,11 @@
 
   <action-attrs name="action-expense-line-attrs-set-site-domain">
     <attribute for="site" name="domain"
-      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"
+      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')}) AND self.company = ${__parent__?.company?.id}&quot;"
       if="project"/>
-    <attribute for="site" name="domain" expr="self.isUsableOnExpense = true" if="!project"/>
+    <attribute for="site" name="domain"
+      expr="eval: &quot;self.isUsableOnExpense = true AND self.company = ${__parent__?.company?.id}&quot;"
+      if="!project"/>
   </action-attrs>
 
   <action-group name="action-expense-line-group-fill-arrival-and-compute">

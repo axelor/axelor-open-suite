@@ -6,10 +6,6 @@
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
-  <selection name="sale.batch.action.select">
-    <option value="1">Invoicing</option>
-  </selection>
-
   <selection name="sale.order.status.select">
     <option value="1">Draft quotation</option>
     <option value="2">Finalized quotation</option>
@@ -101,6 +97,12 @@
 
   <selection name="base.pricing.type.select" id="sale.base.pricing.type.select">
     <option value="Pricing">Sale.Pricing</option>
+  </selection>
+
+  <selection name="cart.order.creation.mode.select">
+    <option value="0">Create order with missing products</option>
+    <option value="1">Ignore missing products</option>
+    <option value="2">Block order creation</option>
   </selection>
 
 </object-views>

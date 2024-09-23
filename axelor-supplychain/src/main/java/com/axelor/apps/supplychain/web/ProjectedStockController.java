@@ -23,6 +23,8 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.cart.CartProductService;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.supplychain.db.MrpLine;
@@ -41,6 +43,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -252,5 +255,24 @@ public class ProjectedStockController {
       dataList.add(dataMapDate);
     }
     return mrpDate;
+  }
+
+  @SuppressWarnings("unchecked")
+  public void addToCart(ActionRequest request, ActionResponse response) {
+    try {
+      LinkedHashMap<String, Object> productHashMap =
+          (LinkedHashMap<String, Object>) request.getContext().get("product");
+      if (productHashMap == null) {
+        return;
+      }
+      Product product =
+          Beans.get(ProductRepository.class)
+              .find(Long.valueOf(productHashMap.get("id").toString()));
+      Beans.get(CartProductService.class).addToCart(product);
+      response.setNotify(
+          String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

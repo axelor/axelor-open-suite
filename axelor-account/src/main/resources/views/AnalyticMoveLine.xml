@@ -104,7 +104,8 @@
       <field name="amount" x-scale="currency.numberOfDecimals"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
-      <field name="project" domain="self.imputable = true AND self.isBusinessProject = true"
+      <field name="project"
+        domain="self.analyticDistributionTemplate != null AND self.isBusinessProject = true"
         if-module="axelor-business-project" form-view="business-project-form"
         grid-view="project-grid" if="__config__.app.isApp('business-project')"
         title="Business project"/>

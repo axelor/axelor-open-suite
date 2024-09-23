@@ -17,9 +17,6 @@
       search="self.importId = :completedTaskStatus_importId"/>
   </input>
 
-  <input file="business_project_project.csv" type="com.axelor.apps.project.db.Project"
-    separator=";" search="self.importId = :importId"/>
-
   <input file="project_task.csv" type="com.axelor.apps.project.db.ProjectTask" separator=";"
     search="self.importId = :importId"
     call="com.axelor.apps.csv.script.ProjectTaskScript:computeFullname">

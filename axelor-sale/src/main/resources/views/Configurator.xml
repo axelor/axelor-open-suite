@@ -6,6 +6,8 @@
   <grid name="configurator-grid" title="Configurators"
     model="com.axelor.apps.sale.db.Configurator">
     <field name="configuratorCreator"/>
+    <field name="attributes"/>
+    <field name="indicators"/>
   </grid>
 
   <form name="configurator-form" title="Configurator"

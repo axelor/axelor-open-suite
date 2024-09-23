@@ -79,7 +79,8 @@
   <form name="stock-move-line-production-form" title="Stock move line"
     model="com.axelor.apps.stock.db.StockMoveLine" canNew="false" canDelete="false"
     onNew="action-group-stock-stockmoveline-production-onnew"
-    onLoad="action-stock-move-line-attrs-scale-and-precision" width="large">
+    onLoad="action-stock-move-line-attrs-scale-and-precision,action-stock-move-line-attrs-load-qty-title"
+    width="large">
     <panel name="mainPanel" readonlyIf="stockMove.statusSelect == 3">
       <field name="product" canEdit="false"
         domain="self.expense = false AND self.dtype = 'Product'"
@@ -144,6 +145,16 @@
     id="action-production-stock-move-line-compute-price">
     <call class="com.axelor.apps.production.web.StockMoveLineController" method="compute"/>
   </action-method>
+
+  <action-attrs name="action-stock-move-line-attrs-load-qty-title"
+    model="com.axelor.apps.stock.db.StockMoveLine">
+    <attribute for="qty" name="title"
+      expr="eval: com.axelor.i18n.I18n.get('Consumed quantity')"
+      if="stockMove?.toStockLocation?.typeSelect == 3"/>
+    <attribute for="qty" name="title"
+      expr="eval: com.axelor.i18n.I18n.get('Produced quantity')"
+      if="stockMove?.toStockLocation?.typeSelect != 3"/>
+  </action-attrs>
 
   <action-method name="action-stock-move-line-set-product-info"
     id="action-production-stock-move-line-set-product-info">

@@ -19,6 +19,18 @@
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
   </grid>
 
+  <grid id="stock-location-line-supplychain-grid" name="stock-location-line-grid"
+    title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine"
+    extension="true">
+    <extend target="//field[@name='product']">
+      <insert position="before">
+        <button name="addToCartBtn" title="Add to cart"
+          onClick="action-stock-location-line-method-add-to-cart" icon="cart-plus-fill"
+          if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"/>
+      </insert>
+    </extend>
+  </grid>
+
   <action-view name="action-stock-location-line-view-by-product"
     title="Stock location lines by product" model="com.axelor.apps.stock.db.StockLocationLine">
     <view type="grid" name="supplychain-stock-location-line-grid"/>
@@ -45,6 +57,11 @@
   <action-method name="action-stock-location-line-deallocate-all">
     <call class="com.axelor.apps.supplychain.web.StockLocationLineController"
       method="deallocateAll"/>
+  </action-method>
+
+  <action-method name="action-stock-location-line-method-add-to-cart">
+    <call class="com.axelor.apps.supplychain.web.StockLocationLineController"
+      method="addToCart"/>
   </action-method>
 
 </object-views>

@@ -3,7 +3,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectMenuServiceImpl;
-import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.google.inject.Inject;
@@ -13,12 +13,12 @@ public class ProjectMenuBusinessServiceImpl extends ProjectMenuServiceImpl {
 
   @Inject
   public ProjectMenuBusinessServiceImpl(
-      ProjectService projectService, ProjectTaskRepository projectTaskRepo) {
-    super(projectService, projectTaskRepo);
+      ProjectToolService projectToolService, ProjectTaskRepository projectTaskRepo) {
+    super(projectToolService, projectTaskRepo);
   }
 
   @Override
-  public Map<String, Object> getAllProjects() {
+  public Map<String, Object> getAllProjects(Long projectId) {
     ActionView.ActionViewBuilder builder =
         ActionView.define(I18n.get("Projects"))
             .model(Project.class.getName())
@@ -29,6 +29,9 @@ public class ProjectMenuBusinessServiceImpl extends ProjectMenuServiceImpl {
             .context("_fromBusinessProject", false)
             .domain("self.isBusinessProject = false");
 
+    if (projectId != null) {
+      builder.context("_showRecord", projectId);
+    }
     return builder.map();
   }
 }

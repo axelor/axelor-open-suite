@@ -19,9 +19,9 @@
 package com.axelor.apps.sale.rest.dto;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
+import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -30,16 +30,15 @@ public class SaleOrderLinePostRequest extends RequestPostStructure {
   @Min(0)
   private Long productId;
 
-  @NotNull
   @Min(0)
-  private Long saleOrderId;
+  private BigDecimal quantity;
 
-  public Long getSaleOrderId() {
-    return saleOrderId;
+  public BigDecimal getQuantity() {
+    return quantity;
   }
 
-  public void setSaleOrderId(Long saleOrderId) {
-    this.saleOrderId = saleOrderId;
+  public void setQuantity(BigDecimal quantity) {
+    this.quantity = quantity;
   }
 
   public Long getProductId() {
@@ -55,12 +54,5 @@ public class SaleOrderLinePostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
-  }
-
-  public SaleOrder fetchsaleOrder() {
-    if (saleOrderId == null || saleOrderId == 0L) {
-      return null;
-    }
-    return ObjectFinder.find(SaleOrder.class, saleOrderId, ObjectFinder.NO_VERSION);
   }
 }

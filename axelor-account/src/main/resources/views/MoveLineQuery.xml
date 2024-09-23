@@ -87,7 +87,7 @@
 
   <action-attrs name="action-move-line-query-attrs-set-trading-name-domain">
     <attribute name="domain" for="tradingName"
-      expr="eval: &quot;self.id IN (${company?.tradingNameSet?.collect{it.id}.join(',')})&quot;"/>
+      expr="eval: &quot;self.id IN (${company?.tradingNameList?.collect{it.id}.join(',')})&quot;"/>
   </action-attrs>
 
   <action-attrs name="action-move-line-query-attrs-set-company-domain">

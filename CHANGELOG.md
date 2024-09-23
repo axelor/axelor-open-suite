@@ -1,3 +1,182 @@
+## [8.1.7] (2024-09-19)
+
+### Fixes
+#### Base
+
+* Update axelor-studio dependency to 3.1.3.
+* Partner: fixed convert contact into individual partner error when address is null.
+* Advanced export: fix export when multiple fields contain same sub path.
+* Request: fixed french translation for 'Request'.
+* Address: in form view, do not empty the ZIP code when filling the city, and automatically fill the city when the ZIP code is filled.
+
+#### Account
+
+* CutOff/Analytic: fixed cut off batch when using analytic on credit move line.
+
+#### Budget
+
+* Budget level: fixed scales in the tree view.
+* Global budget: fixed duplication without budget level.
+
+#### Business Project
+
+* Invoicing project: attach annex to invoice when 'Attach the Annex to the invoice' is enabled while generating invoice.
+* Project: prevented an error during project totals computation when parent task had no time unit.
+* Project task: fixed product changing on assignedTo when linked to a framework contract.
+* Project: prevented an error during project totals computation when spent time percentages were too low.
+
+#### Contract
+
+* Contract: fixed an error when opening a product in an amendment.
+* Contract: fixed error while generating contract from opportunities.
+
+#### CRM
+
+* CRM: added missing action for 'Calls monitoring' dashboard.
+
+#### Helpdesk
+
+* Ticket API: fixed an issue where condition in permission were not evaluated correctly to update tickets.
+
+#### Human Resource
+
+* Timesheet line: fixed issue related to default product value.
+
+#### Mobile Settings
+
+* Mobile Dashboard API: fixed an issue where condition in permission were not evaluated correctly to get mobile chart information.
+
+#### Production
+
+* Sequence per workshop config: improve UI to select workshop stock location and manuf order sequence.
+
+#### Purchase
+
+* Purchase order line tax: fixed reverse charge feature on purchase order.
+
+#### Sale
+
+* Configurator: added field 'attributes' and 'indicators' in grid view.
+
+#### Stock
+
+* Stock: fixed an error occurring when splitting a stock move line with a real quantity greater than the expected quantity.
+
+#### Intervention
+
+* Company: fixed display of intervention config button on company when module is uninstalled.
+* Contract: 'On-call planning' field will be required if 'On-call management' is true.
+
+## [8.1.6] (2024-09-05)
+
+### Fixes
+#### Base
+
+* Partner: fixed an address not linked to a partner in demo data.
+
+#### Account
+
+* Invoice: fixed an issue where tab title for credit note was wrong.
+* Invoice payment: fixed move display in payment details grid view.
+* Payment Voucher: fixed wrong amount on generated invoice payment when using financial discount.
+* Invoice: fixed an issue preventing invoice ventilation when pack feature is used.
+* Mass entry move line: increased width of some columns.
+
+#### Budget
+
+* Purchase order line: fixed an issue where budget panel was editable on a confirmed purchase order.
+
+#### Contract
+
+* Contract: fixed an issue where payment mode and payment condition were not filled by default.
+* Contract: fixed display issue of 'isPeriodicInvoicing' field.
+
+#### Human Resource
+
+* Timesheet: opened timesheets are no longer dirty when opening the form view.
+
+#### Maintenance
+
+* Menu: fixed icon for 'Configuration' menu.
+
+#### Production
+
+* Manufacturing order: fixed unit conversion when computing missing components label.
+* Manufacturing order API: fixed an issue where condition in permission were not evaluated correctly to see and add products from a manufacturing order.
+* Operation order API: fixed an issue where condition in permission were not evaluated correctly to update operation orders.
+* Manufacturing order: fixed wrong priority on the sub manuf order.
+* Manufacturing order: fixed title for produced quantity in produced products form view.
+* Manufacturing order: fixed an issue occurring when adding produced products.
+
+#### Supply Chain
+
+* Invoicing: fixed an issue preventing stock moves/order/contracts invoicing with analytic accounting lines.
+* Invoicing: fixed internal reference on invoices generated from delivery stock move missing sale order reference.
+* Analytic panel: fixed display issue when product family is empty.
+
+## [8.1.5] (2024-08-22)
+
+### Fixes
+#### Base
+
+* Address: removed unused fields related to invoicing/delivery/default address in base address form.
+
+#### Account
+
+* Mass entry move line: increased width of the date columns.
+* MoveLine: fixed tax management in form view
+* Fixed asset: removed disposal info during copy.
+* Accounting report: fixed wrong amounts when selecting accounts with parent accounts.
+* Invoice: fixed unable to display invoice lines (grid view) when one or more invoices are selected.
+
+#### Bank Payment
+
+* Bank statement: fixed name when loading bank statement lines.
+
+#### Budget
+
+* StockMove/Invoice: fixed technical error when invoicing a stock move line with a value of zero.
+
+#### Business Project
+
+* Project: prevented an error during project totals computation when spent time percentages were too high.
+* Project/Kanban: use the same controls as when you change the project status in kanban view.
+
+#### Contract
+
+* Contract: removed unused action.
+
+#### Helpdesk
+
+* Ticket type: fixed 'Ticket per status' chart.
+
+#### Human Resource
+
+* App Project: added missing french translation.
+* Employee bonus management: fixed computation process when there is no user linked with employee.
+* Project: added missing french translation in the planning tab.
+* Leave reason: fixed typo in french translation.
+
+#### Mobile Settings
+
+* Added missing english translation 'Order'.
+
+#### Sale
+
+* Sale order line: take product application start date into account when selecting product.
+* Sale config: fixed 'default holdback percentage' display.
+* Complementary product: removed field 'optional' from partner views.
+
+#### Stock
+
+* Stock config: fixed translation for 'Send email on supplier arrival cancellation'
+* Stock API: fixed an issue where condition in permission were not evaluated correctly to read stocks and modify/create stock moves.
+* Inventory API: fixed an issue where condition in permission were not evaluated correctly to update an inventory.
+
+#### Supply Chain
+
+* Supplychain config: fixed 'Update customer accepted credit' process updating the credit for all companies instead of the current one.
+
 ## [8.1.4] (2024-08-08)
 
 ### Fixes
@@ -408,6 +587,9 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.7]: https://github.com/axelor/axelor-open-suite/compare/v8.1.6...v8.1.7
+[8.1.6]: https://github.com/axelor/axelor-open-suite/compare/v8.1.5...v8.1.6
+[8.1.5]: https://github.com/axelor/axelor-open-suite/compare/v8.1.4...v8.1.5
 [8.1.4]: https://github.com/axelor/axelor-open-suite/compare/v8.1.3...v8.1.4
 [8.1.3]: https://github.com/axelor/axelor-open-suite/compare/v8.1.2...v8.1.3
 [8.1.2]: https://github.com/axelor/axelor-open-suite/compare/v8.1.1...v8.1.2

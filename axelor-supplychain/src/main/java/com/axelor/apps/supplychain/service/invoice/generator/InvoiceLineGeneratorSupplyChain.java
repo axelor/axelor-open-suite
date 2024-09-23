@@ -258,9 +258,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setPrice(price);
       invoiceLine.setInTaxPrice(inTaxPrice);
 
-      analyticMoveLineList =
-          invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-      analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
+      invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
     }
 
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();

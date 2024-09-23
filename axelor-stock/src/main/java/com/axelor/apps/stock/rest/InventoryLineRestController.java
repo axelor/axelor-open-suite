@@ -32,7 +32,6 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.Arrays;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -57,7 +56,7 @@ public class InventoryLineRestController {
       @PathParam("id") Long inventoryLineId, InventoryLinePutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Arrays.asList(Inventory.class, InventoryLine.class)).check();
+    new SecurityCheck().writeAccess(InventoryLine.class, inventoryLineId).check();
 
     InventoryLine inventoryLine =
         ObjectFinder.find(InventoryLine.class, inventoryLineId, requestBody.getVersion());
@@ -79,7 +78,10 @@ public class InventoryLineRestController {
   @HttpExceptionHandler
   public Response addLineToInventory(InventoryLinePostRequest requestBody) throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Inventory.class).createAccess(InventoryLine.class).check();
+    new SecurityCheck()
+        .writeAccess(Inventory.class, requestBody.getInventoryId())
+        .createAccess(InventoryLine.class)
+        .check();
 
     InventoryLine inventoryLine =
         Beans.get(InventoryLineService.class)

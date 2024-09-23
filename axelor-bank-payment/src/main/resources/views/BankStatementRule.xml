@@ -54,6 +54,12 @@
       <field name="moveLineBankStatementQuery" requiredIf="letterToInvoice"
         showIf="letterToInvoice" hidden="true" domain="self.ruleTypeSelect = 3"/>
     </panel>
+    <panel name="customizedLabelsPanel" title="Generated entry customized labels">
+      <field name="entryOriginComputation" widget="code-editor" x-code-syntax="groovy"
+        height="80" x-code-theme="groovy" colSpan="12"/>
+      <field name="entryDescriptionComputation" widget="code-editor" x-code-syntax="groovy"
+        height="150" x-code-theme="groovy" colSpan="12"/>
+    </panel>
   </form>
 
   <action-attrs name="action-bank-statement-rule-attrs-set-counterpart-account-domain">

@@ -198,7 +198,7 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
         saleOrderLine.getProduct().getSaleProductMultipleQtyList();
     BigDecimal qty = saleOrderLine.getQty();
     boolean allowToForce = saleOrderLine.getProduct().getAllowToForceSaleQty();
-    boolean isMultiple = productMultipleQtyService.checkMultipleQty(qty, productMultipleQtyList);
+    boolean isMultiple = productMultipleQtyService.isMultipleQty(qty, productMultipleQtyList);
     dummyFields.put("$qtyValid", isMultiple || allowToForce);
     return dummyFields;
   }

@@ -151,10 +151,10 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     saleOrder.setInTaxTotal(saleOrder.getExTaxTotal().add(saleOrder.getTaxTotal()));
     saleOrder.setAdvanceTotal(computeTotalAdvancePayment(saleOrder));
     logger.debug(
-        "Invoice's total: W.T.T. = {},  W.T. = {}, Tax = {}, A.T.I. = {}",
-        new Object[] {
-          saleOrder.getExTaxTotal(), saleOrder.getTaxTotal(), saleOrder.getInTaxTotal()
-        });
+        "Sale order amounts: W.T. = {}, Tax = {}, A.T.I. = {}",
+        saleOrder.getExTaxTotal(),
+        saleOrder.getTaxTotal(),
+        saleOrder.getInTaxTotal());
   }
 
   protected BigDecimal computeTotalAdvancePayment(SaleOrder saleOrder) {
@@ -180,10 +180,10 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     if (saleOrder.getSaleOrderLineTaxList() == null) {
       saleOrder.setSaleOrderLineTaxList(new ArrayList<SaleOrderLineTax>());
     } else {
-      List<SaleOrderLineTax> saleOrderLineTaxList = new ArrayList<>();
-      saleOrderLineTaxList.addAll(
-          saleOrderLineCreateTaxLineService.getUpdatedSaleOrderLineTax(saleOrder));
-      saleOrder.setSaleOrderLineTaxList(saleOrderLineTaxList);
+      List<SaleOrderLineTax> saleOrderLineTaxList =
+          saleOrderLineCreateTaxLineService.getUpdatedSaleOrderLineTax(saleOrder);
+      saleOrder.getSaleOrderLineTaxList().clear();
+      saleOrder.getSaleOrderLineTaxList().addAll(saleOrderLineTaxList);
     }
   }
 
