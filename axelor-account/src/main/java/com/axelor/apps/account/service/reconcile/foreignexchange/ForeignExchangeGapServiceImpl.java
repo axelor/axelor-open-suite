@@ -3,10 +3,13 @@ package com.axelor.apps.account.service.reconcile.foreignexchange;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -22,6 +25,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.List;
 
 public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService {
 
@@ -226,6 +230,49 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
           true,
           true,
           appBaseService.getTodayDate(reconcile.getCompany()));
+    }
+  }
+
+  @Override
+  public void adjustReconcileAmount(
+      Reconcile reconcile,
+      Invoice invoice,
+      InvoicePayment invoicePayment,
+      BigDecimal foreignExchangeReconciledAmount) {
+    List<InvoicePayment> invoicePaymentList = invoice.getInvoicePaymentList();
+    BigDecimal foreignExchangeGainAmount =
+        foreignExchangeGapToolService.getForeignExchangeAmountSum(
+            InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN,
+            invoicePaymentList,
+            invoicePayment);
+    BigDecimal foreignExchangeLossAmount =
+        foreignExchangeGapToolService.getForeignExchangeAmountSum(
+            InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS,
+            invoicePaymentList,
+            invoicePayment);
+
+    BigDecimal amount = reconcile.getAmount();
+    BigDecimal amountRemaining =
+        invoice
+            .getCompanyInTaxTotalRemaining()
+            .subtract(foreignExchangeLossAmount)
+            .add(foreignExchangeGainAmount);
+    int typeSelect = invoicePayment.getTypeSelect();
+
+    if (amount.compareTo(amountRemaining) != 0
+        && typeSelect == InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN
+        && invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+      reconcile.setAmount(amount.subtract(foreignExchangeReconciledAmount));
+    }
+
+    if (typeSelect == InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS
+        && invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+      if (amount.compareTo(amountRemaining) < 0
+          || (amount.compareTo(amountRemaining) == 0
+              && (BigDecimal.ZERO.compareTo(foreignExchangeGainAmount) != 0
+                  || BigDecimal.ZERO.compareTo(foreignExchangeLossAmount) != 0))) {
+        reconcile.setAmount(amount.subtract(foreignExchangeReconciledAmount));
+      }
     }
   }
 }
