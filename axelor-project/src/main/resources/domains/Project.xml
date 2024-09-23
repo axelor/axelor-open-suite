@@ -122,6 +122,8 @@
       title="Enable status progress by category."
       help="This option is used to activate the automatic allocation of progress to project tasks via project task category. If this option is enabled, the progress field will be available in the category view and the category will be updated using this data (or the data entered in the status if this is empty)."/>
 
+    <string name="wikiDescription" multiline="true" large="true"/>
+
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>
 
