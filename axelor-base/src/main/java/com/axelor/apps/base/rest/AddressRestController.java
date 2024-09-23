@@ -6,6 +6,7 @@ import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.rest.dto.AddressPostRequest;
 import com.axelor.apps.base.rest.dto.AddressResponse;
+import com.axelor.i18n.I18n;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
@@ -39,11 +40,14 @@ public class AddressRestController {
       Address address = requestBody.fetchAddress();
       if (address == null) {
         return ResponseConstructor.build(
-            Response.Status.CREATED, new AddressResponse(requestBody.createAddress()));
+            Response.Status.CREATED,
+            I18n.get("Address created"),
+            new AddressResponse(requestBody.createAddress()));
       }
-      return ResponseConstructor.build(Response.Status.OK, new AddressResponse(address));
+      return ResponseConstructor.build(
+          Response.Status.OK, I18n.get("Address found"), new AddressResponse(address));
     } catch (AxelorException e) {
-      return ResponseConstructor.build(Response.Status.FORBIDDEN, e);
+      return ResponseConstructor.build(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 }

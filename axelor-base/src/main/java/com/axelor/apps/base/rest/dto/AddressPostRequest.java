@@ -15,6 +15,7 @@ import com.axelor.inject.Beans;
 import com.axelor.utils.api.RequestPostStructure;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.persist.Transactional;
+import java.util.Optional;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -113,14 +114,35 @@ public class AddressPostRequest extends RequestPostStructure {
   }
 
   public Address fetchAddress() throws AxelorException {
-    return Beans.get(AddressRepository.class)
-        .all()
-        .filter(
-            "self.country = :country AND self.city = :city AND UPPER(self.streetName) = :streetName")
-        .bind("country", fetchCountry())
-        .bind("city", fetchCity())
-        .bind("streetName", streetName.toUpperCase())
-        .fetchOne();
+    City fetchedCity = fetchCity();
+    if (fetchedCity != null) {
+      return Beans.get(AddressRepository.class)
+          .all()
+          .filter(
+              "self.country = :country AND self.city = :city AND UPPER(self.streetName) = :streetName")
+          .bind("country", fetchCountry())
+          .bind("city", fetchCity())
+          .bind("streetName", streetName.toUpperCase())
+          .fetchOne();
+    } else if (zip != null) {
+      return Optional.ofNullable(
+              Beans.get(AddressRepository.class)
+                  .all()
+                  .filter(
+                      "self.country = :country AND self.zip = :zip AND UPPER(self.streetName) = :streetName")
+                  .bind("country", fetchCountry())
+                  .bind("zip", zip)
+                  .bind("streetName", streetName.toUpperCase())
+                  .fetchOne())
+          .orElseThrow(
+              () ->
+                  new AxelorException(
+                      TraceBackRepository.CATEGORY_INCONSISTENCY,
+                      I18n.get(BaseExceptionMessage.NO_CITY_FOUND)));
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.NO_CITY_FOUND));
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})

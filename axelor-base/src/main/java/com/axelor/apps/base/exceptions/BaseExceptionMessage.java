@@ -668,4 +668,5 @@ public final class BaseExceptionMessage {
   public static final String NO_COUNTRY_FOUND = /*$$(*/ "No country found for: %s." /*)*/;
   public static final String NO_CITY_AND_ZIP_FOUND = /*$$(*/
       "The city and postcode cannot be empty at the same time." /*)*/;
+  public static final String NO_CITY_FOUND = /*$$(*/ "No city found" /*)*/;
 }
