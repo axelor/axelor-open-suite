@@ -14,7 +14,6 @@ import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -64,7 +63,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     // are equals
     if (foreignExchangeGapToolService.checkCurrencies(creditMoveLine, debitMoveLine)
         && !debitMoveLine.getCurrencyRate().equals(creditMoveLine.getCurrencyRate())
-        && this.checkForeignExchangeAccounts(reconcile.getCompany())) {
+        && foreignExchangeGapToolService.checkForeignExchangeAccounts(reconcile.getCompany())) {
       BigDecimal foreignExchangeGapAmount =
           this.getForeignExchangeGapAmount(reconcile.getAmount(), creditMoveLine, debitMoveLine);
 
@@ -97,20 +96,6 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     }
 
     return null;
-  }
-
-  protected boolean checkForeignExchangeAccounts(Company company) throws AxelorException {
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    Account gainsAccount = accountConfig.getForeignExchangeGainsAccount();
-    Account lossesAccount = accountConfig.getForeignExchangeLossesAccount();
-
-    if (gainsAccount == null && lossesAccount == null) {
-      return false;
-    }
-
-    accountConfigService.getForeignExchangeAccount(accountConfig, true);
-    accountConfigService.getForeignExchangeAccount(accountConfig, false);
-    return true;
   }
 
   protected BigDecimal getForeignExchangeGapAmount(
