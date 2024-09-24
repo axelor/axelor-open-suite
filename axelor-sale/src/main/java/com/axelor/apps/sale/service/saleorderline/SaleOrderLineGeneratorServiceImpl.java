@@ -29,10 +29,10 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -40,7 +40,7 @@ import java.math.BigDecimal;
 
 public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGeneratorService {
   protected SaleOrderLineInitValueService saleOrderLineInitValueService;
-  protected SaleOrderLineFireService saleOrderLineFireService;
+  protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
   protected SaleOrderLineRepository saleOrderLineRepository;
   protected ProductRepository productRepository;
   protected SaleOrderRepository saleOrderRepository;
@@ -57,7 +57,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
   @Inject
   public SaleOrderLineGeneratorServiceImpl(
       SaleOrderLineInitValueService saleOrderLineInitValueService,
-      SaleOrderLineFireService saleOrderLineFireService,
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
       SaleOrderLineRepository saleOrderLineRepository,
       ProductRepository productRepository,
       SaleOrderRepository saleOrderRepository,
@@ -70,7 +70,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       SaleOrderLineOnChangeService saleOrderLineOnChangeService,
       ProductMultipleQtyService productMultipleQtyService) {
     this.saleOrderLineInitValueService = saleOrderLineInitValueService;
-    this.saleOrderLineFireService = saleOrderLineFireService;
+    this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.productRepository = productRepository;
     this.saleOrderRepository = saleOrderRepository;
@@ -100,8 +100,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       qty = BigDecimal.ONE;
     }
     saleOrderLine.setQty(qty);
-    saleOrderLineFireService.computeProductInformation(saleOrderLine, saleOrder);
-    saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+    saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
 
     saleOrderLineRepository.save(saleOrderLine);
 

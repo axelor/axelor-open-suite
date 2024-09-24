@@ -22,13 +22,13 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.google.inject.Inject;
 
 public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLineChangeServiceImpl {
@@ -45,7 +45,7 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
-      SaleOrderLineFireService saleOrderLineFireService,
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService) {
     super(
@@ -56,7 +56,7 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
         saleOrderLineRepository,
         saleOrderLineComputeService,
         saleOrderLinePackService,
-        saleOrderLineFireService);
+        saleOrderLineOnProductChangeService);
     this.saleOrderSupplychainService = saleOrderSupplychainService;
     this.saleOrderShipmentService = saleOrderShipmentService;
   }

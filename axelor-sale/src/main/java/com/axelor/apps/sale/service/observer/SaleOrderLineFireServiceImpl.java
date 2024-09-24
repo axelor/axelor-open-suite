@@ -41,13 +41,4 @@ public class SaleOrderLineFireServiceImpl implements SaleOrderLineFireService {
     saleOrderLineViewOnLoadEvent.fire(saleOrderLineViewOnLoad);
     return saleOrderLineViewOnLoad.getSaleOrderLineMap();
   }
-
-  @Override
-  public Map<String, Object> computeProductInformation(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-    SaleOrderLineProductOnChange saleOrderLineProductOnChange =
-        new SaleOrderLineProductOnChange(saleOrderLine, saleOrder);
-    saleOrderLineProductOnChangeEvent.fire(saleOrderLineProductOnChange);
-    return saleOrderLineProductOnChange.getSaleOrderLineMap();
-  }
 }

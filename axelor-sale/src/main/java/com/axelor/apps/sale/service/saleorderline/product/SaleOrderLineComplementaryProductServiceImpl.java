@@ -8,8 +8,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,17 +19,14 @@ import org.apache.commons.collections.CollectionUtils;
 public class SaleOrderLineComplementaryProductServiceImpl
     implements SaleOrderLineComplementaryProductService {
 
-  protected SaleOrderLineFireService saleOrderLineFireService;
-  protected SaleOrderLineComputeService saleOrderLineComputeService;
+  protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
   protected SaleOrderLineRepository saleOrderLineRepository;
 
   @Inject
   public SaleOrderLineComplementaryProductServiceImpl(
-      SaleOrderLineFireService saleOrderLineFireService,
-      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
       SaleOrderLineRepository saleOrderLineRepository) {
-    this.saleOrderLineFireService = saleOrderLineFireService;
-    this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
     this.saleOrderLineRepository = saleOrderLineRepository;
   }
 
@@ -57,8 +52,7 @@ public class SaleOrderLineComplementaryProductServiceImpl
     complementarySOLine.setIsComplementaryPartnerProductsHandled(
         complementaryProduct.getGenerationTypeSelect()
             == ComplementaryProductRepository.GENERATION_TYPE_SALE_ORDER);
-    saleOrderLineFireService.computeProductInformation(complementarySOLine, saleOrder);
-    saleOrderLineComputeService.computeValues(saleOrder, complementarySOLine);
+    saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, complementarySOLine);
     saleOrderLineRepository.save(complementarySOLine);
     return newComplementarySOLines;
   }
