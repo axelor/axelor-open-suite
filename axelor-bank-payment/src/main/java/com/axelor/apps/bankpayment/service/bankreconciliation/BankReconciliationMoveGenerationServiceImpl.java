@@ -77,10 +77,8 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -558,41 +556,6 @@ public class BankReconciliationMoveGenerationServiceImpl
       BankStatementLine bankStatementLine,
       BankStatementRule bankStatementRule)
       throws AxelorException {
-    Map<String, Object> moveFieldsMap =
-        initializeMoveFields(
-            bankReconciliation, bankReconciliationLine, bankStatementLine, bankStatementRule);
-
-    LocalDate effectDate = (LocalDate) moveFieldsMap.get("effectDate");
-    Move move =
-        moveCreateService.createMove(
-            (Journal) moveFieldsMap.get("journal"),
-            (Company) moveFieldsMap.get("company"),
-            (Currency) moveFieldsMap.get("currency"),
-            (Partner) moveFieldsMap.get("partner"),
-            effectDate,
-            effectDate,
-            (PaymentMode) moveFieldsMap.get("paymentMode"),
-            (FiscalPosition) moveFieldsMap.get("fiscalPosition"),
-            (Integer) moveFieldsMap.get("technicalOriginSelect"),
-            (Integer) moveFieldsMap.get("functionalOriginSelect"),
-            (String) moveFieldsMap.get("origin"),
-            (String) moveFieldsMap.get("description"),
-            (BankDetails) moveFieldsMap.get("companyBankDetails"));
-    move.setPaymentCondition(null);
-
-    return move;
-  }
-
-  protected Map<String, Object> initializeMoveFields(
-      BankReconciliation bankReconciliation,
-      BankReconciliationLine bankReconciliationLine,
-      BankStatementLine bankStatementLine,
-      BankStatementRule bankStatementRule)
-      throws AxelorException {
-    Map<String, Object> moveFieldMap = new HashMap<>();
-    if (bankReconciliationLine == null) {
-      return moveFieldMap;
-    }
 
     Company company = null;
     Journal journal = null;
@@ -600,11 +563,9 @@ public class BankReconciliationMoveGenerationServiceImpl
     String description = "";
     String origin = bankReconciliationLine.getReference();
     BankDetails companyBankDetails = null;
-    LocalDate effectDate = bankReconciliationLine.getEffectDate();
     Currency currency = null;
     FiscalPosition fiscalPosition = null;
     Partner partner = bankReconciliationLine.getPartner();
-
     if (bankReconciliation != null) {
       company = bankReconciliation.getCompany();
       journal = bankReconciliation.getJournal();
@@ -612,7 +573,6 @@ public class BankReconciliationMoveGenerationServiceImpl
       currency = bankReconciliation.getCurrency();
       companyBankDetails = bankReconciliation.getBankDetails();
     }
-
     if (bankStatementRule != null) {
       if (bankStatementRule.getAccountManagement() != null) {
         AccountManagement accountManagement = bankStatementRule.getAccountManagement();
@@ -643,28 +603,31 @@ public class BankReconciliationMoveGenerationServiceImpl
               bankStatementLine,
               bankStatementRule.getEntryOriginComputation());
     }
-
     if (bankStatementLine != null && currency == null) {
       currency = bankStatementLine.getCurrency();
     }
-
     if (partner != null) {
       fiscalPosition = partner.getFiscalPosition();
     }
 
-    moveFieldMap.put("journal", journal);
-    moveFieldMap.put("company", company);
-    moveFieldMap.put("currency", currency);
-    moveFieldMap.put("partner", partner);
-    moveFieldMap.put("effectDate", effectDate);
-    moveFieldMap.put("paymentMode", paymentMode);
-    moveFieldMap.put("fiscalPosition", fiscalPosition);
-    moveFieldMap.put("technicalOriginSelect", MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-    moveFieldMap.put("functionalOriginSelect", MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
-    moveFieldMap.put("origin", origin);
-    moveFieldMap.put("description", description);
-    moveFieldMap.put("companyBankDetails", companyBankDetails);
-    return moveFieldMap;
+    Move move =
+        moveCreateService.createMove(
+            journal,
+            company,
+            currency,
+            partner,
+            bankReconciliationLine.getEffectDate(),
+            bankReconciliationLine.getEffectDate(),
+            paymentMode,
+            fiscalPosition,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            description,
+            companyBankDetails);
+    move.setPaymentCondition(null);
+
+    return move;
   }
 
   protected void manageDynamicSearchOnMoveLines(BankReconciliationLine bankReconciliationLine)
