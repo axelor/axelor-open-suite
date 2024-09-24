@@ -176,8 +176,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
             invoicePaymentRepository.findByMove(reconcile.getForeignExchangeMove()).fetchOne();
         if (foreignExchangePayment == null
             && reconcile.getForeignExchangeMove() != null
-            && invoicePayment != null
-            && !reconcile.equals(invoicePayment.getReconcile())) {
+            && (invoicePayment == null || !reconcile.equals(invoicePayment.getReconcile()))) {
           invoicePayment =
               invoicePaymentCreateService.createInvoicePayment(
                   invoice, invoicePaymentAmount, reconcile.getForeignExchangeMove());
