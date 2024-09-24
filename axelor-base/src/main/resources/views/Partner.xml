@@ -341,7 +341,7 @@
             onChange="action-record-base-partner-set-business-card"/>
           <field name="functionBusinessCard"/>
         </panel>
-        <field name="partnerTagSet" widget="TagSelect" x-color-field="colorSelect"
+        <field name="tagSet" widget="TagSelect" x-color-field="colorSelect"
           grid-view="tag-simplified-grid" form-view="tag-form"
           onSelect="action-partner-attrs-set-partner-tag-domain"/>
       </panel>
@@ -1743,7 +1743,7 @@
   </action-attrs>
 
   <action-attrs name="action-partner-attrs-set-partner-tag-domain">
-    <attribute name="domain" for="partnerTagSet"
+    <attribute name="domain" for="tagSet"
       expr="eval: &quot; ${__repo__(MetaModel).findByName('Partner')?.id} member of self.concernedModelSet AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
   </action-attrs>
 

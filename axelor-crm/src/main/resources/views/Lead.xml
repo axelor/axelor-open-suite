@@ -302,7 +302,7 @@
         grid-view="source-grid" canNew="true"/>
       <field name="type" grid-view="partner-category-grid" form-view="partner-category-form"
         colSpan="6"/>
-      <field name="leadTagSet" widget="TagSelect" x-color-field="colorSelect"
+      <field name="tagSet" widget="TagSelect" x-color-field="colorSelect"
         grid-view="tag-simplified-grid" form-view="tag-form"
         onSelect="action-lead-attrs-set-lead-tag-domain"/>
     </panel>
@@ -652,7 +652,7 @@
   </action-method>
 
   <action-attrs name="action-lead-attrs-set-lead-tag-domain">
-    <attribute name="domain" for="leadTagSet"
+    <attribute name="domain" for="tagSet"
       expr="eval: &quot; ${__repo__(MetaModel).findByName('Lead')?.id} member of self.concernedModelSet AND (:company IS NULL OR :company member of self.companySet OR self.companySet IS EMPTY) &quot;"/>
   </action-attrs>
 </object-views>
