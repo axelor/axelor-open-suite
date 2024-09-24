@@ -27,12 +27,17 @@
       <field name="saleUnit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
-      <field name="isEditableGridEnabled" widget="boolean-switch"/>
-      <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
-        showIf="isEditableGridEnabled"/>
       <field name="isEnableCalculationEntireQuotation" widget="boolean-switch"/>
-      <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>
       <field name="isCartManagementEnabled" widget="boolean-switch"/>
+
+    </panel>
+    <panel name="listDisplayPanel" itemSpan="12" colSpan="12">
+      <help showIf="listDisplayTypeSelect == 1"><![CDATA[Display sale order lines the classic way.]]></help>
+      <help showIf="listDisplayTypeSelect == 2"><![CDATA[This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.]]></help>
+      <help showIf="listDisplayTypeSelect == 3"><![CDATA[Activate multi-level sale order lines.]]></help>
+      <field name="listDisplayTypeSelect" widget="RadioSelect"/>
+      <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
+        showIf="listDisplayTypeSelect == 2"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"

@@ -11,7 +11,8 @@
     <hilite color="success" if="deliveryState == 3"/>
     <field name="$hasWarning" hidden="true"/>
     <button name="treeIconButton" showIf="hasTree" onClick="refresh" readonlyIf="true"
-      icon="list-ul" if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
+      icon="list-ul"
+      if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
       icon="fa-exclamation-triangle"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
