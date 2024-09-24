@@ -63,8 +63,6 @@
         <item name="bookResourceItem" title="Book resource"
           if=" __config__.app.getApp('project')?.resourceManagement"
           action="save,action-project-book-resource"/>
-        <item name="taskEditorItem" action="save,action-project-open-task-editor"
-          title="Task editor"/>
         <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
         <item name="topic" title="Topic" action="save,project.topic.all"
           showIf="id &amp;&amp; isShowTopic"/>
@@ -116,7 +114,8 @@
           colSpan="12" action="action-project-view-show-project-task" height="200%"/>
       </panel>
 
-      <panel-include view="incl-project-structure-panel-form"/>
+      <panel-include view="incl-wiki-panel-form"/>
+
       <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
         if="__config__.app.isApp('employee')"/>
       <panel-include if-module="axelor-human-resource"
@@ -139,9 +138,15 @@
     model="com.axelor.apps.project.db.Project">
     <panel name="overviewPanel" title="Overview"
       onTabSelect="action-project-activity-dashboard-method-on-new">
-      <field name="description" colSpan="12" widget="html"/>
-      <panel name="dashboardPanel" title="Dashboard" colSpan="12" canCollapse="true"
-        collapseIf="false">
+      <panel colSpan="10">
+        <field name="description" colSpan="12" widget="html"/>
+      </panel>
+      <panel colSpan="2">
+        <field name="fromDate" colSpan="12"/>
+        <field name="toDate" colSpan="12"/>
+      </panel>
+      <panel name="dashboardPanel" title="Dashboard" showTitle="false" colSpan="12"
+        canCollapse="true" collapseIf="false">
         <panel-dashlet name="dashboardPanelDashlet"
           action="project.reporting.projects.dashboard" colSpan="12"/>
       </panel>
@@ -182,11 +187,9 @@
 
   <form name="incl-project-structure-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel name="structurePanel" title="Project structure">
-      <field name="fromDate" colSpan="6"/>
-      <field name="toDate" colSpan="6"/>
-      <panel title="Members" name="membersPanel" canCollapse="true" colSpan="12"
-        collapseIf="true">
+    <panel name="structurePanel" title="Project structure" collapseIf="false"
+      canCollapse="true" colSpan="12">
+      <panel title="Members" name="membersPanel" colSpan="12">
         <field name="extendsMembersFromParent" hidden="true" widget="boolean-switch"/>
         <spacer/>
         <field name="team" title="Team" readonlyIf="synchronize || extendsMembersFromParent"
@@ -202,17 +205,19 @@
           canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
           grid-view="user-grid" colSpan="3"/>
       </panel>
-      <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
-        canCollapse="true" collapseIf="true">
+      <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
         <field name="parentProject" canEdit="false" form-view="project-form"
           grid-view="project-grid" onSelect="action-project-attrs-set-parent-project-domain"/>
         <field name="isShowPhasesElements" widget="boolean-switch"/>
         <field name="childProjectList" readonly="true" colSpan="12" form-view="project-form"
           grid-view="project-child-grid" showIf="isShowPhasesElements"/>
       </panel>
-      <panel-include view="incl-resource-booking-panel-form"
-        if="__config__.app.getApp('project')?.resourceManagement"/>
-      <panel-include view="incl-wiki-panel-form"/>
+      <panel name="resourceBookingListPanel" title="Resource booking" colSpan="12"
+        if="__config__.app.getApp('project')?.resourceManagement">
+        <panel-related name="resourceBookingListPanel" field="resourceBookingList"
+          form-view="resource-booking-form" grid-view="resource-booking-grid-incl-project"
+          colSpan="12"/>
+      </panel>
     </panel>
   </form>
 
@@ -243,16 +248,6 @@
     </panel>
   </form>
 
-  <form name="incl-resource-booking-panel-form" title="Project"
-    model="com.axelor.apps.project.db.Project">
-    <panel name="resourceBookingListPanel" title="Resource booking" canCollapse="true"
-      collapseIf="true" colSpan="12">
-      <panel-related name="resourceBookingListPanel" field="resourceBookingList"
-        form-view="resource-booking-form" grid-view="resource-booking-grid-incl-project"
-        colSpan="12"/>
-    </panel>
-  </form>
-
   <form name="incl-wiki-panel-form" title="Project" model="com.axelor.apps.project.db.Project">
     <panel title="Wiki" name="wikiPanel" canCollapse="true" collapseIf="true" colSpan="12">
       <panel-related name="wikiListPanel" field="wikiList" colSpan="12"
@@ -262,6 +257,7 @@
 
   <form name="incl-project-config-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
+    <panel-include view="incl-project-structure-panel-form"/>
     <panel title="General configuration" name="generalConfigurationsPanel" colSpan="12"
       canCollapse="true" collapseIf="false">
       <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
@@ -727,11 +723,6 @@
     <view type="grid" name="resource-booking-grid"/>
     <view type="calendar" name="resource-booking-calendar"/>
     <context name="_project" expr="eval:__self__"/>
-  </action-view>
-
-  <action-view name="action-project-open-task-editor" title="Task editor">
-    <view name="project/task-editor/?id={{id}}" type="html"/>
-    <context name="id" expr="eval:id"/>
   </action-view>
 
   <action-view name="project.wiki.all" title="Wikis (${name})"

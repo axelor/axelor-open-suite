@@ -64,8 +64,6 @@
         <item name="bookResourceItem" title="Book resource"
           if=" __config__.app.getApp('project')?.resourceManagement"
           action="save,action-project-book-resource"/>
-        <item name="taskEditorItem" action="save,action-project-open-task-editor"
-          title="Task editor"/>
         <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
         <item name="topic" title="Topic" action="save,project.topic.all"
           showIf="id &amp;&amp; isShowTopic"/>
@@ -250,7 +248,8 @@
           colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
-      <panel-include view="incl-project-structure-panel-form"/>
+      <panel-include view="incl-wiki-panel-form"/>
+
       <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
         if="__config__.app.isApp('employee')"/>
 
