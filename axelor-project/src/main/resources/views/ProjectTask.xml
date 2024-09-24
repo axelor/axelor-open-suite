@@ -117,6 +117,7 @@
       </panel>
     </panel>
     <panel-include view="incl-customized-field-panel-form"/>
+    <panel-include view="comment-file-preview-form"/>
     <panel-tabs name="mainPanelTab">
 
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
@@ -222,6 +223,37 @@
             widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid"/>
         </panel>
       </panel>
+    </panel>
+
+  </form>
+
+  <form model="com.axelor.apps.project.db.ProjectTask" title="Files"
+    name="comment-file-preview-form">
+
+    <panel name="commentFilePreviewPanel" title="Files" showIf="id">
+      <field name="$commentFilePreviewList" showTitle="false" type="one-to-many"
+        target="com.axelor.apps.base.db.CommentFile" colSpan="12" x-dirty="true" readonly="true">
+        <viewer>
+			<![CDATA[
+				<>
+				  <Icon icon="attachment" />
+				  <Link href={`ws/rest/com.axelor.meta.db.MetaFile/${attachmentFile.id}/content/download?v=${attachmentFile.$version}`} style={{ textDecoration: "none" }}>
+				    {attachmentFile.fileName}
+				  </Link>{" "}
+				  {description && `${description}`}{" "}
+				  <span style={{ color: "#999" }}>
+				    {createdBy.fullName}, {$moment(createdOn).format("MM/DD/YYYY HH:mm")}
+				  </span>
+				  <Button variant="link" onClick={() => $execute("action-project-task-view-edit-comment-file")}>
+				    <Icon icon="edit" />
+				  </Button>
+				  <Button variant="link" onClick={() => $execute("action-project-task-group-delete-comment-file")}>
+				    <Icon icon="delete" />
+				  </Button>
+				</>
+			]]>
+        </viewer>
+      </field>
     </panel>
 
   </form>
@@ -882,5 +914,24 @@
     <context name="_parentComment" expr="eval: __repo__(Comment).find(id)"/>
     <context name="_projectTask" expr="eval: projectTask"/>
   </action-view>
+
+  <action-view name="action-project-task-view-edit-comment-file"
+    title="Edit attached file" model="com.axelor.apps.base.db.CommentFile">
+    <view type="form" name="comment-file-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-group name="action-project-task-group-delete-comment-file">
+    <action name="action-comment-validate-delete"/>
+    <action name="action-project-task-method-delete-file"/>
+  </action-group>
+
+  <action-method name="action-project-task-method-delete-file">
+    <call class="com.axelor.apps.project.web.CommentFileController" method="deleteCommentFile"/>
+  </action-method>
 
 </object-views>

@@ -19,11 +19,11 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.base.db.Comment;
-import com.axelor.apps.base.db.repo.CommentRepository;
+import com.axelor.apps.base.db.repo.CommentBaseRepository;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class CommentProjectRepository extends CommentRepository {
+public class CommentProjectRepository extends CommentBaseRepository {
 
   @Override
   public void remove(Comment entity) {

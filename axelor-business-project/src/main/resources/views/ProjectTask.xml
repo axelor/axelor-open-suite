@@ -245,6 +245,7 @@
       </panel>
     </panel>
     <panel-include view="incl-customized-field-panel-form"/>
+    <panel-include view="comment-file-preview-form"/>
     <panel-tabs name="mainPanelTab">
       <panel name="timeFollowUpPanel" title="Time follow-up"
         if="__config__.app.isApp('business-project')" showIf="timeUnit">

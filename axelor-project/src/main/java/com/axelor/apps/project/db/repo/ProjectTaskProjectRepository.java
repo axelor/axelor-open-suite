@@ -19,6 +19,7 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.base.db.Frequency;
+import com.axelor.apps.base.db.repo.CommentFileRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
@@ -170,5 +171,22 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
     task.setTaskEndDate(null);
     task.setMetaFile(null);
     return task;
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+
+    ProjectTask projectTask = this.find((Long) json.get("id"));
+
+    if (!context.containsKey("_model")) {
+      json.put(
+          "$commentFilePreviewList",
+          Beans.get(CommentFileRepository.class)
+              .all()
+              .filter("self.relatedComment.projectTask = ?1", projectTask)
+              .fetch());
+    }
+
+    return super.populate(json, context);
   }
 }

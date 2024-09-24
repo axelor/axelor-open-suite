@@ -10,22 +10,37 @@
     <panel name="mainPanel">
       <field name="mailMessage.body" showIf="mailMessage" showTitle="false" colSpan="12">
         <viewer>
-		  <![CDATA[
-		    <>
-		      <Box as="dd">
-		        {JSON.parse(mailMessage.body).tracks
-		          .filter(track => track.title !== "comment.note")
-		          .map((track, index) => (
-		            <li key={index}>
-		              <strong>{track.title}</strong> :
-		              {track.oldDisplayValue && <span> {track.oldDisplayValue} &raquo; </span>}
-		              {track.oldValue && !track.oldDisplayValue && <span> {track.oldValue} &raquo; </span>}
-		              <span> {track.displayValue || track.value} </span>
-		            </li>
-		          ))}
-		      </Box>
-		    </>
-		  ]]>
+        <![CDATA[
+          <>
+            {(() => {
+              const renderHtml = (value) => (
+                <Box dangerouslySetInnerHTML={{ __html: value }} />
+              );
+
+              return (
+                <>
+                  <Box as="dd">
+                    {mailMessage.body.startsWith("{") && mailMessage.body.endsWith("}") ? (
+                      JSON.parse(mailMessage.body).tracks
+                        .filter(track => track.title !== "comment.note")
+                        .map((track, index) => (
+                          <li key={index}>
+                            <strong>{track.title}</strong> :
+                            {track.oldDisplayValue && <span> {track.oldDisplayValue} &raquo; </span>}
+                            {track.oldValue && !track.oldDisplayValue && <span> {track.oldValue} &raquo; </span>}
+                            <span> {track.displayValue || track.value} </span>
+                          </li>
+                        ))
+                    ) : (
+                      <Box>{renderHtml(mailMessage.body)}</Box>
+                    )}
+                    <Box>{renderHtml($commentFiles)}</Box>
+                  </Box>
+                </>
+              );
+            })()}
+          </>
+        ]]>
         </viewer>
       </field>
       <field name="parentComment" title="Reply on" showIf="parentComment" canRemove="false"
@@ -37,11 +52,11 @@
       <field name="privateNoteLabel" x-dirty="false" readonly="true" showTitle="false"
         showIf="isPrivateNote">
         <viewer>
-	          <![CDATA[
-		          <>
-		          	{<Badge style={{ backgroundColor: "red" }}>Private Note</Badge>}
-				  </>
-	          ]]>
+        <![CDATA[
+          <>
+            {<Badge style={{ backgroundColor: "red" }}>Private Note</Badge>}
+          </>
+        ]]>
         </viewer>
       </field>
       <field name="note" title="Note" widget="html" hideIf="$readonly() &amp;&amp; !note"
@@ -63,6 +78,7 @@
     <field name="parentComment.note"/>
     <field name="parentComment.createdBy.name"/>
     <field name="mailMessage.body"/>
+    <field name="$commentFiles"/>
 
     <template>
 		<![CDATA[
@@ -89,18 +105,23 @@
 			        return (
 			          <>
 			            {parentComment.note && <Box as="dd"><strong>{parentComment.createdBy.name} wrote:</strong> <br />{renderHtml(parentComment.note)}</Box>}
-				        <Box as="dd">
-				          {JSON.parse(mailMessage.body).tracks
-				            .filter(track => track.title !== "comment.note")
-				            .map((track, index) => (
-				              <li key={index}>
-				                <strong>{track.title}</strong> :
-				                {track.oldDisplayValue && <span> {track.oldDisplayValue} &raquo; </span>}
-				                {track.oldValue && !track.oldDisplayValue && <span> {track.oldValue} &raquo; </span>}
-				                <span> {track.displayValue || track.value} </span>
-				              </li>
-				            ))}
-				        </Box>
+						<Box as="dd">
+						  {mailMessage.body.startsWith("{") && mailMessage.body.endsWith("}") ? (
+						    JSON.parse(mailMessage.body).tracks
+						      .filter(track => track.title !== "comment.note")
+						      .map((track, index) => (
+						        <li key={index}>
+						          <strong>{track.title}</strong> :
+						          {track.oldDisplayValue && <span> {track.oldDisplayValue} &raquo; </span>}
+						          {track.oldValue && !track.oldDisplayValue && <span> {track.oldValue} &raquo; </span>}
+						          <span> {track.displayValue || track.value} </span>
+						        </li>
+						      ))
+						  ) : (
+						    <Box>{renderHtml(mailMessage.body)}</Box>
+						  )}
+						  <Box>{renderHtml($commentFiles)}</Box>
+						</Box>
 			            <Box as="dd" display="flex" justifyContent="space-between" alignItems="center">
 			              {renderHtml(note)}
 			              {note && (
