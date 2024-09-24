@@ -16,6 +16,8 @@
     <many-to-one name="address" title="Address" ref="com.axelor.apps.base.db.Address"/>
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
       required="true"/>
+    <many-to-one name="tradingName" title="Trading name"
+      ref="com.axelor.apps.base.db.TradingName"/>
 
     <extra-code><![CDATA[
 

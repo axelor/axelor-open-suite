@@ -413,7 +413,7 @@ public class SaleOrderLineController {
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext());
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(
-        saleOrderLineProductSupplychainService.getProductionInformation(saleOrderLine));
+        saleOrderLineProductSupplychainService.getProductionInformation(saleOrderLine, saleOrder));
     saleOrderLineMap.putAll(
         saleOrderLineProductSupplychainService.setSupplierPartnerDefault(saleOrderLine, saleOrder));
     response.setAttrs(

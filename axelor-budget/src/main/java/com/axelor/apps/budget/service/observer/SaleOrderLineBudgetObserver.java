@@ -1,7 +1,7 @@
 package com.axelor.apps.budget.service.observer;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.budget.service.saleorder.SaleOrderLineViewBudgetService;
+import com.axelor.apps.budget.service.saleorderline.SaleOrderLineViewBudgetService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.event.SaleOrderLineViewOnLoad;
 import com.axelor.apps.sale.service.event.SaleOrderLineViewOnNew;

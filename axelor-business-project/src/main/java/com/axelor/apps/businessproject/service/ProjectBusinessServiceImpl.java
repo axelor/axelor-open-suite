@@ -257,8 +257,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (assignedTo != null) {
       project.addMembersUserSetItem(assignedTo);
     }
-
-    project.setImputable(true);
+    if (parentProject != null) {
+      project.setManageTimeSpent(parentProject.getManageTimeSpent());
+    }
     project.setCompany(company);
     if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
       project.setIsInvoicingTimesheet(true);
@@ -392,24 +393,32 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     project.setPlannedTime(totalPlannedTime);
     project.setSpentTime(totalSpentTime);
 
+    BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
+
     if (totalUpdatedTime.signum() > 0) {
       project.setPercentageOfProgress(
-          totalSpentTime
-              .multiply(new BigDecimal("100"))
-              .divide(totalUpdatedTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+          projectTaskBusinessProjectService.verifiedLimitFollowUp(
+              totalSpentTime
+                  .multiply(new BigDecimal("100"))
+                  .divide(totalUpdatedTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP),
+              percentageLimit));
     }
 
     if (totalSoldTime.signum() > 0) {
       project.setPercentageOfConsumption(
-          totalSpentTime
-              .multiply(new BigDecimal("100"))
-              .divide(totalSoldTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+          projectTaskBusinessProjectService.verifiedLimitFollowUp(
+              totalSpentTime
+                  .multiply(new BigDecimal("100"))
+                  .divide(totalSoldTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP),
+              percentageLimit));
     }
 
     project.setRemainingAmountToDo(
-        totalUpdatedTime
-            .subtract(totalSpentTime)
-            .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+        projectTaskBusinessProjectService.verifiedLimitFollowUp(
+            totalUpdatedTime
+                .subtract(totalSpentTime)
+                .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP),
+            BigDecimal.valueOf(9999.99)));
   }
 
   protected void computeFinancialFollowUp(Project project, List<ProjectTask> projectTaskList) {
@@ -828,7 +837,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     return builder.map();
   }
 
-  public String checkPercentagesOver1000OnTasks(Project project) {
+  public List<String> checkPercentagesOver1000OnTasks(Project project) {
     BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
     return project.getProjectTaskList().stream()
         .filter(
@@ -838,7 +847,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
                     || projectTask.getRemainingAmountToDo().compareTo(BigDecimal.valueOf(9999.99))
                         == 0)
         .map(ProjectTask::getName)
-        .collect(Collectors.toList())
-        .toString();
+        .collect(Collectors.toList());
   }
 }

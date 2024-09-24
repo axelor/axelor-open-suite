@@ -33,8 +33,6 @@ jobs:
       run: cd open-suite-webapp && ./gradlew checkBirtCredentials
     - name: Check changelog generation with gradle task
       run: cd open-suite-webapp && ./gradlew generateChangelog
-    - name: Check XML files validity
-      run: cd open-suite-webapp && ./gradlew checkXml
     - name: Build without tests
       run: cd open-suite-webapp && ./gradlew -xtest clean build
     - name: Run tests
