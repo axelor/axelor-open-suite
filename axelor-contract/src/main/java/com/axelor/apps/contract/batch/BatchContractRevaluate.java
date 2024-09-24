@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.contract.batch;
 
-import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
@@ -92,7 +91,7 @@ public class BatchContractRevaluate extends BatchStrategy {
                 .bind("onGoingStatus", ContractVersionRepository.ONGOING_VERSION)
                 .bind("idsOk", idsOk)
                 .bind("idsFail", idsFail)
-                .fetch(FETCH_LIMIT))
+                .fetch(getFetchLimit()))
         .isEmpty()) {
       Map<String, List<Contract>> ids = revaluateContracts(contractList);
       idsOk.addAll(ids.get("OK").stream().map(Contract::getId).collect(Collectors.toList()));
@@ -100,6 +99,7 @@ public class BatchContractRevaluate extends BatchStrategy {
       idsReevaluated.addAll(
           ids.get("REEVALUATED").stream().map(Contract::getId).collect(Collectors.toList()));
       JPA.clear();
+      findBatch();
     }
     LOG.debug("{} Reevaluated contracts : {}", idsReevaluated.size(), idsReevaluated);
   }
@@ -127,6 +127,8 @@ public class BatchContractRevaluate extends BatchStrategy {
     try {
       Contract newContract = contractService.getNextContract(contract);
       processContract(newContract, idsOk, idsReevaluated);
+      contractService.activeNextVersion(
+          newContract, appBaseService.getTodayDate(newContract.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(e, null, batch.getId());
       idsFail.add(contract);

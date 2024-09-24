@@ -198,4 +198,13 @@
     <option value="3">Delivered</option>
   </selection>
 
+  <selection name="sale.batch.action.select" id="supplychain.sale.batch.action.select">
+    <option value="1">Invoicing</option>
+  </selection>
+
+  <selection name="cart.line.available.status.select">
+    <option value="1">Available</option>
+    <option value="2">Missing</option>
+  </selection>
+
 </object-views>

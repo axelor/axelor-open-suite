@@ -31,7 +31,7 @@ import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
-import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
+import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;

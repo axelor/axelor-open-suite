@@ -13,11 +13,11 @@
         showIf="resourceManagement"/>
       <field name="isEnableSignature" widget="boolean-switch"/>
       <field name="isEnablePerProjectTaskSequence" widget="boolean-switch"/>
-      <field name="defaultTaskStatusSet" widget="TagSelect"
-        onChange="action-app-project-record-reset-completed-task-status"/>
-      <field name="defaultPrioritySet" widget="TagSelect"/>
+      <field name="defaultPrioritySet" widget="TagSelect" canEdit="false"/>
+      <field name="selectAutoProgressOnProjectTask"/>
+      <field name="isActivateProjectChangeShortcut"/>
       <field name="fullNameGroovyFormula"/>
-      <panel title="Custom fields" name="customFieldConfigPanel" colSpan="12">
+      <panel title="Custom fields" name="customFieldConfigPanel" colSpan="12" showIf="id">
         <panel-related field="taskCustomFieldsList" colSpan="6"
           form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
         <panel-related field="projectCustomFieldsList" colSpan="6"
@@ -33,9 +33,12 @@
     </panel>
 
     <panel name="taskStatusMgtPanel" title="Task status management">
+      <field name="defaultTaskStatusSet" canEdit="false" widget="TagSelect" colSpan="12"
+        onChange="action-app-project-method-manage-completed-task-status"/>
       <field name="completedTaskStatus" grid-view="task-status-grid"
         form-view="task-status-form"
         onSelect="action-app-project-attrs-set-completed-task-status-domain"/>
+      <field name="enableStatusManagementByTaskCategory"/>
     </panel>
 
     <panel name="actionsPanel">
@@ -54,14 +57,11 @@
 
   <action-attrs name="action-app-project-attrs-set-completed-task-status-domain">
     <attribute name="domain" for="completedTaskStatus"
-      expr="eval: 'self.isCompleted = true AND self.id IN (' + defaultTaskStatusSet?.collect{ it.id }?.join(',') + ')'"/>
+      expr="eval: 'self.isCompleted = true AND self.id IN (' + defaultTaskStatusSet?.collect{ it.id }?.join(',') + ')'"
+      if="defaultTaskStatusSet?.collect{it.id}?.size &gt; 0"/>
+    <attribute name="domain" for="completedTaskStatus" expr="eval: 'self.id = 0'"
+      if="defaultTaskStatusSet?.collect{it.id}?.size == 0"/>
   </action-attrs>
-
-  <action-record name="action-app-project-record-reset-completed-task-status"
-    model="com.axelor.studio.db.AppProject">
-    <field name="completedTaskStatus" expr="eval: null"
-      if="!defaultTaskStatusSet || !defaultTaskStatusSet.contains(completedTaskStatus)"/>
-  </action-record>
 
   <action-view name="admin.root.conf.project.config" title="Project configurations"
     model="com.axelor.apps.project.db.ProjectConfig">
@@ -77,6 +77,11 @@
   <action-method name="action-project-method-generate-project-config">
     <call class="com.axelor.apps.project.web.AppProjectController"
       method="generateProjectConfigurations"/>
+  </action-method>
+
+  <action-method name="action-app-project-method-manage-completed-task-status">
+    <call class="com.axelor.apps.project.web.AppProjectController"
+      method="manageCompletedTaskStatus"/>
   </action-method>
 
 </object-views>

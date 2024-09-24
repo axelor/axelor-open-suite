@@ -52,7 +52,9 @@ public interface InvoiceTermPaymentService {
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
       BigDecimal availableAmount,
-      BigDecimal reconcileAmount);
+      BigDecimal currencyAvailableAmount,
+      BigDecimal reconcileAmount)
+      throws AxelorException;
 
   /**
    * Method to create invoiceTermPayments for an invoicePayment
@@ -75,7 +77,7 @@ public interface InvoiceTermPaymentService {
       InvoicePayment invoicePayment,
       InvoiceTerm invoiceTermToPay,
       BigDecimal paidAmount,
-      LocalDate paymentDate);
+      BigDecimal companyPaidAmount);
 
   /**
    * Method to compute total paid amount of invoiceTermPayments
@@ -101,4 +103,10 @@ public interface InvoiceTermPaymentService {
       InvoiceTermPayment invoiceTermPayment,
       InvoiceTerm invoiceTerm,
       boolean applyFinancialDiscount);
+
+  List<Long> initializeInvoiceTermPaymentWithoutDiscount(InvoicePayment invoicePayment)
+      throws AxelorException;
+
+  List<Long> applyFinancialDiscount(InvoicePayment invoicePayment, Long invoiceId)
+      throws AxelorException;
 }

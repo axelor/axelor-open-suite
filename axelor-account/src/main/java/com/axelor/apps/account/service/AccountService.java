@@ -181,6 +181,10 @@ public class AccountService {
                   .getAccountConfig(account.getCompany())
                   .getAnalyticDistributionTypeSelect()
               != AccountConfigRepository.DISTRIBUTION_TYPE_FREE
+          && accountConfigService
+                  .getAccountConfig(account.getCompany())
+                  .getAnalyticDistributionTypeSelect()
+              != AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT
           && (isRequiredOnInvoiceLine || isRequiredOnMoveLine)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

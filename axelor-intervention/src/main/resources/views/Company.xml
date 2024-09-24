@@ -8,7 +8,8 @@
     <extend target="//panel[@name='modulesConfigPanel']">
       <insert position="inside">
         <button name="InterventionConfigBtn" title="Intervention config" colSpan="6"
-          width="100%" onClick="action-company-view-intervention-config"/>
+          width="100%" onClick="action-company-view-intervention-config"
+          if="__config__.app.isApp('intervention')"/>
       </insert>
     </extend>
   </form>

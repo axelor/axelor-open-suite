@@ -21,6 +21,8 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.TimesheetLine;
+import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -32,4 +34,7 @@ public interface TimesheetCreateService {
   List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
 
   Timesheet createTimesheet(LocalDate fromDate, LocalDate toDate) throws AxelorException;
+
+  @Transactional(rollbackOn = {Exception.class})
+  TimesheetLine getOrCreateTimesheet(TimesheetLine timesheetLine);
 }

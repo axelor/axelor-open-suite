@@ -56,7 +56,7 @@ public class ProjectTaskHRRepository extends ProjectTaskProjectRepository {
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     if (json != null
         && json.get("id") != null
-        && Boolean.TRUE.equals(context.get("isShowTimeSpent"))) {
+        && Boolean.TRUE.equals(context.get("manageTimeSpent"))) {
       Long id = (Long) json.get("id");
       ProjectTask projectTask = find(id);
       json.put(

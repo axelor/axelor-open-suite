@@ -29,6 +29,8 @@ import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
+import com.axelor.apps.stock.db.repo.MassStockMoveManagementRepository;
+import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
@@ -108,18 +110,23 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.app.AppStockServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancelService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancelServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityServiceImpl;
-import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactory;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactoryImpl;
-import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordServiceImpl;
+import com.axelor.apps.stock.service.massstockmove.PickedProductAttrsService;
+import com.axelor.apps.stock.service.massstockmove.PickedProductAttrsServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.PickedProductService;
 import com.axelor.apps.stock.service.massstockmove.PickedProductServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsService;
 import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsServiceImpl;
+import com.axelor.apps.stock.service.observer.ProductPopulateStockObserver;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
@@ -177,7 +184,8 @@ public class StockModule extends AxelorModule {
     bind(MassStockMovableProductAttrsService.class)
         .to(MassStockMovableProductAttrsServiceImpl.class);
     bind(MassStockMoveRecordService.class).to(MassStockMoveRecordServiceImpl.class);
-    bind(MassStockMovableProductService.class).to(MassStockMovableProductServiceImpl.class);
+    bind(MassStockMovableProductRealizeService.class)
+        .to(MassStockMovableProductRealizeServiceImpl.class);
     bind(MassStockMovableProductServiceFactory.class)
         .to(MassStockMovableProductServiceFactoryImpl.class);
     bind(StoredProductAttrsService.class).to(StoredProductAttrsServiceImpl.class);
@@ -189,5 +197,10 @@ public class StockModule extends AxelorModule {
     bind(StockLocationUtilsService.class).to(StockLocationUtilsServiceImpl.class);
     bind(StockLocationLineFetchService.class).to(StockLocationLineFetchServiceImpl.class);
     bind(TrackingNumberCreateService.class).to(TrackingNumberCreateServiceImpl.class);
+    bind(MassStockMovableProductCancelService.class)
+        .to(MassStockMovableProductCancelServiceImpl.class);
+    bind(MassStockMoveRepository.class).to(MassStockMoveManagementRepository.class);
+    bind(ProductPopulateStockObserver.class);
+    bind(PickedProductAttrsService.class).to(PickedProductAttrsServiceImpl.class);
   }
 }

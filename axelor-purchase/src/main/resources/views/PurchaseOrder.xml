@@ -158,7 +158,7 @@
 	          </>
 	        ]]></viewer>
         </field>
-        <field name="company.tradingNameSet" hidden="true" colSpan="12"/>
+        <field name="company.tradingNameList" hidden="true" colSpan="12"/>
         <field name="company" canEdit="false" colSpan="3" widget="SuggestBox"
           onChange="action-group-purchase-order-company-change-actions" form-view="company-form"
           grid-view="company-grid" readonlyIf="statusSelect >= 3 || supplierPartner != null"/>
@@ -166,9 +166,9 @@
           form-view="trading-name-form"
           if="__config__.app.getApp('base')?.enableTradingNamesManagement" colSpan="3"
           readonlyIf="(purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3"
-          domain=":company MEMBER OF self.companySet"
+          domain="self.company = :company"
           onChange="action-purchase-order-method-printing-settings-default-value,action-purchase-order-record-set-stock-location"
-          requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
+          requiredIf="company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0"/>
         <label name="tradingNameLabel"
           if="!(__config__.app.getApp('base')?.enableTradingNamesManagement)" colSpan="3"/>
         <field name="currency" canEdit="false" colSpan="3" form-view="currency-form"
@@ -211,7 +211,7 @@
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab"
-      hideIf="supplierPartner == null || ($enablePurchasesProductByTradName &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
+      hideIf="supplierPartner == null || ($enablePurchasesProductByTradName &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0 &amp;&amp; tradingName == null)">
       <panel name="contentPanel" title="Content" colSpan="12">
         <panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList"
           canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3"
@@ -220,10 +220,11 @@
           canMove="true" orderBy="sequence" height="30"/>
         <field name="notes" colSpan="12" x-lite="true" widget="html"/>
       </panel>
-      <panel name="taxPanel" title="Tax" colSpan="12">
-        <panel-related name="purchaseOrderLineTaxListPanel"
-          field="purchaseOrderLineTaxList" readonly="true" title="Tax Lines" colSpan="12"
-          grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
+      <panel name="taxPanel" title="Tax" colSpan="12" readonlyIf="statusSelect != 1">
+        <panel-related name="purchaseOrderLineTaxListPanel" canRemove="false"
+          canNew="false" field="purchaseOrderLineTaxList" title="Tax Lines" colSpan="12"
+          grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"
+          onChange="action-purchase-order-method-compute"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" colSpan="12">
         <field name="estimatedReceiptDate" colSpan="3"
@@ -259,7 +260,7 @@
           onClick="save,action-business-project-purchase-order-method-update-lines,save" colSpan="6"
           readonlyIf="!project"/>
         <field name="projectTask" domain="self.project = :project"
-          form-view="project-task-form" grid-view="project-task-grid" colSpan="6"/>
+          form-view="business-project-task-form" grid-view="business-project-task-grid" colSpan="6"/>
       </panel>
       <panel name="POManagementPanel" title="PO Management"
         if-module="axelor-supplier-management" colSpan="12"
@@ -726,10 +727,10 @@
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="currency" expr="eval: supplierPartner?.currency"/>
     <field name="fiscalPosition" expr="eval: supplierPartner?.fiscalPosition"/>
-    <field name="paymentCondition" expr="eval: supplierPartner?.paymentCondition"
-      if="supplierPartner?.paymentCondition != null"/>
+    <field name="paymentCondition" expr="eval: supplierPartner?.outPaymentCondition"
+      if="supplierPartner?.outPaymentCondition != null"/>
     <field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition"
-      if="supplierPartner?.paymentCondition == null"/>
+      if="supplierPartner?.outPaymentCondition == null"/>
     <field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode"
       if="supplierPartner?.outPaymentMode != null"/>
     <field name="paymentMode" expr="eval: company?.accountConfig?.outPaymentMode"

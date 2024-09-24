@@ -23,7 +23,10 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProdProcessService;
+import com.axelor.apps.production.service.SaleOrderLineBomService;
+import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -85,6 +88,38 @@ public class SaleOrderLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setBomDomain(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    response.setAttr(
+        "billOfMaterial",
+        "domain",
+        Beans.get(SaleOrderLineDomainProductionService.class).getBomDomain(saleOrderLine));
+  }
+
+  public void setProdProcessDomain(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    response.setAttr(
+        "prodProcess",
+        "domain",
+        Beans.get(SaleOrderLineDomainProductionService.class).getProdProcessDomain(saleOrderLine));
+  }
+
+  public void generateSubLines(ActionRequest request, ActionResponse response) throws Exception {
+    var saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    var saleOrder = saleOrderLine.getSaleOrder();
+
+    if (saleOrder == null) {
+      saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext());
+    }
+
+    if (saleOrderLine.getBillOfMaterial() != null && saleOrder != null) {
+      response.setValue(
+          "subSaleOrderLineList",
+          Beans.get(SaleOrderLineBomService.class)
+              .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder));
     }
   }
 }

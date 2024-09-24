@@ -260,10 +260,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   public Product getDefaultProduct(TimesheetLine timesheetLine) {
-    if (timesheetLine.getProduct() == null) {
-      return timesheetLine.getEmployee().getProduct();
-    }
-    return timesheetLine.getProduct();
+    return userHrService.getTimesheetProduct(timesheetLine.getEmployee(), null);
   }
 
   @Override

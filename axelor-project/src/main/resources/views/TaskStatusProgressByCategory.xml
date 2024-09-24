@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="task-status-progress-by-category-grid" title="Progress by task status"
+    model="com.axelor.apps.project.db.TaskStatusProgressByCategory" editable="true"
+    orderBy="taskStatus.sequence">
+    <field name="taskStatus" readonly="true"/>
+    <field name="isCustomized" onChange="action-progress-record-reset-progress"/>
+    <field name="progress" onChange="action-progress-record-customize"/>
+    <field name="taskStatus.sequence" hidden="true"/>
+  </grid>
+
+  <form name="task-status-progress-by-category-form" title="Progress by task status"
+    model="com.axelor.apps.project.db.TaskStatusProgressByCategory">
+    <panel name="mainPanel">
+      <field name="taskStatus" readonly="true"/>
+      <field name="isCustomized" onChange="action-progress-record-reset-progress"/>
+      <field name="progress" onChange="action-progress-record-customize"/>
+    </panel>
+  </form>
+
+  <action-record name="action-progress-record-customize"
+    model="com.axelor.apps.project.db.TaskStatusProgressByCategory">
+    <field name="isCustomized" expr="eval: true"/>
+  </action-record>
+
+  <action-record name="action-progress-record-reset-progress"
+    model="com.axelor.apps.project.db.TaskStatusProgressByCategory">
+    <field name="progress" expr="eval: taskStatus?.defaultProgress" if="!isCustomized"/>
+  </action-record>
+</object-views>

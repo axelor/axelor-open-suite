@@ -23,11 +23,10 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
-import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderCheckBudgetService;
-import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
+import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -110,66 +109,12 @@ public class SaleOrderController {
     }
   }
 
-  public void checkNoComputeBudget(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-      if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
-        boolean isBudgetFilled = false;
-        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          if (saleOrderLine.getBudget() != null
-              || !CollectionUtils.isEmpty(saleOrderLine.getBudgetDistributionList())) {
-            isBudgetFilled = true;
-          }
-        }
-        if (!isBudgetFilled) {
-          Boolean isError = Beans.get(AppBudgetService.class).isMissingBudgetCheckError();
-          if (isError != null) {
-            if (isError) {
-              response.setError(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND_ERROR));
-            } else {
-              response.setAlert(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND));
-            }
-          }
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void updateBudgetLines(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
         Beans.get(SaleOrderBudgetService.class).updateBudgetLinesFromSaleOrder(saleOrder);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void validateBudgetBalance(ActionRequest request, ActionResponse response) {
-
-    try {
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-      Beans.get(SaleOrderBudgetService.class).getBudgetExceedAlert(saleOrder);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
-    }
-  }
-
-  public void confirm(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-      if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
-        SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
-        saleOrderBudgetService.generateBudgetDistribution(saleOrder);
-        saleOrderBudgetService.updateBudgetLinesFromSaleOrder(saleOrder);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

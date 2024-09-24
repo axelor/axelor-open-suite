@@ -22,4 +22,6 @@ import com.axelor.apps.account.db.InvoicePayment;
 
 public interface InvoicePaymentFinancialDiscountService {
   void computeFinancialDiscount(InvoicePayment invoicePayment);
+
+  void computeFinancialDiscountFields(InvoicePayment invoicePayment);
 }

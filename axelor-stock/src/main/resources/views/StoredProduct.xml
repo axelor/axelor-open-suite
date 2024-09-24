@@ -4,43 +4,49 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="stored-product-grid" title="Stored products"
-    model="com.axelor.apps.stock.db.StoredProduct">
+    model="com.axelor.apps.stock.db.StoredProduct" editable="true"
+    onNew="action-stored-product-group-onnew">
     <field name="storedProduct" onChange="action-stored-product-group-product-onchange"
-      required="true" onSelect="action-stored-product-method-stored-product-domain"/>
+      required="true" onSelect="action-stored-product-method-stored-product-domain"
+      readonlyIf="stockMoveLine"/>
     <field name="toStockLocation"
-      onSelect="action-stored-product-method-set-domain-from-stock-location"
-      onChange="action-stored-product-record-set-tracking-number,action-stored-product-method-set-current-qty"
-      required="true"/>
+      onSelect="action-stored-product-method-set-domain-to-stock-location"
+      onChange="action-stored-product-method-set-current-qty" required="true"
+      readonlyIf="stockMoveLine"/>
     <field name="trackingNumber" title="Tracking no."
       onSelect="action-stored-product-method-tracking-number-domain"
-      onChange="action-stored-product-method-set-current-qty"/>
+      onChange="action-stored-product-method-set-current-qty" readonlyIf="stockMoveLine"/>
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
       readonly="true"/>
     <field name="unit" readonly="true"/>
-    <field name="storedQty"/>
+    <field name="storedQty" x-scale="nbDecimalQty"/>
     <button name="realizeStoringBtn" title="Realize storing"
-      onClick="save,action-picked-product-method-realize-storing" readonlyIf="stockMoveLine != null"
+      onClick="save,action-stored-product-method-realize-storing" readonlyIf="stockMoveLine != null"
       icon="fa-play"/>
+    <button name="cancelPickingBtn" icon="fa-undo"
+      onClick="action-stored-product-method-cancel-storing" readonlyIf="stockMoveLine == null"/>
+    <field name="stockMoveLine" hidden="true"/>
+    <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
   </grid>
 
   <form name="stored-product-form" title="Stored products"
     model="com.axelor.apps.stock.db.StoredProduct" onNew="action-stored-product-group-onnew"
     onLoad="action-stored-product-method-set-current-qty" canDelete="false">
-    <panel name="mainPanel">
+    <panel name="mainPanel" readonlyIf="stockMoveLine">
       <field name="storedProduct" onChange="action-stored-product-group-product-onchange"
         onSelect="action-stored-product-method-stored-product-domain"/>
       <field name="toStockLocation"
         onSelect="action-stored-product-method-set-domain-to-stock-location"
-        onChange="action-stored-product-record-set-tracking-number,action-stored-product-method-set-current-qty"
-        required="true"/>
+        onChange="action-stored-product-method-set-current-qty" required="true"/>
       <field name="trackingNumber"
         onSelect="action-stored-product-method-tracking-number-domain"
         onChange="action-stored-product-method-set-current-qty"/>
       <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
         readonly="true"/>
       <field name="unit" readonly="true"/>
-      <field name="storedQty"/>
+      <field name="storedQty" x-scale="nbDecimalQty"/>
       <field name="stockMoveLine" showIf="stockMoveLine != null"/>
+      <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
     </panel>
   </form>
 
@@ -74,7 +80,7 @@
 
   <action-attrs name="action-stored-product-attrs-tracking-number-required">
     <attribute name="required" for="trackingNumber"
-      expr="eval: storedProduct?.trackingNumberConfiguration != null"/>
+      expr="eval: storedProduct != null &amp;&amp; com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(storedProduct, 'trackingNumberConfiguration', __parent__?.company) != null"/>
   </action-attrs>
 
 
@@ -96,8 +102,12 @@
       method="setTrackingNumberDomain"/>
   </action-method>
 
-  <action-method name="action-picked-product-method-realize-storing">
+  <action-method name="action-stored-product-method-realize-storing">
     <call class="com.axelor.apps.stock.web.StoredProductController" method="realizeStoring"/>
+  </action-method>
+
+  <action-method name="action-stored-product-method-cancel-storing">
+    <call class="com.axelor.apps.stock.web.StoredProductController" method="cancelStoring"/>
   </action-method>
 
 

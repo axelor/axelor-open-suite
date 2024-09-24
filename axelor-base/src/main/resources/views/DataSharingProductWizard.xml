@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="data-sharing-product-wizard-grid" title="Data sharing product assistant"
+    model="com.axelor.apps.base.db.DataSharingProductWizard">
+    <field name="dataSharingReferential"/>
+  </grid>
+
+  <form name="data-sharing-product-wizard-form" title="Data sharing product assistant"
+    model="com.axelor.apps.base.db.DataSharingProductWizard" width="large" canSave="false">
+    <toolbar>
+      <button name="generateBtn" title="Generate" hidden="true"
+        onClick="save,action-data-sharing-product-wizard-method-generate-data-sharing-referential-lines"
+        showIf="(productCategorySet &amp;&amp; productCategorySet.length > 0) || (productSet &amp;&amp; productSet.length > 0)"/>
+    </toolbar>
+    <panel name="mainPanel">
+      <field name="dataSharingReferential" form-view="data-sharing-referential-form"
+        grid-view="data-sharing-referential-grid" readonlyIf="id"/>
+      <panel-related name="productCategorySetPanel" field="productCategorySet"
+        form-view="product-category-form" grid-view="product-category-grid" canNew="false"
+        canEdit="false" colSpan="12"/>
+      <panel-related name="productSetPanel" field="productSet"
+        form-view="product-form" grid-view="product-grid" canNew="false" canEdit="false"
+        colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-method
+    name="action-data-sharing-product-wizard-method-generate-data-sharing-referential-lines">
+    <call class="com.axelor.apps.base.web.DataSharingProductWizardController"
+      method="generateDataSharingReferentialLines"/>
+  </action-method>
+
+</object-views>

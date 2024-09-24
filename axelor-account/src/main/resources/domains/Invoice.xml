@@ -43,8 +43,8 @@
 
     <string name="addressStr" title="Address" large="true" multiline="true"/>
     <string name="deliveryAddressStr" title="Delivery address" large="true" multiline="true"/>
-    <string name="internalReference" title="Internal Ref."/>
-    <string name="externalReference" title="External Ref."/>
+    <string name="internalReference" title="Internal Ref." large="true"/>
+    <string name="externalReference" title="External Ref." large="true"/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList"
       title="Price list"/>
     <boolean name="hideDiscount" title="Hide Discount on prints"/>
@@ -80,7 +80,7 @@
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice"
       title="Invoice Lines"/>
     <one-to-many name="invoiceLineTaxList" ref="InvoiceLineTax" mappedBy="invoice"
-      title="Tax Lines" readonly="true"/>
+      title="Tax Lines"/>
 
     <!-- Configuration -->
     <boolean name="alreadyPrintedOk" title="Already printed" default="true"/>
@@ -248,6 +248,8 @@
 	      id]]>
     </integer>
 
+    <many-to-one name="latePaymentInterestSourceInvoice"
+      ref="com.axelor.apps.account.db.Invoice" title="Late payment interest source invoice"/>
 
     <!-- Invoice terms -->
     <integer name="paymentProgress" title="Payment progress" default="0"/>
@@ -292,6 +294,7 @@
 	    public static final int OPERATION_SUB_TYPE_DEFAULT = 1;
 	    public static final int OPERATION_SUB_TYPE_ADVANCE = 2;
 	    public static final int OPERATION_SUB_TYPE_BALANCE = 3;
+	    public static final int OPERATION_SUB_TYPE_LATE_PAYMENT = 9;
 
 	    // REPORT TYPE
 		public static final int REPORT_TYPE_PROFORMA = 1;

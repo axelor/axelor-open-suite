@@ -23,12 +23,11 @@ import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.PaymentConditionToolService;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -58,22 +57,8 @@ public class InvoiceToolService {
     LocalDate invoiceDate =
         isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
     return ObjectUtils.isEmpty(invoice.getInvoiceTermList())
-        ? getMaxDueDate(invoice.getPaymentCondition(), invoiceDate)
+        ? PaymentConditionToolService.getMaxDueDate(invoice.getPaymentCondition(), invoiceDate)
         : Beans.get(InvoiceTermService.class).getDueDate(invoice.getInvoiceTermList(), invoiceDate);
-  }
-
-  protected static LocalDate getMaxDueDate(
-      PaymentCondition paymentCondition, LocalDate defaultDate) {
-    if (paymentCondition == null
-        || ObjectUtils.isEmpty(paymentCondition.getPaymentConditionLineList())) {
-      return defaultDate;
-    }
-
-    return getDueDate(
-        paymentCondition.getPaymentConditionLineList().stream()
-            .max(Comparator.comparing(PaymentConditionLine::getSequence))
-            .get(),
-        defaultDate);
   }
 
   @CallMethod
@@ -97,71 +82,6 @@ public class InvoiceToolService {
         .filter(Objects::nonNull)
         .min(Comparator.comparing(LocalDate::toEpochDay))
         .orElse(invoice.getNextDueDate());
-  }
-
-  /**
-   * Method to compute due date based on paymentConditionLine and invoiceDate
-   *
-   * @param paymentConditionLine
-   * @param invoiceDate
-   * @return
-   */
-  public static LocalDate getDueDate(
-      PaymentConditionLine paymentConditionLine, LocalDate invoiceDate) {
-
-    return getDueDate(
-        paymentConditionLine.getTypeSelect(),
-        paymentConditionLine.getPaymentTime(),
-        paymentConditionLine.getPeriodTypeSelect(),
-        paymentConditionLine.getDaySelect(),
-        invoiceDate);
-  }
-
-  /**
-   * Method to compute due date based on paymentCondition and invoiceDate
-   *
-   * @param typeSelect
-   * @param paymentTime
-   * @param periodTypeSelect
-   * @param daySelect
-   * @param invoiceDate
-   * @return
-   */
-  public static LocalDate getDueDate(
-      Integer typeSelect,
-      Integer paymentTime,
-      Integer periodTypeSelect,
-      Integer daySelect,
-      LocalDate invoiceDate) {
-    if (invoiceDate == null) {
-      return null;
-    }
-
-    LocalDate nDaysDate;
-    if (periodTypeSelect.equals(PaymentConditionLineRepository.PERIOD_TYPE_DAYS)) {
-      nDaysDate = invoiceDate.plusDays(paymentTime);
-    } else {
-      nDaysDate = invoiceDate.plusMonths(paymentTime);
-    }
-
-    switch (typeSelect) {
-      case PaymentConditionLineRepository.TYPE_NET:
-        return nDaysDate;
-
-      case PaymentConditionLineRepository.TYPE_END_OF_MONTH_N_DAYS:
-        if (periodTypeSelect.equals(PaymentConditionLineRepository.PERIOD_TYPE_DAYS)) {
-          return invoiceDate.withDayOfMonth(invoiceDate.lengthOfMonth()).plusDays(paymentTime);
-        } else {
-          return invoiceDate.withDayOfMonth(invoiceDate.lengthOfMonth()).plusMonths(paymentTime);
-        }
-      case PaymentConditionLineRepository.TYPE_N_DAYS_END_OF_MONTH:
-        return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth());
-
-      case PaymentConditionLineRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
-        return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth()).plusDays(daySelect);
-      default:
-        return invoiceDate;
-    }
   }
 
   /**
@@ -273,7 +193,12 @@ public class InvoiceToolService {
     Partner partner = invoice.getPartner();
 
     if (partner != null) {
-      PaymentCondition paymentCondition = partner.getPaymentCondition();
+      PaymentCondition paymentCondition = null;
+      if (InvoiceToolService.isOutPayment(invoice)) {
+        paymentCondition = partner.getOutPaymentCondition();
+      } else {
+        paymentCondition = partner.getPaymentCondition();
+      }
       if (paymentCondition != null) {
         return paymentCondition;
       }
