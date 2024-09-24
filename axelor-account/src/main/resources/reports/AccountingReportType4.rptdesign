@@ -489,7 +489,8 @@ AND (CASE
     WHEN AccountingReport.display_closing_accounting_moves IS TRUE THEN Move.functional_origin_select IN (2,3,4)
     WHEN AccountingReport.display_opening_accounting_moves IS TRUE THEN Move.functional_origin_select IN (1,3,4)
     ELSE Move.functional_origin_select IN (3,4)
-END OR Move.functional_origin_select IS NULL)
+END OR Move.functional_origin_select IS NULL) AND
+(AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal)
 group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,MoveLine.name, Currency.number_of_decimals]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
