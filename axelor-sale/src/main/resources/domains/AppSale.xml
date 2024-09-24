@@ -43,7 +43,7 @@
     <boolean name="isCartManagementEnabled" title="Enable cart management"
       help="Allow the user to put products aside to generate an order at a later date."/>
     <integer name="listDisplayTypeSelect" title="Line list display type"
-      selection="sale.app.sale.line.display.type.select" help="" default="1"/>
+      selection="sale.app.sale.line.display.type.select" default="1"/>
 
     <extra-code>
       <![CDATA[

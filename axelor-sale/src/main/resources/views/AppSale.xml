@@ -32,12 +32,10 @@
 
     </panel>
     <panel name="listDisplayPanel" itemSpan="12" colSpan="12">
-      <help showIf="listDisplayTypeSelect == 1"><![CDATA[Display sale order lines the classic way.]]></help>
-      <help showIf="listDisplayTypeSelect == 2"><![CDATA[This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.]]></help>
-      <help showIf="listDisplayTypeSelect == 3"><![CDATA[Activate multi-level sale order lines.]]></help>
-      <field name="listDisplayTypeSelect" widget="RadioSelect"/>
+      <help><![CDATA[Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.]]></help>
+      <field name="listDisplayTypeSelect" widget="RadioSelect" colSpan="6"/>
       <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
-        showIf="listDisplayTypeSelect == 2"/>
+        showIf="listDisplayTypeSelect == 2" colSpan="6"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"
