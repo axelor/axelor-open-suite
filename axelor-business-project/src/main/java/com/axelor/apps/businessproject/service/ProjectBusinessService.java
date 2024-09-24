@@ -23,6 +23,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import java.util.List;
 import java.util.Map;
 
 public interface ProjectBusinessService extends ProjectService {
@@ -43,5 +44,5 @@ public interface ProjectBusinessService extends ProjectService {
 
   void transitionBetweenPaidStatus(Project project) throws AxelorException;
 
-  String checkPercentagesOver1000OnTasks(Project project);
+  List<String> checkPercentagesOver1000OnTasks(Project project);
 }

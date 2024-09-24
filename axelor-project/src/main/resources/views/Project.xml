@@ -26,10 +26,11 @@
     <field name="assignedTo"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="imputable" width="90"/>
-    <button name="openGanttBtn" title="Gantt" icon="fa-tasks"
-      onClick="action-project-open-gantt"/>
     <field name="projectStatus"/>
+    <button name="openGanttBtn" title="Gantt" icon="bar-chart-steps"
+      onClick="action-project-open-gantt"/>
+    <button name="openTasks" onClick="action-project-view-show-related-tasks"
+      icon="list-task"/>
   </grid>
 
   <grid name="project-child-grid" title="Projects" model="com.axelor.apps.project.db.Project"
@@ -41,11 +42,6 @@
   <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-method-check-resource-availibility" width="large">
-    <toolbar>
-      <button name="logTimeBtn" icon="clock-history"
-        onClick="save,action-timesheet-line-method-log-time" showIf="isShowTimeSpent"
-        if="__config__.app.isApp('timesheet')"/>
-    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -58,6 +54,8 @@
           action="save,action-project-method-all-open-tasks" showIf="id"/>
         <item name="allTasks" title="All tasks" action="save,action-project-method-all-tasks"
           showIf="id"/>
+        <item name="allTasksTree" title="All tasks (tree)"
+          action="save, action-view-show-project-task-tree" showIf="id"/>
       </menu>
       <menu name="projectToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
         <item name="ganttItem" title="Gantt" showIf="id &amp;&amp; isShowGantt"
@@ -113,13 +111,9 @@
 
       <panel-include view="incl-project-overview-panel-form"/>
 
-      <panel title="Tasks" name="taskTreePanel">
-        <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
-          icon="fa-plus" onClick="save,action-project-add-task"/>
-        <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-          icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
-        <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
-          colSpan="12" action="action-view-show-project-task-tree"/>
+      <panel title="Tasks" name="taskPanel">
+        <panel-dashlet name="projectTaskDashletPanel" title="Tasks" x-show-bars="true"
+          colSpan="12" action="action-project-view-show-project-task" height="200%"/>
       </panel>
 
       <panel-include view="incl-project-structure-panel-form"/>
@@ -147,14 +141,17 @@
       onTabSelect="action-project-activity-dashboard-method-on-new">
       <field name="description" colSpan="12" widget="html"/>
       <panel name="dashboardPanel" title="Dashboard" colSpan="12" canCollapse="true"
-        collapseIf="true">
+        collapseIf="false">
         <panel-dashlet name="dashboardPanelDashlet"
           action="project.reporting.projects.dashboard" colSpan="12"/>
       </panel>
       <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject">
         <field name="siteSet" showTitle="false" colSpan="12" grid-view="site-project-grid"
-          form-view="site-form" domain="self.isUsableOnProject = true" canEdit="false"/>
+          form-view="site-form"
+          domain="(self.typeSelect = 1 AND self.isUsableOnProject = true AND self.company = :company)
+          OR (self.typeSelect = 2 AND self.isUsableOnProject = true AND self.company = :company AND self.partner = :clientPartner)"
+          canEdit="false"/>
       </panel>
       <panel title="Activities" name="activityPanel" canCollapse="true" collapseIf="true"
         colSpan="12" showIf="id">
@@ -231,19 +228,18 @@
   <form name="incl-log-times-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
     <panel title="Log Times" name="logTimesPanel" showIf="isShowTimeSpent">
-      <panel-dashlet name="validatedTimesheetsPanel"
+      <panel-dashlet name="validatedTimesheetsPanel" x-show-bars="true"
         if="__config__.app.getApp('timesheet')?.needValidation"
         action="action-project-dashlet-validated-timesheet-lines" title="Validated Timesheet lines"
         colSpan="12" canSearch="true"/>
-      <panel-dashlet name="waitingTimesheetLinesPanel"
+      <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
         if="__config__.app.getApp('timesheet')?.needValidation"
         action="action-project-dashlet-project-waiting-timesheet-lines"
         title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
-      <panel-dashlet name="allTimesheetsLinesPanel"
+      <panel-dashlet name="allTimesheetsLinesPanel" x-show-bars="true"
         if="!__config__.app.getApp('timesheet')?.needValidation"
         action="action-project-dashlet-project-all-timesheet-lines" title="TimesheetLine.timeSpent"
-        colSpan="12" canSearch="true"
-        help="To create new timespent lines, you need to do it via project task or via the HR &quot;Complete my Timesheet&quot; menu."/>
+        colSpan="12" canSearch="true"/>
     </panel>
   </form>
 
@@ -267,7 +263,7 @@
   <form name="incl-project-config-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
     <panel title="General configuration" name="generalConfigurationsPanel" colSpan="12"
-      canCollapse="true" collapseIf="true">
+      canCollapse="true" collapseIf="false">
       <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
         name="productSet" widget="TagSelect" canEdit="false"
         domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-activity-form"
@@ -275,16 +271,12 @@
       <field name="projectTimeUnit"/>
       <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
         if-module="axelor-human-resource"/>
-      <field name="imputable" widget="boolean-switch"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
-        if-module="axelor-human-resource"
-        onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
-      <field name="isShowTimeSpent" widget="inline-checkbox"
-        onChange="action-project-record-is-show-timespent-reset-values"
-        if="__config__.app.isApp('timesheet')" readonlyIf="!imputable"/>
+      <field name="manageTimeSpent" widget="inline-checkbox"
+        onChange="action-project-record-manage-timespent-reset-values"
+        if="__config__.app.isApp('timesheet')"/>
     </panel>
     <panel name="taskConfigurationPanel" title="Task configuration" colSpan="12"
-      canCollapse="true" collapseIf="true">
+      canCollapse="true" collapseIf="false">
       <field name="taskStatusManagementSelect" widget="RadioSelect"
         readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
         onChange="action-project-record-manage-task-status-set, action-project-record-activate-task-status-by-category"/>
@@ -315,7 +307,7 @@
         placeholder="All"/>
     </panel>
     <panel title="View configuration" name="viewConfig" colSpan="12" canCollapse="true"
-      collapseIf="true">
+      collapseIf="false">
       <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowSection" colSpan="4" widget="inline-checkbox"
@@ -358,7 +350,7 @@
   <form name="incl-custom-fields-to-display-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
     <panel title="Custom fields" name="customFieldConfigPanel" canCollapse="true"
-      collapseIf="true" colSpan="12">
+      collapseIf="false" colSpan="12">
       <field name="customFieldManagementSelect" widget="MultiSelect" placeholder="None"
         onChange="save"/>
       <panel-related field="taskCustomFieldsList" colSpan="12"
@@ -405,8 +397,6 @@
     <column name="name" type="string"/>
     <column name="taskDate" type="date"/>
     <column name="assignedTo" type="reference"/>
-    <column name="createSubtaskBtn" type="button"/>
-    <column name="deleteTaskBtn" type="button"/>
     <column name="openTaskBtn" type="button"/>
 
     <node model="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :_id"
@@ -415,10 +405,6 @@
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
-      <button name="createSubtaskBtn" icon="fa-plus"
-        onClick="save, action-project-view-add-subtask"/>
-      <button name="deleteTaskBtn" icon="fa-times-circle"
-        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
       <button name="openTaskBtn" icon="fa-external-link"
         onClick="action-project-task-open-task"/>
     </node>
@@ -429,14 +415,9 @@
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
-      <button name="createSubtaskBtn" icon="fa-plus"
-        onClick="save, action-project-view-add-subtask"/>
-      <button name="deleteTaskBtn" icon="fa-times-circle"
-        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
       <button name="openTaskBtn" icon="fa-external-link"
         onClick="action-project-task-open-task"/>
     </node>
-
   </tree>
 
   <tree name="project-phase-tree" title="Phases">
@@ -568,14 +549,9 @@
     <field name="clientPartner" expr="eval: __parent__?.clientPartner"/>
   </action-record>
 
-  <action-record name="action-project-record-is-show-timespent-reset-values"
+  <action-record name="action-project-record-manage-timespent-reset-values"
     model="com.axelor.apps.project.db.Project">
-    <field name="isInvoicingTimesheet" expr="eval: false" if="!isShowTimeSpent"/>
-  </action-record>
-
-  <action-record name="action-project-record-reset-value-is-show-timespent"
-    model="com.axelor.apps.project.db.Project">
-    <field name="isShowTimeSpent" expr="eval: false" if="!imputable"/>
+    <field name="isInvoicingTimesheet" expr="eval: false" if="!manageTimeSpent"/>
   </action-record>
 
   <action-record name="action-project-record-status-new"
@@ -785,7 +761,7 @@
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_project" expr="eval:__this__"/>
+    <context name="_project" expr="eval:__parent__"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
   </action-view>
@@ -795,6 +771,14 @@
     <view type="tree" name="project-project-task-tree"/>
     <view type="form" name="project-task-form"/>
     <domain>self.project.id = :_id AND self.parentTask = null</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-project-view-show-project-task" title="Project Tasks"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="project-task-project-grid"/>
+    <view type="form" name="project-task-form"/>
+    <domain>self.project.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 
@@ -826,7 +810,6 @@
       if="!__config__.app.getApp('project')?.resourceManagement"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
   </search-filters>
 
   <search-filters name="project-topic-filters"
@@ -872,7 +855,6 @@
     <field name="announcementList" hidden="true"
       if="!__config__.app.isApp('business-support')"/>
     <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="isBusinessProject" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
   </search-filters>

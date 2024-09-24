@@ -41,6 +41,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -129,6 +130,17 @@ public class ProjectTaskController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void deleteProjectTasks(ActionRequest request, ActionResponse response) {
+
+    List<Integer> projectTasksIds = (List<Integer>) request.getContext().get("_ids");
+
+    if (!ObjectUtils.isEmpty(projectTasksIds)) {
+      Beans.get(ProjectTaskService.class).deleteProjectTasks(projectTasksIds);
+    }
+
+    response.setReload(true);
   }
 
   public void fillSubtask(ActionRequest request, ActionResponse response) {

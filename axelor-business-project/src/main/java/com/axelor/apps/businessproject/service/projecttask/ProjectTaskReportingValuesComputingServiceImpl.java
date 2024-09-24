@@ -141,9 +141,11 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @param projectTask
    * @return
    */
-  protected BigDecimal getTaskSpentTime(ProjectTask projectTask) {
+  protected BigDecimal getTaskSpentTime(ProjectTask projectTask) throws AxelorException {
     List<TimesheetLine> timesheetLines = getValidatedTimesheetLinesForProjectTask(projectTask);
-    Unit timeUnit = projectTask.getTimeUnit();
+    Unit timeUnit =
+        getTimeUnitForTimesheetLineConversion(
+            projectTask.getTimeUnit(), projectTask.getProject().getProjectTimeUnit());
     BigDecimal spentTime = BigDecimal.ZERO;
 
     for (TimesheetLine timeSheetLine : timesheetLines) {
@@ -151,6 +153,18 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     }
 
     return spentTime;
+  }
+
+  protected Unit getTimeUnitForTimesheetLineConversion(Unit taskUnit, Unit projectUnit)
+      throws AxelorException {
+    if (taskUnit != null) {
+      return taskUnit;
+    } else if (projectUnit != null) {
+      return projectUnit;
+    }
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_INCONSISTENCY,
+        BusinessProjectExceptionMessage.PROJECT_NO_UNIT_FOUND);
   }
 
   /**

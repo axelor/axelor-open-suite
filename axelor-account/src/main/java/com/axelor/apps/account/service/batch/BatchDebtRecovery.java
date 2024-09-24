@@ -131,8 +131,7 @@ public class BatchDebtRecovery extends BatchStrategy {
     int offset = 0;
     List<Partner> partnerList;
 
-    while (!(partnerList = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
-      findBatch();
+    while (!(partnerList = query.fetch(getFetchLimit(), offset)).isEmpty()) {
 
       for (Partner partner : partnerList) {
         ++offset;
@@ -211,6 +210,7 @@ public class BatchDebtRecovery extends BatchStrategy {
       }
 
       JPA.clear();
+      findBatch();
     }
   }
 
