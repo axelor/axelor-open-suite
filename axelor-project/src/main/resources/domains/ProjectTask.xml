@@ -94,7 +94,7 @@
       mappedBy="projectTask" title="Comment"/>
     <one-to-many name="commentFileList" ref="com.axelor.apps.base.db.CommentFile"
       title="Files"/>
-    <string name="note" title="Note" large="true"/>
+    <string name="note" title="comment.note" large="true"/>
     <boolean name="isPrivateNote" title="Private note" default="false" transient="true"/>
     <many-to-many ref="com.axelor.auth.db.User" name="internalWatchers"
       title="Internal Watchers"/>

@@ -197,6 +197,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
+import com.axelor.apps.base.service.comment.CommentService;
+import com.axelor.apps.base.service.comment.CommentServiceImpl;
 import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.dayplanning.DayPlanningServiceImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
@@ -485,5 +487,7 @@ public class BaseModule extends AxelorModule {
     bind(DataSharingReferentialLineService.class).to(DataSharingReferentialLineServiceImpl.class);
     bind(MetaViewService.class).to(MetaViewServiceImpl.class);
     bind(DataSharingProductWizardService.class).to(DataSharingProductWizardServiceImpl.class);
+
+    bind(CommentService.class).to(CommentServiceImpl.class);
   }
 }

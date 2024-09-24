@@ -21,6 +21,7 @@ package com.axelor.apps.project.service.comment;
 import com.axelor.apps.base.db.Comment;
 import com.axelor.apps.base.db.CommentFile;
 import com.axelor.apps.base.db.repo.CommentRepository;
+import com.axelor.apps.base.service.comment.CommentServiceImpl;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.mail.db.MailMessage;
 import com.google.inject.Inject;
@@ -28,9 +29,13 @@ import com.google.inject.persist.Transactional;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class CommentProjectServiceImpl implements CommentProjectService {
+public class CommentProjectServiceImpl extends CommentServiceImpl implements CommentProjectService {
 
-  @Inject public CommentRepository commentRepo;
+  @Inject
+  public CommentProjectServiceImpl(CommentRepository commentRepo) {
+
+    super(commentRepo);
+  }
 
   @Override
   @Transactional

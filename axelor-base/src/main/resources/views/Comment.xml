@@ -14,7 +14,7 @@
 		    <>
 		      <Box as="dd">
 		        {JSON.parse(mailMessage.body).tracks
-		          .filter(track => track.title !== "Note")
+		          .filter(track => track.title !== "comment.note")
 		          .map((track, index) => (
 		            <li key={index}>
 		              <strong>{track.title}</strong> :
@@ -91,7 +91,7 @@
 			            {parentComment.note && <Box as="dd"><strong>{parentComment.createdBy.name} wrote:</strong> <br />{renderHtml(parentComment.note)}</Box>}
 				        <Box as="dd">
 				          {JSON.parse(mailMessage.body).tracks
-				            .filter(track => track.title !== "Note")
+				            .filter(track => track.title !== "comment.note")
 				            .map((track, index) => (
 				              <li key={index}>
 				                <strong>{track.title}</strong> :
@@ -105,13 +105,13 @@
 			              {renderHtml(note)}
 			              {note && (
 			                <Box>
-			                  <Button variant="link" onClick={$action("")}>
+			                  <Button variant="link" onClick={$action("action-comment-view-quote-note")}>
 			                    <Icon icon="quote" />
 			                  </Button>
-			                  <Button variant="link" onClick={$action("")}>
+			                  <Button variant="link" onClick={$action("action-comment-view-edit-note")}>
 			                    <Icon icon="edit" />
 			                  </Button>
-			                  <Button variant="link" onClick={$action("")}>
+			                  <Button variant="link" onClick={$action("action-comment-group-delete-note")}>
 			                    <Icon icon="delete" />
 			                  </Button>
 			                </Box>
@@ -136,5 +136,38 @@
     <attribute name="title" for="note"
       expr="eval: isPrivateNote ? '' : com.axelor.i18n.I18n.get('Note')"/>
   </action-attrs>
+
+  <action-view name="action-comment-view-edit-note" title="Edit a note"
+    model="com.axelor.apps.base.db.Comment">
+    <view type="form" name="comment-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-comment-view-quote-note" title="Quote a note"
+    model="com.axelor.apps.base.db.Comment">
+    <view type="form" name="comment-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_parentComment" expr="eval: __repo__(Comment).find(id)"/>
+  </action-view>
+
+  <action-group name="action-comment-group-delete-note">
+    <action name="action-comment-validate-delete"/>
+    <action name="action-comment-method-delete-note"/>
+  </action-group>
+
+  <action-validate name="action-comment-validate-delete">
+    <alert message="Are you sure?" confirm-btn-title="OK" cancel-btn-title="Cancel"/>
+  </action-validate>
+
+  <action-method name="action-comment-method-delete-note">
+    <call class="com.axelor.apps.base.web.CommentController" method="deleteComment"/>
+  </action-method>
 
 </object-views>
