@@ -48,7 +48,8 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
   }
 
   @Override
-  public boolean equals(BillOfMaterialLine billOfMaterialLine, SaleOrderLine saleOrderLine) {
+  public boolean isBomLineEqualsSol(
+      BillOfMaterialLine billOfMaterialLine, SaleOrderLine saleOrderLine) {
 
     return billOfMaterialLine.getQty().equals(saleOrderLine.getQty())
         && billOfMaterialLine.getProduct().equals(saleOrderLine.getProduct())
@@ -56,7 +57,7 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
         && Optional.ofNullable(saleOrderLine.getBillOfMaterial())
             .map(solBom -> solBom.equals(billOfMaterialLine.getBillOfMaterial()))
             .or(() -> Optional.of(billOfMaterialLine.getBillOfMaterial() == null))
-            .get();
+            .orElse(false);
   }
 
   @Override
@@ -68,6 +69,6 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
       return false;
     }
 
-    return this.equals(saleOrderLine.getBillOfMaterialLine(), saleOrderLine);
+    return this.isBomLineEqualsSol(saleOrderLine.getBillOfMaterialLine(), saleOrderLine);
   }
 }

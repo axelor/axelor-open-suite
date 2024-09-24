@@ -2,17 +2,13 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.db.JPA;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -31,6 +27,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected final BillOfMaterialLineService billOfMaterialLineService;
+  protected final BillOfMaterialService billOfMaterialService;
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -39,12 +36,14 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       AppSaleService appSaleService,
       BillOfMaterialRepository billOfMaterialRepository,
       BillOfMaterialLineRepository billOfMaterialLineRepository,
-      BillOfMaterialLineService billOfMaterialLineService) {
+      BillOfMaterialLineService billOfMaterialLineService,
+      BillOfMaterialService billOfMaterialService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.appSaleService = appSaleService;
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
     this.billOfMaterialLineService = billOfMaterialLineService;
+    this.billOfMaterialService = billOfMaterialService;
   }
 
   @Override
@@ -70,6 +69,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public BillOfMaterial customizeBomOf(SaleOrderLine saleOrderLine) throws AxelorException {
     return customizeBomOf(saleOrderLine, 0);
   }
@@ -150,36 +150,15 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
         subSaleOrderLine.getProduct().getStockManaged());
   }
 
-  @Transactional(rollbackOn = Exception.class)
   protected BillOfMaterial customizeBomOf(SaleOrderLine saleOrderLine, int depth)
       throws AxelorException {
-    if (saleOrderLine.getBillOfMaterial() == null) {
+    var billOfMaterial = saleOrderLine.getBillOfMaterial();
+    if (billOfMaterial == null) {
       return null;
     }
-    if (depth > 1000) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(ProductionExceptionMessage.MAX_DEPTH_REACHED));
-    }
+    BillOfMaterial personalizedBOM =
+        billOfMaterialService.getCustomizedBom(billOfMaterial, depth, false);
 
-    var billOfMaterial = saleOrderLine.getBillOfMaterial();
-    var noOfPersonalizedBOM =
-        billOfMaterialRepository
-                .all()
-                .filter(
-                    "self.product = ?1 AND self.personalized = true", billOfMaterial.getProduct())
-                .count()
-            + 1;
-    var personalizedBOM = JPA.copy(billOfMaterial, false);
-    var name =
-        personalizedBOM.getName()
-            + " ("
-            + I18n.get(ProductionExceptionMessage.BOM_1)
-            + " "
-            + noOfPersonalizedBOM
-            + ")";
-    personalizedBOM.setName(name);
-    personalizedBOM.setPersonalized(true);
     saleOrderLine.setBillOfMaterial(personalizedBOM);
 
     if (saleOrderLine.getSubSaleOrderLineList() != null) {
