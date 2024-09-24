@@ -109,7 +109,8 @@
   <form name="business-project-task-form" title="Task"
     model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-business-project-project-task-group-on-new"
-    onLoad="action-business-project-project-task-group-on-load" width="large">
+    onLoad="action-business-project-project-task-group-on-load"
+    onSave="action-project-task-method-update-project-planning-time" width="large">
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
@@ -239,7 +240,7 @@
           showIf="invoicingType == 4"/>
         <field name="timeUnit" colSpan="4" readonlyIf="saleOrderLine || parentTask"
           onSelect="action-project-task-attrs-set-time-unit-domain"
-          onChange="action-project-task-method-update-budgeted-time, save"
+          onChange="action-project-task-method-update-budgeted-time" requiredIf="sprint"
           if="__config__.app.isApp('business-project')"/>
       </panel>
     </panel>
@@ -274,8 +275,8 @@
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
         if-module="axelor-human-resource" showIf="project.isShowPlanning">
         <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-          x-show-bars="false" action="action-project-task-dashlet-project-planning-time"
-          colSpan="12" canSearch="true"/>
+          x-show-bars="true" action="action-project-task-dashlet-project-planning-time" colSpan="12"
+          canSearch="true"/>
         <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
         <field name="project.isShowPlanning" hidden="true"/>
       </panel>
@@ -452,6 +453,7 @@
         </panel>
       </panel>
       <panel-include view="incl-links-panel-form"/>
+      <panel-include view="sprint-project-task-form"/>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -460,6 +462,15 @@
       <mail-messages/>
       <mail-followers/>
     </panel-mail>
+  </form>
+
+  <form model="com.axelor.apps.project.db.ProjectTask" title="Sprint"
+    name="sprint-project-task-form">
+
+    <panel name="sprintPanel" title="Sprint">
+      <field name="sprint" title="Sprint" domain="self.project = :project"/>
+    </panel>
+
   </form>
 
   <tree name="business-project-project-task-tree" title="Task">
@@ -742,5 +753,10 @@
     <domain>self.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
+
+  <action-method name="action-project-task-method-update-project-planning-time">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="updateProjectPlanningTime"/>
+  </action-method>
 
 </object-views>
