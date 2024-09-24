@@ -54,18 +54,19 @@ public class PaymentModeInterestRateServiceImpl implements PaymentModeInterestRa
     LocalDate todayDate =
         appAccountService.getTodayDate(
             Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+    LocalDate yesterday = todayDate.minusDays(1);
 
     LocalDate fromDate;
     if (paymentMode.getInterestRateHistoryLineList().isEmpty()) {
-      fromDate = todayDate.minusDays(1);
+      fromDate = yesterday;
     } else {
       InterestRateHistoryLine lastInterestRateHistoryLine =
           getLastInterestRateHistoryLine(paymentMode);
       fromDate = lastInterestRateHistoryLine.getEndDate().plusDays(1);
     }
 
-    // check dates
-    if (fromDate.isAfter(todayDate.minusDays(1))) {
+    // yesterday will be end date so it must be after fromDate
+    if (fromDate.isAfter(yesterday)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_HISTORY_DATES_INCONSISTENCY));
@@ -75,7 +76,7 @@ public class PaymentModeInterestRateServiceImpl implements PaymentModeInterestRa
     interestRateHistoryLine.setInterestRate(interestRate);
     interestRateHistoryLine.setPaymentMode(paymentMode);
     interestRateHistoryLine.setFromDate(fromDate);
-    interestRateHistoryLine.setEndDate(todayDate.minusDays(1));
+    interestRateHistoryLine.setEndDate(yesterday);
 
     paymentMode.addInterestRateHistoryLineListItem(interestRateHistoryLine);
 
@@ -128,6 +129,7 @@ public class PaymentModeInterestRateServiceImpl implements PaymentModeInterestRa
 
       checkDateIsInPeriod(fromDate, rateHistoryLine.getFromDate(), rateHistoryLine.getEndDate());
       checkDateIsInPeriod(endDate, rateHistoryLine.getFromDate(), rateHistoryLine.getEndDate());
+      checkEndDateIsInPast(endDate);
     }
   }
 
@@ -180,6 +182,21 @@ public class PaymentModeInterestRateServiceImpl implements PaymentModeInterestRa
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_HISTORY_PERIOD_OVERLAP));
+    }
+  }
+
+  protected void checkEndDateIsInPast(Optional<LocalDate> endDate) throws AxelorException {
+    if (endDate.isPresent()
+        && endDate
+            .get()
+            .isAfter(
+                appAccountService.getTodayDate(
+                    Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null)))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_HISTORY_END_DATE_IN_FUTURE));
     }
   }
 }
