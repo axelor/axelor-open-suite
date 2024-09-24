@@ -16,7 +16,7 @@
     <panel-related name="dataSharingReferentialLinePanel"
       field="dataSharingReferentialLineList" title="Data sharing referential lines"
       form-view="data-sharing-referential-line-form" grid-view="data-sharing-referential-line-grid"
-      colSpan="12"/>
+      colSpan="12" canRemove="false"/>
   </form>
 
 </object-views>

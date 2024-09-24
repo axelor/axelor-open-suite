@@ -9,10 +9,12 @@
 
     <string name="name" title="Name" required="true"/>
     <integer name="priority" title="Priority" required="true"/>
+    <integer name="sequence" title="Sequence"/>
 
     <track>
       <field name="name"/>
       <field name="priority"/>
+      <field name="sequence"/>
     </track>
 
   </entity>

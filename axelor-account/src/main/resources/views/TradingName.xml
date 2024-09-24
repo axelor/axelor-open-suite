@@ -6,7 +6,8 @@
   <form id="account-trading-name-form" model="com.axelor.apps.base.db.TradingName"
     title="Trading name" name="trading-name-form" extension="true">
     <extend target="/">
-      <attribute name="onLoad" value="action-trading-name-method-show-analytic-panel"/>
+      <attribute name="onLoad"
+        value="action-trading-name-attrs-show-related-connectors-panel,action-trading-name-method-show-analytic-panel"/>
     </extend>
 
     <extend target="//field[@name='company']">

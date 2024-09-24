@@ -135,13 +135,17 @@ public class ProjectController {
       throws AxelorException {
     Project project = request.getContext().asType(Project.class);
     ProjectBusinessService projectBusinessService = Beans.get(ProjectBusinessService.class);
-
     projectBusinessService.computeProjectTotals(project);
-    response.setNotify(
-        String.format(
-                I18n.get(ITranslation.PROJECT_TASK_FOLLOW_UP_VALUES_TOO_HIGH),
-                projectBusinessService.checkPercentagesOver1000OnTasks(project))
-            + I18n.get(BusinessProjectExceptionMessage.PROJECT_UPDATE_TOTALS_SUCCESS));
+
+    List<String> projectTaskList = projectBusinessService.checkPercentagesOver1000OnTasks(project);
+    if (projectTaskList.isEmpty()) {
+      response.setNotify(I18n.get(BusinessProjectExceptionMessage.PROJECT_UPDATE_TOTALS_SUCCESS));
+    } else {
+      response.setAlert(
+          String.format(
+                  I18n.get(ITranslation.PROJECT_TASK_FOLLOW_UP_VALUES_TOO_HIGH), projectTaskList)
+              + I18n.get(BusinessProjectExceptionMessage.PROJECT_UPDATE_TOTALS_SUCCESS));
+    }
     response.setReload(true);
   }
 

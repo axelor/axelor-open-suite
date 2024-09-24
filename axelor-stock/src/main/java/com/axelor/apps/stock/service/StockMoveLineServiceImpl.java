@@ -1754,10 +1754,41 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine) {
+  public void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine)
+      throws AxelorException {
+    checkSplitConditions(stockMoveLine);
     StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, false);
     this.updateStockMoveLinesOfSplit(newStockMoveLine, stockMoveLine);
     stockMoveLineRepository.save(newStockMoveLine);
+  }
+
+  protected void checkSplitConditions(StockMoveLine stockMoveLine) throws AxelorException {
+    StockMove stockMove = stockMoveLine.getStockMove();
+    if (stockMove != null) {
+      Integer statusSelect = stockMove.getStatusSelect();
+      List<Integer> authorizedStatus = new ArrayList<>();
+      authorizedStatus.add(StockMoveRepository.STATUS_DRAFT);
+      authorizedStatus.add(StockMoveRepository.STATUS_PLANNED);
+      if (!authorizedStatus.contains(statusSelect)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_STATUS));
+      }
+
+      if (!stockMove.getTypeSelect().equals(StockMoveRepository.TYPE_INCOMING)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_TYPE));
+      }
+    }
+
+    BigDecimal realQty = stockMoveLine.getRealQty();
+    BigDecimal qty = stockMoveLine.getQty();
+    if (realQty != null && (realQty.signum() < 1 || realQty.compareTo(qty) >= 0)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_REAL_QTY));
+    }
   }
 
   protected void updateStockMoveLinesOfSplit(

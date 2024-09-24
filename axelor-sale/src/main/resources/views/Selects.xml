@@ -99,4 +99,10 @@
     <option value="Pricing">Sale.Pricing</option>
   </selection>
 
+  <selection name="cart.order.creation.mode.select">
+    <option value="0">Create order with missing products</option>
+    <option value="1">Ignore missing products</option>
+    <option value="2">Block order creation</option>
+  </selection>
+
 </object-views>

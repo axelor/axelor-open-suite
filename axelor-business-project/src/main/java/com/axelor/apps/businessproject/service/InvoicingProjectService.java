@@ -134,7 +134,7 @@ public class InvoicingProjectService {
     polQueryMap.put("statusValidated", PurchaseOrderRepository.STATUS_VALIDATED);
     polQueryMap.put("statusFinished", PurchaseOrderRepository.STATUS_FINISHED);
 
-    if (project.getIsShowTimeSpent()) {
+    if (project.getManageTimeSpent()) {
       StringBuilder logTimesQueryBuilder = new StringBuilder(commonQuery);
       Map<String, Object> logTimesQueryMap = new HashMap<>();
       logTimesQueryMap.put("project", project);

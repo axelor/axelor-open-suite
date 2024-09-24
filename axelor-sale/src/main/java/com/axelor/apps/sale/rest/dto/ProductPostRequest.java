@@ -3,22 +3,28 @@ package com.axelor.apps.sale.rest.dto;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
-import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class ProductPostRequest extends RequestPostStructure {
 
-  @NotNull @NotEmpty private List<Long> productsId;
+  @NotNull @NotEmpty private List<ProductResquest> productList;
 
   private Long companyId;
 
   private Long partnerId;
   private Long currencyId;
+
+  public List<ProductResquest> getProductList() {
+    return productList;
+  }
+
+  public void setProductList(List<ProductResquest> productList) {
+    this.productList = productList;
+  }
 
   public void setPartnerId(Long partnerId) {
     this.partnerId = partnerId;
@@ -32,14 +38,6 @@ public class ProductPostRequest extends RequestPostStructure {
     this.currencyId = currencyId;
   }
 
-  public void setProductsId(List<Long> productsId) {
-    this.productsId = productsId;
-  }
-
-  public List<Long> getProductsId() {
-    return productsId;
-  }
-
   public Long getCompanyId() {
     return companyId;
   }
@@ -50,18 +48,6 @@ public class ProductPostRequest extends RequestPostStructure {
 
   public Long getPartnerId() {
     return partnerId;
-  }
-
-  public List<Product> fetchProducts() {
-    List<Product> products = new ArrayList<>();
-    if (productsId.isEmpty()) {
-      return null;
-    }
-    for (Long productId : productsId) {
-
-      products.add(ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION));
-    }
-    return products;
   }
 
   public Company fetchCompany() {
