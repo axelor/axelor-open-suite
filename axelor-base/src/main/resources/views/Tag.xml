@@ -16,7 +16,8 @@
     <field name="name"/>
     <field name="colorSelect" widget="SingleSelect" x-color-field="colorSelect"/>
     <field name="companySet" widget="TagSelect" canNew="false"/>
-    <field name="tradingNameSet" widget="TagSelect" canNew="false"/>
+    <field name="tradingNameSet" widget="TagSelect" canNew="false"
+      showIf="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </grid>
 
   <form title="Tag" name="tag-form" model="com.axelor.apps.base.db.Tag"
