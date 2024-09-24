@@ -13,6 +13,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppAccount;
 import com.google.inject.Inject;
@@ -27,17 +28,18 @@ import java.util.stream.Collectors;
 
 public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInterestInvoiceService {
 
-  public static final int INTEREST_SCALE = 2;
-  public static final int INTEREST_PERCENT_SCALE = 4;
-
   protected AppAccountService appAccountService;
   protected InvoiceRepository invoiceRepository;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public LatePaymentInterestInvoiceServiceImpl(
-      AppAccountService appAccountService, InvoiceRepository invoiceRepository) {
+      AppAccountService appAccountService,
+      InvoiceRepository invoiceRepository,
+      CurrencyScaleService currencyScaleService) {
     this.appAccountService = appAccountService;
     this.invoiceRepository = invoiceRepository;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -221,16 +223,15 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_NO_PAYMENT_MODE_RATE));
     }
-    BigDecimal interestRate =
-        paymentMode
-            .getInterestRate()
-            .divide(new BigDecimal("100"), INTEREST_PERCENT_SCALE, RoundingMode.HALF_UP);
+    BigDecimal interestRate = paymentMode.getInterestRate().divide(new BigDecimal("100"));
+
+    int currencyScale = currencyScaleService.getCurrencyScale(invoiceTerm.getCurrency());
 
     return invoiceTerm
         .getAmountRemaining()
         .multiply(interestRate)
         .multiply(new BigDecimal(String.valueOf(numberOfDaySinceDueDate(invoiceTerm.getDueDate()))))
-        .divide(new BigDecimal("365"), INTEREST_SCALE, RoundingMode.HALF_UP);
+        .divide(new BigDecimal("365"), currencyScale, RoundingMode.HALF_UP);
   }
 
   protected long numberOfDaySinceDueDate(LocalDate dueDate) {
