@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="export-code-grid" title="Export codes" model="com.axelor.apps.hr.db.ExportCode">
+    <field name="code"/>
+  </grid>
+
+  <form name="export-code-form" title="Export code" model="com.axelor.apps.hr.db.ExportCode">
+    <panel name="mainPanel">
+      <field name="code"/>
+    </panel>
+  </form>
+
+</object-views>

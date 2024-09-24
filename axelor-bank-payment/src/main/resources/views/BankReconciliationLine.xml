@@ -99,7 +99,7 @@
     <field name="account" canEdit="false"
       onSelect="action-bank-reconciliation-line-method-account-domain" form-view="account-form"
       grid-view="account-grid"/>
-    <field name="partner" canEdit="false"
+    <field name="partner" canEdit="false" requiredIf="typeSelect != 1"
       onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"
       onChange="action-bank-reconciliation-line-record-set-account" form-view="partner-form"
       grid-view="partner-grid"/>

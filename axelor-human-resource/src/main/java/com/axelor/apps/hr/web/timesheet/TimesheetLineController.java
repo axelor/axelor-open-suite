@@ -19,13 +19,22 @@
 package com.axelor.apps.hr.web.timesheet;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -33,6 +42,7 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public class TimesheetLineController {
 
@@ -151,7 +161,7 @@ public class TimesheetLineController {
     try {
       TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
       timesheetLine = Beans.get(TimesheetCreateService.class).getOrCreateTimesheet(timesheetLine);
-      response.setValues(timesheetLine);
+      response.setValue("timesheet", timesheetLine.getTimesheet());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -174,5 +184,65 @@ public class TimesheetLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void logTime(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    Project project = null;
+    ProjectTask projectTask = null;
+    Employee employee =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getEmployee).orElse(null);
+
+    if (Project.class.equals(context.getContextClass())) {
+      project = context.asType(Project.class);
+    } else if (ProjectTask.class.equals(context.getContextClass())) {
+      projectTask = context.asType(ProjectTask.class);
+    } else if (Project.class.equals(context.getParent().getContextClass())) {
+      project = context.getParent().asType(Project.class);
+    } else if (ProjectTask.class.equals(context.getParent().getContextClass())) {
+      projectTask = context.getParent().asType(ProjectTask.class);
+    }
+
+    if (projectTask != null) {
+      project = projectTask.getProject();
+    }
+
+    if (project != null && project.getId() == null) {
+      project = null;
+    }
+
+    if (projectTask != null && projectTask.getId() == null) {
+      projectTask = null;
+    }
+
+    employee =
+        Optional.ofNullable(project)
+            .map(Project::getAssignedTo)
+            .map(User::getEmployee)
+            .orElse(employee);
+
+    response.setView(
+        ActionView.define(I18n.get("Create Timesheet line"))
+            .model(TimesheetLine.class.getName())
+            .add("form", "timesheet-line-timesheet-project-task-form")
+            .param("popup", "true")
+            .param("forceEdit", "true")
+            .param("show-toolbar", "false")
+            .param("popup-save", "true")
+            .context("_project", project)
+            .context("_projectTask", projectTask)
+            .context("_employee", employee)
+            .map());
+  }
+
+  public void removeProjectTimeSheetLines(ActionRequest request, ActionResponse response) {
+
+    List<Integer> projectTimeSheetLineIds = (List<Integer>) request.getContext().get("_ids");
+
+    if (!ObjectUtils.isEmpty(projectTimeSheetLineIds)) {
+      Beans.get(TimesheetLineRemoveService.class).removeTimesheetLines(projectTimeSheetLineIds);
+    }
+
+    response.setReload(true);
   }
 }

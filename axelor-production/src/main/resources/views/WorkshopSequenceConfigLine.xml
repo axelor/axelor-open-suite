@@ -5,8 +5,9 @@
 
   <grid name="workshop-sequence-config-line-grid" title="Sequence by workshop"
     model="com.axelor.apps.production.db.WorkshopSequenceConfigLine" editable="true">
-    <field name="workshopStockLocation"/>
-    <field name="sequence"/>
+    <field name="workshopStockLocation"
+      onSelect="action-workshop-sequence-config-line-attrs-workshop-domain"/>
+    <field name="sequence" onSelect="action-workshop-sequence-config-line-attrs-seq-domain"/>
   </grid>
 
   <form name="workshop-sequence-config-line-form" title="Sequence by workshop"

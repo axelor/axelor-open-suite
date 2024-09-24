@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.mobilesettings.service;
 
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.apps.mobilesettings.db.MobileConfig;
 import com.axelor.apps.mobilesettings.db.MobileDashboard;
@@ -30,10 +31,12 @@ import com.axelor.apps.mobilesettings.rest.dto.MobileShortcutResponse;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.studio.db.AppMobileSettings;
 import com.axelor.studio.db.repo.AppMobileSettingsRepository;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -101,7 +104,10 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getMinimalRequiredMobileAppVersion(),
         getFieldsToShowOnTimesheet(appMobileSettings.getFieldsToShowOnTimesheet()),
         getAuthorizedDashboardIdList(appMobileSettings),
-        getAuthorizedShortcutList(appMobileSettings));
+        getAuthorizedShortcutList(appMobileSettings),
+        appMobileSettings.getIsGenericProductShown(),
+        appMobileSettings.getIsConfiguratorProductShown(),
+        getProductTypesToDisplay(appMobileSettings));
   }
 
   protected List<Long> getAuthorizedDashboardIdList(AppMobileSettings appMobileSettings) {
@@ -269,5 +275,14 @@ public class MobileSettingsResponseComputeServiceImpl
                 AppMobileSettingsRepository.IMPUTATION_ON_MANUF_ORDER,
                 AppMobileSettingsRepository.IMPUTATION_ON_OPERATION_ORDER,
                 AppMobileSettingsRepository.IMPUTATION_ON_ACTIVITY));
+  }
+
+  protected List<String> getProductTypesToDisplay(AppMobileSettings appMobileSettings) {
+    String productTypesToDisplay = appMobileSettings.getProductTypesToDisplaySelect();
+    if (StringUtils.isEmpty(productTypesToDisplay)) {
+      return List.of(
+          ProductRepository.PRODUCT_TYPE_STORABLE, ProductRepository.PRODUCT_TYPE_SERVICE);
+    }
+    return Arrays.stream(productTypesToDisplay.split(",")).collect(Collectors.toList());
   }
 }

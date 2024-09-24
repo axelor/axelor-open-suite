@@ -103,8 +103,9 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
     ActionViewBuilder builder =
         ActionView.define(I18n.get("Related Tasks"))
             .model(ProjectTask.class.getName())
-            .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
+            .add("tree", "project-project-task-tree")
+            .add("kanban", "project-task-kanban")
             .add("form", "project-task-form")
             .param("details-view", "true")
             .domain("self.typeSelect = :_typeSelect AND self.project.id = :_id")
