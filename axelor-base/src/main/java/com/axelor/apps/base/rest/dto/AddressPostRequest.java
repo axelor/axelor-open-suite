@@ -92,7 +92,7 @@ public class AddressPostRequest extends RequestPostStructure {
     if (city == null && zip == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BaseExceptionMessage.NO_CITY_AND_ZIP_FOUND));
+          I18n.get(BaseExceptionMessage.CITY_AND_ZIP_BOTH_EMPTY));
     } else if (city == null) {
       return Beans.get(CityRepository.class).findByZipAndCountry(zip, fetchCountry()).fetchOne();
     } else if (zip == null) {
@@ -121,7 +121,7 @@ public class AddressPostRequest extends RequestPostStructure {
           .filter(
               "self.country = :country AND self.city = :city AND UPPER(self.streetName) = :streetName")
           .bind("country", fetchCountry())
-          .bind("city", fetchCity())
+          .bind("city", fetchedCity)
           .bind("streetName", streetName.toUpperCase())
           .fetchOne();
     } else if (zip != null) {
@@ -138,7 +138,7 @@ public class AddressPostRequest extends RequestPostStructure {
               () ->
                   new AxelorException(
                       TraceBackRepository.CATEGORY_INCONSISTENCY,
-                      I18n.get(BaseExceptionMessage.NO_CITY_FOUND)));
+                      I18n.get(BaseExceptionMessage.NO_ADDRESS_FOUND_WITH_INFOS)));
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.NO_CITY_FOUND));
@@ -147,9 +147,25 @@ public class AddressPostRequest extends RequestPostStructure {
 
   @Transactional(rollbackOn = {Exception.class})
   public Address createAddress() throws AxelorException {
+    City fetchedCity = fetchCity();
+    if (fetchedCity == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.NO_CITY_FOUND));
+    }
+    if (zip == null && fetchedCity.getZip() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.NO_ZIP_FOUND));
+    }
     return Beans.get(AddressRepository.class)
         .save(
             Beans.get(AddressService.class)
-                .createAddress(null, null, streetName, null, zip, fetchCity(), fetchCountry()));
+                .createAddress(
+                    null,
+                    null,
+                    streetName,
+                    null,
+                    Optional.ofNullable(zip).orElse(fetchedCity.getZip()),
+                    fetchedCity,
+                    fetchCountry()));
   }
 }
