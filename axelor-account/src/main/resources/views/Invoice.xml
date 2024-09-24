@@ -434,6 +434,7 @@
 	                        		{operationSubTypeSelect == 7 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Periodic contract')}</Badge>}
 	                        		{operationSubTypeSelect == 1 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Standard credit note')}</Badge>}
 	                        		{operationSubTypeSelect == 2 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Advance payment credit note')}</Badge>}
+	                        		{operationSubTypeSelect == 9 && operationTypeSelect == 3 && <Badge bg="info">{_t('Late payment interest invoice')}</Badge>}
 
 	                        		{(operationTypeSelect == 3 || operationTypeSelect == 4) && partner.factorizedCustomer && <Badge bg="info">{_t('Factorized customer')}</Badge>}
 	                        	</Box>
@@ -862,6 +863,11 @@
         </panel>
       </panel>
       <panel name="invoicePaymentPanel" title="Payments details" showIf="statusSelect != 1">
+        <button name="Generate late payment interest invoice"
+          title="Generate late payment interest invoice"
+          onClick="action-invoice-method-generate-late-payment-invoice"
+          showIf="operationTypeSelect == 3 &amp;&amp; operationSubTypeSelect != 9"
+          if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
         <panel name="pfpValidationPanel" colSpan="12"
           if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
           showIf="pfpValidateStatusSelect > 0">
@@ -876,6 +882,9 @@
           field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid"
           form-view="invoice-payment-form" canNew="false" canRemove="false"/>
         <field name="amountPaid" hidden="true"/>
+        <panel-dashlet action="action-invoice-view-late-interest-invoices"
+          showIf="operationTypeSelect == 3 &amp;&amp; operationSubTypeSelect != 9" colSpan="12"
+          if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
       </panel>
       <panel name="pfpAccountConfigPanel"
         if="__config__.app.getApp('account')?.getActivatePassedForPayment()" hidden="true">
@@ -1081,6 +1090,9 @@
         canCollapse="true" collapseIf="true">
         <field name="internalReference" widget="string"/>
         <field name="externalReference" widget="string"/>
+        <field name="latePaymentInterestSourceInvoice" grid-view="invoice-grid"
+          form-view="invoice-form" showIf="operationSubTypeSelect == 9"
+          if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true"
         collapseIf="true">
@@ -2885,5 +2897,17 @@
     <action name="action-invoice-group-report-print"/>
     <action name="close"/>
   </action-group>
+
+  <action-method name="action-invoice-method-generate-late-payment-invoice">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="generateLatePaymentInvoice"/>
+  </action-method>
+
+  <action-view name="action-invoice-view-late-interest-invoices"
+    title="Late interest invoices" model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="invoice-grid"/>
+    <view type="form" name="invoice-form"/>
+    <domain>self.latePaymentInterestSourceInvoice.id = :id</domain>
+  </action-view>
 
 </object-views>
