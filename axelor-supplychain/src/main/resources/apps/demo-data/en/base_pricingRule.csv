@@ -1,0 +1,3 @@
+"importId";"typeSelect";"concernedModel";"name";"formula";"fieldToPopulate"
+11;1;"SaleOrder";"Select by country code";"mainInvoicingAddress?.country?.alpha3Code";
+12;2;"SaleOrder";"Fiscal position ID";"__repo__(FiscalPosition).all().filter('self.id = ?1', pricingLine.resultParam1.longValue()).fetchOne()";"fiscalPosition"

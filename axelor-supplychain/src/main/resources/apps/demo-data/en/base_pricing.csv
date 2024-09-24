@@ -1,0 +1,2 @@
+"importId";"name";"startDate";"company.importId";"concernedModel.name";"class1PricingRule.importId";"result1PricingRule.importId";"productCategory.code";"formula";"typeSelect"
+10;"Fiscal position selection";"TODAY[-1M]";1;"SaleOrder";11;12;;"clientPartner != null";"FiscalPosition"
