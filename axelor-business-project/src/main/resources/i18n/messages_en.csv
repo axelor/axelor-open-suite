@@ -335,6 +335,7 @@
 "Please set days unit in the configuration of app Business Project.",,,
 "Please set hours unit in the configuration of app Business Project.",,,
 "Please set the default number of hours per day in the project configuration.",,,
+"Please set the time unit for this project.",,,
 "Please set the unit for the task %s.",,,
 "Previous progress",,,
 "Price list",,,
