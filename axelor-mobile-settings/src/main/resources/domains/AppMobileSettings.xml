@@ -109,6 +109,14 @@
       ref="com.axelor.apps.mobilesettings.db.MobileShortcut" mappedBy="appMobileSettings"/>
     <boolean name="isOneLineShortcut" title="Shortcuts display" default="false"/>
 
+    <boolean name="isGenericProductShown" title="Show generic product"
+      help="Defines whether variants are managed with the generic product or directly by the variant product. If the configuration is activated, you must go through the generic product to select a variant, otherwise all variants are displayed and selectable on the application."/>
+    <boolean name="isConfiguratorProductShown" title="Show configurator products"
+      help="Defines whether products from the configurator are to be displayed on the mobile application or not."/>
+    <string name="productTypesToDisplaySelect" title="Types of products to display"
+      selection="product.product.type.select"
+      help="Allows to filter the product types displayed on the mobile application in the sales section."/>
+
     <extra-code>
       <![CDATA[
 		// EMPLOYEE TIMESHEET IMPUTATION SELECT
@@ -153,6 +161,9 @@
       <field name="isLineCreationOfTimesheetDetailsAllowed" on="UPDATE"/>
       <field name="isEditionOfDateAllowed" on="UPDATE"/>
       <field name="isTimesheetProjectInvoicingEnabled" on="UPDATE"/>
+      <field name="isGenericProductShown" on="UPDATE"/>
+      <field name="isConfiguratorProductShown" on="UPDATE"/>
+      <field name="productTypesToDisplaySelect" on="UPDATE"/>
     </track>
   </entity>
 </domain-models>

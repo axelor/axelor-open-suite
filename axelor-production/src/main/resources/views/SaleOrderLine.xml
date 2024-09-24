@@ -11,7 +11,7 @@
         <panel name="billOfMaterialPanel" if="__config__.app.isApp('production')">
           <field name="billOfMaterial" onSelect="action-sale-order-line-method-set-bom-domain"
             form-view="bill-of-material-form" grid-view="bill-of-material-grid" canEdit="true"
-            colSpan="12"/>
+            colSpan="12" onChange="action-sale-order-line-method-general-sub-lines"/>
           <button name="customizeBOMBtn" title="Customize BOM"
             if="__config__.app.getApp('production')?.allowPersonalizedBOM"
             onClick="action-production-method-customize-bill-of-material"/>
@@ -55,6 +55,11 @@
   <action-method name="action-production-method-customize-bill-of-material">
     <call class="com.axelor.apps.production.web.SaleOrderLineController"
       method="customizeBillOfMaterial"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-general-sub-lines">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController"
+      method="generateSubLines"/>
   </action-method>
 
   <action-method name="action-production-method-customize-prod-process">

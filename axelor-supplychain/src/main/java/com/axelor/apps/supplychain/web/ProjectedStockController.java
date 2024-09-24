@@ -24,7 +24,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.service.CartService;
+import com.axelor.apps.sale.service.cart.CartProductService;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.supplychain.db.MrpLine;
@@ -268,7 +268,7 @@ public class ProjectedStockController {
       Product product =
           Beans.get(ProductRepository.class)
               .find(Long.valueOf(productHashMap.get("id").toString()));
-      Beans.get(CartService.class).addToCart(product);
+      Beans.get(CartProductService.class).addToCart(product);
       response.setNotify(
           String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
     } catch (Exception e) {

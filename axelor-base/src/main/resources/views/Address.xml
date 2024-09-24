@@ -17,7 +17,7 @@
   <form name="address-form" title="Address" model="com.axelor.apps.base.db.Address"
     width="large" onLoad="action-group-base-address-onload"
     onSave="action-group-base-address-onsave,save,action-base-address-method-update-lat-long"
-    onNew="action-group-base-address-onnnew">
+    onNew="action-group-base-address-onnnew" onCopy="action-group-base-address-onload">
     <panel name="mainPanel" title="Address details" colSpan="12">
       <field name="country" colSpan="12" canEdit="false"
         onChange="action-group-base-address-country-change" required="true" form-view="country-form"
