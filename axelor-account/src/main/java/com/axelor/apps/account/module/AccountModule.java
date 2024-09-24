@@ -44,6 +44,8 @@ import com.axelor.apps.account.db.repo.FixedAssetLineManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.db.repo.InterestRateHistoryLineRepository;
+import com.axelor.apps.account.db.repo.InterestRateHistoryLineRepositoryManagement;
 import com.axelor.apps.account.db.repo.InvoiceBatchAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineManagementRepository;
@@ -351,6 +353,8 @@ import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServi
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServiceImpl;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateServiceImpl;
+import com.axelor.apps.account.service.payment.PaymentModeInterestRateService;
+import com.axelor.apps.account.service.payment.PaymentModeInterestRateServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentModeServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -949,5 +953,8 @@ public class AccountModule extends AxelorModule {
     bind(InvoicePfpValidateService.class).to(InvoicePfpValidateServiceImpl.class);
     bind(InvoiceTermPaymentToolService.class).to(InvoiceTermPaymentToolServiceImpl.class);
     bind(LatePaymentInterestInvoiceService.class).to(LatePaymentInterestInvoiceServiceImpl.class);
+    bind(PaymentModeInterestRateService.class).to(PaymentModeInterestRateServiceImpl.class);
+    bind(InterestRateHistoryLineRepository.class)
+        .to(InterestRateHistoryLineRepositoryManagement.class);
   }
 }

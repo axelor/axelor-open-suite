@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="interest-rate-history-line-grid" title="Interest rate history line"
+    model="com.axelor.apps.account.db.InterestRateHistoryLine">
+    <field name="interestRate"/>
+    <field name="fromDate"/>
+    <field name="endDate"/>
+  </grid>
+
+  <form name="interest-rate-history-line-form" title="Interest rate history line"
+    model="com.axelor.apps.account.db.InterestRateHistoryLine">
+    <panel name="overviewPanel" title="Overview">
+      <field name="interestRate"/>
+      <field name="fromDate" validIf="!endDate || fromDate &lt; endDate"
+        onChange="action-interest-rate-history-method-check-periods" required="true"/>
+      <field name="endDate" validIf="!fromDate || fromDate &lt; endDate"
+        onChange="action-interest-rate-history-method-check-periods" required="true"/>
+    </panel>
+  </form>
+
+  <action-method name="action-interest-rate-history-method-check-periods">
+    <call class="com.axelor.apps.account.web.InterestRateHistoryLineController"
+      method="checkPeriodConsistency"/>
+  </action-method>
+
+</object-views>
