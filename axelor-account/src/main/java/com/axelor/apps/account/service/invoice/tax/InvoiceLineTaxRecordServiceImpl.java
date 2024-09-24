@@ -21,15 +21,21 @@ public class InvoiceLineTaxRecordServiceImpl implements InvoiceLineTaxRecordServ
   }
 
   @Override
-  public BigDecimal computeInTaxTotal(InvoiceLineTax invoiceLineTax) {
+  public void recomputeAmounts(InvoiceLineTax invoiceLineTax, Invoice invoice)
+      throws AxelorException {
+    invoiceLineTax.setInTaxTotal(computeInTaxTotal(invoiceLineTax));
+    invoiceLineTax.setCompanyTaxTotal(computeCompanyTaxTotal(invoiceLineTax, invoice));
+    invoiceLineTax.setCompanyInTaxTotal(computeCompanyInTaxTotal(invoiceLineTax));
+  }
+
+  protected BigDecimal computeInTaxTotal(InvoiceLineTax invoiceLineTax) {
     if (invoiceLineTax.getTaxTotal().signum() <= 0) {
       return invoiceLineTax.getExTaxBase();
     }
     return invoiceLineTax.getExTaxBase().add(invoiceLineTax.getTaxTotal());
   }
 
-  @Override
-  public BigDecimal computeCompanyTaxTotal(InvoiceLineTax invoiceLineTax, Invoice invoice)
+  protected BigDecimal computeCompanyTaxTotal(InvoiceLineTax invoiceLineTax, Invoice invoice)
       throws AxelorException {
     if (invoiceLineTax.getTaxTotal().signum() <= 0) {
       return BigDecimal.ZERO;
@@ -58,8 +64,7 @@ public class InvoiceLineTaxRecordServiceImpl implements InvoiceLineTaxRecordServ
     return companyTaxTotal;
   }
 
-  @Override
-  public BigDecimal computeCompanyInTaxTotal(InvoiceLineTax invoiceLineTax) {
+  protected BigDecimal computeCompanyInTaxTotal(InvoiceLineTax invoiceLineTax) {
     if (invoiceLineTax.getCompanyTaxTotal().signum() <= 0) {
       return invoiceLineTax.getCompanyExTaxBase();
     }

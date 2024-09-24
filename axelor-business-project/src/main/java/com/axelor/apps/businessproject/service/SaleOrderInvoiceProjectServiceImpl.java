@@ -46,6 +46,7 @@ import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceServiceImpl;
 import com.google.inject.Inject;
@@ -74,6 +75,7 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
       CurrencyScaleService currencyScaleService,
+      InvoiceTaxService invoiceTaxService,
       AppBusinessProjectService appBusinessProjectService) {
     super(
         appBaseService,
@@ -88,7 +90,8 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
         commonInvoiceService,
         invoiceLineOrderService,
         saleInvoicingStateService,
-        currencyScaleService);
+        currencyScaleService,
+        invoiceTaxService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 

@@ -57,6 +57,7 @@ import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
@@ -105,6 +106,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected InvoiceLineOrderService invoiceLineOrderService;
   protected SaleInvoicingStateService saleInvoicingStateService;
   protected CurrencyScaleService currencyScaleService;
+  protected InvoiceTaxService invoiceTaxService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -120,7 +122,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      InvoiceTaxService invoiceTaxService) {
 
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
@@ -135,6 +138,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.invoiceLineOrderService = invoiceLineOrderService;
     this.saleInvoicingStateService = saleInvoicingStateService;
     this.currencyScaleService = currencyScaleService;
+    this.invoiceTaxService = invoiceTaxService;
   }
 
   @Override
@@ -429,6 +433,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException {
 
     Invoice invoice = this.createInvoice(saleOrder);
+    invoiceTaxService.manageTaxByAmount(saleOrder, invoice);
     invoice.setDeliveryAddress(saleOrder.getDeliveryAddress());
     invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
 

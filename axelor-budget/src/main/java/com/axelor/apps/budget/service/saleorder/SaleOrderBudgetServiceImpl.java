@@ -46,6 +46,7 @@ import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
@@ -88,6 +89,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
       CurrencyScaleService currencyScaleService,
+      InvoiceTaxService invoiceTaxService,
       AppBusinessProjectService appBusinessProjectService,
       AppBudgetService appBudgetService,
       BudgetDistributionService budgetDistributionService,
@@ -109,6 +111,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         invoiceLineOrderService,
         saleInvoicingStateService,
         currencyScaleService,
+        invoiceTaxService,
         appBusinessProjectService);
     this.appBudgetService = appBudgetService;
     this.budgetDistributionService = budgetDistributionService;

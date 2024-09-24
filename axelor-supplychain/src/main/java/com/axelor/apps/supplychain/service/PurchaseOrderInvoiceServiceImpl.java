@@ -51,6 +51,7 @@ import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
+import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
@@ -88,6 +89,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   protected InvoiceLineOrderService invoiceLineOrderService;
   protected CurrencyService currencyService;
   protected CurrencyScaleService currencyScaleService;
+  protected InvoiceTaxService invoiceTaxService;
 
   @Inject
   public PurchaseOrderInvoiceServiceImpl(
@@ -101,7 +103,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       AddressService addressService,
       InvoiceLineOrderService invoiceLineOrderService,
       CurrencyService currencyService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      InvoiceTaxService invoiceTaxService) {
     this.invoiceServiceSupplychain = invoiceServiceSupplychain;
     this.invoiceService = invoiceService;
     this.invoiceRepo = invoiceRepo;
@@ -113,12 +116,14 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     this.invoiceLineOrderService = invoiceLineOrderService;
     this.currencyService = currencyService;
     this.currencyScaleService = currencyScaleService;
+    this.invoiceTaxService = invoiceTaxService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException {
     Invoice invoice = this.createInvoice(purchaseOrder);
+    invoiceTaxService.manageTaxByAmount(purchaseOrder, invoice);
     invoice = invoiceRepo.save(invoice);
     invoiceService.setDraftSequence(invoice);
     invoice.setAddressStr(Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
