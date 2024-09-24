@@ -21,6 +21,7 @@ package com.axelor.apps.project.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.db.repo.CommentBaseRepository;
 import com.axelor.apps.base.service.comment.CommentServiceImpl;
+import com.axelor.apps.helpdesk.service.MailServiceHelpDeskImpl;
 import com.axelor.apps.project.db.repo.CommentProjectRepository;
 import com.axelor.apps.project.db.repo.MailMessageProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
@@ -37,6 +38,7 @@ import com.axelor.apps.project.db.repo.TeamProjectRepository;
 import com.axelor.apps.project.db.repo.WikiProjectRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.quickmenu.ActiveProjectQuickMenuCreator;
+import com.axelor.apps.project.service.MailServiceProjectImpl;
 import com.axelor.apps.project.service.MetaJsonFieldProjectService;
 import com.axelor.apps.project.service.MetaJsonFieldProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectActivityDashboardService;
@@ -126,5 +128,6 @@ public class ProjectModule extends AxelorModule {
     bind(CommentServiceImpl.class).to(CommentProjectServiceImpl.class);
     bind(CommentBaseRepository.class).to(CommentProjectRepository.class);
     bind(CommentFileService.class).to(CommentFileServiceImpl.class);
+    bind(MailServiceHelpDeskImpl.class).to(MailServiceProjectImpl.class);
   }
 }
