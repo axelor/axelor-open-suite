@@ -116,6 +116,6 @@ public class StockMoveLineRestController {
     return ResponseConstructor.build(
         Response.Status.OK,
         "Stock move line quantity availability.",
-        Beans.get(StockProductRestService.class).checkProductAvailability(stockMoveLine));
+        Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine));
   }
 }

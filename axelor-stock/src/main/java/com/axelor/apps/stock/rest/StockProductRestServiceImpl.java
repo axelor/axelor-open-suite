@@ -26,31 +26,17 @@ import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.rest.dto.StockProductResponse;
 import com.axelor.apps.stock.rest.dto.StockProductVariantAttributeResponse;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.ResponseConstructor;
-import com.google.inject.Inject;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.core.Response;
 
 public class StockProductRestServiceImpl implements StockProductRestService {
-
-  protected final StockMoveLineService stockMoveLineService;
-
-  @Inject
-  public StockProductRestServiceImpl(StockMoveLineService stockMoveLineService) {
-    this.stockMoveLineService = stockMoveLineService;
-  }
-
   @Override
   public Response getProductIndicators(
       Product product, Company company, StockLocation stockLocation) throws AxelorException {
@@ -148,34 +134,5 @@ public class StockProductRestServiceImpl implements StockProductRestService {
     }
 
     return attributes;
-  }
-
-  @Override
-  public Map<String, Object> checkProductAvailability(StockMoveLine stockMoveLine)
-      throws AxelorException {
-    Map<String, Object> availabilityMap = new HashMap<>();
-
-    if (stockMoveLine.getStockMove() != null && stockMoveLine.getFromStockLocation() != null) {
-      stockMoveLineService.updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
-
-      BigDecimal realQty = stockMoveLine.getRealQty();
-
-      if (stockMoveLine.getProduct() != null) {
-        if (realQty.compareTo(stockMoveLine.getAvailableQty()) < 0) {
-          availabilityMap.put("availability", I18n.get("Available"));
-        } else if (realQty.compareTo(stockMoveLine.getAvailableQtyForProduct()) < 0) {
-          availabilityMap.put("availability", I18n.get("Av. for product"));
-        } else {
-          availabilityMap.put("availability", I18n.get("Missing"));
-          if (stockMoveLine.getProduct().getTrackingNumberConfiguration() == null) {
-            availabilityMap.put("missingQty", stockMoveLine.getAvailableQty().subtract(realQty));
-          } else {
-            availabilityMap.put(
-                "missingQty", stockMoveLine.getAvailableQtyForProduct().subtract(realQty));
-          }
-        }
-      }
-    }
-    return availabilityMap;
   }
 }

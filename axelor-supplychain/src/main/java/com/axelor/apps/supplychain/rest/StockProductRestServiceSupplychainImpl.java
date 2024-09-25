@@ -23,21 +23,14 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
-import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.rest.dto.SupplychainStockProductResponse;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.ResponseConstructor;
-import com.google.inject.Inject;
 import java.util.Map;
 import javax.ws.rs.core.Response;
 
 public class StockProductRestServiceSupplychainImpl extends StockProductRestServiceImpl {
-
-  @Inject
-  public StockProductRestServiceSupplychainImpl(StockMoveLineService stockMoveLineService) {
-    super(stockMoveLineService);
-  }
 
   /*
    * OVERRIDING
