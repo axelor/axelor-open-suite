@@ -26,4 +26,6 @@ public interface DataSharingProductWizardService {
 
   List<DataSharingReferentialLine> generateDataSharingReferentialLines(
       DataSharingProductWizard dataSharingProductWizard);
+
+  void deleteDataSharingReferentialLines(List<Long> dataSharingProductWizardIds);
 }
