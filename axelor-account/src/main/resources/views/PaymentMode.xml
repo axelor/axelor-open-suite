@@ -53,7 +53,8 @@
               title="Save and historize the new interest rate"
               onClick="save,action-payment-mode-method-save-interest-rate-history"/>
             <field name="interestRateHistoryLineList" colSpan="12" onChange="save"
-              x-order="-fromDate"/>
+              form-view="interest-rate-history-line-form"
+              grid-view="interest-rate-history-line-grid" x-order="-fromDate"/>
           </panel>
         </panel-tabs>
       </insert>

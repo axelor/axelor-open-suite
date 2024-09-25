@@ -15,15 +15,31 @@
     <panel name="overviewPanel" title="Overview">
       <field name="interestRate"/>
       <field name="fromDate" validIf="!endDate || fromDate &lt; endDate"
-        onChange="action-interest-rate-history-method-check-periods" required="true"/>
+        onChange="action-interest-rate-history-group-check-periods" required="true"/>
       <field name="endDate" validIf="!fromDate || fromDate &lt; endDate"
-        onChange="action-interest-rate-history-method-check-periods" required="true"/>
+        onChange="action-interest-rate-history-group-check-periods" required="true"/>
     </panel>
   </form>
 
-  <action-method name="action-interest-rate-history-method-check-periods">
+  <action-group name="action-interest-rate-history-group-check-periods">
+    <action name="action-interest-rate-history-method-check-overlap"/>
+    <action name="action-interest-rate-history-method-check-continuous"/>
+    <action name="action-interest-rate-history-method-check-end-date"/>
+  </action-group>
+
+  <action-method name="action-interest-rate-history-method-check-overlap">
     <call class="com.axelor.apps.account.web.InterestRateHistoryLineController"
-      method="checkPeriodConsistency"/>
+      method="checkPeriodOverlap"/>
+  </action-method>
+
+  <action-method name="action-interest-rate-history-method-check-continuous">
+    <call class="com.axelor.apps.account.web.InterestRateHistoryLineController"
+      method="checkPeriodIsContinuous"/>
+  </action-method>
+
+  <action-method name="action-interest-rate-history-method-check-end-date">
+    <call class="com.axelor.apps.account.web.InterestRateHistoryLineController"
+      method="checkEndDateIsInPast"/>
   </action-method>
 
 </object-views>

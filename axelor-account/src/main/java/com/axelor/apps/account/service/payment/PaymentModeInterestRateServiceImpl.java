@@ -15,6 +15,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -89,55 +90,62 @@ public class PaymentModeInterestRateServiceImpl implements PaymentModeInterestRa
         Comparator.comparing(InterestRateHistoryLine::getFromDate));
   }
 
-  /**
-   * Check period dates
-   *
-   * @param paymentMode
-   * @param interestRateHistoryLine
-   * @param fromDate
-   * @param endDate
-   * @throws AxelorException
-   */
   @Override
-  public void checkPeriodConsistency(
+  public List<String> checkPeriodOverlap(
       PaymentMode paymentMode,
       InterestRateHistoryLine interestRateHistoryLine,
       Optional<LocalDate> fromDate,
-      Optional<LocalDate> endDate)
-      throws AxelorException {
+      Optional<LocalDate> endDate) {
 
-    checkPeriodOverlap(paymentMode, interestRateHistoryLine, fromDate, endDate);
+    List<String> fieldsInError = new ArrayList<>();
+
     List<InterestRateHistoryLine> interestRateHistoryLineList =
-        paymentMode.getInterestRateHistoryLineList().stream()
-            .filter(historyLine -> historyLine.getId() != null)
-            .collect(Collectors.toList());
-    if (!interestRateHistoryLineList.isEmpty()) {
-      checkPeriodIsContinuous(interestRateHistoryLineList, fromDate, endDate);
-    }
-  }
-
-  protected void checkPeriodOverlap(
-      PaymentMode paymentMode,
-      InterestRateHistoryLine interestRateHistoryLine,
-      Optional<LocalDate> fromDate,
-      Optional<LocalDate> endDate)
-      throws AxelorException {
-    for (InterestRateHistoryLine rateHistoryLine : paymentMode.getInterestRateHistoryLineList()) {
+        paymentMode.getInterestRateHistoryLineList();
+    for (InterestRateHistoryLine rateHistoryLine : interestRateHistoryLineList) {
       if (rateHistoryLine.getId() == interestRateHistoryLine.getId()) {
         continue;
       }
 
-      checkDateIsInPeriod(fromDate, rateHistoryLine.getFromDate(), rateHistoryLine.getEndDate());
-      checkDateIsInPeriod(endDate, rateHistoryLine.getFromDate(), rateHistoryLine.getEndDate());
-      checkEndDateIsInPast(endDate);
+      if (checkDateIsInPeriod(
+          fromDate, rateHistoryLine.getFromDate(), rateHistoryLine.getEndDate())) {
+        fieldsInError.add("fromDate");
+      }
+      if (checkDateIsInPeriod(
+          endDate, rateHistoryLine.getFromDate(), rateHistoryLine.getEndDate())) {
+        fieldsInError.add("endDate");
+      }
     }
+    // check if the from and end dates are not surrounding all periods
+    LocalDate minFromDate =
+        Collections.min(
+                interestRateHistoryLineList,
+                Comparator.comparing(InterestRateHistoryLine::getFromDate))
+            .getFromDate();
+
+    if (fromDate.isPresent()
+        && endDate.isPresent()
+        && LocalDateHelper.isBetween(fromDate.get(), endDate.get(), minFromDate)) {
+      fieldsInError.add("fromDate");
+      fieldsInError.add("endDate");
+    }
+
+    return fieldsInError;
   }
 
-  protected void checkPeriodIsContinuous(
-      List<InterestRateHistoryLine> interestRateHistoryLineList,
-      Optional<LocalDate> fromDate,
-      Optional<LocalDate> endDate)
-      throws AxelorException {
+  @Override
+  public List<String> checkPeriodIsContinuous(
+      PaymentMode paymentMode, Optional<LocalDate> fromDate, Optional<LocalDate> endDate) {
+
+    List<String> fieldsInError = new ArrayList<>();
+
+    List<InterestRateHistoryLine> interestRateHistoryLineList =
+        paymentMode.getInterestRateHistoryLineList().stream()
+            .filter(historyLine -> historyLine.getId() != null)
+            .collect(Collectors.toList());
+    if (interestRateHistoryLineList.isEmpty()) {
+      return fieldsInError;
+    }
+
     LocalDate minFromDate =
         Collections.min(
                 interestRateHistoryLineList,
@@ -154,49 +162,40 @@ public class PaymentModeInterestRateServiceImpl implements PaymentModeInterestRa
         fromDate.isPresent() && !fromDate.get().isEqual(maxEndDate.plusDays(1));
     boolean endDateIsNotContinue =
         endDate.isPresent() && !endDate.get().isEqual(minFromDate.minusDays(1));
-    boolean endDateIsNotContinueWithNoFromDate =
-        endDate.isPresent()
-            && fromDate.isEmpty()
-            && !endDate.get().isEqual(minFromDate.minusDays(1));
-    boolean fromDateIsNotContinueWithNoEndDate =
-        fromDate.isPresent()
-            && endDate.isEmpty()
-            && !fromDate.get().isEqual(maxEndDate.plusDays(1));
 
-    if ((fromDateIsNotContinue && endDateIsNotContinue)
-        || endDateIsNotContinueWithNoFromDate
-        || fromDateIsNotContinueWithNoEndDate) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_HISTORY_PERIOD_CONTINUITY));
+    // if dectecting non continuous dates
+    if (fromDateIsNotContinue && endDateIsNotContinue) {
+
+      // allow to find if it's the from or end date that is not continuous
+
+      if (fromDate.get().isBefore(minFromDate) && endDate.get().isBefore(minFromDate)) {
+        fieldsInError.add("endDate");
+      }
+
+      if (fromDate.get().isAfter(maxEndDate) && endDate.get().isAfter(maxEndDate)) {
+        fieldsInError.add("fromDate");
+      }
     }
+    return fieldsInError;
   }
 
-  protected void checkDateIsInPeriod(
-      Optional<LocalDate> dateToCheck, LocalDate fromDate, LocalDate endDate)
-      throws AxelorException {
-    if (dateToCheck.isPresent()
+  protected boolean checkDateIsInPeriod(
+      Optional<LocalDate> dateToCheck, LocalDate fromDate, LocalDate endDate) {
+    return dateToCheck.isPresent()
         && fromDate != null
         && endDate != null
-        && LocalDateHelper.isBetween(fromDate, endDate, dateToCheck.get())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_HISTORY_PERIOD_OVERLAP));
-    }
+        && LocalDateHelper.isBetween(fromDate, endDate, dateToCheck.get());
   }
 
-  protected void checkEndDateIsInPast(Optional<LocalDate> endDate) throws AxelorException {
-    if (endDate.isPresent()
+  @Override
+  public boolean checkEndDateIsInPast(Optional<LocalDate> endDate) {
+    return endDate.isPresent()
         && endDate
             .get()
             .isAfter(
                 appAccountService.getTodayDate(
                     Optional.ofNullable(AuthUtils.getUser())
                         .map(User::getActiveCompany)
-                        .orElse(null)))) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_HISTORY_END_DATE_IN_FUTURE));
-    }
+                        .orElse(null)));
   }
 }

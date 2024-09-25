@@ -44,8 +44,6 @@ import com.axelor.apps.account.db.repo.FixedAssetLineManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.db.repo.InterestRateHistoryLineRepository;
-import com.axelor.apps.account.db.repo.InterestRateHistoryLineRepositoryManagement;
 import com.axelor.apps.account.db.repo.InvoiceBatchAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineManagementRepository;
@@ -954,7 +952,5 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceTermPaymentToolService.class).to(InvoiceTermPaymentToolServiceImpl.class);
     bind(LatePaymentInterestInvoiceService.class).to(LatePaymentInterestInvoiceServiceImpl.class);
     bind(PaymentModeInterestRateService.class).to(PaymentModeInterestRateServiceImpl.class);
-    bind(InterestRateHistoryLineRepository.class)
-        .to(InterestRateHistoryLineRepositoryManagement.class);
   }
 }
