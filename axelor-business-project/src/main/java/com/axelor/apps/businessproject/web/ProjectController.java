@@ -164,6 +164,12 @@ public class ProjectController {
               ? Beans.get(PartnerPriceListService.class)
                   .getDefaultPriceList(project.getClientPartner(), PriceListRepository.TYPE_SALE)
               : null);
+
+      response.setValue(
+          "contactPartner",
+          partner.getContactPartnerSet().size() == 1
+              ? partner.getContactPartnerSet().iterator().next()
+              : null);
     }
   }
 }
