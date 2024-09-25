@@ -90,13 +90,6 @@ public class SaleOrderLineOnChangeServiceImpl implements SaleOrderLineOnChangeSe
   }
 
   @Override
-  public Map<String, Object> productOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
-    Map<String, Object> saleOrderLineMap = new HashMap<>();
-    return saleOrderLineMap;
-  }
-
-  @Override
   public Map<String, Object> compute(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();

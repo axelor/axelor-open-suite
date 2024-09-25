@@ -48,6 +48,7 @@
     public static final int PARTNER_FETCH_METHOD_NONE = 0;
     public static final int PARTNER_FETCH_METHOD_SELECT = 1;
     public static final int PARTNER_FETCH_METHOD_QUERY = 2;
+    public static final int PARTNER_FETCH_METHOD_MOVE_LINE = 3;
 
 
     ]]></extra-code>
