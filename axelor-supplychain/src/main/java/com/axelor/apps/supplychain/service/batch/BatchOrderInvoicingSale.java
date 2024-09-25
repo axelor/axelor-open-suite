@@ -113,10 +113,9 @@ public class BatchOrderInvoicingSale extends BatchOrderInvoicing {
 
     SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
     Set<Long> treatedSet = new HashSet<>();
+    List<SaleOrder> saleOrderList;
 
-    for (List<SaleOrder> saleOrderList;
-        !(saleOrderList = query.fetch(FETCH_LIMIT)).isEmpty();
-        JPA.clear()) {
+    while (!(saleOrderList = query.fetch(getFetchLimit())).isEmpty()) {
       for (SaleOrder saleOrder : saleOrderList) {
         if (treatedSet.contains(saleOrder.getId())) {
           throw new IllegalArgumentException("Invoice generation error");
@@ -136,6 +135,8 @@ public class BatchOrderInvoicingSale extends BatchOrderInvoicing {
           break;
         }
       }
+      JPA.clear();
+      findBatch();
     }
   }
 }

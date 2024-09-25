@@ -29,7 +29,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -106,9 +105,8 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
     Query<StockMove> stockMoveQuery =
         cutOffSupplyChainService.getStockMoves(company, accountingCutOffTypeSelect, moveDate);
 
-    while (!(stockMoveList = stockMoveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(stockMoveList = stockMoveQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
 
-      findBatch();
       accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
       company = accountingBatch.getCompany();
 
@@ -123,6 +121,7 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
       }
 
       JPA.clear();
+      findBatch();
     }
   }
 

@@ -1,3 +1,0 @@
----
-title: "Mobile Dashboard API: fixed an issue where condition in permission were not evaluated correctly to get mobile chart information."
-module: axelor-mobile-settings

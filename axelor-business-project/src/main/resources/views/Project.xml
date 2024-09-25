@@ -15,6 +15,8 @@
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="fromDate"/>
     <field name="toDate"/>
+    <button name="openTasks" onClick="action-business-project-view-show-related-tasks"
+      icon="list-task"/>
   </grid>
 
   <grid name="folder-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
@@ -62,8 +64,6 @@
         <item name="bookResourceItem" title="Book resource"
           if=" __config__.app.getApp('project')?.resourceManagement"
           action="save,action-project-book-resource"/>
-        <item name="taskEditorItem" action="save,action-project-open-task-editor"
-          title="Task editor"/>
         <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
         <item name="topic" title="Topic" action="save,project.topic.all"
           showIf="id &amp;&amp; isShowTopic"/>
@@ -85,13 +85,9 @@
       </menu>
     </menubar>
     <panel name="mainPanel">
-      <panel name="detailsPanel" colSpan="12">
-        <panel name="statusPanel" stacked="true" colSpan="8">
-          <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
-            onChange="action-business-project-group-project-status-on-change"/>
-        </panel>
-        <field name="$viewerProjectTags" showTitle="false" colSpan="1" readonly="true">
-          <viewer depends="isBusinessProject,$toInvoiceCounter,id">
+      <panel-include view="incl-information-panel-form"/>
+      <field name="$viewerProjectTags" showTitle="false" colSpan="2" readonly="true">
+        <viewer depends="isBusinessProject,$toInvoiceCounter,id">
             <![CDATA[
 								<>
 									<Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
@@ -106,49 +102,53 @@
 									</Box>
 								</>
 							]]>
-          </viewer>
-        </field>
-        <spacer colSpan="1"/>
-        <panel name="statusChangeBtn" colSpan="2">
-          <button name="finishBtn" icon="check-circle" title="Finish" colSpan="12"
-            showIf="id &amp;&amp; !projectStatus.isCompleted"
-            onClick="action-business-project-group-finish-project"/>
-          <button name="cancelBtn" title="Cancel" css="btn-danger" colSpan="12"
-            hideIf="projectStatus.id == $canceledProjectStatusId || !id" icon="x-circle"
-            onClick="action-project-group-status-canceled"/>
-          <button name="resetBtn" title="Reset" css="btn-warning" colSpan="12"
-            showIf="id &amp;&amp; projectStatus.id == $canceledProjectStatusId"
-            icon="skip-backward-fill" onClick="action-project-record-status-new,save"/>
-          <field name="projectStatus.isCompleted" hidden="true"/>
-        </panel>
+        </viewer>
+      </field>
+      <panel name="statusChangeBtn" colSpan="4">
+        <button name="finishBtn" icon="check-circle" title="Finish"
+          showIf="id &amp;&amp; !projectStatus.isCompleted"
+          onClick="action-business-project-group-finish-project"/>
+        <button name="cancelBtn" title="Cancel" css="btn-danger"
+          hideIf="projectStatus.id == $canceledProjectStatusId || !id" icon="x-circle"
+          onClick="action-project-group-status-canceled"/>
+        <button name="resetBtn" title="Reset" css="btn-warning"
+          showIf="id &amp;&amp; projectStatus.id == $canceledProjectStatusId"
+          icon="skip-backward-fill" onClick="action-project-record-status-new,save"/>
+        <field name="projectStatus.isCompleted" hidden="true"/>
       </panel>
 
-      <panel-include view="incl-information-panel-form"/>
-    </panel>
-    <panel name="generalInfoPanel" colSpan="12" title="General information" canCollapse="true"
-      collapseIf="id">
-      <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"
-        canEdit="false" if-module="axelor-business-project"/>
-      <field name="clientPartner"
-        domain="self.isCustomer = true AND :company member of self.companySet"
-        onChange="action-project-method-get-partner-data" required="true" form-view="partner-form"
-        grid-view="partner-grid" colSpan="3" if="__config__.app.isApp('business-project')"
-        if-module="axelor-business-project"/>
-      <field name="currency" colSpan="3" if="__config__.app.isApp('business-project')"
-        if-module="axelor-business-project" canEdit="false"/>
-      <field name="priceList" colSpan="3" if="__config__.app.isApp('business-project')"
-        if-module="axelor-business-project" canEdit="false"/>
-      <field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner"
-        form-view="partner-form" grid-view="partner-grid" colSpan="6"
-        if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-      <field name="customerAddress" grid-view="address-grid" form-view="address-form"
-        if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-        domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
 
-      <panel-include view="incl-project-overview-panel-form"/>
+      <panel name="overviewPanel" title="Overview"
+        onTabSelect="action-project-activity-dashboard-method-on-new">
+        <panel name="generalInfoPanel" colSpan="12" title="General information"
+          canCollapse="true" collapseIf="false">
+          <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
+            onChange="action-business-project-group-project-status-on-change"/>
+          <field name="fromDate" colSpan="3"/>
+          <field name="toDate" colSpan="3"/>
+          <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"
+            canEdit="false" if-module="axelor-business-project"/>
+          <field name="clientPartner"
+            domain="self.isCustomer = true AND :company member of self.companySet"
+            onChange="action-project-method-get-partner-data" required="true"
+            form-view="partner-form" grid-view="partner-grid" colSpan="3"
+            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+          <field name="currency" colSpan="3" if="__config__.app.isApp('business-project')"
+            if-module="axelor-business-project" canEdit="false"/>
+          <field name="priceList" colSpan="3" if="__config__.app.isApp('business-project')"
+            if-module="axelor-business-project" canEdit="false"/>
+          <field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner"
+            form-view="partner-form" grid-view="partner-grid" colSpan="6"
+            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+          <field name="customerAddress" grid-view="address-grid" form-view="address-form"
+            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+            domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
+        </panel>
+        <panel-include view="incl-project-overview-panel-form"/>
+      </panel>
 
       <panel name="reportingPanel" title="Reporting">
         <panel title="Time follow-up" colSpan="12" canCollapse="true" collapseIf="true">
@@ -249,7 +249,8 @@
           colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
-      <panel-include view="incl-project-structure-panel-form"/>
+      <panel-include view="incl-wiki-panel-form"/>
+
       <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
         if="__config__.app.isApp('employee')"/>
 
