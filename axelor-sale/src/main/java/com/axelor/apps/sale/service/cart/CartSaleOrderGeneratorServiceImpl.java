@@ -43,15 +43,18 @@ public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGenerator
   protected SaleOrderGeneratorService saleOrderGeneratorService;
   protected SaleOrderLineGeneratorService saleOrderLineGeneratorService;
   protected SaleOrderLineRepository saleOrderLineRepository;
+  protected CartResetService cartResetService;
 
   @Inject
   public CartSaleOrderGeneratorServiceImpl(
       SaleOrderGeneratorService saleOrderGeneratorService,
       SaleOrderLineGeneratorService saleOrderLineGeneratorService,
-      SaleOrderLineRepository saleOrderLineRepository) {
+      SaleOrderLineRepository saleOrderLineRepository,
+      CartResetService cartResetService) {
     this.saleOrderGeneratorService = saleOrderGeneratorService;
     this.saleOrderLineGeneratorService = saleOrderLineGeneratorService;
     this.saleOrderLineRepository = saleOrderLineRepository;
+    this.cartResetService = cartResetService;
   }
 
   @Override
@@ -72,6 +75,7 @@ public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGenerator
     for (CartLine cartLine : cartLineList) {
       createSaleOrderLine(cartLine, saleOrder);
     }
+    cartResetService.emptyCart(cart);
     return saleOrder;
   }
 
