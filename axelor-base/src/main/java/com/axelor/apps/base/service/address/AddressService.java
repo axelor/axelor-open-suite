@@ -94,4 +94,7 @@ public interface AddressService {
    * @param address
    */
   public void autocompleteAddress(Address address);
+
+  Address createAddress(Country country, City city, String zip, String streetName)
+      throws AxelorException;
 }

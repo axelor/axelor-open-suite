@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.service.MapService;
@@ -41,8 +42,16 @@ public class AddressServiceSaleImpl extends AddressServiceImpl {
       CityRepository cityRepository,
       StreetRepository streetRepository,
       AppBaseService appBaseService,
-      AddressAttrsService addressAttrsService) {
-    super(ads, mapService, cityRepository, streetRepository, appBaseService, addressAttrsService);
+      AddressAttrsService addressAttrsService,
+      AddressRepository addressRepo) {
+    super(
+        ads,
+        mapService,
+        cityRepository,
+        streetRepository,
+        appBaseService,
+        addressAttrsService,
+        addressRepo);
   }
 
   private static boolean checkAddressUsedSale(Long addressId) {

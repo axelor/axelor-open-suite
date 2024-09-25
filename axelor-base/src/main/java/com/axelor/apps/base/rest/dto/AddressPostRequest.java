@@ -9,12 +9,10 @@ import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.RequestPostStructure;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.persist.Transactional;
 import java.util.Optional;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -143,29 +141,5 @@ public class AddressPostRequest extends RequestPostStructure {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.NO_CITY_FOUND));
     }
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  public Address createAddress() throws AxelorException {
-    City fetchedCity = fetchCity();
-    if (fetchedCity == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.NO_CITY_FOUND));
-    }
-    if (zip == null && fetchedCity.getZip() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.NO_ZIP_FOUND));
-    }
-    return Beans.get(AddressRepository.class)
-        .save(
-            Beans.get(AddressService.class)
-                .createAddress(
-                    null,
-                    null,
-                    streetName,
-                    null,
-                    Optional.ofNullable(zip).orElse(fetchedCity.getZip()),
-                    fetchedCity,
-                    fetchCountry()));
   }
 }

@@ -26,8 +26,10 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
 import com.axelor.apps.base.db.Street;
+import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -61,6 +63,7 @@ public class AddressServiceImpl implements AddressService {
   protected StreetRepository streetRepository;
   protected AppBaseService appBaseService;
   protected AddressAttrsService addressAttrsService;
+  protected AddressRepository addressRepo;
 
   protected MapService mapService;
   protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
@@ -76,13 +79,15 @@ public class AddressServiceImpl implements AddressService {
       CityRepository cityRepository,
       StreetRepository streetRepository,
       AppBaseService appBaseService,
-      AddressAttrsService addressAttrsService) {
+      AddressAttrsService addressAttrsService,
+      AddressRepository addressRepo) {
     this.ads = ads;
     this.mapService = mapService;
     this.cityRepository = cityRepository;
     this.streetRepository = streetRepository;
     this.appBaseService = appBaseService;
     this.addressAttrsService = addressAttrsService;
+    this.addressRepo = addressRepo;
   }
 
   @Override
@@ -249,5 +254,29 @@ public class AddressServiceImpl implements AddressService {
         address.setAddressL4(null);
       }
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Address createAddress(Country country, City city, String zip, String streetName)
+      throws AxelorException {
+    if (city == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.NO_CITY_FOUND));
+    }
+    if (zip == null && city.getZip() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.NO_ZIP_FOUND));
+    }
+
+    return addressRepo.save(
+        createAddress(
+            null,
+            null,
+            streetName,
+            null,
+            Optional.ofNullable(zip).orElse(city.getZip()),
+            city,
+            country));
   }
 }
