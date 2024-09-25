@@ -129,7 +129,7 @@ public class TimesheetController {
                 .find(((Integer) productContext.get("id")).longValue());
       }
       if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
-        product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getEmployee());
+        product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getEmployee(), null);
       }
 
       timesheet =

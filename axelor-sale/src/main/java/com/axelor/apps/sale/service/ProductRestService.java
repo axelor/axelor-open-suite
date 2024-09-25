@@ -4,12 +4,13 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.rest.dto.ProductResponse;
+import com.axelor.apps.sale.rest.dto.ProductResquest;
+import java.util.List;
 import wslite.json.JSONException;
 
 public interface ProductRestService {
-  ProductResponse computeProductResponse(
-      Company company, Product product, Partner partner, Currency currency)
+  List<ProductResponse> computeProductResponse(
+      Company company, List<ProductResquest> unitProducts, Partner partner, Currency currency)
       throws AxelorException, JSONException;
 }

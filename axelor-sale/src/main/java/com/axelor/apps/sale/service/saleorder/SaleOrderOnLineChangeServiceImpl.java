@@ -26,7 +26,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePackService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSequence;
 import com.google.inject.Inject;
@@ -44,7 +44,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
   protected SaleOrderLineRepository saleOrderLineRepository;
   protected SaleOrderLineComputeService saleOrderLineComputeService;
   protected SaleOrderLinePackService saleOrderLinePackService;
-  protected SaleOrderLineProductService saleOrderLineProductService;
+  protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
 
   @Inject
   public SaleOrderOnLineChangeServiceImpl(
@@ -55,7 +55,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
-      SaleOrderLineProductService saleOrderLineProductService) {
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService) {
     this.appSaleService = appSaleService;
     this.saleOrderService = saleOrderService;
     this.saleOrderMarginService = saleOrderMarginService;
@@ -63,7 +63,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderLineComputeService = saleOrderLineComputeService;
     this.saleOrderLinePackService = saleOrderLinePackService;
-    this.saleOrderLineProductService = saleOrderLineProductService;
+    this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
   }
 
   @Override
@@ -117,9 +117,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
                     .getQty()
                     .multiply(compProductSelected.getQty())
                     .setScale(appSaleService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
-            saleOrderLineProductService.computeProductInformation(
-                newSoLine, newSoLine.getSaleOrder());
-            saleOrderLineComputeService.computeValues(newSoLine.getSaleOrder(), newSoLine);
+            saleOrderLineOnProductChangeService.computeLineFromProduct(newSoLine);
 
             newSoLine.setParentId(originSoLine.getManualId());
 
@@ -133,9 +131,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
                   .multiply(compProductSelected.getQty())
                   .setScale(appSaleService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
 
-          saleOrderLineProductService.computeProductInformation(
-              newSoLine, newSoLine.getSaleOrder());
-          saleOrderLineComputeService.computeValues(newSoLine.getSaleOrder(), newSoLine);
+          saleOrderLineOnProductChangeService.computeLineFromProduct(newSoLine);
         }
       }
       originSoLine.setIsComplementaryProductsUnhandledYet(false);

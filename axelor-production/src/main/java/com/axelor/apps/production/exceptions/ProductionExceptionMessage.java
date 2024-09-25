@@ -123,6 +123,21 @@ public final class ProductionExceptionMessage {
   public static final String PROD_PROCESS_LINE_MISSING_WORK_CENTER = /*$$(*/
       "Work center is missing from prod process line %s-%s." /*)*/;
 
+  public static final String PROD_PROCESS_NULL_STATUS = /*$$(*/
+      "Prod process currently has no status" /*)*/;
+
+  public static final String PROD_PROCESS_ALREADY_DRAFT_STATUS = /*$$(*/
+      "Prod process is already on draft status" /*)*/;
+
+  public static final String PROD_PROCESS_VALIDATED_WRONG_STATUS = /*$$(*/
+      "Cannot validate prod process that is not draft" /*)*/;
+
+  public static final String PROD_PROCESS_APPLICABLE_WRONG_STATUS = /*$$(*/
+      "Cannot make prod process applicable that is not validated" /*)*/;
+
+  public static final String PROD_PROCESS_OBSOLETE_WRONG_STATUS = /*$$(*/
+      "Cannot make prod process obsolete that is not applicable" /*)*/;
+
   /** Bill of materials service */
   public static final String COST_TYPE_CANNOT_BE_CHANGED = /*$$(*/
       "The product cost cannot be changed because the product cost type is not manual" /*)*/;

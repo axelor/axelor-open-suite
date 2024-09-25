@@ -13,6 +13,7 @@
     <many-to-one name="variantProduct" title="Product variant"
       ref="com.axelor.apps.base.db.Product"/>
     <many-to-one name="unit" title="Unit" ref="com.axelor.apps.base.db.Unit"/>
+    <decimal name="price" title="Price" precision="20" scale="10"/>
 
   </entity>
 

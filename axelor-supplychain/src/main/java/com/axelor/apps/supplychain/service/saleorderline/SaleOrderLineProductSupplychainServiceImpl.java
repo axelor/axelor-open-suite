@@ -15,11 +15,11 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -33,6 +33,7 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
   protected BlockingService blockingService;
   protected AnalyticLineModelService analyticLineModelService;
   protected AppSupplychainService appSupplychainService;
+  protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
 
   @Inject
   public SaleOrderLineProductSupplychainServiceImpl(
@@ -48,7 +49,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       SaleOrderLineTaxService saleOrderLineTaxService,
       BlockingService blockingService,
       AnalyticLineModelService analyticLineModelService,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
     super(
         appSaleService,
         appBaseService,
@@ -63,13 +65,13 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
     this.blockingService = blockingService;
     this.analyticLineModelService = analyticLineModelService;
     this.appSupplychainService = appSupplychainService;
+    this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
   }
 
   @Override
-  public Map<String, Object> computeProductInformation(
+  public Map<String, Object> computeProductInformationSupplychain(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
-    Map<String, Object> saleOrderLineMap =
-        super.computeProductInformation(saleOrderLine, saleOrder);
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
 
     Product product = saleOrderLine.getProduct();
     if (product == null) {
@@ -85,6 +87,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
 
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
       analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+      saleOrderLineMap.putAll(
+          saleOrderLineAnalyticService.printAnalyticAccounts(saleOrder, saleOrderLine));
     } else {
       return saleOrderLineMap;
     }
@@ -92,7 +96,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
   }
 
   @Override
-  public Map<String, Object> getProductionInformation(SaleOrderLine saleOrderLine) {
+  public Map<String, Object> getProductionInformation(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(setStandardDelay(saleOrderLine));
     return saleOrderLineMap;

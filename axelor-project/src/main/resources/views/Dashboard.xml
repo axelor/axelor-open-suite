@@ -21,17 +21,22 @@
     model="com.axelor.utils.db.Wizard" onNew="action-project-dashboard-method-on-new" width="large"
     canNew="false" canEdit="false" canDelete="false">
     <panel name="overviewPanel" title="Overview" readonly="true">
-      <field name="$description" showTitle="false">
-        <viewer>
-	        <![CDATA[
-	          <><p>{$description}</p></>
-	        ]]>
-        </viewer>
-      </field>
+      <panel name="descriptionPanel" itemSpan="12">
+        <field name="$description" showTitle="false">
+          <viewer>
+            <![CDATA[
+              <>
+                <Box as="p">
+                  {$description && <Box dangerouslySetInnerHTML={{__html : $description}} style={{ wordBreak: "break-all" }}></Box>}
+                </Box>
+              </>
+            ]]>
+          </viewer>
+        </field>
+      </panel>
       <spacer/>
       <panel name="issueTrackingPanel" title="Issue tracking" icon="fa-sticky-note">
-        <field name="$categoryList" showTitle="false" colSpan="12"
-          hideIf="$categoryList.length == 0">
+        <field name="$categoryList" showTitle="false" hideIf="$categoryList.length == 0">
           <viewer>
 					<![CDATA[
 						<>
@@ -47,17 +52,17 @@
 					            <TableBody>
 						           {$categoryList.map((item,index) => (
 						                <TableRow key={item.categoryId}>
-						                  	<TableCell><Link href="#" onClick={$action("com.axelor.apps.project.service.ProjectDashboardService:getTasksOpenedPerCategoryView("+item.categoryId+")")}>{item.categoryName}</Link></TableCell>
-						                  	<TableCell><Link href="#" onClick={$action("com.axelor.apps.project.service.ProjectDashboardService:getTasksOpenedPerCategoryView("+item.categoryId+")")}>{item.open}</Link></TableCell>
-						                  	<TableCell><Link href="#" onClick={$action("com.axelor.apps.project.service.ProjectDashboardService:getTasksClosedPerCategoryView("+item.categoryId+")")}>{item.closed}</Link></TableCell>
-						                  	<TableCell><Link href="#" onClick={$action("com.axelor.apps.project.service.ProjectDashboardService:getTasksPerCategoryView("+item.categoryId+")")}>{item.total}</Link></TableCell>
+					                  	<TableCell><Button variant="link" onClick={() => $execute("action-project-dashboard-show-tasks-opened-per-category", {categoryId : item.categoryId})}>{item.categoryName}</Button></TableCell>
+						                  	<TableCell><Button variant="link" onClick={() => $execute("action-project-dashboard-show-tasks-opened-per-category", {categoryId : item.categoryId})}>{item.open}</Button></TableCell>
+						                  	<TableCell><Button variant="link" onClick={() => $execute("action-project-dashboard-show-tasks-closed-per-category", {categoryId : item.categoryId})}>{item.closed}</Button></TableCell>
+						                  	<TableCell><Button variant="link" onClick={() => $execute("action-project-dashboard-show-tasks-per-category", {categoryId : item.categoryId})}>{item.total}</Button></TableCell>
 						                </TableRow>
 						            ))}
 					            </TableBody>
 					            <TableCaption>
-							    	<Link href="#" onClick={$action("all.open.project.tasks")}>{_t('View all issues')}</Link>
-							    	{$isShowCalendarView && <span> | <Link href="#" onClick={$action("action-project-dashboard-view-per-user-calendar")}>{_t('Calendar')}</Link></span>}
-							    	{$isShowGanttView && <span> | <Link href="#" onClick={$action("action-project-dashboard-view-open-gantt")}>{_t('Gantt')}</Link></span>}
+							    	<Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("all.open.project.tasks")}>{_t('View all issues')}</Button>
+							    	{$isShowCalendarView && <span> | <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-project-dashboard-view-per-user-calendar")}>{_t('Calendar')}</Button></span>}
+							    	{$isShowGanttView && <span> | <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-project-dashboard-view-open-gantt")}>{_t('Gantt')}</Button></span>}
 					            </TableCaption>
 					        </Table>
 						</>
@@ -67,13 +72,13 @@
       </panel>
       <panel name="membersPanel" title="Members" icon="fa-users"
         hideIf="$membersList.length == 0">
-        <field name="$membersList" showTitle="false" colSpan="12">
+        <field name="$membersList" showTitle="false">
           <viewer>
-						<![CDATA[
+            <![CDATA[
 				         <>
 				         	{$membersList.map((item, index) => (
 				         		<span key={index}>
-				         			<Link href={`#/ds/action-auth-users/edit/${item.id}`} target="_self">{item.name}</Link>
+				         			<Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-auth-users", {userId : item.id})}>{item.name}</Button>
 				         		</span>
 				         	)).reduce((prev, curr) => prev ? [prev, ', ', curr] : [curr],'')}
 				         </>
@@ -83,13 +88,13 @@
       </panel>
       <panel name="spentTimePanel" title="Spent time" icon="fa-clock-o"
         if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource"
-        hideIf="$spentTime == 0" showIf="$isShowTimeSpent">
+        hideIf="$spentTime == 0" showIf="$manageTimeSpent">
         <field name="$spentTime" showTitle="false" colSpan="12">
           <viewer>
 						<![CDATA[
 				         <>
 				         	<p>{$spentTime} <span>{_t('hours')}</span></p> <Box/>
-				   	     	<Link href="#" onClick={$action("action-timesheet-line-log-time")}><span>{_t('Log time')}</span></Link> | <Link href="#" onClick={$action("project.spent.time")}><span>{_t('Details')}</span></Link>
+				   	     	<Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-timesheet-line-log-time")}><span>{_t('Log time')}</span></Button> | <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={(e) => $execute("project.spent.time")}><span>{_t('Details')}</span></Button>
 				         </>
 				        ]]>
           </viewer>
@@ -104,18 +109,20 @@
 						 <>
 						 	 {$announcementList.map((item,index) => (
 								 <p key={index}>
-							         <Link href={`#/ds/project.announcement/edit/${item.id}`} target="_self">{item.title}</Link> <Box/>
+                                     <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("project.announcement", {announcementId : item.id})}>{item.title}</Button><br/>
 							         <span>{_t('Added by')}</span>
-							         <Link href={`#/ds/action-auth-users/edit/${item.createdById}`} target="_self"> {item.createdBy} </Link>
-							         <Link href="#" title="{$moment(item.announcementDate).format('MM/DD/YYYY')}" onClick={$action("com.axelor.apps.businesssupport.service.ProjectActivityDashboardBusinessSupportService:getProjectActivityView("+item.id+")")}>{$moment(item.announcementDate).fromNow()}</Link>
+                                     <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-auth-users", {userId : item.createdById})}>{item.createdBy}</Button>
+							         <Button variant="link" p={0} style={{verticalAlign: "unset"}} title="{$moment(item.announcementDate).format('MM/DD/YYYY')}" onClick={$action("com.axelor.apps.businesssupport.service.ProjectActivityDashboardBusinessSupportService:getProjectActivityView("+item.id+")")}>{$moment(item.announcementDate).fromNow()}</Button>
 							     </p>
 						     ))}
-							 <Link href="#" onClick={$action("project.announcement")}>View all news</Link>
+						 <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("project.announcement")}>View all news</Button>
 					     </>
 				        ]]>
           </viewer>
         </field>
       </panel>
+      <spacer/>
+      <spacer/>
       <spacer/>
       <panel name="subprojectPanel" title="Suprojects" icon="fa-gg-circle"
         hideIf="$subprojectList.length == 0">
@@ -125,7 +132,7 @@
 				     <>
 				         {$subprojectList.map((item, index) => (
 				         	<span key={index}>
-				         		<Link href={`#/ds/project.all/edit/${item.id}`} target="_self">{item.name}</Link>
+                                <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("project.all", {childProjectId : item.id})}>{item.name}</Button>
 				         	</span>
 				         )).reduce((prev, curr) => prev ? [prev, ', ', curr] : [curr],'')}
 				     </>
@@ -133,6 +140,7 @@
           </viewer>
         </field>
       </panel>
+      <field name="$projectId" hidden="true"/>
     </panel>
   </form>
 
@@ -275,9 +283,14 @@
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <domain>self.project.id IN :_projectIds</domain>
-    <context name="_project" expr="eval: __user__.activeProject"/>
+    <context name="_project"
+      expr="eval: projectId ? __repo__(Project).find(projectId) : __user__.activeProject"/>
     <context name="_projectIds"
-      expr="call:com.axelor.apps.project.service.ProjectToolService:getActiveProjectIds()"/>
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getActiveProjectIds()"
+      if="!projectId"/>
+    <context name="_projectIds"
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getRelatedProjectIds(__repo__(Project).find(projectId))"
+      if="projectId"/>
   </action-view>
 
   <action-view name="action-project-dashboard-view-per-user-calendar"
@@ -285,9 +298,14 @@
     <view type="calendar" name="project-task-per-user-calendar"/>
     <view type="form" name="project-task-form"/>
     <domain>self.project.id IN :_projectIds</domain>
-    <context name="_project" expr="eval: __user__.activeProject"/>
+    <context name="_project"
+      expr="eval: projectId ? __repo__(Project).find(projectId) : __user__.activeProject"/>
     <context name="_projectIds"
-      expr="call:com.axelor.apps.project.service.ProjectToolService:getActiveProjectIds()"/>
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getActiveProjectIds()"
+      if="!projectId"/>
+    <context name="_projectIds"
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getRelatedProjectIds(__repo__(Project).find(projectId))"
+      if="projectId"/>
   </action-view>
 
   <action-method name="action-project-dashboard-method-on-new">
@@ -307,6 +325,21 @@
   <action-method name="action-project-activity-dashboard-method-next-on-click">
     <call class="com.axelor.apps.project.web.ProjectActivityDashboardController"
       method="getNextData"/>
+  </action-method>
+
+  <action-method name="action-project-dashboard-show-tasks-opened-per-category">
+    <call class="com.axelor.apps.project.web.ProjectDashboardController"
+      method="showTasksOpenedPerCategory"/>
+  </action-method>
+
+  <action-method name="action-project-dashboard-show-tasks-closed-per-category">
+    <call class="com.axelor.apps.project.web.ProjectDashboardController"
+      method="showTasksClosedPerCategory"/>
+  </action-method>
+
+  <action-method name="action-project-dashboard-show-tasks-per-category">
+    <call class="com.axelor.apps.project.web.ProjectDashboardController"
+      method="showTasksPerCategory"/>
   </action-method>
 
 </object-views>

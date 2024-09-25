@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHistoryLine;
 import com.axelor.apps.project.db.ProjectStatus;
@@ -85,7 +86,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService;
   protected AppBaseService appBaseService;
   protected InvoiceRepository invoiceRepository;
-  protected UnitProjectToolService unitProjectToolService;
+  protected UnitConversionForProjectService unitConversionForProjectService;
 
   public static final int BIG_DECIMAL_SCALE = 2;
   public static final String FA_LEVEL_UP = "arrow-90deg-up";
@@ -107,7 +108,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService,
       AppBaseService appBaseService,
       InvoiceRepository invoiceRepository,
-      UnitProjectToolService unitProjectToolService) {
+      UnitConversionForProjectService unitConversionForProjectService) {
     super(
         projectRepository,
         projectStatusRepository,
@@ -122,7 +123,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.projectTaskReportingValuesComputingService = projectTaskReportingValuesComputingService;
     this.appBaseService = appBaseService;
     this.invoiceRepository = invoiceRepository;
-    this.unitProjectToolService = unitProjectToolService;
+    this.unitConversionForProjectService = unitConversionForProjectService;
   }
 
   @Override
@@ -256,8 +257,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (assignedTo != null) {
       project.addMembersUserSetItem(assignedTo);
     }
-
-    project.setImputable(true);
+    if (parentProject != null) {
+      project.setManageTimeSpent(parentProject.getManageTimeSpent());
+    }
     project.setCompany(company);
     if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
       project.setIsInvoicingTimesheet(true);
@@ -346,7 +348,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     BigDecimal totalSpentTime = BigDecimal.ZERO;
 
     Unit projectUnit = project.getProjectTimeUnit();
-    BigDecimal numberHoursADay = unitProjectToolService.getNumberHoursADay(project);
 
     for (ProjectTask projectTask : projectTaskList) {
       Unit projectTaskUnit = projectTask.getTimeUnit();
@@ -354,29 +355,37 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         continue;
       }
       totalSoldTime =
-          totalSoldTime
-              .add(
-                  unitProjectToolService.getConvertedTime(
-                      projectTask.getSoldTime(), projectTaskUnit, projectUnit, numberHoursADay))
-              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+          totalSoldTime.add(
+              unitConversionForProjectService.convert(
+                  projectTaskUnit,
+                  projectUnit,
+                  projectTask.getSoldTime(),
+                  BIG_DECIMAL_SCALE,
+                  project));
       totalUpdatedTime =
-          totalUpdatedTime
-              .add(
-                  unitProjectToolService.getConvertedTime(
-                      projectTask.getUpdatedTime(), projectTaskUnit, projectUnit, numberHoursADay))
-              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+          totalUpdatedTime.add(
+              unitConversionForProjectService.convert(
+                  projectTaskUnit,
+                  projectUnit,
+                  projectTask.getUpdatedTime(),
+                  BIG_DECIMAL_SCALE,
+                  project));
       totalPlannedTime =
-          totalPlannedTime
-              .add(
-                  unitProjectToolService.getConvertedTime(
-                      projectTask.getPlannedTime(), projectTaskUnit, projectUnit, numberHoursADay))
-              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+          totalPlannedTime.add(
+              unitConversionForProjectService.convert(
+                  projectTaskUnit,
+                  projectUnit,
+                  projectTask.getPlannedTime(),
+                  BIG_DECIMAL_SCALE,
+                  project));
       totalSpentTime =
-          totalSpentTime
-              .add(
-                  unitProjectToolService.getConvertedTime(
-                      projectTask.getSpentTime(), projectTaskUnit, projectUnit, numberHoursADay))
-              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+          totalSpentTime.add(
+              unitConversionForProjectService.convert(
+                  projectTaskUnit,
+                  projectUnit,
+                  projectTask.getSpentTime(),
+                  BIG_DECIMAL_SCALE,
+                  project));
     }
 
     project.setSoldTime(totalSoldTime);
@@ -384,24 +393,32 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     project.setPlannedTime(totalPlannedTime);
     project.setSpentTime(totalSpentTime);
 
+    BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
+
     if (totalUpdatedTime.signum() > 0) {
       project.setPercentageOfProgress(
-          totalSpentTime
-              .multiply(new BigDecimal("100"))
-              .divide(totalUpdatedTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+          projectTaskBusinessProjectService.verifiedLimitFollowUp(
+              totalSpentTime
+                  .multiply(new BigDecimal("100"))
+                  .divide(totalUpdatedTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP),
+              percentageLimit));
     }
 
     if (totalSoldTime.signum() > 0) {
       project.setPercentageOfConsumption(
-          totalSpentTime
-              .multiply(new BigDecimal("100"))
-              .divide(totalSoldTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+          projectTaskBusinessProjectService.verifiedLimitFollowUp(
+              totalSpentTime
+                  .multiply(new BigDecimal("100"))
+                  .divide(totalSoldTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP),
+              percentageLimit));
     }
 
     project.setRemainingAmountToDo(
-        totalUpdatedTime
-            .subtract(totalSpentTime)
-            .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+        projectTaskBusinessProjectService.verifiedLimitFollowUp(
+            totalUpdatedTime
+                .subtract(totalSpentTime)
+                .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP),
+            BigDecimal.valueOf(9999.99)));
   }
 
   protected void computeFinancialFollowUp(Project project, List<ProjectTask> projectTaskList) {
@@ -820,7 +837,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     return builder.map();
   }
 
-  public String checkPercentagesOver1000OnTasks(Project project) {
+  public List<String> checkPercentagesOver1000OnTasks(Project project) {
     BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
     return project.getProjectTaskList().stream()
         .filter(
@@ -830,7 +847,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
                     || projectTask.getRemainingAmountToDo().compareTo(BigDecimal.valueOf(9999.99))
                         == 0)
         .map(ProjectTask::getName)
-        .collect(Collectors.toList())
-        .toString();
+        .collect(Collectors.toList());
   }
 }

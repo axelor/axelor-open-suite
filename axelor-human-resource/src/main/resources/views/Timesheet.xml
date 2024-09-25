@@ -411,7 +411,7 @@
 
   <action-attrs name="action-hr-timesheet-attrs-domain-project">
     <attribute name="domain" for="$project"
-      expr="eval: &quot; (${employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${employee?.user?.id}) AND self.isShowTimeSpent = true &quot;"/>
+      expr="eval: &quot; (${employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${employee?.user?.id}) AND self.manageTimeSpent = true &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-title-project">

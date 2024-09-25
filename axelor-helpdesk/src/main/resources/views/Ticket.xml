@@ -45,7 +45,7 @@
     <panel name="mainPanel" colSpan="12">
 
       <field name="ticketStatus" colSpan="12" readonly="true" showTitle="false"
-        widget="NavSelect" x-order="priority"/>
+        widget="NavSelect" x-order="sequence"/>
 
       <field name="slaPolicy.name" showTitle="false"
         hideIf="ticketStatus.priority >= slaPolicy.reachStageTicketStatus.priority" colSpan="4">

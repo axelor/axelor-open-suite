@@ -51,7 +51,7 @@ public class ProductPriceServiceImpl implements ProductPriceService {
   @Override
   public BigDecimal getSaleUnitPrice(
       Company company, Product product, boolean inAti, Partner partner) throws AxelorException {
-    return getSaleUnitPrice(company, product, product.getInAti(), partner, null);
+    return getSaleUnitPrice(company, product, inAti, partner, null);
   }
 
   @Override
