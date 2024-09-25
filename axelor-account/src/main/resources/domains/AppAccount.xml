@@ -47,6 +47,8 @@
       title="Specify the barcode type by fixed asset" default="false"/>
     <many-to-one name="fixedAssetBarcodeTypeConfig" title="Fixed asset barcode type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
+    <integer name="dsoComputationPeriod" title="DSO computation period"
+      help="Duration (in days) for the DSO (Days Sales Outstanding) calculation. This calculation is based on invoices only. Formula: DSO = (Accounts receivable / Revenue) x Number of days in the period."/>
 
     <boolean name="enableLatePaymentInterest" title="Enable late payment interest"/>
     <decimal name="latePaymentInterestFlatFee" title="Late payment interest flat fee"
@@ -55,7 +57,8 @@
       title="Flat fee product"/>
     <many-to-one name="latePaymentInterestProduct" ref="com.axelor.apps.base.db.Product"
       title="Late payment product"/>
-
+    <decimal name="thresholdAmount" title="Threshold amount"
+      help="Threshold amount to generate late interest invoice"/>
 
     <extra-code><![CDATA[
 

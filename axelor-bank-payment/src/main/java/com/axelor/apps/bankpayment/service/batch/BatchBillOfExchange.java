@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -38,10 +39,8 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -59,7 +58,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BatchBillOfExchange extends AbstractBatch {
+public class BatchBillOfExchange extends BatchStrategy {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -120,8 +119,8 @@ public class BatchBillOfExchange extends AbstractBatch {
   protected void createLCRAccountingMovesForInvoices(
       Query<Invoice> query, List<Long> anomalyList, AccountingBatch accountingBatch) {
     List<Invoice> invoicesList = null;
-    while (!(invoicesList = query.bind("anomalyList", anomalyList).fetch(FETCH_LIMIT)).isEmpty()) {
-      findBatch();
+    while (!(invoicesList = query.bind("anomalyList", anomalyList).fetch(getFetchLimit()))
+        .isEmpty()) {
       accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
       for (Invoice invoice : invoicesList) {
         try {
@@ -136,6 +135,7 @@ public class BatchBillOfExchange extends AbstractBatch {
         }
       }
       JPA.clear();
+      findBatch();
     }
   }
 
@@ -318,9 +318,5 @@ public class BatchBillOfExchange extends AbstractBatch {
             batch.getAnomaly()));
     addComment(sb.toString());
     super.stop();
-  }
-
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BANK_PAYMENT_BATCH);
   }
 }

@@ -21,6 +21,8 @@
     <field name="taskEndDate" hidden="true"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
     <field name="project.completedTaskStatus.id" hidden="true"/>
+    <button name="showFinancialReport" title="Show financial reports" icon="bar-chart-fill"
+      onClick="action-project-task-view-show-financial-datas-panel"/>
   </grid>
 
   <grid name="business-project-task-project-grid" title="Tasks"
@@ -118,10 +120,12 @@
         showIf="project.isShowStatus"/>
     </toolbar>
     <menubar>
-      <menu name="projectTaskMenu" title="Tools"
-        if="__config__.app.getApp('project')?.resourceManagement">
+      <menu name="projectTaskMenu" title="Tools">
         <item name="bookResourceItem" title="Book resource"
-          action="save,action-project-task-book-resource"/>
+          action="save,action-project-task-book-resource"
+          if="__config__.app.getApp('project')?.resourceManagement"/>
+        <item title="Show financial datas"
+          action="action-project-task-view-show-financial-datas-panel" showIf="id"/>
       </menu>
     </menubar>
 
@@ -287,13 +291,6 @@
           <field name="name"/>
         </panel-related>
       </panel>
-      <panel name="purchasePanel" title="Purchase" colSpan="12"
-        if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
-        <button name="generatePurchaseOrderBtn" title="Generate Purchase Order"
-          onClick="action-project-task-method-generate-purchase-order"/>
-        <field name="purchaseOrderList" colSpan="12" canNew="false"/>
-        <field name="purchaseOrderLineList" colSpan="12" canNew="false"/>
-      </panel>
       <panel name="financialDataPanel" title="Financial Data" colSpan="12"
         if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
         <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true">
@@ -352,61 +349,101 @@
             width="120" widget="Image"/>
         </panel>
       </panel>
-      <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
-        <panel-dashlet action="action-project-task-view-turnover-custom" colSpan="3"
-          height="125"/>
-        <panel-dashlet action="action-project-task-view-initial-costs-custom"
-          colSpan="3" height="125"/>
-        <panel-dashlet action="action-project-task-view-initial-margin-custom"
-          colSpan="3" height="125"/>
-        <panel-dashlet action="action-project-task-view-initial-markup-custom"
-          colSpan="3" height="125"/>
-        <field name="turnover" hidden="true"/>
-        <field name="initialCosts" hidden="true"/>
-        <field name="initialMargin" hidden="true"/>
-        <field name="initialMarkup" hidden="true"/>
+
+      <panel name="timerPanel" title="Timer" showIf="id" hidden="true"
+        if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')">
+        <panel name="actionsPanel" title="Actions">
+          <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12"
+            hidden="true" onClick="action-project-task-method-start-timer"/>
+          <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="12" hidden="true"
+            onClick="action-project-task-method-stop-timer"/>
+          <button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="12"
+            hidden="true" onClick="action-project-task-method-cancel-timer"/>
+        </panel>
+        <panel name="durationPanel">
+          <field name="$_totalTimerDuration" type="decimal" readonly="true"
+            title="Total duration (Hours)" colSpan="12"/>
+        </panel>
       </panel>
-      <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
-        <panel-dashlet action="action-project-task-view-forecast-costs-custom"
-          colSpan="3" height="125"/>
-        <panel-dashlet action="action-project-task-view-forecast-margin-custom"
-          colSpan="3" hidden="true" showIf="!parentTask" height="125"/>
-        <panel-dashlet action="action-project-task-view-forecast-markup-custom"
-          colSpan="3" hidden="true" showIf="!parentTask" height="125"/>
-        <field name="forecastCosts" hidden="true"/>
-        <field name="forecastMargin" hidden="true"/>
-        <field name="forecastMarkup" hidden="true"/>
+      <panel-include view="incl-links-panel-form"/>
+    </panel-tabs>
+    <panel name="attrsPanel">
+      <field name="attrs" colSpan="12"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <form title="Financial datas" name="business-project-task-financial-datas-form"
+    model="com.axelor.apps.project.db.ProjectTask" width="large">
+    <panel-tabs>
+      <panel name="purchasePanel" title="Purchase" colSpan="12"
+        if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
+        <button name="generatePurchaseOrderBtn" title="Generate Purchase Order"
+          onClick="action-project-task-method-generate-purchase-order"/>
+        <field name="purchaseOrderList" colSpan="12" canNew="false"/>
+        <field name="purchaseOrderLineList" colSpan="12" canNew="false"/>
       </panel>
-      <panel name="realPanel" title="ProjectTask.Real" colSpan="12" hidden="true"
-        showIf="!parentTask">
-        <panel-dashlet action="action-project-task-view-real-turnover-custom"
-          colSpan="3" showIf="timeUnit" height="125"/>
-        <panel-dashlet action="action-project-task-view-real-costs-custom" colSpan="3"
-          height="125"/>
-        <panel-dashlet action="action-project-task-view-real-margin-custom"
-          colSpan="3" height="125"/>
-        <panel-dashlet action="action-project-task-view-real-markup-custom"
-          colSpan="3" height="125"/>
-        <field name="realTurnover" hidden="true"/>
-        <field name="realCosts" hidden="true"/>
-        <field name="realMargin" hidden="true"/>
-        <field name="realMarkup" hidden="true"/>
-      </panel>
-      <panel name="realCostPanel" title="" colSpan="12" hidden="true" showIf="parentTask">
-        <panel-dashlet action="action-project-task-view-real-costs-custom"
-          title="Real costs" colSpan="3" height="125"/>
-        <field name="realCosts" hidden="true"/>
-      </panel>
-      <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
-        <panel-dashlet action="action-project-task-view-landing-costs-custom"
-          colSpan="3" height="125"/>
-        <panel-dashlet action="action-project-task-view-landing-margin-custom"
-          colSpan="3" height="125"/>
-        <panel-dashlet action="action-project-task-view-landing-markup-custom"
-          colSpan="3" height="125"/>
-        <field name="landingCosts" hidden="true"/>
-        <field name="landingMargin" hidden="true"/>
-        <field name="landingMarkup" hidden="true"/>
+      <panel name="reportsPanel" title="Reporting" colSpan="12">
+        <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
+          <panel-dashlet action="action-project-task-view-turnover-custom" colSpan="3"
+            height="125"/>
+          <panel-dashlet action="action-project-task-view-initial-costs-custom"
+            colSpan="3" height="125"/>
+          <panel-dashlet action="action-project-task-view-initial-margin-custom"
+            colSpan="3" height="125"/>
+          <panel-dashlet action="action-project-task-view-initial-markup-custom"
+            colSpan="3" height="125"/>
+          <field name="turnover" hidden="true"/>
+          <field name="initialCosts" hidden="true"/>
+          <field name="initialMargin" hidden="true"/>
+          <field name="initialMarkup" hidden="true"/>
+        </panel>
+        <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
+          <panel-dashlet action="action-project-task-view-forecast-costs-custom"
+            colSpan="3" height="125"/>
+          <panel-dashlet action="action-project-task-view-forecast-margin-custom"
+            colSpan="3" hidden="true" showIf="!parentTask" height="125"/>
+          <panel-dashlet action="action-project-task-view-forecast-markup-custom"
+            colSpan="3" hidden="true" showIf="!parentTask" height="125"/>
+          <field name="forecastCosts" hidden="true"/>
+          <field name="forecastMargin" hidden="true"/>
+          <field name="forecastMarkup" hidden="true"/>
+        </panel>
+        <panel name="realPanel" title="ProjectTask.Real" colSpan="12" hidden="true"
+          showIf="!parentTask">
+          <panel-dashlet action="action-project-task-view-real-turnover-custom"
+            colSpan="3" showIf="timeUnit" height="125"/>
+          <panel-dashlet action="action-project-task-view-real-costs-custom"
+            colSpan="3" height="125"/>
+          <panel-dashlet action="action-project-task-view-real-margin-custom"
+            colSpan="3" height="125"/>
+          <panel-dashlet action="action-project-task-view-real-markup-custom"
+            colSpan="3" height="125"/>
+          <field name="realTurnover" hidden="true"/>
+          <field name="realCosts" hidden="true"/>
+          <field name="realMargin" hidden="true"/>
+          <field name="realMarkup" hidden="true"/>
+          <field name="timeUnit" hidden="true"/>
+        </panel>
+        <panel name="realCostPanel" title="" colSpan="12" hidden="true" showIf="parentTask">
+          <panel-dashlet action="action-project-task-view-real-costs-custom"
+            title="Real costs" colSpan="3" height="125"/>
+          <field name="realCosts" hidden="true"/>
+        </panel>
+        <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
+          <panel-dashlet action="action-project-task-view-landing-costs-custom"
+            colSpan="3" height="125"/>
+          <panel-dashlet action="action-project-task-view-landing-margin-custom"
+            colSpan="3" height="125"/>
+          <panel-dashlet action="action-project-task-view-landing-markup-custom"
+            colSpan="3" height="125"/>
+          <field name="landingCosts" hidden="true"/>
+          <field name="landingMargin" hidden="true"/>
+          <field name="landingMarkup" hidden="true"/>
+        </panel>
       </panel>
 
       <panel name="frequencyPanel" title="Frequency" showIf="project.isShowFrequency">
@@ -435,31 +472,7 @@
           colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
         <field name="project.isShowTimeSpent" hidden="true"/>
       </panel>
-
-      <panel name="timerPanel" title="Timer" showIf="id" hidden="true"
-        if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')">
-        <panel name="actionsPanel" title="Actions">
-          <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12"
-            hidden="true" onClick="action-project-task-method-start-timer"/>
-          <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="12" hidden="true"
-            onClick="action-project-task-method-stop-timer"/>
-          <button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="12"
-            hidden="true" onClick="action-project-task-method-cancel-timer"/>
-        </panel>
-        <panel name="durationPanel">
-          <field name="$_totalTimerDuration" type="decimal" readonly="true"
-            title="Total duration (Hours)" colSpan="12"/>
-        </panel>
-      </panel>
-      <panel-include view="incl-links-panel-form"/>
     </panel-tabs>
-    <panel name="attrsPanel">
-      <field name="attrs" colSpan="12"/>
-    </panel>
-    <panel-mail name="mailPanel">
-      <mail-messages/>
-      <mail-followers/>
-    </panel-mail>
   </form>
 
   <tree name="business-project-project-task-tree" title="Task">
@@ -741,6 +754,12 @@
     <view type="form" name="business-project-task-form"/>
     <domain>self.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-show-financial-datas-panel"
+    title="Financial datas" model="com.axelor.apps.project.db.ProjectTask">
+    <view type="form" name="business-project-task-financial-datas-form"/>
+    <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
 </object-views>

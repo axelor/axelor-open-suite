@@ -999,9 +999,12 @@
 								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
 								{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
+								{(typeSelect == 10 || typeSelect == 11) && <span> {_t('Foreign exchange on')} </span>}
 								<span>{$fmt('paymentDate')}</span>
 							</Box>
-							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{(typeSelect == 8 || typeSelect == 10) && <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{typeSelect == 11 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{typeSelect != 8 && typeSelect != 10 && typeSelect != 11 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
 						</Box>
 
 						{applyFinancialDiscount &&
@@ -1017,6 +1020,7 @@
 									{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
 									{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 									{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
+									{(typeSelect == 10 || typeSelect == 11) && <span> {_t('Foreign exchange on')} </span>}
 									<span>{$fmt('paymentDate')}</span>
 								</Box>
 								{financialDiscountTaxAmount > 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(financialDiscountTotalAmount).toFixed(currency.numberOfDecimals)}</Box>}
@@ -1338,9 +1342,12 @@
 								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
 								{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
+								{(typeSelect == 10 || typeSelect == 11) && <span> {_t('Foreign exchange on')} </span>}
 								<span>{$fmt('paymentDate')}</span>
 							</Box>
-							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{(typeSelect == 8 || typeSelect == 11) && <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{typeSelect == 10 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{typeSelect != 8 && typeSelect != 10 && typeSelect != 11 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
 						</Box>
 					</>
                 ]]>

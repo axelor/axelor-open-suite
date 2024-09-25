@@ -17,6 +17,7 @@
       <field name="manageCutOffPeriod" widget="boolean-switch"/>
       <field name="allowMultiInvoiceTerms" widget="boolean-switch"/>
       <field name="partnerBalConfigSelect"/>
+      <field name="dsoComputationPeriod"/>
       <panel name="rejectsReasonsAndCodesListPanel" title="Rejects reasons and codes list"
         colSpan="12">
         <field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid"
@@ -41,6 +42,7 @@
         <field name="latePaymentInterestProduct" showIf="enableLatePaymentInterest"/>
         <field name="flatFeeProduct" showIf="enableLatePaymentInterest"/>
         <field name="latePaymentInterestFlatFee" showIf="enableLatePaymentInterest"/>
+        <field name="thresholdAmount" showIf="enableLatePaymentInterest"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
