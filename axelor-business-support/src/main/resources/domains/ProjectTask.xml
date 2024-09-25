@@ -14,6 +14,11 @@
     <many-to-one name="targetVersion" title="Target version"
       ref="com.axelor.apps.businesssupport.db.ProjectVersion"/>
     <boolean name="isOrderProposed" title="Order Proposed"/>
+    <many-to-one ref="com.axelor.apps.base.db.Partner" name="assignedToContact"
+      title="Assigned to contact"/>
+    <many-to-one ref="com.axelor.apps.base.db.Partner" name="requestedByContact"
+      title="Requested by contact"/>
+    <boolean name="displayFinancialData" title="Display financial data" default="false"/>
 
     <extra-code>
 			<![CDATA[

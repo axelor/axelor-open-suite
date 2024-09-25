@@ -38,6 +38,9 @@
       <field name="completedTaskStatus" grid-view="task-status-grid"
         form-view="task-status-form"
         onSelect="action-app-project-attrs-set-completed-task-status-domain"/>
+      <field name="cancelledTaskStatus" grid-view="task-status-grid"
+        form-view="task-status-form"
+        onSelect="action-app-project-attrs-set-cancelled-task-status-domain"/>
       <field name="enableStatusManagementByTaskCategory"/>
     </panel>
 
@@ -60,6 +63,14 @@
       expr="eval: 'self.isCompleted = true AND self.id IN (' + defaultTaskStatusSet?.collect{ it.id }?.join(',') + ')'"
       if="defaultTaskStatusSet?.collect{it.id}?.size &gt; 0"/>
     <attribute name="domain" for="completedTaskStatus" expr="eval: 'self.id = 0'"
+      if="defaultTaskStatusSet?.collect{it.id}?.size == 0"/>
+  </action-attrs>
+
+  <action-attrs name="action-app-project-attrs-set-cancelled-task-status-domain">
+    <attribute name="domain" for="cancelledTaskStatus"
+      expr="eval: 'self.id IN (' + defaultTaskStatusSet?.collect{ it.id }?.join(',') + ')'"
+      if="defaultTaskStatusSet?.collect{it.id}?.size &gt; 0"/>
+    <attribute name="domain" for="cancelledTaskStatus" expr="eval: 'self.id = 0'"
       if="defaultTaskStatusSet?.collect{it.id}?.size == 0"/>
   </action-attrs>
 

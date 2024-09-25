@@ -105,24 +105,34 @@
           hidden="true" onClick="action-project-task-attrs-assginment-customer,save"
           showIf="assignment == 2 &amp;&amp; typeSelect == 'ticket'"/>
       </panel>
+      <panel name="assignmentPanel" colSpan="12">
+        <field name="assignedTo" readonlyIf="project == null" canNew="false" canView="false"
+          canEdit="false" onChange="action-project-task-group-assigned-to-on-change"
+          onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true"
+          form-view="user-form" grid-view="user-grid"/>
+        <field name="assignedToContact" title="Contact"
+          onSelect="action-project-task-attrs-contact-domain" canNew="false" canView="false"
+          canEdit="false"/>
+      </panel>
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
         <field name="taskDate" onChange="action-project-task-attrs-set-task-duration"
           required="true" readonlyIf="id"/>
         <field name="projectTaskCategory"
-          onSelect="action-project-task-attrs-project-task-category-configurations" readonlyIf="id"/>
+          onSelect="action-project-task-attrs-project-task-category-configurations"/>
         <field name="targetVersion" domain=":project member of self.projectSet"
-          form-view="project-version-form" grid-view="project-version-grid" readonlyIf="id"/>
+          form-view="project-version-form" grid-view="project-version-grid"/>
         <field name="customerReferral" hidden="true" showIf="typeSelect == 'ticket'"
           onSelect="action-project-task-attrs-customer-referral-domain"
           if="__config__.app.isApp('business-project')"/>
         <field name="progress" colSpan="6"
-          onChange="action-project-task-group-progress-onchange" readonlyIf="id"/>
+          onChange="action-project-task-group-progress-onchange"/>
         <field name="assignment" hidden="true" readonlyIf="id" showIf="typeSelect == 'ticket'"/>
+        <field name="displayFinancialData" widget="boolean-switch"/>
       </panel>
     </panel>
     <panel-include view="incl-customized-field-panel-form"/>
     <panel-include view="comment-file-preview-form"/>
-    <panel-tabs name="mainPanelTab" readonlyIf="id">
+    <panel-tabs name="mainPanelTab">
       <panel name="contentPanel" title="Content" colSpan="12">
         <field name="description" showTitle="false" colSpan="12" widget="html"/>
       </panel>
@@ -134,7 +144,8 @@
           <field name="name"/>
         </panel-related>
       </panel>
-      <panel name="financialDataPanel" title="Financial Data" colSpan="12">
+      <panel name="financialDataPanel" title="Financial Data" showIf="displayFinancialData"
+        colSpan="12">
         <field name="invoicingType" if="__config__.app.isApp('business-project')"
           if-module="axelor-business-project"/>
         <panel name="pricingPanel" showIf="invoicingType == 2" colSpan="12">
@@ -154,9 +165,15 @@
           action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
           colSpan="12" canSearch="true" readonly="true"/>
       </panel>
+      <panel-include view="incl-links-panel-form"/>
     </panel-tabs>
     <panel-include view="project-task-history-form"/>
   </form>
+
+  <action-attrs name="action-project-task-attrs-contact-domain">
+    <attribute name="domain" for="assignedToContact"
+      expr="eval: &quot;self.id = ${project?.clientPartner?.id} OR self.id IN (${project?.clientPartner?.contactPartnerSet?.collect{it.id}?.join(',')})&quot;"/>
+  </action-attrs>
 
   <action-view name="action-dashlet-version-view-show-task" title="Ticket associated"
     model="com.axelor.apps.project.db.ProjectTask">
