@@ -1132,7 +1132,8 @@
   </action-view>
 
   <menuitem name="studio-app-root" id="base-studio-app-root" title="App" order="-250"
-    icon="pencil-square" icon-background="#9c27b0" if="__config__.app.isApp('studio')"/>
+    icon="wrench-adjustable-circle-fill" icon-background="indigo"
+    if="__config__.app.isApp('studio')"/>
 
   <menuitem name="birt-print-conf" parent="admin-root" if="__config__.app.isApp('base')"
     title="BIRT printings" order="1000"/>
