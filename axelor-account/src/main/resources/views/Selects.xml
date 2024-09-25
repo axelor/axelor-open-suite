@@ -196,6 +196,7 @@
     <option value="1">Invoice.Standard</option>
     <option value="2">Invoice.AdvancePayment</option>
     <option value="3">Balance invoice</option>
+    <option value="9">Late payment interest invoice</option>
   </selection>
 
   <selection name='iaccount.account.schedule.export.type.select'>
@@ -348,6 +349,8 @@
     <option value="7">Irrecoverable Debt</option>
     <option value="8">Doubtful credit</option>
     <option value="9">Credit note imputation</option>
+    <option value="10">Foreign exchange gain</option>
+    <option value="11">Foreign exchange loss</option>
   </selection>
 
   <selection name="invoice.payment.status.select">

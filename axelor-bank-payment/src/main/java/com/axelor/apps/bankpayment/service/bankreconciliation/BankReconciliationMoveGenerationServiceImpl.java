@@ -75,10 +75,11 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -223,6 +224,9 @@ public class BankReconciliationMoveGenerationServiceImpl
           move = generateMove(bankReconciliationLine, null);
           moveValidateService.accounting(move);
         }
+        if (bankReconciliationLine.getMoveLine() == null) {
+          manageDynamicSearchOnMoveLines(bankReconciliationLine);
+        }
       }
       offset += limit;
       JPA.clear();
@@ -267,37 +271,15 @@ public class BankReconciliationMoveGenerationServiceImpl
 
     BankReconciliation bankReconciliation = bankReconciliationLine.getBankReconciliation();
 
-    Map<String, Object> moveFieldsMap =
-        initializeMoveFields(
+    Move move =
+        generateMove(
             bankReconciliation, bankReconciliationLine, bankStatementLine, bankStatementRule);
 
-    LocalDate effectDate = (LocalDate) moveFieldsMap.get("effectDate");
-    Move move =
-        moveCreateService.createMove(
-            (Journal) moveFieldsMap.get("journal"),
-            (Company) moveFieldsMap.get("company"),
-            (Currency) moveFieldsMap.get("currency"),
-            (Partner) moveFieldsMap.get("partner"),
-            effectDate,
-            effectDate,
-            (PaymentMode) moveFieldsMap.get("paymentMode"),
-            (FiscalPosition) moveFieldsMap.get("fiscalPosition"),
-            (Integer) moveFieldsMap.get("technicalOriginSelect"),
-            (Integer) moveFieldsMap.get("functionalOriginSelect"),
-            (String) moveFieldsMap.get("origin"),
-            (String) moveFieldsMap.get("description"),
-            (BankDetails) moveFieldsMap.get("companyBankDetails"));
-    move.setPaymentCondition(null);
-    LocalDate originDate =
-        Optional.ofNullable(bankStatementLine)
-            .map(BankStatementLine::getOperationDate)
-            .orElse(effectDate);
-
     MoveLine counterPartMoveLine =
-        generateMoveLine(bankReconciliationLine, bankStatementRule, move, true, originDate);
+        generateMoveLine(bankReconciliationLine, bankStatementRule, move, true, null);
 
     MoveLine moveLine =
-        generateMoveLine(bankReconciliationLine, bankStatementRule, move, false, originDate);
+        generateMoveLine(bankReconciliationLine, bankStatementRule, move, false, null);
 
     generateTaxMoveLine(counterPartMoveLine, moveLine);
 
@@ -433,13 +415,21 @@ public class BankReconciliationMoveGenerationServiceImpl
       BankStatementRule bankStatementRule,
       Move move,
       boolean isCounterpartLine,
-      LocalDate originDate)
+      Account defaultAccount)
       throws AxelorException {
     MoveLine moveLine;
     LocalDate date = bankReconciliationLine.getEffectDate();
     BigDecimal debit;
     BigDecimal credit;
-    Account account = bankReconciliationLine.getAccount();
+    LocalDate originDate =
+        Optional.of(bankReconciliationLine)
+            .map(BankReconciliationLine::getBankStatementLine)
+            .map(BankStatementLine::getOperationDate)
+            .orElse(move.getDate());
+    Account account = defaultAccount;
+    if (account == null) {
+      account = bankReconciliationLine.getAccount();
+    }
     String description = move.getDescription();
     String origin = move.getOrigin();
     Set<TaxLine> taxLineSet = new HashSet<>();
@@ -560,16 +550,12 @@ public class BankReconciliationMoveGenerationServiceImpl
     }
   }
 
-  protected Map<String, Object> initializeMoveFields(
+  protected Move generateMove(
       BankReconciliation bankReconciliation,
       BankReconciliationLine bankReconciliationLine,
       BankStatementLine bankStatementLine,
       BankStatementRule bankStatementRule)
       throws AxelorException {
-    Map<String, Object> moveFieldMap = new HashMap<>();
-    if (bankReconciliationLine == null) {
-      return moveFieldMap;
-    }
 
     Company company = null;
     Journal journal = null;
@@ -577,11 +563,9 @@ public class BankReconciliationMoveGenerationServiceImpl
     String description = "";
     String origin = bankReconciliationLine.getReference();
     BankDetails companyBankDetails = null;
-    LocalDate effectDate = bankReconciliationLine.getEffectDate();
     Currency currency = null;
     FiscalPosition fiscalPosition = null;
     Partner partner = bankReconciliationLine.getPartner();
-
     if (bankReconciliation != null) {
       company = bankReconciliation.getCompany();
       journal = bankReconciliation.getJournal();
@@ -589,7 +573,6 @@ public class BankReconciliationMoveGenerationServiceImpl
       currency = bankReconciliation.getCurrency();
       companyBankDetails = bankReconciliation.getBankDetails();
     }
-
     if (bankStatementRule != null) {
       if (bankStatementRule.getAccountManagement() != null) {
         AccountManagement accountManagement = bankStatementRule.getAccountManagement();
@@ -620,27 +603,166 @@ public class BankReconciliationMoveGenerationServiceImpl
               bankStatementLine,
               bankStatementRule.getEntryOriginComputation());
     }
-
     if (bankStatementLine != null && currency == null) {
       currency = bankStatementLine.getCurrency();
     }
-
     if (partner != null) {
       fiscalPosition = partner.getFiscalPosition();
     }
 
-    moveFieldMap.put("journal", journal);
-    moveFieldMap.put("company", company);
-    moveFieldMap.put("currency", currency);
-    moveFieldMap.put("partner", partner);
-    moveFieldMap.put("effectDate", effectDate);
-    moveFieldMap.put("paymentMode", paymentMode);
-    moveFieldMap.put("fiscalPosition", fiscalPosition);
-    moveFieldMap.put("technicalOriginSelect", MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-    moveFieldMap.put("functionalOriginSelect", MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
-    moveFieldMap.put("origin", origin);
-    moveFieldMap.put("description", description);
-    moveFieldMap.put("companyBankDetails", companyBankDetails);
-    return moveFieldMap;
+    Move move =
+        moveCreateService.createMove(
+            journal,
+            company,
+            currency,
+            partner,
+            bankReconciliationLine.getEffectDate(),
+            bankReconciliationLine.getEffectDate(),
+            paymentMode,
+            fiscalPosition,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            description,
+            companyBankDetails);
+    move.setPaymentCondition(null);
+
+    return move;
+  }
+
+  protected void manageDynamicSearchOnMoveLines(BankReconciliationLine bankReconciliationLine)
+      throws AxelorException {
+    if (bankReconciliationLine == null
+        || bankReconciliationLine.getBankStatementLine() == null
+        || bankReconciliationLine.getBankReconciliation() == null) {
+      return;
+    }
+
+    List<MoveLine> fetchedMoveLineList = getMoveLineFetchedByMoveLines(bankReconciliationLine);
+    MoveLine fetchedMoveLine =
+        getFetchedMoveLine(fetchedMoveLineList, bankReconciliationLine.getEffectDate());
+
+    if (fetchedMoveLine == null) {
+      return;
+    }
+    Partner fetchedPartner = null;
+    if (fetchedMoveLine.getPartner() != null
+        && (fetchedMoveLineList.size() == 1
+            || fetchedMoveLineList.stream()
+                .noneMatch(ml -> !Objects.equals(fetchedMoveLine.getPartner(), ml.getPartner())))) {
+      fetchedPartner = fetchedMoveLine.getPartner();
+    }
+
+    MoveLine counterPartMoveLine =
+        generateAndFillMove(bankReconciliationLine, fetchedMoveLine, fetchedPartner);
+
+    if (fetchedMoveLineList.size() == 1) {
+      reconcileService.reconcile(counterPartMoveLine, fetchedMoveLine, false, true);
+    } else {
+      bankReconciliationLine.setConfidenceIndex(
+          BankReconciliationLineRepository.CONFIDENCE_INDEX_ORANGE);
+    }
+  }
+
+  protected MoveLine getFetchedMoveLine(List<MoveLine> fetchedMoveLineList, LocalDate date) {
+    if (ObjectUtils.isEmpty(fetchedMoveLineList)) {
+      return null;
+    }
+
+    MoveLine fetchedMoveLine = null;
+
+    if (fetchedMoveLineList.size() == 1) {
+      fetchedMoveLine = fetchedMoveLineList.get(0);
+    } else if (date != null) {
+      fetchedMoveLine =
+          fetchedMoveLineList.stream()
+              .sorted(
+                  Comparator.comparing(
+                      MoveLine::getDate, Comparator.nullsFirst(Comparator.reverseOrder())))
+              .filter(ml -> ml.getDate().isBefore(date))
+              .findFirst()
+              .orElse(null);
+    }
+
+    return fetchedMoveLine;
+  }
+
+  protected MoveLine generateAndFillMove(
+      BankReconciliationLine bankReconciliationLine,
+      MoveLine fetchedMoveLine,
+      Partner fetchedPartner)
+      throws AxelorException {
+    Move move =
+        generateMove(
+            bankReconciliationLine.getBankReconciliation(),
+            bankReconciliationLine,
+            bankReconciliationLine.getBankStatementLine(),
+            null);
+
+    move.setPartner(fetchedPartner);
+
+    MoveLine cashMoveLine = generateMoveLine(bankReconciliationLine, null, move, false, null);
+
+    MoveLine moveLine =
+        generateMoveLine(bankReconciliationLine, null, move, true, fetchedMoveLine.getAccount());
+
+    generateTaxMoveLine(moveLine, cashMoveLine);
+
+    bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, moveLine);
+    bankReconciliationLine.setAccount(fetchedMoveLine.getAccount());
+    bankReconciliationLine.setPartner(fetchedMoveLine.getPartner());
+    bankReconciliationLine.setMoveLine(cashMoveLine);
+
+    moveValidateService.accounting(move);
+
+    return moveLine;
+  }
+
+  protected List<MoveLine> getMoveLineFetchedByMoveLines(
+      BankReconciliationLine bankReconciliationLine) throws AxelorException {
+
+    Company company =
+        Optional.of(bankReconciliationLine)
+            .map(BankReconciliationLine::getBankReconciliation)
+            .map(BankReconciliation::getCompany)
+            .orElse(null);
+    BankDetails bankDetails =
+        Optional.of(bankReconciliationLine)
+            .map(BankReconciliationLine::getBankStatementLine)
+            .map(BankStatementLine::getBankDetails)
+            .orElse(null);
+    List<MoveLine> fetchedMoveLineList = new ArrayList<>();
+    List<BankStatementRule> bankStatementRuleList =
+        bankStatementRuleRepository
+            .all()
+            .filter(
+                "self.ruleTypeSelect = :ruleTypeSelect"
+                    + " AND self.partnerFetchMethodSelect = :partnerFetchMethodSelect"
+                    + " AND self.accountManagement.company = :company"
+                    + " AND self.accountManagement.bankDetails = :bankDetails"
+                    + " AND self.letterToInvoice = true")
+            .bind("ruleTypeSelect", BankStatementRuleRepository.RULE_TYPE_MOVE_LINE_FETCHING)
+            .bind(
+                "partnerFetchMethodSelect",
+                BankStatementRuleRepository.PARTNER_FETCH_METHOD_MOVE_LINE)
+            .bind("company", company)
+            .bind("bankDetails", bankDetails)
+            .fetch();
+
+    if (ObjectUtils.isEmpty(bankStatementRuleList)) {
+      return fetchedMoveLineList;
+    }
+
+    for (BankStatementRule bankStatementRule : bankStatementRuleList) {
+      MoveLine fetchedMoveLine =
+          bankStatementRuleService
+              .getMoveLine(bankStatementRule, bankReconciliationLine, null)
+              .orElse(null);
+      if (fetchedMoveLine != null) {
+        fetchedMoveLineList.add(fetchedMoveLine);
+      }
+    }
+
+    return fetchedMoveLineList;
   }
 }

@@ -1,3 +1,72 @@
+## [8.1.7] (2024-09-19)
+
+### Fixes
+#### Base
+
+* Update axelor-studio dependency to 3.1.3.
+* Partner: fixed convert contact into individual partner error when address is null.
+* Advanced export: fix export when multiple fields contain same sub path.
+* Request: fixed french translation for 'Request'.
+* Address: in form view, do not empty the ZIP code when filling the city, and automatically fill the city when the ZIP code is filled.
+
+#### Account
+
+* CutOff/Analytic: fixed cut off batch when using analytic on credit move line.
+
+#### Budget
+
+* Budget level: fixed scales in the tree view.
+* Global budget: fixed duplication without budget level.
+
+#### Business Project
+
+* Invoicing project: attach annex to invoice when 'Attach the Annex to the invoice' is enabled while generating invoice.
+* Project: prevented an error during project totals computation when parent task had no time unit.
+* Project task: fixed product changing on assignedTo when linked to a framework contract.
+* Project: prevented an error during project totals computation when spent time percentages were too low.
+
+#### Contract
+
+* Contract: fixed an error when opening a product in an amendment.
+* Contract: fixed error while generating contract from opportunities.
+
+#### CRM
+
+* CRM: added missing action for 'Calls monitoring' dashboard.
+
+#### Helpdesk
+
+* Ticket API: fixed an issue where condition in permission were not evaluated correctly to update tickets.
+
+#### Human Resource
+
+* Timesheet line: fixed issue related to default product value.
+
+#### Mobile Settings
+
+* Mobile Dashboard API: fixed an issue where condition in permission were not evaluated correctly to get mobile chart information.
+
+#### Production
+
+* Sequence per workshop config: improve UI to select workshop stock location and manuf order sequence.
+
+#### Purchase
+
+* Purchase order line tax: fixed reverse charge feature on purchase order.
+
+#### Sale
+
+* Configurator: added field 'attributes' and 'indicators' in grid view.
+
+#### Stock
+
+* Stock: fixed an error occurring when splitting a stock move line with a real quantity greater than the expected quantity.
+
+#### Intervention
+
+* Company: fixed display of intervention config button on company when module is uninstalled.
+* Contract: 'On-call planning' field will be required if 'On-call management' is true.
+
 ## [8.1.6] (2024-09-05)
 
 ### Fixes
@@ -518,6 +587,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.7]: https://github.com/axelor/axelor-open-suite/compare/v8.1.6...v8.1.7
 [8.1.6]: https://github.com/axelor/axelor-open-suite/compare/v8.1.5...v8.1.6
 [8.1.5]: https://github.com/axelor/axelor-open-suite/compare/v8.1.4...v8.1.5
 [8.1.4]: https://github.com/axelor/axelor-open-suite/compare/v8.1.3...v8.1.4

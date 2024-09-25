@@ -15,6 +15,8 @@
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="fromDate"/>
     <field name="toDate"/>
+    <button name="openTasks" onClick="action-business-project-view-show-related-tasks"
+      icon="list-task"/>
   </grid>
 
   <grid name="folder-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
@@ -62,8 +64,6 @@
         <item name="bookResourceItem" title="Book resource"
           if=" __config__.app.getApp('project')?.resourceManagement"
           action="save,action-project-book-resource"/>
-        <item name="taskEditorItem" action="save,action-project-open-task-editor"
-          title="Task editor"/>
         <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
         <item name="topic" title="Topic" action="save,project.topic.all"
           showIf="id &amp;&amp; isShowTopic"/>
@@ -85,13 +85,9 @@
       </menu>
     </menubar>
     <panel name="mainPanel">
-      <panel name="detailsPanel" colSpan="12">
-        <panel name="statusPanel" stacked="true" colSpan="8">
-          <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
-            onChange="action-business-project-group-project-status-on-change"/>
-        </panel>
-        <field name="$viewerProjectTags" showTitle="false" colSpan="1" readonly="true">
-          <viewer depends="isBusinessProject,$toInvoiceCounter,id">
+      <panel-include view="incl-information-panel-form"/>
+      <field name="$viewerProjectTags" showTitle="false" colSpan="2" readonly="true">
+        <viewer depends="isBusinessProject,$toInvoiceCounter,id">
             <![CDATA[
 								<>
 									<Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
@@ -106,79 +102,83 @@
 									</Box>
 								</>
 							]]>
-          </viewer>
-        </field>
-        <spacer colSpan="1"/>
-        <panel name="statusChangeBtn" colSpan="2">
-          <button name="finishBtn" icon="check-circle" title="Finish" colSpan="12"
-            showIf="id &amp;&amp; !projectStatus.isCompleted"
-            onClick="action-business-project-group-finish-project"/>
-          <button name="cancelBtn" title="Cancel" css="btn-danger" colSpan="12"
-            hideIf="projectStatus.id == $canceledProjectStatusId || !id" icon="x-circle"
-            onClick="action-project-group-status-canceled"/>
-          <button name="resetBtn" title="Reset" css="btn-warning" colSpan="12"
-            showIf="id &amp;&amp; projectStatus.id == $canceledProjectStatusId"
-            icon="skip-backward-fill" onClick="action-project-record-status-new,save"/>
-          <field name="projectStatus.isCompleted" hidden="true"/>
-        </panel>
+        </viewer>
+      </field>
+      <panel name="statusChangeBtn" colSpan="4">
+        <button name="finishBtn" icon="check-circle" title="Finish"
+          showIf="id &amp;&amp; !projectStatus.isCompleted"
+          onClick="action-business-project-group-finish-project"/>
+        <button name="cancelBtn" title="Cancel" css="btn-danger"
+          hideIf="projectStatus.id == $canceledProjectStatusId || !id" icon="x-circle"
+          onClick="action-project-group-status-canceled"/>
+        <button name="resetBtn" title="Reset" css="btn-warning"
+          showIf="id &amp;&amp; projectStatus.id == $canceledProjectStatusId"
+          icon="skip-backward-fill" onClick="action-project-record-status-new,save"/>
+        <field name="projectStatus.isCompleted" hidden="true"/>
       </panel>
 
-      <panel-include view="incl-information-panel-form"/>
-    </panel>
-    <panel name="generalInfoPanel" colSpan="12" title="General information" canCollapse="true"
-      collapseIf="id">
-      <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"
-        canEdit="false" if-module="axelor-business-project"/>
-      <field name="clientPartner"
-        domain="self.isCustomer = true AND :company member of self.companySet"
-        onChange="action-project-method-get-partner-data" required="true" form-view="partner-form"
-        grid-view="partner-grid" colSpan="3" if="__config__.app.isApp('business-project')"
-        if-module="axelor-business-project"/>
-      <field name="currency" colSpan="3" if="__config__.app.isApp('business-project')"
-        if-module="axelor-business-project" canEdit="false"/>
-      <field name="priceList" colSpan="3" if="__config__.app.isApp('business-project')"
-        if-module="axelor-business-project" canEdit="false"/>
-      <field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner"
-        form-view="partner-form" grid-view="partner-grid" colSpan="6"
-        if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-      <field name="customerAddress" grid-view="address-grid" form-view="address-form"
-        if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-        domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
 
-      <panel-include view="incl-project-overview-panel-form"/>
+      <panel name="overviewPanel" title="Overview"
+        onTabSelect="action-project-activity-dashboard-method-on-new">
+        <panel name="generalInfoPanel" colSpan="12" title="General information"
+          canCollapse="true" collapseIf="false">
+          <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
+            onChange="action-business-project-group-project-status-on-change"/>
+          <field name="fromDate" colSpan="3"/>
+          <field name="toDate" colSpan="3"/>
+          <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"
+            canEdit="false" if-module="axelor-business-project"/>
+          <field name="clientPartner"
+            domain="self.isCustomer = true AND :company member of self.companySet"
+            onChange="action-project-method-get-partner-data" required="true"
+            form-view="partner-form" grid-view="partner-grid" colSpan="3"
+            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+          <field name="currency" colSpan="3" if="__config__.app.isApp('business-project')"
+            if-module="axelor-business-project" canEdit="false"/>
+          <field name="priceList" colSpan="3" if="__config__.app.isApp('business-project')"
+            if-module="axelor-business-project" canEdit="false"/>
+          <field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner"
+            form-view="partner-form" grid-view="partner-grid" colSpan="6"
+            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+          <field name="customerAddress" grid-view="address-grid" form-view="address-form"
+            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+            domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
+        </panel>
+        <panel-include view="incl-project-overview-panel-form"/>
+      </panel>
 
       <panel name="reportingPanel" title="Reporting">
         <panel title="Time follow-up" colSpan="12" canCollapse="true" collapseIf="true">
           <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
-            showTitle="false" height="125"/>
+            showTitle="false" height="125" canSearch="true"/>
           <panel-dashlet action="action-project-view-updated-time-custom" colSpan="3"
-            showTitle="false" height="125"/>
+            showTitle="false" height="125" canSearch="true"/>
           <panel-dashlet action="action-project-view-planned-time-custom" colSpan="3"
-            showTitle="false" height="125"/>
+            showTitle="false" height="125" canSearch="true"/>
           <panel-dashlet action="action-project-view-spent-time-custom" colSpan="3"
-            showTitle="false" height="125"/>
+            showTitle="false" height="125" canSearch="true"/>
 
           <panel-dashlet action="action-project-view-percentage-progress-custom"
-            colSpan="3" showTitle="false" height="125"/>
+            colSpan="3" showTitle="false" height="125" canSearch="true"/>
           <panel-dashlet action="action-project-view-percentage-consumption-custom"
-            colSpan="3" showTitle="false" height="125"/>
+            colSpan="3" showTitle="false" height="125" canSearch="true"/>
           <panel-dashlet action="action-project-view-remaining-to-do-custom"
-            colSpan="3" showTitle="false" height="125"/>
+            colSpan="3" showTitle="false" height="125" canSearch="true"/>
         </panel>
 
         <panel title="Financial follow-up" colSpan="12" canCollapse="true" collapseIf="true">
           <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
             <panel-dashlet action="action-project-view-turnover-custom" colSpan="3"
-              height="125"/>
+              height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-initial-costs-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-initial-margin-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-initial-markup-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <field name="turnover" hidden="true"/>
             <field name="initialCosts" hidden="true"/>
             <field name="initialMargin" hidden="true"/>
@@ -186,24 +186,24 @@
           </panel>
           <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
             <panel-dashlet action="action-project-view-forecast-costs-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-forecast-margin-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-forecast-markup-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <field name="forecastCosts" hidden="true"/>
             <field name="forecastMargin" hidden="true"/>
             <field name="forecastMarkup" hidden="true"/>
           </panel>
           <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
             <panel-dashlet action="action-project-view-real-turnover-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-real-costs-custom" colSpan="3"
-              height="125"/>
+              height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-real-margin-custom" colSpan="3"
-              height="125"/>
+              height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-real-markup-custom" colSpan="3"
-              height="125"/>
+              height="125" canSearch="true"/>
             <field name="realTurnover" hidden="true"/>
             <field name="realCosts" hidden="true"/>
             <field name="realMargin" hidden="true"/>
@@ -211,24 +211,24 @@
           </panel>
           <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
             <panel-dashlet action="action-project-view-landing-costs-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-landing-margin-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-landing-markup-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <field name="landingCosts" hidden="true"/>
             <field name="landingMargin" hidden="true"/>
             <field name="landingMarkup" hidden="true"/>
           </panel>
           <panel name="invoicingPanel" title="Invoicing (excl. VAT)" colSpan="12">
             <panel-dashlet action="action-project-view-total-invoiced-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-invoiced-this-month-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-invoiced-last-month-custom"
-              colSpan="3" height="125"/>
+              colSpan="3" height="125" canSearch="true"/>
             <panel-dashlet action="action-project-view-total-paid-custom" colSpan="3"
-              height="125"/>
+              height="125" canSearch="true"/>
             <field name="totalInvoiced" hidden="true"/>
             <field name="invoicedThisMonth" hidden="true"/>
             <field name="invoicedLastMonth" hidden="true"/>
@@ -244,12 +244,13 @@
       <panel title="Tasks" name="taskTreePanel">
         <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
           height="200%" colSpan="12" action="action-view-show-business-project-task"
-          x-show-bars="true"/>
+          x-show-bars="true" canSearch="true"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
-      <panel-include view="incl-project-structure-panel-form"/>
+      <panel-include view="incl-wiki-panel-form"/>
+
       <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
         if="__config__.app.isApp('employee')"/>
 
@@ -289,7 +290,7 @@
           onClick="action-project-attrs-sales-order-line-cancel-manage-lines"/>
         <panel-dashlet name="saleOrderLinePanel" height="200%"
           action="action-project-view-show-confirmed-sale-order-lines" colSpan="12" canSearch="true"/>
-        <panel-dashlet name="customerDeliveriesPanel" height="200%"
+        <panel-dashlet name="customerDeliveriesPanel" canSearch="true" height="200%"
           action="action-project-dashlet-customer-deliveries" colSpan="12"/>
       </panel>
       <panel title="Purchases" name="purchasesPanel"
@@ -327,7 +328,7 @@
         <panel-dashlet name="purchaseOrderLinePanel" height="200%"
           action="action-project-view-show-confirmed-purchase-order-lines" colSpan="12"
           canSearch="true"/>
-        <panel-dashlet name="supplierArrivalsPanel" height="200%"
+        <panel-dashlet name="supplierArrivalsPanel" canSearch="true" height="200%"
           action="action-project-dashlet-supplier-arrivals" colSpan="12"/>
       </panel>
 
@@ -344,7 +345,7 @@
           action="action-project-dashlet-expense-validated" colSpan="12" canSearch="true"/>
         <button name="selectNewExpenseLinesBtn" title="Select new lines"
           css="btn-custom text-left" onClick="save,action-project-attrs-expense-line-select-lines"
-          hideIf="$popup() || $readonly()" colSpan="3"/>
+          hideIf="$popup() || $readonly()" colSpan="3" canSearch="true"/>
         <button name="manageExpenseLinesBtn" title="Manage lines" css="btn-custom text-left"
           onClick="save,action-project-attrs-expense-line-manage-lines"
           hideIf="$popup() || $readonly()" colSpan="3"/>
@@ -388,8 +389,8 @@
         <panel-dashlet name="supplierContractPanel" title="Supplier contracts"
           height="200%" action="action-project-dashlet-supplier-contracts" colSpan="12"
           canSearch="true"/>
-        <panel-dashlet name="contractInvoicePanel" title="Invoices" height="200%"
-          action="action-project-dashlet-contract-invoices" colSpan="12"/>
+        <panel-dashlet name="contractInvoicePanel" title="Invoices" canSearch="true"
+          height="200%" action="action-project-dashlet-contract-invoices" colSpan="12"/>
       </panel>
 
       <panel title="Production" name="productionPanel" if-module="axelor-business-production"
@@ -425,7 +426,7 @@
             grid-view="analytic-distribution-template-grid"
             form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
             domain="self.company = :company AND self.isSpecific = false"/>
-          <panel-dashlet name="analyticDashletPanel" height="200%"
+          <panel-dashlet name="analyticDashletPanel" canSearch="true" height="200%"
             action="action-project-dashlet-analytic-move-lines" colSpan="12"/>
         </panel>
 
@@ -443,7 +444,7 @@
           <panel-related name="manualElementListPanel" colSpan="12"
             field="manualElementList" form-view="manual-element-form"
             grid-view="manual-element-grid"/>
-          <panel-dashlet name="allinvoicingProjectsPanel"
+          <panel-dashlet name="allinvoicingProjectsPanel" canSearch="true"
             action="action-dashlet-project-show-all-invoicing-project" colSpan="12"/>
           <panel-dashlet name="customerInvoicePanel"
             action="action-project-dashlet-customer-invoices" colSpan="12"
