@@ -349,6 +349,8 @@
     <option value="7">Irrecoverable Debt</option>
     <option value="8">Doubtful credit</option>
     <option value="9">Credit note imputation</option>
+    <option value="10">Foreign exchange gain</option>
+    <option value="11">Foreign exchange loss</option>
   </selection>
 
   <selection name="invoice.payment.status.select">

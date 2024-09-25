@@ -49,6 +49,7 @@ import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -99,6 +100,7 @@ public class PaymentVoucherConfirmService {
   protected FinancialDiscountService financialDiscountService;
   protected CurrencyScaleService currencyScaleService;
   protected InvoicePaymentRepository invoicePaymentRepository;
+  protected ForeignExchangeGapToolService foreignExchangeGapToolService;
 
   @Inject
   public PaymentVoucherConfirmService(
@@ -121,7 +123,8 @@ public class PaymentVoucherConfirmService {
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       FinancialDiscountService financialDiscountService,
       CurrencyScaleService currencyScaleService,
-      InvoicePaymentRepository invoicePaymentRepository) {
+      InvoicePaymentRepository invoicePaymentRepository,
+      ForeignExchangeGapToolService foreignExchangeGapToolService) {
 
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
@@ -143,6 +146,7 @@ public class PaymentVoucherConfirmService {
     this.financialDiscountService = financialDiscountService;
     this.currencyScaleService = currencyScaleService;
     this.invoicePaymentRepository = invoicePaymentRepository;
+    this.foreignExchangeGapToolService = foreignExchangeGapToolService;
   }
 
   /**
@@ -861,7 +865,12 @@ public class PaymentVoucherConfirmService {
 
     companyAmountToPay =
         this.computeForeignExchangeCompanyAmount(
-            currencyRate, invoiceTermCurrencyRate, companyAmountToPay, currencyAmount, invoiceTerm);
+            currencyRate,
+            invoiceTermCurrencyRate,
+            companyAmountToPay,
+            currencyAmount,
+            invoiceTerm,
+            moveLineToPay.getMove().getCompany());
 
     Reconcile reconcile =
         reconcileService.createReconcile(moveLineToPay, moveLine, companyAmountToPay, true);
@@ -929,9 +938,11 @@ public class PaymentVoucherConfirmService {
       BigDecimal invoiceTermCurrencyRate,
       BigDecimal companyAmount,
       BigDecimal currencyAmount,
-      InvoiceTerm invoiceTerm)
+      InvoiceTerm invoiceTerm,
+      Company company)
       throws AxelorException {
-    if (paymentCurrencyRate.compareTo(invoiceTermCurrencyRate) > 0) {
+    if (paymentCurrencyRate.compareTo(invoiceTermCurrencyRate) > 0
+        && !foreignExchangeGapToolService.checkForeignExchangeAccounts(company)) {
       return currencyService.getAmountCurrencyConvertedAtDate(
           invoiceTerm.getCurrency(),
           invoiceTerm.getCompanyCurrency(),
