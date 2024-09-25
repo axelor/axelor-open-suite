@@ -22,8 +22,10 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.rest.dto.StockProductVariantAttributeResponse;
 import java.util.List;
+import java.util.Map;
 import javax.ws.rs.core.Response;
 
 public interface StockProductRestService {
@@ -33,4 +35,6 @@ public interface StockProductRestService {
 
   List<StockProductVariantAttributeResponse> fetchAttributes(Product product)
       throws AxelorException;
+
+  Map<String, Object> checkProductAvailability(StockMoveLine stockMoveLine) throws AxelorException;
 }
