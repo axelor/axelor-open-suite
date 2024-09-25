@@ -39,7 +39,6 @@ public class FinalizeAndConfirmSaleOrder {
     this.saleOrderFinalizeService = saleOrderFinalizeService;
   }
 
-  @Inject
   public Object finalizeAndConfirmSaleOrder(Object bean, Map<String, Object> values)
       throws AxelorException {
     assert bean instanceof SaleOrder;
