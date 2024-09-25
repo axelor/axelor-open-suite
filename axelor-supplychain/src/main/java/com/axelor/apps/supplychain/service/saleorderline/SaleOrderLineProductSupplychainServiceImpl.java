@@ -33,6 +33,7 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
   protected BlockingService blockingService;
   protected AnalyticLineModelService analyticLineModelService;
   protected AppSupplychainService appSupplychainService;
+  protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
 
   @Inject
   public SaleOrderLineProductSupplychainServiceImpl(
@@ -48,7 +49,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       SaleOrderLineTaxService saleOrderLineTaxService,
       BlockingService blockingService,
       AnalyticLineModelService analyticLineModelService,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
     super(
         appSaleService,
         appBaseService,
@@ -63,13 +65,13 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
     this.blockingService = blockingService;
     this.analyticLineModelService = analyticLineModelService;
     this.appSupplychainService = appSupplychainService;
+    this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
   }
 
   @Override
-  public Map<String, Object> computeProductInformation(
+  public Map<String, Object> computeProductInformationSupplychain(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
-    Map<String, Object> saleOrderLineMap =
-        super.computeProductInformation(saleOrderLine, saleOrder);
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
 
     Product product = saleOrderLine.getProduct();
     if (product == null) {
@@ -82,9 +84,10 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
 
       saleOrderLineMap.putAll(setStandardDelay(saleOrderLine));
       saleOrderLineMap.putAll(setSupplierPartnerDefault(saleOrderLine, saleOrder));
+      saleOrderLineMap.putAll(setAnalyticMap(saleOrderLine, saleOrder));
 
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
-      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+      saleOrderLineMap.putAll(
+          saleOrderLineAnalyticService.printAnalyticAccounts(saleOrder, saleOrderLine));
     } else {
       return saleOrderLineMap;
     }
@@ -96,6 +99,22 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(setStandardDelay(saleOrderLine));
+    return saleOrderLineMap;
+  }
+
+  protected Map<String, Object> setAnalyticMap(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+    saleOrderLineMap.put(
+        "analyticDistributionTemplate", saleOrderLine.getAnalyticDistributionTemplate());
+    saleOrderLineMap.put("axis1AnalyticAccount", saleOrderLine.getAxis1AnalyticAccount());
+    saleOrderLineMap.put("axis2AnalyticAccount", saleOrderLine.getAxis2AnalyticAccount());
+    saleOrderLineMap.put("axis3AnalyticAccount", saleOrderLine.getAxis3AnalyticAccount());
+    saleOrderLineMap.put("axis4AnalyticAccount", saleOrderLine.getAxis4AnalyticAccount());
+    saleOrderLineMap.put("axis5AnalyticAccount", saleOrderLine.getAxis5AnalyticAccount());
+    saleOrderLineMap.put("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
     return saleOrderLineMap;
   }
 

@@ -10,7 +10,11 @@ import java.util.Map;
 public interface SaleOrderLineProductService {
 
   /**
-   * Update all fields of the sale order line from the product.
+   * Update all fields in the sale module of the sale order line from the product. <br>
+   * <br>
+   * Warning: you probably want to call {@link
+   * SaleOrderLineOnProductChangeService#computeLineFromProduct(SaleOrderLine)} instead, as this
+   * will compute all fields from all modules and compute the line.
    *
    * @param saleOrderLine
    * @param saleOrder

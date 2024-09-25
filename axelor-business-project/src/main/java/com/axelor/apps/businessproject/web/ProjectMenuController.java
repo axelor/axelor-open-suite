@@ -1,5 +1,7 @@
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -12,7 +14,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
+import com.axelor.utils.helpers.ContextHelper;
 import java.util.Optional;
 
 public class ProjectMenuController {
@@ -74,21 +76,26 @@ public class ProjectMenuController {
     response.setView(builder.map());
   }
 
-  public void allProjectRelatedTasks(ActionRequest request, ActionResponse response) {
-    Project project =
-        Optional.ofNullable(request.getContext())
-            .map(Context::getParent)
-            .map(c -> c.asType(Project.class))
-            .orElse(null);
+  @ErrorException
+  public void allProjectRelatedTasks(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Project project = null;
+    if (Project.class.equals(request.getContext().getContextClass())) {
+      project = request.getContext().asType(Project.class);
+    } else {
+      project = ContextHelper.getContextParent(request.getContext(), Project.class, 1);
+    }
+
     if (project == null) {
       return;
     }
+
     ActionView.ActionViewBuilder builder =
         ActionView.define(I18n.get("Related Tasks"))
             .model(ProjectTask.class.getName())
+            .add("grid", "business-project-task-grid")
             .add("tree", "business-project-project-task-tree")
             .add("kanban", "project-task-kanban")
-            .add("grid", "project-task-grid")
             .add("form", "business-project-task-form")
             .param("details-view", "true")
             .domain("self.typeSelect = :_typeSelect AND self.project.id = :_id")
