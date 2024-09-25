@@ -151,7 +151,10 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
     if (!isMultipleQty(qty, productMultipleQtyList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          String.format(I18n.get(BaseExceptionMessage.QUANTITY_NOT_MULTIPLE), quantityList));
+          String.format(
+              I18n.get(BaseExceptionMessage.QUANTITY_NOT_MULTIPLE),
+              productMultipleQtyList.get(0).getSaleProduct().getFullName(),
+              quantityList));
     }
   }
 }
