@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
@@ -102,6 +103,7 @@ public class BankReconciliationMoveGenerationServiceImpl
   protected MoveLineService moveLineService;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineToolService moveLineToolService;
+  protected AccountManagementRepository accountManagementRepository;
 
   @Inject
   public BankReconciliationMoveGenerationServiceImpl(
@@ -120,7 +122,8 @@ public class BankReconciliationMoveGenerationServiceImpl
       MoveLineCreateService moveLineCreateService,
       MoveLineService moveLineService,
       CurrencyScaleService currencyScaleService,
-      MoveLineToolService moveLineToolService) {
+      MoveLineToolService moveLineToolService,
+      AccountManagementRepository accountManagementRepository) {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankStatementRuleRepository = bankStatementRuleRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
@@ -137,6 +140,7 @@ public class BankReconciliationMoveGenerationServiceImpl
     this.moveLineService = moveLineService;
     this.currencyScaleService = currencyScaleService;
     this.moveLineToolService = moveLineToolService;
+    this.accountManagementRepository = accountManagementRepository;
   }
 
   @Override
@@ -602,6 +606,20 @@ public class BankReconciliationMoveGenerationServiceImpl
               bankReconciliationLine,
               bankStatementLine,
               bankStatementRule.getEntryOriginComputation());
+    } else if (bankStatementLine != null) {
+      AccountManagement accountManagement =
+          accountManagementRepository
+              .all()
+              .filter(
+                  "self.company = :company AND self.bankDetails = :bankDetails AND self.journal = :journal AND self.interbankCodeLine = :interbankCodeLine")
+              .bind("company", company)
+              .bind("bankDetails", companyBankDetails)
+              .bind("journal", journal)
+              .bind("interbankCodeLine", bankStatementLine.getOperationInterbankCodeLine())
+              .fetchOne();
+      if (accountManagement != null) {
+        paymentMode = accountManagement.getPaymentMode();
+      }
     }
     if (bankStatementLine != null && currency == null) {
       currency = bankStatementLine.getCurrency();
