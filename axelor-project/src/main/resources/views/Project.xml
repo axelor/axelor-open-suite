@@ -141,8 +141,8 @@
       <field name="description" colSpan="12" widget="html"/>
     </panel>
     <panel name="dashboardPanel" title="Dashboard" showTitle="false" colSpan="12"
-        canCollapse="true" collapseIf="false">
-        <panel-dashlet name="dashboardPanelDashlet" height="200%"
+      canCollapse="true" collapseIf="false">
+      <panel-dashlet name="dashboardPanelDashlet" height="200%"
         action="project.reporting.projects.dashboard" colSpan="12"/>
     </panel>
     <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
