@@ -150,8 +150,6 @@
 
       <panel-include view="incl-project-overview-panel-form"/>
 
-      <panel-include view="incl-checklist-panel-form"/>
-
       <panel name="reportingPanel" title="Reporting">
         <panel title="Time follow-up" colSpan="12" canCollapse="true" collapseIf="true">
           <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
@@ -251,6 +249,8 @@
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
       <panel-include view="incl-wiki-panel-form"/>
+
+      <panel-include view="incl-checklist-panel-form"/>
 
       <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
         if="__config__.app.isApp('employee')"/>

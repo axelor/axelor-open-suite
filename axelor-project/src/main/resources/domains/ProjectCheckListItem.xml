@@ -5,17 +5,17 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-  <entity name="ProjectToDoItem">
+  <entity name="ProjectCheckListItem">
     <string name="title" title="Title" namecolumn="true"/>
     <boolean name="completed" title="Completed"/>
     <integer name="sequence" title="Sequence"/>
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask"
       title="Project task"/>
-    <many-to-one name="parentItem" ref="com.axelor.apps.project.db.ProjectToDoItem"
+    <many-to-one name="parentItem" ref="com.axelor.apps.project.db.ProjectCheckListItem"
       title="Parent"/>
-    <one-to-many name="projectToDoItemList"
-      ref="com.axelor.apps.project.db.ProjectToDoItem" mappedBy="parentItem"/>
+    <one-to-many name="projectCheckListItemList"
+      ref="com.axelor.apps.project.db.ProjectCheckListItem" mappedBy="parentItem"/>
   </entity>
 
 </domain-models>

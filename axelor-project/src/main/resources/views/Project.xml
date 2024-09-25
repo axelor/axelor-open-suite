@@ -109,14 +109,14 @@
 
       <panel-include view="incl-project-overview-panel-form"/>
 
-      <panel-include view="incl-checklist-panel-form"/>
-
       <panel title="Tasks" name="taskPanel">
         <panel-dashlet name="projectTaskDashletPanel" title="Tasks" x-show-bars="true"
           colSpan="12" action="action-project-view-show-project-task" height="200%"/>
       </panel>
 
       <panel-include view="incl-wiki-panel-form"/>
+
+      <panel-include view="incl-checklist-panel-form"/>
 
       <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
         if="__config__.app.isApp('employee')"/>
@@ -359,11 +359,12 @@
 
   <form name="incl-checklist-panel-form" title="Check list"
     model="com.axelor.apps.project.db.Project">
-    <panel-related name="toDoItemListPanel" colSpan="12" x-tree-limit="1"
-      title="To do list" field="projectToDoItemList" orderBy="sequence" canMove="true"
-      onChange="action-to-do-item-method-reset-completed-fields" form-view="project-to-do-item-form"
-      grid-view="project-to-do-item-grid" widget="tree-grid" x-tree-field="projectToDoItemList"
-      x-tree-field-title="Add a new to do item" editable="true" x-expand-all="true"/>
+    <panel-related name="checkListPanel" colSpan="12" x-tree-limit="1"
+      title="Check list" field="projectCheckListItemList" orderBy="sequence" canMove="true"
+      onChange="action-check-list-item-method-reset-completed-fields"
+      form-view="project-check-list-item-form" grid-view="project-check-list-item-grid"
+      widget="tree-grid" x-tree-field="projectCheckListItemList"
+      x-tree-field-title="Add a new check list item" editable="true" x-expand-all="true"/>
   </form>
 
   <kanban columnBy="projectStatus" sequenceBy="orderByState" limit="10" name="project-kanban"

@@ -36,5 +36,5 @@ public interface ITranslation {
 
   public static final String PROJECT_PRIORITY_HIGH = /*$$(*/ "value:High"; /*)*/
 
-  public static final String ADD_TO_DO_ITEM_TREE = /*$$(*/ "Add a new to do item"; /*)*/
+  public static final String ADD_CHECK_LIST_ITEM_TREE = /*$$(*/ "Add a new check list item"; /*)*/
 }

@@ -90,8 +90,9 @@
     <string name="projectJson" title="Project json" json="true"/>
     <string name="categoryJson" title="Category json" json="true"/>
 
-    <one-to-many name="projectToDoItemList"
-      ref="com.axelor.apps.project.db.ProjectToDoItem" title="To do list" mappedBy="projectTask"/>
+    <one-to-many name="projectCheckListItemList"
+      ref="com.axelor.apps.project.db.ProjectCheckListItem" title="Check list"
+      mappedBy="projectTask"/>
 
     <extra-code>
 

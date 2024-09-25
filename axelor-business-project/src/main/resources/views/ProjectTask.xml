@@ -245,7 +245,6 @@
     </panel>
     <panel-include view="incl-customized-field-panel-form"/>
     <panel-tabs name="mainPanelTab">
-      <panel-include view="incl-todo-task-panel-form"/>
       <panel name="timeFollowUpPanel" title="Time follow-up"
         if="__config__.app.isApp('business-project')" showIf="timeUnit">
         <field name="budgetedTime" colSpan="4"
@@ -452,6 +451,9 @@
             title="Total duration (Hours)" colSpan="12"/>
         </panel>
       </panel>
+
+      <panel-include view="incl-checklist-task-panel-form"/>
+
       <panel-include view="incl-links-panel-form"/>
     </panel-tabs>
     <panel name="attrsPanel">
