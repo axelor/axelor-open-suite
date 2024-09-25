@@ -53,12 +53,14 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
   @Override
   public MetaFile getDecryptedFile(MetaFile bankOrderGeneratedFile, String password)
       throws AxelorException {
-    String encryptPassword = AppSettings.get().get("encryption.bankorder.password");
+    String encryptPassword = checkAndGetEncryptionPassword();
     if (!password.equals(encryptPassword)) {
-      return null;
-    } else {
-      return getDecryptedFile(bankOrderGeneratedFile);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_ENCRYPTION_INCORRECT_PASSWORD));
     }
+
+    return getDecryptedFile(bankOrderGeneratedFile);
   }
 
   /**
@@ -95,10 +97,10 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
     }
   }
 
-  protected BytesEncryptor getEncryptor() {
+  protected BytesEncryptor getEncryptor() throws AxelorException {
     AppSettings appSettings = AppSettings.get();
     String algorithm = appSettings.get("encryption.algorithm");
-    String encryptPassword = appSettings.get("encryption.bankorder.password");
+    String encryptPassword = checkAndGetEncryptionPassword();
 
     BytesEncryptor encryptor;
 
@@ -133,5 +135,16 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_DECRYPT_ERROR),
           e.getMessage());
     }
+  }
+
+  @Override
+  public String checkAndGetEncryptionPassword() throws AxelorException {
+    String encryptPassword = AppSettings.get().get("encryption.bankorder.password");
+    if (encryptPassword == null || encryptPassword.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_ENCRYPTION_NO_PASSWORD));
+    }
+    return encryptPassword;
   }
 }

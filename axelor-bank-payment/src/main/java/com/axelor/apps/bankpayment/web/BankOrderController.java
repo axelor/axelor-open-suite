@@ -203,8 +203,6 @@ public class BankOrderController {
               .param("download", "true")
               .map());
       response.setCanClose(true);
-    } else {
-      response.setAlert(I18n.get("The password is incorrect"));
     }
   }
 
