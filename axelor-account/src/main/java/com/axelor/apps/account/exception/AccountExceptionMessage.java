@@ -1776,4 +1776,7 @@ public final class AccountExceptionMessage {
 
   public static final String LATE_PAYMENT_INTEREST_BELOW_THRESHOLD = /*$$(*/
       "The amount remaining is below the threshold defined in configuration." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_NO_PAYMENT_MODE_RATE = /*$$(*/
+      "There is no interest rate defined in invoice term payment mode." /*)*/;
 }
