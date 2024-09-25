@@ -112,7 +112,7 @@
 
       <panel title="Tasks" name="taskPanel">
         <panel-dashlet name="projectTaskDashletPanel" title="Tasks" x-show-bars="true"
-          colSpan="12" action="action-project-view-show-project-task" height="200%"/>
+          colSpan="12" action="action-project-view-show-project-task" height="200%" canSearch="true"/>
       </panel>
 
       <panel-include view="incl-wiki-panel-form"/>
@@ -142,7 +142,7 @@
     </panel>
     <panel name="dashboardPanel" title="Dashboard" showTitle="false" colSpan="12"
       canCollapse="true" collapseIf="false">
-      <panel-dashlet name="dashboardPanelDashlet"
+      <panel-dashlet name="dashboardPanelDashlet" height="200%"
         action="project.reporting.projects.dashboard" colSpan="12"/>
     </panel>
     <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
@@ -245,7 +245,7 @@
   <form name="incl-wiki-panel-form" title="Project" model="com.axelor.apps.project.db.Project">
     <panel title="Wiki" name="wikiPanel" canCollapse="true" collapseIf="true" colSpan="12">
       <panel-related name="wikiListPanel" field="wikiList" colSpan="12"
-        form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
+        form-view="wiki-form" grid-view="wiki-grid-incl-project" canSearch="true"/>
     </panel>
   </form>
 
