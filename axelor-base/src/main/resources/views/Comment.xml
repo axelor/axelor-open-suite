@@ -25,10 +25,10 @@
                         .filter(track => track.title !== "comment.note")
                         .map((track, index) => (
                           <li key={index}>
-                            <strong>{track.title}</strong> :
-                            {track.oldDisplayValue && <span> {track.oldDisplayValue} &raquo; </span>}
-                            {track.oldValue && !track.oldDisplayValue && <span> {track.oldValue} &raquo; </span>}
-                            <span> {track.displayValue || track.value} </span>
+                            <strong>{_t(track.title)}</strong> :
+                            {track.oldDisplayValue && <span> {_t(track.oldDisplayValue)} &raquo; </span>}
+                            {track.oldValue && !track.oldDisplayValue && <span> {_t(track.oldValue)} &raquo; </span>}
+                            <span> {_t(track.displayValue) || _t(track.value)} </span>
                           </li>
                         ))
                     ) : (
@@ -44,7 +44,7 @@
         </viewer>
       </field>
       <field name="parentComment" title="Reply on" showIf="parentComment" canRemove="false"
-        canSelect="false" canView="false" colSpan="12">
+        canSelect="false" colSpan="12">
         <editor x-viewer="true" readonly="true">
           <field name="note" showTitle="false" widget="html" colSpan="12"/>
         </editor>
@@ -79,6 +79,7 @@
     <field name="parentComment.createdBy.name"/>
     <field name="mailMessage.body"/>
     <field name="$commentFiles"/>
+    <field name="mailMessage.subject"/>
 
     <template>
 		<![CDATA[
@@ -87,11 +88,11 @@
 			    <Box as="dl">
 			      <Box as="dt" display="flex" justifyContent="space-between" style={{ borderBottom: isPrivateNote ? "1px dotted red" : "1px dotted #d3d3d3" }}>
 			        <span>
-			          Updated by{" "}
+			          {!mailMessage.subject ? _t('Record updated') : _t(mailMessage.subject)}{" "}
 			          <Link href={`#/ds/action-auth-users/edit/${createdBy.id}`} style={{ textDecoration: "none" }}>
 			            {createdBy.name}
-			          </Link>{" "}
-			          over{" "}
+			          </Link>
+			          {" - "}
 			          <Link href="#" title={$moment(createdOn).format("MM/DD/YYYY HH:mm")} style={{ textDecoration: "none" }}>
 			            {$moment(createdOn).fromNow()}
 			          </Link>
@@ -104,17 +105,21 @@
 			        const renderHtml = (value) => <Box dangerouslySetInnerHTML={{ __html: value }} />;
 			        return (
 			          <>
-			            {parentComment.note && <Box as="dd"><strong>{parentComment.createdBy.name} wrote:</strong> <br />{renderHtml(parentComment.note)}</Box>}
+			            {parentComment.note && (
+						  <Box as="dd" bgColor='body-tertiary' style={{ padding: "10px", borderRadius: "5px", margin: "10px 0" }}>
+						    {renderHtml(parentComment.note)}
+						  </Box>
+						)}
 						<Box as="dd">
 						  {mailMessage.body.startsWith("{") && mailMessage.body.endsWith("}") ? (
 						    JSON.parse(mailMessage.body).tracks
 						      .filter(track => track.title !== "comment.note")
 						      .map((track, index) => (
 						        <li key={index}>
-						          <strong>{track.title}</strong> :
-						          {track.oldDisplayValue && <span> {track.oldDisplayValue} &raquo; </span>}
-						          {track.oldValue && !track.oldDisplayValue && <span> {track.oldValue} &raquo; </span>}
-						          <span> {track.displayValue || track.value} </span>
+						          <strong>{_t(track.title)}</strong> :
+						          {track.oldDisplayValue && <span> {_t(track.oldDisplayValue)} &raquo; </span>}
+						          {track.oldValue && !track.oldDisplayValue && <span> {_t(track.oldValue)} &raquo; </span>}
+						          <span> {_t(track.displayValue) || _t(track.value)} </span>
 						        </li>
 						      ))
 						  ) : (
