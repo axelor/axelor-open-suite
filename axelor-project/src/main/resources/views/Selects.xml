@@ -68,4 +68,8 @@
     <option value="project">Project</option>
     <option value="category">Category</option>
   </selection>
+
+  <selection name="project.batch.action.select">
+    <option value="1">Remove task status</option>
+  </selection>
 </object-views>
