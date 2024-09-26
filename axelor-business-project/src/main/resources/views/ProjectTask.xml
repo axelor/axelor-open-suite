@@ -428,10 +428,12 @@
     <panel name="overviewPanel" title="Overview">
       <field name="ticketNumber"
         if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
-      <field name="project" colSpan="6"
+      <field name="project" colSpan="6" form-view="business-project-form"
+        grid-view="business-project-grid"
         onChange="action-business-project-task-group-project-onchange"
         domain="self.projectStatus.isCompleted = false" required="true"/>
       <field name="parentTask" readonlyIf="project == null" colSpan="6"
+        form-view="business-project-task-form" grid-view="business-project-task-grid"
         onChange="action-project-task-record-get-parent-timeunit"
         onSelect="action-project-task-attrs-project-parent-task-configurations"/>
       <field name="frameworkCustomerContract"

@@ -163,8 +163,10 @@
       <field name="ticketNumber"
         if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
       <field name="project" colSpan="6" onChange="action-project-task-group-project-onchange"
-        domain="self.projectStatus.isCompleted = false" required="true"/>
+        domain="self.projectStatus.isCompleted = false" required="true" form-view="project-form"
+        grid-view="project-grid"/>
       <field name="parentTask" readonlyIf="project == null" colSpan="6"
+        form-view="project-task-form" grid-view="project-task-grid"
         onSelect="action-project-task-attrs-project-parent-task-configurations"/>
       <field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false"
         canView="false" canEdit="false"
