@@ -120,14 +120,26 @@ public class AddressPostRequest extends RequestPostStructure {
   public Address fetchAddress() throws AxelorException {
     City fetchedCity = fetchCity();
     if (fetchedCity != null) {
-      return Beans.get(AddressRepository.class)
-          .all()
-          .filter(
-              "self.country = :country AND self.city = :city AND UPPER(self.streetName) = :streetName")
-          .bind("country", fetchCountry())
-          .bind("city", fetchedCity)
-          .bind("streetName", streetName.toUpperCase())
-          .fetchOne();
+      if (zip != null) {
+        return Beans.get(AddressRepository.class)
+            .all()
+            .filter(
+                "self.country = :country AND self.zip = :zip AND self.city = :city AND UPPER(self.streetName) = :streetName")
+            .bind("country", fetchCountry())
+            .bind("zip", zip)
+            .bind("city", fetchedCity)
+            .bind("streetName", streetName.toUpperCase())
+            .fetchOne();
+      } else {
+        return Beans.get(AddressRepository.class)
+            .all()
+            .filter(
+                "self.country = :country AND self.city = :city AND UPPER(self.streetName) = :streetName")
+            .bind("country", fetchCountry())
+            .bind("city", fetchedCity)
+            .bind("streetName", streetName.toUpperCase())
+            .fetchOne();
+      }
     } else if (zip != null) {
       return Optional.ofNullable(
               Beans.get(AddressRepository.class)
