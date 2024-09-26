@@ -43,4 +43,10 @@
     <option value="submenu">Submenu</option>
   </selection>
 
+  <selection name="mobilesettings.reporting.type.display.select">
+    <option value="indicators">Indicators</option>
+    <option value="activities">Activities</option>
+    <option value="none">None</option>
+  </selection>
+
 </object-views>
