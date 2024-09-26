@@ -60,9 +60,9 @@ import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -106,6 +106,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected SaleInvoicingStateService saleInvoicingStateService;
   protected CurrencyScaleService currencyScaleService;
 
+  protected OrderInvoiceService orderInvoiceService;
+
   @Inject
   public SaleOrderInvoiceServiceImpl(
       AppBaseService appBaseService,
@@ -115,13 +117,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       InvoiceRepository invoiceRepo,
       InvoiceServiceSupplychainImpl invoiceService,
       StockMoveRepository stockMoveRepository,
-      InvoiceTermService invoiceTermService,
       SaleOrderWorkflowService saleOrderWorkflowService,
+      InvoiceTermService invoiceTermService,
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
-      CurrencyScaleService currencyScaleService) {
-
+      CurrencyScaleService currencyScaleService,
+      OrderInvoiceService orderInvoiceService) {
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.appSupplychainService = appSupplychainService;
@@ -129,12 +131,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.invoiceRepo = invoiceRepo;
     this.invoiceService = invoiceService;
     this.stockMoveRepository = stockMoveRepository;
-    this.invoiceTermService = invoiceTermService;
     this.saleOrderWorkflowService = saleOrderWorkflowService;
+    this.invoiceTermService = invoiceTermService;
     this.commonInvoiceService = commonInvoiceService;
     this.invoiceLineOrderService = invoiceLineOrderService;
     this.saleInvoicingStateService = saleInvoicingStateService;
     this.currencyScaleService = currencyScaleService;
+    this.orderInvoiceService = orderInvoiceService;
   }
 
   @Override
@@ -852,7 +855,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   @Override
   public List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
     BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
-    BigDecimal amountToBeInvoiced = amountToBeInvoiced(saleOrder);
+    BigDecimal amountToBeInvoiced = orderInvoiceService.amountToBeInvoiced(saleOrder);
     List<Integer> operationSelectList = new ArrayList<>();
     if (exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
       operationSelectList.add(SaleOrderRepository.INVOICE_LINES);
@@ -875,7 +878,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   @Override
   public void displayErrorMessageIfSaleOrderIsInvoiceable(
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
-    BigDecimal sumInvoices = amountToBeInvoiced(saleOrder);
+    BigDecimal sumInvoices = orderInvoiceService.amountToBeInvoiced(saleOrder);
     BigDecimal computedAmountToInvoice = amountToInvoice;
     if (isPercent) {
       computedAmountToInvoice =
@@ -888,7 +891,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                   RoundingMode.HALF_UP);
     }
     sumInvoices = sumInvoices.add(computedAmountToInvoice);
-    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
+    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) >= 0) {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -899,38 +902,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   @Override
   public void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException {
-    if (amountToBeInvoiced(saleOrder).compareTo(saleOrder.getExTaxTotal()) >= 0) {
+    if (orderInvoiceService.amountToBeInvoiced(saleOrder).compareTo(saleOrder.getExTaxTotal())
+        >= 0) {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
     }
-  }
-
-  /**
-   * Warning; it is not the same as {@link SaleOrder#getAmountInvoiced()}. This method is also
-   * including invoice that are not ventilated. The purpose is to prevent the user from creating too
-   * many invoices, but until all invoices are ventilated the two amounts are different.
-   *
-   * @param saleOrder a saved sale order
-   * @return the sum of amount of all non canceled invoices related to the sale order
-   */
-  protected BigDecimal amountToBeInvoiced(SaleOrder saleOrder) {
-    List<Invoice> invoices =
-        Query.of(Invoice.class)
-            .filter(
-                " self.saleOrder.id = :saleOrderId "
-                    + "AND self.statusSelect != :invoiceStatus "
-                    + "AND self.operationSubTypeSelect != :advanceOperationSubTypeSelect "
-                    + "AND (self.operationTypeSelect = :saleOperationTypeSelect OR self.operationTypeSelect = :refundOperationTypeSelect)")
-            .bind("saleOrderId", saleOrder.getId())
-            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
-            .bind("advanceOperationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
-            .bind("saleOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-            .bind("refundOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
-            .fetch();
-
-    return commonInvoiceService.computeSumInvoices(invoices);
   }
 
   @Transactional
