@@ -117,6 +117,7 @@
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
         <field name="taskDate" onChange="action-project-task-attrs-set-task-duration"
           required="true" readonlyIf="id"/>
+        <field name="priority" canView="false"/>
         <field name="projectTaskCategory"
           onSelect="action-project-task-attrs-project-task-category-configurations"/>
         <field name="targetVersion" domain=":project member of self.projectSet"

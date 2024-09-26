@@ -120,6 +120,7 @@
       <field name="progress"/>
       <field name="assignedTo"/>
       <field name="note"/>
+      <field name="priority"/>
     </track>
 
   </entity>
