@@ -436,7 +436,7 @@ public class InvoiceToolService {
     copy.setLegalNotice(legalNotice);
   }
 
-  protected static void computeInvoiceAmounts(Invoice copy) throws AxelorException {
+  public static void computeInvoiceAmounts(Invoice copy) throws AxelorException {
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
     // Update invoice lines with new currency rate
     for (InvoiceLine invoiceLine : copy.getInvoiceLineList()) {

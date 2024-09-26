@@ -1363,4 +1363,16 @@ public class InvoiceController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void computeInvoiceAmounts(ActionRequest request, ActionResponse response) {
+
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    try {
+      InvoiceToolService.computeInvoiceAmounts(invoice);
+      response.setValues(invoice);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }
