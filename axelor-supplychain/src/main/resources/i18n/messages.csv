@@ -207,6 +207,8 @@
 "Expected/Future Quantity",,,
 "Expedition",,,
 "Export directory is not configured.",,,
+"Fetch limit",,,
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",,,
 "Field fieldSelect is null for %s",,,
 "Field of application",,,
 "Field to select",,,
