@@ -46,7 +46,7 @@ public class AddressRestController {
             I18n.get("Address created"),
             new AddressResponse(
                 Beans.get(AddressService.class)
-                    .createAddress(
+                    .restCreateAddress(
                         requestBody.fetchCountry(),
                         requestBody.fetchCity(),
                         requestBody.getZip(),

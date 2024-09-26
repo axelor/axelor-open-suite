@@ -13,6 +13,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.RequestPostStructure;
 import com.axelor.utils.helpers.StringHelper;
+import java.util.List;
 import java.util.Optional;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -101,13 +102,18 @@ public class AddressPostRequest extends RequestPostStructure {
           .bind("name", city.toUpperCase())
           .fetchOne();
     } else {
-      return Beans.get(CityRepository.class)
-          .all()
-          .filter("self.zip = :zip AND self.country = :country AND UPPER(self.name) = :name")
-          .bind("zip", zip)
-          .bind("country", fetchCountry())
-          .bind("name", city.toUpperCase())
-          .fetchOne();
+      List<City> cityList =
+          Beans.get(CityRepository.class)
+              .all()
+              .filter("self.country = :country AND UPPER(self.name) = :name")
+              .bind("country", fetchCountry())
+              .bind("name", city.toUpperCase())
+              .fetch();
+      if (cityList.size() == 1) {
+        return cityList.get(0);
+      } else {
+        return cityList.stream().filter(c -> zip.equals(c.getZip())).findFirst().orElse(null);
+      }
     }
   }
 

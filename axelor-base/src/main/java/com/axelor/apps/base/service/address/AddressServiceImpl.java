@@ -106,7 +106,7 @@ public class AddressServiceImpl implements AddressService {
   }
 
   @Override
-  public Address createAddress(
+  public Address restCreateAddress(
       String room,
       String floor,
       String streetName,
@@ -258,7 +258,7 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Address createAddress(Country country, City city, String zip, String streetName)
+  public Address restCreateAddress(Country country, City city, String zip, String streetName)
       throws AxelorException {
     if (city == null) {
       throw new AxelorException(
@@ -270,7 +270,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     return addressRepo.save(
-        createAddress(
+        restCreateAddress(
             null,
             null,
             streetName,

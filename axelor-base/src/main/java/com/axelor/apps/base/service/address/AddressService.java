@@ -37,7 +37,7 @@ public interface AddressService {
 
   public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker);
 
-  public Address createAddress(
+  public Address restCreateAddress(
       String room,
       String floor,
       String streetName,
@@ -95,6 +95,6 @@ public interface AddressService {
    */
   public void autocompleteAddress(Address address);
 
-  Address createAddress(Country country, City city, String zip, String streetName)
+  Address restCreateAddress(Country country, City city, String zip, String streetName)
       throws AxelorException;
 }

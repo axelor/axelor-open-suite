@@ -179,7 +179,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
         addressFetchService.getAddress(null, null, streetName, postBox, zip, city, country);
 
     if (address == null) {
-      address = addressService.createAddress(null, null, streetName, postBox, zip, city, country);
+      address =
+          addressService.restCreateAddress(null, null, streetName, postBox, zip, city, country);
     }
 
     return address;
