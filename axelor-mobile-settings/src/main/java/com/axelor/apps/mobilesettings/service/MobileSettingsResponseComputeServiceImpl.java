@@ -247,7 +247,7 @@ public class MobileSettingsResponseComputeServiceImpl
   protected List<MobileMenuResponse> getAccessibleMenusFromApp(String appSequence) {
     MobileConfig mobileConfig = getMobileConfigFromAppSequence(appSequence);
     if (mobileConfig.getIsCustomizeMenuEnabled()) {
-      return mobileConfig.getMenus().stream()
+      return mobileConfig.getMenuList().stream()
           .filter(
               mobileMenu ->
                   mobileMenu.getAuthorizedRoles().isEmpty()
