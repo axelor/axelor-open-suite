@@ -405,6 +405,10 @@ import com.axelor.apps.account.service.reconcile.ReconcileToolService;
 import com.axelor.apps.account.service.reconcile.ReconcileToolServiceImpl;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.account.service.reconcile.UnreconcileServiceImpl;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapService;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapServiceImpl;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapToolService;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapToolServiceImpl;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupService;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupServiceImpl;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupToolService;
@@ -950,6 +954,11 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoicePfpValidateService.class).to(InvoicePfpValidateServiceImpl.class);
     bind(InvoiceTermPaymentToolService.class).to(InvoiceTermPaymentToolServiceImpl.class);
+
+    bind(ForeignExchangeGapService.class).to(ForeignExchangeGapServiceImpl.class);
+
+    bind(ForeignExchangeGapToolService.class).to(ForeignExchangeGapToolServiceImpl.class);
+
     bind(LatePaymentInterestInvoiceService.class).to(LatePaymentInterestInvoiceServiceImpl.class);
     bind(PaymentModeInterestRateService.class).to(PaymentModeInterestRateServiceImpl.class);
   }
