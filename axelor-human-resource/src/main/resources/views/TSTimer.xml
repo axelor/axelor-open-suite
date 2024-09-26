@@ -45,7 +45,7 @@
         canNew="false" canEdit="false" canView="false" colSpan="6"/>
       <spacer colSpan="6"/>
       <field name="project" form-view="project-form" grid-view="project-grid"
-        domain="self.imputable = true AND self.isShowTimeSpent = true" colSpan="6"
+        domain="self.manageTimeSpent = true" colSpan="6"
         onChange="action-ts-timer-attrs-project-onchange"/>
       <field name="projectTask" onSelect="action-ts-timer-attrs-project-task-onselect"
         widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid" colSpan="6"

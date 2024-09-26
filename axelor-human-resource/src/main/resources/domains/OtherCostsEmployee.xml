@@ -9,6 +9,7 @@
 
     <decimal name="amount" title="Amount" scale="2" precision="15"/>
     <string name="description" title="Description" large="true"/>
+    <many-to-one name="exportCode" ref="com.axelor.apps.hr.db.ExportCode"/>
 
   </entity>
 

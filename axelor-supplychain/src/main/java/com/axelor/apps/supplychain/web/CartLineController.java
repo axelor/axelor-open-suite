@@ -21,7 +21,7 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
-import com.axelor.apps.supplychain.service.CartLineSupplychainService;
+import com.axelor.apps.supplychain.service.cartline.CartLineAvailabilityService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -32,9 +32,8 @@ public class CartLineController {
     try {
       CartLine cartLine = request.getContext().asType(CartLine.class);
       Cart cart = request.getContext().getParent().asType(Cart.class);
-      Beans.get(CartLineSupplychainService.class).setAvailableStatus(cart, cartLine);
-      response.setValue("availableStatus", cartLine.getAvailableStatus());
-      response.setValue("availableStatusSelect", cartLine.getAvailableStatusSelect());
+      response.setValues(
+          Beans.get(CartLineAvailabilityService.class).setAvailableStatus(cart, cartLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

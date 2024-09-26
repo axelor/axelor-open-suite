@@ -4,12 +4,12 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -24,8 +24,6 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
   protected AppAccountService appAccountService;
   protected SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain;
   protected AppSupplychainService appSupplychainService;
-  protected SaleOrderLineProductSupplychainService saleOrderLineProductSupplychainService;
-  protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
 
   @Inject
   public SaleOrderLineOnChangeSupplychainServiceImpl(
@@ -37,9 +35,7 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
       AnalyticLineModelService analyticLineModelService,
       AppAccountService appAccountService,
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
-      AppSupplychainService appSupplychainService,
-      SaleOrderLineProductSupplychainService saleOrderLineProductSupplychainService,
-      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
+      AppSupplychainService appSupplychainService) {
     super(
         saleOrderLineDiscountService,
         saleOrderLineComputeService,
@@ -50,8 +46,6 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
     this.appAccountService = appAccountService;
     this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
     this.appSupplychainService = appSupplychainService;
-    this.saleOrderLineProductSupplychainService = saleOrderLineProductSupplychainService;
-    this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
   }
 
   @Override
@@ -65,15 +59,6 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
     }
     saleOrderLineMap.putAll(checkInvoicedOrDeliveredOrderQty(saleOrderLine, saleOrder));
 
-    return saleOrderLineMap;
-  }
-
-  @Override
-  public Map<String, Object> productOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
-    Map<String, Object> saleOrderLineMap = super.productOnChange(saleOrderLine, saleOrder);
-    saleOrderLineMap.putAll(
-        saleOrderLineAnalyticService.printAnalyticAccounts(saleOrder, saleOrderLine));
     return saleOrderLineMap;
   }
 

@@ -14,8 +14,6 @@
       title="Customer Catalog Lines"/>
     <one-to-many name="complementaryProductList" title="Complementary product(s)"
       ref="com.axelor.apps.sale.db.ComplementaryProduct" mappedBy="partner"/>
-    <one-to-many name="loyaltyAccountList" title="Loyalty accounts"
-      ref="com.axelor.apps.sale.db.LoyaltyAccount" mappedBy="partner"/>
   </entity>
 
 </domain-models>
