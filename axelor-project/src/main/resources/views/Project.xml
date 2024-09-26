@@ -183,7 +183,7 @@
           x-show-bars="true" action="action-project-dashlet-project-planning-time" colSpan="12"
           canSearch="true"/>
       </panel>
-      <panel title="HoldBacks" name="projectHoldBacksPanel">
+      <panel title="HoldBacks" name="projectHoldBacksPanel" showIf="isBusinessProject">
         <button name="invoiceReleasedProjectHoldBacksBtn"
           title="Re-invoice selected holdBacks" onClick="action-project-view-release-hold-backs"/>
         <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"
