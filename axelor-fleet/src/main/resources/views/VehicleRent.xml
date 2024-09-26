@@ -19,7 +19,8 @@
     model="com.axelor.apps.fleet.db.VehicleRent" width="large">
     <panel name="mainPanel">
       <field name="customer" colSpan="3"/>
-      <field name="vehicleModel" colSpan="3"/>
+      <field name="vehicleModel" colSpan="3"
+        onChange="action-vehicle-rent-record-set-plate-no"/>
       <field name="plateNo" widget="ref-text" x-target-name="plateNo"
         x-target="com.axelor.apps.fleet.db.Vehicle"
         domain="self.vehicleModel = :vehicleModel and self.isRentalCar = true" colSpan="3"/>
@@ -31,5 +32,11 @@
         domain="self.labelToPrinting = 'km' or self.labelToPrinting = 'miles'" colSpan="3"/>
     </panel>
   </form>
+
+  <action-record name="action-vehicle-rent-record-set-plate-no"
+    model="com.axelor.apps.fleet.db.VehicleRent">
+    <field name="plateNo"
+      expr="eval: vehicleModel ? __repo__(Vehicle).all().filter('self.vehicleModel = ? and self.isRentalCar = true',vehicleModel).fetchOne()?.plateNo : null"/>
+  </action-record>
 
 </object-views>
