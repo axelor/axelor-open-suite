@@ -75,6 +75,7 @@
     <field name="isPrivateNote"/>
     <field name="createdBy.name"/>
     <field name="createdOn"/>
+    <field name="parentComment.id"/>
     <field name="parentComment.note"/>
     <field name="parentComment.createdBy.name"/>
     <field name="mailMessage.body"/>
@@ -180,7 +181,10 @@
     <view-param name="popup-save" value="true"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="forceEdit" value="true"/>
-    <context name="_parentComment" expr="eval: __repo__(Comment).find(id)"/>
+    <context name="_parentComment" expr="eval: __repo__(Comment).find(id)"
+      if="!parentComment.id"/>
+    <context name="_parentComment" expr="eval: __repo__(Comment).find(parentComment.id)"
+      if="parentComment.id"/>
   </action-view>
 
   <action-group name="action-comment-group-delete-note">
