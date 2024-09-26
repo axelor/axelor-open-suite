@@ -191,6 +191,8 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineViewService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineViewServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeComputationService;
@@ -264,6 +266,8 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLineMultipleQtyService.class).to(SaleOrderLineMultipleQtyServiceImpl.class);
     bind(SaleOrderLinePriceService.class).to(SaleOrderLinePriceServiceImpl.class);
     bind(SaleOrderLineOnChangeService.class).to(SaleOrderLineOnChangeServiceImpl.class);
+    bind(SaleOrderLineOnProductChangeService.class)
+        .to(SaleOrderLineOnProductChangeServiceImpl.class);
     bind(SaleOrderInitValueService.class).to(SaleOrderInitValueServiceImpl.class);
     bind(SaleOrderViewService.class).to(SaleOrderViewServiceImpl.class);
     bind(SaleOrderDummyService.class).to(SaleOrderDummyServiceImpl.class);

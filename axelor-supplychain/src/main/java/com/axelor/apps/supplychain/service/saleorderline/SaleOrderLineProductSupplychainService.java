@@ -6,6 +6,10 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import java.util.Map;
 
 public interface SaleOrderLineProductSupplychainService {
+
+  Map<String, Object> computeProductInformationSupplychain(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
+
   Map<String, Object> getProductionInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 

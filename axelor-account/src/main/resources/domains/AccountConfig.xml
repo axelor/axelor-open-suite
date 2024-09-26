@@ -75,6 +75,11 @@
     <integer name="accountCodeNbrCharSelect" title="Account code nbr. char"
       selection="account.account.chart.code.nbr.char.select"/>
 
+    <!-- Foreign exchange gains/losses -->
+    <many-to-one name="foreignExchangeGainsAccount"
+      ref="com.axelor.apps.account.db.Account" title="Gains account"/>
+    <many-to-one name="foreignExchangeLossesAccount"
+      ref="com.axelor.apps.account.db.Account" title="Losses account"/>
 
     <!-- Automatic account creation for partners -->
     <integer name="partnerAccountGenerationModeSelect"
