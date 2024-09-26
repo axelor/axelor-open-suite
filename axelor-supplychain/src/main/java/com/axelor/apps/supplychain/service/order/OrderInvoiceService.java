@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 public interface OrderInvoiceService {
 
   /**
-   * Warning; it is not the same as {@link SaleOrder#getAmountInvoiced()}. This method is also
+   * Warning: it is not the same as {@link SaleOrder#getAmountInvoiced()}. This method is also
    * including invoice that are not ventilated. The purpose is to prevent the user from creating too
    * many invoices, but until all invoices are ventilated the two amounts are different.
    *
@@ -22,7 +22,7 @@ public interface OrderInvoiceService {
   BigDecimal amountToBeInvoiced(SaleOrder saleOrder);
 
   /**
-   * Warning; it is not the same as {@link PurchaseOrder#getAmountInvoiced()}. This method is also
+   * Warning: it is not the same as {@link PurchaseOrder#getAmountInvoiced()}. This method is also
    * including invoice that are not ventilated. The purpose is to prevent the user from creating too
    * many invoices, but until all invoices are ventilated the two amounts are different.
    *
