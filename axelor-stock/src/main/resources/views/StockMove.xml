@@ -1495,6 +1495,7 @@
     title="See stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
+    <view-param name="search-filters" value="stock-move-line-filters"/>
     <domain>self.stockMove.typeSelect = :_typeSelect AND self.stockMove.isReversion = :_isReversion</domain>
     <context name="_typeSelect" expr="eval:_typeSelect"/>
     <context name="_isReversion" expr="eval:_isReversion"/>
