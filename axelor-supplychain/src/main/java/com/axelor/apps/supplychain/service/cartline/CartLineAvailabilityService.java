@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service.cartline;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import java.util.List;
@@ -25,9 +26,10 @@ import java.util.Map;
 
 public interface CartLineAvailabilityService {
 
-  void setAvailableStatus(Cart cart);
+  void setAvailableStatus(Cart cart) throws AxelorException;
 
-  Map<String, Object> setAvailableStatus(Cart cart, CartLine cartLine);
+  Map<String, Object> setAvailableStatus(Cart cart, CartLine cartLine) throws AxelorException;
 
-  List<CartLine> getAvailableCartLineList(Cart cart, List<CartLine> cartLineList);
+  List<CartLine> getAvailableCartLineList(Cart cart, List<CartLine> cartLineList)
+      throws AxelorException;
 }

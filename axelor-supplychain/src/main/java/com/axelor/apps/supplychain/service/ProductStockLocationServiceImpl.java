@@ -297,7 +297,12 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
 
       Unit unitConversion = product.getUnit();
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
-        BigDecimal productAvailableQty = stockLocationLine.getCurrentQty();
+        BigDecimal productAvailableQty =
+            appSupplychainService.isApp("supplychain")
+                    && appSupplychainService.getAppSupplychain().getManageStockReservation()
+                ? stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty())
+                : stockLocationLine.getCurrentQty();
+
         productAvailableQty =
             unitConversionService.convert(
                 stockLocationLine.getUnit(),
