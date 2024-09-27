@@ -1,3 +1,0 @@
----
-title: "Stock: fixed an error occurring when splitting a stock move line with a real quantity greater than the expected quantity."
-module: axelor-stock

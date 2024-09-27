@@ -26,6 +26,7 @@ import com.axelor.apps.sale.service.cart.CartInitValueService;
 import com.axelor.apps.sale.service.cart.CartResetService;
 import com.axelor.apps.sale.service.cart.CartRetrievalService;
 import com.axelor.apps.sale.service.cart.CartSaleOrderGeneratorService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -92,6 +93,17 @@ public class CartController {
               .context("_showRecord", String.valueOf(saleOrder.getId()))
               .map());
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getCartPartnerDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Cart cart = request.getContext().asType(Cart.class);
+      String domain =
+          Beans.get(SaleOrderDomainService.class).getPartnerBaseDomain(cart.getCompany());
+      response.setAttr("partner", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

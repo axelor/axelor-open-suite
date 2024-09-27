@@ -17,7 +17,6 @@
       mappedBy="projectTemplate"/>
     <string name="code" title="Code" unique="true"/>
     <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
-    <boolean name="imputable" default="true" massUpdate="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
       title="Type of authorized activities"/>

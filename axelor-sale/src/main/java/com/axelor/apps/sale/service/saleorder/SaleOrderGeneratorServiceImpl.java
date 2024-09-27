@@ -32,6 +32,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
 import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
@@ -47,8 +48,6 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   protected SaleOrderDomainService saleOrderDomainService;
   protected PartnerRepository partnerRepository;
 
-  protected SaleConfigRepository saleConfigRepository;
-
   @Inject
   public SaleOrderGeneratorServiceImpl(
       SaleOrderRepository saleOrderRepository,
@@ -58,8 +57,7 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
       SaleOrderOnChangeService saleOrderOnChangeService,
       SaleOrderDomainService saleOrderDomainService,
       PartnerRepository partnerRepository,
-      SaleConfigService saleConfigService,
-      SaleConfigRepository saleConfigRepository) {
+      SaleConfigService saleConfigService) {
     this.saleOrderRepository = saleOrderRepository;
     this.appSaleService = appSaleService;
     this.companyService = companyService;
@@ -68,7 +66,6 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
     this.saleOrderDomainService = saleOrderDomainService;
     this.partnerRepository = partnerRepository;
     this.saleConfigService = saleConfigService;
-    this.saleConfigRepository = saleConfigRepository;
   }
 
   @Transactional(rollbackOn = {Exception.class})

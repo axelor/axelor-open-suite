@@ -29,4 +29,6 @@ public interface PurchaseOrderLineTaxService {
   List<PurchaseOrderLineTax> createsPurchaseOrderLineTax(
       PurchaseOrder purchaseOrder, List<PurchaseOrderLine> purchaseOrderLineList)
       throws AxelorException;
+
+  List<PurchaseOrderLineTax> getUpdatedPurchaseOrderLineTax(PurchaseOrder purchaseOrder);
 }

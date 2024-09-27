@@ -112,7 +112,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
             .all()
             .filter("self.archived = false or self.archived is null")
             .order("id");
-    while (!(debtRecoveries = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(debtRecoveries = query.fetch(getFetchLimit(), offset)).isEmpty()) {
       for (DebtRecovery debtRecovery : debtRecoveries) {
         ++offset;
         if (debtRecovery.getRespiteDateBeforeAccountBlocking() != null
@@ -165,6 +165,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
         }
       }
       JPA.clear();
+      findBatch();
     }
     blockCustomers(customersToBlock);
     unblockCustomers(customerToUnblock);

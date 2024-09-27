@@ -113,20 +113,22 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderRestService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderRestServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionServiceImpl;
+import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingService;
+import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingServiceImpl;
+import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingViewService;
+import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingViewServiceImpl;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeServiceImpl;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.opportunity.OpportunitySaleOrderService;
 import com.axelor.apps.sale.service.saleorder.opportunity.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.opportunity.OpportunityServiceSaleImpl;
@@ -189,6 +191,8 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineViewService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineViewServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeComputationService;
@@ -262,6 +266,8 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLineMultipleQtyService.class).to(SaleOrderLineMultipleQtyServiceImpl.class);
     bind(SaleOrderLinePriceService.class).to(SaleOrderLinePriceServiceImpl.class);
     bind(SaleOrderLineOnChangeService.class).to(SaleOrderLineOnChangeServiceImpl.class);
+    bind(SaleOrderLineOnProductChangeService.class)
+        .to(SaleOrderLineOnProductChangeServiceImpl.class);
     bind(SaleOrderInitValueService.class).to(SaleOrderInitValueServiceImpl.class);
     bind(SaleOrderViewService.class).to(SaleOrderViewServiceImpl.class);
     bind(SaleOrderDummyService.class).to(SaleOrderDummyServiceImpl.class);
@@ -295,5 +301,6 @@ public class SaleModule extends AxelorModule {
     bind(ProductPopulateSaleObserver.class);
     bind(ProductRestService.class).to(ProductRestServiceImpl.class);
     bind(CartSaleOrderGeneratorService.class).to(CartSaleOrderGeneratorServiceImpl.class);
+    bind(SaleOrderRestService.class).to(SaleOrderRestServiceImpl.class);
   }
 }

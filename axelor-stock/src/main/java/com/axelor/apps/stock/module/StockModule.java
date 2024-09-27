@@ -72,6 +72,8 @@ import com.axelor.apps.stock.service.StockCorrectionService;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryService;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
+import com.axelor.apps.stock.service.StockLocationDomainService;
+import com.axelor.apps.stock.service.StockLocationDomainServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineFetchServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
@@ -204,6 +206,7 @@ public class StockModule extends AxelorModule {
     bind(MassStockMoveRepository.class).to(MassStockMoveManagementRepository.class);
     bind(ProductPopulateStockObserver.class);
     bind(PickedProductAttrsService.class).to(PickedProductAttrsServiceImpl.class);
+    bind(StockLocationDomainService.class).to(StockLocationDomainServiceImpl.class);
     bind(MassStockMoveNeedService.class).to(MassStockMoveNeedServiceImpl.class);
   }
 }

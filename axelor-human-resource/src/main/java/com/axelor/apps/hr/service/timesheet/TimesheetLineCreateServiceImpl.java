@@ -76,7 +76,7 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
           HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE);
     }
     if (product == null) {
-      product = userHrService.getTimesheetProduct(employee);
+      product = userHrService.getTimesheetProduct(employee, projectTask);
     }
     timesheetLineCheckService.checkActivity(project, product);
     TimesheetLine timesheetLine =
