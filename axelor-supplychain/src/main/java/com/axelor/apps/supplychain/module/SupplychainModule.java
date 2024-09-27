@@ -236,6 +236,8 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderServiceImpl;
 import com.axelor.apps.supplychain.service.observer.SaleOrderLineSupplychainObserver;
 import com.axelor.apps.supplychain.service.observer.SaleOrderSupplychainObserver;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderComputeServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCreateServiceSupplychainImpl;
@@ -305,6 +307,7 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderWorkflowServiceImpl.class).to(SaleOrderWorkflowServiceSupplychainImpl.class);
     bind(PurchaseOrderInvoiceService.class).to(PurchaseOrderInvoiceServiceImpl.class);
     bind(SaleOrderInvoiceService.class).to(SaleOrderInvoiceServiceImpl.class);
+    bind(OrderInvoiceService.class).to(OrderInvoiceServiceImpl.class);
     bind(SaleOrderPurchaseService.class).to(SaleOrderPurchaseServiceImpl.class);
     bind(StockMoveInvoiceService.class).to(StockMoveInvoiceServiceImpl.class);
     bind(SaleOrderManagementRepository.class).to(SaleOrderSupplychainRepository.class);
