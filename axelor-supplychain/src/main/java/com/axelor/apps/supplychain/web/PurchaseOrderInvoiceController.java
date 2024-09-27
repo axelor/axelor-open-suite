@@ -49,7 +49,8 @@ public class PurchaseOrderInvoiceController {
 
     try {
       Beans.get(PurchaseOrderInvoiceService.class)
-          .displayErrorMessageIfPurchaseOrderIsInvoiceable(purchaseOrder, BigDecimal.ZERO, false);
+          .displayErrorMessageIfPurchaseOrderIsInvoiceable(
+              purchaseOrder, purchaseOrder.getExTaxTotal(), false);
       Invoice invoice = Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
       if (invoice != null) {
         response.setReload(true);
