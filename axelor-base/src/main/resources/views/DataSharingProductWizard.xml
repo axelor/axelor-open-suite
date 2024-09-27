@@ -14,7 +14,7 @@
     onDelete="action-data-sharing-product-wizard-method-delete-data-sharing-referential-lines">
     <toolbar>
       <button name="generateBtn" title="Generate" hidden="true"
-        onClick="save,action-data-sharing-product-wizard-method-generate-data-sharing-referential-lines"
+        onClick="action-data-sharing-product-wizard-group-generate-data-sharing-referential-lines"
         showIf="(productCategorySet &amp;&amp; productCategorySet.length > 0) || (productSet &amp;&amp; productSet.length > 0)"/>
     </toolbar>
     <panel name="mainPanel">
@@ -28,6 +28,15 @@
         colSpan="12"/>
     </panel>
   </form>
+
+  <action-group
+    name="action-data-sharing-product-wizard-group-generate-data-sharing-referential-lines">
+    <action name="save"/>
+    <action
+      name="action-data-sharing-product-wizard-method-delete-data-sharing-referential-lines"/>
+    <action
+      name="action-data-sharing-product-wizard-method-generate-data-sharing-referential-lines"/>
+  </action-group>
 
   <action-method
     name="action-data-sharing-product-wizard-method-generate-data-sharing-referential-lines">
