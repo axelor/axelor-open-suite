@@ -642,7 +642,7 @@
 "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error.","Le processus a été arrêté car le calcul était bloqué dans une boucle infinie. Cette erreur peut être causée par une erreur de configuration.",,
 "The product will not be delivered in time for its corresponding need.","Le produit ne sera pas livré à temps pour le besoin correspondant.",,
 "The proposal has been successfully generated.","La proposition a été générée avec succès.",,
-"The purchase order %s invoiced amount cannot be greater than its total amount.","Le montant facturé de la commande %s ne peut pas être plus grand que son montant total.",,
+"The purchase order %s invoiced amount cannot be greater than its total amount.",,,
 "The purchase order trading name is missing.","L'enseigne de la commande est manquante.",,
 "The quantity to invoice is greater than the quantity in the purchase order","La quantité à facturer est plus importante que la quantité de la commande d’achat.",,
 "The quantity to invoice is greater than the quantity in the sale order","La quantité à facturer est plus grande que la quantité de la commande",,
