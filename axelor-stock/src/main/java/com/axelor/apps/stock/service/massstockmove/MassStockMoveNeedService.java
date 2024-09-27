@@ -11,7 +11,6 @@ public interface MassStockMoveNeedService {
   void createMassStockMoveNeedFromStockMoveLinesId(
       MassStockMove massStockMove, List<Long> stockMoveLinesIdList);
 
-  @Transactional(rollbackOn = Exception.class)
   MassStockMoveNeed createMassStockMoveNeed(
       MassStockMove massStockMove, Product product, BigDecimal qtyToMove);
 }
