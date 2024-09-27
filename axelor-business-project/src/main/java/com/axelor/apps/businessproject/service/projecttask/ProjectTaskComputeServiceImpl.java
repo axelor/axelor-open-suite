@@ -15,7 +15,7 @@ public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService 
 
   protected UnitConversionForProjectService unitConversionForProjectService;
   protected ProjectFrameworkContractService projectFrameworkContractService;
-  public static final int BIG_DECIMAL_SCALE = 2;
+  public static final int COMPUTE_SCALE = 5;
 
   @Inject
   public ProjectTaskComputeServiceImpl(
@@ -40,7 +40,7 @@ public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService 
             oldTimeUnit,
             projectTask.getTimeUnit(),
             projectTask.getBudgetedTime(),
-            BIG_DECIMAL_SCALE,
+            COMPUTE_SCALE,
             projectTask.getProject()));
   }
 
@@ -57,7 +57,7 @@ public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService 
             projectTask.getTimeUnit(),
             projectTask.getInvoicingUnit(),
             projectTask.getUpdatedTime(),
-            BIG_DECIMAL_SCALE,
+            COMPUTE_SCALE,
             projectTask.getProject()));
   }
 
@@ -77,7 +77,7 @@ public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService 
               projectTask.getInvoicingUnit(),
               productUnit,
               (BigDecimal) productDatas.get("unitPrice"),
-              BIG_DECIMAL_SCALE,
+              COMPUTE_SCALE,
               projectTask.getProject()));
     }
     if (productDatas.get("unitCost") != null) {
@@ -86,7 +86,7 @@ public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService 
               projectTask.getInvoicingUnit(),
               productUnit,
               (BigDecimal) productDatas.get("unitCost"),
-              BIG_DECIMAL_SCALE,
+              COMPUTE_SCALE,
               projectTask.getProject()));
     }
   }
