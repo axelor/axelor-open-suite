@@ -139,13 +139,19 @@ public class PaymentModeInterestRateServiceImpl implements PaymentModeInterestRa
 
   @Override
   public List<String> checkPeriodIsContinuous(
-      PaymentMode paymentMode, Optional<LocalDate> fromDate, Optional<LocalDate> endDate) {
+      PaymentMode paymentMode,
+      InterestRateHistoryLine interestRateHistoryLine,
+      Optional<LocalDate> fromDate,
+      Optional<LocalDate> endDate) {
 
     List<String> fieldsInError = new ArrayList<>();
 
     List<InterestRateHistoryLine> interestRateHistoryLineList =
         paymentMode.getInterestRateHistoryLineList().stream()
-            .filter(historyLine -> historyLine.getId() != null)
+            .filter(
+                historyLine ->
+                    historyLine.getId() != null
+                        && historyLine.getId() != interestRateHistoryLine.getId())
             .collect(Collectors.toList());
     if (interestRateHistoryLineList.isEmpty()) {
       return fieldsInError;

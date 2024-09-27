@@ -17,7 +17,10 @@ public interface PaymentModeInterestRateService {
       Optional<LocalDate> endDate);
 
   List<String> checkPeriodIsContinuous(
-      PaymentMode paymentMode, Optional<LocalDate> fromDate, Optional<LocalDate> endDate);
+      PaymentMode paymentMode,
+      InterestRateHistoryLine interestRateHistoryLine,
+      Optional<LocalDate> fromDate,
+      Optional<LocalDate> endDate);
 
   boolean checkEndDateIsInPast(Optional<LocalDate> endDate);
 }

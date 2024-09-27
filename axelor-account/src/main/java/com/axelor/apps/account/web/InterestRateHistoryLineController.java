@@ -52,7 +52,7 @@ public class InterestRateHistoryLineController {
 
     List<String> fieldsInError =
         Beans.get(PaymentModeInterestRateService.class)
-            .checkPeriodIsContinuous(paymentMode, fromDate, endDate);
+            .checkPeriodIsContinuous(paymentMode, interestRateHistoryLine, fromDate, endDate);
 
     if (!fieldsInError.isEmpty()) {
       fieldsInError.forEach(field -> response.setValue(field, null));
