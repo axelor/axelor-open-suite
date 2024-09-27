@@ -63,8 +63,9 @@
         <item name="bookResourceItem" title="Book resource"
           if=" __config__.app.getApp('project')?.resourceManagement"
           action="save,action-project-book-resource"/>
-        <item name="taskEditorItem" action="save,action-project-open-task-editor"
-          title="Task editor"/>
+        <item title="Show planning" action="action-project-view-show-planning-panel"
+          if-module="axelor-human-resource" if="__config__.app.isApp('employee')"
+          showIf="isShowPlanning &amp;&amp; id"/>
         <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
         <item name="topic" title="Topic" action="save,project.topic.all"
           showIf="id &amp;&amp; isShowTopic"/>
@@ -85,40 +86,39 @@
           showIf="id &amp;&amp; isShowCalendarPerUser"/>
       </menu>
     </menubar>
-    <panel name="mainPanel">
-      <panel name="detailsPanel" colSpan="12">
-        <panel name="statusPanel" stacked="true" colSpan="8">
-          <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"/>
-        </panel>
-        <spacer colSpan="2"/>
-        <panel name="statusChangeBtn" colSpan="2">
-          <button name="finishBtn" icon="check-circle" title="Finish" colSpan="12"
-            showIf="id &amp;&amp; !projectStatus.isCompleted"
-            onClick="action-project-group-finish-project"/>
-          <button name="cancelBtn" title="Cancel" css="btn-danger" colSpan="12"
-            hideIf="projectStatus.id == $canceledProjectStatusId || !id" icon="x-circle"
-            onClick="action-project-group-status-canceled"/>
-          <button name="resetBtn" title="Reset" css="btn-warning" colSpan="12"
-            showIf="id &amp;&amp; projectStatus.id == $canceledProjectStatusId"
-            icon="skip-backward-fill" onClick="action-project-record-status-new,save"/>
-          <field name="projectStatus.isCompleted" hidden="true"/>
-        </panel>
-      </panel>
+    <panel name="mainPanel" colSpan="12">
       <panel-include view="incl-information-panel-form"/>
+      <spacer colSpan="2"/>
+      <panel name="statusChangeBtn" colSpan="4">
+        <button name="finishBtn" icon="check-circle" title="Finish"
+          showIf="id &amp;&amp; !projectStatus.isCompleted"
+          onClick="action-project-group-finish-project"/>
+        <button name="cancelBtn" title="Cancel" css="btn-danger"
+          hideIf="projectStatus.id == $canceledProjectStatusId || !id" icon="x-circle"
+          onClick="action-project-group-status-canceled"/>
+        <button name="resetBtn" title="Reset" css="btn-warning"
+          showIf="id &amp;&amp; projectStatus.id == $canceledProjectStatusId"
+          icon="skip-backward-fill" onClick="action-project-record-status-new,save"/>
+        <field name="projectStatus.isCompleted" hidden="true"/>
+      </panel>
     </panel>
 
     <panel-tabs name="mainPanelTab">
 
-      <panel-include view="incl-project-overview-panel-form"/>
+      <panel name="overviewPanel" title="Overview"
+        onTabSelect="action-project-activity-dashboard-method-on-new">
+        <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"/>
+        <field name="fromDate" colSpan="3"/>
+        <field name="toDate" colSpan="3"/>
+        <panel-include view="incl-project-overview-panel-form"/>
+      </panel>
 
       <panel title="Tasks" name="taskPanel">
         <panel-dashlet name="projectTaskDashletPanel" title="Tasks" x-show-bars="true"
-          colSpan="12" action="action-project-view-show-project-task" height="200%"/>
+          colSpan="12" action="action-project-view-show-project-task" height="200%" canSearch="true"/>
       </panel>
 
-      <panel-include view="incl-project-structure-panel-form"/>
-      <panel-include if-module="axelor-human-resource" view="incl-planning-panel-form"
-        if="__config__.app.isApp('employee')"/>
+      <panel-include view="incl-wiki-panel-form"/>
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
 
@@ -137,32 +137,31 @@
 
   <form name="incl-project-overview-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel name="overviewPanel" title="Overview"
-      onTabSelect="action-project-activity-dashboard-method-on-new">
+    <panel colSpan="12">
       <field name="description" colSpan="12" widget="html"/>
-      <panel name="dashboardPanel" title="Dashboard" colSpan="12" canCollapse="true"
-        collapseIf="false">
-        <panel-dashlet name="dashboardPanelDashlet"
-          action="project.reporting.projects.dashboard" colSpan="12"/>
-      </panel>
-      <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
-        if="__config__.app.getApp('base')?.enableSiteManagementForProject">
-        <field name="siteSet" showTitle="false" colSpan="12" grid-view="site-project-grid"
-          form-view="site-form"
-          domain="(self.typeSelect = 1 AND self.isUsableOnProject = true AND self.company = :company)
+    </panel>
+    <panel name="dashboardPanel" title="Dashboard" showTitle="false" colSpan="12"
+      canCollapse="true" collapseIf="false">
+      <panel-dashlet name="dashboardPanelDashlet" height="200%"
+        action="project.reporting.projects.dashboard" colSpan="12"/>
+    </panel>
+    <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
+      if="__config__.app.getApp('base')?.enableSiteManagementForProject">
+      <field name="siteSet" showTitle="false" colSpan="12" grid-view="site-project-grid"
+        form-view="site-form"
+        domain="(self.typeSelect = 1 AND self.isUsableOnProject = true AND self.company = :company)
           OR (self.typeSelect = 2 AND self.isUsableOnProject = true AND self.company = :company AND self.partner = :clientPartner)"
-          canEdit="false"/>
-      </panel>
-      <panel title="Activities" name="activityPanel" canCollapse="true" collapseIf="true"
-        colSpan="12" showIf="id">
-        <panel-include view="project-activity-dashboard-form"/>
-      </panel>
+        canEdit="false"/>
+    </panel>
+    <panel title="Activities" name="activityPanel" canCollapse="true" collapseIf="true"
+      colSpan="12" showIf="id">
+      <panel-include view="project-activity-dashboard-form"/>
     </panel>
   </form>
 
   <form name="incl-information-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel name="informationPanel" colSpan="10">
+    <panel name="informationPanel">
       <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
         <editor x-show-titles="false">
           <panel name="seq" colSpan="3">
@@ -182,11 +181,9 @@
 
   <form name="incl-project-structure-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel name="structurePanel" title="Project structure">
-      <field name="fromDate" colSpan="6"/>
-      <field name="toDate" colSpan="6"/>
-      <panel title="Members" name="membersPanel" canCollapse="true" colSpan="12"
-        collapseIf="true">
+    <panel name="structurePanel" title="Project structure" collapseIf="false"
+      canCollapse="true" colSpan="12">
+      <panel title="Members" name="membersPanel" colSpan="12">
         <field name="extendsMembersFromParent" hidden="true" widget="boolean-switch"/>
         <spacer/>
         <field name="team" title="Team" readonlyIf="synchronize || extendsMembersFromParent"
@@ -202,26 +199,28 @@
           canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
           grid-view="user-grid" colSpan="3"/>
       </panel>
-      <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
-        canCollapse="true" collapseIf="true">
+      <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
         <field name="parentProject" canEdit="false" form-view="project-form"
           grid-view="project-grid" onSelect="action-project-attrs-set-parent-project-domain"/>
         <field name="isShowPhasesElements" widget="boolean-switch"/>
         <field name="childProjectList" readonly="true" colSpan="12" form-view="project-form"
           grid-view="project-child-grid" showIf="isShowPhasesElements"/>
       </panel>
-      <panel-include view="incl-resource-booking-panel-form"
-        if="__config__.app.getApp('project')?.resourceManagement"/>
-      <panel-include view="incl-wiki-panel-form"/>
+      <panel name="resourceBookingListPanel" title="Resource booking" colSpan="12"
+        if="__config__.app.getApp('project')?.resourceManagement">
+        <panel-related name="resourceBookingListPanel" field="resourceBookingList"
+          form-view="resource-booking-form" grid-view="resource-booking-grid-incl-project"
+          height="200%" colSpan="12"/>
+      </panel>
     </panel>
   </form>
 
   <form name="incl-planning-panel-form" title="Project"
-    model="com.axelor.apps.project.db.Project">
-    <panel title="Planning" name="planningPanel" colSpan="12" hideIf="!isShowPlanning || !id">
+    model="com.axelor.apps.project.db.Project" width="large">
+    <panel title="Planning" name="planningPanel" colSpan="12">
       <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
         x-show-bars="true" action="action-project-dashlet-project-planning-time" colSpan="12"
-        canSearch="true"/>
+        canSearch="true" height="200%"/>
     </panel>
   </form>
 
@@ -233,35 +232,27 @@
         action="action-project-dashlet-validated-timesheet-lines" title="Validated Timesheet lines"
         colSpan="12" canSearch="true"/>
       <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
-        if="__config__.app.getApp('timesheet')?.needValidation"
+        if="__config__.app.getApp('timesheet')?.needValidation" height="200%"
         action="action-project-dashlet-project-waiting-timesheet-lines"
         title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
       <panel-dashlet name="allTimesheetsLinesPanel" x-show-bars="true"
-        if="!__config__.app.getApp('timesheet')?.needValidation"
+        if="!__config__.app.getApp('timesheet')?.needValidation" height="200%"
         action="action-project-dashlet-project-all-timesheet-lines" title="TimesheetLine.timeSpent"
         colSpan="12" canSearch="true"/>
     </panel>
   </form>
 
-  <form name="incl-resource-booking-panel-form" title="Project"
-    model="com.axelor.apps.project.db.Project">
-    <panel name="resourceBookingListPanel" title="Resource booking" canCollapse="true"
-      collapseIf="true" colSpan="12">
-      <panel-related name="resourceBookingListPanel" field="resourceBookingList"
-        form-view="resource-booking-form" grid-view="resource-booking-grid-incl-project"
-        colSpan="12"/>
-    </panel>
-  </form>
-
   <form name="incl-wiki-panel-form" title="Project" model="com.axelor.apps.project.db.Project">
     <panel title="Wiki" name="wikiPanel" canCollapse="true" collapseIf="true" colSpan="12">
+      <field name="wikiDescription" colSpan="12" widget="html"/>
       <panel-related name="wikiListPanel" field="wikiList" colSpan="12"
-        form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
+        form-view="wiki-form" grid-view="wiki-grid-incl-project" canSearch="true"/>
     </panel>
   </form>
 
   <form name="incl-project-config-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
+    <panel-include view="incl-project-structure-panel-form"/>
     <panel title="General configuration" name="generalConfigurationsPanel" colSpan="12"
       canCollapse="true" collapseIf="false">
       <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
@@ -729,11 +720,6 @@
     <context name="_project" expr="eval:__self__"/>
   </action-view>
 
-  <action-view name="action-project-open-task-editor" title="Task editor">
-    <view name="project/task-editor/?id={{id}}" type="html"/>
-    <context name="id" expr="eval:id"/>
-  </action-view>
-
   <action-view name="project.wiki.all" title="Wikis (${name})"
     model="com.axelor.apps.project.db.Wiki">
     <view type="grid" name="wiki-grid"/>
@@ -780,6 +766,12 @@
     <view type="form" name="project-task-form"/>
     <domain>self.project.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-project-view-show-planning-panel" title="Planning"
+    model="com.axelor.apps.project.db.Project">
+    <view type="form" name="incl-planning-panel-form"/>
+    <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
   <!-- ACTION VALIDATE -->

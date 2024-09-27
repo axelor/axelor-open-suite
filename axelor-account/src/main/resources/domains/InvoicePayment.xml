@@ -89,6 +89,8 @@
 		public static final int TYPE_IRRECOVERABLE_DEBT = 7;
 		public static final int TYPE_DOUBTFUL_CREDIT = 8;
 		public static final int TYPE_REFUND_IMPUTATION = 9;
+		public static final int TYPE_FOREIGN_EXCHANGE_GAIN = 10;
+		public static final int TYPE_FOREIGN_EXCHANGE_LOSS = 11;
 
 	]]></extra-code>
 

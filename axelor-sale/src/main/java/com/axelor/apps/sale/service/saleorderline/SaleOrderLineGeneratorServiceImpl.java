@@ -30,9 +30,9 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
-import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -40,7 +40,7 @@ import java.math.BigDecimal;
 
 public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGeneratorService {
   protected SaleOrderLineInitValueService saleOrderLineInitValueService;
-  protected SaleOrderLineProductService saleOrderLineProductService;
+  protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
   protected SaleOrderLineRepository saleOrderLineRepository;
   protected ProductRepository productRepository;
   protected SaleOrderRepository saleOrderRepository;
@@ -57,31 +57,31 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
   @Inject
   public SaleOrderLineGeneratorServiceImpl(
       SaleOrderLineInitValueService saleOrderLineInitValueService,
-      SaleOrderLineProductService saleOrderLineProductService,
-      SaleOrderRepository saleOrderRepository,
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
       SaleOrderLineRepository saleOrderLineRepository,
+      ProductRepository productRepository,
+      SaleOrderRepository saleOrderRepository,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderLineDomainService saleOrderLineDomainService,
-      ProductRepository productRepository,
       SaleOrderService saleOrderService,
-      AppSaleService appSaleService,
       SaleOrderOnLineChangeService saleOrderOnLineChangeService,
-      ProductMultipleQtyService productMultipleQtyService,
-      SaleOrderLineOnChangeService saleOrderLineOnChangeService) {
+      AppSaleService appSaleService,
+      SaleOrderLineOnChangeService saleOrderLineOnChangeService,
+      ProductMultipleQtyService productMultipleQtyService) {
     this.saleOrderLineInitValueService = saleOrderLineInitValueService;
-    this.saleOrderLineProductService = saleOrderLineProductService;
+    this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
     this.saleOrderLineRepository = saleOrderLineRepository;
+    this.productRepository = productRepository;
     this.saleOrderRepository = saleOrderRepository;
     this.saleOrderLineComputeService = saleOrderLineComputeService;
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderLineDomainService = saleOrderLineDomainService;
-    this.productRepository = productRepository;
     this.saleOrderService = saleOrderService;
     this.saleOrderOnLineChangeService = saleOrderOnLineChangeService;
     this.appSaleService = appSaleService;
-    this.productMultipleQtyService = productMultipleQtyService;
     this.saleOrderLineOnChangeService = saleOrderLineOnChangeService;
+    this.productMultipleQtyService = productMultipleQtyService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -100,9 +100,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       qty = BigDecimal.ONE;
     }
     saleOrderLine.setQty(qty);
-    saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
-    saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
-    saleOrderLineOnChangeService.productOnChange(saleOrderLine, saleOrder);
+    saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
 
     saleOrderLineRepository.save(saleOrderLine);
 

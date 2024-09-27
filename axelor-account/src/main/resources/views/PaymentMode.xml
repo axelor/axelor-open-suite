@@ -15,6 +15,10 @@
     <extend target="//panel[@name='mainPanel']/field[@name='inOutSelect']">
       <attribute name="onChange"
         value="action-payment-mode-group-empty,action-payment-mode-record-accounting-trigger-init-cheque-in"/>
+      <insert position="after">
+        <field name="interestRate" colSpan="3"
+          if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
+      </insert>
     </extend>
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">

@@ -20,8 +20,11 @@ package com.axelor.apps.sale.service.cart;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.sale.db.Cart;
 
 public interface CartProductService {
 
   void addToCart(Product product) throws AxelorException;
+
+  void addToCart(Cart cart, Product product) throws AxelorException;
 }

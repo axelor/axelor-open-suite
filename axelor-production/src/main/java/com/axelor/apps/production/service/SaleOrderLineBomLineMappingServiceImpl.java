@@ -5,8 +5,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.google.inject.Inject;
 import java.util.Objects;
 import java.util.Optional;
@@ -14,17 +13,14 @@ import java.util.Optional;
 public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomLineMappingService {
 
   protected final SaleOrderLineBomService saleOrderLineBomService;
-  protected final SaleOrderLineProductService saleOrderLineProductService;
-  protected final SaleOrderLineComputeService saleOrderLineComputeService;
+  protected final SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
 
   @Inject
   public SaleOrderLineBomLineMappingServiceImpl(
       SaleOrderLineBomService saleOrderLineBomService,
-      SaleOrderLineProductService saleOrderLineProductService,
-      SaleOrderLineComputeService saleOrderLineComputeService) {
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService) {
     this.saleOrderLineBomService = saleOrderLineBomService;
-    this.saleOrderLineProductService = saleOrderLineProductService;
-    this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
   }
 
   @Override
@@ -38,9 +34,8 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
       saleOrderLine.setProduct(billOfMaterialLine.getProduct());
       saleOrderLine.setQty(billOfMaterialLine.getQty());
       saleOrderLine.setBillOfMaterialLine(billOfMaterialLine);
-      // ComputeProductInformation will generate sub lines.
-      saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
-      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+      // computing the line will generate sub lines.
+      saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
 
       return saleOrderLine;
     }

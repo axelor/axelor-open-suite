@@ -20,9 +20,9 @@ package com.axelor.apps.supplychain.service.saleorder;
 
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.SaleOrderMergingResult;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewServiceImpl;
+import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingService;
+import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingService.SaleOrderMergingResult;
+import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingViewServiceImpl;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
 import java.util.List;
