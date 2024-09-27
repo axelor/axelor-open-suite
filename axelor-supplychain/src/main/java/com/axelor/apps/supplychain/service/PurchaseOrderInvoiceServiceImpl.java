@@ -705,7 +705,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     }
     BigDecimal sumInvoices = orderInvoiceService.amountToBeInvoiced(purchaseOrder);
     sumInvoices = sumInvoices.add(amountToInvoice);
-    if (sumInvoices.compareTo(purchaseOrder.getExTaxTotal()) >= 0) {
+    if (sumInvoices.compareTo(purchaseOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           purchaseOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

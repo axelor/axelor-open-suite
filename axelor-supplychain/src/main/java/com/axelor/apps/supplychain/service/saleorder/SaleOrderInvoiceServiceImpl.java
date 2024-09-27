@@ -891,7 +891,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                   RoundingMode.HALF_UP);
     }
     sumInvoices = sumInvoices.add(computedAmountToInvoice);
-    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) >= 0) {
+    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

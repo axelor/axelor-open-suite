@@ -21,6 +21,7 @@ public class OrderInvoiceServiceImpl implements OrderInvoiceService {
     this.invoiceRepository = invoiceRepository;
   }
 
+  @Override
   public BigDecimal amountToBeInvoiced(SaleOrder saleOrder) {
     return commonInvoiceService.computeSumInvoices(
         invoiceRepository
@@ -30,6 +31,7 @@ public class OrderInvoiceServiceImpl implements OrderInvoiceService {
             .fetch());
   }
 
+  @Override
   public BigDecimal amountToBeInvoiced(PurchaseOrder purchaseOrder) {
     return commonInvoiceService.computeSumInvoices(
         invoiceRepository
