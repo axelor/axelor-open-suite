@@ -345,7 +345,7 @@
 
   <action-attrs name="action-leave-request-attrs-leave-reason-domain">
     <attribute name="domain" for="leaveReason"
-      expr="eval: &quot;self.leaveReasonTypeSelect == 2&quot;"/>
+      expr="eval: &quot;self.leaveReasonTypeSelect = 2&quot;"/>
     <attribute name="domain" for="leaveReason"
       expr="eval: &quot;self.leaveReasonTypeSelect = 2 OR self IN (SELECT leaveReason FROM LeaveLine leaveLine WHERE leaveLine.employee.id = ${__this__.employee.id})&quot;"
       if="employee != null"/>
