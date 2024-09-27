@@ -120,6 +120,8 @@ import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealiz
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactory;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductServiceFactoryImpl;
+import com.axelor.apps.stock.service.massstockmove.MassStockMoveNeedService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMoveNeedServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.PickedProductAttrsService;
@@ -205,5 +207,6 @@ public class StockModule extends AxelorModule {
     bind(ProductPopulateStockObserver.class);
     bind(PickedProductAttrsService.class).to(PickedProductAttrsServiceImpl.class);
     bind(StockLocationDomainService.class).to(StockLocationDomainServiceImpl.class);
+    bind(MassStockMoveNeedService.class).to(MassStockMoveNeedServiceImpl.class);
   }
 }
