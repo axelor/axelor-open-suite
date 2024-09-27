@@ -100,11 +100,16 @@ public class PaymentModeInterestRateServiceImpl implements PaymentModeInterestRa
     List<String> fieldsInError = new ArrayList<>();
 
     List<InterestRateHistoryLine> interestRateHistoryLineList =
-        paymentMode.getInterestRateHistoryLineList();
+        paymentMode.getInterestRateHistoryLineList().stream()
+            .filter(line1 -> line1.getId() != interestRateHistoryLine.getId())
+            .collect(Collectors.toList());
+
+    // if no element, no need to check
+    if (interestRateHistoryLineList.isEmpty()) {
+      return fieldsInError;
+    }
+
     for (InterestRateHistoryLine rateHistoryLine : interestRateHistoryLineList) {
-      if (rateHistoryLine.getId() == interestRateHistoryLine.getId()) {
-        continue;
-      }
 
       if (checkDateIsInPeriod(
           fromDate, rateHistoryLine.getFromDate(), rateHistoryLine.getEndDate())) {

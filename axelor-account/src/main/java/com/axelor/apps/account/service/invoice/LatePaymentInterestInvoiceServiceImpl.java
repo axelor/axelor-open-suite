@@ -230,6 +230,7 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
     }
 
     LocalDate dueDate = invoiceTerm.getDueDate();
+    LocalDate startInterestDate = invoiceTerm.getDueDate().plusDays(1);
     BigDecimal interestAmount = BigDecimal.ZERO;
 
     List<InterestRateHistoryLine> periodHistoryLinesFiltered =
@@ -240,8 +241,8 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
       BigDecimal interestRate =
           interestRateHistoryLine.getInterestRate().divide(new BigDecimal("100"));
       LocalDate fromDate = interestRateHistoryLine.getFromDate();
-      if (fromDate.isBefore(dueDate)) {
-        fromDate = dueDate;
+      if (fromDate.isBefore(startInterestDate)) {
+        fromDate = startInterestDate;
       }
       LocalDate endDate = interestRateHistoryLine.getEndDate();
       long daysBetween = LocalDateHelper.daysBetween(fromDate, endDate, false);
@@ -251,11 +252,20 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
               amountRemaining.multiply(interestRate).multiply(BigDecimal.valueOf(daysBetween)));
     }
 
-    LocalDate endDate =
-        Collections.max(
-                periodHistoryLinesFiltered,
-                Comparator.comparing(InterestRateHistoryLine::getEndDate))
-            .getEndDate();
+    LocalDate currentPeriodFromDate;
+
+    // if there is a history, use last period ennDate + 1
+    if (!periodHistoryLinesFiltered.isEmpty()) {
+      LocalDate lastPeriodEndDate =
+          Collections.max(
+                  periodHistoryLinesFiltered,
+                  Comparator.comparing(InterestRateHistoryLine::getEndDate))
+              .getEndDate();
+      currentPeriodFromDate = lastPeriodEndDate.plusDays(1);
+    } else {
+      // if no history, use the dueDate
+      currentPeriodFromDate = startInterestDate;
+    }
 
     // add current periodRate
     BigDecimal interestRate = paymentMode.getInterestRate().divide(new BigDecimal("100"));
@@ -263,7 +273,7 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
 
     long lastPeriod =
         LocalDateHelper.daysBetween(
-            endDate.plusDays(1),
+            currentPeriodFromDate,
             appAccountService.getTodayDate(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)),
             false);
