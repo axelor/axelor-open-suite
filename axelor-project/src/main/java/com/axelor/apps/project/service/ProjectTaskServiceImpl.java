@@ -244,6 +244,17 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
+  public void deleteProjectTasks(List<Integer> projectTasksIds) {
+    if (ObjectUtils.isEmpty(projectTasksIds)) {
+      return;
+    }
+
+    for (Integer id : projectTasksIds) {
+      deleteProjectTask(projectTaskRepo.find(Long.valueOf(id)));
+    }
+  }
+
+  @Override
   public String getTaskLink(String value) {
     if (StringUtils.isEmpty(value)) {
       return value;

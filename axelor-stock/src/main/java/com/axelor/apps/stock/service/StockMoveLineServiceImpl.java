@@ -1496,10 +1496,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public void setAvailableStatus(StockMoveLine stockMoveLine) throws AxelorException {
+  public Map<String, Object> setAvailableStatus(StockMoveLine stockMoveLine)
+      throws AxelorException {
     if (stockMoveLine.getStockMove() != null) {
       this.updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
     }
+    Map<String, Object> availabilityMap = new HashMap<>();
     if (stockMoveLine.getProduct() != null
         && !stockMoveLine
             .getProduct()
@@ -1508,33 +1510,42 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       BigDecimal availableQty = stockMoveLine.getAvailableQty();
       BigDecimal availableQtyForProduct = stockMoveLine.getAvailableQtyForProduct();
       BigDecimal realQty = stockMoveLine.getRealQty();
+
       if (availableQty.compareTo(realQty) >= 0 || !stockMoveLine.getProduct().getStockManaged()) {
         stockMoveLine.setAvailableStatus(I18n.get("Available"));
         stockMoveLine.setAvailableStatusSelect(StockMoveLineRepository.STATUS_AVAILABLE);
+        availabilityMap.put("availability", stockMoveLine.getAvailableStatus());
       } else if (availableQtyForProduct.compareTo(realQty) >= 0) {
         stockMoveLine.setAvailableStatus(I18n.get("Av. for product"));
         stockMoveLine.setAvailableStatusSelect(
             StockMoveLineRepository.STATUS_AVAILABLE_FOR_PRODUCT);
+        availabilityMap.put("availability", stockMoveLine.getAvailableStatus());
       } else if (availableQty.compareTo(realQty) < 0
           && availableQtyForProduct.compareTo(realQty) < 0) {
-        BigDecimal missingQty = BigDecimal.ZERO;
-        TrackingNumberConfiguration trackingNumberConfiguration =
-            (TrackingNumberConfiguration)
-                productCompanyService.get(
-                    stockMoveLine.getProduct(),
-                    "trackingNumberConfiguration",
-                    Optional.ofNullable(stockMoveLine.getStockMove())
-                        .map(StockMove::getCompany)
-                        .orElse(null));
-
-        if (trackingNumberConfiguration != null) {
-          missingQty = availableQtyForProduct.subtract(realQty);
-        } else {
-          missingQty = availableQty.subtract(realQty);
-        }
+        BigDecimal missingQty = computeMissingQty(stockMoveLine);
         stockMoveLine.setAvailableStatus(I18n.get("Missing") + " (" + missingQty + ")");
         stockMoveLine.setAvailableStatusSelect(StockMoveLineRepository.STATUS_MISSING);
+        availabilityMap.put("availability", I18n.get("Missing"));
+        availabilityMap.put("missingQty", missingQty);
       }
+    }
+    return availabilityMap;
+  }
+
+  protected BigDecimal computeMissingQty(StockMoveLine stockMoveLine) throws AxelorException {
+    TrackingNumberConfiguration trackingNumberConfiguration =
+        (TrackingNumberConfiguration)
+            productCompanyService.get(
+                stockMoveLine.getProduct(),
+                "trackingNumberConfiguration",
+                Optional.ofNullable(stockMoveLine.getStockMove())
+                    .map(StockMove::getCompany)
+                    .orElse(null));
+
+    if (trackingNumberConfiguration != null) {
+      return stockMoveLine.getAvailableQtyForProduct().subtract(stockMoveLine.getRealQty());
+    } else {
+      return stockMoveLine.getAvailableQty().subtract(stockMoveLine.getRealQty());
     }
   }
 
@@ -1754,10 +1765,41 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine) {
+  public void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine)
+      throws AxelorException {
+    checkSplitConditions(stockMoveLine);
     StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, false);
     this.updateStockMoveLinesOfSplit(newStockMoveLine, stockMoveLine);
     stockMoveLineRepository.save(newStockMoveLine);
+  }
+
+  protected void checkSplitConditions(StockMoveLine stockMoveLine) throws AxelorException {
+    StockMove stockMove = stockMoveLine.getStockMove();
+    if (stockMove != null) {
+      Integer statusSelect = stockMove.getStatusSelect();
+      List<Integer> authorizedStatus = new ArrayList<>();
+      authorizedStatus.add(StockMoveRepository.STATUS_DRAFT);
+      authorizedStatus.add(StockMoveRepository.STATUS_PLANNED);
+      if (!authorizedStatus.contains(statusSelect)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_STATUS));
+      }
+
+      if (!stockMove.getTypeSelect().equals(StockMoveRepository.TYPE_INCOMING)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_TYPE));
+      }
+    }
+
+    BigDecimal realQty = stockMoveLine.getRealQty();
+    BigDecimal qty = stockMoveLine.getQty();
+    if (realQty != null && (realQty.signum() < 1 || realQty.compareTo(qty) >= 0)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_REAL_QTY));
+    }
   }
 
   protected void updateStockMoveLinesOfSplit(

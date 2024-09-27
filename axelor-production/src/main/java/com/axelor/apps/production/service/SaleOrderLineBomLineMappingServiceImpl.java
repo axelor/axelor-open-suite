@@ -5,25 +5,21 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.google.inject.Inject;
 import java.util.Objects;
 
 public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomLineMappingService {
 
   protected final SaleOrderLineBomService saleOrderLineBomService;
-  protected final SaleOrderLineProductService saleOrderLineProductService;
-  protected final SaleOrderLineComputeService saleOrderLineComputeService;
+  protected final SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
 
   @Inject
   public SaleOrderLineBomLineMappingServiceImpl(
       SaleOrderLineBomService saleOrderLineBomService,
-      SaleOrderLineProductService saleOrderLineProductService,
-      SaleOrderLineComputeService saleOrderLineComputeService) {
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService) {
     this.saleOrderLineBomService = saleOrderLineBomService;
-    this.saleOrderLineProductService = saleOrderLineProductService;
-    this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
   }
 
   @Override
@@ -36,9 +32,7 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
       SaleOrderLine saleOrderLine = new SaleOrderLine();
       saleOrderLine.setProduct(billOfMaterialLine.getProduct());
       saleOrderLine.setQty(billOfMaterialLine.getQty());
-      saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
-      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
-
+      saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
       return saleOrderLine;
     }
     return null;

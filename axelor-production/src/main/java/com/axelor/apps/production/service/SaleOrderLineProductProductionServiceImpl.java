@@ -30,12 +30,13 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -64,6 +65,7 @@ public class SaleOrderLineProductProductionServiceImpl
       BlockingService blockingService,
       AnalyticLineModelService analyticLineModelService,
       AppSupplychainService appSupplychainService,
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService,
       AppProductionService appProductionService,
       SaleOrderLineBomService saleOrderLineBomService) {
     super(
@@ -79,16 +81,16 @@ public class SaleOrderLineProductProductionServiceImpl
         saleOrderLineTaxService,
         blockingService,
         analyticLineModelService,
-        appSupplychainService);
+        appSupplychainService,
+        saleOrderLineAnalyticService);
     this.appProductionService = appProductionService;
     this.saleOrderLineBomService = saleOrderLineBomService;
   }
 
   @Override
-  public Map<String, Object> computeProductInformation(
+  public Map<String, Object> computeProductInformationProduction(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
-    Map<String, Object> saleOrderLineMap =
-        super.computeProductInformation(saleOrderLine, saleOrder);
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(setBillOfMaterial(saleOrderLine, saleOrder));
 
     return saleOrderLineMap;

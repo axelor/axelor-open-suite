@@ -21,7 +21,7 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.StockLocationCartService;
+import com.axelor.apps.supplychain.service.cart.CartStockLocationService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -36,7 +36,7 @@ public class StockLocationController {
       if (CollectionUtils.isEmpty(stockLocation.getStockLocationLineList())) {
         return;
       }
-      Beans.get(StockLocationCartService.class).addToCart(stockLocation);
+      Beans.get(CartStockLocationService.class).addToCart(stockLocation);
       response.setNotify(
           String.format(
               I18n.get(SupplychainExceptionMessage.STOCK_LOCATION_PRODUCTS_ADDED_TO_CART),

@@ -25,6 +25,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.auth.db.User;
 import com.axelor.meta.CallMethod;
+import java.util.List;
 
 public interface ProjectTaskService {
 
@@ -50,6 +51,8 @@ public interface ProjectTaskService {
   public ProjectPriority getPriority(Project project);
 
   void deleteProjectTask(ProjectTask projectTask);
+
+  void deleteProjectTasks(List<Integer> projectTasksIds);
 
   public String getTaskLink(String value);
 
