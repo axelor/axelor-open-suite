@@ -93,7 +93,7 @@ public final class ProjectExceptionMessage {
       "Project task category %s" /*)*/;
 
   public static final String BATCH_TASK_STATUS_UPDATION_2 = /*$$(*/
-      "Tasks status update completed: " /*)*/;
+      "Tasks status update completed:" /*)*/;
 
   public static final String BATCH_TASK_STATUS_UPDATION_DONE = /*$$(*/
       "* %s project task updated" /*)*/;

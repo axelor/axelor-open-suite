@@ -19,7 +19,8 @@
 
     <!-- REMOVE STATUS BATCH -->
     <many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project"
-      title="Projects"/>
+      title="Projects"
+      help="The selectable projects are those for which the 'Manage via project' option is enabled."/>
     <many-to-many name="taskCategorySet"
       ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Task categories"/>
     <many-to-many name="taskStatusSet" ref="com.axelor.apps.project.db.TaskStatus"

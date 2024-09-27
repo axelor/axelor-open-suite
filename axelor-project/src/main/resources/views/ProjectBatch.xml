@@ -20,13 +20,17 @@
     </panel>
 
     <panel name="removeTaskStatusPanel" title="Remove task status">
+      <label
+        title="The selected statuses will be removed from the allowed status types for these projects and/or categories and, as a result, will no longer be available for associated tasks. In the case of categories, the statuses will only be removed from the tasks if the 'Manage via categories' option is enabled in the project configuration."
+        colSpan="12"/>
       <field name="projectSet" form-view="project-form" grid-view="project-grid"
-        widget="TagSelect" colSpan="12"
+        widget="TagSelect" canNew="false"
         domain="self.taskStatusManagementSelect = 2 AND self.projectTaskStatusSet IS NOT EMPTY"/>
       <field name="taskCategorySet" form-view="project-task-category-form" widget="TagSelect"
-        colSpan="12" grid-view="project-task-category-grid"
+        grid-view="project-task-category-grid" canNew="false"
+        if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
         domain="self.projectTaskStatusSet IS NOT EMPTY"/>
-      <field name="taskStatusSet" colSpan="12" widget="TagSelect"/>
+      <field name="taskStatusSet" widget="TagSelect" canNew="false"/>
     </panel>
     <panel name="informationPanel" title="Information">
       <field name="createdOn" title="Created on"/>
