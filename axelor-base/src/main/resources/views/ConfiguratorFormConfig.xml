@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="configurator-form-config-grid" title="Configurator form"
+    model="com.axelor.apps.base.db.ConfiguratorFormConfig">
+    <field name="name"/>
+  </grid>
+
+  <form name="configurator-form-config-form" title="Configurator form"
+    model="com.axelor.apps.base.db.ConfiguratorFormConfig">
+    <panel name="idPanel">
+      <field name="name"/>
+    </panel>
+    <panel-related field="metaJsonFieldList" form-view="base-json-field-form"
+      grid-view="base-json-field-grid" summary-view="base-json-field-form" colSpan="12"/>
+  </form>
+</object-views>

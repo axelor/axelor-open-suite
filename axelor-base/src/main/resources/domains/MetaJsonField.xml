@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="base" package="com.axelor.meta.db"/>
+
+  <entity name="MetaJsonField" table="META_JSON_FIELD">
+    <string name="formula" title="Formula" large="true"/>
+    <string name="metaJsonCategorySelect" selection="base.meta.json.field.category.select"
+      required="true" default="attribute"/>
+
+    <track>
+      <field name="formula"/>
+      <field name="typeSelect"/>
+    </track>
+  </entity>
+
+</domain-models>

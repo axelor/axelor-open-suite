@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+
+
+  <grid id="base-json-field-grid" name="json-field-grid" title="Custom fields"
+    model="com.axelor.meta.db.MetaJsonField" extension="true">
+    <extend target="//field[@name='type']">
+      <insert position="after">
+        <field name="metaJsonCategorySelect" title="Meta json field category"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form name="json-field-form" id="base-json-field-form" title="Custom field"
+    model="com.axelor.meta.db.MetaJsonField" extension="true">
+    <extend target="//field[@name='type']">
+      <insert position="after">
+        <field name="metaJsonCategorySelect" title="Meta json field category"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@title='Options']">
+      <insert position="before">
+        <field name="formula" colSpan="12" widget="CodeEditor" x-code-syntax="groovy"/>
+      </insert>
+    </extend>
+  </form>
+</object-views>
