@@ -39,6 +39,7 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.google.inject.Inject;
+import java.util.Map;
 
 public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServiceImpl {
 
@@ -83,13 +84,18 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServi
   }
 
   @Override
-  public void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
-    super.compute(invoice, invoiceLine);
+  public Map<String, Object> compute(Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException {
+    Map<String, Object> invoiceLineMap = super.compute(invoice, invoiceLine);
 
     if (appBudgetService.isApp("budget")) {
       invoiceLine.setBudgetRemainingAmountToAllocate(
           budgetToolsService.getBudgetRemainingAmountToAllocate(
               invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
+      invoiceLineMap.put(
+          "BudgetRemainingAmountToAllocate", invoiceLine.getBudgetRemainingAmountToAllocate());
     }
+
+    return invoiceLineMap;
   }
 }
