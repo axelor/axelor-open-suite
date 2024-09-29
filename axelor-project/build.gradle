@@ -16,6 +16,7 @@ axelor {
 
 dependencies {
 	api project(":modules:axelor-base")
+	api project(":modules:axelor-helpdesk")
   
   implementation libs.jsoup
 }

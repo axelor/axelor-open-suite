@@ -51,7 +51,7 @@
 
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
-    width="large">
+    onSave="action-project-task-group-on-save" width="large">
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
@@ -149,11 +149,80 @@
 
       <panel-include view="incl-links-panel-form"/>
     </panel-tabs>
+    <panel-include view="comment-file-preview-form"/>
+    <panel-include view="project-task-history-form"/>
+  </form>
 
-    <panel-mail name="mailPanel">
-      <mail-messages/>
-      <mail-followers/>
-    </panel-mail>
+  <form name="project-task-history-form" title="History"
+    model="com.axelor.apps.project.db.ProjectTask" width="large">
+
+    <panel name="commentPanel" showTitle="false" showIf="id" colSpan="12">
+      <panel name="editPanel" title="Edit" colSpan="12" showIf="!$readonly()">
+        <field name="privateNoteLabel" x-dirty="false" readonly="true" showTitle="false"
+          showIf="isPrivateNote">
+          <viewer>
+	          <![CDATA[
+		          <>
+		          	{<Badge style={{ backgroundColor: "red" }}>Private Note</Badge>}
+				  </>
+	          ]]>
+          </viewer>
+        </field>
+        <field name="note" title="Note" colSpan="12" widget="html"/>
+        <field name="isPrivateNote" widget="boolean-switch"
+          onChange="action-comment-attrs-is-private-note-on-change"/>
+        <field name="commentFileList" title="Files" colSpan="12">
+          <editor>
+            <field name="attachmentFile" showTitle="false" widget="binary-link"/>
+            <field name="description" showTitle="false" widget="string"/>
+          </editor>
+        </field>
+        <button onClick="action-project-task-group-on-save" name="submitBtn" title="Submit"
+          colSpan="1"/>
+      </panel>
+      <panel name="historyPanel" title="History" showTitle="false" colSpan="12">
+        <panel-dashlet action="action-project-task-dashlet-show-history"
+          name="showHistoryPanel" colSpan="9"/>
+        <panel name="watchersPanel" title="Watchers" colSpan="3">
+          <field name="internalWatchers" title="Internal Watchers" colSpan="12"
+            widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid"/>
+          <field name="externalWatchers" title="External Watchers" colSpan="12"
+            widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid"/>
+        </panel>
+      </panel>
+    </panel>
+
+  </form>
+
+  <form model="com.axelor.apps.project.db.ProjectTask" title="Files"
+    name="comment-file-preview-form">
+
+    <panel name="commentFilePreviewPanel" title="Files" showIf="id">
+      <field name="$commentFilePreviewList" showTitle="false" type="one-to-many"
+        target="com.axelor.apps.base.db.CommentFile" colSpan="12" x-dirty="true" readonly="true">
+        <viewer>
+			<![CDATA[
+				<>
+				  <Icon icon="attachment" />
+				  <Link href={`ws/rest/com.axelor.meta.db.MetaFile/${attachmentFile.id}/content/download?v=${attachmentFile.$version}`} style={{ textDecoration: "none" }}>
+				    {attachmentFile.fileName}
+				  </Link>{" "}
+				  {description && `${description}`}{" "}
+				  <span style={{ color: "#999" }}>
+				    {createdBy.fullName}, {$moment(createdOn).format("MM/DD/YYYY HH:mm")}
+				  </span>
+				  <Button variant="link" onClick={() => $execute("action-project-task-view-edit-comment-file")}>
+				    <Icon icon="edit" />
+				  </Button>
+				  <Button variant="link" onClick={() => $execute("action-project-task-group-delete-comment-file")}>
+				    <Icon icon="delete" />
+				  </Button>
+				</>
+			]]>
+        </viewer>
+      </field>
+    </panel>
+
   </form>
 
 
@@ -838,5 +907,65 @@
     <field name="metaFile" hidden="true"
       if="!__config__.app.getApp('project')?.isEnableSignature"/>
   </search-filters>
+
+  <action-view name="action-project-task-dashlet-show-history" title="History"
+    model="com.axelor.apps.base.db.Comment">
+    <view type="cards" name="comment-card"/>
+    <view type="form" name="comment-form"/>
+    <view-param name="forceEdit" value="true"/>
+    <domain>self.projectTask.id = :id</domain>
+  </action-view>
+
+  <action-attrs id="project-task-action-comment-attrs-on-new"
+    name="action-comment-attrs-on-new">
+    <attribute name="value" for="parentComment" expr="eval: _parentComment"/>
+    <attribute name="value" for="projectTask" expr="eval: _projectTask"/>
+    <attribute name="value" for="sequence"
+      expr="eval: __repo__(Comment).all().filter('self.projectTask = ?1', _projectTask).count() + 1"/>
+  </action-attrs>
+
+  <action-group name="action-project-task-group-on-save">
+    <action name="save"/>
+    <action name="action-project-task-method-create-comment-with-only-attachment"/>
+  </action-group>
+
+  <action-method name="action-project-task-method-create-comment-with-only-attachment">
+    <call class="com.axelor.apps.project.web.ProjectTaskController"
+      method="createCommentWithOnlyAttachment"/>
+  </action-method>
+
+  <action-view id="project-task-action-comment-view-quote-note"
+    name="action-comment-view-quote-note" title="Quote a note"
+    model="com.axelor.apps.base.db.Comment">
+    <view type="form" name="comment-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_parentComment" expr="eval: __repo__(Comment).find(id)"
+      if="!parentComment.id"/>
+    <context name="_parentComment" expr="eval: __repo__(Comment).find(parentComment.id)"
+      if="parentComment.id"/>
+    <context name="_projectTask" expr="eval: projectTask"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-edit-comment-file"
+    title="Edit attached file" model="com.axelor.apps.base.db.CommentFile">
+    <view type="form" name="comment-file-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-group name="action-project-task-group-delete-comment-file">
+    <action name="action-comment-validate-delete"/>
+    <action name="action-project-task-method-delete-file"/>
+  </action-group>
+
+  <action-method name="action-project-task-method-delete-file">
+    <call class="com.axelor.apps.project.web.CommentFileController" method="deleteCommentFile"/>
+  </action-method>
 
 </object-views>

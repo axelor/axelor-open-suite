@@ -19,6 +19,11 @@
 package com.axelor.apps.project.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.base.db.repo.CommentBaseRepository;
+import com.axelor.apps.base.service.comment.CommentServiceImpl;
+import com.axelor.apps.helpdesk.service.MailServiceHelpDeskImpl;
+import com.axelor.apps.project.db.repo.CommentProjectRepository;
+import com.axelor.apps.project.db.repo.MailMessageProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskLinkTypeManagementRepository;
@@ -33,6 +38,7 @@ import com.axelor.apps.project.db.repo.TeamProjectRepository;
 import com.axelor.apps.project.db.repo.WikiProjectRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.quickmenu.ActiveProjectQuickMenuCreator;
+import com.axelor.apps.project.service.MailServiceProjectImpl;
 import com.axelor.apps.project.service.MetaJsonFieldProjectService;
 import com.axelor.apps.project.service.MetaJsonFieldProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectActivityDashboardService;
@@ -69,12 +75,17 @@ import com.axelor.apps.project.service.UserProjectService;
 import com.axelor.apps.project.service.UserProjectServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.service.app.AppProjectServiceImpl;
+import com.axelor.apps.project.service.comment.CommentFileService;
+import com.axelor.apps.project.service.comment.CommentFileServiceImpl;
+import com.axelor.apps.project.service.comment.CommentProjectService;
+import com.axelor.apps.project.service.comment.CommentProjectServiceImpl;
 import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.apps.project.service.config.ProjectConfigServiceImpl;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkServiceImpl;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkTypeService;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkTypeServiceImpl;
+import com.axelor.mail.db.repo.MailMessageRepository;
 import com.axelor.team.db.repo.TeamRepository;
 
 public class ProjectModule extends AxelorModule {
@@ -111,5 +122,12 @@ public class ProjectModule extends AxelorModule {
     bind(UserProjectService.class).to(UserProjectServiceImpl.class);
     addQuickMenu(ActiveProjectQuickMenuCreator.class);
     bind(ProjectToolService.class).to(ProjectToolServiceImpl.class);
+
+    bind(MailMessageRepository.class).to(MailMessageProjectRepository.class);
+    bind(CommentProjectService.class).to(CommentProjectServiceImpl.class);
+    bind(CommentServiceImpl.class).to(CommentProjectServiceImpl.class);
+    bind(CommentBaseRepository.class).to(CommentProjectRepository.class);
+    bind(CommentFileService.class).to(CommentFileServiceImpl.class);
+    bind(MailServiceHelpDeskImpl.class).to(MailServiceProjectImpl.class);
   }
 }

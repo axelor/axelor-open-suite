@@ -90,6 +90,17 @@
     <string name="projectJson" title="Project json" json="true"/>
     <string name="categoryJson" title="Category json" json="true"/>
 
+    <one-to-many name="commentList" ref="com.axelor.apps.base.db.Comment"
+      mappedBy="projectTask" title="Comment"/>
+    <one-to-many name="commentFileList" ref="com.axelor.apps.base.db.CommentFile"
+      title="Files"/>
+    <string name="note" title="comment.note" large="true"/>
+    <boolean name="isPrivateNote" title="Private note" default="false" transient="true"/>
+    <many-to-many ref="com.axelor.auth.db.User" name="internalWatchers"
+      title="Internal Watchers"/>
+    <many-to-many ref="com.axelor.auth.db.User" name="externalWatchers"
+      title="External Watchers"/>
+
     <extra-code>
 
       // TYPE SELECT
@@ -108,6 +119,8 @@
       <field name="projectTaskCategory"/>
       <field name="progress"/>
       <field name="assignedTo"/>
+      <field name="note"/>
+      <field name="priority"/>
     </track>
 
   </entity>

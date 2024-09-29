@@ -34,6 +34,8 @@ import com.axelor.apps.base.db.repo.BankBaseRepository;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.BaseBatchBaseRepository;
 import com.axelor.apps.base.db.repo.BaseBatchRepository;
+import com.axelor.apps.base.db.repo.CommentBaseRepository;
+import com.axelor.apps.base.db.repo.CommentRepository;
 import com.axelor.apps.base.db.repo.DataBackupManagementRepository;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.base.db.repo.DurationBaseRepository;
@@ -197,6 +199,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
+import com.axelor.apps.base.service.comment.CommentService;
+import com.axelor.apps.base.service.comment.CommentServiceImpl;
 import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.dayplanning.DayPlanningServiceImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
@@ -485,5 +489,8 @@ public class BaseModule extends AxelorModule {
     bind(DataSharingReferentialLineService.class).to(DataSharingReferentialLineServiceImpl.class);
     bind(MetaViewService.class).to(MetaViewServiceImpl.class);
     bind(DataSharingProductWizardService.class).to(DataSharingProductWizardServiceImpl.class);
+
+    bind(CommentService.class).to(CommentServiceImpl.class);
+    bind(CommentRepository.class).to(CommentBaseRepository.class);
   }
 }

@@ -111,7 +111,8 @@
   <form name="business-project-task-form" title="Task"
     model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-business-project-project-task-group-on-new"
-    onLoad="action-business-project-project-task-group-on-load" width="large">
+    onLoad="action-business-project-project-task-group-on-load"
+    onSave="action-project-task-group-on-save" width="large">
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
@@ -314,13 +315,8 @@
 
       <panel-include view="incl-links-panel-form"/>
     </panel-tabs>
-    <panel name="attrsPanel">
-      <field name="attrs" colSpan="12"/>
-    </panel>
-    <panel-mail name="mailPanel">
-      <mail-messages/>
-      <mail-followers/>
-    </panel-mail>
+    <panel-include view="comment-file-preview-form"/>
+    <panel-include view="project-task-history-form"/>
   </form>
 
   <form title="Financial datas" name="business-project-task-financial-datas-form"
