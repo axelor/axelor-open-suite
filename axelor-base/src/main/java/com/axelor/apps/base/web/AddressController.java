@@ -353,8 +353,19 @@ public class AddressController {
     Address address = request.getContext().asType(Address.class);
 
     if (address.getCountry() != null) {
-      response.setAttrs(
-          Beans.get(AddressAttrsService.class).getCountryAddressMetaFieldOnChangeAttrsMap(address));
+      AddressAttrsService addressAttrsService = Beans.get(AddressAttrsService.class);
+
+      Map<String, Map<String, Object>> countryAddressMetaFieldOnChangeAttrsMap =
+          addressAttrsService.getCountryAddressMetaFieldOnChangeAttrsMap(address);
+
+      Map<String, Map<String, Object>> townNameAndCityAttrtsMap =
+          addressAttrsService.getTownNameAndCityAttrsMap(
+              countryAddressMetaFieldOnChangeAttrsMap, address);
+
+      addressAttrsService.updateAttrsMap(
+          townNameAndCityAttrtsMap, countryAddressMetaFieldOnChangeAttrsMap);
+
+      response.setAttrs(countryAddressMetaFieldOnChangeAttrsMap);
     }
   }
 }
