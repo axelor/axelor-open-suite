@@ -90,6 +90,8 @@
     <string name="projectJson" title="Project json" json="true"/>
     <string name="categoryJson" title="Category json" json="true"/>
 
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+
     <extra-code>
 
       // TYPE SELECT
