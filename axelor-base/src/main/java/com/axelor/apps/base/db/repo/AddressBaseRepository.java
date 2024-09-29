@@ -55,4 +55,11 @@ public class AddressBaseRepository extends AddressRepository {
 
     return super.save(entity);
   }
+
+  @Override
+  public Address copy(Address entity, boolean deep) {
+    Address address = super.copy(entity, deep);
+    address.setCertifiedOk(false);
+    return address;
+  }
 }

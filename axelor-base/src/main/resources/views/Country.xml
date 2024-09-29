@@ -23,6 +23,7 @@
         form-view="address-template-form"/>
       <field name="registrationNumberTemplate" grid-view="registration-number-template-grid"
         form-view="registration-number-template-form"/>
+      <field name="addressValidationApi"/>
     </panel>
     <panel name="attributesPanel" title="Attributes">
       <field name="cog"/>

@@ -18,8 +18,10 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
@@ -31,6 +33,9 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressAttrsService;
 import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.base.service.address.validation.AddressValidationDataGouvFrService;
+import com.axelor.apps.base.service.address.validation.AddressValidationNominatimService;
+import com.axelor.apps.base.service.address.validation.AddressValidationQASService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
@@ -44,16 +49,12 @@ import com.axelor.rpc.Context;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.Singleton;
-import com.qas.web_2005_02.AddressLineType;
-import com.qas.web_2005_02.PicklistEntryType;
-import com.qas.web_2005_02.QAAddressType;
 import com.qas.web_2005_02.QAPicklistType;
-import com.qas.web_2005_02.VerifyLevelType;
+import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
@@ -78,75 +79,42 @@ public class AddressController {
     response.setInfo(msg);
   }
 
-  public void validate(ActionRequest request, ActionResponse response) {
+  public void validate(ActionRequest request, ActionResponse response)
+      throws AxelorException, UnsupportedEncodingException {
 
     Address a = request.getContext().asType(Address.class);
     LOG.debug("validate a = {}", a);
-    String search = a.getAddressL4() + " " + a.getAddressL6();
-    Map<String, Object> retDict =
-        Beans.get(AddressService.class)
-            .validate(Beans.get(AppBaseService.class).getAppBase().getQasWsdlUrl(), search);
-    LOG.debug("validate retDict = {}", retDict);
+    Integer addressValidationApiSelect =
+        Optional.of(a).map(Address::getCountry).map(Country::getAddressValidationApi).orElse(null);
+    if (addressValidationApiSelect == null) {
+      return;
+    }
 
-    VerifyLevelType verifyLevel = (VerifyLevelType) retDict.get("verifyLevel");
+    if (addressValidationApiSelect == 0) {
+      // by default, use the nominatim
 
-    if (verifyLevel != null && verifyLevel.value().equals("Verified")) {
-
-      QAAddressType address = (QAAddressType) retDict.get("qaAddress");
-      String addL1;
-      List<AddressLineType> addressLineType = address.getAddressLine();
-      addL1 = addressLineType.get(0).getLine();
-      response.setValue("addressL2", addressLineType.get(1).getLine());
-      response.setValue("addressL3", addressLineType.get(2).getLine());
-      response.setValue("addressL4", addressLineType.get(3).getLine());
-      response.setValue("addressL5", addressLineType.get(4).getLine());
-      response.setValue("addressL6", addressLineType.get(5).getLine());
-      response.setValue("inseeCode", addressLineType.get(6).getLine());
-      response.setValue("certifiedOk", true);
-      response.setValue("pickList", new ArrayList<QAPicklistType>());
-      if (addL1 != null) {
-        response.setInfo("Ligne 1: " + addL1);
+      boolean result = Beans.get(AddressValidationNominatimService.class).validateAddress(a);
+      if (result) {
+        response.setValue("certifiedOk", true);
+        response.setInfo(I18n.get(BaseExceptionMessage.ADDRESS_VALIDATION_SUCCESS));
+      } else {
+        response.setValue("certifiedOk", false);
+        response.setInfo(I18n.get(BaseExceptionMessage.ADDRESS_VALIDATION_FAILED));
       }
-    } else if (verifyLevel != null
-        && (verifyLevel.value().equals("Multiple")
-            || verifyLevel.value().equals("StreetPartial")
-            || verifyLevel.value().equals("InteractionRequired")
-            || verifyLevel.value().equals("PremisesPartial"))) {
-      LOG.debug("retDict.verifyLevel = {}", retDict.get("verifyLevel"));
-      QAPicklistType qaPicklist = (QAPicklistType) retDict.get("qaPicklist");
-      List<PickListEntry> pickList = new ArrayList<>();
-      if (qaPicklist != null) {
-        for (PicklistEntryType p : qaPicklist.getPicklistEntry()) {
-          PickListEntry e = new PickListEntry();
-          e.setAddress(a);
-          e.setMoniker(p.getMoniker());
-          e.setScore(p.getScore().toString());
-          e.setPostcode(p.getPostcode());
-          e.setPartialAddress(p.getPartialAddress());
-          e.setPicklist(p.getPicklist());
 
-          pickList.add(e);
-        }
-      } else if (retDict.get("qaAddress") != null) {
-        QAAddressType address = (QAAddressType) retDict.get("qaAddress");
-        PickListEntry e = new PickListEntry();
-        List<AddressLineType> addressLineType = address.getAddressLine();
-        e.setAddress(a);
-        e.setL2(addressLineType.get(1).getLine());
-        e.setL3(addressLineType.get(2).getLine());
-        e.setPartialAddress(addressLineType.get(3).getLine());
-        e.setL5(addressLineType.get(4).getLine());
-        e.setPostcode(addressLineType.get(5).getLine());
-        e.setInseeCode(addressLineType.get(6).getLine());
-
-        pickList.add(e);
+    } else if (addressValidationApiSelect == 1) {
+      // Data.gouv.fr
+      boolean result = Beans.get(AddressValidationDataGouvFrService.class).validateAddress(a);
+      if (result) {
+        response.setValue("certifiedOk", true);
+        response.setInfo(I18n.get(BaseExceptionMessage.ADDRESS_VALIDATION_SUCCESS));
+      } else {
+        response.setValue("certifiedOk", false);
+        response.setInfo(I18n.get(BaseExceptionMessage.ADDRESS_VALIDATION_FAILED));
       }
-      response.setValue("certifiedOk", false);
-      response.setValue("pickList", pickList);
 
-    } else if (verifyLevel != null && verifyLevel.value().equals("None")) {
-      LOG.debug("address None");
-      response.setInfo(I18n.get(BaseExceptionMessage.ADDRESS_3));
+    } else {
+      Beans.get(AddressValidationQASService.class).validateAddress(a, response);
     }
   }
 

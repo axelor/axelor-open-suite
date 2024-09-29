@@ -21,6 +21,9 @@
     <!-- Interfaces QAS et SVI -->
     <string name="qasWsdlUrl" title="URL to QAS WSDL"/>
 
+    <!-- Address Validation URL -->
+    <string name="nominatimUrl" title="URL to Nominatim"/>
+    <string name="dataGouvFrUrl" title="URL to Data.Gouv.Fr"/>
 
     <string name="draftPrefix" title="Draft prefix for sequences" default="#"
       help="The default value is #"/>
@@ -41,8 +44,6 @@
     <one-to-many name="currencyConversionLineList"
       ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase"
       title="Currency conversion table"/>
-
-    <boolean name="hasQasValidation" title="Use QAS Validation"/>
 
     <integer name="productInAtiSelect" title="Products ATI/WT"
       selection="base.in.ati.select" default="1"/>
@@ -209,7 +210,6 @@
       <field name="mapApiSelect" on="UPDATE"/>
       <field name="googleMapsApiKey" on="UPDATE"/>
       <field name="currencyWsURL" on="UPDATE"/>
-      <field name="hasQasValidation" on="UPDATE"/>
       <field name="productInAtiSelect" on="UPDATE"/>
       <field name="nbDecimalDigitForUnitPrice" on="UPDATE"/>
       <field name="computeMethodDiscountSelect" on="UPDATE"/>

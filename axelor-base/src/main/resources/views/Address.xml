@@ -70,17 +70,17 @@
       <field name="isValidLatLong" hidden="true"/>
       <field name="formattedFullName" readonly="true" colSpan="12" height="4"/>
 
-      <panel if="__config__.app.getApp('base')?.getHasQasValidation()"
-        name="qasCertificationPanel" title="QAS certification" colSpan="12">
-        <field name="certifiedOk" colSpan="4"/>
-        <panel name="actionsPanel" colSpan="4">
-          <button name="validateBtn" title="Validate"
-            onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
-          <button name="selectBtn" title="Choose"
-            onClick="com.axelor.apps.base.web.AddressController:select,save"/>
-        </panel>
-        <panel-related name="pickListPanel" title="Pick list" colSpan="12"
-          field="pickList" grid-view="pick-list-entry-grid" form="pick-list-entry-form"/>
+      <panel name="certificationPanel" title="Certification" colSpan="12" itemSpan="12">
+        <field name="certifiedOk"/>
+        <button name="validateBtn" title="Validate"
+          onClick="save,action-address-method-validate-address,save"/>
+        <panel-related name="pickListPanel" title="Pick list" readonly="true"
+          field="pickList" grid-view="pick-list-entry-grid" form="pick-list-entry-form"
+          showIf="country.addressValidationApi == 2 &amp;&amp; pickList &amp;&amp; pickList.length &gt; 0"/>
+        <button name="selectBtn" title="Choose"
+          showIf="country.addressValidationApi == 2 &amp;&amp; pickList &amp;&amp; pickList.length &gt; 0"
+          onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+        <field name="country.addressValidationApi" hidden="true"/>
       </panel>
 
     </panel>
@@ -147,17 +147,17 @@
         </panel>
 
       </panel>
-      <panel name="qasCertificationPanel" title="QAS certification" colSpan="12"
-        if="__config__.app.getApp('base')?.getHasQasValidation()">
-        <field name="certifiedOk" colSpan="4"/>
-        <panel name="actionsPanel" colSpan="4">
-          <button name="validateBtn" title="Validate"
-            onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
-          <button name="selectBtn" title="Choose"
-            onClick="com.axelor.apps.base.web.AddressController:select,save"/>
-        </panel>
-        <panel-related name="pickListPanel" field="pickList" title="Pick list"
-          colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"/>
+      <panel name="certificationPanel" title="Certification" colSpan="12" itemSpan="12">
+        <field name="certifiedOk"/>
+        <button name="validateBtn" title="Validate"
+          onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
+        <panel-related name="pickListPanel" title="Pick list" readonly="true"
+          field="pickList" form="pick-list-entry-form" grid-view="pick-list-entry-grid"
+          showIf="country.addressValidationApi == 2 &amp;&amp; pickList &amp;&amp; pickList.length &gt; 0"/>
+        <button name="selectBtn" title="Choose"
+          showIf="country.addressValidationApi == 2 &amp;&amp; pickList &amp;&amp; pickList.length &gt; 0"
+          onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+        <field name="country.addressValidationApi" hidden="true"/>
       </panel>
     </panel>
   </form>
@@ -272,6 +272,11 @@
     <call class="com.axelor.apps.base.web.AddressController" method="autocompleteAddress"/>
   </action-method>
 
+  <action-method name="action-address-method-validate-address">
+    <call class="com.axelor.apps.base.web.AddressController" method="validate"/>
+  </action-method>
+
+
   <action-record name="action-address-record-change-streetName"
     model="com.axelor.apps.base.db.Address">
     <field name="streetName" expr="eval: buildingNumber + ' ' + street?.name"
@@ -290,9 +295,5 @@
     <field name="street" hidden="true" if="!__config__.app.getApp('base')?.getStoreStreets()"/>
     <field name="streetName" hidden="true"
       if="__config__.app.getApp('base')?.getStoreStreets()"/>
-    <field name="certifiedOk" hidden="true"
-      if="!__config__.app.getApp('base')?.getHasQasValidation()"/>
-    <field name="pickList" hidden="true"
-      if="!__config__.app.getApp('base')?.getHasQasValidation()"/>
   </search-filters>
 </object-views>
