@@ -66,7 +66,7 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
       return Optional.ofNullable(project.getCompletedTaskStatus());
     }
 
-    return Optional.ofNullable(appProject).map(AppProject::getCompletedTaskStatus);
+    return Optional.empty();
   }
 
   @Override
@@ -87,22 +87,15 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
     if (enableTaskStatusManagementByCategory
         && project.getTaskStatusManagementSelect()
             == ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY
-        && projectTask.getProjectTaskCategory() != null
-        && !ObjectUtils.isEmpty(projectTask.getProjectTaskCategory().getProjectTaskStatusSet())) {
+        && projectTask.getProjectTaskCategory() != null) {
       return projectTask.getProjectTaskCategory().getProjectTaskStatusSet();
     }
 
-    if (Arrays.asList(
-                ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT,
-                ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY)
-            .contains(project.getTaskStatusManagementSelect())
-        && !ObjectUtils.isEmpty(project.getProjectTaskStatusSet())) {
+    if (project.getTaskStatusManagementSelect()
+        == ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT) {
       return project.getProjectTaskStatusSet();
     }
 
-    if (appProject != null) {
-      return appProject.getDefaultTaskStatusSet();
-    }
     return null;
   }
 
@@ -115,41 +108,24 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
       return "";
     }
 
-    AppProject appProject = appProjectService.getAppProject();
-    boolean enableTaskStatusManagementByCategory = false;
-    if (appProject != null) {
-      enableTaskStatusManagementByCategory = appProject.getEnableStatusManagementByTaskCategory();
-    }
+    boolean enableTaskStatusManagementByCategory =
+        Optional.ofNullable(appProjectService.getAppProject())
+            .map(AppProject::getEnableStatusManagementByTaskCategory)
+            .orElse(false);
 
     if (enableTaskStatusManagementByCategory
         && project.getTaskStatusManagementSelect()
             == ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY
         && projectTask.getProjectTaskCategory() != null
         && projectTask.getProjectTaskCategory().getCompletedTaskStatus() == null) {
-      Optional<TaskStatus> taskStatus = getCompletedTaskStatus(project, projectTask);
-      if (taskStatus.isPresent()) {
-        return String.format(
-            I18n.get(
-                ProjectExceptionMessage.CATEGORY_COMPLETED_TASK_STATUS_MISSING_WITH_DEFAULT_STATUS),
-            I18n.get(taskStatus.get().getName()));
-      } else {
-        return I18n.get(
-            ProjectExceptionMessage.CATEGORY_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS);
-      }
+      return I18n.get(
+          ProjectExceptionMessage.CATEGORY_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS);
     }
 
     if (project.getTaskStatusManagementSelect() == ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT
         && project.getCompletedTaskStatus() == null) {
-      Optional<TaskStatus> taskStatus = getCompletedTaskStatus(project, projectTask);
-      if (taskStatus.isPresent()) {
-        return String.format(
-            I18n.get(
-                ProjectExceptionMessage.PROJECT_COMPLETED_TASK_STATUS_MISSING_WITH_DEFAULT_STATUS),
-            I18n.get(taskStatus.get().getName()));
-      } else {
-        return I18n.get(
-            ProjectExceptionMessage.PROJECT_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS);
-      }
+      return I18n.get(
+          ProjectExceptionMessage.PROJECT_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS);
     }
 
     return "";
