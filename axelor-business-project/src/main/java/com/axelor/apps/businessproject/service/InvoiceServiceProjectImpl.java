@@ -182,17 +182,12 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
     if (CollectionUtils.isEmpty(projectHoldBackATIList)) {
       return;
     }
-    for (ProjectHoldBackATI projectHoldBackATI : projectHoldBackATIList) {
-      invoice.setAmountRemaining(
-          currencyScaleService.getScaledValue(
-              invoice, invoice.getAmountRemaining().add(projectHoldBackATI.getAmount())));
-      invoice.setCompanyInTaxTotalRemaining(
-          currencyScaleService.getScaledValue(
-              invoice,
-              invoice
-                  .getCompanyInTaxTotal()
-                  .add(this.getAmountInCompanyCurrency(projectHoldBackATI.getAmount(), invoice))));
-    }
+    invoice.setAmountRemaining(
+        currencyScaleService.getScaledValue(
+            invoice, invoice.getAmountRemaining().add(invoice.getHoldBacksTotal())));
+    invoice.setCompanyInTaxTotalRemaining(
+        currencyScaleService.getScaledValue(
+            invoice, invoice.getCompanyInTaxTotal().add(invoice.getCompanyHoldBacksTotal())));
 
     if (!ObjectUtils.isEmpty(invoice.getInvoiceLineList())
         && ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
@@ -200,7 +195,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
     }
   }
 
-  protected BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, Invoice invoice)
+  public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, Invoice invoice)
       throws AxelorException {
 
     return currencyService

@@ -67,6 +67,7 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
   protected final InvoiceTermService invoiceTermService;
   protected final CurrencyService currencyService;
   protected final ProjectHoldBackATIRepository projectHoldBackATIRepository;
+  protected final InvoiceServiceProject invoiceServiceProject;
 
   @Inject
   ProjectHoldBackLineServiceImpl(
@@ -79,7 +80,8 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
       CurrencyScaleService currencyScaleService,
       InvoiceTermService invoiceTermService,
       CurrencyService currencyService,
-      ProjectHoldBackATIRepository projectHoldBackATIRepository) {
+      ProjectHoldBackATIRepository projectHoldBackATIRepository,
+      InvoiceServiceProject invoiceServiceProject) {
     this.invoiceRepository = invoiceRepository;
     this.invoiceLineRepository = invoiceLineRepository;
     this.invoicingProjectService = invoicingProjectService;
@@ -90,6 +92,7 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
     this.invoiceTermService = invoiceTermService;
     this.currencyService = currencyService;
     this.projectHoldBackATIRepository = projectHoldBackATIRepository;
+    this.invoiceServiceProject = invoiceServiceProject;
   }
 
   @Override
@@ -241,8 +244,10 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
             InvoiceLine invoiceLine = this.createInvoiceLine();
             invoiceLine.setProductName(
                 String.format(
-                    I18n.get("HoldBack %s %s"),
-                    holdBackInvoiceLine.getProductCode(),
+                    I18n.get("%s %s% - %s of %s"),
+                    holdBackInvoiceLine.getProjectHoldBackLine().getProjectHoldBack().getName(),
+                    holdBackInvoiceLine.getProjectHoldBackLine().getPercentage(),
+                    holdBackInvoiceLine.getInvoice().getInvoiceId(),
                     holdBackInvoiceLine.getInvoice().getInvoiceDate()));
             invoiceLine.setRelatedProjectHoldBackLineInvoiceLine(holdBackInvoiceLine);
             List<InvoiceLine> invoiceLines = new ArrayList<>();
@@ -291,8 +296,9 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
             if (projectHoldBackATI != null) {
               invoiceLine.setProductName(
                   String.format(
-                      I18n.get("HoldBack %s for %s %s"),
+                      I18n.get("%s %s%% - %s of %s"),
                       projectHoldBackATI.getName(),
+                      projectHoldBackATI.getProjectHoldBack().getDefaultPercentage(),
                       projectHoldBackATI.getInvoice().getInvoiceId(),
                       projectHoldBackATI.getInvoice().getInvoiceDate()));
               invoiceLine.setRelatedProjectHoldBackATI(projectHoldBackATI);
@@ -422,8 +428,34 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
   }
 
   @Override
-  public void generateHoldBackATIs(Invoice invoice) {
+  public void generateHoldBackATIs(Invoice invoice) throws AxelorException {
     invoice.setProjectHoldBackATIList(this.createHoldBackATIs(invoice));
+    calculateHoldBacksTotal(invoice);
+  }
+
+  protected void calculateHoldBacksTotal(Invoice invoice) throws AxelorException {
+
+    BigDecimal holdBacksTotal = BigDecimal.ZERO;
+    BigDecimal companyHoldBacksTotal = BigDecimal.ZERO;
+    List<ProjectHoldBackATI> projectHoldBackATIList = invoice.getProjectHoldBackATIList();
+    if (CollectionUtils.isEmpty(projectHoldBackATIList)) {
+      return;
+    }
+    for (ProjectHoldBackATI projectHoldBackATI : projectHoldBackATIList) {
+
+      holdBacksTotal =
+          currencyScaleService.getScaledValue(
+              invoice, holdBacksTotal.add(projectHoldBackATI.getAmount()));
+      companyHoldBacksTotal =
+          currencyScaleService.getScaledValue(
+              invoice,
+              companyHoldBacksTotal.add(
+                  invoiceServiceProject.getAmountInCompanyCurrency(
+                      projectHoldBackATI.getAmount(), invoice)));
+    }
+
+    invoice.setHoldBacksTotal(holdBacksTotal);
+    invoice.setCompanyHoldBacksTotal(companyHoldBacksTotal);
   }
 
   protected List<ProjectHoldBackATI> createHoldBackATIs(Invoice invoice) {
@@ -454,7 +486,7 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
       ProjectHoldBackATI projectHoldBackATI = new ProjectHoldBackATI();
       projectHoldBackATI.setProjectHoldBack(holdBack);
       projectHoldBackATI.setName(
-          String.format(I18n.get(/*$$(*/ "HoldBack %s total A.T.I.") /*)*/, holdBack.getName()));
+          String.format(I18n.get(/*$$(*/ "%s total A.T.I.") /*)*/, holdBack.getName()));
       projectHoldBackATI.setInvoice(invoice);
       BigDecimal amount = BigDecimal.ZERO;
       for (ProjectHoldBackLine line : holdBackLines) {
