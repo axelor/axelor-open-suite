@@ -132,7 +132,7 @@ public class PaymentVoucherController {
             Beans.get(PaymentModeService.class)
                 .getPaymentModeJournal(paymentMode, company, companyBankDetails);
         if (journal.getExcessPaymentOk()) {
-          response.setAlert(I18n.get("No items have been selected. Do you want to continue?"));
+          response.setAlert(I18n.get("The paid amount is superior to the imputed amount(s)."));
         }
         if (!Beans.get(PaymentVoucherControlService.class).controlMoveAmounts(paymentVoucher)) {
           response.setError(
