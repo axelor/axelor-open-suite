@@ -55,10 +55,9 @@ public class IndicatorGeneratorGroupingService {
       result =
           result
               + "\n"
-              + indicatorGenerator.getCode()
+              + (indicatorGenerator.getCode() != null ? indicatorGenerator.getCode() : "")
               + " "
-              + indicatorGenerator.getName()
-              + " : "
+              + (indicatorGenerator.getName() != null ? indicatorGenerator.getName() + " : " : "")
               + indicatorGenerator.getResult();
 
       if (indicatorGenerator.getLog() != null && !indicatorGenerator.getLog().isEmpty()) {
