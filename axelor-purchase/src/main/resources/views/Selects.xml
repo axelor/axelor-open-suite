@@ -43,4 +43,8 @@
     <option value="com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl">Purchase</option>
   </selection>
 
+  <selection name="message.related.to.select" id="purchase.message.related.to.select">
+    <option value="com.axelor.apps.purchase.db.PurchaseOrder">Purchase order</option>
+  </selection>
+
 </object-views>
