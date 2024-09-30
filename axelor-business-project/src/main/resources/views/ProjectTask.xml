@@ -145,27 +145,7 @@
         <field name="typeSelect" hidden="true"/>
         <field name="project.isShowPlanning" hidden="true"/>
       </panel>
-      <panel name="viewerTagsPanel" colSpan="4">
-        <field name="$viewerTags" showTitle="false" readonly="true"
-          showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="12"
-          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
-          hidden="true">
-          <viewer>
-            <![CDATA[
-                   <>
-                       <Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
-                           {assignment == 1 && <Badge bg="danger">{_t('Task assigned to the client')}</Badge>}
-                           {assignment == 2 && !$provider && <Badge bg="success">{_t('Task assigned to the provider')}</Badge>}
-                           {assignment == 2 && $provider && <Badge bg="success">{_t('Task assigned to')} {$provider}</Badge>}
-                           {((!isOrderAccepted && invoicingType == 2 && exTaxTotal != 0) || (!isOrderAccepted && invoicingType == 1)) && <Badge bg="danger">{_t('Order Proposed')}</Badge>}
-                           {isOrderAccepted && <Badge bg="success">{_t('Order Accepted')}</Badge>}
-                       </Box>
-                   </>
-	        ]]>
-          </viewer>
-        </field>
-      </panel>
-      <field name="$provider" hidden="true" type="string"/>
+
       <panel name="projectDetailsPanel" colSpan="12">
         <panel name="detailsPanel" colSpan="8">
           <field name="fullName" showTitle="false" colSpan="12">
@@ -183,20 +163,6 @@
                 required="true"/>
             </editor>
           </field>
-        </panel>
-        <panel name="actionPanel" colSpan="4">
-          <button name="acceptOrderBtn" title="Accept Order" hidden="true"
-            hideIf="invoicingType != 1  || isOrderAccepted || typeSelect != 'ticket'"
-            onClick="action-project-task-attrs-onclick-order-accepted,save" colSpan="12"
-            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-          <button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider"
-            hidden="true" onClick="action-project-task-attrs-assginment-provider,save"
-            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
-            showIf="assignment == 1 &amp;&amp; typeSelect == 'ticket'"/>
-          <button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer"
-            hidden="true" onClick="action-project-task-attrs-assginment-customer,save"
-            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
-            showIf="assignment == 2 &amp;&amp; typeSelect == 'ticket'"/>
         </panel>
       </panel>
     </panel>
@@ -455,30 +421,13 @@
       <field name="site" onSelect="action-project-task-attrs-set-site-domain"
         form-view="site-form" grid-view="site-grid"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
-      <field name="customerReferral"
-        onSelect="action-project-task-attrs-customer-referral-domain"
-        showIf="typeSelect == 'ticket'" if="__config__.app.isApp('business-project')"/>
-      <field name="isPrivate" showIf="typeSelect == 'ticket'" colSpan="6"
-        if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-      <field name="isOrderAccepted" colSpan="3" showIf="typeSelect == 'ticket'"
-        if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-      <field name="isOrderProposed" hidden="true" colSpan="3"
-        if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
         collapseIf="true" canCollapse="true">
         <panel-include view="incl-characteristics-panel-form"/>
-        <field name="targetVersion" if-module="axelor-business-support"
-          if="__config__.app.isApp('business-support')" domain=":project member of self.projectSet"
-          colSpan="4" form-view="project-version-form" grid-view="project-version-grid"/>
-        <field name="assignment" hidden="true" showIf="typeSelect == 'ticket'"
-          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
-          colSpan="4"/>
         <field name="invoicingProgress" readonly="true" colSpan="4"
           showIf="invoicingType == 4"/>
         <field name="description" colSpan="12" widget="html"/>
-        <field name="internalDescription" colSpan="12" widget="html"
-          if="__config__.app.isApp('business-support')" if-module="axelor-business-support"/>
       </panel>
 
       <panel-include view="incl-checklist-task-panel-form"/>
