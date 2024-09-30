@@ -933,8 +933,10 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       if (invoice.getInvoiceLineList() != null) {
         Beans.get(InvoiceLineService.class).updateLinesAfterFiscalPositionChange(invoice);
+        response.setValue(
+            "invoiceLineList",
+            invoice.getInvoiceLineList().stream().map(Mapper::toMap).collect(Collectors.toList()));
       }
-      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

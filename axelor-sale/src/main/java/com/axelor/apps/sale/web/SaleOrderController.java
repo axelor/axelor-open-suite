@@ -79,6 +79,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -669,8 +670,12 @@ public class SaleOrderController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       if (saleOrder.getSaleOrderLineList() != null) {
         Beans.get(SaleOrderLineService.class).updateLinesAfterFiscalPositionChange(saleOrder);
+        response.setValue(
+            "saleOrderLineList",
+            saleOrder.getSaleOrderLineList().stream()
+                .map(Mapper::toMap)
+                .collect(Collectors.toList()));
       }
-      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
