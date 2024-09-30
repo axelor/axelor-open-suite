@@ -18,12 +18,23 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHoldBackLine;
+import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,39 +42,156 @@ import java.util.Set;
 
 public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineService {
 
+  protected final InvoiceLineRepository invoiceLineRepository;
+  protected final InvoiceRepository invoiceRepository;
+  protected final InvoicingProjectService invoicingProjectService;
+  protected final InvoiceLineService invoiceLineService;
+  protected final InvoiceLineAnalyticService invoiceLineAnalyticService;
+  protected final AnalyticLineService analyticLineService;
+
+  @Inject
+  ProjectHoldBackLineServiceImpl(
+      InvoiceLineRepository invoiceLineRepository,
+      InvoiceRepository invoiceRepository,
+      InvoicingProjectService invoicingProjectService,
+      InvoiceLineService invoiceLineService,
+      InvoiceLineAnalyticService invoiceLineAnalyticService,
+      AnalyticLineService analyticLineService) {
+    this.invoiceRepository = invoiceRepository;
+    this.invoiceLineRepository = invoiceLineRepository;
+    this.invoicingProjectService = invoicingProjectService;
+    this.invoiceLineService = invoiceLineService;
+    this.invoiceLineAnalyticService = invoiceLineAnalyticService;
+    this.analyticLineService = analyticLineService;
+  }
+
   @Override
-  public Invoice generateInvoiceLinesForHoldBacks(Invoice invoice) throws AxelorException {
+  public List<InvoiceLine> generateInvoiceLinesForReleasedHoldBacks(
+      Invoice invoice, List<Integer> projectHoldBacksIds) throws AxelorException {
+
+    Project project = invoice.getProject();
+    int sequence = 0;
+    List<InvoiceLine> holdBacksInvoiceLines =
+        invoiceLineRepository
+            .all()
+            .filter(
+                "self.invoice.project= :_project AND self.projectHoldBackLine.projectHoldBack.id IN :_projectHoldBacksIds AND self.invoice.statusSelect = :_ventilated AND self.isVentilatedReleasedProjectHoldBackLineInvoiceLine = false")
+            .bind("_project", project)
+            .bind("_projectHoldBacksIds", projectHoldBacksIds)
+            .bind("_ventilated", InvoiceRepository.STATUS_VENTILATED)
+            .fetch();
+
+    if (holdBacksInvoiceLines == null || holdBacksInvoiceLines.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(BusinessProjectExceptionMessage.NO_HOLD_BACK_LINES_TO_RELEASE));
+    }
+    List<InvoiceLine> invoiceLineList =
+        createInvoiceLinesForReleasedHoldBacks(
+            invoice, holdBacksInvoiceLines, invoice.getInvoiceLineList().size());
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      invoiceLine.setSequence(sequence);
+      sequence++;
+
+      invoiceLine.setAnalyticDistributionTemplate(project.getAnalyticDistributionTemplate());
+
+      List<AnalyticMoveLine> analyticMoveLineList =
+          invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
+      analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
+      invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
+
+      analyticLineService.setAnalyticAccount(invoiceLine, project.getCompany());
+
+      invoiceLineService.compute(invoice, invoiceLine);
+    }
+
+    return invoiceLineList;
+  }
+
+  protected List<InvoiceLine> createInvoiceLinesForReleasedHoldBacks(
+      Invoice invoice, List<InvoiceLine> holdBacksInvoiceLines, int priority)
+      throws AxelorException {
+
+    List<InvoiceLine> invoiceLineList = new ArrayList<>();
+    int count = 0;
+    for (InvoiceLine holdBackInvoiceLine : holdBacksInvoiceLines) {
+      invoiceLineList.addAll(
+          this.createInvoiceLineForReleasedHoldBacks(
+              invoice, holdBackInvoiceLine, priority * 100 + count));
+      count++;
+    }
+    return invoiceLineList;
+  }
+
+  protected List<InvoiceLine> createInvoiceLineForReleasedHoldBacks(
+      Invoice invoice, InvoiceLine holdBackInvoiceLine, int priority) throws AxelorException {
+
+    BigDecimal price = holdBackInvoiceLine.getPrice().negate();
+    InvoiceLineGenerator invoiceLineGenerator =
+        new InvoiceLineGenerator(
+            invoice,
+            holdBackInvoiceLine.getProduct(),
+            holdBackInvoiceLine.getProductName(),
+            price,
+            price,
+            price,
+            null,
+            BigDecimal.ONE,
+            holdBackInvoiceLine.getUnit(),
+            null,
+            priority,
+            BigDecimal.ZERO,
+            0,
+            null,
+            null,
+            false) {
+
+          @Override
+          public List<InvoiceLine> creates() throws AxelorException {
+
+            InvoiceLine invoiceLine = this.createInvoiceLine();
+            invoiceLine.setRelatedProjectHoldBackLineInvoiceLine(holdBackInvoiceLine);
+            List<InvoiceLine> invoiceLines = new ArrayList<>();
+            invoiceLines.add(invoiceLine);
+
+            return invoiceLines;
+          }
+        };
+
+    return invoiceLineGenerator.creates();
+  }
+
+  public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<InvoiceLine> invoiceLines)
+      throws AxelorException {
+
     List<ProjectHoldBackLine> projectHoldBackLineList =
         invoice.getProject().getProjectHoldBackLineList();
     if (projectHoldBackLineList == null || projectHoldBackLineList.isEmpty()) {
-      return invoice;
+      return new ArrayList<>();
     }
-
-    List<InvoiceLine> invoiceLineList =
-        createInvoiceLines(invoice, projectHoldBackLineList, invoice.getInvoiceLineList().size());
-    invoice.getInvoiceLineList().addAll(invoiceLineList);
-    return invoice;
-  }
-
-  protected List<InvoiceLine> createInvoiceLines(
-      Invoice invoice, List<ProjectHoldBackLine> projectHoldBackLineList, int priority)
-      throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     int count = 0;
     for (ProjectHoldBackLine projectHoldBackLine : projectHoldBackLineList) {
       invoiceLineList.addAll(
-          this.createInvoiceLine(invoice, projectHoldBackLine, priority * 100 + count));
+          this.createInvoiceLine(
+              invoice,
+              projectHoldBackLine,
+              invoice.getInvoiceLineList().size() * 100 + count,
+              invoiceLines));
       count++;
     }
     return invoiceLineList;
   }
 
   protected List<InvoiceLine> createInvoiceLine(
-      Invoice invoice, ProjectHoldBackLine projectHoldBackLine, int priority)
+      Invoice invoice,
+      ProjectHoldBackLine projectHoldBackLine,
+      int priority,
+      List<InvoiceLine> invoiceLineList)
       throws AxelorException {
 
-    BigDecimal price = calculateHoldBackLinePrice(invoice, projectHoldBackLine);
+    BigDecimal price = calculateHoldBackLinePrice(invoiceLineList, projectHoldBackLine);
 
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
@@ -71,8 +199,8 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
             projectHoldBackLine.getProjectHoldBack().getProjectHoldBackProduct(),
             projectHoldBackLine.getProjectHoldBack().getName(),
             price,
-            BigDecimal.ZERO,
-            BigDecimal.ZERO,
+            price,
+            price,
             null,
             BigDecimal.ONE,
             projectHoldBackLine.getProjectHoldBack().getProjectHoldBackProduct().getUnit(),
@@ -80,15 +208,15 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
             priority,
             BigDecimal.ZERO,
             0,
-            price,
-            BigDecimal.ZERO,
+            null,
+            null,
             false) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 
             InvoiceLine invoiceLine = this.createInvoiceLine();
-
+            invoiceLine.setProjectHoldBackLine(projectHoldBackLine);
             List<InvoiceLine> invoiceLines = new ArrayList<>();
             invoiceLines.add(invoiceLine);
 
@@ -100,11 +228,10 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
   }
 
   protected BigDecimal calculateHoldBackLinePrice(
-      Invoice invoice, ProjectHoldBackLine projectHoldBackLine) {
+      List<InvoiceLine> invoiceLineList, ProjectHoldBackLine projectHoldBackLine) {
     BigDecimal price;
     BigDecimal percentage = projectHoldBackLine.getPercentage();
     Set<Product> products = projectHoldBackLine.getProjectHoldBack().getProductsHeldBackSet();
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
     if (products == null || products.isEmpty()) {
       price =
           invoiceLineList.stream()

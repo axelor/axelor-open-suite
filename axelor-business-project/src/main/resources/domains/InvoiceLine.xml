@@ -14,6 +14,12 @@
     <decimal name="newProgress" title="New progress" nullable="true"/>
     <many-to-one name="expenseLine" title="Expense line"
       ref="com.axelor.apps.hr.db.ExpenseLine"/>
+    <boolean name="isVentilatedReleasedProjectHoldBackLineInvoiceLine"
+      title="Ventilated project hold back line invoice" nullable="false" default="false"/>
+    <many-to-one name="projectHoldBackLine"
+      ref="com.axelor.apps.project.db.ProjectHoldBackLine" title="Project holdBack line"/>
+    <many-to-one name="relatedProjectHoldBackLineInvoiceLine"
+      title="Related project hold back line invoice" ref="com.axelor.apps.account.db.InvoiceLine"/>
 
   </entity>
 
