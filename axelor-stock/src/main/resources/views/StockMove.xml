@@ -372,6 +372,8 @@
             </field>
             <field name="invoicingStatusSelect" hidden="true" colSpan="12"/>
           </panel>
+          <field name="company.currency.symbol" hidden="true"/>
+          <field name="company.currency.numberOfDecimals" hidden="true"/>
         </panel>
       </panel>
       <panel name="actionPanel" colSpan="3" itemSpan="12">
@@ -452,7 +454,7 @@
 						<>
 							<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
 								<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
-								<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
+								<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{parseFloat(exTaxTotal).toFixed(company.currency.numberOfDecimals)} {company.currency.symbol}</Box>
 							</Box>
 						</>
 	                    ]]>
@@ -530,7 +532,7 @@
 							<>
 								<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
 									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
-									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
+									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{parseFloat(exTaxTotal).toFixed(company.currency.numberOfDecimals)} {company.currency.symbol}</Box>
 								</Box>
 							</>
                           ]]>
@@ -573,7 +575,7 @@
 							<>
 								<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
 									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
-									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
+									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{parseFloat(exTaxTotal).toFixed(company.currency.numberOfDecimals)} {company.currency.symbol}</Box>
 								</Box>
 							</>
                           ]]>
