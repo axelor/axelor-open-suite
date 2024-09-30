@@ -5,6 +5,4 @@ import java.util.Map;
 
 public interface SaleOrderLineViewProductionService {
   Map<String, Map<String, Object>> hideBomAndProdProcess(SaleOrderLine saleOrderLine);
-
-  Map<String, Map<String, Object>> getSolDetailsScale();
 }
