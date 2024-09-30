@@ -15,6 +15,6 @@
     </panel>
     <panel-related field="metaJsonFieldList" form-view="base-json-field-form"
       grid-view="base-json-field-grid" summary-view="base-json-field-form" colSpan="12"
-      widget="expandable"/>
+      widget="expandable" editable="true"/>
   </form>
 </object-views>

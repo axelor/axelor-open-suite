@@ -6,7 +6,8 @@
 
 
   <grid name="base-json-field-grid" title="Custom fields"
-    model="com.axelor.meta.db.MetaJsonField" edit-icon="true">
+    model="com.axelor.meta.db.MetaJsonField" edit-icon="true"
+        onNew="action-configurator-form-config-set-json-field-default">
     <field name="name"/>
     <field name="title"/>
     <field name="type"/>
@@ -15,12 +16,12 @@
 
   <form name="base-json-field-form" onLoad="action-configurator-json-field-onload"
     title="Custom field" model="com.axelor.meta.db.MetaJsonField"
-    onNew="action-configurator-set-json-field-default">
+    onNew="action-configurator-form-config-set-json-field-default">
     <panel name="overviewPanel" title="Overview">
       <field name="$simpleName"
         onChange="action-configurator-json-field-record-name,action-condition-sale-meta-json-field-check-duplicate-name"
         title="Name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
-      <field readonly="true" name="name" title="Name to use in scripts"/>
+      <field name="name" title="Name to use in scripts"/>
       <field name="type"
         selection-in="['string', 'integer', 'decimal', 'boolean', 'datetime', 'date', 'time', 'panel', 'enum', 'button', 'separator', 'many-to-one', 'many-to-many', 'json-many-to-one', 'json-many-to-many']"/>
       <field name="metaJsonCategorySelect"/>
@@ -66,7 +67,17 @@
         <field name="formView" showIf="type.match('^(one|many)-to-')" widget="ref-text"
           x-target="com.axelor.meta.db.MetaView" x-target-name="name"
           x-domain="self.model = :targetModel AND self.type = 'form'"/>
+        <panel name="attrOptionsPanel" title="Attributes" itemSpan="6">
+          <field name="required" widget="inline-checkbox"/>
+          <field name="nameField" widget="inline-checkbox" showIf="type === 'string'"/>
+          <field name="hidden" widget="inline-checkbox"/>
+          <field name="visibleInGrid" widget="inline-checkbox"/>
+        </panel>
+        <panel name="widgetAttributesPanel" title="Widget Attributes" sidebar="true">
+          <field name="widgetAttrs" widget="json-raw"/>
+        </panel>
       </panel>
+
       <panel name="conditionsPanel" title="Conditions" itemSpan="12">
         <field name="contextField" hidden="true" title="Only if" colSpan="6" widget="ref-text"
           x-target-name="name" x-target="com.axelor.meta.db.MetaField"
@@ -88,15 +99,16 @@
         <panel-include view="incl-help-meta-json-field"/>
       </panel>
     </panel-tabs>
-    <panel name="attrOptionsPanel" title="Options" sidebar="true" itemSpan="6">
-      <field name="required" widget="inline-checkbox"/>
-      <field name="nameField" widget="inline-checkbox" showIf="type === 'string'"/>
-      <field name="hidden" widget="inline-checkbox"/>
-      <field name="visibleInGrid" widget="inline-checkbox"/>
-    </panel>
-    <panel name="widgetAttributesPanel" title="Widget Attributes" sidebar="true">
-      <field name="widgetAttrs" widget="json-raw"/>
-    </panel>
+
+
   </form>
+
+
+  <action-attrs name="action-configurator-form-config-set-json-field-default">
+    <attribute name="value" for="model" expr="eval:'com.axelor.apps.base.db.ConfiguratorFormConfig'"
+               if="__parent__._model == 'com.axelor.apps.base.db.ConfiguratorFormConfig'"/>
+    <attribute name="value" for="modelField" expr="eval:'attributes'"
+               if="__parent__._model == 'com.axelor.apps.base.db.ConfiguratorFormConfig'"/>
+  </action-attrs>
 
 </object-views>

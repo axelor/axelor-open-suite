@@ -14,7 +14,7 @@
       <field name="metaModel" onChange="action-configurator-generator-form-record-set-record-reference"/>
       <field name="configuratorFormConfig"/>
       <field name="recordReference" widget="RefSelect" x-related="recordReferenceId"
-        selection-in="null" colSpan="12"/>
+        selection-in="null" colSpan="12" />
       <field name="recordReferenceId" hidden="true"/>
     </panel>
     <panel-related field="configuratorGeneratorLineList"
@@ -23,6 +23,7 @@
   </form>
 
   <action-attrs name="action-configurator-generator-form-record-set-record-reference">
-    <attribute for="recordReference" name="value" expr="eval: metaModel?.packageName + '.' + metaModel?.name"/>
+    <attribute for="recordReference" name="value" expr="eval: metaModel?.packageName + '.' + metaModel?.name" if="metaModel != null"/>
+    <attribute for="recordReference" name="value" expr="eval: '' " if="metaModel == null"/>
   </action-attrs>
 </object-views>
