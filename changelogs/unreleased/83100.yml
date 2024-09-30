@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed invoice to ensure validation or ventilation when empty."
+module: axelor-account
