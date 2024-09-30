@@ -110,8 +110,13 @@
         domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
         colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+      <field name="toStockMove" hidden="true" colSpan="6"/>
       <button name="confirmBtn" title="Confirm"
-        onClick="action-purchase-order-method-merge-from-pop-up" colSpan="12" width="200px"/>
+        onClick="action-purchase-order-method-merge-from-pop-up" colSpan="12" width="200px"
+        showIf="!toStockMove"/>
+      <button name="confirmBtn" title="Confirmer"
+        onClick="action-supplychain-stock-move-method-generate-invoice-from-pop-up" colSpan="12"
+        width="200px" showIf="toStockMove" if="__config__.app.isApp('supplychain')"/>
     </panel>
   </form>
 
