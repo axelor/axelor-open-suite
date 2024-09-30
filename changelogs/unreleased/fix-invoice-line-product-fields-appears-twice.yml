@@ -1,0 +1,3 @@
+---
+title: "Fix Product field, Filter on supplier field and Type field appearing twice in invoice line form on onLoad"
+type: fix
