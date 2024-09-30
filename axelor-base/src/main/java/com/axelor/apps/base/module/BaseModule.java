@@ -165,6 +165,8 @@ import com.axelor.apps.base.service.YearService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.address.AddressAttrsService;
 import com.axelor.apps.base.service.address.AddressAttrsServiceImpl;
+import com.axelor.apps.base.service.address.AddressCreationService;
+import com.axelor.apps.base.service.address.AddressCreationServiceImpl;
 import com.axelor.apps.base.service.address.AddressFetchService;
 import com.axelor.apps.base.service.address.AddressFetchServiceImpl;
 import com.axelor.apps.base.service.address.AddressMetaService;
@@ -485,5 +487,6 @@ public class BaseModule extends AxelorModule {
     bind(DataSharingReferentialLineService.class).to(DataSharingReferentialLineServiceImpl.class);
     bind(MetaViewService.class).to(MetaViewServiceImpl.class);
     bind(DataSharingProductWizardService.class).to(DataSharingProductWizardServiceImpl.class);
+    bind(AddressCreationService.class).to(AddressCreationServiceImpl.class);
   }
 }

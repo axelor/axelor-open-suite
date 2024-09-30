@@ -6,7 +6,7 @@ import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.rest.dto.AddressPostRequest;
 import com.axelor.apps.base.rest.dto.AddressResponse;
-import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.base.service.address.AddressCreationService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -45,8 +45,8 @@ public class AddressRestController {
             Response.Status.CREATED,
             I18n.get("Address created"),
             new AddressResponse(
-                Beans.get(AddressService.class)
-                    .restCreateAddress(
+                Beans.get(AddressCreationService.class)
+                    .createAndSaveAddress(
                         requestBody.fetchCountry(),
                         requestBody.fetchCity(),
                         requestBody.getZip(),

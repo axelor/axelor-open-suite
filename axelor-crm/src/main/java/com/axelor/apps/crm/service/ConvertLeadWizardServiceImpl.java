@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressCreationService;
 import com.axelor.apps.base.service.address.AddressFetchService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -64,6 +65,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   protected ConvertWizardService convertWizardService;
 
   protected AddressService addressService;
+  protected AddressCreationService addressCreationService;
 
   protected PartnerService partnerService;
 
@@ -88,6 +90,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       LeadService leadService,
       ConvertWizardService convertWizardService,
       AddressService addressService,
+      AddressCreationService addressCreationService,
       AddressFetchService addressFetchService,
       AddressRepository addressRepository,
       PartnerService partnerService,
@@ -100,6 +103,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     this.leadService = leadService;
     this.convertWizardService = convertWizardService;
     this.addressService = addressService;
+    this.addressCreationService = addressCreationService;
     this.addressFetchService = addressFetchService;
     this.addressRepository = addressRepository;
     this.partnerService = partnerService;
@@ -180,7 +184,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
     if (address == null) {
       address =
-          addressService.restCreateAddress(null, null, streetName, postBox, zip, city, country);
+          addressCreationService.createAddress(null, null, streetName, postBox, zip, city, country);
     }
 
     return address;

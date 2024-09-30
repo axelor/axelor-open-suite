@@ -18,13 +18,8 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.db.repo.AddressRepository;
-import com.axelor.apps.base.db.repo.CityRepository;
-import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.service.MapService;
-import com.axelor.apps.base.service.address.AddressAttrsService;
 import com.axelor.apps.base.service.address.AddressServiceImpl;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.db.JPA;
@@ -37,22 +32,8 @@ public class AddressServiceStockImpl extends AddressServiceImpl {
   }
 
   @Inject
-  public AddressServiceStockImpl(
-      AddressHelper ads,
-      MapService mapService,
-      CityRepository cityRepository,
-      StreetRepository streetRepository,
-      AppBaseService appBaseService,
-      AddressAttrsService addressAttrsService,
-      AddressRepository addressRepo) {
-    super(
-        ads,
-        mapService,
-        cityRepository,
-        streetRepository,
-        appBaseService,
-        addressAttrsService,
-        addressRepo);
+  public AddressServiceStockImpl(AddressHelper ads, MapService mapService) {
+    super(ads, mapService);
   }
 
   private static boolean checkAddressUsedStock(Long addressId) {

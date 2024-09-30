@@ -20,13 +20,8 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Umr;
-import com.axelor.apps.base.db.repo.AddressRepository;
-import com.axelor.apps.base.db.repo.CityRepository;
-import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.service.MapService;
-import com.axelor.apps.base.service.address.AddressAttrsService;
 import com.axelor.apps.base.service.address.AddressServiceImpl;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.utils.helpers.address.AddressHelper;
 import com.google.inject.Inject;
@@ -37,22 +32,8 @@ public class AddressServiceAccountImpl extends AddressServiceImpl {
   }
 
   @Inject
-  public AddressServiceAccountImpl(
-      AddressHelper ads,
-      MapService mapService,
-      CityRepository cityRepository,
-      StreetRepository streetRepository,
-      AppBaseService appBaseService,
-      AddressAttrsService addressAttrsService,
-      AddressRepository addressRepo) {
-    super(
-        ads,
-        mapService,
-        cityRepository,
-        streetRepository,
-        appBaseService,
-        addressAttrsService,
-        addressRepo);
+  public AddressServiceAccountImpl(AddressHelper ads, MapService mapService) {
+    super(ads, mapService);
   }
 
   private static boolean checkAddressUsedAccount(Long addressId) {
