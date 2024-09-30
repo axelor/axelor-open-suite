@@ -185,4 +185,20 @@
     <option value="Delivered by">Delivered by</option>
   </selection>
 
+  <selection name="supplychain.product.reservation.type.select">
+    <option value="1">Reservation</option>
+    <option value="2">Allocation</option>
+  </selection>
+
+  <selection name="supplychain.requested.reservation.type.select">
+    <option value="1">On sale order</option>
+    <option value="2">On manuf order</option>
+  </selection>
+
+  <selection name="supplychain.product.reservation.status.select">
+    <option value="1">In progress</option>
+    <option value="2">Realized</option>
+    <option value="3">Canceled</option>
+  </selection>
+
 </object-views>
