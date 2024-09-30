@@ -340,4 +340,7 @@ public final class StockExceptionMessage {
 
   public static final String MASS_STOCK_MOVE_NO_SEQUENCE = /*$$(*/
       "There's no configured sequence for mass stock move for the company %s" /*)*/;
+
+  public static final String LOCATIONS_ARE_EMPTY = /*$$(*/
+      "Source and destination locations are empty" /*)*/;
 }

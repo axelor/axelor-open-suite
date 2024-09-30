@@ -116,6 +116,8 @@
     <string name="productTypesToDisplaySelect" title="Types of products to display"
       selection="product.product.type.select"
       help="Allows to filter the product types displayed on the mobile application in the sales section."/>
+    <string name="reportingTypesToDisplaySelect" title="Reporting to display"
+      selection="mobilesettings.reporting.type.display.select"/>
 
     <extra-code>
       <![CDATA[
@@ -125,6 +127,11 @@
 		public static final String IMPUTATION_ON_MANUF_ORDER = "manufOrder";
 		public static final String IMPUTATION_ON_OPERATION_ORDER = "operationOrder";
 		public static final String IMPUTATION_ON_ACTIVITY = "product";
+
+		// REPORTING TYPE DISPLAY SELECT
+		public static final String REPORTING_TYPE_DISPLAY_INDICATORS = "indicators";
+		public static final String REPORTING_TYPE_DISPLAY_ACTIVITIES = "activities";
+		public static final String REPORTING_TYPE_DISPLAY_NONE = "none";
 	  ]]>
     </extra-code>
 
@@ -164,6 +171,7 @@
       <field name="isGenericProductShown" on="UPDATE"/>
       <field name="isConfiguratorProductShown" on="UPDATE"/>
       <field name="productTypesToDisplaySelect" on="UPDATE"/>
+      <field name="reportingTypesToDisplaySelect" on="UPDATE"/>
     </track>
   </entity>
 </domain-models>
