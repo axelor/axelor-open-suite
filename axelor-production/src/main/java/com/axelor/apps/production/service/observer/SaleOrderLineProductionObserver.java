@@ -16,21 +16,15 @@ public class SaleOrderLineProductionObserver {
   void onSaleOrderLineOnNew(@Observes SaleOrderLineViewOnNew event) {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
-    SaleOrderLineViewProductionService saleOrderLineViewProductionService =
-        Beans.get(SaleOrderLineViewProductionService.class);
     saleOrderLineMap.putAll(
-        saleOrderLineViewProductionService.hideBomAndProdProcess(saleOrderLine));
-    saleOrderLineMap.putAll(saleOrderLineViewProductionService.getSolDetailsScale());
+        Beans.get(SaleOrderLineViewProductionService.class).hideBomAndProdProcess(saleOrderLine));
   }
 
   void onSaleOrderLineOnLoad(@Observes SaleOrderLineViewOnLoad event) {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
-    SaleOrderLineViewProductionService saleOrderLineViewProductionService =
-        Beans.get(SaleOrderLineViewProductionService.class);
     saleOrderLineMap.putAll(
-        saleOrderLineViewProductionService.hideBomAndProdProcess(saleOrderLine));
-    saleOrderLineMap.putAll(saleOrderLineViewProductionService.getSolDetailsScale());
+        Beans.get(SaleOrderLineViewProductionService.class).hideBomAndProdProcess(saleOrderLine));
   }
 
   void onSaleOrderLineProductOnChange(@Observes SaleOrderLineProductOnChange event)

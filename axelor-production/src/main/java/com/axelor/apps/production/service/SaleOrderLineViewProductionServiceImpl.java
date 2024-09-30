@@ -14,7 +14,6 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainServiceImpl;
-import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +82,7 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
     attrs.put("customizeProdProcessBtn", Map.of(HIDDEN_ATTR, hideProdProcess));
     return attrs;
   }
-
+  /*
   @Override
   public Map<String, Map<String, Object>> getSolDetailsScale() {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
@@ -93,13 +92,9 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
 
     attrs.put("saleOrderLineDetailsList.price", Map.of(SCALE_ATTR, scaleForPrice));
     attrs.put("saleOrderLineDetailsList.totalPrice", Map.of(SCALE_ATTR, scaleForPrice));
-    // attrs.put("saleOrderLineDetailsList.saleOrderLineDetailsList.price", Map.of(SCALE_ATTR,
-    // scaleForPrice));
-    // attrs.put("saleOrderLineDetailsList.saleOrderLineDetailsList.totalPrice", Map.of(SCALE_ATTR,
-    // scaleForPrice));
 
     attrs.put("saleOrderLineDetailsList.qty", Map.of(SCALE_ATTR, scaleForQty));
 
     return attrs;
-  }
+  }*/
 }
