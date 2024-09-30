@@ -77,6 +77,7 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
 
     Invoice latePaymentInvoice = invoiceGenerator.generate();
     latePaymentInvoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_LATE_PAYMENT);
+    latePaymentInvoice.setInvoiceDate(appAccountService.getTodayDate(invoice.getCompany()));
     List<InvoiceLine> invoiceLines = new ArrayList<>();
 
     invoiceLines.add(createFlatFeeInvoiceLine(invoice));
