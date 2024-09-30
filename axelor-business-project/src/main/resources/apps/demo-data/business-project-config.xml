@@ -41,6 +41,9 @@
       eval="taskTemplateSet_importId.split('\\|') as List"/>
   </input>
 
+  <input file="project_project.csv" type="com.axelor.apps.project.db.Project" separator=";"
+    search="self.importId = :importId"/>
+
   <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"
     type="com.axelor.apps.sale.db.SaleOrder">
     <bind to="creationDate"
@@ -157,9 +160,12 @@
   </input>
 
   <input file="project_project.csv" type="com.axelor.apps.project.db.Project" separator=";"
-    search="self.importId = :importId" update="true"/>
+    search="self.importId = :importId"/>
 
   <input file="project_businessProjectConfig.csv" separator=";"
     type="com.axelor.apps.businessproject.db.BusinessProjectConfig"
     search="self.importId = :importId"/>
+
+  <input file="hr_projectPlannedTimeValue.csv" separator=";"
+    type="com.axelor.apps.project.db.PlannedTimeValue" search="self.importId = :importId"/>
 </csv-inputs>
