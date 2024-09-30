@@ -38,6 +38,8 @@ import com.axelor.apps.production.db.repo.ProductionBatchManagementRepository;
 import com.axelor.apps.production.db.repo.ProductionBatchRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementProductionRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementRepository;
+import com.axelor.apps.production.db.repo.SaleOrderLineDetailsManagementRepository;
+import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
 import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
 import com.axelor.apps.production.db.repo.StockMoveProductionRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepository;
@@ -83,6 +85,8 @@ import com.axelor.apps.production.service.SaleOrderLineBomLineMappingService;
 import com.axelor.apps.production.service.SaleOrderLineBomLineMappingServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
 import com.axelor.apps.production.service.SaleOrderLineBomServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineDetailsService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionService;
@@ -327,5 +331,7 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderOnLineChangeSupplyChainServiceImpl.class)
         .to(SaleOrderOnLineChangeProductionServiceImpl.class);
     bind(SaleOrderProductionSyncService.class).to(SaleOrderProductionSyncServiceImpl.class);
+    bind(SaleOrderLineDetailsService.class).to(SaleOrderLineDetailsServiceImpl.class);
+    bind(SaleOrderLineDetailsRepository.class).to(SaleOrderLineDetailsManagementRepository.class);
   }
 }
