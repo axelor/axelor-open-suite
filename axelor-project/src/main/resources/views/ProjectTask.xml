@@ -147,6 +147,9 @@
         <panel-include view="incl-frequency-panel-task-form"/>
       </panel>
 
+
+      <panel-include view="incl-checklist-task-panel-form"/>
+
       <panel-include view="incl-links-panel-form"/>
     </panel-tabs>
 
@@ -291,6 +294,16 @@
       <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
       <field name="project.isShowPlanning" hidden="true"/>
     </panel>
+  </form>
+
+  <form name="incl-checklist-task-panel-form" title="Check list"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <panel-related name="checkListItemListPanel" colSpan="12" x-tree-limit="1"
+      title="Check list" field="projectCheckListItemList" orderBy="sequence" canMove="true"
+      onChange="action-check-list-item-method-reset-completed-fields"
+      form-view="project-check-list-item-form" grid-view="project-check-list-item-grid"
+      widget="tree-grid" x-tree-field="projectCheckListItemList"
+      x-tree-field-title="Add a new check list item" editable="true"/>
   </form>
 
   <gantt name="task-gantt" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
