@@ -231,7 +231,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       senderRecord +=
           cfonbToolService.createZone(
               I18n.get("10 - Sender bank details type"),
-              senderBank.getBankDetailsTypeSelect(),
+              senderBank.getCountry().getBankDetailsTemplate().getBankDetailsTypeSelect(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
               1);
@@ -274,7 +274,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       senderRecord +=
           cfonbToolService.createZone(
               I18n.get("14 - Sender bank details type"),
-              senderBank.getBankDetailsTypeSelect(),
+              senderBank.getCountry().getBankDetailsTemplate().getBankDetailsTypeSelect(),
               cfonbToolService.STATUS_DEPENDENT,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
               1);
@@ -444,7 +444,11 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
           bankOrderSeq);
     }
 
-    switch (bankDetails.getBank().getBankDetailsTypeSelect()) {
+    switch (bankDetails
+        .getBank()
+        .getCountry()
+        .getBankDetailsTemplate()
+        .getBankDetailsTypeSelect()) {
       case BankRepository.BANK_IDENTIFIER_TYPE_IBAN:
         return StringHelper.fillStringRight(bankDetails.getIban(), ' ', 34);
 
@@ -534,7 +538,11 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       detailRecord +=
           cfonbToolService.createZone(
               I18n.get("4 - Bank details type"),
-              receiverBankDetails.getBank().getBankDetailsTypeSelect(),
+              receiverBankDetails
+                  .getBank()
+                  .getCountry()
+                  .getBankDetailsTemplate()
+                  .getBankDetailsTypeSelect(),
               cfonbToolService.STATUS_DEPENDENT,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
               1);
@@ -1200,7 +1208,11 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       totalRecord +=
           cfonbToolService.createZone(
               I18n.get("9 - Bank details type"),
-              senderBankDetails.getBank().getBankDetailsTypeSelect(),
+              senderBankDetails
+                  .getBank()
+                  .getCountry()
+                  .getBankDetailsTemplate()
+                  .getBankDetailsTypeSelect(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
               1);

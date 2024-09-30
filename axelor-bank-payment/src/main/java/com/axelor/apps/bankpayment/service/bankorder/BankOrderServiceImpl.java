@@ -118,7 +118,10 @@ public class BankOrderServiceImpl implements BankOrderService {
     if (bankOrder.getBankOrderFileFormat() != null) {
       String acceptedIdentifiers = bankOrder.getBankOrderFileFormat().getBankDetailsTypeSelect();
       if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
-        domain += " AND self.bank.bankDetailsTypeSelect IN (" + acceptedIdentifiers + ")";
+        domain +=
+            " AND self.bank.country.bankDetailsTemplate.bankDetailsTypeSelect IN ("
+                + acceptedIdentifiers
+                + ")";
       }
     }
     return domain;
