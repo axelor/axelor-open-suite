@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -46,8 +45,8 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
-  public void updateBlockedAccount(Partner partner) throws AxelorException {
+  @Transactional
+  public void updateBlockedAccount(Partner partner) {
 
     long invoiceCount =
         invoiceRepository
@@ -56,13 +55,12 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
                 "self.operationTypeSelect = :operationTypeSelect "
                     + "AND self.amountRemaining > 0 "
                     + "AND self.partner = :partner "
-                    + "AND self.statusSelect in (:invoiceStatusValidated, :invoiceStatusVentilated) "
+                    + "AND self.statusSelect = :invoiceStatusVentilated "
                     + "AND self.dueDate < "
                     + "(SELECT DATE(:todayDate) + config.numberOfDaysBeforeAccountBlocking "
                     + "FROM AccountConfig config WHERE config.company = self.company)")
             .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             .bind("partner", partner.getId())
-            .bind("invoiceStatusValidated", InvoiceRepository.STATUS_VALIDATED)
             .bind("invoiceStatusVentilated", InvoiceRepository.STATUS_VENTILATED)
             .bind("todayDate", appBaseService.getTodayDate(null))
             .count();
