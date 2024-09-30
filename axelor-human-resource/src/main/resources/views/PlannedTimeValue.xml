@@ -4,7 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="planned-time-value-grid" title="Planned time values"
-    model="com.axelor.apps.project.db.PlannedTimeValue">
+    model="com.axelor.apps.project.db.PlannedTimeValue" orderBy="sequence" canMove="true">
+    <field name="sequence"/>
     <field name="plannedTime"/>
   </grid>
 
