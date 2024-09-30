@@ -26,8 +26,6 @@
           <field name="bankName" colSpan="9" placeholder="Bank Name"/>
         </editor>
       </field>
-
-      <field name="bankDetailsTypeSelect"/>
     </panel>
     <panel name="addressPanel">
       <field name="bankAddressList" colSpan="12">

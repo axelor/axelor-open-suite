@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="bank-details-template-line-non-iban-grid" title="Bank details template lines"
+    model="com.axelor.apps.base.db.BankDetailsTemplateLine">
+    <field name="title" title="Title"/>
+    <field name="metaField" title="Bank details fields"/>
+  </grid>
+
+  <grid name="bank-details-template-line-iban-grid" title="Bank details template lines"
+    model="com.axelor.apps.base.db.BankDetailsTemplateLine">
+    <field name="title" title="Title"/>
+    <field name="metaField" title="Bank details fields"/>
+    <field name="startPos"/>
+    <field name="endPos"/>
+  </grid>
+
+  <form name="bank-details-template-line-form" title="Bank details template line"
+    model="com.axelor.apps.base.db.BankDetailsTemplateLine"
+    onNew="action-bank-details-template-line-attr-set-start-pos-and-end-pos-hidden"
+    onLoad="action-bank-details-template-line-attr-set-start-pos-and-end-pos-hidden">
+    <panel name="mainPanel" colSpan="12">
+      <field name="title" title="Title" colSpan="6"/>
+      <field name="metaField" title="Bank details fields" colSpan="6"
+        domain="self.name in ('bankCode','sortCode','accountNbr','bbanKey')"
+        onChange="action-base-record-bank-details-template-line-set-title"/>
+      <field name="startPos" title="Start position (included)" validIf="startPos >= 1"/>
+      <field name="endPos" title="End position (included)" validIf="endPos >= startPos"/>
+    </panel>
+  </form>
+
+  <action-record name="action-base-record-bank-details-template-line-set-title"
+    model="com.axelor.apps.base.db.BankDetailsTemplateLine">
+    <field name="title" expr="eval:com.axelor.i18n.I18n.get(__this__.metaField?.label)"/>
+  </action-record>
+
+  <action-attrs
+    name="action-bank-details-template-line-attr-set-start-pos-and-end-pos-hidden">
+    <attribute for="startPos" name="hidden"
+      expr="eval:__parent__?.bankDetailsTypeSelect != 1"/>
+    <attribute for="startPos" name="validIf" expr="startPos >= 1"
+      if="__parent__?.bankDetailsTypeSelect == 1"/>
+    <attribute for="endPos" name="hidden"
+      expr="eval:__parent__?.bankDetailsTypeSelect != 1"/>
+    <attribute for="endPos" name="validIf" expr="endPos >= startPos"
+      if="__parent__?.bankDetailsTypeSelect == 1"/>
+  </action-attrs>
+
+</object-views>

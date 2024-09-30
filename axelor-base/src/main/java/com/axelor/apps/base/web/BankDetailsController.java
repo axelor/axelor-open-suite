@@ -18,9 +18,11 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
@@ -38,6 +40,8 @@ public class BankDetailsController {
 
   public void validateIban(ActionRequest request, ActionResponse response) {
     response.setAttr("invalidIbanText", "hidden", true);
+    response.setAttr("unsupportedIbanText", "hidden", true);
+    response.setAttr("bankDetailsTemplateFieldsToUseNotSetText", "hidden", true);
 
     if (request.getAction().endsWith("onnew")) {
       return;
@@ -48,21 +52,32 @@ public class BankDetailsController {
 
     if (bankDetails.getIban() != null
         && bank != null
-        && bank.getBankDetailsTypeSelect() == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
+        && bank.getCountry().getBankDetailsTemplate().getBankDetailsTypeSelect()
+            == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
       try {
         Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());
-      } catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
+
+      } catch (IbanFormatException | InvalidCheckDigitException e) {
         if (request.getAction().endsWith("onchange")) {
           response.setInfo(I18n.get(BaseExceptionMessage.BANK_DETAILS_1));
         }
         response.setAttr("invalidIbanText", "hidden", false);
+      } catch (UnsupportedCountryException e) {
+        if (request.getAction().endsWith("onchange")) {
+          response.setAttr("unsupportedIbanText", "hidden", false);
+        }
       } finally {
-        bankDetails = Beans.get(BankDetailsServiceImpl.class).detailsIban(bankDetails);
-        if (bank.getCountry() != null && bank.getCountry().getAlpha2Code().equals("FR")) {
+        try {
+          bankDetails = Beans.get(BankDetailsServiceImpl.class).detailsIban(bankDetails);
           response.setValue("bankCode", bankDetails.getBankCode());
           response.setValue("sortCode", bankDetails.getSortCode());
           response.setValue("accountNbr", bankDetails.getAccountNbr());
           response.setValue("bbanKey", bankDetails.getBbanKey());
+        } catch (AxelorException e) {
+          if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE) {
+            response.setAttr("bankDetailsTemplateFieldsToUseNotSetText", "hidden", false);
+          }
+          response.setInfo(e.getMessage());
         }
       }
     }

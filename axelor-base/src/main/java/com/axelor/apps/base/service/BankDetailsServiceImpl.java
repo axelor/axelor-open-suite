@@ -22,13 +22,19 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.BankDetailsTemplate;
+import com.axelor.apps.base.db.BankDetailsTemplateLine;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHelper;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
@@ -53,14 +59,63 @@ public class BankDetailsServiceImpl implements BankDetailsService {
    * @return BankDetails
    */
   @Override
-  public BankDetails detailsIban(BankDetails bankDetails) {
-
+  public BankDetails detailsIban(BankDetails bankDetails) throws AxelorException {
     if (bankDetails.getIban() != null) {
+      List<BankDetailsTemplateLine> bankDetailsTemplateLines =
+          Optional.of(bankDetails)
+              .map(BankDetails::getBank)
+              .map(Bank::getCountry)
+              .map(Country::getBankDetailsTemplate)
+              .map(BankDetailsTemplate::getBankDetailsTemplateLineList)
+              .orElse(null);
 
-      bankDetails.setBankCode(StringHelper.extractStringFromRight(bankDetails.getIban(), 23, 5));
-      bankDetails.setSortCode(StringHelper.extractStringFromRight(bankDetails.getIban(), 18, 5));
-      bankDetails.setAccountNbr(StringHelper.extractStringFromRight(bankDetails.getIban(), 13, 11));
-      bankDetails.setBbanKey(StringHelper.extractStringFromRight(bankDetails.getIban(), 2, 2));
+      // if bankDetailsTemplateLines are not set and the country is France, use the FR settings
+      if ((bankDetailsTemplateLines == null || bankDetailsTemplateLines.isEmpty())
+          && "FR".equals(bankDetails.getBank().getCountry().getAlpha2Code())) {
+        bankDetails.setBankCode(StringHelper.extractStringFromRight(bankDetails.getIban(), 23, 5));
+        bankDetails.setSortCode(StringHelper.extractStringFromRight(bankDetails.getIban(), 18, 5));
+        bankDetails.setAccountNbr(
+            StringHelper.extractStringFromRight(bankDetails.getIban(), 13, 11));
+        bankDetails.setBbanKey(StringHelper.extractStringFromRight(bankDetails.getIban(), 2, 2));
+        return bankDetails;
+      }
+
+      // country is not France and no settings in the template
+      if ((bankDetailsTemplateLines == null || bankDetailsTemplateLines.isEmpty())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(
+                "No fields to use were set under the bank details template for the country in which the bank is located."));
+        //        return bankDetails;
+      }
+
+      for (BankDetailsTemplateLine bankDetailsTemplateLine : bankDetailsTemplateLines) {
+        int startPos = bankDetailsTemplateLine.getStartPos();
+        int endPos = bankDetailsTemplateLine.getEndPos();
+        String metaFieldName = bankDetailsTemplateLine.getMetaField().getName();
+        if (endPos > bankDetails.getIban().length()) {
+          String fieldToUse = bankDetailsTemplateLine.getTitle();
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(
+                  "For the field to use \" %s \" on the bank details template, the end position is greater than the length of IBAN number."),
+              fieldToUse);
+        }
+        switch (metaFieldName) {
+          case "bankCode":
+            bankDetails.setBankCode(bankDetails.getIban().substring(startPos - 1, endPos));
+            break;
+          case "sortCode":
+            bankDetails.setSortCode(bankDetails.getIban().substring(startPos - 1, endPos));
+            break;
+          case "accountNbr":
+            bankDetails.setAccountNbr(bankDetails.getIban().substring(startPos - 1, endPos));
+            break;
+          case "bbanKey":
+            bankDetails.setBbanKey(bankDetails.getIban().substring(startPos - 1, endPos));
+            break;
+        }
+      }
     }
     return bankDetails;
   }
@@ -180,7 +235,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
   public void validateIban(String iban)
       throws IbanFormatException, InvalidCheckDigitException, UnsupportedCountryException {
     CountryCode countryCode = CountryCode.getByCode(IbanUtil.getCountryCode(iban));
-    if (countryCode == null) {
+    if (countryCode == null || !IbanUtil.isSupportedCountry(countryCode)) {
       throw new UnsupportedCountryException("Country code is not supported.");
     }
     if (IbanUtil.isSupportedCountry(countryCode)) {
