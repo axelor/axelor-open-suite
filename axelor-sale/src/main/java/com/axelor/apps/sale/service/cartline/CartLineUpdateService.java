@@ -24,4 +24,6 @@ import java.math.BigDecimal;
 public interface CartLineUpdateService {
 
   void updateCartLine(CartLine cartLine, BigDecimal qty);
+
+  void updateCartLine(CartLine cartLine);
 }

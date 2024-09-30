@@ -42,4 +42,10 @@ public class CartLineUpdateServiceImpl implements CartLineUpdateService {
     cartLine.setQty(cartLine.getQty().add(qty));
     cartLineRepository.save(cartLine);
   }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void updateCartLine(CartLine cartLine) {
+    updateCartLine(cartLine, null);
+  }
 }

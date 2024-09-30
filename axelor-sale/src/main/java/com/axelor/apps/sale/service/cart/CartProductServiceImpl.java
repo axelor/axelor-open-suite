@@ -60,7 +60,7 @@ public class CartProductServiceImpl implements CartProductService {
     if (cartLine == null) {
       cartLineCreateService.createCartLine(cart, product, null);
     } else {
-      cartLineUpdateService.updateCartLine(cartLine, null);
+      cartLineUpdateService.updateCartLine(cartLine);
     }
   }
 
