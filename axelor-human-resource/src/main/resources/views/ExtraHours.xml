@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="extra-hours-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours"
-    canNew="true" orderBy="-sentDate">
+    canNew="false" orderBy="-sentDate">
     <hilite color="danger" if="statusSelect == 4"/>
     <hilite color="success" if="statusSelect == 3"/>
     <hilite color="warning" if="statusSelect == 2"/>
@@ -107,6 +107,7 @@
     <action name="action-extra-hours-method-confirm"/>
     <action name="action-extra-hours-attrs-buttons"/>
     <action name="save"/>
+    <action name="action-extra-hours-view-open-empty-view"/>
   </action-group>
 
   <action-group name="action-extra-hours-group-validate">
@@ -189,6 +190,11 @@
     <view-param name="popup-save" value="true"/>
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-extra-hours-view-open-empty-view"
+    model="com.axelor.apps.hr.db.ExtraHours" title="Extra Hours">
+    <view name="extra-hours-form" type="form"/>
   </action-view>
 
   <search-filters name="extra-hours-filters" model="com.axelor.apps.hr.db.ExtraHours"
