@@ -306,14 +306,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       invoice.setAddressStr(
           Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
 
-      if (invoice != null) {
-        Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
-        if (stockMoveSet == null) {
-          stockMoveSet = new HashSet<>();
-          invoice.setStockMoveSet(stockMoveSet);
-        }
-        stockMoveSet.add(stockMove);
-      }
+      invoice.addStockMoveSetItem(stockMove);
+
+      // Set origin purchase order
+      invoice.setPurchaseOrder(purchaseOrder);
 
       invoiceRepository.save(invoice);
     }
