@@ -73,11 +73,10 @@
   </action-record>
 
   <action-attrs name="action-stock-correction-on-select-product">
-    <attribute name="domain" for="product"
-      expr="eval: &quot; self.id IN (0) AND self.dtype = 'Product'&quot;"
+    <attribute name="domain" for="product" expr="eval: &quot; self.id IN (0) &quot;"
       if="stockLocation == null || stockLocation?.stockLocationLineList?.isEmpty()"/>
     <attribute name="domain" for="product"
-      expr="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"
+      expr="self.productTypeSelect = 'storable' AND self.dtype = 'Product' AND self.stockManaged = true"
       if="stockLocation != null"/>
   </action-attrs>
 
