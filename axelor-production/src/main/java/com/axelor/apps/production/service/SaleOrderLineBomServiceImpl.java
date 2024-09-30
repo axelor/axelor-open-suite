@@ -50,6 +50,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected final BillOfMaterialLineService billOfMaterialLineService;
   protected final BillOfMaterialService billOfMaterialService;
+  protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -59,13 +60,15 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       BillOfMaterialRepository billOfMaterialRepository,
       BillOfMaterialLineRepository billOfMaterialLineRepository,
       BillOfMaterialLineService billOfMaterialLineService,
-      BillOfMaterialService billOfMaterialService) {
+      BillOfMaterialService billOfMaterialService,
+      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.appSaleService = appSaleService;
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
     this.billOfMaterialLineService = billOfMaterialLineService;
     this.billOfMaterialService = billOfMaterialService;
+    this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
   }
 
   @Override
@@ -84,6 +87,15 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       var saleOrderLine =
           saleOrderLineBomLineMappingService.mapToSaleOrderLine(billOfMaterialLine, saleOrder);
       if (saleOrderLine != null) {
+        BillOfMaterial bom = saleOrderLine.getBillOfMaterial();
+
+        if (bom != null) {
+          saleOrderLineDetailsBomService
+              .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+              .stream()
+              .filter(Objects::nonNull)
+              .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+        }
         saleOrderLinesList.add(saleOrderLine);
       }
     }
