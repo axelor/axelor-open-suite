@@ -3,6 +3,30 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
+  <form id="business-project-invoice-reports-wizard-form" name="invoice-reports-wizard-form"
+    title="Reports" model="com.axelor.utils.db.Wizard"
+    onNew="action-invoice-reports-wizard-attrs-set-report-type-select,action-invoice-reports-wizard-method-set-invoice-print-template"
+    extension="true">
+    <extend target="//panel[@name='invoiceTypePanel']">
+      <replace>
+        <panel name="invoiceTypePanel" colSpan="6">
+          <field name="$reportType" title="Invoice type" type="integer" selection-in="[1]"
+            selection="invoice.report.type" required="true"
+            showIf="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)"
+            readonly="true" colSpan="12"/>
+          <field name="$reportType" title="Invoice type" type="integer"
+            selection-in="[2,3,5,6]" selection="invoice.report.type" required="true"
+            showIf="(_statusSelect == 3  || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF == null"
+            colSpan="12"/>
+          <field name="$reportType" title="Invoice type" type="integer"
+            selection-in="[2,3,4,5,6]" selection="invoice.report.type" colSpan="12" required="true"
+            showIf="(_statusSelect == 3 || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF != null"/>
+        </panel>
+      </replace>
+    </extend>
+
+  </form>
+
   <action-group name="action-business-project-group-print-annex">
     <action name="action-business-project-validate-printing-settings"/>
     <action name="action-invoice-business-project-method-print-annex"
