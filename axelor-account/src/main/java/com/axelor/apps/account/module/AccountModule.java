@@ -224,6 +224,10 @@ import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementServiceImpl;
+import com.axelor.apps.account.service.invoice.record.InvoiceAttrsService;
+import com.axelor.apps.account.service.invoice.record.InvoiceAttrsServiceImpl;
+import com.axelor.apps.account.service.invoice.record.InvoiceGroupService;
+import com.axelor.apps.account.service.invoice.record.InvoiceGroupServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelService;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationService;
@@ -918,5 +922,9 @@ public class AccountModule extends AxelorModule {
 
     bind(AdvancePaymentMoveLineCreateService.class)
         .to(AdvancePaymentMoveLineCreateServiceImpl.class);
+
+    bind(InvoiceGroupService.class).to(InvoiceGroupServiceImpl.class);
+
+    bind(InvoiceAttrsService.class).to(InvoiceAttrsServiceImpl.class);
   }
 }
