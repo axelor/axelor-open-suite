@@ -18,7 +18,12 @@
  */
 package com.axelor.apps.base.service.address;
 
+import com.axelor.apps.base.db.AddressTemplateLine;
+import com.axelor.apps.base.db.Country;
+import com.axelor.meta.CallMethod;
+import com.google.api.client.util.Strings;
 import com.google.inject.Inject;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class AddressTemplateLineViewServiceImpl implements AddressTemplateLineViewService {
@@ -37,5 +42,42 @@ public class AddressTemplateLineViewServiceImpl implements AddressTemplateLineVi
             .map(item -> "'" + item + "'")
             .collect(Collectors.joining(","));
     return "self.metaModel.name = 'Address' AND  self.name IN (" + nameList + ")";
+  }
+
+  @CallMethod
+  public static Boolean fieldNotInAddressTemplate(String fieldName, Country country) {
+    if (Strings.isNullOrEmpty(fieldName) || country == null) return true;
+    List<AddressTemplateLine> addressTemplateLineList =
+        country.getAddressTemplate().getAddressTemplateLineList();
+
+    return getAddressTemplateLine(fieldName, addressTemplateLineList) == null;
+  }
+
+  @CallMethod
+  public static Boolean fieldIsRequiredOnAddressTemplate(String fieldName, Country country) {
+    if (Strings.isNullOrEmpty(fieldName) || country == null) return false;
+    List<AddressTemplateLine> addressTemplateLineList =
+        country.getAddressTemplate().getAddressTemplateLineList();
+    AddressTemplateLine addressTemplateLine =
+        getAddressTemplateLine(fieldName, addressTemplateLineList);
+    if (addressTemplateLine == null) return false;
+    return addressTemplateLine.getIsRequired();
+  }
+
+  @CallMethod
+  public static AddressTemplateLine getAddressTemplateLine(
+      String fieldName, List<AddressTemplateLine> addressTemplateLineList) {
+    if (Strings.isNullOrEmpty(fieldName)
+        || addressTemplateLineList == null
+        || addressTemplateLineList.isEmpty()) return null;
+    List<AddressTemplateLine> filteredList =
+        addressTemplateLineList.stream()
+            .filter(
+                addressTemplateLine ->
+                    fieldName.equals(addressTemplateLine.getMetaField().getName()))
+            .collect(Collectors.toList());
+
+    if (filteredList.isEmpty()) return null;
+    return filteredList.get(0);
   }
 }

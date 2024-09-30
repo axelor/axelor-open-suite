@@ -132,6 +132,8 @@
     <field name="zip" expr="eval: city?.zip" if="!zip"/>
     <field name="street" expr="eval: null"/>
     <field name="townName" expr="eval: city?.name"/>
+    <field name="countrySubDivision" if="city?.countrySubDivision"
+      expr="eval: city?.countrySubDivision"/>
   </action-record>
 
   <action-validate name="action-address-validate-change-city">
