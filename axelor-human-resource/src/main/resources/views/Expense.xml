@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
-    orderBy="-sentDateTime" groupBy="period">
+    orderBy="-sentDateTime" groupBy="period" canNew="false">
     <hilite color="danger" if="statusSelect == 5"/>
     <hilite color="success" if="statusSelect == 3 || statusSelect == 4"/>
     <hilite color="warning" if="statusSelect == 2"/>
@@ -50,7 +50,8 @@
 
   <form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
     onNew="action-expense-group-form-onNew" onLoad="action-expense-group-form-onLoad"
-    onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false">
+    onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false"
+    canNew="false">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printAll" title="Print report and files"
@@ -271,6 +272,7 @@
     <action name="action-expense-method-check-line-file"/>
     <action name="action-expense-method-send"/>
     <action name="action-expense-attrs-hide-button-readonly-field"/>
+    <action name="action-expense-view-open-empty-view"/>
   </action-group>
 
   <action-group name="action-expense-group-validate">
@@ -472,6 +474,11 @@
   <action-method name="action-expense-method-check-line-file">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkLineFile"/>
   </action-method>
+
+  <action-view name="action-expense-view-open-empty-view"
+    model="com.axelor.apps.hr.db.Expense" title="Expense">
+    <view name="expense-form" type="form"/>
+  </action-view>
 
   <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"
     title="Expense filters">
