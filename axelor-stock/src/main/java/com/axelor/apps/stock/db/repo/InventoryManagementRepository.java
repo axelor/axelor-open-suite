@@ -22,9 +22,11 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.Inventory;
+import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import java.util.List;
 import javax.persistence.PersistenceException;
 
 public class InventoryManagementRepository extends InventoryRepository {
@@ -32,10 +34,24 @@ public class InventoryManagementRepository extends InventoryRepository {
   public Inventory copy(Inventory entity, boolean deep) {
 
     Inventory copy = super.copy(entity, deep);
-
     copy.setStatusSelect(STATUS_DRAFT);
     copy.setInventorySeq(null);
+    copy.setValidatedOn(null);
+    copy.setValidatedBy(null);
+
+    List<InventoryLine> inventoryLineList = copy.getInventoryLineList();
+    if (inventoryLineList != null) {
+      inventoryLineList.forEach(this::resetInventoryLineList);
+    }
     return copy;
+  }
+
+  protected void resetInventoryLineList(InventoryLine inventoryLine) {
+    inventoryLine.setCurrentQty(null);
+    inventoryLine.setRealQty(null);
+    inventoryLine.setGapValue(null);
+    inventoryLine.setRealValue(null);
+    inventoryLine.setGap(null);
   }
 
   @Override
