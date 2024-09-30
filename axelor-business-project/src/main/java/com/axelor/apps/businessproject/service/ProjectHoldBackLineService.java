@@ -19,9 +19,12 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
+import java.util.List;
 
 public interface ProjectHoldBackLineService {
 
-  Invoice generateInvoiceLinesForHoldBacks(Invoice invoice) throws AxelorException;
+  List<InvoiceLine> createInvoiceLines(Invoice invoice, List<InvoiceLine> invoiceLineList)
+      throws AxelorException;
 }
