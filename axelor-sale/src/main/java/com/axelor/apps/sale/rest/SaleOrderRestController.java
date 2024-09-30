@@ -20,6 +20,7 @@ package com.axelor.apps.sale.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.rest.dto.SaleOrderAddLinePutRequest;
@@ -107,8 +108,9 @@ public class SaleOrderRestController {
         Beans.get(SaleOrderLineGeneratorService.class);
     Product product = requestBody.getSaleOrderLine().fetchProduct();
     BigDecimal quantity = requestBody.getSaleOrderLine().getQuantity();
+    Unit unit = requestBody.getSaleOrderLine().fetchUnit();
     SaleOrderLine saleOrderLine =
-        saleorderLineCreateService.createSaleOrderLine(saleOrder, product, quantity);
+        saleorderLineCreateService.createSaleOrderLine(saleOrder, product, quantity, unit);
     return ResponseConstructor.buildCreateResponse(
         saleOrderLine, new SaleOrderLineResponse(saleOrderLine));
   }

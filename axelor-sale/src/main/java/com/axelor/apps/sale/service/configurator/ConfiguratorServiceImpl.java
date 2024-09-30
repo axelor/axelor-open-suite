@@ -279,7 +279,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
       saleOrderLine =
           saleOrderLineGeneratorService.createSaleOrderLine(
-              saleOrder, configurator.getProduct(), qty);
+              saleOrder, configurator.getProduct(), qty, configurator.getProduct().getUnit());
       saleOrderLineRepository.save(saleOrderLine);
     } else {
       generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);

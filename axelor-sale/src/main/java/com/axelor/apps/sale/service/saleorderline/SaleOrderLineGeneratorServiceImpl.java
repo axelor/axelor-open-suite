@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service.saleorderline;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -86,8 +87,8 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product, BigDecimal qty)
-      throws AxelorException {
+  public SaleOrderLine createSaleOrderLine(
+      SaleOrder saleOrder, Product product, BigDecimal qty, Unit unit) throws AxelorException {
     checkSaleOrderAndProduct(saleOrder, product);
     SaleOrderLine saleOrderLine = new SaleOrderLine();
     saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine);
@@ -96,12 +97,15 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     if (appSaleService.getAppSale().getManageMultipleSaleQuantity()) {
       productMultipleQtyService.checkMultipleQty(product.getSaleProductMultipleQtyList(), qty);
     }
+
     if (qty == null) {
       qty = BigDecimal.ONE;
     }
     saleOrderLine.setQty(qty);
     saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
-
+    if (unit != null) {
+      saleOrderLine.setUnit(unit);
+    }
     saleOrderLineRepository.save(saleOrderLine);
 
     saleOrder.addSaleOrderLineListItem(saleOrderLine);

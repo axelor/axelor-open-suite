@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.rest.dto.SaleOrderLinePostRequest;
@@ -53,7 +54,8 @@ public class SaleOrderRestServiceImpl implements SaleOrderRestService {
     for (SaleOrderLinePostRequest saleOrderLinePostRequest : saleOrderLinePostRequestList) {
       Product product = saleOrderLinePostRequest.fetchProduct();
       BigDecimal quantity = saleOrderLinePostRequest.getQuantity();
-      saleOrderLineGeneratorService.createSaleOrderLine(saleOrder, product, quantity);
+      Unit unit = saleOrderLinePostRequest.fetchUnit();
+      saleOrderLineGeneratorService.createSaleOrderLine(saleOrder, product, quantity, unit);
     }
     saleOrderRepository.save(saleOrder);
     return saleOrder;

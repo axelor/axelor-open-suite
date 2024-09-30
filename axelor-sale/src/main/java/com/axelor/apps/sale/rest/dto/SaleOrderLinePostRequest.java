@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.rest.dto;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
 import java.math.BigDecimal;
@@ -32,6 +33,17 @@ public class SaleOrderLinePostRequest extends RequestPostStructure {
 
   @Min(0)
   private BigDecimal quantity;
+
+  @Min(0)
+  private Long unitId;
+
+  public Long getUnitId() {
+    return unitId;
+  }
+
+  public void setUnitId(Long unitId) {
+    this.unitId = unitId;
+  }
 
   public BigDecimal getQuantity() {
     return quantity;
@@ -54,5 +66,12 @@ public class SaleOrderLinePostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
+  }
+
+  public Unit fetchUnit() {
+    if (unitId == null || unitId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(Unit.class, unitId, ObjectFinder.NO_VERSION);
   }
 }

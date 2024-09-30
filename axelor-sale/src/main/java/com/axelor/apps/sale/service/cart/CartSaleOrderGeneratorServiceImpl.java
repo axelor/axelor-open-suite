@@ -82,8 +82,8 @@ public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGenerator
       product = cartLine.getVariantProduct();
     }
     SaleOrderLine saleOrderLine =
-        saleOrderLineGeneratorService.createSaleOrderLine(saleOrder, product, cartLine.getQty());
-    saleOrderLine.setUnit(cartLine.getUnit());
+        saleOrderLineGeneratorService.createSaleOrderLine(
+            saleOrder, product, cartLine.getQty(), cartLine.getUnit());
     saleOrderLineRepository.save(saleOrderLine);
   }
 
