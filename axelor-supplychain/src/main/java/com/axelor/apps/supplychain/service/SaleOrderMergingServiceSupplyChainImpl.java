@@ -40,10 +40,13 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.MapHelper;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServiceImpl
     implements SaleOrderMergingServiceSupplyChain {
@@ -322,6 +325,23 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
           I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICING_ERROR),
           stockMove.getStockMoveSeq());
     }
+
+    setDummySaleOrderSeq(result, stockMove.getSaleOrderSet());
     return result.getSaleOrder();
+  }
+
+  @Override
+  public void setDummySaleOrderSeq(SaleOrderMergingResult result, Set<SaleOrder> saleOrderSet) {
+    SaleOrder saleOrderMerged = result.getSaleOrder();
+    // This fix can not be done in simulateMergeSaleOrders
+    // It would require to modify generateSaleOrder method
+    // But by modifying it, it would then affect true merging SO in a bad way.
+    // Therefor this fix is done here
+    saleOrderMerged.setSaleOrderSeq(
+        StringHelper.cutTooLongString(
+            saleOrderSet.stream()
+                .map(SaleOrder::getSaleOrderSeq)
+                .filter(s -> s != null && !s.isEmpty())
+                .collect(Collectors.joining("-"))));
   }
 }

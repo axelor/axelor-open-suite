@@ -35,6 +35,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.SaleOrderMergingServiceSupplyChain;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -102,6 +103,8 @@ public class StockMoveInvoiceController {
             response.setView(confirmView.map());
             return;
           }
+          Beans.get(SaleOrderMergingServiceSupplyChain.class)
+              .setDummySaleOrderSeq(result, saleOrderSet);
           invoice =
               stockMoveInvoiceService.createInvoiceFromSaleOrder(
                   stockMove, result.getSaleOrder(), qtyToInvoiceMap);
@@ -150,6 +153,8 @@ public class StockMoveInvoiceController {
             Beans.get(SaleOrderMergingService.class)
                 .simulateMergeSaleOrdersWithContext(
                     new ArrayList<>(stockMove.getSaleOrderSet()), context);
+        Beans.get(SaleOrderMergingServiceSupplyChain.class)
+            .setDummySaleOrderSeq(result, stockMove.getSaleOrderSet());
         invoice =
             Beans.get(StockMoveInvoiceService.class)
                 .createInvoiceFromSaleOrder(stockMove, result.getSaleOrder(), qtyToInvoiceMap);
@@ -677,6 +682,8 @@ public class StockMoveInvoiceController {
             response.setView(confirmView.map());
             return;
           }
+          Beans.get(SaleOrderMergingServiceSupplyChain.class)
+              .setDummySaleOrderSeq(result, saleOrderSet);
           invoice =
               stockMoveInvoiceService.createInvoiceFromSaleOrder(
                   stockMove, result.getSaleOrder(), null);

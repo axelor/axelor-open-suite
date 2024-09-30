@@ -20,9 +20,14 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
 import com.axelor.apps.stock.db.StockMove;
+import java.util.Set;
 
 public interface SaleOrderMergingServiceSupplyChain {
 
   SaleOrder getDummyMergedSaleOrder(StockMove stockMove) throws AxelorException;
+
+  void setDummySaleOrderSeq(
+      SaleOrderMergingService.SaleOrderMergingResult result, Set<SaleOrder> saleOrderSet);
 }
