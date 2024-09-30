@@ -281,6 +281,8 @@ import com.axelor.message.service.MailServiceMessageImpl;
 import com.axelor.message.service.MessageServiceImpl;
 import com.axelor.message.service.TemplateMessageServiceImpl;
 import com.axelor.meta.service.MetaBaseService;
+import com.axelor.meta.service.MetaHelpService;
+import com.axelor.meta.service.MetaHelpServiceImpl;
 import com.axelor.meta.service.MetaServiceBaseImpl;
 import com.axelor.report.ReportGenerator;
 import com.axelor.rpc.ActionRequest;
@@ -474,5 +476,6 @@ public class BaseModule extends AxelorModule {
     bind(TranslationBaseService.class).to(TranslationBaseServiceImpl.class);
     bind(UserPermissionResponseComputeService.class)
         .to(UserPermissionResponseComputeServiceImpl.class);
+    bind(MetaHelpService.class).to(MetaHelpServiceImpl.class);
   }
 }

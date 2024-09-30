@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.service.LocalizationService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.meta.service.MetaHelpService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
@@ -33,6 +34,16 @@ public class LocalizationController {
       Beans.get(LocalizationService.class).validateLocale(localization);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void importMetaHelps(ActionRequest request, ActionResponse response) {
+    try {
+      Localization localization = request.getContext().asType(Localization.class);
+      Beans.get(MetaHelpService.class).findOrCreateMetaHelp(localization);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

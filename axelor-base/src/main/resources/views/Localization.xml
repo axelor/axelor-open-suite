@@ -15,6 +15,10 @@
 
   <form name="localization-form" title="Localization"
     model="com.axelor.apps.base.db.Localization" onSave="action-localization-method-validate-locale">
+    <toolbar>
+      <button name="importHelpsBtn" title="Import helps"
+        onClick="action-localization-method-import-meta-helps" showIf="id" hidden="true"/>
+    </toolbar>
     <panel name="mainPanel" colSpan="12">
       <field name="name" title="Name" required="true" colSpan="6"/>
       <field name="code" title="Code" required="true" colSpan="6" readonly="true"
@@ -39,4 +43,9 @@
   <action-method name="action-localization-method-validate-locale">
     <call class="com.axelor.apps.base.web.LocalizationController" method="validateLocale"/>
   </action-method>
+
+  <action-method name="action-localization-method-import-meta-helps">
+    <call class="com.axelor.apps.base.web.LocalizationController" method="importMetaHelps"/>
+  </action-method>
+
 </object-views>
