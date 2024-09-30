@@ -59,7 +59,8 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
                     invoiceTerm
                             .getDueDate()
                             .isBefore(appAccountService.getTodayDate(invoice.getCompany()))
-                        && !invoiceTerm.getIsPaid())
+                        && !invoiceTerm.getIsPaid()
+                        && !invoiceTerm.getIsHoldBack())
             .collect(Collectors.toList());
 
     if (lateInvoiceTerms.isEmpty()) {
