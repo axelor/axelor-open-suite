@@ -1,4 +1,4 @@
-package com.axelor.apps.sale.service.saleorderline;
+package com.axelor.apps.sale.service.saleorderline.view;
 
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;

@@ -74,13 +74,13 @@ import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowServiceImp
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCreateServiceImpl;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDummyServiceImpl;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineInitValueServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeServiceImpl;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineViewServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineCreateServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValueServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeComputationServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDummyServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;

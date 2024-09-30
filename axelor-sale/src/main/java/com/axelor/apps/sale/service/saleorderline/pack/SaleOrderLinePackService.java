@@ -1,4 +1,4 @@
-package com.axelor.apps.sale.service.saleorderline;
+package com.axelor.apps.sale.service.saleorderline.pack;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
