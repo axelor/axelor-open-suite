@@ -8,7 +8,7 @@
   <entity name="MetaJsonField" table="META_JSON_FIELD">
     <string name="formula" title="Formula" large="true"/>
     <string name="metaJsonCategorySelect" selection="base.meta.json.field.category.select"
-      required="true" default="attribute"/>
+      default="attribute"/>
 
     <track>
       <field name="formula"/>

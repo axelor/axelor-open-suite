@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="configurator-generator-line-grid" title="Configurator generator line"
+    model="com.axelor.apps.base.db.ConfiguratorGeneratorLine">
+    <field name="parentCOnfiguratorGenerator"/>
+    <field name="booleanUseConfiguratorLine"/>
+    <field name="valueFormula"/>
+    <field name="configuratorGenerator"/>
+  </grid>
+
+  <form name="configurator-generator-line-form" title="Configurator generator lin"
+    model="com.axelor.apps.base.db.ConfiguratorGeneratorLine">
+    <panel name="mainPanel">
+      <field name="parentConfiguratorGenerator"/>
+      <field name="configuratorGenerator"/>
+    </panel>
+    <panel name="formulaPanel">
+      <field name="booleanUseConfiguratorLine"/>
+      <field name="valueFormula"/>
+    </panel>
+
+  </form>
+</object-views>

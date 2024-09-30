@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ConfiguratorGeneratorLine">
+    <many-to-one name="parentConfiguratorGenerator"
+      ref="com.axelor.apps.base.db.ConfiguratorGenerator"/>
+    <string name="booleanUseConfiguratorLine" title="Use configurator line formula"
+      large="true" help="Formula that should return a boolean."/>
+    <string name="valueFormula" title="Value formula" large="true"/>
+    <many-to-one name="configuratorGenerator"
+      ref="com.axelor.apps.base.db.ConfiguratorGenerator"/>
+  </entity>
+
+</domain-models>

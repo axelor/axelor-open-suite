@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="configurator-generator-grid" title="Configurator generator"
+    model="com.axelor.apps.base.db.ConfiguratorGenerator">
+    <field name="name"/>
+  </grid>
+
+  <form name="configurator-generator-form" title="Configurator generator"
+    model="com.axelor.apps.base.db.ConfiguratorGenerator">
+    <panel name="mainPanel">
+      <field name="metaModel" onChange="action-configurator-generator-form-record-set-record-reference"/>
+      <field name="configuratorFormConfig"/>
+      <field name="recordReference" widget="RefSelect" x-related="recordReferenceId"
+        selection-in="null" colSpan="12"/>
+      <field name="recordReferenceId" hidden="true"/>
+    </panel>
+    <panel-related field="configuratorGeneratorLineList"
+      form-view="configurator-generator-line-form" grid-view="configurator-generator-line-grid"
+      colSpan="12"/>
+  </form>
+
+  <action-attrs name="action-configurator-generator-form-record-set-record-reference">
+    <attribute for="recordReference" name="value" expr="eval: metaModel?.packageName + '.' + metaModel?.name"/>
+  </action-attrs>
+</object-views>

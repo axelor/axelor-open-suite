@@ -1193,4 +1193,27 @@
     <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
 
+  <menuitem title="Configurators" name="root-base-configurator" parent="admin-root"
+    order="1400"/>
+
+  <menuitem title="Configurators forms conf" name="root-base-configurator-form-conf"
+    parent="root-base-configurator" action="action-base-configurator-form-conf"/>
+
+  <action-view name="action-base-configurator-form-conf"
+    title="Configurators forms conf" model="com.axelor.apps.base.db.ConfiguratorFormConfig">
+    <view type="grid" name="configurator-form-config-grid"/>
+    <view type="form" name="configurator-form-config-form"/>
+  </action-view>
+
+  <menuitem title="Configurator generators" name="root-base-configurator-generator"
+    parent="root-base-configurator" action="action-base-configurator-generator"/>
+
+  <action-view name="action-base-configurator-generator" title="Configurator generators"
+    model="com.axelor.apps.base.db.ConfiguratorGenerator">
+    <view type="grid" name="configurator-generator-grid"/>
+    <view type="form" name="configurator-generator-form"/>
+  </action-view>
+
+
+
 </object-views>

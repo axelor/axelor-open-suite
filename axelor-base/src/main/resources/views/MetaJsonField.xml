@@ -5,26 +5,98 @@
 
 
 
-  <grid id="base-json-field-grid" name="json-field-grid" title="Custom fields"
-    model="com.axelor.meta.db.MetaJsonField" extension="true">
-    <extend target="//field[@name='type']">
-      <insert position="after">
-        <field name="metaJsonCategorySelect" title="Meta json field category"/>
-      </insert>
-    </extend>
+  <grid name="base-json-field-grid" title="Custom fields"
+    model="com.axelor.meta.db.MetaJsonField" edit-icon="true">
+    <field name="name"/>
+    <field name="title"/>
+    <field name="type"/>
+    <field name="metaJsonCategorySelect"/>
   </grid>
 
-  <form name="json-field-form" id="base-json-field-form" title="Custom field"
-    model="com.axelor.meta.db.MetaJsonField" extension="true">
-    <extend target="//field[@name='type']">
-      <insert position="after">
-        <field name="metaJsonCategorySelect" title="Meta json field category"/>
-      </insert>
-    </extend>
-    <extend target="//panel[@title='Options']">
-      <insert position="before">
+  <form name="base-json-field-form" onLoad="action-configurator-json-field-onload"
+    title="Custom field" model="com.axelor.meta.db.MetaJsonField"
+    onNew="action-configurator-set-json-field-default">
+    <panel name="overviewPanel" title="Overview">
+      <field name="$simpleName"
+        onChange="action-configurator-json-field-record-name,action-condition-sale-meta-json-field-check-duplicate-name"
+        title="Name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
+      <field readonly="true" name="name" title="Name to use in scripts"/>
+      <field name="type"
+        selection-in="['string', 'integer', 'decimal', 'boolean', 'datetime', 'date', 'time', 'panel', 'enum', 'button', 'separator', 'many-to-one', 'many-to-many', 'json-many-to-one', 'json-many-to-many']"/>
+      <field name="metaJsonCategorySelect"/>
+      <field name="title"/>
+      <field name="defaultValue"/>
+      <field name="help"/>
+      <field name="sequence"/>
+      <field name="model" hidden="true"/>
+      <field name="modelField" hidden="true"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="formulaPanel" title="Formula">
         <field name="formula" colSpan="12" widget="CodeEditor" x-code-syntax="groovy"/>
-      </insert>
-    </extend>
+      </panel>
+      <panel name="optionsPanel" title="Options">
+        <panel name="selectTypePanel" itemSpan="12">
+          <field name="enumType" showIf="type === 'enum'" widget="ref-text"
+            x-target="com.axelor.meta.db.MetaEnum" x-target-name="name"/>
+          <field name="selection" showIf="type !== 'enum'" widget="ref-text"
+            x-target="com.axelor.meta.db.MetaSelect" x-target-name="name"/>
+        </panel>
+        <field name="widget" widget="widget-select"/>
+        <field name="$showedOnChange" type="string" hideIf="type === 'button'"
+          onChange="action-configurator-record-meta-on-change" title="On change" colSpan="12"/>
+        <field name="onChange" hidden="true" colSpan="12"/>
+        <field name="onClick" colSpan="12" showIf="type === 'button'"
+          requiredIf="type === 'button'"/>
+        <field name="minSize" title="Min" showIf="type.match('string|integer|decimal')"/>
+        <field name="maxSize" title="Max" showIf="type.match('string|integer|decimal')"/>
+        <field name="precision" showIf="type === 'decimal'"/>
+        <field name="scale" showIf="type === 'decimal'"/>
+        <field name="regex" showIf="type === 'string'" colSpan="12"/>
+        <panel name="targetModelPanel" itemSpan="12">
+          <field name="targetModel" showIf="type.match('^(one|many)-to-')" widget="ref-text"
+            x-target="com.axelor.meta.db.MetaModel" x-target-name="fullName"/>
+          <field name="targetJsonModel" showIf="type.match('^json-')"
+            title="Target custom model" canEdit="false" canView="false"/>
+        </panel>
+        <field name="domain" showIf="type.match('-to-')"/>
+        <field name="gridView" showIf="type.match('^(one|many)-to-')" widget="ref-text"
+          x-target="com.axelor.meta.db.MetaView" x-target-name="name"
+          x-domain="self.model = :targetModel AND self.type = 'grid'"/>
+        <field name="formView" showIf="type.match('^(one|many)-to-')" widget="ref-text"
+          x-target="com.axelor.meta.db.MetaView" x-target-name="name"
+          x-domain="self.model = :targetModel AND self.type = 'form'"/>
+      </panel>
+      <panel name="conditionsPanel" title="Conditions" itemSpan="12">
+        <field name="contextField" hidden="true" title="Only if" colSpan="6" widget="ref-text"
+          x-target-name="name" x-target="com.axelor.meta.db.MetaField"
+          x-domain="self.name not in ('createdBy', 'updatedBy') and self.relationship = 'ManyToOne' and self.metaModel.fullName = :model"
+          onChange="com.axelor.meta.web.MetaController:contextFieldChange"/>
+        <field name="contextFieldValue" hidden="true" colSpan="6" title="Value"
+          widget="EvalRefSelect" x-eval-target="record.contextFieldTarget"
+          x-eval-target-name="record.contextFieldTargetName" x-eval-value="record.contextFieldValue"
+          x-eval-title="record.contextFieldTitle"/>
+        <field name="contextFieldTitle" hidden="true"/>
+        <field name="contextFieldTarget" hidden="true"/>
+        <field name="contextFieldTargetName" hidden="true"/>
+        <field name="showIf"/>
+        <field name="hideIf"/>
+        <field name="requiredIf"/>
+        <field name="readonlyIf"/>
+      </panel>
+      <panel name="attributesHelpPanel" title="Help" itemSpan="12">
+        <panel-include view="incl-help-meta-json-field"/>
+      </panel>
+    </panel-tabs>
+    <panel name="attrOptionsPanel" title="Options" sidebar="true" itemSpan="6">
+      <field name="required" widget="inline-checkbox"/>
+      <field name="nameField" widget="inline-checkbox" showIf="type === 'string'"/>
+      <field name="hidden" widget="inline-checkbox"/>
+      <field name="visibleInGrid" widget="inline-checkbox"/>
+    </panel>
+    <panel name="widgetAttributesPanel" title="Widget Attributes" sidebar="true">
+      <field name="widgetAttrs" widget="json-raw"/>
+    </panel>
   </form>
+
 </object-views>
