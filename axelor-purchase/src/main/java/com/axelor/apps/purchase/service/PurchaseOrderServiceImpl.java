@@ -296,7 +296,17 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                   purchaseOrder.getCompany().getCurrency(),
                   lastPurchasePrice,
                   currencyService.getDateToConvert(null));
-
+          if (purchaseOrderLine.getUnit() != null
+              && !purchaseOrderLine.getUnit().equals(product.getUnit())) {
+            lastPurchasePrice =
+                Beans.get(UnitConversionService.class)
+                    .convert(
+                        product.getUnit() != null ? product.getUnit() : purchaseOrderLine.getUnit(),
+                        purchaseOrderLine.getUnit(),
+                        lastPurchasePrice,
+                        lastPurchasePrice.scale(),
+                        product);
+          }
           productCompanyService.set(
               product, "lastPurchasePrice", lastPurchasePrice, purchaseOrder.getCompany());
 
