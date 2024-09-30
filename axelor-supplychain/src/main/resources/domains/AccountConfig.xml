@@ -15,6 +15,8 @@
       ref="com.axelor.apps.account.db.Account" title="Forecasted invoice customer account"/>
     <many-to-one name="forecastedInvSuppAccount"
       ref="com.axelor.apps.account.db.Account" title="Forecasted invoice supplier account"/>
+    <integer name="cutoffBatchRowsLimitBeforeShowingAlert"
+      title="Limit of rows before showing an alert message" default="300"/>
 
     <track>
       <field name="company" on="UPDATE"/>

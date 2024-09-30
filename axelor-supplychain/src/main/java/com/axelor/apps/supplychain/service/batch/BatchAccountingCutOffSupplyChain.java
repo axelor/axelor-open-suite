@@ -78,7 +78,6 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
     LocalDate moveDate = accountingBatch.getMoveDate();
     int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
     updateBatch(moveDate, accountingCutOffTypeSelect);
-
     if (accountingCutOffTypeSelect
         < AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
       if (this.recordIdList == null) {
@@ -126,6 +125,7 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
   }
 
   protected void _processStockMovesByIds(AccountingBatch accountingBatch) {
+    int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
     List<StockMove> stockMoveList =
         recordIdList.stream()
             .map(it -> stockMoveLineRepository.find(it))
@@ -144,6 +144,14 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
   @Transactional
   protected boolean _processStockMove(StockMove stockMove, AccountingBatch accountingBatch) {
     try {
+      if (!cutOffSupplyChainService.checkPriceLimit(
+          stockMove,
+          accountingBatch.getLowerAmountLimit(),
+          accountingBatch.getUpperAmountLimit(),
+          accountingBatch.getAccountingCutOffTypeSelect(),
+          accountingBatch.getAti())) {
+        return false;
+      }
       Journal miscOpeJournal = accountingBatch.getMiscOpeJournal();
       LocalDate reverseMoveDate = accountingBatch.getReverseMoveDate();
       LocalDate moveDate = accountingBatch.getMoveDate();
