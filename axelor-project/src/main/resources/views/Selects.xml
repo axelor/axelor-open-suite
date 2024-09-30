@@ -68,4 +68,9 @@
     <option value="project">Project</option>
     <option value="category">Category</option>
   </selection>
+
+  <selection name="check.list.template.type.select">
+    <option value="project">Project</option>
+    <option value="task">Project task</option>
+  </selection>
 </object-views>

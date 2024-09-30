@@ -229,4 +229,13 @@
   <menuitem name="project-my-reporting" parent="menu-my-project-root" order="1000"
     title="Reporting" action="project.my.projects"/>
 
+  <menuitem name="project-project-check-list-template" parent="project-configurations"
+    title="Check list templates" action="project.root.project.checklist.template.all" order="1600"/>
+
+  <action-view name="project.root.project.checklist.template.all"
+    title="Check list templates" model="com.axelor.apps.project.db.ProjectCheckListTemplate">
+    <view type="grid" name="project-check-list-template-grid"/>
+    <view type="form" name="project-check-list-template-form"/>
+  </action-view>
+
 </object-views>
