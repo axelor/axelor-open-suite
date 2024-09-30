@@ -47,8 +47,7 @@
   </grid>
 
   <form name="leave-request-form" title="Leave Request"
-    model="com.axelor.apps.hr.db.LeaveRequest"
-    onNew="action-leave-request-record-default,action-leave-request-attrs-buttons, action-leave-request-record-to-justify, action-leave-request-method-leave-reason-to-justify"
+    model="com.axelor.apps.hr.db.LeaveRequest" onNew="action-leave-request-group-onnew"
     onLoad="action-leave-request-group-on-form-load"
     onSave="action-leave-request-validate-dates-on-save" canCopy="false">
 
@@ -216,6 +215,14 @@
     <action name="action-leave-request-attrs-inject-change"/>
     <action name="action-leave-request-attrs-send"/>
     <action name="action-leave-request-attrs-valid-refuse"/>
+  </action-group>
+
+  <action-group name="action-leave-request-group-onnew">
+    <action name="action-leave-request-record-default"/>
+    <action name="action-leave-request-attrs-buttons"/>
+    <action name="action-validate-check-user-employee"/>
+    <action name="action-leave-request-record-to-justify"/>
+    <action name="action-leave-request-method-leave-reason-to-justify"/>
   </action-group>
 
   <action-record name="action-leave-request-record-default"
