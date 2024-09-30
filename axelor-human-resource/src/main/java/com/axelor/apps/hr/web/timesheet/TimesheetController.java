@@ -485,7 +485,11 @@ public class TimesheetController {
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
       }
-      response.setReload(true);
+      response.setView(
+          ActionView.define(I18n.get("Timesheet"))
+              .model(Timesheet.class.getName())
+              .add("form", "timesheet-form")
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
