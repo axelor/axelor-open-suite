@@ -19,8 +19,9 @@
 package com.axelor.apps.sale.service.cartline;
 
 import com.axelor.apps.sale.db.CartLine;
+import java.math.BigDecimal;
 
 public interface CartLineUpdateService {
 
-  void updateCartLine(CartLine cartLine);
+  void updateCartLine(CartLine cartLine, BigDecimal qty);
 }

@@ -22,10 +22,15 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
+import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public interface CartLineCreateService {
 
-  CartLine createCartLine(Cart cart, Product product) throws AxelorException;
+  @Transactional(rollbackOn = Exception.class)
+  CartLine createCartLine(Cart cart, Product product, BigDecimal qty) throws AxelorException;
 
-  CartLine createCartLineWithVariant(Cart cart, Product product) throws AxelorException;
+  @Transactional(rollbackOn = Exception.class)
+  CartLine createCartLineWithVariant(Cart cart, Product product, BigDecimal qty)
+      throws AxelorException;
 }
