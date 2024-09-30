@@ -492,7 +492,9 @@ public class StockMoveController {
   public void compute(ActionRequest request, ActionResponse response) {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
-      response.setValue("exTaxTotal", Beans.get(StockMoveToolService.class).compute(stockMove));
+      StockMoveToolService stockMoveToolService = Beans.get(StockMoveToolService.class);
+      response.setValue("exTaxTotal", stockMoveToolService.compute(stockMove));
+      response.setValue("grossMass", stockMoveToolService.computeGrossMass(stockMove));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

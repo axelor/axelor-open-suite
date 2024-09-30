@@ -165,6 +165,7 @@ public class StockMoveMergingServiceImpl implements StockMoveMergingService {
 
     mergeStockMoveLines(mergedStockMove, stockMoveList);
     mergedStockMove.setExTaxTotal(stockMoveToolService.compute(mergedStockMove));
+    mergedStockMove.setGrossMass(stockMoveToolService.computeGrossMass(mergedStockMove));
     stockMoveList.forEach(stockMoveService::setMergedStatus);
 
     return stockMoveRepository.save(mergedStockMove);
