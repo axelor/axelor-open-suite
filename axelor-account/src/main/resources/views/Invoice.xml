@@ -952,7 +952,7 @@
         x-scale="currency.numberOfDecimals"/>
       <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals">
-        <viewer depends="exTaxTotal,taxTotal,projectHoldBackATIList">
+        <viewer depends="exTaxTotal,taxTotal,projectHoldBackATIList,currency,currency.symbol">
         	<![CDATA[
 	                  <>
 	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
@@ -963,7 +963,7 @@
                              {projectHoldBackATIList.map((item, index) => (
                               <>
                                 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{item.name}</Box>
-                                <Box as="dd" m={0} px={3} py={1}>{item.amount}</Box>
+                                <Box as="dd" m={0} px={3} py={1}>{item.amount} {currency.symbol}</Box>
                               </>
                               ))}
 	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
