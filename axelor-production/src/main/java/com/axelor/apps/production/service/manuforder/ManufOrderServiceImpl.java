@@ -237,10 +237,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
               product.getUnit(), unit, qtyRequested, qtyRequested.scale(), product);
     }
     BigDecimal qty =
-        qtyRequested.divide(
-            billOfMaterial.getQty(),
-            appBaseService.getNbDecimalDigitForQty(),
-            RoundingMode.HALF_UP);
+        qtyRequested
+            .multiply(billOfMaterial.getQty())
+            .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
 
     ManufOrder manufOrder =
         this.createManufOrder(
