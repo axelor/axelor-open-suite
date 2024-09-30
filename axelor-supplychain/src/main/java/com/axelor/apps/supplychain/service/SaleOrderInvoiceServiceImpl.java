@@ -860,18 +860,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         appSupplychainService.getAppSupplychain().getAllowTimetableInvoicing();
     BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();
     BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
-    Invoice invoice =
-        Query.of(Invoice.class)
-            .filter(
-                " self.saleOrder.id = :saleOrderId "
-                    + "AND self.statusSelect != :invoiceStatus "
-                    + "AND self.operationSubTypeSelect != :advancePaymentSubType "
-                    + "AND self.operationTypeSelect = :operationTypeSelect")
-            .bind("saleOrderId", saleOrder.getId())
-            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
-            .bind("advancePaymentSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
-            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-            .fetchOne();
+
     List<Integer> operationSelectList = new ArrayList<>();
     if (exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
       operationSelectList.add(SaleOrderRepository.INVOICE_LINES);
@@ -882,8 +871,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     if (allowTimetableInvoicing) {
       operationSelectList.add(SaleOrderRepository.INVOICE_TIMETABLES);
     }
-    if (invoice == null && amountInvoiced.compareTo(BigDecimal.ZERO) == 0
-        || exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
+    if (amountInvoiced.compareTo(BigDecimal.ZERO) == 0) {
       operationSelectList.add(SaleOrderRepository.INVOICE_ALL);
     }
 
