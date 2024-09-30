@@ -244,6 +244,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(StockExceptionMessage.LOCATION_LINE_3),
+          stockRules.getId(),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode());
     }
