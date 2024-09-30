@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
+
+  <entity name="BankStatementLineCAMT53" extends="BankStatementLine" persistable="true">
+    <integer name="lineTypeSelect" title="Line type"
+      selection="bankpayment.bank.statement.line.camt.053.line.type.select"/>
+    <integer name="commissionExemptionIndexSelect" title="Commission exemption index"
+      selection="bankpayment.bank.statement.line.camt.053.commission.exemption.index.select"/>
+
+    <extra-code><![CDATA[
+		public static final int LINE_TYPE_INITIAL_BALANCE = 1;
+		public static final int LINE_TYPE_MOVEMENT = 2;
+		public static final int LINE_TYPE_FINAL_BALANCE = 3;
+
+		public static final int TYPE_OPERATION_CODE = 1;
+		public static final int TYPE_REJECT_RETURN_CODE = 2;
+
+
+	]]></extra-code>
+  </entity>
+
+
+
+</domain-models>
+

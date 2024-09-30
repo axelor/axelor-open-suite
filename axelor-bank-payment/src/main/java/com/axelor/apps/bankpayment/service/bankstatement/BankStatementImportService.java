@@ -23,6 +23,7 @@ import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.repo.BankStatementFileFormatRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.afb120.BankStatementImportAFB120Service;
+import com.axelor.apps.bankpayment.service.bankstatement.camt53.BankStatementImportCAMT53Service;
 import com.axelor.apps.bankpayment.service.bankstatement.classic.BankStatementImportClassicService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -58,7 +59,9 @@ public class BankStatementImportService {
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
         Beans.get(BankStatementImportAFB120Service.class).runImport(bankStatement);
         break;
-
+      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_053_001_02_STM:
+        Beans.get(BankStatementImportCAMT53Service.class).runImport(bankStatement);
+        break;
       default:
         if (alertIfFormatNotSupported) {
           throw new AxelorException(

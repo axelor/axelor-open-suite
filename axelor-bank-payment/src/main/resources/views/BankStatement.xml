@@ -53,11 +53,15 @@
       <panel-dashlet name="bankStatementLinesPanel"
         action="action-bank-statement-view-bank-statement-lines" colSpan="12" height="500"
         canSearch="true"
-        hideIf="bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0"/>
+        showIf="['camt.xxx.cfonb120.stm','camt.xxx.cfonb120.rep','camt.053.001.02.stm'].indexOf(bankStatementFileFormat.statementFileFormatSelect) == -1"/>
       <panel-dashlet name="bankStatementLinesAfb120Panel"
         action="action-bank-statement-view-bank-statement-lines-afb-120" colSpan="12" height="500"
         canSearch="true"
         showIf="bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0"/>
+      <panel-dashlet name="bankStatementLinesCAMT53Panel"
+        action="action-bank-statement-view-bank-statement-lines-camt-053" colSpan="12" height="500"
+        canSearch="true"
+        showIf="bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.053.001.02&quot;) == 0"/>
       <label name="infoLabel" title="Initial balance" colSpan="12" css="btn-info"/>
       <label name="primaryLabel" title="Final balance" colSpan="12" css="btn-primary"/>
       <label name="sucessLabel" title="Reconciled bank statement line" colSpan="12"
@@ -93,6 +97,15 @@
     title="Bank statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120">
     <view type="grid" name="bank-statement-line-afb-120-grid-dashlet"/>
     <view type="form" name="bank-statement-line-afb-120-form"/>
+    <view-param name="limit" value="200"/>
+    <domain>self.bankStatement.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-bank-statement-view-bank-statement-lines-camt-053"
+    title="Bank statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineCAMT53">
+    <view type="grid" name="bank-statement-line-camt-053-grid-dashlet"/>
+    <view type="form" name="bank-statement-line-camt-053-form"/>
     <view-param name="limit" value="200"/>
     <domain>self.bankStatement.id = :_id</domain>
     <context name="_id" expr="eval: id"/>

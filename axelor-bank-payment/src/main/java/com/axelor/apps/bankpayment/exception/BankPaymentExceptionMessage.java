@@ -212,6 +212,18 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_STATEMENT_IMPORT_ERROR = /*$$(*/
       "Error while reading the csv file. Make sure that decimal values use a dot and not a comma." /*)*/;
 
+  public static final String BANK_STATEMENT_XML_FILE_READ_ERROR = /*$$(*/
+      "Error while reading the input XML file." /*)*/;
+
+  public static final String BANK_STATEMENT_XML_FILE_NO_BANK_STATEMENT_FOUND_ERROR = /*$$(*/
+      "Error: No bank statement found." /*)*/;
+
+  public static final String BANK_STATEMENT_XML_FILE_UNMARSHAL_ERROR = /*$$(*/
+      "Error: File format unmarshalling process failed." /*)*/;
+
+  public static final String BANK_STATEMENT_BANK_DETAILS_NOT_EXIST_ERROR = /*$$(*/
+      "Error: The bank details doesn't exist." /*)*/;
+
   /*
    * Batch direct debit
    */
