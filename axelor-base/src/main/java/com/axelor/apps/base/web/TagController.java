@@ -1,10 +1,9 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Tag;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaModel;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -33,16 +32,15 @@ public class TagController {
       return;
     }
 
+    TagService tagService = Beans.get(TagService.class);
     if (parentContext != null && parentContext.get("_model") != null) {
       String fullNameModel = parentContext.get("_model").toString();
-      MetaModel metaModel =
-          Beans.get(MetaModelRepository.class)
-              .all()
-              .filter("self.fullName = ?", fullNameModel)
-              .fetchOne();
-
-      tag.addConcernedModelSetItem(metaModel);
-      response.setValue("concernedModelSet", tag.getConcernedModelSet());
+      tagService.addMetaModelToTag(tag, fullNameModel);
     }
+    if (request.getContext().get("_fieldModel") != null) {
+      tagService.addMetaModelToTag(tag, request.getContext().get("_fieldModel").toString());
+    }
+
+    response.setValue("concernedModelSet", tag.getConcernedModelSet());
   }
 }

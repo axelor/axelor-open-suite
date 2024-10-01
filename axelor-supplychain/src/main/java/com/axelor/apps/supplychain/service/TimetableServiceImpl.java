@@ -20,7 +20,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.PaymentConditionToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -118,7 +118,7 @@ public class TimetableServiceImpl implements TimetableService {
     for (TimetableTemplateLine templateLine : template.getTimetableTemplateLineList()) {
       Timetable timetable = new Timetable();
       timetable.setEstimatedDate(
-          InvoiceToolService.getDueDate(
+          PaymentConditionToolService.getDueDate(
               templateLine.getTypeSelect(),
               templateLine.getPaymentTime(),
               templateLine.getPeriodTypeSelect(),

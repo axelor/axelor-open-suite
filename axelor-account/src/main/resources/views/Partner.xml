@@ -158,6 +158,14 @@
           if="__config__.app.isApp('account')"/>
       </insert>
     </extend>
+    <extend target="//field[@name='$balance']">
+      <insert position="after">
+        <field name="daysSalesOutstanding" hidden="true" colSpan="3"/>
+        <button if="__config__.app.isApp('account')" name="$dsoBtn" title="DSO"
+          showIf="id &amp;&amp; isCustomer" colSpan="3" icon="payments" onClick=""
+          widget="info-button" x-field="daysSalesOutstanding"/>
+      </insert>
+    </extend>
   </form>
 
 

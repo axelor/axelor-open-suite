@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="interest-rate-history-line-grid" title="Interest rate history line"
+    model="com.axelor.apps.account.db.InterestRateHistoryLine">
+    <field name="interestRate"/>
+    <field name="fromDate"/>
+    <field name="endDate"/>
+  </grid>
+
+  <form name="interest-rate-history-line-form" title="Interest rate history line"
+    model="com.axelor.apps.account.db.InterestRateHistoryLine">
+    <panel name="overviewPanel" title="Overview">
+      <field name="interestRate"/>
+      <field name="fromDate" validIf="!endDate || fromDate &lt; endDate"
+        onChange="action-interest-rate-history-group-check-periods" required="true"/>
+      <field name="endDate" validIf="!fromDate || fromDate &lt; endDate"
+        onChange="action-interest-rate-history-group-check-periods" required="true"/>
+    </panel>
+  </form>
+
+  <action-group name="action-interest-rate-history-group-check-periods">
+    <action name="action-interest-rate-history-method-check-overlap"/>
+    <action name="action-interest-rate-history-method-check-continuous"/>
+    <action name="action-interest-rate-history-method-check-end-date"/>
+  </action-group>
+
+  <action-method name="action-interest-rate-history-method-check-overlap">
+    <call class="com.axelor.apps.account.web.InterestRateHistoryLineController"
+      method="checkPeriodOverlap"/>
+  </action-method>
+
+  <action-method name="action-interest-rate-history-method-check-continuous">
+    <call class="com.axelor.apps.account.web.InterestRateHistoryLineController"
+      method="checkPeriodIsContinuous"/>
+  </action-method>
+
+  <action-method name="action-interest-rate-history-method-check-end-date">
+    <call class="com.axelor.apps.account.web.InterestRateHistoryLineController"
+      method="checkEndDateIsInPast"/>
+  </action-method>
+
+</object-views>

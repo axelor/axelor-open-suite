@@ -20,9 +20,6 @@ public interface SaleOrderLineOnChangeService {
 
   Map<String, Object> typeSelectOnChange(SaleOrderLine saleOrderLine);
 
-  Map<String, Object> productOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException;
-
   Map<String, Object> compute(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 }

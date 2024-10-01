@@ -12,10 +12,10 @@ public class MobileConfigController {
 
   public void selectAllMenus(ActionRequest request, ActionResponse response) {
     MobileConfig mobileConfig = request.getContext().asType(MobileConfig.class);
-    List<MobileMenu> menus =
+    List<MobileMenu> menuList =
         Beans.get(MobileMenuRepository.class)
             .findByParentApplication(mobileConfig.getSequence())
             .fetch();
-    response.setValue("menus", menus);
+    response.setValue("menuList", menuList);
   }
 }

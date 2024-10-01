@@ -62,4 +62,18 @@ public class CartProductServiceImpl implements CartProductService {
       cartLineUpdateService.updateCartLine(cartLine);
     }
   }
+
+  @Override
+  public void addToCart(Cart cart, Product product) throws AxelorException {
+    CartLine cartLine = cartLineRetrievalService.getCartLine(cart, product);
+    if (cartLine == null) {
+      if (product.getParentProduct() != null) {
+        cartLineCreateService.createCartLineWithVariant(cart, product);
+      } else {
+        cartLineCreateService.createCartLine(cart, product);
+      }
+    } else {
+      cartLineUpdateService.updateCartLine(cartLine);
+    }
+  }
 }

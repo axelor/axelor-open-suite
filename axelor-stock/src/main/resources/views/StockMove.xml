@@ -437,12 +437,10 @@
           readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
         <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str"
-          readonlyIf="statusSelect == 3 || statusSelect == 4"
-          form-view="address-partner-address-form"/>
+          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
         <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
-          readonlyIf="statusSelect == 3 || statusSelect == 4"
-          form-view="address-partner-address-form"/>
+          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
         <static name="deliveryAddressText" hidden="true" colSpan="12">
 	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
         </static>
@@ -490,8 +488,7 @@
           form-view="stock-location-form"/>
         <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
-          readonlyIf="statusSelect == 3 || statusSelect == 4"
-          form-view="address-partner-address-form"/>
+          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
         <field name="toStockLocation" showIf="_fromOutsource &amp;&amp; typeSelect == 2"
           canEdit="false" domain="self.company = :company AND self.typeSelect IN (2, 3)"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
@@ -552,8 +549,7 @@
           form-view="stock-location-form"/>
         <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str"
-          readonlyIf="statusSelect == 3 || statusSelect == 4"
-          form-view="address-partner-address-form"/>
+          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
           onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"

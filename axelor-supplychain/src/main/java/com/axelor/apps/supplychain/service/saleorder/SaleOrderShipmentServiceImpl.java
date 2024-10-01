@@ -26,8 +26,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -43,21 +42,18 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrderMarginService saleOrderMarginService;
   protected SaleOrderLineRepository saleOrderLineRepo;
-  protected SaleOrderLineComputeService saleOrderLineComputeService;
-  protected SaleOrderLineProductService saleOrderLineProductService;
+  protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
 
   @Inject
   public SaleOrderShipmentServiceImpl(
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
       SaleOrderLineRepository saleOrderLineRepo,
-      SaleOrderLineComputeService saleOrderLineComputeService,
-      SaleOrderLineProductService saleOrderLineProductService) {
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService) {
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleOrderLineRepo = saleOrderLineRepo;
-    this.saleOrderLineComputeService = saleOrderLineComputeService;
-    this.saleOrderLineProductService = saleOrderLineProductService;
+    this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
   }
 
   @Override
@@ -162,8 +158,7 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
     SaleOrderLine shippingCostLine = new SaleOrderLine();
     shippingCostLine.setSaleOrder(saleOrder);
     shippingCostLine.setProduct(shippingCostProduct);
-    saleOrderLineProductService.computeProductInformation(shippingCostLine, saleOrder);
-    saleOrderLineComputeService.computeValues(saleOrder, shippingCostLine);
+    saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, shippingCostLine);
     return shippingCostLine;
   }
 
