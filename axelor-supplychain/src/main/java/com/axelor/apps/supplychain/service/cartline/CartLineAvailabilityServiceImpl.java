@@ -59,10 +59,8 @@ public class CartLineAvailabilityServiceImpl implements CartLineAvailabilityServ
 
   @Override
   public Map<String, Object> setAvailableStatus(Cart cart, CartLine cartLine) {
-    Product product = cartLine.getProduct();
-    if (product != null && product.getIsModel() && cartLine.getVariantProduct() != null) {
-      product = cartLine.getVariantProduct();
-    }
+    Product product =
+        cartLine.getVariantProduct() != null ? cartLine.getVariantProduct() : cartLine.getProduct();
     String availableStatus = null;
     int availableStatusSelect = 0;
 
