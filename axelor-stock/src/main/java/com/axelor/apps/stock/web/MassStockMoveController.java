@@ -1,6 +1,7 @@
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -9,6 +10,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancelService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveNeedService;
+import com.axelor.apps.stock.service.massstockmove.MassStockMoveNeedToPickedProductService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordService;
 import com.axelor.apps.stock.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
@@ -139,5 +141,17 @@ public class MassStockMoveController {
       response.setInfo(I18n.get(ITranslation.MASS_STOCK_MOVE_NEED_CREATED));
       response.setCanClose(true);
     }
+  }
+
+  @ErrorException
+  public void generatePickedLines(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
+    massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
+
+    Beans.get(MassStockMoveNeedToPickedProductService.class)
+        .generatePickedProductsFromMassStockMoveNeedList(
+            massStockMove, massStockMove.getMassStockMoveNeedList());
+    response.setReload(true);
   }
 }
