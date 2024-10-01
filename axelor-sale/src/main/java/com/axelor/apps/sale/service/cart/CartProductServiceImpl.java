@@ -58,7 +58,7 @@ public class CartProductServiceImpl implements CartProductService {
     }
     CartLine cartLine = cartLineRetrievalService.getCartLine(cart, product);
     if (cartLine == null) {
-      cartLineCreateService.createCartLine(cart, product, null);
+      cartLineCreateService.createCartLine(cart, product);
     } else {
       cartLineUpdateService.updateCartLine(cartLine);
     }

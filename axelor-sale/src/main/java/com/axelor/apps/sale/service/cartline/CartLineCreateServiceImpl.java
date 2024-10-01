@@ -68,6 +68,11 @@ public class CartLineCreateServiceImpl implements CartLineCreateService {
   }
 
   @Override
+  public CartLine createCartLine(Cart cart, Product product) throws AxelorException {
+    return createCartLine(cart, product, null);
+  }
+
+  @Override
   @Transactional(rollbackOn = Exception.class)
   public CartLine createCartLineWithVariant(Cart cart, Product product, BigDecimal qty)
       throws AxelorException {
