@@ -199,6 +199,8 @@ import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLin
 import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeComputationServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeService;
 import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 
 public class SaleModule extends AxelorModule {
 
@@ -302,5 +304,6 @@ public class SaleModule extends AxelorModule {
     bind(ProductRestService.class).to(ProductRestServiceImpl.class);
     bind(CartSaleOrderGeneratorService.class).to(CartSaleOrderGeneratorServiceImpl.class);
     bind(SaleOrderRestService.class).to(SaleOrderRestServiceImpl.class);
+    bind(SubSaleOrderLineComputeService.class).to(SubSaleOrderLineComputeServiceImpl.class);
   }
 }
