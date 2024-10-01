@@ -12,8 +12,8 @@ import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealiz
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveNeedService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveNeedToPickedProductService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMoveRecordService;
-import com.axelor.apps.stock.translation.ITranslation;
 import com.axelor.apps.stock.service.massstockmove.PickedProductService;
+import com.axelor.apps.stock.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
