@@ -31,6 +31,8 @@ import com.axelor.apps.crm.service.OpportunityServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
+import com.axelor.apps.sale.db.repo.ComplementaryProductSelectedRepository;
+import com.axelor.apps.sale.db.repo.ComplementaryProductSelectedSaleRepository;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorSaleRepository;
 import com.axelor.apps.sale.db.repo.OpportunitySaleRepository;
@@ -164,5 +166,7 @@ public class SaleModule extends AxelorModule {
     bind(PricingGroupServiceImpl.class).to(PricingGroupSaleServiceImpl.class);
     bind(SaleOrderAttrsService.class).to(SaleOrderAttrsServiceImpl.class);
     bind(SaleOrderGroupService.class).to(SaleOrderGroupServiceImpl.class);
+    bind(ComplementaryProductSelectedRepository.class)
+        .to(ComplementaryProductSelectedSaleRepository.class);
   }
 }

@@ -10,12 +10,15 @@
     <field name="optional"/>
     <field name="complementaryProduct" hidden="true"/>
     <field name="isSelected"/>
-    <button name="selectBtn" readonlyIf="isSelected || !optional" icon="fa-check"
+    <button name="selectBtn"
+      readonlyIf="isSelected || !optional || $saleOrderStatusSelectIsConfirmed" icon="fa-check"
       help="Select this optional complementary product"
       onClick="action-compl-product-selected-record-select"/>
-    <button name="unSelectBtn" readonlyIf="!isSelected || !optional" icon="fa-minus"
+    <button name="unSelectBtn"
+      readonlyIf="!isSelected || !optional || $saleOrderStatusSelectIsConfirmed" icon="fa-minus"
       help="Unselect this optional complementary product"
       onClick="action-compl-product-selected-record-unselect"/>
+    <field name="$saleOrderStatusSelectIsConfirmed" hidden="true"/>
   </grid>
 
   <form name="complementary-product-selected-form" title="Complementary product"
