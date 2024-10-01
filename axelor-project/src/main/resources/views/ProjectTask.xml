@@ -207,8 +207,9 @@
       <field name="taskEndDate" colSpan="4"
         onChange="action-project-task-attrs-set-task-duration"/>
       <field name="taskDeadline" title="Task deadline" colSpan="4"/>
-      <field name="projectTaskTagSet" widget="TagSelect" x-color-field="colorSelect"
-        form-view="project-task-tag-form" grid-view="project-task-tag-grid" colSpan="4"/>
+      <field name="tagSet" widget="TagSelect" x-color-field="colorSelect" form-view="tag-form"
+        grid-view="tag-simplified-grid" colSpan="4"
+        onSelect="action-project-task-method-set-tag-domain"/>
       <field name="progress" onChange="action-project-task-group-progress-onchange"
         showIf="project.isShowProgress &amp;&amp; !$readonly()" colSpan="4" min="0"/>
       <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; !$readonly()"/>
@@ -520,6 +521,10 @@
 
   <action-method name="action-project-task-method-set-status-selection-in">
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="manageStatus"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-set-tag-domain">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="setTagDomain"/>
   </action-method>
 
   <action-group name="action-project-task-group-click-done">

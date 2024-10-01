@@ -286,7 +286,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     projectTask.setProjectTaskCategory(parentTask.getProjectTaskCategory());
     projectTask.setProjectTaskSection(parentTask.getProjectTaskSection());
     projectTask.setPriority(parentTask.getPriority());
-    projectTask.setProjectTaskTagSet(parentTask.getProjectTaskTagSet());
+    projectTask.setTagSet(parentTask.getTagSet());
     projectTask.setAssignedTo(parentTask.getAssignedTo());
   }
 
