@@ -48,6 +48,7 @@ public class AppBankPaymentController {
       try {
         Beans.get(BankOrderEncryptionService.class).checkAndGetEncryptionPassword();
       } catch (AxelorException e) {
+        TraceBackService.trace(e);
         response.setValue("enableBankOrderFileEncryption", false);
         response.setError(e.getMessage());
       }

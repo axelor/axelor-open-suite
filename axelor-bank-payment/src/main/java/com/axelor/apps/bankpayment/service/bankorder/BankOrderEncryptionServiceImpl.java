@@ -6,9 +6,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.crypto.BytesEncryptor;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,6 +16,13 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionService {
+
+  protected MetaFiles metaFiles;
+
+  @Inject
+  public BankOrderEncryptionServiceImpl(MetaFiles metaFiles) {
+    this.metaFiles = metaFiles;
+  }
 
   /**
    * Encrypt bank order file according to axelor-config.properties settings
@@ -36,9 +43,9 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
 
     } catch (IOException e) {
       throw new AxelorException(
+          e,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_DECRYPT_ERROR),
-          e.getMessage());
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_DECRYPT_ERROR));
     }
   }
 
@@ -64,7 +71,7 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
   }
 
   /**
-   * Encrypt bank order file according to axelor-config.properties settings
+   * Decrypt bank order file according to axelor-config.properties settings
    *
    * @param bankOrderGeneratedFile
    * @return
@@ -88,12 +95,12 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
       Path tempFilePath = MetaFiles.createTempFile(prefix, suffix);
       Files.write(tempFilePath, decrypt, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
 
-      return Beans.get(MetaFiles.class).upload(tempFilePath.toFile());
+      return metaFiles.upload(tempFilePath.toFile());
     } catch (IOException e) {
       throw new AxelorException(
+          e,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_DECRYPT_ERROR),
-          e.getMessage());
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_DECRYPT_ERROR));
     }
   }
 
@@ -131,9 +138,9 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
       return encryptor.isEncrypted(Files.readAllBytes(bankOrderFile.toPath()));
     } catch (IOException e) {
       throw new AxelorException(
+          e,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_DECRYPT_ERROR),
-          e.getMessage());
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_DECRYPT_ERROR));
     }
   }
 
