@@ -1,5 +1,6 @@
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.InterestRateHistoryLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -14,16 +15,21 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppAccount;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInterestInvoiceService {
@@ -53,7 +59,8 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
                     invoiceTerm
                             .getDueDate()
                             .isBefore(appAccountService.getTodayDate(invoice.getCompany()))
-                        && !invoiceTerm.getIsPaid())
+                        && !invoiceTerm.getIsPaid()
+                        && !invoiceTerm.getIsHoldBack())
             .collect(Collectors.toList());
 
     if (lateInvoiceTerms.isEmpty()) {
@@ -77,6 +84,7 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
 
     Invoice latePaymentInvoice = invoiceGenerator.generate();
     latePaymentInvoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_LATE_PAYMENT);
+    latePaymentInvoice.setInvoiceDate(appAccountService.getTodayDate(invoice.getCompany()));
     List<InvoiceLine> invoiceLines = new ArrayList<>();
 
     invoiceLines.add(createFlatFeeInvoiceLine(invoice));
@@ -217,24 +225,79 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
   protected BigDecimal computeInterestFromInvoiceTerm(InvoiceTerm invoiceTerm)
       throws AxelorException {
     PaymentMode paymentMode = invoiceTerm.getPaymentMode();
-
     if (paymentMode == null || paymentMode.getInterestRate() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_NO_PAYMENT_MODE_RATE));
     }
-    BigDecimal interestRate = paymentMode.getInterestRate().divide(new BigDecimal("100"));
 
+    LocalDate dueDate = invoiceTerm.getDueDate();
+    LocalDate startInterestDate = invoiceTerm.getDueDate().plusDays(1);
+    BigDecimal interestAmount = BigDecimal.ZERO;
+
+    List<InterestRateHistoryLine> periodHistoryLinesFiltered =
+        getPeriodHistoryLine(paymentMode, dueDate);
+    BigDecimal amountRemaining = invoiceTerm.getAmountRemaining();
+
+    for (InterestRateHistoryLine interestRateHistoryLine : periodHistoryLinesFiltered) {
+      BigDecimal interestRate =
+          interestRateHistoryLine.getInterestRate().divide(new BigDecimal("100"));
+      LocalDate fromDate = interestRateHistoryLine.getFromDate();
+      if (fromDate.isBefore(startInterestDate)) {
+        fromDate = startInterestDate;
+      }
+      LocalDate endDate = interestRateHistoryLine.getEndDate();
+      long daysBetween = LocalDateHelper.daysBetween(fromDate, endDate, false);
+
+      interestAmount =
+          interestAmount.add(
+              amountRemaining.multiply(interestRate).multiply(BigDecimal.valueOf(daysBetween)));
+    }
+
+    LocalDate currentPeriodFromDate;
+
+    // if there is a history, use last period ennDate + 1
+    if (!periodHistoryLinesFiltered.isEmpty()) {
+      LocalDate lastPeriodEndDate =
+          Collections.max(
+                  periodHistoryLinesFiltered,
+                  Comparator.comparing(InterestRateHistoryLine::getEndDate))
+              .getEndDate();
+      currentPeriodFromDate = lastPeriodEndDate.plusDays(1);
+    } else {
+      // if no history, use the dueDate
+      currentPeriodFromDate = startInterestDate;
+    }
+
+    // add current periodRate
+    BigDecimal interestRate = paymentMode.getInterestRate().divide(new BigDecimal("100"));
     int currencyScale = currencyScaleService.getCurrencyScale(invoiceTerm.getCurrency());
 
-    return invoiceTerm
-        .getAmountRemaining()
-        .multiply(interestRate)
-        .multiply(new BigDecimal(String.valueOf(numberOfDaySinceDueDate(invoiceTerm.getDueDate()))))
-        .divide(new BigDecimal("365"), currencyScale, RoundingMode.HALF_UP);
+    long lastPeriod =
+        LocalDateHelper.daysBetween(
+            currentPeriodFromDate,
+            appAccountService.getTodayDate(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)),
+            false);
+    interestAmount =
+        interestAmount
+            .add(amountRemaining.multiply(interestRate).multiply(BigDecimal.valueOf(lastPeriod)))
+            .divide(new BigDecimal("365"), currencyScale, RoundingMode.HALF_UP);
+
+    return interestAmount;
   }
 
-  protected long numberOfDaySinceDueDate(LocalDate dueDate) {
-    return ChronoUnit.DAYS.between(dueDate, appAccountService.getTodayDate(null));
+  protected List<InterestRateHistoryLine> getPeriodHistoryLine(
+      PaymentMode paymentMode, LocalDate dueDate) {
+    return paymentMode.getInterestRateHistoryLineList().stream()
+        .filter(
+            interestRateHistoryLine ->
+                LocalDateHelper.isBetween(
+                        interestRateHistoryLine.getFromDate(),
+                        interestRateHistoryLine.getEndDate(),
+                        dueDate)
+                    || interestRateHistoryLine.getFromDate().isAfter(dueDate))
+        .sorted((line1, line2) -> line1.getFromDate().compareTo(line2.getEndDate()))
+        .collect(Collectors.toList());
   }
 }

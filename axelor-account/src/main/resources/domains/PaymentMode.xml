@@ -21,6 +21,8 @@
       selection="payment.mode.move.accounting.date.select" default="1"
       help="Choose the option to determine the accounting date (effect date) of the accounted moves generated."/>
     <decimal name="interestRate" title="Interest rate (%)" min="0" precision="5" scale="2"/>
+    <one-to-many name="interestRateHistoryLineList" title="Interest rate history lines"
+      ref="com.axelor.apps.account.db.InterestRateHistoryLine"/>
 
     <extra-code><![CDATA[
         public static final int ACCOUNTING_TRIGGER_NONE = 0;

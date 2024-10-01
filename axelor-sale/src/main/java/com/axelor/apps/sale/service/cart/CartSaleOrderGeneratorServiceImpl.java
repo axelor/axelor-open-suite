@@ -30,12 +30,12 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGeneratorService;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGeneratorService {
@@ -43,15 +43,18 @@ public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGenerator
   protected SaleOrderGeneratorService saleOrderGeneratorService;
   protected SaleOrderLineGeneratorService saleOrderLineGeneratorService;
   protected SaleOrderLineRepository saleOrderLineRepository;
+  protected CartResetService cartResetService;
 
   @Inject
   public CartSaleOrderGeneratorServiceImpl(
       SaleOrderGeneratorService saleOrderGeneratorService,
       SaleOrderLineGeneratorService saleOrderLineGeneratorService,
-      SaleOrderLineRepository saleOrderLineRepository) {
+      SaleOrderLineRepository saleOrderLineRepository,
+      CartResetService cartResetService) {
     this.saleOrderGeneratorService = saleOrderGeneratorService;
     this.saleOrderLineGeneratorService = saleOrderLineGeneratorService;
     this.saleOrderLineRepository = saleOrderLineRepository;
+    this.cartResetService = cartResetService;
   }
 
   @Override
@@ -72,6 +75,7 @@ public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGenerator
     for (CartLine cartLine : cartLineList) {
       createSaleOrderLine(cartLine, saleOrder);
     }
+    cartResetService.emptyCart(cart);
     return saleOrder;
   }
 
@@ -99,18 +103,8 @@ public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGenerator
     if (!missingProductVariants.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          formatMessage(
+          StringHtmlListBuilder.formatMessage(
               I18n.get(SaleExceptionMessage.MISSING_PRODUCT_VARIANTS), missingProductVariants));
     }
-  }
-
-  protected String formatMessage(String title, List<String> messages) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(String.format("<b>%s</b><br/>", title));
-    sb.append(
-        messages.stream()
-            .map(item -> String.format("<li>%s</li>", item))
-            .collect(Collectors.joining("", "<ul>", "</ul>")));
-    return sb.toString();
   }
 }

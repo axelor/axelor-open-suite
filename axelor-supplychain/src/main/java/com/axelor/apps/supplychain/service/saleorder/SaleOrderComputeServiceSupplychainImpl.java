@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
@@ -49,8 +50,13 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
       SaleOrderLineCreateTaxLineService saleOrderLineCreateTaxLineService,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
+      SubSaleOrderLineComputeService subSaleOrderLineComputeService,
       AdvancePaymentRefundService refundService) {
-    super(saleOrderLineCreateTaxLineService, saleOrderLineComputeService, saleOrderLinePackService);
+    super(
+        saleOrderLineCreateTaxLineService,
+        saleOrderLineComputeService,
+        saleOrderLinePackService,
+        subSaleOrderLineComputeService);
     this.refundService = refundService;
   }
 

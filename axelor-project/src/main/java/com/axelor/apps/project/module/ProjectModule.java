@@ -45,6 +45,8 @@ import com.axelor.apps.project.service.ProjectMenuService;
 import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.project.service.ProjectTaskAttrsService;
+import com.axelor.apps.project.service.ProjectTaskAttrsServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskCategoryService;
 import com.axelor.apps.project.service.ProjectTaskCategoryServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskService;
@@ -111,5 +113,6 @@ public class ProjectModule extends AxelorModule {
     bind(UserProjectService.class).to(UserProjectServiceImpl.class);
     addQuickMenu(ActiveProjectQuickMenuCreator.class);
     bind(ProjectToolService.class).to(ProjectToolServiceImpl.class);
+    bind(ProjectTaskAttrsService.class).to(ProjectTaskAttrsServiceImpl.class);
   }
 }
