@@ -224,19 +224,27 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
   protected BigDecimal computeInterestFromInvoiceTerm(InvoiceTerm invoiceTerm)
       throws AxelorException {
     PaymentMode paymentMode = invoiceTerm.getPaymentMode();
+    Invoice invoice = invoiceTerm.getInvoice();
     if (paymentMode == null || paymentMode.getInterestRate() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.LATE_PAYMENT_INTEREST_NO_PAYMENT_MODE_RATE));
     }
 
+    int currencyScale = currencyScaleService.getCurrencyScale(invoiceTerm.getCurrency());
     LocalDate dueDate = invoiceTerm.getDueDate();
     LocalDate startInterestDate = invoiceTerm.getDueDate().plusDays(1);
     BigDecimal interestAmount = BigDecimal.ZERO;
 
     List<InterestRateHistoryLine> periodHistoryLinesFiltered =
         getPeriodHistoryLine(paymentMode, dueDate);
-    BigDecimal amountRemaining = invoiceTerm.getAmountRemaining();
+    BigDecimal latePaymentAmount =
+        invoice
+            .getExTaxTotal()
+            .multiply(invoiceTerm.getPercentage())
+            .divide(new BigDecimal("100"))
+            .multiply(invoiceTerm.getAmountRemaining())
+            .divide(invoiceTerm.getAmount(), currencyScale, RoundingMode.HALF_UP);
 
     for (InterestRateHistoryLine interestRateHistoryLine : periodHistoryLinesFiltered) {
       BigDecimal interestRate =
@@ -250,7 +258,7 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
 
       interestAmount =
           interestAmount.add(
-              amountRemaining.multiply(interestRate).multiply(BigDecimal.valueOf(daysBetween)));
+              latePaymentAmount.multiply(interestRate).multiply(BigDecimal.valueOf(daysBetween)));
     }
 
     LocalDate currentPeriodFromDate;
@@ -270,7 +278,6 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
 
     // add current periodRate
     BigDecimal interestRate = paymentMode.getInterestRate().divide(new BigDecimal("100"));
-    int currencyScale = currencyScaleService.getCurrencyScale(invoiceTerm.getCurrency());
 
     long lastPeriod =
         LocalDateHelper.daysBetween(
@@ -280,7 +287,7 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
             false);
     interestAmount =
         interestAmount
-            .add(amountRemaining.multiply(interestRate).multiply(BigDecimal.valueOf(lastPeriod)))
+            .add(latePaymentAmount.multiply(interestRate).multiply(BigDecimal.valueOf(lastPeriod)))
             .divide(new BigDecimal("365"), currencyScale, RoundingMode.HALF_UP);
 
     return interestAmount;
