@@ -5,7 +5,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.AxelorException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface PaymentModeInterestRateService {
   void saveInterestRateToHistory(PaymentMode paymentMode) throws AxelorException;
@@ -13,14 +12,14 @@ public interface PaymentModeInterestRateService {
   List<String> checkPeriodOverlap(
       PaymentMode paymentMode,
       InterestRateHistoryLine interestRateHistoryLine,
-      Optional<LocalDate> fromDate,
-      Optional<LocalDate> endDate);
+      LocalDate fromDate,
+      LocalDate endDate);
 
   List<String> checkPeriodIsContinuous(
       PaymentMode paymentMode,
       InterestRateHistoryLine interestRateHistoryLine,
-      Optional<LocalDate> fromDate,
-      Optional<LocalDate> endDate);
+      LocalDate fromDate,
+      LocalDate endDate);
 
-  boolean checkEndDateIsInPast(Optional<LocalDate> endDate);
+  boolean checkEndDateIsInPast(LocalDate endDate);
 }

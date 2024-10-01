@@ -22,10 +22,16 @@ public class InterestRateHistoryLineController {
         Optional.ofNullable(interestRateHistoryLine.getPaymentMode())
             .orElse(context.getParent().asType(PaymentMode.class));
 
-    Optional<LocalDate> fromDate =
-        Optional.ofNullable(context.get("fromDate")).map(Object::toString).map(LocalDate::parse);
-    Optional<LocalDate> endDate =
-        Optional.ofNullable(context.get("endDate")).map(Object::toString).map(LocalDate::parse);
+    LocalDate fromDate =
+        Optional.ofNullable(context.get("fromDate"))
+            .map(Object::toString)
+            .map(LocalDate::parse)
+            .orElse(null);
+    LocalDate endDate =
+        Optional.ofNullable(context.get("endDate"))
+            .map(Object::toString)
+            .map(LocalDate::parse)
+            .orElse(null);
 
     List<String> fieldsInError =
         Beans.get(PaymentModeInterestRateService.class)
@@ -45,10 +51,16 @@ public class InterestRateHistoryLineController {
         Optional.ofNullable(interestRateHistoryLine.getPaymentMode())
             .orElse(context.getParent().asType(PaymentMode.class));
 
-    Optional<LocalDate> fromDate =
-        Optional.ofNullable(context.get("fromDate")).map(Object::toString).map(LocalDate::parse);
-    Optional<LocalDate> endDate =
-        Optional.ofNullable(context.get("endDate")).map(Object::toString).map(LocalDate::parse);
+    LocalDate fromDate =
+        Optional.ofNullable(context.get("fromDate"))
+            .map(Object::toString)
+            .map(LocalDate::parse)
+            .orElse(null);
+    LocalDate endDate =
+        Optional.ofNullable(context.get("endDate"))
+            .map(Object::toString)
+            .map(LocalDate::parse)
+            .orElse(null);
 
     List<String> fieldsInError =
         Beans.get(PaymentModeInterestRateService.class)
@@ -62,10 +74,11 @@ public class InterestRateHistoryLineController {
   }
 
   public void checkEndDateIsInPast(ActionRequest request, ActionResponse response) {
-    Optional<LocalDate> endDate =
+    LocalDate endDate =
         Optional.ofNullable(request.getContext().get("endDate"))
             .map(Object::toString)
-            .map(LocalDate::parse);
+            .map(LocalDate::parse)
+            .orElse(null);
 
     if (Beans.get(PaymentModeInterestRateService.class).checkEndDateIsInPast(endDate)) {
       response.setValue("endDate", null);

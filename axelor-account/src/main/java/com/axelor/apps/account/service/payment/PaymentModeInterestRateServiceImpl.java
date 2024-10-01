@@ -94,8 +94,8 @@ public class PaymentModeInterestRateServiceImpl implements PaymentModeInterestRa
   public List<String> checkPeriodOverlap(
       PaymentMode paymentMode,
       InterestRateHistoryLine interestRateHistoryLine,
-      Optional<LocalDate> fromDate,
-      Optional<LocalDate> endDate) {
+      LocalDate fromDate,
+      LocalDate endDate) {
 
     List<String> fieldsInError = new ArrayList<>();
 
@@ -127,9 +127,9 @@ public class PaymentModeInterestRateServiceImpl implements PaymentModeInterestRa
                 Comparator.comparing(InterestRateHistoryLine::getFromDate))
             .getFromDate();
 
-    if (fromDate.isPresent()
-        && endDate.isPresent()
-        && LocalDateHelper.isBetween(fromDate.get(), endDate.get(), minFromDate)) {
+    if (fromDate != null
+        && endDate != null
+        && LocalDateHelper.isBetween(fromDate, endDate, minFromDate)) {
       fieldsInError.add("fromDate");
       fieldsInError.add("endDate");
     }
@@ -141,8 +141,8 @@ public class PaymentModeInterestRateServiceImpl implements PaymentModeInterestRa
   public List<String> checkPeriodIsContinuous(
       PaymentMode paymentMode,
       InterestRateHistoryLine interestRateHistoryLine,
-      Optional<LocalDate> fromDate,
-      Optional<LocalDate> endDate) {
+      LocalDate fromDate,
+      LocalDate endDate) {
 
     List<String> fieldsInError = new ArrayList<>();
 
@@ -169,21 +169,19 @@ public class PaymentModeInterestRateServiceImpl implements PaymentModeInterestRa
                 Comparator.comparing(InterestRateHistoryLine::getEndDate))
             .getEndDate();
 
-    boolean fromDateIsNotContinue =
-        fromDate.isPresent() && !fromDate.get().isEqual(maxEndDate.plusDays(1));
-    boolean endDateIsNotContinue =
-        endDate.isPresent() && !endDate.get().isEqual(minFromDate.minusDays(1));
+    boolean fromDateIsNotContinue = fromDate != null && !fromDate.isEqual(maxEndDate.plusDays(1));
+    boolean endDateIsNotContinue = endDate != null && !endDate.isEqual(minFromDate.minusDays(1));
 
     // if dectecting non continuous dates
     if (fromDateIsNotContinue && endDateIsNotContinue) {
 
       // allow to find if it's the from or end date that is not continuous
 
-      if (fromDate.get().isBefore(minFromDate) && endDate.get().isBefore(minFromDate)) {
+      if (fromDate.isBefore(minFromDate) && endDate.isBefore(minFromDate)) {
         fieldsInError.add("endDate");
       }
 
-      if (fromDate.get().isAfter(maxEndDate) && endDate.get().isAfter(maxEndDate)) {
+      if (fromDate.isAfter(maxEndDate) && endDate.isAfter(maxEndDate)) {
         fieldsInError.add("fromDate");
       }
     }
@@ -191,22 +189,18 @@ public class PaymentModeInterestRateServiceImpl implements PaymentModeInterestRa
   }
 
   protected boolean checkDateIsInPeriod(
-      Optional<LocalDate> dateToCheck, LocalDate fromDate, LocalDate endDate) {
-    return dateToCheck.isPresent()
+      LocalDate dateToCheck, LocalDate fromDate, LocalDate endDate) {
+    return dateToCheck != null
         && fromDate != null
         && endDate != null
-        && LocalDateHelper.isBetween(fromDate, endDate, dateToCheck.get());
+        && LocalDateHelper.isBetween(fromDate, endDate, dateToCheck);
   }
 
   @Override
-  public boolean checkEndDateIsInPast(Optional<LocalDate> endDate) {
-    return endDate.isPresent()
-        && endDate
-            .get()
-            .isAfter(
-                appAccountService.getTodayDate(
-                    Optional.ofNullable(AuthUtils.getUser())
-                        .map(User::getActiveCompany)
-                        .orElse(null)));
+  public boolean checkEndDateIsInPast(LocalDate endDate) {
+    return endDate != null
+        && endDate.isAfter(
+            appAccountService.getTodayDate(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
   }
 }
