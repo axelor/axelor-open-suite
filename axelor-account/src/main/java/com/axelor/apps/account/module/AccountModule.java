@@ -237,6 +237,8 @@ import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxRecordService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxRecordServiceImpl;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolServiceImpl;
+import com.axelor.apps.account.service.invoice.tax.InvoiceTaxComputeService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceTaxComputeServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelService;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationService;
@@ -961,5 +963,7 @@ public class AccountModule extends AxelorModule {
 
     bind(LatePaymentInterestInvoiceService.class).to(LatePaymentInterestInvoiceServiceImpl.class);
     bind(PaymentModeInterestRateService.class).to(PaymentModeInterestRateServiceImpl.class);
+
+    bind(InvoiceTaxComputeService.class).to(InvoiceTaxComputeServiceImpl.class);
   }
 }

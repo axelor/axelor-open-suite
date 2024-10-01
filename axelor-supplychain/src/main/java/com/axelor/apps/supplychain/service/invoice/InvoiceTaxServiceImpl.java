@@ -3,9 +3,9 @@ package com.axelor.apps.supplychain.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxRecordService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceTaxComputeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.interfaces.OrderLineTax;
-import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.service.PurchaseOrderLineTaxService;
@@ -14,7 +14,6 @@ import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCreateTaxLineService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,18 +22,18 @@ public class InvoiceTaxServiceImpl implements InvoiceTaxService {
   protected SaleOrderLineCreateTaxLineService saleOrderLineCreateTaxLineService;
   protected PurchaseOrderLineTaxService purchaseOrderLineTaxService;
   protected InvoiceLineTaxRecordService invoiceLineTaxRecordService;
-  protected CurrencyScaleService currencyScaleService;
+  protected InvoiceTaxComputeService invoiceTaxComputeService;
 
   @Inject
   public InvoiceTaxServiceImpl(
       SaleOrderLineCreateTaxLineService saleOrderLineCreateTaxLineService,
       PurchaseOrderLineTaxService purchaseOrderLineTaxService,
       InvoiceLineTaxRecordService invoiceLineTaxRecordService,
-      CurrencyScaleService currencyScaleService) {
+      InvoiceTaxComputeService invoiceTaxComputeService) {
     this.saleOrderLineCreateTaxLineService = saleOrderLineCreateTaxLineService;
     this.purchaseOrderLineTaxService = purchaseOrderLineTaxService;
     this.invoiceLineTaxRecordService = invoiceLineTaxRecordService;
-    this.currencyScaleService = currencyScaleService;
+    this.invoiceTaxComputeService = invoiceTaxComputeService;
   }
 
   @Override
@@ -59,7 +58,7 @@ public class InvoiceTaxServiceImpl implements InvoiceTaxService {
     }
 
     if (isInvoiceLineTaxUpdated) {
-      recomputeInvoiceAmountsAfterTaxUpdate(invoice);
+      invoiceTaxComputeService.recomputeInvoiceTaxAmounts(invoice);
     }
   }
 
@@ -86,7 +85,7 @@ public class InvoiceTaxServiceImpl implements InvoiceTaxService {
     }
 
     if (isInvoiceLineTaxUpdated) {
-      recomputeInvoiceAmountsAfterTaxUpdate(invoice);
+      invoiceTaxComputeService.recomputeInvoiceTaxAmounts(invoice);
     }
   }
 
@@ -116,34 +115,5 @@ public class InvoiceTaxServiceImpl implements InvoiceTaxService {
     }
 
     return null;
-  }
-
-  protected void recomputeInvoiceAmountsAfterTaxUpdate(Invoice invoice) {
-    invoice.setTaxTotal(BigDecimal.ZERO);
-    invoice.setCompanyTaxTotal(BigDecimal.ZERO);
-    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
-      // In the invoice currency
-      invoice.setTaxTotal(
-          currencyScaleService.getScaledValue(
-              invoice, invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal())));
-
-      // In the company accounting currency
-      invoice.setCompanyTaxTotal(
-          currencyScaleService.getCompanyScaledValue(
-              invoice, invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal())));
-    }
-
-    // In the invoice currency
-    invoice.setInTaxTotal(
-        currencyScaleService.getScaledValue(
-            invoice, invoice.getExTaxTotal().add(invoice.getTaxTotal())));
-
-    // In the company accounting currency
-    invoice.setCompanyInTaxTotal(
-        currencyScaleService.getCompanyScaledValue(
-            invoice, invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal())));
-    invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
-
-    invoice.setAmountRemaining(invoice.getInTaxTotal());
   }
 }
