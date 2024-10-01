@@ -34,6 +34,9 @@
       <field name="taxLine.tax.manageByAmount" hidden="true"/>
       <field name="invoice.statusSelect" hidden="true"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <action-group name="action-invoice-line-tax-group-onnew-onload">

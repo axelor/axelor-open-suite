@@ -18,6 +18,12 @@
     <many-to-one name="taxType" ref="com.axelor.apps.account.db.TaxType"
       title="Tax type"/>
 
+    <track>
+      <field name="exTaxBase"/>
+      <field name="taxTotal"/>
+      <field name="percentageTaxTotal"/>
+      <field name="inTaxTotal"/>
+    </track>
   </entity>
 
 </domain-models>

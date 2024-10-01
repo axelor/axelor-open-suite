@@ -36,6 +36,9 @@
       <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
       <field name="taxLine.tax.manageByAmount" hidden="true"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <action-method name="action-sale-order-line-tax-method-recompute-amounts">
