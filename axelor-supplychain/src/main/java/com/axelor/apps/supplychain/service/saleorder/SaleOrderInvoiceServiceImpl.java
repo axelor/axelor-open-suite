@@ -60,9 +60,9 @@ import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -106,6 +106,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected SaleInvoicingStateService saleInvoicingStateService;
   protected CurrencyScaleService currencyScaleService;
 
+  protected OrderInvoiceService orderInvoiceService;
+
   @Inject
   public SaleOrderInvoiceServiceImpl(
       AppBaseService appBaseService,
@@ -115,13 +117,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       InvoiceRepository invoiceRepo,
       InvoiceServiceSupplychainImpl invoiceService,
       StockMoveRepository stockMoveRepository,
-      InvoiceTermService invoiceTermService,
       SaleOrderWorkflowService saleOrderWorkflowService,
+      InvoiceTermService invoiceTermService,
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
-      CurrencyScaleService currencyScaleService) {
-
+      CurrencyScaleService currencyScaleService,
+      OrderInvoiceService orderInvoiceService) {
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.appSupplychainService = appSupplychainService;
@@ -129,12 +131,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.invoiceRepo = invoiceRepo;
     this.invoiceService = invoiceService;
     this.stockMoveRepository = stockMoveRepository;
-    this.invoiceTermService = invoiceTermService;
     this.saleOrderWorkflowService = saleOrderWorkflowService;
+    this.invoiceTermService = invoiceTermService;
     this.commonInvoiceService = commonInvoiceService;
     this.invoiceLineOrderService = invoiceLineOrderService;
     this.saleInvoicingStateService = saleInvoicingStateService;
     this.currencyScaleService = currencyScaleService;
+    this.orderInvoiceService = orderInvoiceService;
   }
 
   @Override
@@ -851,35 +854,20 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   @Override
   public List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
-    boolean manageAdvanceInvoice =
-        Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice();
-    boolean allowTimetableInvoicing =
-        appSupplychainService.getAppSupplychain().getAllowTimetableInvoicing();
-    BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();
     BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
-    Invoice invoice =
-        Query.of(Invoice.class)
-            .filter(
-                " self.saleOrder.id = :saleOrderId "
-                    + "AND self.statusSelect != :invoiceStatus "
-                    + "AND self.operationSubTypeSelect != :advancePaymentSubType "
-                    + "AND self.operationTypeSelect = :operationTypeSelect")
-            .bind("saleOrderId", saleOrder.getId())
-            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
-            .bind("advancePaymentSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
-            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-            .fetchOne();
+    BigDecimal amountToBeInvoiced = orderInvoiceService.amountToBeInvoiced(saleOrder);
     List<Integer> operationSelectList = new ArrayList<>();
     if (exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
       operationSelectList.add(SaleOrderRepository.INVOICE_LINES);
     }
-    if (manageAdvanceInvoice && exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
+    if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()
+        && exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
       operationSelectList.add(SaleOrderRepository.INVOICE_ADVANCE_PAYMENT);
     }
-    if (allowTimetableInvoicing) {
+    if (appSupplychainService.getAppSupplychain().getAllowTimetableInvoicing()) {
       operationSelectList.add(SaleOrderRepository.INVOICE_TIMETABLES);
     }
-    if (invoice == null && amountInvoiced.compareTo(BigDecimal.ZERO) == 0
+    if (amountToBeInvoiced.compareTo(BigDecimal.ZERO) == 0
         || exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
       operationSelectList.add(SaleOrderRepository.INVOICE_ALL);
     }
@@ -890,19 +878,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   @Override
   public void displayErrorMessageIfSaleOrderIsInvoiceable(
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
-    List<Invoice> invoices =
-        Query.of(Invoice.class)
-            .filter(
-                " self.saleOrder.id = :saleOrderId "
-                    + "AND self.statusSelect != :invoiceStatus "
-                    + "AND (self.operationTypeSelect = :saleOperationTypeSelect OR self.operationTypeSelect = :refundOperationTypeSelect)")
-            .bind("saleOrderId", saleOrder.getId())
-            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
-            .bind("saleOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-            .bind("refundOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
-            .fetch();
-
-    BigDecimal sumInvoices = commonInvoiceService.computeSumInvoices(invoices);
+    BigDecimal sumInvoices = orderInvoiceService.amountToBeInvoiced(saleOrder);
     BigDecimal computedAmountToInvoice = amountToInvoice;
     if (isPercent) {
       computedAmountToInvoice =
@@ -926,17 +902,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   @Override
   public void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException {
-    List<Invoice> invoices =
-        Query.of(Invoice.class)
-            .filter(
-                " self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect"
-                    + " AND self.statusSelect != :invoiceStatus")
-            .bind("saleOrderId", saleOrder.getId())
-            .bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT)
-            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
-            .fetch();
-    BigDecimal sumInvoices = computeSumInvoices(invoices);
-    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) >= 0) {
+    if (orderInvoiceService.amountToBeInvoiced(saleOrder).compareTo(saleOrder.getExTaxTotal())
+        >= 0) {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -950,19 +917,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     saleInvoicingStateService.updateSaleOrderLinesInvoicingState(saleOrder.getSaleOrderLineList());
     saleOrder.setInvoicingState(
         saleInvoicingStateService.computeSaleOrderInvoicingState(saleOrder));
-  }
-
-  public BigDecimal computeSumInvoices(List<Invoice> invoices) {
-    BigDecimal sumInvoices = BigDecimal.ZERO;
-    for (Invoice invoice : invoices) {
-      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
-          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
-        sumInvoices = sumInvoices.subtract(invoice.getExTaxTotal());
-      } else {
-        sumInvoices = sumInvoices.add(invoice.getExTaxTotal());
-      }
-    }
-    return sumInvoices;
   }
 
   @Transactional(rollbackOn = {Exception.class})

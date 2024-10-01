@@ -33,6 +33,7 @@ import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -201,16 +202,22 @@ public class ContractVersionServiceImpl implements ContractVersionService {
 
   public void computeTotals(ContractVersion contractVersion) {
     List<ContractLine> contractLineList = contractVersion.getContractLineList();
-    contractVersion.setInitialExTaxTotalPerYear(
-        contractLineList.stream()
-            .map(ContractLine::getInitialPricePerYear)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO));
-    contractVersion.setYearlyExTaxTotalRevalued(
-        contractLineList.stream()
-            .map(ContractLine::getYearlyPriceRevalued)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO));
+    BigDecimal initialExTaxTotalPerYear = BigDecimal.ZERO;
+    BigDecimal yearlyExTaxTotalRevalued = BigDecimal.ZERO;
+    if (ObjectUtils.notEmpty(contractLineList)) {
+      initialExTaxTotalPerYear =
+          contractLineList.stream()
+              .map(ContractLine::getInitialPricePerYear)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      yearlyExTaxTotalRevalued =
+          contractLineList.stream()
+              .map(ContractLine::getYearlyPriceRevalued)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+    }
+    contractVersion.setInitialExTaxTotalPerYear(initialExTaxTotalPerYear);
+    contractVersion.setYearlyExTaxTotalRevalued(yearlyExTaxTotalRevalued);
 
     List<InvoiceLine> invoiceLineList =
         invoiceLineRepository

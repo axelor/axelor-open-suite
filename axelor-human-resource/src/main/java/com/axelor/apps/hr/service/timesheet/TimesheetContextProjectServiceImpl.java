@@ -49,7 +49,7 @@ public class TimesheetContextProjectServiceImpl implements TimesheetContextProje
     Set<Long> projectIdsSet = new HashSet<>();
     if (contextProject == null) {
       List<Project> allTimeSpentProjectList =
-          projectRepository.all().filter("self.isShowTimeSpent = true").fetch();
+          projectRepository.all().filter("self.manageTimeSpent = true").fetch();
       for (Project timeSpentProject : allTimeSpentProjectList) {
         projectToolService.getChildProjectIds(projectIdsSet, timeSpentProject);
       }

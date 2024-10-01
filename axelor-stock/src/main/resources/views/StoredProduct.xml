@@ -80,7 +80,7 @@
 
   <action-attrs name="action-stored-product-attrs-tracking-number-required">
     <attribute name="required" for="trackingNumber"
-      expr="eval: storedProduct?.trackingNumberConfiguration != null"/>
+      expr="eval: storedProduct != null &amp;&amp; com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(storedProduct, 'trackingNumberConfiguration', __parent__?.company) != null"/>
   </action-attrs>
 
 

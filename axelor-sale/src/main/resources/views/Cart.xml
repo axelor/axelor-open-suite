@@ -15,8 +15,8 @@
       <button name="emptyCartBtn" title="Empty cart"
         onClick="save,action-cart-method-empty-cart"/>
       <button name="createSaleOrderBtn" title="Create the sale order"
-        onClick="save,action-method-cart-create-sale-order" hidden="true"
-        showIf="cartLineList &amp;&amp; cartLineList.length > 0"/>
+        onClick="action-method-cart-create-sale-order" hidden="true"
+        showIf="id &amp;&amp; cartLineList &amp;&amp; cartLineList.length > 0"/>
     </toolbar>
 
     <panel name="mainPanel">
@@ -25,7 +25,7 @@
         onChange="action-cart-record-reset-fields"
         readonlyIf="cartLineList &amp;&amp; cartLineList.length > 0"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid" canNew="true"
-        readonlyIf="!company" domain=":company MEMBER OF self.companySet"/>
+        readonlyIf="!company" onSelect="action-method-cart-set-partner-domain"/>
       <panel-related field="cartLineList" form-view="cart-line-form"
         grid-view="cart-line-grid" colSpan="12"/>
     </panel>
@@ -43,6 +43,9 @@
     <call class="com.axelor.apps.sale.web.CartController" method="createSaleOrder"/>
   </action-method>
 
+  <action-method name="action-method-cart-set-partner-domain">
+    <call class="com.axelor.apps.sale.web.CartController" method="getCartPartnerDomain"/>
+  </action-method>
   <action-record name="action-cart-record-reset-fields"
     model="com.axelor.apps.sale.db.Cart">
     <field name="partner" expr="eval: null" if="!company"/>

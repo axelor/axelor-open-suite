@@ -27,6 +27,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.cart.CartResetService;
 import com.axelor.apps.sale.service.cart.CartSaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
@@ -49,9 +50,14 @@ public class CartSaleOrderGeneratorSupplychainServiceImpl
       SaleOrderGeneratorService saleOrderGeneratorService,
       SaleOrderLineGeneratorService saleOrderLineGeneratorService,
       SaleOrderLineRepository saleOrderLineRepository,
+      CartResetService cartResetService,
       SaleConfigService saleConfigService,
       CartLineAvailabilityService cartLineAvailabilityService) {
-    super(saleOrderGeneratorService, saleOrderLineGeneratorService, saleOrderLineRepository);
+    super(
+        saleOrderGeneratorService,
+        saleOrderLineGeneratorService,
+        saleOrderLineRepository,
+        cartResetService);
     this.saleConfigService = saleConfigService;
     this.cartLineAvailabilityService = cartLineAvailabilityService;
   }

@@ -6,28 +6,13 @@
   <form name="business-project-form" title="Project" model="com.axelor.apps.project.db.Project"
     extension="true" id="budget-business-project-form">
 
-    <extend target="//panel[@name='datePanel']">
+    <extend target="//field[@name='allowToGetPricesFromFrameworkContract']">
       <insert position="after">
-        <panel name="budgetPanel" title="Budget" colSpan="12" sidebar="true"
-          if="__config__.app.getApp('budget')?.getEnableProject()" canCollapse="true">
-          <field name="globalBudgetSet" widget="TagSelect" colSpan="12"
-            form-view="global-budget-form" grid-view="global-budget-grid"
-            domain="self.company = :company AND self.statusSelect = 2" canNew="false"
-            canEdit="false"/>
-        </panel>
+        <field name="globalBudgetSet" widget="TagSelect"
+          if="__config__.app.getApp('budget')?.getEnableProject()" form-view="global-budget-form"
+          grid-view="global-budget-grid" domain="self.company = :company AND self.statusSelect = 2"
+          canNew="false" canEdit="false"/>
       </insert>
-    </extend>
-
-    <extend target="//panel[@name='purchasesPanel']">
-      <insert position="before">
-        <panel name="budgetPanelTab" title="Global budgets"
-          if="__config__.app.getApp('budget')?.getEnableProject()" colSpan="12">
-          <panel-related field="globalBudgetSet" showTitle="false"
-            name="globalBudgetSet" readonly="true" form-view="global-budget-form"
-            grid-view="global-budget-grid" colSpan="12"/>
-        </panel>
-      </insert>
-
     </extend>
   </form>
 </object-views>

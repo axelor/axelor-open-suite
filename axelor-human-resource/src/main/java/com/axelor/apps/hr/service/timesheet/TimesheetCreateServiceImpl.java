@@ -123,7 +123,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
       return lines;
     }
 
-    Product product = userHrService.getTimesheetProduct(timesheet.getEmployee());
+    Product product = userHrService.getTimesheetProduct(timesheet.getEmployee(), null);
 
     if (product == null) {
       return lines;
@@ -133,10 +133,9 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
         projectRepository
             .all()
             .filter(
-                "self.membersUserSet.id = ?1 and "
-                    + "self.imputable = true "
+                "self.membersUserSet.id = ?1 "
                     + "and self.projectStatus.isCompleted = false "
-                    + "and self.isShowTimeSpent = true",
+                    + "and self.manageTimeSpent = true",
                 user.getId())
             .fetch();
 

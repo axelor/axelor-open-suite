@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -40,7 +39,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -115,17 +113,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     List<InvoiceTerm> invoiceTerms;
     if (CollectionUtils.isNotEmpty(invoiceTermToPayList)) {
       invoiceTerms = new ArrayList<>(invoiceTermToPayList);
-    } else if (invoicePayment.getMove() != null
-        && invoicePayment.getMove().getPaymentVoucher() != null
-        && CollectionUtils.isNotEmpty(
-            invoicePayment.getMove().getPaymentVoucher().getPayVoucherElementToPayList())) {
-      invoiceTerms =
-          invoicePayment.getMove().getPaymentVoucher().getPayVoucherElementToPayList().stream()
-              .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
-              .map(PayVoucherElementToPay::getInvoiceTerm)
-              .collect(Collectors.toList());
     } else {
-      invoiceTerms = invoiceTermFilterService.getUnpaidInvoiceTermsFiltered(invoice);
+      invoiceTerms = invoiceTermToolService.getPaymentVoucherInvoiceTerms(invoicePayment, invoice);
     }
 
     if (CollectionUtils.isNotEmpty(invoiceTerms)) {
@@ -146,13 +135,11 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       List<InvoiceTerm> invoiceTermsToPay,
       BigDecimal availableAmount,
       BigDecimal currencyAvailableAmount,
-      BigDecimal reconcileAmount)
-      throws AxelorException {
+      BigDecimal reconcileAmount) {
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     InvoiceTerm invoiceTermToPay;
     InvoiceTermPayment invoiceTermPayment;
     BigDecimal baseAvailableAmount = availableAmount;
-    BigDecimal availableAmountUnchanged = availableAmount;
     int invoiceTermCount = invoiceTermsToPay.size();
 
     if (invoicePayment != null) {
@@ -169,10 +156,6 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
       if (invoiceTermToPay.getPfpValidateStatusSelect()
           != InvoiceTermRepository.PFP_STATUS_LITIGATION) {
-        LocalDate date =
-            invoicePayment != null
-                ? invoicePayment.getPaymentDate()
-                : invoiceTermToPay.getDueDate();
         BigDecimal invoiceTermCompanyAmount = invoiceTermToPay.getCompanyAmountRemaining();
         BigDecimal invoiceTermAmount = invoiceTermToPay.getAmountRemaining();
         if (invoiceTermAmount.compareTo(currencyAvailableAmount) >= 0
@@ -181,8 +164,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
           invoiceTermPayment =
               createInvoiceTermPayment(
                   invoicePayment, invoiceTermToPay, currencyAvailableAmount, availableAmount);
-          availableAmount = availableAmount.subtract(availableAmount);
-          currencyAvailableAmount = currencyAvailableAmount.subtract(currencyAvailableAmount);
+          availableAmount = BigDecimal.ZERO;
+          currencyAvailableAmount = BigDecimal.ZERO;
         } else {
           invoiceTermPayment =
               createInvoiceTermPayment(
