@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductService {
 
@@ -240,9 +241,11 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     saleOrderLineMap.put("companyExTaxTotal", null);
     saleOrderLineMap.put("description", null);
     saleOrderLineMap.put("typeSelect", SaleOrderLineRepository.TYPE_NORMAL);
-    line.clearSelectedComplementaryProductList();
-    saleOrderLineMap.put(
-        "selectedComplementaryProductList", line.getSelectedComplementaryProductList());
+    if (CollectionUtils.isNotEmpty(line.getSelectedComplementaryProductList())) {
+      line.clearSelectedComplementaryProductList();
+      saleOrderLineMap.put(
+          "selectedComplementaryProductList", line.getSelectedComplementaryProductList());
+    }
     saleOrderLineMap.put("taxLineSet", Sets.newHashSet());
     saleOrderLineMap.put("taxEquiv", null);
 
