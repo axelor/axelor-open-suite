@@ -551,6 +551,25 @@
     </panel>
   </form>
 
+  <grid name="stock-move-line-for-mass-stock-move-grid" title="Stock move lines"
+    model="com.axelor.apps.stock.db.StockMoveLine" canEdit="false" canNew="false" canDelete="false"
+    x-selector="checkbox">
+    <toolbar>
+      <button onClick="action-mass-stock-move-method-fill-product-need,close"
+        name="selectedStockMoveLinesToAdd" title="Selected move lines to add"/>
+    </toolbar>
+    <hilite strong="true" color="default" if="lineTypeSelect != 0"/>
+    <field name="name" width="120"/>
+    <field name="product" width="200"/>
+    <field name="stockMove.partner"/>
+    <field name="stockMove.fromStockLocation"/>
+    <field name="stockMove.toStockLocation"/>
+    <field name="realQty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unit"/>
+    <field name="stockMove.statusSelect"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+  </grid>
+
   <action-method
     name="action-stock-move-line-method-display-available-tracking-number">
     <call class="com.axelor.apps.stock.web.StockMoveLineController"

@@ -288,6 +288,8 @@ public class InvoiceToolService {
     int functionalOrigin = 0;
     if (isPurchase(invoice)) {
       functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE;
+    } else if (isLatePaymentInterest(invoice)) {
+      functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_LATE_PAYMENT_INTEREST;
     } else {
       functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
     }
@@ -373,5 +375,9 @@ public class InvoiceToolService {
 
     // Update invoice
     Beans.get(InvoiceService.class).compute(copy);
+  }
+
+  protected static boolean isLatePaymentInterest(Invoice invoice) {
+    return invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_LATE_PAYMENT;
   }
 }

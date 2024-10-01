@@ -57,6 +57,7 @@ import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.Inject;
@@ -90,6 +91,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
       InvoiceLineOrderService invoiceLineOrderService,
       CurrencyService currencyService,
       CurrencyScaleService currencyScaleService,
+      OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
       PriceListService priceListService,
       PurchaseOrderLineService purchaseOrderLineService,
@@ -107,6 +109,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
         invoiceLineOrderService,
         currencyService,
         currencyScaleService,
+        orderInvoiceService,
         invoiceTaxService);
     this.priceListService = priceListService;
     this.purchaseOrderLineService = purchaseOrderLineService;

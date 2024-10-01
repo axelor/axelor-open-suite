@@ -48,6 +48,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
@@ -83,12 +84,13 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       InvoiceRepository invoiceRepo,
       InvoiceServiceSupplychainImpl invoiceService,
       StockMoveRepository stockMoveRepository,
-      InvoiceTermService invoiceTermService,
       SaleOrderWorkflowService saleOrderWorkflowService,
+      InvoiceTermService invoiceTermService,
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
       CurrencyScaleService currencyScaleService,
+      OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
       AppBusinessProjectService appBusinessProjectService,
       AppBudgetService appBudgetService,
@@ -105,12 +107,13 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         invoiceRepo,
         invoiceService,
         stockMoveRepository,
-        invoiceTermService,
         saleOrderWorkflowService,
+        invoiceTermService,
         commonInvoiceService,
         invoiceLineOrderService,
         saleInvoicingStateService,
         currencyScaleService,
+        orderInvoiceService,
         invoiceTaxService,
         appBusinessProjectService);
     this.appBudgetService = appBudgetService;
