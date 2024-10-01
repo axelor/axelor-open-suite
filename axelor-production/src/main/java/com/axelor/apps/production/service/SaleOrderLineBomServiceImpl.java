@@ -13,6 +13,7 @@ import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -148,8 +149,13 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
         subSaleOrderLine.getBillOfMaterial(),
         subSaleOrderLine.getQty(),
         subSaleOrderLine.getUnit(),
-        0,
-        subSaleOrderLine.getProduct().getStockManaged());
+        Optional.ofNullable(subSaleOrderLine.getBillOfMaterialLine())
+            .map(BillOfMaterialLine::getPriority)
+            .orElse(0),
+        subSaleOrderLine.getProduct().getStockManaged(),
+        Optional.ofNullable(subSaleOrderLine.getBillOfMaterialLine())
+            .map(BillOfMaterialLine::getWasteRate)
+            .orElse(BigDecimal.ZERO));
   }
 
   protected BillOfMaterial customizeBomOf(SaleOrderLine saleOrderLine, int depth)
