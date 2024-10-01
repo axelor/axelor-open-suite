@@ -31,7 +31,7 @@ import com.axelor.apps.sale.service.cart.CartResetService;
 import com.axelor.apps.sale.service.cart.CartSaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGeneratorService;
+import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGeneratorService;
 import com.axelor.apps.supplychain.service.cartline.CartLineAvailabilityService;
 import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -28,7 +28,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGeneratorService;
+import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGeneratorService;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
