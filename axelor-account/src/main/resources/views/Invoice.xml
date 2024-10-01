@@ -2850,8 +2850,8 @@
   </action-group>
 
   <action-group name="action-invoice-group-invoice-date-on-change">
-    <action name="action-invoice-group-payment-condition-onchange"/>
     <action name="action-invoice-method-compute-invoice-amounts"/>
+    <action name="action-invoice-group-payment-condition-onchange"/>
   </action-group>
 
   <action-method name="action-invoice-method-compute-invoice-amounts">
