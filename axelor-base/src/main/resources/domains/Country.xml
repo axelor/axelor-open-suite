@@ -24,6 +24,10 @@
     <many-to-one name="citizenship" title="Citizenship"
       ref="com.axelor.apps.base.db.Citizenship"/>
 
+    <finder-method name="findByAlpha3Code" using="alpha3Code"/>
+    <finder-method name="findByAlpha2Code" using="alpha2Code"/>
+    <finder-method name="findByNumericCode" using="numericCode"/>
+
   </entity>
 
 </domain-models>

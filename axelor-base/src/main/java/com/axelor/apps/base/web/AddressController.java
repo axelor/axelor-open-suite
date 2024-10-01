@@ -30,6 +30,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressAttrsService;
+import com.axelor.apps.base.service.address.AddressCreationService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -353,7 +354,7 @@ public class AddressController {
 
   public void autocompleteAddress(ActionRequest request, ActionResponse response) {
     Address address = request.getContext().asType(Address.class);
-    Beans.get(AddressService.class).autocompleteAddress(address);
+    Beans.get(AddressCreationService.class).autocompleteAddress(address);
     response.setValues(address);
   }
 
