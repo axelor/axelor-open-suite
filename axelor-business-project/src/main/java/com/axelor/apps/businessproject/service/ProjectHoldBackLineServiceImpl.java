@@ -244,7 +244,7 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
             InvoiceLine invoiceLine = this.createInvoiceLine();
             invoiceLine.setProductName(
                 String.format(
-                    I18n.get("%s %s% - %s of %s"),
+                    I18n.get("%s %s%% - %s of %s"),
                     holdBackInvoiceLine.getProjectHoldBackLine().getProjectHoldBack().getName(),
                     holdBackInvoiceLine.getProjectHoldBackLine().getPercentage(),
                     holdBackInvoiceLine.getInvoice().getInvoiceId(),
@@ -297,7 +297,7 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
               invoiceLine.setProductName(
                   String.format(
                       I18n.get("%s %s%% - %s of %s"),
-                      projectHoldBackATI.getName(),
+                      projectHoldBackATI.getProjectHoldBack().getName(),
                       projectHoldBackATI.getProjectHoldBack().getDefaultPercentage(),
                       projectHoldBackATI.getInvoice().getInvoiceId(),
                       projectHoldBackATI.getInvoice().getInvoiceDate()));

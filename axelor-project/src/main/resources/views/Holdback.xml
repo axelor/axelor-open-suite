@@ -33,7 +33,7 @@
           <label title="%" colSpan="3"/>
         </editor>
       </field>
-      <field name="holdBackTypeSelect" selection="project.hold.back.type.select"/>
+      <field name="holdBackTypeSelect"/>
       <field name="projectHoldBackProduct"/>
       <panel-related field="productsHeldBackSet" form-view="product-form" colSpan="12"
         grid-view="product-project-hold-back-grid" canNew="false"/>
