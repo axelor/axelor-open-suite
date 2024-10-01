@@ -671,6 +671,6 @@ public final class BaseExceptionMessage {
   public static final String NO_CITY_FOUND = /*$$(*/ "No city found" /*)*/;
   public static final String NO_ZIP_FOUND = /*$$(*/
       "No zip found in request body or in the found city" /*)*/;
-  public static final String NO_ADDRESS_FOUND_WITH_INFOS = /*$$(*/
+  public static final String NO_ADDRESS_FOUND_WITH_INFO = /*$$(*/
       "No address found with this country, zip and street name" /*)*/;
 }

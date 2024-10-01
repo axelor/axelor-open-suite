@@ -154,7 +154,7 @@ public class AddressPostRequest extends RequestPostStructure {
               () ->
                   new AxelorException(
                       TraceBackRepository.CATEGORY_INCONSISTENCY,
-                      I18n.get(BaseExceptionMessage.NO_ADDRESS_FOUND_WITH_INFOS)));
+                      I18n.get(BaseExceptionMessage.NO_ADDRESS_FOUND_WITH_INFO)));
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.NO_CITY_FOUND));
