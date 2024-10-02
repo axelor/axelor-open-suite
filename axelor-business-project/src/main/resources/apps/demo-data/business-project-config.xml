@@ -157,7 +157,19 @@
   </input>
 
   <input file="project_project.csv" type="com.axelor.apps.project.db.Project" separator=";"
-    search="self.importId = :importId" update="true"/>
+    search="self.importId = :importId" update="true">
+    <bind to="projectTaskStatusSet" column="projectTaskStatusSet"
+      search="self.importId in :projectTaskStatusSet"
+      eval="projectTaskStatusSet.split('\\|') as List"/>
+    <bind to="projectTaskPrioritySet" column="projectTaskPrioritySet"
+      search="self.importId in :projectTaskPrioritySet"
+      eval="projectTaskPrioritySet.split('\\|') as List"/>
+    <bind to="projectTaskCategorySet" column="projectTaskCategorySet"
+      search="self.importId in :projectTaskCategorySet"
+      eval="projectTaskCategorySet.split('\\|') as List"/>
+    <bind to="completedTaskStatus" column="completedTaskStatus_importId"
+      search="self.importId = :completedTaskStatus_importId"/>
+  </input>
 
   <input file="project_businessProjectConfig.csv" separator=";"
     type="com.axelor.apps.businessproject.db.BusinessProjectConfig"
