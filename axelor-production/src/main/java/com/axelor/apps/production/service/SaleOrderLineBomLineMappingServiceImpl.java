@@ -34,6 +34,7 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
       saleOrderLine.setProduct(billOfMaterialLine.getProduct());
       saleOrderLine.setQty(billOfMaterialLine.getQty());
       saleOrderLine.setBillOfMaterialLine(billOfMaterialLine);
+      saleOrderLine.setSequence(billOfMaterialLine.getPriority());
       // computing the line will generate sub lines.
       saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
 
@@ -49,6 +50,7 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
     return billOfMaterialLine.getQty().equals(saleOrderLine.getQty())
         && billOfMaterialLine.getProduct().equals(saleOrderLine.getProduct())
         && billOfMaterialLine.getUnit().equals(saleOrderLine.getUnit())
+        && billOfMaterialLine.getPriority().equals(saleOrderLine.getSequence())
         && Optional.ofNullable(saleOrderLine.getBillOfMaterial())
             .map(solBom -> solBom.equals(billOfMaterialLine.getBillOfMaterial()))
             .or(() -> Optional.of(billOfMaterialLine.getBillOfMaterial() == null))
