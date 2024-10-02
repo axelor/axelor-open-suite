@@ -75,7 +75,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromStockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="toAddressStr"/>
     <field name="estimatedDate"/>
     <field name="realDate"/>
@@ -115,7 +116,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="origin" width="120"/>
   </grid>
 
@@ -142,7 +144,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="statusSelect"/>
     <field name="origin" width="120"/>
     <field name="availableStatusSelect">
@@ -175,7 +178,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="toStockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="fromAddressStr"/>
     <field name="estimatedDate"/>
     <field name="realDate"/>
@@ -205,7 +209,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="supplierShipmentRef"/>
     <field name="origin" width="120"/>
   </grid>
@@ -476,13 +481,13 @@
           onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
           domain="self.company = :company" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="3"/>
-        <field name="partner" canEdit="false"
+        <field name="partner" canEdit="false" x-image-field="picture"
           domain="self.isContact = false AND :company member of self.companySet"
           readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange"
           grid-view="partner-grid" form-view="partner-form"/>
         <field name="invoicedPartner" canEdit="false" readonlyIf="statusSelect != 1"
           onSelect="action-stock-move-supplychain-method-set-invoiced-partner-domain"
-          grid-view="partner-grid" form-view="partner-form"/>
+          grid-view="partner-grid" form-view="partner-form" x-image-field="picture"/>
         <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form"/>
@@ -540,7 +545,7 @@
         <field name="company" readonlyIf="statusSelect != 1"
           onChange="action-stock-move-group-onchange-company" canEdit="false"
           grid-view="company-grid" form-view="company-form"/>
-        <field name="partner" canEdit="false"
+        <field name="partner" canEdit="false" x-image-field="picture"
           domain="self.isContact = false AND :company member of self.companySet"
           readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange"
           grid-view="partner-grid" form-view="partner-form"/>
