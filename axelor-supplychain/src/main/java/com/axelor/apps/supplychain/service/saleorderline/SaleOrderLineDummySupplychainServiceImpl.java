@@ -9,7 +9,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDummyServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDummyServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;

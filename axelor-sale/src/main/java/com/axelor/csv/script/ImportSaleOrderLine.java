@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 

@@ -16,15 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorderline;
+package com.axelor.apps.sale.service.saleorderline.creation;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
 
-public interface SaleOrderLineGeneratorService {
-  SaleOrderLine createSaleOrderLine(SaleOrder saleOrder, Product product, BigDecimal quantity)
+public interface SaleOrderLineCreateService {
+  SaleOrderLine createSaleOrderLine(
+      PackLine packLine,
+      SaleOrder saleOrder,
+      BigDecimal packQty,
+      BigDecimal conversionRate,
+      Integer sequence)
       throws AxelorException;
 }

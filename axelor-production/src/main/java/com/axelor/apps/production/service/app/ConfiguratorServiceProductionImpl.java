@@ -35,7 +35,7 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGeneratorService;
+import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGeneratorService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
