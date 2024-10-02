@@ -27,6 +27,7 @@ import com.axelor.apps.sale.db.repo.CartLineRepository;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public class CartLineCreateServiceImpl implements CartLineCreateService {
 
@@ -52,9 +53,14 @@ public class CartLineCreateServiceImpl implements CartLineCreateService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public CartLine createCartLine(Cart cart, Product product) throws AxelorException {
+  public CartLine createCartLine(Cart cart, Product product, BigDecimal qty)
+      throws AxelorException {
+    if (qty == null) {
+      qty = BigDecimal.ONE;
+    }
     CartLine cartLine = new CartLine();
     cartLine.setProduct(productRepository.find(product.getId()));
+    cartLine.setQty(qty);
     cartLine.setUnit(saleOrderLineProductService.getSaleUnit(product));
     cartLine.setPrice(
         cartLinePriceService.getSalePrice(product, cart.getCompany(), cart.getPartner()));
@@ -63,11 +69,21 @@ public class CartLineCreateServiceImpl implements CartLineCreateService {
   }
 
   @Override
+  public CartLine createCartLine(Cart cart, Product product) throws AxelorException {
+    return createCartLine(cart, product, null);
+  }
+
+  @Override
   @Transactional(rollbackOn = Exception.class)
-  public CartLine createCartLineWithVariant(Cart cart, Product product) throws AxelorException {
+  public CartLine createCartLineWithVariant(Cart cart, Product product, BigDecimal qty)
+      throws AxelorException {
+    if (qty == null) {
+      qty = BigDecimal.ONE;
+    }
     CartLine cartLine = new CartLine();
     cartLine.setProduct(product.getParentProduct());
     cartLine.setVariantProduct(product);
+    cartLine.setQty(qty);
     cartLineProductService.getProductInformation(cart, cartLine);
     cartLine.setCart(cart);
     return cartLineRepository.save(cartLine);
