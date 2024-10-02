@@ -261,6 +261,8 @@
       </panel>
       <panel-include view="incl-wiki-panel-form"/>
 
+      <panel-include view="incl-checklist-panel-form"/>
+
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
 

@@ -59,25 +59,31 @@ public class CartLineAvailabilityServiceImpl implements CartLineAvailabilityServ
 
   @Override
   public Map<String, Object> setAvailableStatus(Cart cart, CartLine cartLine) {
-    Product product = cartLine.getProduct();
-    if (product != null && product.getIsModel() && cartLine.getVariantProduct() != null) {
-      product = cartLine.getVariantProduct();
-    }
-    BigDecimal availableQty =
-        stockLocationLineFetchService.getAvailableQty(cart.getStockLocation(), product);
-    BigDecimal qty = cartLine.getQty();
+    Product product =
+        cartLine.getVariantProduct() != null ? cartLine.getVariantProduct() : cartLine.getProduct();
+    String availableStatus = null;
+    int availableStatusSelect = 0;
 
-    if (availableQty.compareTo(qty) >= 0) {
-      cartLine.setAvailableStatus(I18n.get("Available"));
-      cartLine.setAvailableStatusSelect(SaleOrderLineRepository.STATUS_AVAILABLE);
-    } else {
-      BigDecimal missingQty =
-          availableQty
-              .subtract(qty)
-              .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
-      cartLine.setAvailableStatus(I18n.get("Missing") + " (" + missingQty + ")");
-      cartLine.setAvailableStatusSelect(SaleOrderLineRepository.STATUS_MISSING);
+    if (product.getStockManaged()) {
+      BigDecimal availableQty =
+          stockLocationLineFetchService.getAvailableQty(cart.getStockLocation(), product);
+      BigDecimal qty = cartLine.getQty();
+
+      if (availableQty.compareTo(qty) >= 0) {
+        availableStatus = I18n.get("Available");
+        availableStatusSelect = SaleOrderLineRepository.STATUS_AVAILABLE;
+      } else {
+        BigDecimal missingQty =
+            availableQty
+                .subtract(qty)
+                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
+        availableStatus = I18n.get("Missing") + " (" + missingQty + ")";
+        availableStatusSelect = SaleOrderLineRepository.STATUS_MISSING;
+      }
     }
+    cartLine.setAvailableStatus(availableStatus);
+    cartLine.setAvailableStatusSelect(availableStatusSelect);
+
     Map<String, Object> cartLineMap = new HashMap<>();
     cartLineMap.put("availableStatus", cartLine.getAvailableStatus());
     cartLineMap.put("availableStatusSelect", cartLine.getAvailableStatusSelect());

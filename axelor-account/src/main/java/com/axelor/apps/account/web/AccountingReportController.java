@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -321,6 +322,10 @@ public class AccountingReportController {
     }
 
     response.setAttr(
-        "reportType", "domain", String.format("self.id IN (%s)", accountingReportTypeIds));
+        "reportType",
+        "domain",
+        String.format(
+            "self.id IN (%s)",
+            StringUtils.notEmpty(accountingReportTypeIds) ? accountingReportTypeIds : "0"));
   }
 }

@@ -47,6 +47,7 @@ import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.axelor.utils.helpers.StringHelper;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -144,13 +145,8 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     checkInconsistentQties(logisticalForm, warningMessageList);
 
     if (!warningMessageList.isEmpty()) {
-      String errorMessage =
-          String.format(
-              "<ul>%s</ul>",
-              warningMessageList.stream()
-                  .map(message -> String.format("<li>%s</li>", message))
-                  .collect(Collectors.joining("\n")));
-      throw new LogisticalFormWarning(logisticalForm, errorMessage);
+      throw new LogisticalFormWarning(
+          logisticalForm, StringHtmlListBuilder.formatMessage(warningMessageList));
     }
   }
 

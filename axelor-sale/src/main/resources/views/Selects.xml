@@ -105,4 +105,10 @@
     <option value="2">Block order creation</option>
   </selection>
 
+  <selection name="sale.app.sale.line.display.type.select">
+    <option value="1">Standard</option>
+    <option value="2">Editable</option>
+    <option value="3">Editable tree</option>
+  </selection>
+
 </object-views>

@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.service.cartline;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
@@ -42,9 +43,13 @@ public class CartLineProductServiceImpl implements CartLineProductService {
   @Override
   public Map<String, Object> getProductInformation(Cart cart, CartLine cartLine)
       throws AxelorException {
+    Product product =
+        cartLine.getVariantProduct() != null ? cartLine.getVariantProduct() : cartLine.getProduct();
+
     Map<String, Object> cartLineMap = new HashMap<>();
-    cartLine.setUnit(saleOrderLineProductService.getSaleUnit(cartLine.getProduct()));
-    cartLine.setPrice(cartLinePriceService.getSalePrice(cart, cartLine));
+    cartLine.setUnit(saleOrderLineProductService.getSaleUnit(product));
+    cartLine.setPrice(
+        cartLinePriceService.getSalePrice(product, cart.getCompany(), cart.getPartner()));
     cartLineMap.put("unit", cartLine.getUnit());
     cartLineMap.put("price", cartLine.getPrice());
     return cartLineMap;
