@@ -63,5 +63,5 @@ public interface MoveLineTaxService {
 
   boolean isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect);
 
-  BigDecimal getTotalTaxRateInPercentage(Set<TaxLine> taxLineSet);
+  BigDecimal getAdjustedTotalTaxRateInPercentage(Set<TaxLine> taxLineSet);
 }

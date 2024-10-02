@@ -454,16 +454,25 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   }
 
   @Override
-  public BigDecimal getTotalTaxRateInPercentage(Set<TaxLine> taxLineSet) {
-    return taxLineSet.stream()
-        .filter(taxLine -> taxLine.getTax() != null) // Ensure getTax() is not null
-        .filter(
-            taxLine ->
-                !taxLine
-                    .getTax()
-                    .getIsNonDeductibleTax()) // Check if getIsNonDeductibleTax() is false
-        .map(TaxLine::getValue) // Map to the value of TaxLine
-        .reduce(BigDecimal::add) // Sum all values
-        .orElse(BigDecimal.ZERO);
+  public BigDecimal getAdjustedTotalTaxRateInPercentage(Set<TaxLine> taxLineSet) {
+    BigDecimal sumOfAllDeductibleRateValue = BigDecimal.ZERO;
+    BigDecimal sumOfAllNonDeductibleRateValue = BigDecimal.ZERO;
+    for (TaxLine taxLine : taxLineSet) {
+      Boolean isNonDeductibleTax = taxLine.getTax().getIsNonDeductibleTax();
+      if (isNonDeductibleTax) {
+        BigDecimal nonDeductibleRateValue = taxLine.getValue();
+        sumOfAllNonDeductibleRateValue = sumOfAllNonDeductibleRateValue.add(nonDeductibleRateValue);
+      } else {
+        // Deductible rate
+        BigDecimal deductibleRateValue = taxLine.getValue();
+        sumOfAllDeductibleRateValue = sumOfAllDeductibleRateValue.add(deductibleRateValue);
+      }
+    }
+    return sumOfAllDeductibleRateValue.multiply(
+        BigDecimal.ONE.subtract(
+            sumOfAllNonDeductibleRateValue.divide(
+                BigDecimal.valueOf(100),
+                AppBaseService.COMPUTATION_SCALING,
+                RoundingMode.HALF_UP)));
   }
 }

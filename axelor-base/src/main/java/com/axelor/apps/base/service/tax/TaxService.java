@@ -281,7 +281,7 @@ public class TaxService {
         if (sumOfNonDeTaxes.compareTo(BigDecimal.valueOf(100)) > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              BaseExceptionMessage.SUM_OF_NON_DEDUCTIBLE_TAXES_EXCEEDS_ONE_HUNDRED);
+              I18n.get(BaseExceptionMessage.SUM_OF_NON_DEDUCTIBLE_TAXES_EXCEEDS_ONE_HUNDRED));
         }
       }
     }
