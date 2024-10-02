@@ -45,16 +45,29 @@ public class DataSharingReferentialLineServiceImpl implements DataSharingReferen
   }
 
   @Override
+  public Query<? extends Model> getQuery(
+      DataSharingReferential dataSharingReferential, Class<? extends Model> modelClass) {
+    return this.getQuery(dataSharingReferential.getDataSharingReferentialLineList(), modelClass);
+  }
+
+  @Override
   public Query<? extends Model> getQuery(Class<? extends Model> modelClass) {
-    List<DataSharingReferentialLine> dataSharingReferentialLineList =
-        getDataSharingReferentialLineList(modelClass);
+    return this.getQuery(this.getDataSharingReferentialLineList(modelClass), modelClass);
+  }
+
+  protected Query<? extends Model> getQuery(
+      List<DataSharingReferentialLine> dataSharingReferentialLineList,
+      Class<? extends Model> modelClass) {
     if (CollectionUtils.isEmpty(dataSharingReferentialLineList)) {
       return null;
     }
+
     List<String> conditionList = getConditionList(dataSharingReferentialLineList);
+
     if (CollectionUtils.isEmpty(conditionList)) {
       return null;
     }
+
     String condition = String.join(" OR ", conditionList);
     return JPA.all(modelClass).filter(condition);
   }
