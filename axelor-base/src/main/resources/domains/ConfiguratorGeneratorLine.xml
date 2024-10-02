@@ -11,6 +11,7 @@
     <string name="booleanUseConfiguratorLine" title="Use configurator line formula"
       large="true" help="Formula that should return a boolean."/>
     <string name="valueFormula" title="Value formula" large="true"/>
+    <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField"/>
     <many-to-one name="configuratorGenerator"
       ref="com.axelor.apps.base.db.ConfiguratorGenerator"/>
   </entity>

@@ -5,6 +5,7 @@
 
   <grid name="configurator-generator-line-grid" title="Configurator generator line"
     model="com.axelor.apps.base.db.ConfiguratorGeneratorLine">
+    <field name="metaField"/>
     <field name="booleanUseConfiguratorLine"/>
     <field name="valueFormula"/>
     <field name="configuratorGenerator"/>
@@ -13,11 +14,14 @@
   <form name="configurator-generator-line-form" title="Configurator generator line"
     model="com.axelor.apps.base.db.ConfiguratorGeneratorLine">
     <panel name="mainPanel">
+      <field name="metaField"/>
       <field name="configuratorGenerator"/>
     </panel>
     <panel name="formulaPanel">
-      <field name="booleanUseConfiguratorLine"  colSpan="12" widget="CodeEditor" x-code-syntax="groovy"/>
-      <field name="valueFormula"  colSpan="12" widget="CodeEditor" x-code-syntax="groovy"/>
+      <field name="booleanUseConfiguratorLine" colSpan="12" widget="CodeEditor"
+        x-code-syntax="groovy"/>
+      <field name="metaField"/>
+      <field name="valueFormula" colSpan="12" widget="CodeEditor" x-code-syntax="groovy"/>
     </panel>
 
   </form>

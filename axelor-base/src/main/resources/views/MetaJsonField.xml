@@ -7,7 +7,7 @@
 
   <grid name="base-json-field-grid" title="Custom fields"
     model="com.axelor.meta.db.MetaJsonField" edit-icon="true"
-        onNew="action-configurator-form-config-set-json-field-default">
+    onNew="action-configurator-form-config-set-json-field-default">
     <field name="name"/>
     <field name="title"/>
     <field name="type"/>
@@ -105,10 +105,11 @@
 
 
   <action-attrs name="action-configurator-form-config-set-json-field-default">
-    <attribute name="value" for="model" expr="eval:'com.axelor.apps.base.db.ConfiguratorFormConfig'"
-               if="__parent__._model == 'com.axelor.apps.base.db.ConfiguratorFormConfig'"/>
+    <attribute name="value" for="model"
+      expr="eval:'com.axelor.apps.base.db.ConfiguratorFormConfig'"
+      if="__parent__._model == 'com.axelor.apps.base.db.ConfiguratorFormConfig'"/>
     <attribute name="value" for="modelField" expr="eval:'attributes'"
-               if="__parent__._model == 'com.axelor.apps.base.db.ConfiguratorFormConfig'"/>
+      if="__parent__._model == 'com.axelor.apps.base.db.ConfiguratorFormConfig'"/>
   </action-attrs>
 
 </object-views>
