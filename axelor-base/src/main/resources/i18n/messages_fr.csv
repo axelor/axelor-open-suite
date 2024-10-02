@@ -31,7 +31,7 @@
 "(LE)","(LE)",,
 "(LES)","(LES)",,
 "(LOS)","(LOS)",,
-"* %s anomaly(ies)",,,
+"* %s anomaly(ies)","* %s anomalie(s)",,
 "- Not null :","- Non vide :",,
 "- Succeeded :","- Réussi :",,
 ". Using those keys will result in a Invalid private key error",". L'utilisation de ces clés entraînera un message d'erreur 'Clé privée non valide'.",,
