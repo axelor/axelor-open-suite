@@ -800,5 +800,9 @@
   <selection name="connector.mapper.select">
     <option value="other" order="10000">Other</option>
   </selection>
+  <selection name="base.meta.json.field.category.select">
+    <option value="attribute">Champ de saisie</option>
+    <option value="indicator">Indicator</option>
+  </selection>
 
 </object-views>
