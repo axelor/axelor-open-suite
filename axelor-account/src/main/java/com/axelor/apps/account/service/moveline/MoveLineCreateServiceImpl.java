@@ -58,7 +58,6 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
@@ -66,6 +65,7 @@ import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -767,12 +767,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     Boolean isNonDeductibleTax = taxLine.getTax().getIsNonDeductibleTax();
     BigDecimal originalTaxRateValue = taxLine.getValue();
     BigDecimal adjustedTaxValue =
-        Beans.get(TaxService.class)
-            .computeAdjustedTaxValue(
-                isNonDeductibleTax,
-                originalTaxRateValue,
-                sumOfAllDeductibleRateValue,
-                sumOfAllNonDeductibleRateValue);
+        taxService.computeAdjustedTaxValue(
+            isNonDeductibleTax,
+            originalTaxRateValue,
+            sumOfAllDeductibleRateValue,
+            sumOfAllNonDeductibleRateValue);
 
     if (percentMoveTemplate) {
       debit = sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_PAYABLE);
@@ -781,8 +780,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     int scale = currencyScaleService.getCompanyScale(move);
-    BigDecimal newMoveLineDebit = debit.multiply(adjustedTaxValue);
-    BigDecimal newMoveLineCredit = credit.multiply(adjustedTaxValue);
+    BigDecimal newMoveLineDebit =
+        debit.multiply(adjustedTaxValue).setScale(scale, RoundingMode.HALF_UP);
+    BigDecimal newMoveLineCredit =
+        credit.multiply(adjustedTaxValue).setScale(scale, RoundingMode.HALF_UP);
 
     this.setTaxLineAmount(newMoveLineDebit, newMoveLineCredit, newOrUpdatedMoveLine);
 

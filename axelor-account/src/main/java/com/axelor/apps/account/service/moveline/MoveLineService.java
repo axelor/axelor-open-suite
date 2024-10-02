@@ -68,6 +68,4 @@ public interface MoveLineService {
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists);
 
   void computeCutOffProrataAmount(AccountingBatch accountingBatch) throws AxelorException;
-
-  String computeMoveLineTaxLineSetDomain(int functionalOriginSelect, String dateString);
 }

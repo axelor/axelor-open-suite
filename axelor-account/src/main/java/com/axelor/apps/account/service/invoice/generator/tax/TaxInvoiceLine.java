@@ -64,6 +64,7 @@ public class TaxInvoiceLine extends TaxGenerator {
   protected TaxAccountToolService taxAccountToolService;
   protected InvoiceJournalService invoiceJournalService;
   protected InvoiceLineTaxToolService invoiceLineTaxToolService;
+  protected TaxService taxService;
 
   public TaxInvoiceLine(Invoice invoice, List<InvoiceLine> invoiceLines) {
     super(invoice, invoiceLines);
@@ -73,6 +74,7 @@ public class TaxInvoiceLine extends TaxGenerator {
     this.taxAccountToolService = Beans.get(TaxAccountToolService.class);
     this.invoiceJournalService = Beans.get(InvoiceJournalService.class);
     this.invoiceLineTaxToolService = Beans.get(InvoiceLineTaxToolService.class);
+    this.taxService = Beans.get(TaxService.class);
   }
 
   /**
@@ -308,12 +310,11 @@ public class TaxInvoiceLine extends TaxGenerator {
     Boolean isNonDeductibleTax = invoiceLineTax.getTaxLine().getTax().getIsNonDeductibleTax();
     BigDecimal originalTaxRateValue = invoiceLineTax.getTaxLine().getValue();
     BigDecimal adjustedTaxValue =
-        Beans.get(TaxService.class)
-            .computeAdjustedTaxValue(
-                isNonDeductibleTax,
-                originalTaxRateValue,
-                sumOfAllDeductibleRateValue,
-                sumOfAllNonDeductibleRateValue);
+        taxService.computeAdjustedTaxValue(
+            isNonDeductibleTax,
+            originalTaxRateValue,
+            sumOfAllDeductibleRateValue,
+            sumOfAllNonDeductibleRateValue);
     // Dans la devise de la facture
     BigDecimal exTaxBase =
         (invoiceLineTax.getReverseCharged())

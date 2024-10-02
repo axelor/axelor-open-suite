@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.InvoiceValidationService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -418,6 +419,9 @@ public abstract class InvoiceGenerator {
    */
   public void computeInvoice(Invoice invoice) throws AxelorException {
     CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
+    InvoiceValidationService invoiceValidationService = Beans.get(InvoiceValidationService.class);
+    invoiceValidationService.checkNotOnlyNonDeductibleTaxes(invoice);
+    invoiceValidationService.checkSumOfNonDeductibleTaxes(invoice);
 
     // In the invoice currency
     invoice.setExTaxTotal(BigDecimal.ZERO);

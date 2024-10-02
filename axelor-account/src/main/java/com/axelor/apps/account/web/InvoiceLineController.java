@@ -632,15 +632,8 @@ public class InvoiceLineController {
   }
 
   public void computeTaxLineSetDomainOnSelect(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-    Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
-    Object operationTypeSelectObj = _parent.get("operationTypeSelect");
-    int operationTypeSelect;
-    if (operationTypeSelectObj != null) {
-      operationTypeSelect = (Integer) operationTypeSelectObj;
-    } else {
-      operationTypeSelect = -1;
-    }
+    int operationTypeSelect =
+        request.getContext().getParent().asType(Invoice.class).getOperationTypeSelect();
     String domainString =
         Beans.get(InvoiceLineService.class).computeInvoiceLineTaxLineSetDomain(operationTypeSelect);
     response.setAttr("taxLineSet", "domain", domainString);

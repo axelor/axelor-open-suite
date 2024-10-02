@@ -225,20 +225,9 @@ public class TaxService {
     if (taxes == null || taxes.isEmpty()) {
       return true;
     }
-    int countDeductibleTaxes = 0;
-    int countNonDeductibleTaxes = 0;
-    for (Tax tax : taxes) {
-      Boolean isNonDeductibleTax = tax.getIsNonDeductibleTax();
-      if (isNonDeductibleTax) {
-        countNonDeductibleTaxes++;
-      } else {
-        countDeductibleTaxes++;
-      }
-    }
-    if (countDeductibleTaxes == 0 && countNonDeductibleTaxes > 0) {
-      return false;
-    }
-    return true;
+    // Check if there is at least one deductible tax. If exists at least one deductible tax, return
+    // true.
+    return taxes.stream().anyMatch(tax -> !tax.getIsNonDeductibleTax());
   }
 
   public BigDecimal computeAdjustedTaxValue(
