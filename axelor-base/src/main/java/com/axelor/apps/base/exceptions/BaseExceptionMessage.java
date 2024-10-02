@@ -616,8 +616,7 @@ public final class BaseExceptionMessage {
   public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
       "Error while accessing certificate information." /*)*/;
 
-  public static final String RESEARCH_RESULT_NO_VIEW_CONFIGURED = /*$$(*/
-      "No view configured for model %s." /*)*/;
+  public static final String VIEW_NOT_FOUND = /*$$(*/ "No view configured for model %s." /*)*/;
 
   public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
       "The file could not be generated." /*)*/;
@@ -665,11 +664,20 @@ public final class BaseExceptionMessage {
       "This product comes in multiple quantities, so please specify a quantity that is a multiple of at least one from the list %s." /*)*/;
 
   public static final String QUANTITY_NOT_MULTIPLE = /*$$(*/
-      "This product comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
+      "The product %s comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
 
   public static final String TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR = /*$$(*/
       "Only one non-deductible tax is configured. A non deductible tax should always be paired with at least one other deductible tax." /*)*/;
 
   public static final String SUM_OF_NON_DEDUCTIBLE_TAXES_EXCEEDS_ONE_HUNDRED = /*$$(*/
       "The sum of non-deductible taxes should not exceed 100%." /*)*/;
+
+  public static final String NO_COUNTRY_FOUND = /*$$(*/ "No country found for: %s." /*)*/;
+  public static final String CITY_AND_ZIP_BOTH_EMPTY = /*$$(*/
+      "The city and postcode cannot be empty at the same time." /*)*/;
+  public static final String NO_CITY_FOUND = /*$$(*/ "No city found" /*)*/;
+  public static final String NO_ZIP_FOUND = /*$$(*/
+      "No zip found in request body or in the found city" /*)*/;
+  public static final String NO_ADDRESS_FOUND_WITH_INFO = /*$$(*/
+      "No address found with this country, zip and street name" /*)*/;
 }

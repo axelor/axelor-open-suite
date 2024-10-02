@@ -31,6 +31,7 @@ import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskLinkTypeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectTaskAttrsService;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TimerProjectTaskService;
@@ -41,6 +42,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -129,6 +131,17 @@ public class ProjectTaskController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void deleteProjectTasks(ActionRequest request, ActionResponse response) {
+
+    List<Integer> projectTasksIds = (List<Integer>) request.getContext().get("_ids");
+
+    if (!ObjectUtils.isEmpty(projectTasksIds)) {
+      Beans.get(ProjectTaskService.class).deleteProjectTasks(projectTasksIds);
+    }
+
+    response.setReload(true);
   }
 
   public void fillSubtask(ActionRequest request, ActionResponse response) {
@@ -262,5 +275,13 @@ public class ProjectTaskController {
           "status", Beans.get(ProjectTaskService.class).getStatus(project, projectTask));
       manageStatus(request, response);
     }
+  }
+
+  @ErrorException
+  public void setTagDomain(ActionRequest request, ActionResponse response) throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    response.setAttr(
+        "tagSet", "domain", Beans.get(ProjectTaskAttrsService.class).getTagDomain(projectTask));
   }
 }

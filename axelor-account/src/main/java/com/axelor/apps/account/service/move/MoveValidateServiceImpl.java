@@ -927,11 +927,11 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
     Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
 
-    BigDecimal adjustedTotalTaxRateInPercentage =
-        moveLineTaxService.getAdjustedTotalTaxRateInPercentage(taxLineSet);
+    BigDecimal totalTaxRateInPercentage =
+        moveLineTaxService.getTotalTaxRateInPercentage(taxLineSet);
 
     return lineTotal
-        .multiply(adjustedTotalTaxRateInPercentage)
+        .multiply(totalTaxRateInPercentage)
         .divide(
             BigDecimal.valueOf(100),
             currencyScaleService.getCompanyScale(moveLine),

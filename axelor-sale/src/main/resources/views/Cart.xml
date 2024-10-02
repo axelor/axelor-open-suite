@@ -15,13 +15,17 @@
       <button name="emptyCartBtn" title="Empty cart"
         onClick="save,action-cart-method-empty-cart"/>
       <button name="createSaleOrderBtn" title="Create the sale order"
-        onClick="save,action-method-cart-create-sale-order"/>
+        onClick="action-method-cart-create-sale-order" hidden="true"
+        showIf="id &amp;&amp; cartLineList &amp;&amp; cartLineList.length > 0"/>
     </toolbar>
 
     <panel name="mainPanel">
       <field name="user" form-view="user-form" grid-view="user-grid" readonly="true"/>
-      <field name="company" form-view="company-form" grid-view="company-grid"/>
-      <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+      <field name="company" form-view="company-form" grid-view="company-grid"
+        onChange="action-cart-record-reset-fields"
+        readonlyIf="cartLineList &amp;&amp; cartLineList.length > 0"/>
+      <field name="partner" form-view="partner-form" grid-view="partner-grid" canNew="true"
+        readonlyIf="!company" onSelect="action-method-cart-set-partner-domain"/>
       <panel-related field="cartLineList" form-view="cart-line-form"
         grid-view="cart-line-grid" colSpan="12"/>
     </panel>
@@ -38,5 +42,15 @@
   <action-method name="action-method-cart-create-sale-order">
     <call class="com.axelor.apps.sale.web.CartController" method="createSaleOrder"/>
   </action-method>
+
+  <action-method name="action-method-cart-set-partner-domain">
+    <call class="com.axelor.apps.sale.web.CartController" method="getCartPartnerDomain"/>
+  </action-method>
+  <action-record name="action-cart-record-reset-fields"
+    model="com.axelor.apps.sale.db.Cart">
+    <field name="partner" expr="eval: null" if="!company"/>
+    <field name="stockLocation" expr="eval: null"
+      if="!company &amp;&amp; __config__.app.isApp('supplychain')"/>
+  </action-record>
 
 </object-views>

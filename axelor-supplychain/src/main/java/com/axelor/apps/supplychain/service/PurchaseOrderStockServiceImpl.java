@@ -213,8 +213,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             StockMoveRepository.TYPE_INCOMING);
 
     if (appBaseService.getAppBase().getEnableTradingNamesManagement()
-        && company.getTradingNameSet() != null
-        && !company.getTradingNameSet().isEmpty()) {
+        && !CollectionUtils.isEmpty(company.getTradingNameList())) {
       if (purchaseOrder.getTradingName() != null) {
         endLocation = purchaseOrder.getTradingName().getQualityControlDefaultStockLocation();
       } else {

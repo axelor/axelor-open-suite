@@ -28,7 +28,7 @@
       ref="com.axelor.apps.project.db.ResourceBooking" title="Resource booking" mappedBy="project"/>
 
     <one-to-many name="taskCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField"
-      title="Task fields" orphanRemoval="true"/>
+      title="Task fields" mappedBy="project"/>
 
     <string name="code" title="Code" unique="true"/>
     <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
@@ -44,10 +44,6 @@
 
     <decimal name="sequence" title="Sequence"/>
     <integer name="orderByState"/>
-
-    <boolean name="imputable" title="Imputable to HR timesheets" default="true"
-      massUpdate="true"
-      help="When this field is activated, it enables to choose the project when filling timesheet lines of the HR timesheet app."/>
 
     <many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.Project"
       title="Finish tasks to start"/>
@@ -94,7 +90,7 @@
       help="Activates a Planification tab on the project-task-form allowing to record planned times on tasks, in order to compare with actual spent time."/>
     <boolean name="isShowFrequency" title="Task recurrence"
       help="Activate a panel tab, within a project-task-form related to the project, allowing to replicate a task following a date frequency defined by the user."/>
-    <boolean name="isShowTimeSpent" title="Time Spent?"
+    <boolean name="manageTimeSpent" title="Time Spent?" default="true"
       help="Allow to allocate Time spent from the project-task-form. A readonly logtimes paneltab will also appear on the related project-form. Note: if you use the HR timesheets, these log times will allocate HR Timesheet for the concerned colleague."/>
     <boolean name="isShowSection" title="Section?" default="true"
       help="Allow to activate an additional tasks classification, customizable according the the user needs. Section can be created in the Configuration sub-menu of the Project menu."/>
@@ -125,6 +121,11 @@
     <boolean name="enableStatusProgressByCategory"
       title="Enable status progress by category."
       help="This option is used to activate the automatic allocation of progress to project tasks via project task category. If this option is enabled, the progress field will be available in the category view and the category will be updated using this data (or the data entered in the status if this is empty)."/>
+
+    <string name="wikiDescription" multiline="true" large="true"/>
+
+    <one-to-many name="projectCheckListItemList"
+      ref="com.axelor.apps.project.db.ProjectCheckListItem" title="Check list" mappedBy="project"/>
 
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>

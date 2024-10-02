@@ -100,7 +100,7 @@
           if="__config__.app.isApp('cash-management')"/>
         <field name="supplierPaymentDelay" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')"/>
-        <field name="tradingNameSet" canNew="true" form-view="trading-name-form"
+        <field name="tradingNameList" canNew="true" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="12"
           if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
         <field name="tradingNamePrintingSettingsList" canNew="true"
@@ -188,7 +188,7 @@
 
   <search-filters name="company-filters" model="com.axelor.apps.base.db.Company"
     title="Company filters">
-    <field name="tradingNameSet" hidden="true"
+    <field name="tradingNameList" hidden="true"
       if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="tradingNamePrintingSettingsList" hidden="true"
       if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>

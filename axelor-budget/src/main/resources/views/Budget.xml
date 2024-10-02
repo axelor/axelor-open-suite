@@ -27,17 +27,14 @@
   <tree name="budget-tree" title="Budget Levels">
     <column name="name" type="string"/>
     <column name="code" type="string"/>
-    <column name="totalAmountExpected"
-      x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="totalAmountCommitted"
-      x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="totalFirmGap" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="realizedWithNoPo" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="realizedWithPo" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="simulatedAmount" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="availableAmountWithSimulated"
-      x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="globalBudget.company.currency.numberOfDecimals" hidden="true"/>
+    <column name="totalAmountExpected" type="decimal" x-scale="$currencyNumberOfDecimals"/>
+    <column name="totalAmountCommitted" type="decimal" x-scale="$currencyNumberOfDecimals"/>
+    <column name="totalFirmGap" type="decimal" x-scale="$currencyNumberOfDecimals"/>
+    <column name="realizedWithNoPo" type="decimal" x-scale="$currencyNumberOfDecimals"/>
+    <column name="realizedWithPo" type="decimal" x-scale="$currencyNumberOfDecimals"/>
+    <column name="simulatedAmount" type="decimal" x-scale="$currencyNumberOfDecimals"/>
+    <column name="availableAmountWithSimulated" type="decimal"
+      x-scale="$currencyNumberOfDecimals"/>
 
     <node model="com.axelor.apps.budget.db.BudgetLevel"
       domain="self.parentBudgetLevel is null AND self.globalBudget.id = :_globalId "

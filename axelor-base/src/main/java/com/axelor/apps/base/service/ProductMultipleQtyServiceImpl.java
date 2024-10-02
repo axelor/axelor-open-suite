@@ -131,6 +131,9 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
   @Override
   public void checkMultipleQty(List<ProductMultipleQty> productMultipleQtyList, BigDecimal qty)
       throws AxelorException {
+    if (CollectionUtils.isEmpty(productMultipleQtyList)) {
+      return;
+    }
     String quantityList =
         productMultipleQtyList.stream()
             .map(
@@ -140,7 +143,7 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
                         .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP))
             .collect(Collectors.toList())
             .toString();
-    if (CollectionUtils.isNotEmpty(productMultipleQtyList) && qty == null) {
+    if (qty == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           String.format(I18n.get(BaseExceptionMessage.NO_QUANTITY_PROVIDED), quantityList));
@@ -148,7 +151,10 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
     if (!isMultipleQty(qty, productMultipleQtyList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          String.format(I18n.get(BaseExceptionMessage.QUANTITY_NOT_MULTIPLE), quantityList));
+          String.format(
+              I18n.get(BaseExceptionMessage.QUANTITY_NOT_MULTIPLE),
+              productMultipleQtyList.get(0).getSaleProduct().getFullName(),
+              quantityList));
     }
   }
 }

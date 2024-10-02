@@ -47,28 +47,27 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.apps.sale.service.loyalty.LoyaltyAccountPointsManagementService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderConfirmService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderDummyService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderFinalizeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderGroupService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderViewService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderContextHelper;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyService;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderGroupService;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
@@ -126,10 +125,6 @@ public class SaleOrderController {
     Map<String, Map<String, Object>> attrsMap =
         Beans.get(SaleOrderViewService.class).getOnLoadAttrs(saleOrder);
     response.setAttrs(attrsMap);
-
-    Map<String, Object> saleOrderMap = new HashMap<>();
-    saleOrderMap.putAll(Beans.get(SaleOrderDummyService.class).getOnLoadDummies(saleOrder));
-    response.setValues(saleOrderMap);
   }
 
   public void compute(ActionRequest request, ActionResponse response) {
@@ -329,6 +324,8 @@ public class SaleOrderController {
       String message =
           Beans.get(SaleOrderConfirmService.class)
               .confirmSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
+
+      response.setReload(true);
 
       if (StringUtils.notEmpty(message)) {
         response.setNotify(message);
@@ -838,20 +835,5 @@ public class SaleOrderController {
     saleOrderMap.putAll(Beans.get(SaleOrderOnChangeService.class).companyOnChange(saleOrder));
     response.setValues(saleOrderMap);
     response.setAttrs(Beans.get(SaleOrderViewService.class).getCompanyAttrs(saleOrder));
-  }
-
-  public void updateLoyaltyAccount(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Partner clientPartner = saleOrder.getClientPartner();
-    if (clientPartner == null) {
-      return;
-    }
-
-    Beans.get(LoyaltyAccountPointsManagementService.class)
-        .incrementLoyaltyPointsFromAmount(saleOrder);
-  }
-
-  public void reloadMethod(ActionRequest request, ActionResponse response) {
-    response.setReload(true);
   }
 }

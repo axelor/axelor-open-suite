@@ -244,6 +244,17 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
+  public void deleteProjectTasks(List<Integer> projectTasksIds) {
+    if (ObjectUtils.isEmpty(projectTasksIds)) {
+      return;
+    }
+
+    for (Integer id : projectTasksIds) {
+      deleteProjectTask(projectTaskRepo.find(Long.valueOf(id)));
+    }
+  }
+
+  @Override
   public String getTaskLink(String value) {
     if (StringUtils.isEmpty(value)) {
       return value;
@@ -275,7 +286,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     projectTask.setProjectTaskCategory(parentTask.getProjectTaskCategory());
     projectTask.setProjectTaskSection(parentTask.getProjectTaskSection());
     projectTask.setPriority(parentTask.getPriority());
-    projectTask.setProjectTaskTagSet(parentTask.getProjectTaskTagSet());
+    projectTask.setTagSet(parentTask.getTagSet());
     projectTask.setAssignedTo(parentTask.getAssignedTo());
   }
 

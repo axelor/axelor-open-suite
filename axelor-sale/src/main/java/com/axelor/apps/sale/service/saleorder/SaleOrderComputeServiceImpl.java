@@ -25,8 +25,9 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCreateTaxLineService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -34,6 +35,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,25 +46,35 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
   protected SaleOrderLineCreateTaxLineService saleOrderLineCreateTaxLineService;
   protected SaleOrderLineComputeService saleOrderLineComputeService;
   protected SaleOrderLinePackService saleOrderLinePackService;
+  protected SubSaleOrderLineComputeService subSaleOrderLineComputeService;
 
   @Inject
   public SaleOrderComputeServiceImpl(
       SaleOrderLineCreateTaxLineService saleOrderLineCreateTaxLineService,
       SaleOrderLineComputeService saleOrderLineComputeService,
-      SaleOrderLinePackService saleOrderLinePackService) {
+      SaleOrderLinePackService saleOrderLinePackService,
+      SubSaleOrderLineComputeService subSaleOrderLineComputeService) {
     this.saleOrderLineCreateTaxLineService = saleOrderLineCreateTaxLineService;
     this.saleOrderLineComputeService = saleOrderLineComputeService;
     this.saleOrderLinePackService = saleOrderLinePackService;
+    this.subSaleOrderLineComputeService = subSaleOrderLineComputeService;
   }
 
   @Override
   public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
 
-    if (saleOrder.getSaleOrderLineList() != null) {
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        saleOrderLine.setCompanyExTaxTotal(
-            saleOrderLineComputeService.getAmountInCompanyCurrency(
-                saleOrderLine.getExTaxTotal(), saleOrder));
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return saleOrder;
+    }
+
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+        saleOrderLine.setPrice(
+            subSaleOrderLineComputeService.computeSumSubLineList(subSaleOrderLineList, saleOrder));
+        saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
       }
     }
 
@@ -151,10 +163,10 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     saleOrder.setInTaxTotal(saleOrder.getExTaxTotal().add(saleOrder.getTaxTotal()));
     saleOrder.setAdvanceTotal(computeTotalAdvancePayment(saleOrder));
     logger.debug(
-        "Invoice's total: W.T.T. = {},  W.T. = {}, Tax = {}, A.T.I. = {}",
-        new Object[] {
-          saleOrder.getExTaxTotal(), saleOrder.getTaxTotal(), saleOrder.getInTaxTotal()
-        });
+        "Sale order amounts: W.T. = {}, Tax = {}, A.T.I. = {}",
+        saleOrder.getExTaxTotal(),
+        saleOrder.getTaxTotal(),
+        saleOrder.getInTaxTotal());
   }
 
   protected BigDecimal computeTotalAdvancePayment(SaleOrder saleOrder) {
