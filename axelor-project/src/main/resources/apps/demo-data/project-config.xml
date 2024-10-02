@@ -3,6 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.2.xsd">
 
+  <input file="project_task_category.csv"
+    type="com.axelor.apps.project.db.ProjectTaskCategory" separator=";"
+    search="self.importId = :importId"
+    call="com.axelor.apps.csv.script.ImportProjectTaskCategory:importProjectTaskCategory">
+    <bind to="projectTaskStatusSet" column="projectTaskStatusSet"
+      search="self.importId in :projectTaskStatusSet"
+      eval="projectTaskStatusSet.split('\\|') as List"/>
+  </input>
+
   <input file="project_project.csv" type="com.axelor.apps.project.db.Project" separator=";"
     search="self.importId = :importId">
     <bind to="fromDate" column="fromDate"
@@ -13,6 +22,9 @@
     <bind to="projectTaskPrioritySet" column="projectTaskPrioritySet"
       search="self.importId in :projectTaskPrioritySet"
       eval="projectTaskPrioritySet.split('\\|') as List"/>
+    <bind to="projectTaskCategorySet" column="projectTaskCategorySet"
+      search="self.importId in :projectTaskCategorySet"
+      eval="projectTaskCategorySet.split('\\|') as List"/>
     <bind to="completedTaskStatus" column="completedTaskStatus_importId"
       search="self.importId = :completedTaskStatus_importId"/>
   </input>
