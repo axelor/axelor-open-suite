@@ -3,11 +3,20 @@ package com.axelor.apps.sale.db.repo;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ComplementaryProductSelected;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.db.JPA;
+import com.google.inject.Inject;
 import java.util.Map;
 
 public class ComplementaryProductSelectedSaleRepository
     extends ComplementaryProductSelectedRepository {
+  AppSaleService appSaleService;
+
+  @Inject
+  public ComplementaryProductSelectedSaleRepository(AppSaleService appSaleService) {
+    this.appSaleService = appSaleService;
+  }
+
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     try {
@@ -28,7 +37,9 @@ public class ComplementaryProductSelectedSaleRepository
             Boolean isConfirmed =
                 saleOrderLine.getSaleOrder().getStatusSelect()
                     == SaleOrderRepository.STATUS_ORDER_CONFIRMED;
-            json.put(saleOrderStatusSelectIsConfirmed, isConfirmed);
+            json.put(
+                saleOrderStatusSelectIsConfirmed,
+                isConfirmed && !appSaleService.getAppSale().getAllowPendingOrderModification());
           }
         }
       }
