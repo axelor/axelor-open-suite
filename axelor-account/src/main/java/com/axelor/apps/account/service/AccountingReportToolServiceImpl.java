@@ -71,9 +71,14 @@ public class AccountingReportToolServiceImpl implements AccountingReportToolServ
     if (isCustom) {
       accountingReportTypeStream =
           accountingReportTypeStream.filter(
-              it ->
-                  CollectionUtils.isEmpty(it.getCompanySet())
-                      || it.getCompanySet().equals(accountingReport.getCompanySet()));
+              it -> {
+                if (CollectionUtils.isNotEmpty(it.getCompanySet())) {
+                  return it.getCompanySet().equals(accountingReport.getCompanySet());
+                } else if (it.getCompany() != null) {
+                  return accountingReport.getCompanySet().contains(it.getCompany());
+                }
+                return true;
+              });
     }
 
     return accountingReportTypeStream

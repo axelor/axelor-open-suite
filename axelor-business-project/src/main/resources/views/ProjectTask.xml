@@ -121,7 +121,7 @@
             <field name="product" colSpan="3" canEdit="false"
               onChange="action-business-project-project-task-group-product-onchange"
               onSelect="action-project-task-attrs-set-product-domain" form-view="product-form"
-              grid-view="product-grid" readonlyIf="saleOrderLine"/>
+              grid-view="product-grid"/>
             <field name="quantity" colSpan="3"
               onChange="action-project-task-group-qty-onchange" readonlyIf="saleOrderLine"/>
             <field name="unitPrice" colSpan="3"
@@ -383,7 +383,8 @@
 
   <action-group name="action-project-task-group-assigned-to-on-change">
     <action name="action-project-task-attrs-hide-time-spent-button"/>
-    <action name="action-project-task-group-set-product-and-update"/>
+    <action name="action-project-task-group-set-product-and-update"
+      if="invoicingType == 1 &amp;&amp; !frameworkCustomerContract &amp;&amp; !frameworkSupplierContract"/>
   </action-group>
 
   <action-method name="action-project-task-method-get-employee-product">
