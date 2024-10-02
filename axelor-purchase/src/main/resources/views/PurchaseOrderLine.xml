@@ -145,7 +145,7 @@
 	          ]]></viewer>
         </field>
         <spacer name="receiptStateSpacer" if="__config__.app.isApp('supplychain')"/>
-        <field name="product" canEdit="false"
+        <field name="product" canEdit="false" x-image-field="picture"
           onChange="action-group-purchase-purchase-orderline-product-onchange"
           onSelect="action-purchase-order-line-attrs-product-domain" form-view="product-form"
           grid-view="product-purchase-grid"/>

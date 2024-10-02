@@ -37,7 +37,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement" width="200"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"
+      x-image-field="picture"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
@@ -85,7 +86,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement" width="200"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"
+      x-image-field="picture"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="operationTypeSelect"/>
     <field name="invoiceDate" width="120"/>
@@ -135,7 +137,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement" width="200"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"
+      x-image-field="picture"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
@@ -189,7 +192,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement" width="200"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"
+      x-image-field="picture"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
       width="160"/>
@@ -242,7 +246,8 @@
     <field name="company" form-view="company-form" grid-view="company-grid" width="200"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="supplierInvoiceNb"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
     <field name="originDate"/>
@@ -305,7 +310,8 @@
     <field name="supplierInvoiceNb"/>
     <field name="operationTypeSelect"/>
     <field name="operationSubTypeSelect"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="originDate"/>
     <field name="invoiceDate"/>
     <field name="dueDate"/>
@@ -522,17 +528,18 @@
 
     <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
       <field name="partner" colSpan="4" canEdit="false" readonlyIf="statusSelect != 1"
-        onChange="action-invoice-group-partner-onchange"
+        onChange="action-invoice-group-partner-onchange" x-image-field="picture"
         onSelect="action-invoice-method-set-partner-domain" form-view="partner-form"
         grid-view="partner-grid"/>
       <field name="contactPartner" colSpan="4" canEdit="false"
-        onSelect="action-set-partner-domain"
+        onSelect="action-set-partner-domain" x-image-field="picture"
         domain="self.isContact = true AND :company member of self.companySet"
         readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <field name="thirdPartyPayerPartner" colSpan="4" domain="self.isThirdPartyPayer IS TRUE"
         showIf="[1,3].includes(operationTypeSelect)" form-view="partner-form"
-        grid-view="partner-grid" onChange="action-invoice-method-update-subrogation-partner"
+        x-image-field="picture" grid-view="partner-grid"
+        onChange="action-invoice-method-update-subrogation-partner"
         if="__config__.app.getApp('base')?.activatePartnerRelations"/>
       <field name="paymentMode" colSpan="4" canEdit="false" widget="SuggestBox"
         onSelect="action-set-payment-mode-domain"
@@ -1199,12 +1206,12 @@
 
     <panel name="invoicingInfoPanel" title="Invoicing information">
       <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"
-        readonlyIf="statusSelect != 1"
+        readonlyIf="statusSelect != 1" x-image-field="picture"
         onChange="action-group-account-invoice-partner-onchange-client"
         onSelect="action-invoice-method-set-partner-domain" canView="false"/>
       <field name="contactPartner" canEdit="false" onSelect="action-set-partner-domain"
         domain="self.isContact = true AND :company member of self.companySet"
-        form-view="partner-contact-form" grid-view="partner-contact-grid"
+        form-view="partner-contact-form" grid-view="partner-contact-grid" x-image-field="picture"
         readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" canView="false"/>
       <field name="$partnerBankDetailsListWarning" showTitle="false" hidden="true"
         readonly="true" colSpan="12">
@@ -1389,7 +1396,8 @@
   <grid name="invoice-direct-debit-grid" title="Debited invoices"
     model="com.axelor.apps.account.db.Invoice">
     <field name="invoiceId"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="operationTypeSelect"/>
     <field name="operationSubTypeSelect"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
@@ -1450,7 +1458,7 @@
       <field name="paymentModeToCheck" hidden="true" colOffset="3"/>
       <field name="paymentConditionToCheck" hidden="true" colOffset="3"/>
       <field name="$contactPartner" title="Contact partner" type="many-to-one"
-        target="com.axelor.apps.base.db.Partner"
+        target="com.axelor.apps.base.db.Partner" x-image-field="picture"
         domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
         colOffset="3" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>

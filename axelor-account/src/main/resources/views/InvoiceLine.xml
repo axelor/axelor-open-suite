@@ -79,7 +79,7 @@
           </viewer>
         </field>
         <panel name="customerInvoicePanel" colSpan="12">
-          <field name="product" canEdit="false"
+          <field name="product" canEdit="false" x-image-field="picture"
             onChange="action-group-account-invoice-line-product-onchange"
             onSelect="action-invoice-line-attrs-set-product-domain-onselect"
             form-view="product-form" grid-view="product-grid"/>
@@ -91,7 +91,7 @@
         </panel>
 
         <panel name="supplierInvoicePanel" colSpan="12">
-          <field name="product" canEdit="false"
+          <field name="product" canEdit="false" x-image-field="picture"
             onChange="action-group-account-invoice-line-product-onchange"
             onSelect="action-invoice-line-attrs-set-product-domain-onselect"
             form-view="product-form" grid-view="product-purchase-grid"/>
@@ -257,7 +257,7 @@
       <panel name="informationsPanel" title="Information">
         <field name="product" onChange="action-group-account-invoice-line-product-onchange"
           form-view="product-form" grid-view="product-grid" canView="false"
-          domain="self.dtype = 'Product'"/>
+          domain="self.dtype = 'Product'" x-image-field="picture"/>
         <field name="productName" requiredIf="!typeSelect == 1"/>
         <field name="qty" required="true"
           onChange="action-group-account-invoice-line-qty-onchange"/>
