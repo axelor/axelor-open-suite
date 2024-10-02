@@ -2,20 +2,13 @@ package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ComplementaryProductSelected;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
 import java.util.Map;
 
 public class ComplementaryProductSelectedSaleRepository
     extends ComplementaryProductSelectedRepository {
-  AppSaleService appSaleService;
-
-  @Inject
-  public ComplementaryProductSelectedSaleRepository(AppSaleService appSaleService) {
-    this.appSaleService = appSaleService;
-  }
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
@@ -34,12 +27,11 @@ public class ComplementaryProductSelectedSaleRepository
           if (SaleOrderLine.class.equals(model)) {
             SaleOrderLine saleOrderLine =
                 JPA.find(SaleOrderLine.class, Long.parseLong(_parent.get("id").toString()));
+            SaleOrder saleOrder = saleOrderLine.getSaleOrder();
             Boolean isConfirmed =
-                saleOrderLine.getSaleOrder().getStatusSelect()
-                    == SaleOrderRepository.STATUS_ORDER_CONFIRMED;
+                saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED;
             json.put(
-                saleOrderStatusSelectIsConfirmed,
-                isConfirmed && !appSaleService.getAppSale().getAllowPendingOrderModification());
+                saleOrderStatusSelectIsConfirmed, isConfirmed && !saleOrder.getOrderBeingEdited());
           }
         }
       }
