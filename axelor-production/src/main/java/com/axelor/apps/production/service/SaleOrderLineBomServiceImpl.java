@@ -9,6 +9,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -53,7 +54,8 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
 
     var saleOrderLinesList = new ArrayList<SaleOrderLine>();
 
-    if (!appSaleService.getAppSale().getActivateMultiLevelSaleOrderLines()) {
+    if (appSaleService.getAppSale().getListDisplayTypeSelect()
+        != AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
       return saleOrderLinesList;
     }
 

@@ -75,8 +75,7 @@
     <decimal name="budgetedTime" title="Estimated time"/>
     <many-to-one name="metaFile" title="Signature" ref="com.axelor.meta.db.MetaFile"/>
 
-    <many-to-many name="projectTaskTagSet"
-      ref="com.axelor.apps.project.db.ProjectTaskTag" title="Tags"/>
+    <many-to-many name="tagSet" ref="com.axelor.apps.base.db.Tag" title="Tags"/>
     <many-to-one name="projectTaskSection"
       ref="com.axelor.apps.project.db.ProjectTaskSection" title="Section"/>
 

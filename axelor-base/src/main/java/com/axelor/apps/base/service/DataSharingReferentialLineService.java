@@ -25,6 +25,9 @@ import com.axelor.db.Query;
 
 public interface DataSharingReferentialLineService {
 
+  Query<? extends Model> getQuery(
+      DataSharingReferential dataSharingReferential, Class<? extends Model> modelClass);
+
   Query<? extends Model> getQuery(Class<? extends Model> modelClass);
 
   DataSharingReferentialLine createDataSharingReferentialLine(

@@ -9,11 +9,12 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 
 public class SaleOrderOnLineChangeProductionServiceImpl
@@ -56,7 +57,8 @@ public class SaleOrderOnLineChangeProductionServiceImpl
     super.onLineChange(saleOrder);
 
     if (appProductionService.isApp("production")
-        && appSaleService.getAppSale().getActivateMultiLevelSaleOrderLines()) {
+        && appSaleService.getAppSale().getListDisplayTypeSelect()
+            == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
       saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder);
     }
   }
