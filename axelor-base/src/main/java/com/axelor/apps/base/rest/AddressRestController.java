@@ -15,6 +15,7 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.Optional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -56,6 +57,8 @@ public class AddressRestController {
               requestBody.getStreetName());
 
       if (address == null) {
+      Optional<Address> address = requestBody.fetchAddress();
+      if (address.isEmpty()) {
         return ResponseConstructor.build(
             Response.Status.CREATED,
             I18n.get("Address created"),
@@ -67,7 +70,7 @@ public class AddressRestController {
                     requestBody.getStreetName())));
       }
       return ResponseConstructor.build(
-          Response.Status.OK, I18n.get("Address found"), new AddressResponse(address));
+          Response.Status.OK, I18n.get("Address found"), new AddressResponse(address.get()));
     } catch (AxelorException e) {
       return ResponseConstructor.build(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
     }
