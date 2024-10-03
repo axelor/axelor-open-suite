@@ -109,6 +109,23 @@ public interface StockMoveLineService {
       StockLocation toStockLocation)
       throws AxelorException;
 
+  StockMoveLine createStockMoveLine(
+      Product product,
+      String productName,
+      String description,
+      BigDecimal quantity,
+      BigDecimal unitPrice,
+      BigDecimal companyUnitPriceUntaxed,
+      Unit unit,
+      StockMove stockMove,
+      int type,
+      boolean taxed,
+      BigDecimal taxRate,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      TrackingNumber trackingNumber)
+      throws AxelorException;
+
   public StockMoveLine assignOrGenerateTrackingNumber(
       StockMoveLine stockMoveLine,
       StockMove stockMove,
