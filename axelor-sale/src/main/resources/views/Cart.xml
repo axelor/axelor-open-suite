@@ -22,7 +22,7 @@
     <panel name="mainPanel">
       <field name="user" form-view="user-form" grid-view="user-grid" readonly="true"/>
       <field name="company" form-view="company-form" grid-view="company-grid"
-        onChange="action-cart-record-reset-fields"
+        onChange="action-cart-record-reset-fields" onSelect="action-cart-attrs-set-company-domain"
         readonlyIf="cartLineList &amp;&amp; cartLineList.length > 0"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid" canNew="true"
         readonlyIf="!company" onSelect="action-method-cart-set-partner-domain"/>
@@ -46,6 +46,13 @@
   <action-method name="action-method-cart-set-partner-domain">
     <call class="com.axelor.apps.sale.web.CartController" method="getCartPartnerDomain"/>
   </action-method>
+
+  <action-attrs name="action-cart-attrs-set-company-domain">
+    <attribute name="domain" for="company"
+      expr="eval: 'self.id IN (' + __user__?.companySet?.collect{it.id}.join(',') + ')'"
+      if="__user__?.companySet &amp;&amp; !__user__?.companySet?.isEmpty()"/>
+  </action-attrs>
+
   <action-record name="action-cart-record-reset-fields"
     model="com.axelor.apps.sale.db.Cart">
     <field name="partner" expr="eval: null" if="!company"/>
