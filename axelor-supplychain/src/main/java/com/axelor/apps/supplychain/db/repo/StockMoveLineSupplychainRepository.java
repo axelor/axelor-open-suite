@@ -21,6 +21,8 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.interfaces.Currenciable;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -53,6 +55,16 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
             "$notInvoicedAmount",
             Beans.get(StockMoveLineServiceSupplychain.class)
                 .getAmountNotInvoiced(stockMoveLine, isPurchase, ati, recoveredTax));
+
+        Currenciable currenciable =
+            isPurchase && stockMoveLine.getPurchaseOrderLine() != null
+                ? stockMoveLine.getPurchaseOrderLine()
+                : (!isPurchase && stockMoveLine.getSaleOrderLine() != null)
+                    ? stockMoveLine.getSaleOrderLine()
+                    : null;
+        json.put(
+            "$currencyNumberOfDecimals",
+            Beans.get(CurrencyScaleService.class).getScale(currenciable));
       }
 
       if (stockMove != null && stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {

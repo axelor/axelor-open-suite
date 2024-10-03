@@ -1,0 +1,3 @@
+---
+title: "StockMoveLine : Fix scale for company and currency amounts"
+module: axelor-stock

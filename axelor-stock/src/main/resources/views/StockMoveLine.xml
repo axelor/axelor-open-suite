@@ -51,7 +51,8 @@
       onChange="action-stock-move-line-record-price-onchange"
       readonlyIf="lineTypeSelect == 1 || $get('stockMove.pickingIsEdited') || saleOrderLine || purchaseOrderLine"/>
     <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
-    <field name="companyUnitPriceUntaxed" hidden="true"/>
+    <field name="companyUnitPriceUntaxed" hidden="true"
+      x-scale="$companyCurrencyNumberOfDecimals"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" width="70px"
       readonlyIf="lineTypeSelect == 1 || (($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3)"/>
     <field name="netMass" onChange="action-stock-move-line-group-net-mass-onchange"
@@ -91,6 +92,7 @@
       hideIf=" $get('stockMove.typeSelect') != 3 || $get('stockMove.statusSelect') &gt; 2 "/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
     <field name="$trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr" hidden="true"/>
+    <field name="$companyCurrencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="stock-move-line-form" title="Stock move line"
@@ -182,8 +184,10 @@
       <field name="unitPriceUntaxed" onChange="action-stock-move-line-record-price-onchange"
         readonly="true"/>
       <field name="unitPriceTaxed" hidden="true"/>
-      <field name="companyUnitPriceUntaxed" hidden="true"/>
-      <field name="companyPurchasePrice" hidden="true"/>
+      <field name="companyUnitPriceUntaxed" hidden="true"
+        x-scale="$companyCurrencyNumberOfDecimals"/>
+      <field name="companyPurchasePrice" hidden="true"
+        x-scale="$companyCurrencyNumberOfDecimals"/>
       <field name="reservedQty"
         showIf="product &amp;&amp; product.productTypeSelect != 'service'" readonly="true"
         if-module="axelor-supplychain"
@@ -233,6 +237,7 @@
       <field name="regime"/>
       <field name="natureOfTransaction"/>
       <field name="countryOfOrigin" hidden="true"/>
+      <field name="$companyCurrencyNumberOfDecimals" hidden="true"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -449,7 +454,8 @@
       <field name="unitPriceUntaxed" onChange="action-stock-move-line-record-price-onchange"
         readonly="true"/>
       <field name="unitPriceTaxed" hidden="true"/>
-      <field name="companyUnitPriceUntaxed" hidden="true"/>
+      <field name="companyUnitPriceUntaxed" hidden="true"
+        x-scale="$companyCurrencyNumberOfDecimals"/>
       <field name="unit" canEdit="false" colSpan="3" form-view="unit-form"
         grid-view="unit-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
       <field name="netMass" x-scale="5"
@@ -470,6 +476,7 @@
       <field name="regime"/>
       <field name="natureOfTransaction"/>
       <field name="countryOfOrigin"/>
+      <field name="$companyCurrencyNumberOfDecimals" hidden="true"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>

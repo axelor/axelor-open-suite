@@ -19,6 +19,7 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
@@ -63,7 +64,8 @@ public class StockMoveLineProductionServiceImpl extends StockMoveLineServiceSupp
       SupplyChainConfigService supplychainConfigService,
       StockLocationLineHistoryService stockLocationLineHistoryService,
       InvoiceLineRepository invoiceLineRepository,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      CurrencyScaleService currencyScaleService) {
     super(
         trackingNumberService,
         appBaseService,
@@ -82,7 +84,8 @@ public class StockMoveLineProductionServiceImpl extends StockMoveLineServiceSupp
         supplychainConfigService,
         stockLocationLineHistoryService,
         invoiceLineRepository,
-        appSupplychainService);
+        appSupplychainService,
+        currencyScaleService);
   }
 
   @Override
