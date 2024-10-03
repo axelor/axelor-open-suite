@@ -9,11 +9,6 @@ public interface BankOrderEncryptionService {
 
   void checkInputPassword(String password) throws AxelorException;
 
-  MetaFile getDecryptedFile(MetaFile bankOrderGeneratedFile, String password)
-      throws AxelorException;
-
-  MetaFile getDecryptedFile(MetaFile bankOrderGeneratedFile) throws AxelorException;
-
   byte[] getDecryptedBytes(File bankOrderFile) throws AxelorException;
 
   boolean isFileEncrypted(MetaFile bankOrderGeneratedFile) throws AxelorException;

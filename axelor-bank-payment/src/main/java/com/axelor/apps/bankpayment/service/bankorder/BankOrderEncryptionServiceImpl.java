@@ -12,7 +12,6 @@ import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionService {
@@ -56,53 +55,6 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_ENCRYPTION_INCORRECT_PASSWORD));
-    }
-  }
-
-  /**
-   * Decrypt bank order file according to axelor-config.properties settings with password checking
-   *
-   * @param bankOrderGeneratedFile
-   * @param password
-   * @return
-   * @throws IOException
-   */
-  @Override
-  public MetaFile getDecryptedFile(MetaFile bankOrderGeneratedFile, String password)
-      throws AxelorException {
-    checkInputPassword(password);
-    return getDecryptedFile(bankOrderGeneratedFile);
-  }
-
-  /**
-   * Decrypt bank order file according to axelor-config.properties settings
-   *
-   * @param bankOrderGeneratedFile
-   * @return
-   * @throws IOException
-   */
-  @Override
-  public MetaFile getDecryptedFile(MetaFile bankOrderGeneratedFile) throws AxelorException {
-
-    File bankOrderFile = MetaFiles.getPath(bankOrderGeneratedFile).toFile();
-    String fileName = bankOrderFile.getName();
-    String prefix =
-        fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
-    String suffix = fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.')) : "";
-
-    try {
-
-      byte[] decrypt = getDecryptedBytes(bankOrderFile);
-
-      Path tempFilePath = MetaFiles.createTempFile(prefix, suffix);
-      Files.write(tempFilePath, decrypt, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
-
-      return metaFiles.upload(tempFilePath.toFile());
-    } catch (IOException e) {
-      throw new AxelorException(
-          e,
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_DECRYPT_ERROR));
     }
   }
 
