@@ -7,10 +7,14 @@ import java.io.File;
 public interface BankOrderEncryptionService {
   File encryptFile(File file) throws AxelorException;
 
+  void checkInputPassword(String password) throws AxelorException;
+
   MetaFile getDecryptedFile(MetaFile bankOrderGeneratedFile, String password)
       throws AxelorException;
 
   MetaFile getDecryptedFile(MetaFile bankOrderGeneratedFile) throws AxelorException;
+
+  byte[] getDecryptedBytes(File bankOrderFile) throws AxelorException;
 
   boolean isFileEncrypted(MetaFile bankOrderGeneratedFile) throws AxelorException;
 

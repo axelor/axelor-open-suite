@@ -49,6 +49,16 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
     }
   }
 
+  @Override
+  public void checkInputPassword(String password) throws AxelorException {
+    String encryptPassword = checkAndGetEncryptionPassword();
+    if (!password.equals(encryptPassword)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_ENCRYPTION_INCORRECT_PASSWORD));
+    }
+  }
+
   /**
    * Decrypt bank order file according to axelor-config.properties settings with password checking
    *
@@ -60,13 +70,7 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
   @Override
   public MetaFile getDecryptedFile(MetaFile bankOrderGeneratedFile, String password)
       throws AxelorException {
-    String encryptPassword = checkAndGetEncryptionPassword();
-    if (!password.equals(encryptPassword)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_ENCRYPTION_INCORRECT_PASSWORD));
-    }
-
+    checkInputPassword(password);
     return getDecryptedFile(bankOrderGeneratedFile);
   }
 
@@ -86,16 +90,27 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
         fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
     String suffix = fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.')) : "";
 
-    BytesEncryptor encryptor = getEncryptor();
-
     try {
 
-      byte[] decrypt = encryptor.decrypt(Files.readAllBytes(bankOrderFile.toPath()));
+      byte[] decrypt = getDecryptedBytes(bankOrderFile);
 
       Path tempFilePath = MetaFiles.createTempFile(prefix, suffix);
       Files.write(tempFilePath, decrypt, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
 
       return metaFiles.upload(tempFilePath.toFile());
+    } catch (IOException e) {
+      throw new AxelorException(
+          e,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_DECRYPT_ERROR));
+    }
+  }
+
+  @Override
+  public byte[] getDecryptedBytes(File bankOrderFile) throws AxelorException {
+    BytesEncryptor encryptor = getEncryptor();
+    try {
+      return encryptor.decrypt(Files.readAllBytes(bankOrderFile.toPath()));
     } catch (IOException e) {
       throw new AxelorException(
           e,
