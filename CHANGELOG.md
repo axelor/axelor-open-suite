@@ -1,3 +1,38 @@
+## [8.0.16] (2024-10-03)
+
+### Fixes
+#### Base
+
+* Batch: added french translation for '* %s anomaly(ies)'
+
+#### Account
+
+* Partner blocking: fixed 'blocking partner with late payment' feature which resulted in some processes being stuck.
+
+#### Bank Payment
+
+* Bank order/ Bank statement: fixed broken reports.
+
+#### Helpdesk
+
+* Ticket: fixed the french translation  of 'Assign to me'.
+
+#### Human Resource
+
+* Leave request: fixed the leave reason domain when employee is null.
+
+#### Project
+
+* Project: fixed issue related to contact partner when updating client partner.
+
+#### Stock
+
+* Stock move line: the advanced filter saved is not displayed unless we refresh the whole page.
+
+#### Supply Chain
+
+* Sale order invoicing: removed partially invoiced flag when invoice is fully refunded.
+
 ## [8.0.15] (2024-09-19)
 
 ### Fixes
@@ -1062,6 +1097,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.16]: https://github.com/axelor/axelor-open-suite/compare/v8.0.15...v8.0.16
 [8.0.15]: https://github.com/axelor/axelor-open-suite/compare/v8.0.14...v8.0.15
 [8.0.14]: https://github.com/axelor/axelor-open-suite/compare/v8.0.13...v8.0.14
 [8.0.13]: https://github.com/axelor/axelor-open-suite/compare/v8.0.12...v8.0.13
