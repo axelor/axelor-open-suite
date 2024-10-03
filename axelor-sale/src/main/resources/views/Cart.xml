@@ -25,7 +25,10 @@
         onChange="action-cart-record-reset-fields"
         readonlyIf="cartLineList &amp;&amp; cartLineList.length > 0"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid" canNew="true"
-        readonlyIf="!company" onSelect="action-method-cart-set-partner-domain"/>
+        readonlyIf="!company" onSelect="action-method-cart-set-partner-domain"
+        onChange="action-cart-method-update-price"/>
+      <field name="partner.currency" form-view="currency-form" grid-view="currency-grid"
+        hidden="true" showIf="partner"/>
       <panel-related field="cartLineList" form-view="cart-line-form"
         grid-view="cart-line-grid" colSpan="12"/>
     </panel>
@@ -52,5 +55,9 @@
     <field name="stockLocation" expr="eval: null"
       if="!company &amp;&amp; __config__.app.isApp('supplychain')"/>
   </action-record>
+
+  <action-method name="action-cart-method-update-price">
+    <call class="com.axelor.apps.sale.web.CartController" method="updatePrice"/>
+  </action-method>
 
 </object-views>
