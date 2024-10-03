@@ -21,8 +21,13 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.project.db.Project;
+import java.util.List;
 
 public interface ProjectGenerateInvoiceService {
 
   Invoice generateInvoice(InvoicingProject invoicingProject) throws AxelorException;
+
+  Invoice generateInvoiceForReleasedHoldBacks(Project project, List<Integer> projectHoldBacksIds)
+      throws AxelorException;
 }

@@ -8,6 +8,7 @@
     <field name="projectHoldBack"
       onChange="action-project-hold-back-line-record-set-percentage"/>
     <field name="percentage"/>
+    <field name="projectHoldBack.holdBackTypeSelect"/>
     <field name="projectHoldBack.defaultPercentage" hidden="true"/>
   </grid>
 
