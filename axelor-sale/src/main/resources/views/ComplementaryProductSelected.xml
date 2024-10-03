@@ -10,15 +10,17 @@
     <field name="optional"/>
     <field name="complementaryProduct" hidden="true"/>
     <field name="isSelected"/>
+    <field name="saleOrderLine.saleOrder" hidden="true"/>
+    <field name="saleOrderLine.saleOrder.statusSelect" hidden="true"/>
+    <field name="saleOrderLine.saleOrder.orderBeingEdited" hidden="true"/>
     <button name="selectBtn"
-      readonlyIf="isSelected || !optional || $saleOrderStatusSelectIsConfirmed" icon="fa-check"
-      help="Select this optional complementary product"
+      readonlyIf="isSelected || !optional ||($get('saleOrderLine.saleOrder.statusSelect')==3 &amp;&amp; !$get('saleOrderLine.saleOrder.orderBeingEdited'))"
+      icon="fa-check" help="Select this optional complementary product"
       onClick="action-compl-product-selected-record-select"/>
     <button name="unSelectBtn"
-      readonlyIf="!isSelected || !optional || $saleOrderStatusSelectIsConfirmed" icon="fa-minus"
-      help="Unselect this optional complementary product"
+      readonlyIf="!isSelected || !optional ||($get('saleOrderLine.saleOrder.statusSelect')==3 &amp;&amp; !$get('saleOrderLine.saleOrder.orderBeingEdited'))"
+      icon="fa-minus" help="Unselect this optional complementary product"
       onClick="action-compl-product-selected-record-unselect"/>
-    <field name="$saleOrderStatusSelectIsConfirmed" hidden="true"/>
   </grid>
 
   <form name="complementary-product-selected-form" title="Complementary product"
