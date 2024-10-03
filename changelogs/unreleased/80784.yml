@@ -1,3 +1,3 @@
 ---
-title: "Abc analysis: Added sequence in demo data."
+title: "ABC analysis: fixed an issue where printing an unsaved analysis was not setting correctly the sequence,and added sequence in demo data."
 module: axelor-base
