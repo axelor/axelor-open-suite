@@ -108,8 +108,7 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
 
     try {
-      invoice = Beans.get(InvoiceService.class).compute(invoice);
-      response.setValues(invoice);
+      response.setValues(Beans.get(InvoiceService.class).compute(invoice));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -1365,12 +1364,10 @@ public class InvoiceController {
   }
 
   public void computeInvoiceAmounts(ActionRequest request, ActionResponse response) {
-
     Invoice invoice = request.getContext().asType(Invoice.class);
 
     try {
-      InvoiceToolService.computeInvoiceAmounts(invoice);
-      response.setValues(invoice);
+      response.setValues(InvoiceToolService.computeInvoiceAmounts(invoice));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
