@@ -1,3 +1,22 @@
+## [7.1.31] (2024-10-03)
+
+### Fixes
+#### Base
+
+* Batch: added french translation for '* %s anomaly(ies)'
+
+#### Account
+
+* Partner blocking: fixed 'blocking partner with late payment' feature which resulted in some processes being stuck.
+
+#### Helpdesk
+
+* Ticket: fixed the french translation  of 'Assign to me'.
+
+#### Project
+
+* Project: fixed issue related to contact partner when updating client partner.
+
 ## [7.1.30] (2024-09-19)
 
 ### Fixes
@@ -1380,6 +1399,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.31]: https://github.com/axelor/axelor-open-suite/compare/v7.1.30...v7.1.31
 [7.1.30]: https://github.com/axelor/axelor-open-suite/compare/v7.1.29...v7.1.30
 [7.1.29]: https://github.com/axelor/axelor-open-suite/compare/v7.1.28...v7.1.29
 [7.1.28]: https://github.com/axelor/axelor-open-suite/compare/v7.1.27...v7.1.28
