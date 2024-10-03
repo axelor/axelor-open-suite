@@ -37,6 +37,8 @@ import com.axelor.apps.project.service.MetaJsonFieldProjectService;
 import com.axelor.apps.project.service.MetaJsonFieldProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectActivityDashboardService;
 import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
+import com.axelor.apps.project.service.ProjectCheckListTemplateService;
+import com.axelor.apps.project.service.ProjectCheckListTemplateServiceImpl;
 import com.axelor.apps.project.service.ProjectCreateTaskService;
 import com.axelor.apps.project.service.ProjectCreateTaskServiceImpl;
 import com.axelor.apps.project.service.ProjectDashboardService;
@@ -114,5 +116,6 @@ public class ProjectModule extends AxelorModule {
     addQuickMenu(ActiveProjectQuickMenuCreator.class);
     bind(ProjectToolService.class).to(ProjectToolServiceImpl.class);
     bind(ProjectTaskAttrsService.class).to(ProjectTaskAttrsServiceImpl.class);
+    bind(ProjectCheckListTemplateService.class).to(ProjectCheckListTemplateServiceImpl.class);
   }
 }

@@ -25,12 +25,15 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectCheckListTemplate;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskLinkType;
 import com.axelor.apps.project.db.TaskStatus;
+import com.axelor.apps.project.db.repo.ProjectCheckListTemplateRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskLinkTypeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectCheckListTemplateService;
 import com.axelor.apps.project.service.ProjectTaskAttrsService;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.TaskStatusToolService;
@@ -283,5 +286,24 @@ public class ProjectTaskController {
 
     response.setAttr(
         "tagSet", "domain", Beans.get(ProjectTaskAttrsService.class).getTagDomain(projectTask));
+  }
+
+  @ErrorException
+  public void generateCheckListFromTemplate(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    Map<String, Object> checkListTemplateMap =
+        (Map<String, Object>) request.getContext().get("projectCheckListTemplate");
+    if (ObjectUtils.isEmpty(checkListTemplateMap)) {
+      return;
+    }
+
+    ProjectCheckListTemplate template =
+        Beans.get(ProjectCheckListTemplateRepository.class)
+            .find(Long.valueOf(checkListTemplateMap.get("id").toString()));
+
+    Beans.get(ProjectCheckListTemplateService.class)
+        .generateCheckListItemsFromTemplate(projectTask, template);
+    response.setValue("projectCheckListItemList", projectTask.getProjectCheckListItemList());
   }
 }
