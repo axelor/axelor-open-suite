@@ -1,3 +1,0 @@
----
-title: "SaleOrder/Invoice: removed partially invoiced flag when invoice is fully refunded."
-module: axelor-supplychain

@@ -1,3 +1,0 @@
----
-title: "Expense/ Leave request/ Timesheet/ TSTimer: fixed creation with empty employee when connected user doesn't have employee."
-module: axelor-human-resource
