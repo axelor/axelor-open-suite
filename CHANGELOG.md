@@ -1,3 +1,30 @@
+## [7.2.23] (2024-10-03)
+
+### Fixes
+#### Base
+
+* Batch: added french translation for '* %s anomaly(ies)'
+
+#### Account
+
+* Partner blocking: fixed 'blocking partner with late payment' feature which resulted in some processes being stuck.
+
+#### Helpdesk
+
+* Ticket: fixed the french translation  of 'Assign to me'.
+
+#### Project
+
+* Project: fixed issue related to contact partner when updating client partner.
+
+#### Stock
+
+* Stock move line: the advanced filter saved is not displayed unless we refresh the whole page.
+
+#### Supply Chain
+
+* Sale order invoicing: removed partially invoiced flag when invoice is fully refunded.
+
 ## [7.2.22] (2024-09-19)
 
 ### Fixes
@@ -1172,6 +1199,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.23]: https://github.com/axelor/axelor-open-suite/compare/v7.2.22...v7.2.23
 [7.2.22]: https://github.com/axelor/axelor-open-suite/compare/v7.2.21...v7.2.22
 [7.2.21]: https://github.com/axelor/axelor-open-suite/compare/v7.2.20...v7.2.21
 [7.2.20]: https://github.com/axelor/axelor-open-suite/compare/v7.2.19...v7.2.20
