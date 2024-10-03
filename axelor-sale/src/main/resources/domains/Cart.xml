@@ -8,7 +8,8 @@
   <entity name="Cart">
 
     <many-to-one name="user" column="user_id" title="User" ref="com.axelor.auth.db.User"/>
-    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
+      required="true"/>
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
     <one-to-many name="cartLineList" title="Cart line list"
       ref="com.axelor.apps.sale.db.CartLine" mappedBy="cart"/>
