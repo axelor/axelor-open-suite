@@ -471,6 +471,9 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
   protected List<Unit> computeAvailableDisplayTimeUnits(Unit unit) {
     List<Unit> units = new ArrayList<>();
+    if (unit == null) {
+      return units;
+    }
     units.add(unit);
     units.addAll(
         unitConversionRepository.all()
