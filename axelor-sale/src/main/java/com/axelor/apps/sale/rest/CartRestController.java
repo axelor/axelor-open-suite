@@ -73,7 +73,8 @@ public class CartRestController {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(Cart.class, cartId).createAccess(CartLine.class).check();
     Cart cart = ObjectFinder.find(Cart.class, cartId, requestBody.getVersion());
-    Beans.get(CartProductService.class).addToCart(cart, requestBody.fetchProduct());
+    Beans.get(CartProductService.class)
+        .addToCart(cart, requestBody.fetchProduct(), requestBody.getQty());
     return ResponseConstructor.build(Response.Status.OK, I18n.get(ITranslation.PRODUCT_IS_ADDED));
   }
 }

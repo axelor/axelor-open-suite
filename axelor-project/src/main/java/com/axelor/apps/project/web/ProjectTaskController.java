@@ -31,6 +31,7 @@ import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskLinkTypeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectTaskAttrsService;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TimerProjectTaskService;
@@ -274,5 +275,13 @@ public class ProjectTaskController {
           "status", Beans.get(ProjectTaskService.class).getStatus(project, projectTask));
       manageStatus(request, response);
     }
+  }
+
+  @ErrorException
+  public void setTagDomain(ActionRequest request, ActionResponse response) throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    response.setAttr(
+        "tagSet", "domain", Beans.get(ProjectTaskAttrsService.class).getTagDomain(projectTask));
   }
 }

@@ -14,17 +14,5 @@
           canNew="false" canEdit="false"/>
       </insert>
     </extend>
-
-    <extend target="//panel[@name='purchasesPanel']">
-      <insert position="before">
-        <panel name="budgetPanelTab" title="Global budgets"
-          if="__config__.app.getApp('budget')?.getEnableProject()" colSpan="12">
-          <panel-related field="globalBudgetSet" showTitle="false"
-            name="globalBudgetSet" readonly="true" form-view="global-budget-form"
-            grid-view="global-budget-grid" colSpan="12"/>
-        </panel>
-      </insert>
-
-    </extend>
   </form>
 </object-views>

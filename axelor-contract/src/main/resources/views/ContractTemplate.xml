@@ -21,7 +21,7 @@
           onChange="action-contract-template-attrs-set-invoicing-management-title"/>
         <field name="targetTypeSelect" readonlyIf="id"
           onChange="action-contract-attrs-domains-template,action-contract-template-attrs-set-payment-mode"/>
-        <field name="company" readonlyIf="statusSelect >= 2" canEdit="false"/>
+        <field name="company" canEdit="false"/>
         <field name="name" colSpan="12" css="highlight"/>
         <field if="__config__.app.getApp('contract')?.getIsInvoicingManagement()" colSpan="4"
           name="currency"/>
@@ -74,7 +74,7 @@
         </panel>
 
         <panel if="__config__.app.getApp('contract')?.isInvoicingManagement" title="Invoicing"
-          readonlyIf="statusSelect > 1" colSpan="12" name="subConfigPanel" hidden="true"
+          colSpan="12" name="subConfigPanel" hidden="true"
           showIf="contractTypeSelect == 1 &amp;&amp; isInvoicingManagement">
 
           <field if="__config__.app.getApp('contract')?.isConsumptionManagement"
@@ -92,8 +92,7 @@
               readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
               <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                 <panel colSpan="6" name="automaticInvoicingPanel">
-                  <field name="automaticInvoicing" readonlyIf="statusSelect > 2" colSpan="6"
-                    widget="boolean-switch"/>
+                  <field name="automaticInvoicing" colSpan="6" widget="boolean-switch"/>
                   <field name="invoicingMomentSelect" hidden="true"
                     showIf="automaticInvoicing" colSpan="6" requiredIf="automaticInvoicing"/>
                 </panel>
@@ -102,8 +101,7 @@
             <field name="currentContractVersion" showTitle="false"
               readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
               <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                <field name="isPeriodicInvoicing" readonlyIf="statusSelect > 2" colSpan="3"
-                  widget="boolean-switch"/>
+                <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
                 <panel name="invoicingDetailsPanel" hidden="true" showIf="isPeriodicInvoicing"
                   colSpan="9">
                   <field name="invoicingDuration" colSpan="4" canEdit="false"

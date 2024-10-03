@@ -119,6 +119,9 @@
       </panel>
 
       <panel-include view="incl-wiki-panel-form"/>
+
+      <panel-include view="incl-checklist-panel-form"/>
+
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
 
@@ -272,13 +275,11 @@
         readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
         onChange="action-project-record-manage-task-status-set, action-project-record-activate-task-status-by-category"/>
       <field name="projectTaskStatusSet" widget="TagSelect"
-        showIf="taskStatusManagementSelect == 2 || taskStatusManagementSelect == 3"
-        requiredIf="taskStatusManagementSelect == 2" readonlyIf="taskStatusManagementSelect == 3"
+        showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2"
         canEdit="false" onChange="action-project-method-manage-completed-task-status"/>
       <field name="completedTaskStatus" grid-view="task-status-grid"
-        form-view="task-status-form"
-        showIf="taskStatusManagementSelect == 2 || taskStatusManagementSelect == 3"
-        requiredIf="taskStatusManagementSelect == 2" readonlyIf="taskStatusManagementSelect == 3"
+        form-view="task-status-form" showIf="taskStatusManagementSelect == 2"
+        requiredIf="taskStatusManagementSelect == 2"
         onSelect="action-project-attrs-set-completed-task-status-domain"/>
       <field name="isShowPriority" widget="inline-checkbox"
         onChange="action-project-record-priority-reset-values"/>
@@ -296,6 +297,7 @@
         showIf="isShowTaskCategory"/>
       <field name="projectTaskLinkTypeSet" colSpan="12" widget="TagSelect" canEdit="false"
         placeholder="All"/>
+      <field name="projectTaskList" hidden="true"/>
     </panel>
     <panel title="View configuration" name="viewConfig" colSpan="12" canCollapse="true"
       collapseIf="false">
@@ -348,6 +350,16 @@
         showIf="$contains(customFieldManagementSelect, 'project')"
         form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
     </panel>
+  </form>
+
+  <form name="incl-checklist-panel-form" title="Check list"
+    model="com.axelor.apps.project.db.Project">
+    <panel-related name="checkListPanel" colSpan="12" x-tree-limit="1"
+      title="Check list" field="projectCheckListItemList" orderBy="sequence" canMove="true"
+      onChange="action-check-list-item-method-reset-completed-fields"
+      form-view="project-check-list-item-form" grid-view="project-check-list-item-grid"
+      widget="tree-grid" x-tree-field="projectCheckListItemList"
+      x-tree-field-title="Add a new check list item" editable="true" x-expand-all="true"/>
   </form>
 
   <kanban columnBy="projectStatus" sequenceBy="orderByState" limit="10" name="project-kanban"
@@ -591,10 +603,10 @@
     model="com.axelor.apps.project.db.Project">
     <field name="projectTaskStatusSet"
       expr="eval: __config__.app.getApp('project')?.getDefaultTaskStatusSet()"
-      if="taskStatusManagementSelect == 2 || taskStatusManagementSelect == 3"/>
+      if="taskStatusManagementSelect == 2"/>
     <field name="completedTaskStatus"
       expr="eval: __config__.app.getApp('project')?.getCompletedTaskStatus()"
-      if="taskStatusManagementSelect == 2 || taskStatusManagementSelect == 3"/>
+      if="taskStatusManagementSelect == 2"/>
     <field name="projectTaskStatusSet,completedTaskStatus" expr="eval: null"
       if="taskStatusManagementSelect == 1 || taskStatusManagementSelect == 4"/>
   </action-record>

@@ -27,10 +27,11 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.cart.CartResetService;
 import com.axelor.apps.sale.service.cart.CartSaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGeneratorService;
+import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGeneratorService;
 import com.axelor.apps.supplychain.service.cartline.CartLineAvailabilityService;
 import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -49,9 +50,14 @@ public class CartSaleOrderGeneratorSupplychainServiceImpl
       SaleOrderGeneratorService saleOrderGeneratorService,
       SaleOrderLineGeneratorService saleOrderLineGeneratorService,
       SaleOrderLineRepository saleOrderLineRepository,
+      CartResetService cartResetService,
       SaleConfigService saleConfigService,
       CartLineAvailabilityService cartLineAvailabilityService) {
-    super(saleOrderGeneratorService, saleOrderLineGeneratorService, saleOrderLineRepository);
+    super(
+        saleOrderGeneratorService,
+        saleOrderLineGeneratorService,
+        saleOrderLineRepository,
+        cartResetService);
     this.saleConfigService = saleConfigService;
     this.cartLineAvailabilityService = cartLineAvailabilityService;
   }
