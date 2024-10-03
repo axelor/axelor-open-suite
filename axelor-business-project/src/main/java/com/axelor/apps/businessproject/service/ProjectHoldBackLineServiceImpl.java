@@ -458,7 +458,7 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
     invoice.setCompanyHoldBacksTotal(companyHoldBacksTotal);
   }
 
-  protected List<ProjectHoldBackATI> createHoldBackATIs(Invoice invoice) {
+  protected List<ProjectHoldBackATI> createHoldBackATIs(Invoice invoice) throws AxelorException {
     List<ProjectHoldBackATI> projectHoldBackATIList = new ArrayList<>();
     List<ProjectHoldBackLine> projectHoldBackLineList =
         invoice.getProject().getProjectHoldBackLineList().stream()
@@ -485,14 +485,15 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
 
       ProjectHoldBackATI projectHoldBackATI = new ProjectHoldBackATI();
       projectHoldBackATI.setProjectHoldBack(holdBack);
-      projectHoldBackATI.setName(
-          String.format(I18n.get(/*$$(*/ "%s total A.T.I.") /*)*/, holdBack.getName()));
+      projectHoldBackATI.setName(holdBack.getName());
       projectHoldBackATI.setInvoice(invoice);
       BigDecimal amount = BigDecimal.ZERO;
       for (ProjectHoldBackLine line : holdBackLines) {
         amount = amount.add(calculateHoldBackLinePrice(invoiceLineList, line));
       }
       projectHoldBackATI.setAmount(amount);
+      projectHoldBackATI.setCompanyAmount(
+          invoiceServiceProject.getAmountInCompanyCurrency(amount, invoice));
       projectHoldBackATIList.add(projectHoldBackATI);
     }
     return projectHoldBackATIList;

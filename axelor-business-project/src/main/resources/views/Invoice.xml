@@ -66,4 +66,9 @@
     <call class="com.axelor.apps.businessproject.web.InvoiceController" method="printExpenses"/>
   </action-method>
 
+  <action-method name="action-invoice-method-load-related-hold-backs">
+    <call class="com.axelor.apps.businessproject.web.InvoiceController"
+      method="loadRelatedHoldBacks"/>
+  </action-method>
+
 </object-views>

@@ -10958,7 +10958,7 @@ else{ 1.00 }
                                                             <structure>
                                                                 <property name="paramName">param_1</property>
                                                                 <simple-property-list name="expression">
-                                                                    <value type="javascript">'ProjectHoldBackATI.amount'</value>
+                                                                    <value type="javascript">'ProjectHoldBackATI.percentage'</value>
                                                                 </simple-property-list>
                                                             </structure>
                                                         </list-property>
@@ -10997,7 +10997,7 @@ else{ 1.00 }
                                                             <structure>
                                                                 <property name="paramName">param_1</property>
                                                                 <simple-property-list name="expression">
-                                                                    <value type="javascript">'ProjectHoldBackATI.percentage'</value>
+                                                                    <value type="javascript">'ProjectHoldBackATI.amount'</value>
                                                                 </simple-property-list>
                                                             </structure>
                                                         </list-property>
@@ -11053,9 +11053,9 @@ else{ 1.00 }
                                                     <property name="borderTopWidth">thin</property>
                                                     <text id="6274">
                                                         <property name="fontSize">8pt</property>
-                                                        <property name="textAlign">center</property>
+                                                        <property name="textAlign">right</property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["amount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))+ row["symbol"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="###0.00' %'{RoundingMode=HALF_UP}">row["default_percentage"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                                 <cell id="6262">
@@ -11069,9 +11069,9 @@ else{ 1.00 }
                                                     <property name="borderTopWidth">thin</property>
                                                     <text id="6275">
                                                         <property name="fontSize">8pt</property>
-                                                        <property name="textAlign">center</property>
+                                                        <property name="textAlign">right</property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="###0.00' %'{RoundingMode=HALF_UP}">row["default_percentage"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["amount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))+ row["symbol"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                             </row>
@@ -11912,7 +11912,7 @@ else {'Invoice.totalTaxes'}</value>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">params["ReportType"].value != 3</expression>
+                                                    <expression name="valueExpr" type="javascript">params["ReportType"].value != 3 &amp;&amp; params["ReportType"].value != 5 &amp;&amp; params["ReportType"].value != 6</expression>
                                                 </structure>
                                             </list-property>
                                             <cell id="5720">

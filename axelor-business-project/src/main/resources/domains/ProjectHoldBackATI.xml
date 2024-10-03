@@ -5,11 +5,10 @@
 
   <module name="business-project" package="com.axelor.apps.businessproject.db"/>
 
-  <sequence name="hold.back.ati.seq" initial="1" increment="1" padding="5" prefix="HB"/>
-
   <entity name="ProjectHoldBackATI">
     <string name="name" required="true" namecolumn="true"/>
     <decimal name="amount" title="Amount"/>
+    <decimal name="companyAmount" title="Amount"/>
     <many-to-one name="projectHoldBack" ref="com.axelor.apps.project.db.ProjectHoldBack"
       title="HoldBack product" required="true"/>
     <boolean name="isVentilatedProjectHoldBackATI" title="Ventilated hold back ATI"

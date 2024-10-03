@@ -874,6 +874,12 @@
           form-view="invoice-payment-form" canNew="false" canRemove="false"/>
         <field name="amountPaid" hidden="true"/>
       </panel>
+      <panel name="holdBackPanel" title="HoldBacks" showIf="projectHoldBackATIList">
+        <panel-related field="$projectHoldBackList" type="one-to-many"
+          target="com.axelor.apps.project.db.ProjectHoldBack" title="HoldBacks"
+          grid-view="project-hold-back-grid" form-view="project-hold-back-form" readonly="true"
+          colSpan="12"/>
+      </panel>
       <panel name="pfpAccountConfigPanel"
         if="__config__.app.getApp('account')?.getActivatePassedForPayment()" hidden="true">
         <field name="$isValidPfpValidatorUser" type="boolean"/>
@@ -1032,8 +1038,8 @@
         <editor></editor>
       </field>
       <field name="amountRemaining" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3" x-currency="currency.symbol"
-        x-scale="currency.numberOfDecimals">
+        showIf="statusSelect == 2 || statusSelect == 3 || projectHoldBackATIList"
+        x-currency="currency.symbol" x-scale="currency.numberOfDecimals">
         <viewer depends="amountRemaining"><![CDATA[
 		         <>
 		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
@@ -1066,6 +1072,12 @@
 	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('companyExTaxTotal')}</Box>
 	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
 	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('companyTaxTotal')}</Box>
+	                     	 {projectHoldBackATIList.map((item, index) => (
+                              <>
+                                <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{item.name}</Box>
+                                <Box as="dd" m={0} px={3} py={1}>{item.companyAmount} {currency.symbol}</Box>
+                              </>
+                              ))}
 	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
 	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('companyInTaxTotal')}</Box>
 	                     </Box>
@@ -1073,8 +1085,8 @@
 		       ]]></viewer>
       </field>
       <field name="companyInTaxTotalRemaining" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3" x-currency="company.currency.symbol"
-        x-scale="company.currency.numberOfDecimals">
+        showIf="statusSelect == 2 || statusSelect == 3 || projectHoldBackATIList"
+        x-currency="company.currency.symbol" x-scale="company.currency.numberOfDecimals">
         <viewer depends="companyInTaxTotalRemaining"><![CDATA[
 		         <>
 		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
@@ -1571,6 +1583,8 @@
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="action-invoice-attrs-display-line-coefficient"/>
+    <action name="action-invoice-method-load-related-hold-backs"
+      if="__config__.app.isApp('business-project')"/>
   </action-group>
 
   <action-group name="action-account-invoice-onload-group">
@@ -1597,6 +1611,8 @@
     <action name="action-invoice-attrs-set-subrogation-partner-readonly"/>
     <action name="action-invoice-method-set-invoice-line-list-scale"/>
     <action name="action-invoice-attrs-display-line-coefficient"/>
+    <action name="action-invoice-method-load-related-hold-backs"
+      if="__config__.app.isApp('business-project')"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">

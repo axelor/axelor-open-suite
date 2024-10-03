@@ -35,9 +35,11 @@ import com.axelor.apps.base.service.pdf.PdfSignatureService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
+import com.axelor.apps.businessproject.db.ProjectHoldBackATI;
 import com.axelor.apps.businessproject.report.ITranslation;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.project.db.ProjectHoldBack;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -58,6 +60,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoicePrintBusinessProjectServiceImpl extends InvoicePrintServiceImpl
     implements InvoicePrintBusinessProjectService {
@@ -280,5 +283,18 @@ public class InvoicePrintBusinessProjectServiceImpl extends InvoicePrintServiceI
       // don't save
       return print(invoice, reportType, invoicePrintTemplate, locale);
     }
+  }
+
+  public List<ProjectHoldBack> loadProjectHoldBacks(Invoice invoice) {
+
+    List<ProjectHoldBackATI> holdBackATIS = invoice.getProjectHoldBackATIList();
+    if (CollectionUtils.isEmpty(holdBackATIS)) {
+      return null;
+    }
+
+    return holdBackATIS.stream()
+        .map(ProjectHoldBackATI::getProjectHoldBack)
+        .distinct()
+        .collect(Collectors.toList());
   }
 }
