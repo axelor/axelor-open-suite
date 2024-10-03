@@ -154,7 +154,7 @@
       <field name="scheduleOfOperation" hidden="true" showIf="typeSelect != 'place'"/>
       <field name="specificAccessSchedule" hidden="true" showIf="typeSelect != 'place'"/>
       <field name="contract" form-view="contract-form" hidden="true" canNew="false"
-        domain="self.partner = :partner AND self.currentContractVersion.statusSelect = 3"
+        domain="self.partner = :partner AND self.currentContractVersion.statusSelect = 3  AND self.contractTypeSelect = 1"
         showIf="typeSelect != 'place'"/>
       <field name="comments" colSpan="12"/>
     </panel>
