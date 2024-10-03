@@ -9,6 +9,8 @@
       <button name="logTimeBtn" icon="clock-history"
         onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
     </toolbar>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
@@ -28,6 +30,8 @@
     <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>

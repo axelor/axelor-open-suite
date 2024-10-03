@@ -9,7 +9,8 @@
     <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
-    <field name="ticketNumber"/>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
     <field name="name"/>
     <field name="project"/>
     <field name="taskDate"/>
@@ -42,7 +43,9 @@
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
-    <field name="name" width="700"/>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()" width="100"/>
+    <field name="name" width="550"/>
     <field name="taskDate" width="120"/>
     <field name="initial" width="120"/>
     <field name="forecast" width="120"/>
@@ -65,6 +68,8 @@
         onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
     </toolbar>
     <field name="project"/>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
@@ -92,6 +97,8 @@
         onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
     </toolbar>
     <field name="project"/>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
