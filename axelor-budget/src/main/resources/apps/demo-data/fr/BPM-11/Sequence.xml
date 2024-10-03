@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sequences xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <sequence>
+    <codeSelect>pr</codeSelect>
+    <company>Axelor</company>
+    <padding>4</padding>
+    <prefixe>DI</prefixe>
+    <toBeAdded>1</toBeAdded>
+    <name>Purchase Request</name>
+  </sequence>
+
+</sequences>
