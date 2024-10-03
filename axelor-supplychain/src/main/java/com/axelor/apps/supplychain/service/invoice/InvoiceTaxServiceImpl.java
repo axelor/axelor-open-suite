@@ -11,7 +11,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.service.PurchaseOrderLineTaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCreateTaxLineService;
+import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.List;
