@@ -57,14 +57,6 @@
     <view type="dashboard" name="project-planned-charge"/>
   </action-view>
 
-  <menuitem name="project-reporting-project-dashboard" parent="project-reporting"
-    order="300" title="Project dashboard" action="project.reporting.projects.dashboard"
-    if="__user__.activeProject"/>
-  <action-view name="project.reporting.projects.dashboard" title="${name}"
-    model="com.axelor.utils.db.Wizard">
-    <view type="form" name="project-dashboard-form"/>
-  </action-view>
-
   <menuitem name="project-resource-booking" title="Resource bookings" order="600"
     parent="menu-project-root" action="project.resource.booking"
     if="__config__.app.getApp('project')?.getResourceManagement()"/>

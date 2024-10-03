@@ -20,22 +20,9 @@
   <form name="project-dashboard-form" title="Project dashboard"
     model="com.axelor.utils.db.Wizard" onNew="action-project-dashboard-method-on-new" width="large"
     canNew="false" canEdit="false" canDelete="false">
-    <panel name="overviewPanel" title="Overview" readonly="true">
-      <panel name="descriptionPanel" itemSpan="12">
-        <field name="$description" showTitle="false">
-          <viewer>
-            <![CDATA[
-              <>
-                <Box as="p">
-                  {$description && <Box dangerouslySetInnerHTML={{__html : $description}} style={{ wordBreak: "break-all" }}></Box>}
-                </Box>
-              </>
-            ]]>
-          </viewer>
-        </field>
-      </panel>
-      <spacer/>
-      <panel name="issueTrackingPanel" title="Issue tracking" icon="fa-sticky-note">
+    <panel name="overviewPanel" title="Dashboard" readonly="true" colSpan="12"
+      canCollapse="true">
+      <panel name="issueTrackingPanel" title="Task tracking" icon="fa-sticky-note">
         <field name="$categoryList" showTitle="false" hideIf="$categoryList.length == 0">
           <viewer>
 					<![CDATA[
@@ -100,7 +87,7 @@
           </viewer>
         </field>
       </panel>
-      <panel name="announcementPanel" title="Latest News" icon="fa-newspaper-o"
+      <panel name="announcementPanel" title="Latest announcement" icon="fa-newspaper-o"
         if="__config__.app.isApp('business-support')" if-module="axelor-business-support"
         hideIf="$announcementList.length == 0">
         <field name="$announcementList" showTitle="false" colSpan="12">
@@ -115,15 +102,12 @@
 							         <Button variant="link" p={0} style={{verticalAlign: "unset"}} title="{$moment(item.announcementDate).format('MM/DD/YYYY')}" onClick={$action("com.axelor.apps.businesssupport.service.ProjectActivityDashboardBusinessSupportService:getProjectActivityView("+item.id+")")}>{$moment(item.announcementDate).fromNow()}</Button>
 							     </p>
 						     ))}
-						 <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("project.announcement")}>View all news</Button>
+						 <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("project.announcement")}>View all announcement</Button>
 					     </>
 				        ]]>
           </viewer>
         </field>
       </panel>
-      <spacer/>
-      <spacer/>
-      <spacer/>
       <panel name="subprojectPanel" title="Suprojects" icon="fa-gg-circle"
         hideIf="$subprojectList.length == 0">
         <field name="$subprojectList" showTitle="false" colSpan="12">

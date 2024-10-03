@@ -3,6 +3,7 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.HashSet;
 import java.util.Optional;
@@ -20,9 +21,10 @@ public class ProjectToolServiceImpl implements ProjectToolService {
     }
 
     projectIdsSet.add(project.getId());
-
-    for (Project childProject : project.getChildProjectList()) {
-      getChildProjectIds(projectIdsSet, childProject);
+    if (!ObjectUtils.isEmpty(project.getChildProjectList())) {
+      for (Project childProject : project.getChildProjectList()) {
+        getChildProjectIds(projectIdsSet, childProject);
+      }
     }
   }
 

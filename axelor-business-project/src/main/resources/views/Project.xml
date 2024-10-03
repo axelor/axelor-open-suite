@@ -132,7 +132,7 @@
     <panel-tabs name="mainPanelTab">
 
       <panel name="overviewPanel" title="Overview"
-        onTabSelect="action-project-activity-dashboard-method-on-new">
+        onTabSelect="action-project-activity-dashboard-method-on-new,action-project-dashboard-method-on-new">
         <panel name="generalInfoPanel" colSpan="12" title="General information"
           canCollapse="true" collapseIf="false">
           <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
