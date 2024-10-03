@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -628,12 +628,6 @@ order by BankStatementLine.sequence
                     <text-property name="displayName">bank_statement_file_format</text-property>
                     <text-property name="heading">bank_statement_file_format</text-property>
                 </structure>
-                <structure>
-                    <property name="columnName">ebics_partner</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">ebics_partner</text-property>
-                    <text-property name="heading">ebics_partner</text-property>
-                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -717,11 +711,6 @@ order by BankStatementLine.sequence
                     <structure>
                         <property name="position">14</property>
                         <property name="name">bank_statement_file_format</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">15</property>
-                        <property name="name">ebics_partner</property>
                         <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
@@ -823,13 +812,6 @@ order by BankStatementLine.sequence
                     <property name="position">14</property>
                     <property name="name">bank_statement_file_format</property>
                     <property name="nativeName">bank_statement_file_format</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                </structure>
-                <structure>
-                    <property name="position">15</property>
-                    <property name="name">ebics_partner</property>
-                    <property name="nativeName">ebics_partner</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                 </structure>
