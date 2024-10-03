@@ -155,8 +155,7 @@ public class ProjectController {
     taskStatusSelect.addAll(
         Arrays.asList(
             ProjectRepository.TASK_STATUS_MANAGEMENT_NONE,
-            ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT,
-            ProjectRepository.TASK_STATUS_MANAGEMENT_APP));
+            ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT));
     if (appProject != null && appProject.getEnableStatusManagementByTaskCategory()) {
       taskStatusSelect.add(ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY);
     }

@@ -43,7 +43,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.studio.db.AppProject;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -53,7 +52,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -311,7 +309,7 @@ public class ProjectServiceImpl implements ProjectService {
     Integer taskStatusManagement =
         Optional.ofNullable(projectTemplate)
             .map(ProjectTemplate::getTaskStatusManagementSelect)
-            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_APP);
+            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT);
 
     initTaskStatus(project, taskStatusManagement, taskStatusSet);
   }
@@ -322,7 +320,7 @@ public class ProjectServiceImpl implements ProjectService {
     Integer taskStatusManagement =
         Optional.ofNullable(parentProject)
             .map(Project::getTaskStatusManagementSelect)
-            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_APP);
+            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT);
 
     initTaskStatus(project, taskStatusManagement, taskStatusSet);
   }
@@ -331,18 +329,6 @@ public class ProjectServiceImpl implements ProjectService {
       Project project, Integer taskStatusManagement, Set<TaskStatus> taskStatusSet) {
     project.setTaskStatusManagementSelect(taskStatusManagement);
 
-    switch (taskStatusManagement) {
-      case ProjectRepository.TASK_STATUS_MANAGEMENT_APP:
-        project.setProjectTaskStatusSet(
-            new HashSet<>(
-                Objects.requireNonNull(
-                    Optional.ofNullable(appProjectService.getAppProject())
-                        .map(AppProject::getDefaultTaskStatusSet)
-                        .orElse(null))));
-        break;
-      case ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT:
-        project.setProjectTaskStatusSet(new HashSet<>(taskStatusSet));
-        break;
-    }
+    project.setProjectTaskStatusSet(new HashSet<>(taskStatusSet));
   }
 }
