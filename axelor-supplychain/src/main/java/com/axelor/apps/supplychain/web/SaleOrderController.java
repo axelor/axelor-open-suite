@@ -42,6 +42,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderServiceSupplychainImpl;
@@ -265,14 +266,29 @@ public class SaleOrderController {
 
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
-      Invoice invoice =
-          saleOrderInvoiceService.generateInvoice(
-              saleOrder,
-              operationSelect,
-              amountToInvoice,
-              isPercent,
-              qtyToInvoiceMap,
-              timetableIdList);
+      Invoice invoice;
+
+      if (saleOrder.getSaleOrderTypeSelect() == SaleOrderRepository.SALE_ORDER_TYPE_SUBSCRIPTION) {
+        SubscriptionInvoiceService subscriptionInvoiceService =
+            Beans.get(SubscriptionInvoiceService.class);
+        invoice =
+            subscriptionInvoiceService.generateSubscriptionInvoice(
+                saleOrder,
+                operationSelect,
+                amountToInvoice,
+                isPercent,
+                qtyToInvoiceMap,
+                timetableIdList);
+      } else {
+        invoice =
+            saleOrderInvoiceService.generateInvoice(
+                saleOrder,
+                operationSelect,
+                amountToInvoice,
+                isPercent,
+                qtyToInvoiceMap,
+                timetableIdList);
+      }
 
       if (invoice != null) {
         response.setCanClose(true);
