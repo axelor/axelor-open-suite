@@ -64,7 +64,7 @@ public class CartLineAvailabilityServiceImpl implements CartLineAvailabilityServ
     String availableStatus = null;
     int availableStatusSelect = 0;
 
-    if (product.getStockManaged()) {
+    if (product != null && product.getStockManaged()) {
       BigDecimal availableQty =
           stockLocationLineFetchService.getAvailableQty(cart.getStockLocation(), product);
       BigDecimal qty = cartLine.getQty();
