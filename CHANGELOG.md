@@ -1,3 +1,18 @@
+## [6.5.43] (2024-10-03)
+
+### Fixes
+#### Account
+
+* Partner blocking: fixed 'blocking partner with late payment' feature which resulted in some processes being stuck.
+
+#### Helpdesk
+
+* Ticket: fixed the french translation  of 'Assign to me'.
+
+#### Project
+
+* Project: fixed issue related to contact partner when updating client partner.
+
 ## [6.5.42] (2024-09-19)
 
 ### Fixes
@@ -1534,6 +1549,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.43]: https://github.com/axelor/axelor-open-suite/compare/v6.5.42...v6.5.43
 [6.5.42]: https://github.com/axelor/axelor-open-suite/compare/v6.5.41...v6.5.42
 [6.5.41]: https://github.com/axelor/axelor-open-suite/compare/v6.5.40...v6.5.41
 [6.5.40]: https://github.com/axelor/axelor-open-suite/compare/v6.5.39...v6.5.40
