@@ -97,6 +97,8 @@
       <field name="projectInvoiceLines" on="UPDATE"/>
       <field name="enableTaskTemplatesByProduct" on="UPDATE"/>
       <field name="automaticInvoicing" on="UPDATE"/>
+      <field name="preTaskStatusSet" on="UPDATE"/>
+      <field name="postTaskStatusSet" on="UPDATE"/>
       <field name="excludeTaskInvoicing" on="UPDATE"/>
       <field name="invoicingProjectAnnexPrintTemplate" on="UPDATE"/>
       <field name="invoicingAnnexPrintTemplate" on="UPDATE"/>

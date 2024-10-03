@@ -36,6 +36,7 @@
       <field name="sequence" on="UPDATE"/>
       <field name="isCustomizeMenuEnabled" on="UPDATE"/>
       <field name="isAppEnabled" on="UPDATE"/>
+      <field name="authorizedRoles" on="UPDATE"/>
     </track>
   </entity>
 

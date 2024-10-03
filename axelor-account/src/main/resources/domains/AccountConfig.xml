@@ -490,6 +490,8 @@
       <field name="displayPartnerSeqOnPrinting" on="UPDATE"/>
       <field name="displayHeadOfficeAddrOnInvoicePrinting" on="UPDATE"/>
       <field name="displayStockMoveOnInvoicePrinting" on="UPDATE"/>
+      <field name="displayPartnerSirenOnInvoicePrinting" on="UPDATE"/>
+      <field name="displayItemsCategoriesOnPrinting" on="UPDATE"/>
       <field name="invoiceClientBox" on="UPDATE"/>
       <field name="saleInvoiceLegalNote" on="UPDATE"/>
       <field name="termsAndConditions" on="UPDATE"/>
@@ -500,6 +502,7 @@
 
       <field name="isManagePassedForPayment" on="UPDATE"/>
       <field name="isManagePFPInRefund" on="UPDATE"/>
+      <field name="isManageDaybookInPFP" on="UPDATE"/>
 
       <field name="lineMinBeforeLongReportGenerationMessageNumber" on="UPDATE"/>
 

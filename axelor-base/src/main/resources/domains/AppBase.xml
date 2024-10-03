@@ -249,6 +249,7 @@
       <field name="isSharedAddress" on="UPDATE"/>
       <field name="productSequenceTypeSelect" on="UPDATE"/>
       <field name="productSequence" on="UPDATE"/>
+      <field name="companySpecificProductFieldsSet" on="UPDATE"/>
       <field name="defaultMailMessageTemplate" on="UPDATE"/>
       <field name="geoNamesDumpUrl" on="UPDATE"/>
       <field name="geoNamesZipUrl" on="UPDATE"/>

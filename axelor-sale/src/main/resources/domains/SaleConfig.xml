@@ -49,6 +49,7 @@
       <field name="saleOrderLegalNote" on="UPDATE"/>
       <field name="isAnalyticDistributionRequired" on="UPDATE"/>
       <field name="saleOrderPrintTemplate" on="UPDATE"/>
+      <field name="defaultHoldBackPercentage" on="UPDATE"/>
     </track>
   </entity>
 
