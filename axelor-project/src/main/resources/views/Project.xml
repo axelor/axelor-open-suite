@@ -297,6 +297,7 @@
         showIf="isShowTaskCategory"/>
       <field name="projectTaskLinkTypeSet" colSpan="12" widget="TagSelect" canEdit="false"
         placeholder="All"/>
+      <field name="projectTaskList" hidden="true"/>
     </panel>
     <panel title="View configuration" name="viewConfig" colSpan="12" canCollapse="true"
       collapseIf="false">
