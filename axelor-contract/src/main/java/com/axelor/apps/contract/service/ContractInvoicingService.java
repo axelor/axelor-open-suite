@@ -58,6 +58,7 @@ public interface ContractInvoicingService {
   Invoice invoicingContracts(List<Contract> contractList) throws AxelorException;
 
   Contract increaseInvoiceDates(Contract contract);
+
   /**
    * Take each consumption line and convert it to contract line if a associate consumption contract
    * line is present in contract.

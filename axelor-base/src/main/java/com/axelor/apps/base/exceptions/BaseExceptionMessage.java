@@ -130,6 +130,7 @@ public final class BaseExceptionMessage {
   public static final String INDICATOR_GENERATOR_GROUPING_3 = /*$$(*/
       "Error while creating the file" /*)*/;
   public static final String INDICATOR_GENERATOR_GROUPING_4 = /*$$(*/ "Result exported" /*)*/;
+
   /** Indicator generator service */
   public static final String INDICATOR_GENERATOR_1 = /*$$(*/
       "Error : a request has to be set for the indicatior generator %s" /*)*/;
@@ -137,6 +138,7 @@ public final class BaseExceptionMessage {
   public static final String INDICATOR_GENERATOR_2 = /*$$(*/
       "Error : incorrect request for the indicatior generator %s" /*)*/;
   public static final String INDICATOR_GENERATOR_3 = /*$$(*/ "Request performed" /*)*/;
+
   /** Base batch service */
   public static final String BASE_BATCH_1 = /*$$(*/ "Unknown action %s for the %s treatment" /*)*/;
 

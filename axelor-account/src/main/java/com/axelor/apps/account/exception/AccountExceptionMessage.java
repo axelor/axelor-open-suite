@@ -72,6 +72,7 @@ public final class AccountExceptionMessage {
   public static final String FIXED_ASSET_CAN_NOT_BE_REMOVE =
       /*$$(*/ "Only fixed assets at draft status can be deleted." /*)*/;
   public static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
+
   /** Bank statement service */
   public static final String BANK_STATEMENT_1 = /*$$(*/
       "%s : Computed balance and Ending Balance must be equal" /*)*/;
@@ -207,6 +208,7 @@ public final class AccountExceptionMessage {
   /** AnalyticJournal service */
   public static final String NOT_UNIQUE_NAME_ANALYTIC_JOURNAL =
       /*$$(*/ "The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly." /*)*/;
+
   /** Move line export service */
   public static final String MOVE_LINE_EXPORT_1 = /*$$(*/
       "%s : Error : You must configure a sale interface sequence for the company %s" /*)*/;
@@ -370,6 +372,7 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
       "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed." /*)*/;
+
   /** Move service */
   public static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
@@ -885,6 +888,7 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_PFP_VALIDATOR_USER_MISSING = /*$$(*/
       "At least one pfp validator is missing, do you wish to continue ?" /*)*/;
+
   /** Invoice line generator */
   public static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/
       "You must select a currency for partner %s (%s)" /*)*/;

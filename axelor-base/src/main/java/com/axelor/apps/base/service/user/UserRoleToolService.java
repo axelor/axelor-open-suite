@@ -30,6 +30,7 @@ public class UserRoleToolService {
   private UserRoleToolService() {
     throw new IllegalStateException("Utility class");
   }
+
   /**
    * Method to check if the user's roles and group's roles are in a role set. Return true if role
    * set is empty
