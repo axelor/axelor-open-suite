@@ -379,16 +379,16 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal coefficient = invoiceLine.getCoefficient();
 
     invoiceLine.setPriceDiscounted(priceDiscounted);
-    invoiceLineMap.put("PriceDiscounted", invoiceLine.getPriceDiscounted());
+    invoiceLineMap.put("priceDiscounted", invoiceLine.getPriceDiscounted());
 
     BigDecimal taxRate = BigDecimal.ZERO;
     Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
       taxRate = taxService.getTotalTaxRateInPercentage(taxLineSet);
       invoiceLine.setTaxRate(taxRate);
-      invoiceLineMap.put("TaxRate", invoiceLine.getTaxRate());
+      invoiceLineMap.put("taxRate", invoiceLine.getTaxRate());
       invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
-      invoiceLineMap.put("TaxCode", invoiceLine.getTaxCode());
+      invoiceLineMap.put("taxCode", invoiceLine.getTaxCode());
     }
 
     if (!invoice.getInAti()) {
@@ -414,13 +414,13 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     companyInTaxTotal = this.getCompanyExTaxTotal(inTaxTotal, invoice);
 
     invoiceLine.setExTaxTotal(exTaxTotal);
-    invoiceLineMap.put("ExTaxTotal", invoiceLine.getExTaxTotal());
+    invoiceLineMap.put("exTaxTotal", invoiceLine.getExTaxTotal());
     invoiceLine.setInTaxTotal(inTaxTotal);
-    invoiceLineMap.put("InTaxTotal", invoiceLine.getInTaxTotal());
+    invoiceLineMap.put("inTaxTotal", invoiceLine.getInTaxTotal());
     invoiceLine.setCompanyInTaxTotal(companyInTaxTotal);
-    invoiceLineMap.put("CompanyInTaxTotal", invoiceLine.getCompanyInTaxTotal());
+    invoiceLineMap.put("companyInTaxTotal", invoiceLine.getCompanyInTaxTotal());
     invoiceLine.setCompanyExTaxTotal(companyExTaxTotal);
-    invoiceLineMap.put("CompanyExTaxTotal", invoiceLine.getCompanyExTaxTotal());
+    invoiceLineMap.put("companyExTaxTotal", invoiceLine.getCompanyExTaxTotal());
 
     return invoiceLineMap;
   }

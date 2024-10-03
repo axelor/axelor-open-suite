@@ -93,7 +93,7 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServi
           budgetToolsService.getBudgetRemainingAmountToAllocate(
               invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
       invoiceLineMap.put(
-          "BudgetRemainingAmountToAllocate", invoiceLine.getBudgetRemainingAmountToAllocate());
+          "budgetRemainingAmountToAllocate", invoiceLine.getBudgetRemainingAmountToAllocate());
     }
 
     return invoiceLineMap;
