@@ -9,6 +9,7 @@ import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.address.CountryService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.RequestPostStructure;
@@ -57,7 +58,7 @@ public class AddressPostRequest extends RequestPostStructure {
     this.streetName = streetName;
   }
 
-  public Country fetchCountry() throws AxelorException {
+  public Country fetchCountry() {
     Country fetchedCountry;
     switch (country.length()) {
       case 2:
@@ -81,10 +82,7 @@ public class AddressPostRequest extends RequestPostStructure {
     if (fetchedCountry != null) {
       return fetchedCountry;
     }
-
-    throw new AxelorException(
-        TraceBackRepository.CATEGORY_INCONSISTENCY,
-        String.format(I18n.get(BaseExceptionMessage.NO_COUNTRY_FOUND), country));
+    return Beans.get(CountryService.class).createAndSaveCountry(country, country);
   }
 
   public City fetchCity() throws AxelorException {
