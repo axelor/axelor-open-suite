@@ -106,7 +106,7 @@
     <panel-tabs name="mainPanelTab">
 
       <panel name="overviewPanel" title="Overview"
-        onTabSelect="action-project-activity-dashboard-method-on-new">
+        onTabSelect="action-project-activity-dashboard-method-on-new,action-project-dashboard-method-on-new">
         <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"/>
         <field name="fromDate" colSpan="3"/>
         <field name="toDate" colSpan="3"/>
@@ -145,8 +145,7 @@
     </panel>
     <panel name="dashboardPanel" title="Dashboard" showTitle="false" colSpan="12"
       canCollapse="true" collapseIf="false">
-      <panel-dashlet name="dashboardPanelDashlet" height="200%"
-        action="project.reporting.projects.dashboard" colSpan="12"/>
+      <panel-include view="project-dashboard-form"/>
     </panel>
     <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject">
@@ -464,6 +463,8 @@
   <action-group name="action-project-on-load-group">
     <action name="action-project-attrs-on-new-load"/>
     <action name="action-project-method-task-status-management-selection-in"/>
+    <action name="action-project-activity-dashboard-method-on-new"/>
+    <action name="action-project-dashboard-method-on-new"/>
   </action-group>
 
   <action-group name="action-project-group-on-new-project">
