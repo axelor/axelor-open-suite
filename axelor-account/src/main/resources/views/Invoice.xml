@@ -564,7 +564,7 @@
         <field name="address" hideIf="$readonly() || statusSelect &gt; 1"
           onSelect="action-invoice-attrs-domain-address"
           onChange="action-method-invoice-address-str" canEdit="false" canNew="true"
-          form-view="address-partner-address-form" grid-view="address-grid"/>
+          form-view="address-form" grid-view="address-grid"/>
         <field name="addressStr" readonlyIf="statusSelect &gt; 1" height="5">
           <viewer><![CDATA[<>{addressStr}</>]]></viewer>
 
@@ -646,8 +646,8 @@
           showIf="operationTypeSelect == 3">
           <field name="deliveryAddress" hideIf="$readonly() || statusSelect &gt; 1"
             onSelect="action-invoice-attrs-domain-delivery-address"
-            onChange="action-method-invoice-compute-delivery-address-str"
-            form-view="address-partner-address-form" canEdit="false" canNew="true" colSpan="6"/>
+            onChange="action-method-invoice-compute-delivery-address-str" form-view="address-form"
+            canEdit="false" canNew="true" colSpan="6"/>
           <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
             grid-view="incoterm-grid"
             if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
@@ -1217,8 +1217,8 @@
       <panel name="addressDetailsPanel" stacked="true">
         <field name="address" hideIf="$readonly() || statusSelect &gt; 1"
           onSelect="action-invoice-attrs-domain-address"
-          onChange="action-method-invoice-address-str" form-view="address-partner-address-form"
-          canEdit="false" canNew="true"/>
+          onChange="action-method-invoice-address-str" form-view="address-form" canEdit="false"
+          canNew="true"/>
         <field name="addressStr" readonlyIf="statusSelect &gt; 1" height="5">
           <viewer><![CDATA[<>{addressStr}</>]]></viewer>
         </field>

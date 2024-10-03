@@ -128,6 +128,12 @@ public class ProjectController {
       response.setValue("analyticDistributionTemplate", project.getAnalyticDistributionTemplate());
       response.setValue("currency", project.getCurrency());
       response.setValue("priceList", project.getPriceList());
+
+      response.setValue(
+          "contactPartner",
+          partner.getContactPartnerSet().size() == 1
+              ? partner.getContactPartnerSet().iterator().next()
+              : null);
     }
   }
 

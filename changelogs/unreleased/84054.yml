@@ -1,0 +1,3 @@
+---
+title: "Accounting report: added filter on company for report type in custom reports if companies are empty."
+module: axelor-account

@@ -1,0 +1,3 @@
+---
+title: "Partner blocking: fixed 'blocking partner with late payment' feature which resulted in some processes being stuck."
+module: axelor-account

@@ -255,6 +255,7 @@
     <action name="action-expense-attrs-hide-button-readonly-field"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
     <action name="action-expense-attrs-kilometric-panel-visibility"/>
+    <action name="action-validate-check-user-employee"/>
   </action-group>
 
   <action-group name="action-expense-group-form-onLoad">
@@ -306,7 +307,7 @@
     <field name="bankDetails"
       expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
     <field name="currency"
-      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany.currency ?: __user__.activeCompany.currency"/>
+      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany?.currency ?: __user__.activeCompany?.currency"/>
     <field name="typeSelect"
       expr="eval: _isExpenseDeclaration ? com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE_DECLARATION : com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE"/>
   </action-record>
@@ -404,6 +405,11 @@
   <action-validate name="action-expense-validate-period">
     <error message="Period is closed"
       if="period?.statusSelect == 2 || period?.statusSelect == 5"/>
+  </action-validate>
+
+  <action-validate name="action-validate-check-user-employee">
+    <error message="Please create an employee for the user ${__user__.name}"
+      if="__user__.employee == null &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0"/>
   </action-validate>
 
   <action-view name="action-expense-refusal-popup-form" title="Ground for refusal"

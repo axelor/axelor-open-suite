@@ -124,6 +124,9 @@
 
     <string name="wikiDescription" multiline="true" large="true"/>
 
+    <one-to-many name="projectCheckListItemList"
+      ref="com.axelor.apps.project.db.ProjectCheckListItem" title="Check list" mappedBy="project"/>
+
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>
 

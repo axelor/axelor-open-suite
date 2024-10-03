@@ -155,6 +155,8 @@ import com.axelor.apps.base.service.ProductUpdateService;
 import com.axelor.apps.base.service.ProductUpdateServiceImpl;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.ProductVariantServiceImpl;
+import com.axelor.apps.base.service.TagService;
+import com.axelor.apps.base.service.TagServiceImpl;
 import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
@@ -165,6 +167,8 @@ import com.axelor.apps.base.service.YearService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.address.AddressAttrsService;
 import com.axelor.apps.base.service.address.AddressAttrsServiceImpl;
+import com.axelor.apps.base.service.address.AddressCreationService;
+import com.axelor.apps.base.service.address.AddressCreationServiceImpl;
 import com.axelor.apps.base.service.address.AddressFetchService;
 import com.axelor.apps.base.service.address.AddressFetchServiceImpl;
 import com.axelor.apps.base.service.address.AddressMetaService;
@@ -485,5 +489,7 @@ public class BaseModule extends AxelorModule {
     bind(DataSharingReferentialLineService.class).to(DataSharingReferentialLineServiceImpl.class);
     bind(MetaViewService.class).to(MetaViewServiceImpl.class);
     bind(DataSharingProductWizardService.class).to(DataSharingProductWizardServiceImpl.class);
+    bind(TagService.class).to(TagServiceImpl.class);
+    bind(AddressCreationService.class).to(AddressCreationServiceImpl.class);
   }
 }

@@ -8,8 +8,7 @@
   <entity name="QualityMeasuringPoint">
 
     <string name="name" title="Name"/>
-    <integer name="measuringNote" title="Note"
-      selection="quality.measuring.point.measuring.note.select"/>
+    <integer name="measuringNote" title="Note"/>
     <boolean name="compliant" title="Compliant"/>
     <decimal name="coefficient" title="Coefficient"/>
     <string name="observations" title="Observations" large="true"/>
