@@ -1,3 +1,0 @@
----
-title: "Payroll preparation: fixed employee bonus amount computation by correctly ignoring lines that were not computed."
-module: axelor-human-resource

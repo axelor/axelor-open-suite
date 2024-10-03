@@ -1,3 +1,59 @@
+## [8.1.8] (2024-10-03)
+
+### Fixes
+#### Base
+
+* Webapp: updated Axelor Open Platform dependency to 7.1.5.
+* ABC analysis: fixed an issue where printing an unsaved analysis was not setting correctly the sequence,and added sequence in demo data.
+* Batch: added french translation for '* %s anomaly(ies)'
+
+#### Account
+
+* Accounting report: added filter on company for report type in custom reports if companies are empty.
+* Partner blocking: fixed 'blocking partner with late payment' feature which resulted in some processes being stuck.
+
+#### Bank Payment
+
+* Bank order/ Bank statement: fixed broken reports.
+
+#### Business Project
+
+* Invoicing project annex report: fixed empty values in multiple columns.
+
+#### Contract
+
+* Contract template: removed unused condition related to statusSelect field.
+
+#### Helpdesk
+
+* Ticket: fixed the french translation  of 'Assign to me'.
+
+#### Human Resource
+
+* Payroll preparation: improved export to Silae by adding the number of lunch vouchers and employee bonus.
+* Payroll preparation: fixed employee bonus amount computation by correctly ignoring lines that were not computed.
+* Leave request: fixed the leave reason domain when employee is null.
+* Project planning time: fixed error while selecting unit when time unit is null.
+* Expense/ Leave request/ Timesheet/ TSTimer: fixed creation with empty employee when connected user doesn't have employee.
+* Payroll preparation: improved export to Nibelis by adding the number of working days in the period.
+
+#### Project
+
+* Project: fixed issue related to contact partner when updating client partner.
+
+#### Stock
+
+* Logistical form line: fixed wrong calculation of net weight.
+* Stock move line: the advanced filter saved is not displayed unless we refresh the whole page.
+
+#### Supply Chain
+
+* Sale order invoicing: removed partially invoiced flag when invoice is fully refunded.
+
+#### Intervention
+
+* Equipment: fixed contract domain to have only billing contracts.
+
 ## [8.1.7] (2024-09-19)
 
 ### Fixes
@@ -587,6 +643,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.8]: https://github.com/axelor/axelor-open-suite/compare/v8.1.7...v8.1.8
 [8.1.7]: https://github.com/axelor/axelor-open-suite/compare/v8.1.6...v8.1.7
 [8.1.6]: https://github.com/axelor/axelor-open-suite/compare/v8.1.5...v8.1.6
 [8.1.5]: https://github.com/axelor/axelor-open-suite/compare/v8.1.4...v8.1.5
