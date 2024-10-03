@@ -84,7 +84,6 @@
       onSelect="action-move-line-mass-entry-method-domain-pfp-validator-user-on-select"
       canEdit="false"
       onChange="action-move-line-mass-entry-attrs-set-required-move-pfp-validator-user"/>
-    <field name="deliveryDate" title="Delivery date" width="120"/>
     <field name="analyticDistributionTemplate"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
