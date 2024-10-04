@@ -34,7 +34,7 @@
     <view type="form" name="project-version-form"/>
   </action-view>
 
-  <menuitem name="project-task-customer" title="Tickets" order="700"
+  <menuitem name="project-task-customer" title="Tickets" order="300"
     parent="menu-project-root" if="__config__.app.isApp('business-support')" icon="clipboard-check"
     icon-background="#3f6bb9"/>
 
