@@ -23,12 +23,8 @@
       <field name="code" onChange="action-condition-group-validCode"
         validIf="code.length >= 2" readonlyIf="id &amp;&amp; code == 'admins'"/>
       <field name="navigation"/>
-      <panel name="actionsPanel" stacked="true">
-        <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
-        <field name="__actionSelect" title="Action" widget="SuggestBox" canNew="false"
-          target="com.axelor.meta.db.MetaAction" target-name="name"
-          domain="self.type = 'action-view' and self.home = true"/>
-      </panel>
+      <field name="homeAction" widget="ref-text" x-target="com.axelor.meta.db.MetaAction"
+        x-target-name="name" domain="self.type = 'action-view' and self.home = true"/>
       <field name="technicalStaff" colSpan="3"/>
       <field name="canViewCollaboration"/>
       <field name="isClient" colSpan="3"/>
