@@ -42,6 +42,11 @@
   <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-method-check-resource-availibility" width="large">
+    <toolbar>
+      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
+        onClick="save,action-project-view-show-planning-panel" if="__config__.app.isApp('employee')"
+        if-module="axelor-human-resource" showIf="isShowPlanning"/>
+    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -63,9 +68,6 @@
         <item name="bookResourceItem" title="Book resource"
           if=" __config__.app.getApp('project')?.resourceManagement"
           action="save,action-project-book-resource"/>
-        <item title="Show planning" action="action-project-view-show-planning-panel"
-          if-module="axelor-human-resource" if="__config__.app.isApp('employee')"
-          showIf="isShowPlanning &amp;&amp; id"/>
         <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
         <item name="topic" title="Topic" action="save,project.topic.all"
           showIf="id &amp;&amp; isShowTopic"/>

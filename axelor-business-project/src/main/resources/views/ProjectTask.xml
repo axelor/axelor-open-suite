@@ -125,17 +125,19 @@
       <button name="doneBtn" icon="fa-check"
         onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
         showIf="project.taskStatusManagementSelect != 1"/>
+      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
+        onClick="save,action-business-project-task-view-show-planning"
+        if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
+        showIf="project.isShowPlanning"/>
+      <button name="showFinancialDatas" icon="clipboard-data" title="Show financial datas"
+        onClick="save,action-project-task-view-show-financial-datas-panel"/>
     </toolbar>
     <menubar>
-      <menu name="projectTaskMenu" title="Tools">
+      <menu name="projectTaskMenu" title="Tools"
+        if="__config__.app.getApp('project')?.resourceManagement">
         <item name="bookResourceItem" title="Book resource"
           action="save,action-project-task-book-resource"
           if="__config__.app.getApp('project')?.resourceManagement"/>
-        <item title="Show financial datas"
-          action="action-project-task-view-show-financial-datas-panel" showIf="id"/>
-        <item title="Show planning" action="action-business-project-task-view-show-planning"
-          if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
-          showIf="project.isShowPlanning"/>
       </menu>
     </menubar>
 
