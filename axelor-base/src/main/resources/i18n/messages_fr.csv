@@ -910,6 +910,7 @@
 "February","Février",,
 "Fetch emails","Récupérer les emails",,
 "Fetch limit","Limite de récupération par lot",,
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.","Limite de récupération par lot pour ce traitement de masse. 0 ne sera pas pris en compte. Dans ce cas, la valeur définie dans la configuration de l'application Base sera utilisée.",,
 "Field","Champ",,
 "Field displayed in the result of the research",,,
 "Field permission","Champ de permission",,

@@ -289,6 +289,8 @@
 "Error while generating bill of material: the product of the bill of material is supposed to be generated from the configurator but the configurator did not generate a product.",,,
 "Expected/Future Quantity",,,
 "Export",,,
+"Fetch limit",,,
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",,,
 "Fill SOP real values",,,
 "Filters",,,
 "Finish",,,
