@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderEncryptionService;
@@ -225,6 +226,11 @@ public class BankOrderController {
 
   public void encryptUploadedFile(ActionRequest request, ActionResponse response)
       throws AxelorException {
+    if (!Beans.get(AppBankPaymentService.class)
+        .getAppBankPayment()
+        .getEnableBankOrderFileEncryption()) {
+      return;
+    }
     Context context = request.getContext();
     boolean isMetafileEncrypted =
         Optional.ofNullable(context.get("isMetafileEncrypted"))
