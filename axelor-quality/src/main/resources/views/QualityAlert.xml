@@ -38,7 +38,7 @@
       <field name="startDate"/>
       <field name="endDate"/>
       <field name="deadLineDate"/>
-      <field name="tagSet" widget="TagSelect" x-color-field="colorPicker"
+      <field name="tagSet" widget="TagSelect" x-color-field="colorSelect"
         grid-view="tag-simplified-grid" form-view="tag-form"
         onSelect="action-quality-alert-attrs-set-quality-tag-domain"/>
     </panel>

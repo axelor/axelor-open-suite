@@ -341,7 +341,7 @@
             onChange="action-record-base-partner-set-business-card"/>
           <field name="functionBusinessCard"/>
         </panel>
-        <field name="tagSet" widget="TagSelect" x-color-field="colorPicker"
+        <field name="tagSet" widget="TagSelect" x-color-field="colorSelect"
           grid-view="tag-simplified-grid" form-view="tag-form"
           onSelect="action-partner-attrs-set-partner-tag-domain"/>
       </panel>
