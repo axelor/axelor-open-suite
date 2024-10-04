@@ -11,6 +11,8 @@
       <field name="manageBankToBankTransferPayment" widget="boolean-switch"/>
       <field name="manageBillOfExchange" widget="boolean-switch"/>
       <field name="useEditorInBankOrderForm" widget="boolean-switch"/>
+      <field name="enableBankOrderFileEncryption" widget="boolean-switch"
+        onChange="action-app-bank-payment-method-check-password-filled"/>
     </panel>
     <panel name="configPanel">
       <button name="generateBankPaymentConfigurationsBtn"
@@ -39,5 +41,10 @@
     <view type="grid" name="bank-payment-config-grid"/>
     <view type="form" name="bank-payment-config-form"/>
   </action-view>
+
+  <action-method name="action-app-bank-payment-method-check-password-filled">
+    <call class="com.axelor.apps.bankpayment.web.AppBankPaymentController"
+      method="checkPasswordPresentInConfig"/>
+  </action-method>
 
 </object-views>

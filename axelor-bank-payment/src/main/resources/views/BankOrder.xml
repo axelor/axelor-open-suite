@@ -139,6 +139,7 @@
           readonlyIf="technicalOriginSelect == 1"/>
         <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"
           readonlyIf="technicalOriginSelect == 1"/>
+        <field name="$isMetafileEncrypted" hidden="true" colSpan="12"/>
         <panel name="accountingTriggerPanel" stacked="true">
           <field name="accountingTriggerSelect" showIf="functionalOriginSelect != 1"
             requiredIf="functionalOriginSelect != 1"/>
@@ -301,6 +302,12 @@
         showIf="statusSelect == 2 || statusSelect == 3" prompt="The payment status will not update."
         onClick="save,action-bank-order-method-set-status-correct"/>
     </panel>
+    <panel name="decryptFilePanel" sidebar="true"
+      showIf="generatedMetaFile &amp;&amp; $isMetafileEncrypted">
+      <button name="decryptFileBtn" title="Decrypt generated file"
+        onClick="action-bank-order-decrypt-password"
+        showIf="generatedMetaFile &amp;&amp; $isMetafileEncrypted"/>
+    </panel>
     <panel name="dateTimePanel" sidebar="true"
       showIf="statusSelect &gt;= 2 || technicalOriginSelect == 1" itemSpan="12" readonly="true">
       <field name="fileGenerationDateTime" showIf="fileGenerationDateTime"/>
@@ -388,6 +395,14 @@
     </panel>
   </form>
 
+  <form name="bank-order-decrypt-file-form" title="Decrypt file"
+    model="com.axelor.utils.db.Wizard">
+    <panel name="mainPanel">
+      <field name="$password" title="Password" type="password" colSpan="3"/>
+      <button name="decryptBtn" title="Decrypt and download file"
+        onClick="action-bank-order-method-decrypt-and-download" colSpan="3"/>
+    </panel>
+  </form>
 
   <!-- BANK ORDER ACTIONS -->
   <!-- Actions Groups -->
@@ -415,6 +430,7 @@
   <action-group name="action-bank-order-group-on-load">
     <action name="action-bank-order-attrs-show-partner-or-receiver-company"/>
     <action name="action-bank-order-attrs-on-load"/>
+    <action name="action-bank-order-method-set-is-file-encrypted" if="generatedMetaFile"/>
   </action-group>
 
   <action-group name="action-bank-order-group-sender-company-change">
@@ -756,4 +772,22 @@
       if="bankOrderDate != null &amp;&amp; bankOrderDate &lt; __config__.date"/>
   </action-validate>
 
+  <action-view name="action-bank-order-decrypt-password" title="Decrypt file password"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="bank-order-decrypt-file-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_bankOrder" expr="eval: __this__.id"/>
+  </action-view>
+
+  <action-method name="action-bank-order-method-decrypt-and-download">
+    <call class="com.axelor.apps.bankpayment.web.BankOrderController"
+      method="decryptAndDownload"/>
+  </action-method>
+
+  <action-method name="action-bank-order-method-set-is-file-encrypted">
+    <call class="com.axelor.apps.bankpayment.web.BankOrderController"
+      method="setIsFileEncrypted"/>
+  </action-method>
 </object-views>
