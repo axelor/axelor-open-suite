@@ -97,7 +97,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
             bomLine.setProduct(subSaleOrderLine.getProduct());
             bomLine.setUnit(subSaleOrderLine.getUnit());
             bomLine.setBillOfMaterial(subSaleOrderLine.getBillOfMaterial());
-            bomLine.setPriority(subSaleOrderLine.getSequence());
+            bomLine.setPriority(subSaleOrderLine.getSequence() * 10);
             bom.addBillOfMaterialLineListItem(bomLine);
           }
           // Creating a new one
@@ -154,6 +154,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
         subSaleOrderLine.getQty(),
         subSaleOrderLine.getUnit(),
         Optional.ofNullable(subSaleOrderLine.getSequence())
+            .map(seq -> seq * 10)
             .or(
                 () ->
                     Optional.ofNullable(subSaleOrderLine.getBillOfMaterialLine())
