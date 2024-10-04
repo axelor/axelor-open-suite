@@ -536,14 +536,6 @@
       if="frameworkCustomerContract &amp;&amp; frameworkSupplierContract"/>
   </action-attrs>
 
-  <action-attrs name="action-project-task-attrs-assginment-customer">
-    <attribute name="value" for="assignment" expr="eval: 1"/>
-  </action-attrs>
-
-  <action-attrs name="action-project-task-attrs-assginment-provider">
-    <attribute name="value" for="assignment" expr="eval: 2"/>
-  </action-attrs>
-
   <action-attrs name="action-project-task-attrs-onchange-invoice-type">
     <attribute name="value" for="toInvoice" expr="eval: true"
       if="invoicingType == 1 || invoicingType == 2"/>
