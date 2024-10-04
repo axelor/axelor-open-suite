@@ -1,0 +1,3 @@
+---
+title: "Accounting report: fixed NPE when selecting report type on form opened from year closure."
+module: axelor-account
