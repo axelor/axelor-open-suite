@@ -47,6 +47,13 @@
     onLoad="action-business-project-project-group-on-load"
     onNew="action-business-project-project-group-on-new"
     onSave="action-project-method-check-resource-availibility">
+    <toolbar>
+      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
+        onClick="save,action-project-view-show-planning-panel" if="__config__.app.isApp('employee')"
+        if-module="axelor-human-resource" showIf="isShowPlanning"/>
+      <button name="showFinancialDatas" icon="clipboard-data" title="Show financial datas"
+        onClick="save,action-project-view-show-financial-datas-panel"/>
+    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -69,11 +76,6 @@
         <item name="bookResourceItem" title="Book resource"
           if=" __config__.app.getApp('project')?.resourceManagement"
           action="save,action-project-book-resource"/>
-        <item title="Show planning" action="action-project-view-show-planning-panel"
-          if-module="axelor-human-resource" if="__config__.app.isApp('employee')"
-          showIf="isShowPlanning &amp;&amp; id"/>
-        <item title="Show financial datas"
-          action="action-project-view-show-financial-datas-panel" showIf="id"/>
         <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
         <item name="topic" title="Topic" action="save,project.topic.all"
           showIf="id &amp;&amp; isShowTopic"/>
