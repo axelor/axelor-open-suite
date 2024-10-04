@@ -3,8 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
-  <menuitem name="menu-project-root" order="-1400" title="Project" icon="list-task"
-    if="__config__.app.isApp('project')" icon-background="#3f6bb9"/>
+  <menuitem name="menu-project-root" order="-1400" title="Project management"
+    icon="list-task" if="__config__.app.isApp('project')" icon-background="#3f6bb9"/>
 
   <menuitem name="menu-project-project-root" parent="menu-project-root" order="0"
     title="Projects" icon="fa-tasks" icon-background="#3f6bb9"/>
@@ -16,7 +16,7 @@
   </action-method>
 
   <menuitem name="project-task-all" parent="menu-project-project-root" order="300"
-    title="Tasks" action="project.task.all"/>
+    title="Project tasks" action="project.task.all"/>
   <action-method name="project.task.all">
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="allProjectTasks"/>
   </action-method>
