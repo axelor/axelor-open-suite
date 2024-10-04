@@ -111,7 +111,7 @@
         <field name="compatibleAccountSet" widget="TagSelect"
           showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"
           domain="self.company = :company"/>
-        <field name="tagSet" widget="TagSelect" x-color-field="colorSelect"
+        <field name="tagSet" widget="TagSelect" x-color-field="colorPicker"
           grid-view="tag-simplified-grid" form-view="tag-form"
           onSelect="action-account-attrs-set-account-tag-domain"/>
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12"

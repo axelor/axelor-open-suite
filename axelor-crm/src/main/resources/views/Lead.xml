@@ -302,7 +302,7 @@
         grid-view="source-grid" canNew="true"/>
       <field name="type" grid-view="partner-category-grid" form-view="partner-category-form"
         colSpan="6"/>
-      <field name="tagSet" widget="TagSelect" x-color-field="colorSelect"
+      <field name="tagSet" widget="TagSelect" x-color-field="colorPicker"
         grid-view="tag-simplified-grid" form-view="tag-form"
         onSelect="action-lead-attrs-set-lead-tag-domain"/>
     </panel>
