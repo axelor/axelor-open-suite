@@ -6,6 +6,7 @@ import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.studio.db.AppSale;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -35,7 +36,7 @@ public class SaleOrderLineMultipleQtyServiceImpl implements SaleOrderLineMultipl
     BigDecimal qty = saleOrderLine.getQty();
     List<ProductMultipleQty> productMultipleQtyList = product.getSaleProductMultipleQtyList();
 
-    if (appSaleService.getAppSale().getIsEditableGridEnabled()
+    if (appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_EDITABLE
         && !productMultipleQtyService.isMultipleQty(qty, productMultipleQtyList)) {
       return productMultipleQtyService.getMultipleQuantityErrorMessage(productMultipleQtyList);
     }

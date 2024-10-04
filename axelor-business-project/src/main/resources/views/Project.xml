@@ -25,13 +25,18 @@
     <field name="clientPartner"/>
   </grid>
 
-  <form name="project-form" id="business-project-project-form" title="Project"
+  <form name="incl-project-structure-panel-form"
+    id="incl-business-project-structure-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project" extension="true">
     <extend target="//field[@name='isShowPhasesElements']">
       <insert position="before">
-        <button name="convertProjectBtn" colSpan="12"
+        <button name="convertProjectBtn"
           onClick="save,action-project-view-convert-project-wizard"
           title="Convert into business project" showIf="!isBusinessProject"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='childProjectList']">
+      <insert position="after">
         <field name="isBusinessProject" hidden="true"/>
       </insert>
     </extend>
@@ -255,6 +260,8 @@
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
       <panel-include view="incl-wiki-panel-form"/>
+
+      <panel-include view="incl-checklist-panel-form"/>
 
       <panel-include if-module="axelor-human-resource"
         view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>

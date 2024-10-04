@@ -32,6 +32,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
 import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;

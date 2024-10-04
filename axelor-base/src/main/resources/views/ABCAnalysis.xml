@@ -22,7 +22,7 @@
         prompt="Are you sure you want to run the analysis ? It can take a long time."
         showIf="statusSelect != 2"/>
       <button name="printBtn" title="Print"
-        onClick="save,action-abc-analysis-validate-abc-analysis-seq,action-abc-analysis-validate-status,action-method-print-template"
+        onClick="action-abc-analysis-method-set-sequence,save,action-abc-analysis-validate-abc-analysis-seq,action-abc-analysis-validate-status,action-method-print-template"
         icon="fa-print"/>
     </toolbar>
     <panel name="statusPanel" hidden="true">
