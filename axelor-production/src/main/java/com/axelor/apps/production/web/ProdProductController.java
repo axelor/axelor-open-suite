@@ -22,7 +22,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.ProdProductAttrsService;
+import com.axelor.apps.production.service.ProdProductService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -42,6 +44,20 @@ public class ProdProductController {
           "domain",
           Beans.get(ProdProductAttrsService.class)
               .getTrackingNumberDomain(manufOrder, prodProduct));
+    }
+  }
+
+  public void checkFinishedProduct(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    var prodProduct = request.getContext().asType(ProdProduct.class);
+    var parent = request.getContext().getParent();
+
+    if (parent != null
+        && parent.getContextClass().equals(ManufOrder.class)
+        && Beans.get(ProdProductService.class)
+            .existInFinishedProduct(parent.asType(ManufOrder.class), prodProduct)) {
+      response.setInfo(ProductionExceptionMessage.MANUF_ORDER_WASTE_DECLARATION_IN_PRODUCED_LIST);
     }
   }
 }

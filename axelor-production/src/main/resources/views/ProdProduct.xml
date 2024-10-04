@@ -95,7 +95,8 @@
       <field name="qty" required="true"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
       <field name="wasteProductTrackingNumber"
-        onSelect="action-prod-product-method-set-tracking-number-domain"/>
+        onSelect="action-prod-product-method-set-tracking-number-domain"
+        onChange="action-prod-product-method-check-in-finished-products"/>
     </panel>
     <panel-dashlet name="showStockPanel"
       action="action-prod-product-view-product-qty-stock-location-line"/>
@@ -136,5 +137,10 @@
     <attribute name="scale" for="qty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
+
+  <action-method name="action-prod-product-method-check-in-finished-products">
+    <call class="com.axelor.apps.production.web.ProdProductController"
+      method="checkFinishedProduct"/>
+  </action-method>
 
 </object-views>
