@@ -283,7 +283,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
   protected BigDecimal getProductBaseQty(StockCorrection stockCorrection) {
     StockLocationLine stockLocationLine = getProductStockLocationLine(stockCorrection);
-    return stockLocationLine.getCurrentQty();
+    return stockLocationLine != null ? stockLocationLine.getCurrentQty() : BigDecimal.ZERO;
   }
 
   @Override
