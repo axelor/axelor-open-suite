@@ -1,0 +1,3 @@
+---
+title: "Stock API: fixed issue on stock correction creation request."
+module: axelor-stock
