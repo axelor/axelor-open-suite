@@ -76,7 +76,7 @@
           colSpan="4" onChange="action-stock-location-group-site-on-change"/>
         <field name="parentStockLocation" canEdit="false" form-view="stock-location-form"
           grid-view="stock-location-grid" colSpan="4"
-          onSelect="action-stock-location-attrs-set-parent-stock-location-domain"
+          onSelect="action-stock-location-method-set-parent-stock-location-domain"
           onChange="action-stock-location-record-auto-fill-site"/>
         <field name="partner" canEdit="false" showIf="typeSelect == 2"
           domain="self.isContact = false AND :company member of self.companySet"
@@ -306,6 +306,11 @@
     <attribute for="parentStockLocation" name="domain"
       expr="self.company = :company AND self.site = :site" if="site != null"/>
   </action-attrs>
+
+  <action-method name="action-stock-location-method-set-parent-stock-location-domain">
+    <call class="com.axelor.apps.stock.web.StockLocationController"
+      method="setParentStockLocationDomain"/>
+  </action-method>
 
   <action-record name="action-stock-location-record-remove-parent-stock-location"
     model="com.axelor.apps.stock.db.StockLocation">
