@@ -19,6 +19,7 @@
 package com.axelor.apps.base.service.weeklyplanning;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.DayPlanningRepository;
@@ -268,5 +269,14 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
         I18n.get(Character.toUpperCase(dayPlanningName.charAt(0)) + dayPlanningName.substring(1))
             .toLowerCase()); // Because day of week are traduced with a upperCase at the first
     // letter
+  }
+
+  @Override
+  public boolean checkDateIsWeekend(Company company, LocalDate date) {
+
+    WeeklyPlanning weeklyPlanning = company.getWeeklyPlanning();
+    DayPlanning dayPlanning = weeklyPlanning != null ? findDayPlanning(weeklyPlanning, date) : null;
+
+    return dayPlanning != null && dayPlanning.getIsWeekend();
   }
 }
