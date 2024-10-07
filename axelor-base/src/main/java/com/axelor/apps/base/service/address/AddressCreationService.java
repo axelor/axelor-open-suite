@@ -25,4 +25,7 @@ public interface AddressCreationService {
    * @param address
    */
   public void autocompleteAddress(Address address);
+
+  Address fetchAddress(Country country, City city, String zip, String streetName)
+      throws AxelorException;
 }

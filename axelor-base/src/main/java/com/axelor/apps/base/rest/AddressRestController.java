@@ -7,6 +7,7 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.rest.dto.AddressPostRequest;
 import com.axelor.apps.base.rest.dto.AddressResponse;
 import com.axelor.apps.base.service.address.AddressCreationService;
+import com.axelor.apps.base.service.address.CountryService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -39,18 +40,31 @@ public class AddressRestController {
     RequestValidator.validateBody(requestBody);
 
     try {
-      Address address = requestBody.fetchAddress();
+      CountryService countryService = Beans.get(CountryService.class);
+      String countryCode = requestBody.getCountry();
+      Country country =
+          countryService
+              .fetchCountry(countryCode)
+              .orElse(countryService.createAndSaveCountry(countryCode, countryCode));
+
+      AddressCreationService addressCreationService = Beans.get(AddressCreationService.class);
+      Address address =
+          addressCreationService.fetchAddress(
+              country,
+              requestBody.fetchCity(country),
+              requestBody.getZip(),
+              requestBody.getStreetName());
+
       if (address == null) {
         return ResponseConstructor.build(
             Response.Status.CREATED,
             I18n.get("Address created"),
             new AddressResponse(
-                Beans.get(AddressCreationService.class)
-                    .createAndSaveAddress(
-                        requestBody.fetchCountry(),
-                        requestBody.fetchCity(),
-                        requestBody.getZip(),
-                        requestBody.getStreetName())));
+                addressCreationService.createAndSaveAddress(
+                    country,
+                    requestBody.fetchCity(country),
+                    requestBody.getZip(),
+                    requestBody.getStreetName())));
       }
       return ResponseConstructor.build(
           Response.Status.OK, I18n.get("Address found"), new AddressResponse(address));
