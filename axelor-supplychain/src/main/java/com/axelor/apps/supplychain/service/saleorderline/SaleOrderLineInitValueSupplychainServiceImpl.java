@@ -52,7 +52,7 @@ public class SaleOrderLineInitValueSupplychainServiceImpl
   @Override
   public Map<String, Object> onNewEditableInitValues(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-    Map<String, Object> values = new HashMap<>();
+    Map<String, Object> values = super.onNewEditableInitValues(saleOrder, saleOrderLine);
     return values;
   }
 
