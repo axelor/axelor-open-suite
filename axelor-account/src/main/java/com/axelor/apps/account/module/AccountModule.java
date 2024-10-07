@@ -219,6 +219,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolServiceImpl;
+import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceService;
+import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsServiceImpl;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineTaxAttrsService;
@@ -235,6 +237,8 @@ import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxRecordService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxRecordServiceImpl;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolServiceImpl;
+import com.axelor.apps.account.service.invoice.tax.InvoiceTaxComputeService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceTaxComputeServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelService;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationService;
@@ -349,6 +353,8 @@ import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServi
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServiceImpl;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateServiceImpl;
+import com.axelor.apps.account.service.payment.PaymentModeInterestRateService;
+import com.axelor.apps.account.service.payment.PaymentModeInterestRateServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentModeServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -369,6 +375,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentToolService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentToolServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
@@ -399,6 +407,10 @@ import com.axelor.apps.account.service.reconcile.ReconcileToolService;
 import com.axelor.apps.account.service.reconcile.ReconcileToolServiceImpl;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.account.service.reconcile.UnreconcileServiceImpl;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapService;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapServiceImpl;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapToolService;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapToolServiceImpl;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupService;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupServiceImpl;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupToolService;
@@ -943,5 +955,15 @@ public class AccountModule extends AxelorModule {
     bind(MovePfpValidateService.class).to(MovePfpValidateServiceImpl.class);
 
     bind(InvoicePfpValidateService.class).to(InvoicePfpValidateServiceImpl.class);
+    bind(InvoiceTermPaymentToolService.class).to(InvoiceTermPaymentToolServiceImpl.class);
+
+    bind(ForeignExchangeGapService.class).to(ForeignExchangeGapServiceImpl.class);
+
+    bind(ForeignExchangeGapToolService.class).to(ForeignExchangeGapToolServiceImpl.class);
+
+    bind(LatePaymentInterestInvoiceService.class).to(LatePaymentInterestInvoiceServiceImpl.class);
+    bind(PaymentModeInterestRateService.class).to(PaymentModeInterestRateServiceImpl.class);
+
+    bind(InvoiceTaxComputeService.class).to(InvoiceTaxComputeServiceImpl.class);
   }
 }

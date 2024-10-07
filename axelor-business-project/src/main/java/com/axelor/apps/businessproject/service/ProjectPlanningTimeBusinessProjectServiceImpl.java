@@ -136,6 +136,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
     }
     if (planningTime.getTimeUnit().equals(appBusinessProjectService.getDaysUnit())) {
       BigDecimal numberHoursADay = project.getNumberHoursADay();
+
       if (numberHoursADay.signum() <= 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

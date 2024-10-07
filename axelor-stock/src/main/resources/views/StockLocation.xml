@@ -72,7 +72,7 @@
         <field name="name"
           onChange="action-stock-location-attrs-set-default-serial-number-with-name" colSpan="12"/>
         <field name="site" if="__config__.app.getApp('base')?.enableSiteManagementForStock"
-          showIf="typeSelect != 3" onSelect="action-stock-location-attrs-set-site-domain"
+          showIf="typeSelect != 3" onSelect="action-stock-location-method-set-site-domain"
           colSpan="4" onChange="action-stock-location-group-site-on-change"/>
         <field name="parentStockLocation" canEdit="false" form-view="stock-location-form"
           grid-view="stock-location-grid" colSpan="4"
@@ -89,6 +89,9 @@
           <field name="company" widget="SuggestBox" canEdit="false" colSpan="12"
             onChange="action-stock-location-record-empty-site-parent-stock-location"
             form-view="company-form" grid-view="company-grid"/>
+          <field name="tradingName" grid-view="trading-name-grid"
+            form-view="trading-name-form" domain="self.company = :company"
+            if="__config__.app.getApp('base')?.enableTradingNamesManagement" colSpan="12"/>
         </panel>
         <panel name="rightPanel" colSpan="6">
           <field name="typeSelect"
@@ -175,6 +178,10 @@
 
   <action-method name="action-stock-location-method-open-print-wizard">
     <call class="com.axelor.apps.stock.web.StockLocationController" method="openPrintWizard"/>
+  </action-method>
+
+  <action-method name="action-stock-location-method-set-site-domain">
+    <call class="com.axelor.apps.stock.web.StockLocationController" method="getSiteDomain"/>
   </action-method>
 
   <action-record name="action-stock-location-record-new"
@@ -272,17 +279,6 @@
 
   <action-attrs name="action-stock-location-attrs-set-default-serial-number-with-name">
     <attribute name="value" for="serialNumber" expr="eval: name" if="eval: id == null"/>
-  </action-attrs>
-
-  <action-attrs name="action-stock-location-attrs-set-site-domain">
-    <attribute for="site" name="domain"
-      expr="self.typeSelect = 1 AND :company MEMBER OF self.companySet" if="eval: typeSelect == 1"/>
-    <attribute for="site" name="domain"
-      expr="self.typeSelect = 2 AND self.partner = :partner AND :company MEMBER OF self.companySet"
-      if="eval: typeSelect == 2 &amp;&amp; partner != null"/>
-    <attribute for="site" name="domain"
-      expr="self.typeSelect = 2 AND :company MEMBER OF self.companySet"
-      if="eval: typeSelect == 2 &amp;&amp; partner == null"/>
   </action-attrs>
 
   <action-view name="action-stock-location-view-tree" title="Stock Location Tree"

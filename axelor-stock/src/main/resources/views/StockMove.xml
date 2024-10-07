@@ -423,7 +423,7 @@
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
           onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
-          domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          domain="self.company = :company" form-view="trading-name-form"
           grid-view="trading-name-grid"/>
         <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
@@ -437,12 +437,10 @@
           readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
         <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str"
-          readonlyIf="statusSelect == 3 || statusSelect == 4"
-          form-view="address-partner-address-form"/>
+          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
         <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
-          readonlyIf="statusSelect == 3 || statusSelect == 4"
-          form-view="address-partner-address-form"/>
+          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
         <static name="deliveryAddressText" hidden="true" colSpan="12">
 	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
         </static>
@@ -476,7 +474,7 @@
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
           onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
-          domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          domain="self.company = :company" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="3"/>
         <field name="partner" canEdit="false"
           domain="self.isContact = false AND :company member of self.companySet"
@@ -490,8 +488,7 @@
           form-view="stock-location-form"/>
         <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
-          readonlyIf="statusSelect == 3 || statusSelect == 4"
-          form-view="address-partner-address-form"/>
+          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
         <field name="toStockLocation" showIf="_fromOutsource &amp;&amp; typeSelect == 2"
           canEdit="false" domain="self.company = :company AND self.typeSelect IN (2, 3)"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
@@ -552,12 +549,11 @@
           form-view="stock-location-form"/>
         <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str"
-          readonlyIf="statusSelect == 3 || statusSelect == 4"
-          form-view="address-partner-address-form"/>
+          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
           onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
-          domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          domain="self.company = :company" form-view="trading-name-form"
           grid-view="trading-name-grid"/>
         <field name="estimatedDate"
           readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
@@ -1498,6 +1494,7 @@
     title="See stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
+    <view-param name="search-filters" value="stock-move-line-filters"/>
     <domain>self.stockMove.typeSelect = :_typeSelect AND self.stockMove.isReversion = :_isReversion</domain>
     <context name="_typeSelect" expr="eval:_typeSelect"/>
     <context name="_isReversion" expr="eval:_isReversion"/>

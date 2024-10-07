@@ -5,6 +5,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
+import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -17,6 +18,16 @@ public class SaleOrderPostRequest extends RequestPostStructure {
   private Long companyId;
   private Long contactId;
   private Long currencyId;
+  private Boolean inAti;
+  private List<SaleOrderLinePostRequest> saleOrderLineList;
+
+  public List<SaleOrderLinePostRequest> getSaleOrderLineList() {
+    return saleOrderLineList;
+  }
+
+  public void setSaleOrderLineList(List<SaleOrderLinePostRequest> saleOrderLineList) {
+    this.saleOrderLineList = saleOrderLineList;
+  }
 
   public Long getCompanyId() {
     return companyId;
@@ -48,6 +59,14 @@ public class SaleOrderPostRequest extends RequestPostStructure {
 
   public void setClientPartnerId(Long clientPartnerId) {
     this.clientPartnerId = clientPartnerId;
+  }
+
+  public Boolean getInAti() {
+    return inAti;
+  }
+
+  public void setInAti(Boolean inAti) {
+    this.inAti = inAti;
   }
 
   public Partner fetchClientPartner() {

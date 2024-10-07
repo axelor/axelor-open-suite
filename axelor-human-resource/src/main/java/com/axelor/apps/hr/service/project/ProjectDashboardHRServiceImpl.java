@@ -40,7 +40,7 @@ public class ProjectDashboardHRServiceImpl extends ProjectDashboardServiceImpl {
   public Map<String, Object> getData(Project project) {
     Map<String, Object> dataMap = super.getData(project);
     dataMap.put("$spentTime", getSpentTime(project));
-    dataMap.put("$isShowTimeSpent", project.getIsShowTimeSpent());
+    dataMap.put("$manageTimeSpent", project.getManageTimeSpent());
     return dataMap;
   }
 
@@ -48,7 +48,7 @@ public class ProjectDashboardHRServiceImpl extends ProjectDashboardServiceImpl {
     List<TimesheetLine> timesheetLineList =
         timsheetLineRepo
             .all()
-            .filter("self.project.id IN ?1", projectToolService.getActiveProjectIds())
+            .filter("self.project.id IN ?1", projectToolService.getRelatedProjectIds(project))
             .fetch();
     BigDecimal totalDuration = BigDecimal.ZERO;
     for (TimesheetLine timesheetLine : timesheetLineList) {

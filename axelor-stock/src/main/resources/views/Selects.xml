@@ -69,20 +69,6 @@
     <option value="3">Missing</option>
   </selection>
 
-  <selection name="rating.icon.select">
-    <option value="0.00" icon="img/rating/rating-0.00.png">0.00</option>
-    <option value="0.50" icon="img/rating/rating-0.50.png">0.50</option>
-    <option value="1.00" icon="img/rating/rating-1.00.png">1.00</option>
-    <option value="1.50" icon="img/rating/rating-1.50.png">1.50</option>
-    <option value="2.00" icon="img/rating/rating-2.00.png">2.00</option>
-    <option value="2.50" icon="img/rating/rating-2.50.png">2.50</option>
-    <option value="3.00" icon="img/rating/rating-3.00.png">3.00</option>
-    <option value="3.50" icon="img/rating/rating-3.50.png">3.50</option>
-    <option value="4.00" icon="img/rating/rating-4.00.png">4.00</option>
-    <option value="4.50" icon="img/rating/rating-4.50.png">4.50</option>
-    <option value="5.00" icon="img/rating/rating-5.00.png">5.00</option>
-  </selection>
-
   <selection name="stock.incoterm.allocation.select">
     <option value="1">Buyer</option>
     <option value="2">Seller</option>
@@ -168,6 +154,13 @@
 
   <selection name="message.related.to.select" id="stockRule.message.related.to.select">
     <option value="com.axelor.apps.stock.db.StockRules">Stock Rules</option>
+  </selection>
+
+  <selection name="stock.mass.stock.move.status.select">
+    <option value="1">Draft</option>
+    <option value="2">In progress</option>
+    <option value="3">Realized</option>
+    <option value="4">Canceled</option>
   </selection>
 
 </object-views>

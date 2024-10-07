@@ -33,6 +33,7 @@ import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
@@ -133,7 +134,7 @@ public class InvoicingProjectService {
     polQueryMap.put("statusValidated", PurchaseOrderRepository.STATUS_VALIDATED);
     polQueryMap.put("statusFinished", PurchaseOrderRepository.STATUS_FINISHED);
 
-    if (project.getIsShowTimeSpent()) {
+    if (project.getManageTimeSpent()) {
       StringBuilder logTimesQueryBuilder = new StringBuilder(commonQuery);
       Map<String, Object> logTimesQueryMap = new HashMap<>();
       logTimesQueryMap.put("project", project);
@@ -298,6 +299,7 @@ public class InvoicingProjectService {
                   Beans.get(AccountConfigService.class)
                       .getInvoicePrintTemplate(invoice.getCompany()),
                   null));
+      metaFiles.attach(new FileInputStream(file), file.getName(), invoice);
       fileList.add(file);
       file = PrintingTemplateHelper.mergeToFile(fileList, Files.getNameWithoutExtension(fileName));
     }

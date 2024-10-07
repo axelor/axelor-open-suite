@@ -14,8 +14,7 @@
     <many-to-one name="carrierPartner" title="Carrier"
       ref="com.axelor.apps.base.db.Partner" index="false"/>
     <decimal name="supplierQualityRating" title="Supplier quality rating"/>
-    <decimal name="supplierQualityRatingSelect" title="Supplier quality rating"
-      selection="rating.icon.select"/>
+    <decimal name="supplierQualityRatingSelect" title="Supplier quality rating"/>
     <decimal name="supplierArrivalProductQty" title="Supplier arrival product qty" min="0"/>
     <boolean name="isCarrier" title="Carrier"/>
     <one-to-many name="partnerProductQualityRatingList"

@@ -15,6 +15,23 @@
     <one-to-many name="storedProductList" ref="com.axelor.apps.stock.db.StoredProduct"
       title="Stored products" mappedBy="massStockMove"/>
     <string name="sequence" title="Sequence" namecolumn="true" readonly="true"/>
+    <many-to-one name="commonFromStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Common source location"/>
+    <many-to-one name="commonToStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Common destination location"/>
+    <one-to-many name="massStockMoveNeedList"
+      ref="com.axelor.apps.stock.db.MassStockMoveNeed" title="Products to move"
+      mappedBy="massStockMove"/>
+    <integer name="statusSelect" selection="stock.mass.stock.move.status.select"
+      title="Status" default="1"/>
+
+    <extra-code><![CDATA[
+           // STATUS SELECT
+        public static final int STATUS_DRAFT = 1;
+        public static final int STATUS_IN_PROGRESS = 2;
+        public static final int STATUS_REALIZED = 3;
+        public static final int STATUS_CANCELED = 4;
+    ]]></extra-code>
   </entity>
 
 

@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceTaxComputeService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
@@ -421,13 +422,9 @@ public abstract class InvoiceGenerator {
 
     // In the invoice currency
     invoice.setExTaxTotal(BigDecimal.ZERO);
-    invoice.setTaxTotal(BigDecimal.ZERO);
-    invoice.setInTaxTotal(BigDecimal.ZERO);
 
     // In the company accounting currency
     invoice.setCompanyExTaxTotal(BigDecimal.ZERO);
-    invoice.setCompanyTaxTotal(BigDecimal.ZERO);
-    invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 
@@ -446,31 +443,7 @@ public abstract class InvoiceGenerator {
               invoice, invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal())));
     }
 
-    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
-
-      // In the invoice currency
-      invoice.setTaxTotal(
-          currencyScaleService.getScaledValue(
-              invoice, invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal())));
-
-      // In the company accounting currency
-      invoice.setCompanyTaxTotal(
-          currencyScaleService.getCompanyScaledValue(
-              invoice, invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal())));
-    }
-
-    // In the invoice currency
-    invoice.setInTaxTotal(
-        currencyScaleService.getScaledValue(
-            invoice, invoice.getExTaxTotal().add(invoice.getTaxTotal())));
-
-    // In the company accounting currency
-    invoice.setCompanyInTaxTotal(
-        currencyScaleService.getCompanyScaledValue(
-            invoice, invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal())));
-    invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
-
-    invoice.setAmountRemaining(invoice.getInTaxTotal());
+    Beans.get(InvoiceTaxComputeService.class).recomputeInvoiceTaxAmounts(invoice);
 
     invoice.setHasPendingPayments(false);
 

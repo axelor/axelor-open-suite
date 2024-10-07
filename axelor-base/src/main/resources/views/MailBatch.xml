@@ -20,6 +20,8 @@
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid"/>
+      <field name="fetchLimit"
+        help="Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used."/>
       <field name="template" widget="SuggestBox" form-view="template-form"
         grid-view="template-grid"/>
       <field name="archived" title="Archived"/>

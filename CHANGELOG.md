@@ -1,3 +1,175 @@
+## [8.1.8] (2024-10-03)
+
+### Fixes
+#### Base
+
+* Webapp: updated Axelor Open Platform dependency to 7.1.5.
+* ABC analysis: fixed an issue where printing an unsaved analysis was not setting correctly the sequence,and added sequence in demo data.
+* Batch: added french translation for '* %s anomaly(ies)'
+
+#### Account
+
+* Accounting report: added filter on company for report type in custom reports if companies are empty.
+* Partner blocking: fixed 'blocking partner with late payment' feature which resulted in some processes being stuck.
+
+#### Bank Payment
+
+* Bank order/ Bank statement: fixed broken reports.
+
+#### Business Project
+
+* Invoicing project annex report: fixed empty values in multiple columns.
+
+#### Contract
+
+* Contract template: removed unused condition related to statusSelect field.
+
+#### Helpdesk
+
+* Ticket: fixed the french translation  of 'Assign to me'.
+
+#### Human Resource
+
+* Payroll preparation: improved export to Silae by adding the number of lunch vouchers and employee bonus.
+* Payroll preparation: fixed employee bonus amount computation by correctly ignoring lines that were not computed.
+* Leave request: fixed the leave reason domain when employee is null.
+* Project planning time: fixed error while selecting unit when time unit is null.
+* Expense/ Leave request/ Timesheet/ TSTimer: fixed creation with empty employee when connected user doesn't have employee.
+* Payroll preparation: improved export to Nibelis by adding the number of working days in the period.
+
+#### Project
+
+* Project: fixed issue related to contact partner when updating client partner.
+
+#### Stock
+
+* Logistical form line: fixed wrong calculation of net weight.
+* Stock move line: the advanced filter saved is not displayed unless we refresh the whole page.
+
+#### Supply Chain
+
+* Sale order invoicing: removed partially invoiced flag when invoice is fully refunded.
+
+#### Intervention
+
+* Equipment: fixed contract domain to have only billing contracts.
+
+## [8.1.7] (2024-09-19)
+
+### Fixes
+#### Base
+
+* Update axelor-studio dependency to 3.1.3.
+* Partner: fixed convert contact into individual partner error when address is null.
+* Advanced export: fix export when multiple fields contain same sub path.
+* Request: fixed french translation for 'Request'.
+* Address: in form view, do not empty the ZIP code when filling the city, and automatically fill the city when the ZIP code is filled.
+
+#### Account
+
+* CutOff/Analytic: fixed cut off batch when using analytic on credit move line.
+
+#### Budget
+
+* Budget level: fixed scales in the tree view.
+* Global budget: fixed duplication without budget level.
+
+#### Business Project
+
+* Invoicing project: attach annex to invoice when 'Attach the Annex to the invoice' is enabled while generating invoice.
+* Project: prevented an error during project totals computation when parent task had no time unit.
+* Project task: fixed product changing on assignedTo when linked to a framework contract.
+* Project: prevented an error during project totals computation when spent time percentages were too low.
+
+#### Contract
+
+* Contract: fixed an error when opening a product in an amendment.
+* Contract: fixed error while generating contract from opportunities.
+
+#### CRM
+
+* CRM: added missing action for 'Calls monitoring' dashboard.
+
+#### Helpdesk
+
+* Ticket API: fixed an issue where condition in permission were not evaluated correctly to update tickets.
+
+#### Human Resource
+
+* Timesheet line: fixed issue related to default product value.
+
+#### Mobile Settings
+
+* Mobile Dashboard API: fixed an issue where condition in permission were not evaluated correctly to get mobile chart information.
+
+#### Production
+
+* Sequence per workshop config: improve UI to select workshop stock location and manuf order sequence.
+
+#### Purchase
+
+* Purchase order line tax: fixed reverse charge feature on purchase order.
+
+#### Sale
+
+* Configurator: added field 'attributes' and 'indicators' in grid view.
+
+#### Stock
+
+* Stock: fixed an error occurring when splitting a stock move line with a real quantity greater than the expected quantity.
+
+#### Intervention
+
+* Company: fixed display of intervention config button on company when module is uninstalled.
+* Contract: 'On-call planning' field will be required if 'On-call management' is true.
+
+## [8.1.6] (2024-09-05)
+
+### Fixes
+#### Base
+
+* Partner: fixed an address not linked to a partner in demo data.
+
+#### Account
+
+* Invoice: fixed an issue where tab title for credit note was wrong.
+* Invoice payment: fixed move display in payment details grid view.
+* Payment Voucher: fixed wrong amount on generated invoice payment when using financial discount.
+* Invoice: fixed an issue preventing invoice ventilation when pack feature is used.
+* Mass entry move line: increased width of some columns.
+
+#### Budget
+
+* Purchase order line: fixed an issue where budget panel was editable on a confirmed purchase order.
+
+#### Contract
+
+* Contract: fixed an issue where payment mode and payment condition were not filled by default.
+* Contract: fixed display issue of 'isPeriodicInvoicing' field.
+
+#### Human Resource
+
+* Timesheet: opened timesheets are no longer dirty when opening the form view.
+
+#### Maintenance
+
+* Menu: fixed icon for 'Configuration' menu.
+
+#### Production
+
+* Manufacturing order: fixed unit conversion when computing missing components label.
+* Manufacturing order API: fixed an issue where condition in permission were not evaluated correctly to see and add products from a manufacturing order.
+* Operation order API: fixed an issue where condition in permission were not evaluated correctly to update operation orders.
+* Manufacturing order: fixed wrong priority on the sub manuf order.
+* Manufacturing order: fixed title for produced quantity in produced products form view.
+* Manufacturing order: fixed an issue occurring when adding produced products.
+
+#### Supply Chain
+
+* Invoicing: fixed an issue preventing stock moves/order/contracts invoicing with analytic accounting lines.
+* Invoicing: fixed internal reference on invoices generated from delivery stock move missing sale order reference.
+* Analytic panel: fixed display issue when product family is empty.
+
 ## [8.1.5] (2024-08-22)
 
 ### Fixes
@@ -471,6 +643,9 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.8]: https://github.com/axelor/axelor-open-suite/compare/v8.1.7...v8.1.8
+[8.1.7]: https://github.com/axelor/axelor-open-suite/compare/v8.1.6...v8.1.7
+[8.1.6]: https://github.com/axelor/axelor-open-suite/compare/v8.1.5...v8.1.6
 [8.1.5]: https://github.com/axelor/axelor-open-suite/compare/v8.1.4...v8.1.5
 [8.1.4]: https://github.com/axelor/axelor-open-suite/compare/v8.1.3...v8.1.4
 [8.1.3]: https://github.com/axelor/axelor-open-suite/compare/v8.1.2...v8.1.3

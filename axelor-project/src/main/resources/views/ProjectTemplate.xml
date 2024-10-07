@@ -67,13 +67,10 @@
         <field name="taskStatusManagementSelect" widget="RadioSelect" colSpan="12"
           onChange="action-project-template-record-manage-task-status-set"/>
         <field name="projectTaskStatusSet" widget="TagSelect" colSpan="12"
-          showIf="taskStatusManagementSelect == 2 || taskStatusManagementSelect == 3"
-          requiredIf="taskStatusManagementSelect == 2" readonlyIf="taskStatusManagementSelect == 3"
+          showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2"
           canEdit="false"/>
         <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect" canEdit="false"
           requiredIf="taskStatusManagementSelect == 4"/>
-        <field name="imputable" colSpan="4" widget="boolean-switch"
-          if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
       </panel>
     </panel-tabs>
 
@@ -122,7 +119,7 @@
     model="com.axelor.apps.project.db.ProjectTemplate">
     <field name="projectTaskStatusSet"
       expr="eval: __config__.app.getApp('project')?.getDefaultTaskStatusSet()"
-      if="taskStatusManagementSelect == 2 || taskStatusManagementSelect == 3"/>
+      if="taskStatusManagementSelect == 2"/>
     <field name="projectTaskStatusSet" expr="eval: null"
       if="taskStatusManagementSelect == 1 || taskStatusManagementSelect == 4"/>
   </action-record>
@@ -138,7 +135,6 @@
     <field name="invoicingComment" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
     <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="isBusinessProject" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
   </search-filters>

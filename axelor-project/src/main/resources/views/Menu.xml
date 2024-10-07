@@ -3,8 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
-  <menuitem name="menu-project-root" order="-1400" title="Project" icon="list-task"
-    if="__config__.app.isApp('project')" icon-background="#3f6bb9"/>
+  <menuitem name="menu-project-root" order="-1400" title="Project management"
+    icon="list-task" if="__config__.app.isApp('project')" icon-background="#3f6bb9"/>
 
   <menuitem name="menu-project-project-root" parent="menu-project-root" order="0"
     title="Projects" icon="fa-tasks" icon-background="#3f6bb9"/>
@@ -16,7 +16,7 @@
   </action-method>
 
   <menuitem name="project-task-all" parent="menu-project-project-root" order="300"
-    title="Tasks" action="project.task.all"/>
+    title="Project tasks" action="project.task.all"/>
   <action-method name="project.task.all">
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="allProjectTasks"/>
   </action-method>
@@ -55,14 +55,6 @@
     title="Planned charge" action="project.planned.charge"/>
   <action-view name="project.planned.charge" title="Planned charge">
     <view type="dashboard" name="project-planned-charge"/>
-  </action-view>
-
-  <menuitem name="project-reporting-project-dashboard" parent="project-reporting"
-    order="300" title="Project dashboard" action="project.reporting.projects.dashboard"
-    if="__user__.activeProject"/>
-  <action-view name="project.reporting.projects.dashboard" title="Project dashboard"
-    model="com.axelor.utils.db.Wizard">
-    <view type="form" name="project-dashboard-form"/>
   </action-view>
 
   <menuitem name="project-resource-booking" title="Resource bookings" order="600"
@@ -150,10 +142,11 @@
 
   <menuitem name="project-tags" title="Tags" parent="project-configurations"
     action="project.tags" order="900"/>
-  <action-view name="project.tags" title="Tags"
-    model="com.axelor.apps.project.db.ProjectTaskTag">
-    <view type="grid" name="project-task-tag-grid"/>
-    <view type="form" name="project-task-tag-form"/>
+  <action-view name="project.tags" title="Tags" model="com.axelor.apps.base.db.Tag">
+    <view type="grid" name="tag-simplified-grid"/>
+    <view type="form" name="tag-form"/>
+    <context name="_packageName" expr="eval: 'com.axelor.apps.project'"/>
+    <context name="_fieldModel" expr="eval: 'com.axelor.apps.project.db.ProjectTask'"/>
   </action-view>
 
   <menuitem name="project-wiki-folder" parent="project-configurations" title="Wiki folder"
@@ -228,5 +221,14 @@
 
   <menuitem name="project-my-reporting" parent="menu-my-project-root" order="1000"
     title="Reporting" action="project.my.projects"/>
+
+  <menuitem name="project-project-check-list-template" parent="project-configurations"
+    title="Check list templates" action="project.root.project.checklist.template.all" order="1600"/>
+
+  <action-view name="project.root.project.checklist.template.all"
+    title="Check list templates" model="com.axelor.apps.project.db.ProjectCheckListTemplate">
+    <view type="grid" name="project-check-list-template-grid"/>
+    <view type="form" name="project-check-list-template-form"/>
+  </action-view>
 
 </object-views>

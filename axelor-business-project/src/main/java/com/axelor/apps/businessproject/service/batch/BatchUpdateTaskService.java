@@ -18,15 +18,13 @@
  */
 package com.axelor.apps.businessproject.service.batch;
 
-import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
-import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.ProjectTask;
@@ -43,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class BatchUpdateTaskService extends AbstractBatch {
+public class BatchUpdateTaskService extends BatchStrategy {
 
   protected AppBusinessProjectService appBusinessProjectService;
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
@@ -114,7 +112,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
                 I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_1), projectTaskId),
             batch.getId());
       }
-      if (offset % FETCH_LIMIT == 0) {
+      if (offset % getFetchLimit() == 0) {
         JPA.clear();
         findBatch();
       }
@@ -161,7 +159,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
             ExceptionOriginRepository.INVOICE_ORIGIN,
             batch.getId());
       }
-      if (offset % FETCH_LIMIT == 0) {
+      if (offset % getFetchLimit() == 0) {
         JPA.clear();
         findBatch();
       }
@@ -210,7 +208,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
             ExceptionOriginRepository.INVOICE_ORIGIN,
             batch.getId());
       }
-      if (offset % FETCH_LIMIT == 0) {
+      if (offset % getFetchLimit() == 0) {
         JPA.clear();
         findBatch();
       }
@@ -228,9 +226,5 @@ public class BatchUpdateTaskService extends AbstractBatch {
 
     super.stop();
     addComment(comment);
-  }
-
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BUSINESS_PROJECT_BATCH);
   }
 }

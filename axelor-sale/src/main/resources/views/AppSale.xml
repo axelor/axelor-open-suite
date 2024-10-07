@@ -27,17 +27,15 @@
       <field name="saleUnit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
-      <field name="isEditableGridEnabled" widget="boolean-switch"/>
-      <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
-        showIf="isEditableGridEnabled"/>
       <field name="isEnableCalculationEntireQuotation" widget="boolean-switch"/>
-      <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>
-      <panel name="loyaltyAccountPanel" colSpan="12">
-        <field name="enableLoyalty" widget="boolean-switch"/>
-        <field name="loyaltyAccountsManagement" showIf="enableLoyalty" colSpan="3"/>
-        <field name="loyaltyAccountPointsAcquiringDelay" showIf="enableLoyalty" colSpan="3"/>
-      </panel>
       <field name="isCartManagementEnabled" widget="boolean-switch"/>
+
+    </panel>
+    <panel name="listDisplayPanel" itemSpan="12" colSpan="12">
+      <help><![CDATA[Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.]]></help>
+      <field name="listDisplayTypeSelect" widget="RadioSelect" colSpan="6"/>
+      <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
+        showIf="listDisplayTypeSelect == 2" colSpan="6"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"
@@ -70,8 +68,6 @@
     model="com.axelor.studio.db.AppSale">
     <attribute name="hidden" for="enableSalesProductByTradName"
       expr="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <attribute name="selection-in" for="loyaltyAccountsManagement" expr="[0, 1]"
-      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </action-attrs>
 
 </object-views>
