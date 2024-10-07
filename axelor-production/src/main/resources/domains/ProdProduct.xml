@@ -40,5 +40,9 @@
     <decimal name="realQty" title="Real Qty" precision="20" scale="10"/>
 
 
+    <many-to-one name="wasteProductTrackingNumber"
+      ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking number"/>
+
+
   </entity>
 </domain-models>

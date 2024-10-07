@@ -559,7 +559,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           false,
           BigDecimal.ZERO,
           virtualStockLocation,
-          wasteStockLocation);
+          wasteStockLocation,
+          prodProduct.getWasteProductTrackingNumber());
     }
 
     stockMoveService.validate(wasteStockMove);
