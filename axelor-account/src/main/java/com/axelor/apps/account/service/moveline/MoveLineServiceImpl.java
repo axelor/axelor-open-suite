@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -89,6 +90,8 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected CurrencyScaleService currencyScaleService;
   protected AccountingBatchRepository accountingBatchRepo;
 
+  protected TaxLineRepository taxLineRepository;
+
   @Inject
   public MoveLineServiceImpl(
       MoveLineRepository moveLineRepository,
@@ -101,7 +104,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       AccountingCutOffService cutOffService,
       MoveLineTaxService moveLineTaxService,
       CurrencyScaleService currencyScaleService,
-      AccountingBatchRepository accountingBatchRepo) {
+      AccountingBatchRepository accountingBatchRepo,
+      TaxLineRepository taxLineRepository) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -113,6 +117,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineTaxService = moveLineTaxService;
     this.currencyScaleService = currencyScaleService;
     this.accountingBatchRepo = accountingBatchRepo;
+    this.taxLineRepository = taxLineRepository;
   }
 
   @Override

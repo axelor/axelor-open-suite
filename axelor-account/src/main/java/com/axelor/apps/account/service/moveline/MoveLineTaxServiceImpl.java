@@ -320,17 +320,41 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         continue;
       }
 
-      if (CollectionUtils.isNotEmpty(taxLineSet))
+      if (CollectionUtils.isNotEmpty(taxLineSet)) {
+        BigDecimal sumOfAllDeductibleRateValue = BigDecimal.ZERO;
+        BigDecimal sumOfAllNonDeductibleRateValue = BigDecimal.ZERO;
+        for (TaxLine taxLine : taxLineSet) {
+          Boolean isNonDeductibleTax = taxLine.getTax().getIsNonDeductibleTax();
+          if (isNonDeductibleTax) {
+            BigDecimal nonDeductibleRateValue = taxLine.getValue();
+            sumOfAllNonDeductibleRateValue =
+                sumOfAllNonDeductibleRateValue.add(nonDeductibleRateValue);
+          } else {
+            // Deductible rate
+            BigDecimal deductibleRateValue = taxLine.getValue();
+            sumOfAllDeductibleRateValue = sumOfAllDeductibleRateValue.add(deductibleRateValue);
+          }
+        }
         for (TaxLine taxLine : taxLineSet) {
           if (taxLine != null && taxLine.getValue().signum() != 0) {
             String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
 
             if (this.isGenerateMoveLineForAutoTax(moveLine)) {
               moveLineCreateService.createMoveLineForAutoTax(
-                  move, map, newMap, moveLine, taxLine, accountType, account, percentMoveTemplate);
+                  move,
+                  map,
+                  newMap,
+                  moveLine,
+                  taxLine,
+                  accountType,
+                  account,
+                  percentMoveTemplate,
+                  sumOfAllDeductibleRateValue,
+                  sumOfAllNonDeductibleRateValue);
             }
           }
         }
+      }
     }
 
     moveLineList.addAll(newMap.values());
@@ -427,5 +451,28 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         && Lists.newArrayList(
                 MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE, MoveRepository.FUNCTIONAL_ORIGIN_SALE)
             .contains(functionalOriginSelect);
+  }
+
+  @Override
+  public BigDecimal getAdjustedTotalTaxRateInPercentage(Set<TaxLine> taxLineSet) {
+    BigDecimal sumOfAllDeductibleRateValue = BigDecimal.ZERO;
+    BigDecimal sumOfAllNonDeductibleRateValue = BigDecimal.ZERO;
+    for (TaxLine taxLine : taxLineSet) {
+      Boolean isNonDeductibleTax = taxLine.getTax().getIsNonDeductibleTax();
+      if (isNonDeductibleTax) {
+        BigDecimal nonDeductibleRateValue = taxLine.getValue();
+        sumOfAllNonDeductibleRateValue = sumOfAllNonDeductibleRateValue.add(nonDeductibleRateValue);
+      } else {
+        // Deductible rate
+        BigDecimal deductibleRateValue = taxLine.getValue();
+        sumOfAllDeductibleRateValue = sumOfAllDeductibleRateValue.add(deductibleRateValue);
+      }
+    }
+    return sumOfAllDeductibleRateValue.multiply(
+        BigDecimal.ONE.subtract(
+            sumOfAllNonDeductibleRateValue.divide(
+                BigDecimal.valueOf(100),
+                AppBaseService.COMPUTATION_SCALING,
+                RoundingMode.HALF_UP)));
   }
 }

@@ -36,6 +36,7 @@ import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceManagementRepository extends InvoiceRepository {
+
   @Override
   public Invoice copy(Invoice entity, boolean deep) {
     try {

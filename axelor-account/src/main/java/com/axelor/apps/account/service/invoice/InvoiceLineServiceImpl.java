@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -62,6 +63,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceLineServiceImpl implements InvoiceLineService {
@@ -76,6 +78,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected AccountConfigService accountConfigService;
   protected InvoiceLineAnalyticService invoiceLineAnalyticService;
   protected TaxService taxService;
+  protected TaxLineRepository taxLineRepository;
   protected InternationalService internationalService;
   protected InvoiceLineAttrsService invoiceLineAttrsService;
   protected CurrencyScaleService currencyScaleService;
@@ -96,6 +99,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
       CurrencyScaleService currencyScaleService,
+      TaxLineRepository taxLineRepository,
       ProductPriceService productPriceService) {
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
@@ -111,6 +115,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.invoiceLineAttrsService = invoiceLineAttrsService;
     this.currencyScaleService = currencyScaleService;
     this.productPriceService = productPriceService;
+    this.taxLineRepository = taxLineRepository;
   }
 
   @Override
@@ -717,6 +722,14 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal taxValue =
         Optional.of(invoiceLine)
             .map(InvoiceLine::getTaxLineSet)
+            .map(
+                taxLineSet ->
+                    taxLineSet.stream()
+                        .filter(
+                            taxLine ->
+                                taxLine.getTax() != null
+                                    && !taxLine.getTax().getIsNonDeductibleTax())
+                        .collect(Collectors.toSet()))
             .map(taxService::getTotalTaxRateInPercentage)
             .map(
                 it ->
@@ -739,5 +752,15 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     invoiceLineAttrsService.addCoefficientScale(invoice, attrsMap, "");
 
     return attrsMap;
+  }
+
+  @Override
+  public String computeInvoiceLineTaxLineSetDomain(int operationTypeSelect) {
+    String domain = "(self.endDate > :__date__ OR self.endDate IS NULL) ";
+    if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      domain += " AND self.tax.isNonDeductibleTax = false ";
+    }
+    return domain;
   }
 }

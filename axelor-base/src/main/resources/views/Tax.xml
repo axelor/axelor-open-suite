@@ -15,6 +15,7 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
       <field name="taxType"/>
+      <field name="isNonDeductibleTax" widget="boolean-switch"/>
       <field name="manageByAmount" widget="boolean-select" x-false-text="Manage by percentage"
         x-true-text="Manage by amount" colSpan="3"/>
     </panel>

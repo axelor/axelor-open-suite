@@ -665,6 +665,13 @@ public final class BaseExceptionMessage {
 
   public static final String QUANTITY_NOT_MULTIPLE = /*$$(*/
       "The product %s comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
+
+  public static final String TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR = /*$$(*/
+      "Only one non-deductible tax is configured. A non deductible tax should always be paired with at least one other deductible tax." /*)*/;
+
+  public static final String SUM_OF_NON_DEDUCTIBLE_TAXES_EXCEEDS_ONE_HUNDRED = /*$$(*/
+      "The sum of non-deductible taxes should not exceed 100%." /*)*/;
+
   public static final String NO_COUNTRY_FOUND = /*$$(*/ "No country found for: %s." /*)*/;
   public static final String CITY_AND_ZIP_BOTH_EMPTY = /*$$(*/
       "The city and postcode cannot be empty at the same time." /*)*/;
