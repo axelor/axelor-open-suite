@@ -6,7 +6,8 @@
   <grid name="partner-product-quality-rating-grid" title="Partner product quality ratings"
     model="com.axelor.apps.stock.db.PartnerProductQualityRating">
     <field name="product"/>
-    <field name="qualityRatingSelect" widget="ImageSelect" x-labels="false"/>
+    <field name="qualityRatingSelect" widget="Rating"
+      x-rating-color="black,black,black,black,black"/>
     <field name="arrivalProductQty" x-scale="2"/>
   </grid>
 
@@ -14,7 +15,8 @@
     model="com.axelor.apps.stock.db.PartnerProductQualityRating">
     <panel name="mainPanel">
       <field name="product" colSpan="6" domain="self.dtype = 'Product'"/>
-      <field name="qualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
+      <field name="qualityRatingSelect" widget="Rating"
+        x-rating-color="black,black,black,black,black" colSpan="3"/>
       <field name="arrivalProductQty" colSpan="3"/>
     </panel>
   </form>

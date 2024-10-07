@@ -16,6 +16,8 @@
       title="Parent"/>
     <one-to-many name="projectCheckListItemList"
       ref="com.axelor.apps.project.db.ProjectCheckListItem" mappedBy="parentItem"/>
+    <many-to-one name="projectCheckListTemplate"
+      ref="com.axelor.apps.project.db.ProjectCheckListTemplate"/>
   </entity>
 
 </domain-models>

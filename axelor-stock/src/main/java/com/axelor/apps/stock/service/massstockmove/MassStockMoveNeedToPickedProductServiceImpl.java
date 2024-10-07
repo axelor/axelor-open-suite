@@ -191,7 +191,8 @@ public class MassStockMoveNeedToPickedProductServiceImpl
                 massStockMove,
                 stockLocationLine.getProduct(),
                 stockLocationLine.getStockLocation(),
-                massStockMoveNeed.getQtyToMove()));
+                massStockMoveNeed.getQtyToMove(),
+                null));
       } else {
         // Case where we will retry to create pickedProduct because toStockLocation is filled, so
         // the massStockMoveNeed might have been generated from different stock location
@@ -260,7 +261,8 @@ public class MassStockMoveNeedToPickedProductServiceImpl
               massStockMove,
               stockLocationLine.getProduct(),
               stockLocationLine.getStockLocation(),
-              maximumPickableQty);
+              maximumPickableQty,
+              null);
 
       fetchQty = fetchQty.add(maximumPickableQty);
       pickedProductRepository.save(createdPickedProduct);
@@ -293,7 +295,8 @@ public class MassStockMoveNeedToPickedProductServiceImpl
                 massStockMove,
                 stockLocationLine.getProduct(),
                 stockLocationLine.getDetailsStockLocation(),
-                maximumPickableQty);
+                maximumPickableQty,
+                null);
 
         createdPickedProduct.setTrackingNumber(stockLocationLine.getTrackingNumber());
 

@@ -1779,4 +1779,19 @@ public final class AccountExceptionMessage {
 
   public static final String LATE_PAYMENT_INTEREST_NO_PAYMENT_MODE_RATE = /*$$(*/
       "There is no interest rate defined in invoice term payment mode." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_NO_INTEREST_RATE = /*$$(*/
+      "There is no interest rate defined in payment mode." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_DATES_INCONSISTENCY = /*$$(*/
+      "Inconsistency in begin and ending dates." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_PERIOD_CONTINUITY = /*$$(*/
+      "The periods must be continuous." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_PERIOD_OVERLAP = /*$$(*/
+      "2 interest rate history line periods can not overlap." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_END_DATE_IN_FUTURE = /*$$(*/
+      "The end date must be in the past." /*)*/;
 }

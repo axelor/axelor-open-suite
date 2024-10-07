@@ -6,7 +6,7 @@
   <grid name="cart-line-grid" title="Cart lines" model="com.axelor.apps.sale.db.CartLine"
     editable="true">
     <field name="product" form-view="product-form" grid-view="product-grid"
-      domain="self.parentProduct IS NULL" onChange="action-cart-line-method-set-product-information"/>
+      domain="self.parentProduct IS NULL" onChange="action-cart-line-group-product-onchange"/>
     <field name="product.code"/>
     <field name="price" x-scale="$nbDecimalDigitForUnitPrice" readonly="true"/>
     <field name="qty" x-scale="$nbDecimalDigitForQty"/>
@@ -22,8 +22,7 @@
   <form name="cart-line-form" title="Cart line" model="com.axelor.apps.sale.db.CartLine">
     <panel name="mainPanel">
       <field name="product" form-view="product-form" grid-view="product-grid"
-        domain="self.parentProduct IS NULL"
-        onChange="action-cart-line-method-set-product-information"/>
+        domain="self.parentProduct IS NULL" onChange="action-cart-line-group-product-onchange"/>
       <field name="product.code"/>
       <field name="price" x-scale="$nbDecimalDigitForUnitPrice" readonly="true"/>
       <field name="qty" x-scale="$nbDecimalDigitForQty"/>
@@ -36,6 +35,16 @@
       <field name="$nbDecimalDigitForQty" hidden="true"/>
     </panel>
   </form>
+
+  <action-group name="action-cart-line-group-product-onchange">
+    <action name="action-cart-line-record-reset-variant-product"/>
+    <action name="action-cart-line-method-set-product-information"/>
+  </action-group>
+
+  <action-record name="action-cart-line-record-reset-variant-product"
+    model="com.axelor.apps.sale.db.CartLine">
+    <field name="variantProduct" expr="eval: null"/>
+  </action-record>
 
   <action-method name="action-cart-line-method-set-product-information">
     <call class="com.axelor.apps.sale.web.CartLineController" method="setProductInformation"/>

@@ -9,9 +9,11 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -53,7 +55,8 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
 
     var saleOrderLinesList = new ArrayList<SaleOrderLine>();
 
-    if (!appSaleService.getAppSale().getActivateMultiLevelSaleOrderLines()) {
+    if (appSaleService.getAppSale().getListDisplayTypeSelect()
+        != AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
       return saleOrderLinesList;
     }
 
@@ -146,8 +149,13 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
         subSaleOrderLine.getBillOfMaterial(),
         subSaleOrderLine.getQty(),
         subSaleOrderLine.getUnit(),
-        0,
-        subSaleOrderLine.getProduct().getStockManaged());
+        Optional.ofNullable(subSaleOrderLine.getBillOfMaterialLine())
+            .map(BillOfMaterialLine::getPriority)
+            .orElse(0),
+        subSaleOrderLine.getProduct().getStockManaged(),
+        Optional.ofNullable(subSaleOrderLine.getBillOfMaterialLine())
+            .map(BillOfMaterialLine::getWasteRate)
+            .orElse(BigDecimal.ZERO));
   }
 
   protected BillOfMaterial customizeBomOf(SaleOrderLine saleOrderLine, int depth)

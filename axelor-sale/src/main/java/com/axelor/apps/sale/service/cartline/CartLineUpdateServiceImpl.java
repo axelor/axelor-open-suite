@@ -35,8 +35,17 @@ public class CartLineUpdateServiceImpl implements CartLineUpdateService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void updateCartLine(CartLine cartLine) {
-    cartLine.setQty(cartLine.getQty().add(BigDecimal.ONE));
+  public void updateCartLine(CartLine cartLine, BigDecimal qty) {
+    if (qty == null) {
+      qty = BigDecimal.ONE;
+    }
+    cartLine.setQty(cartLine.getQty().add(qty));
     cartLineRepository.save(cartLine);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void updateCartLine(CartLine cartLine) {
+    updateCartLine(cartLine, null);
   }
 }
