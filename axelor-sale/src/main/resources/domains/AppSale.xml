@@ -43,7 +43,7 @@
     <boolean name="isCartManagementEnabled" title="Enable cart management"
       help="Allow the user to put products aside to generate an order at a later date."/>
     <integer name="listDisplayTypeSelect" title="Line list display type"
-      selection="sale.app.sale.line.display.type.select" default="1"/>
+      selection="sale.app.sale.line.display.type.select" default="0"/>
 
     <extra-code>
       <![CDATA[
@@ -52,9 +52,9 @@
 		public static final int APP_SALE_USER_ASSIGNED_TO_CUSTOMER = 2;
 
 		// LINE DISPLAY TYPE SELECT
-		public static final int APP_SALE_LINE_DISPLAY_TYPE_CLASSIC = 1;
-		public static final int APP_SALE_LINE_DISPLAY_TYPE_EDITABLE = 2;
-        public static final int APP_SALE_LINE_DISPLAY_TYPE_MULTI = 3;
+		public static final int APP_SALE_LINE_DISPLAY_TYPE_CLASSIC = 0;
+		public static final int APP_SALE_LINE_DISPLAY_TYPE_EDITABLE = 1;
+        public static final int APP_SALE_LINE_DISPLAY_TYPE_MULTI = 2;
       ]]>
     </extra-code>
 

@@ -106,9 +106,9 @@
   </selection>
 
   <selection name="sale.app.sale.line.display.type.select">
-    <option value="1">Standard</option>
-    <option value="2">Editable</option>
-    <option value="3">Editable tree</option>
+    <option value="0">Standard</option>
+    <option value="1">Editable</option>
+    <option value="2">Editable tree</option>
   </selection>
 
 </object-views>
