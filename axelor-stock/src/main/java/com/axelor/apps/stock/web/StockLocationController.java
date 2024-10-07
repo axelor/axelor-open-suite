@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.PrintingTemplateRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.service.StockLocationAttrsService;
 import com.axelor.apps.stock.service.StockLocationPrintService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.common.ObjectUtils;
@@ -137,5 +138,15 @@ public class StockLocationController {
             .context("_ids", lstSelectedLocations)
             .context("_stockLocation", stockLocation)
             .map());
+  }
+
+  public void setParentStockLocationDomain(ActionRequest request, ActionResponse response) {
+
+    StockLocation stockLocation = request.getContext().asType(StockLocation.class);
+
+    response.setAttr(
+        "parentStockLocation",
+        "domain",
+        Beans.get(StockLocationAttrsService.class).getParentStockLocationDomain(stockLocation));
   }
 }
