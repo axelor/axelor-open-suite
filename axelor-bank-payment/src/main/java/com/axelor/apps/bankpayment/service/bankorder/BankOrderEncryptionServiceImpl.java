@@ -121,4 +121,10 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
     }
     return encryptPassword;
   }
+
+  @Override
+  public File encryptUploadedBankOrderFile(MetaFile bankOrderMetaFile) throws AxelorException {
+    File bankOrderFile = MetaFiles.getPath(bankOrderMetaFile).toFile();
+    return encryptFile(bankOrderFile);
+  }
 }

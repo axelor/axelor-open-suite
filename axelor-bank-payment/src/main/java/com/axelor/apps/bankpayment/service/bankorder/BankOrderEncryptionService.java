@@ -14,4 +14,6 @@ public interface BankOrderEncryptionService {
   boolean isFileEncrypted(MetaFile bankOrderGeneratedFile) throws AxelorException;
 
   String checkAndGetEncryptionPassword() throws AxelorException;
+
+  File encryptUploadedBankOrderFile(MetaFile bankOrderMetaFile) throws AxelorException;
 }

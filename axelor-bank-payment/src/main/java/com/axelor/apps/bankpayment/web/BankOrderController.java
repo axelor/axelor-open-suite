@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderEncryptionService;
@@ -32,9 +33,11 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -212,9 +215,35 @@ public class BankOrderController {
   public void setIsFileEncrypted(ActionRequest request, ActionResponse response)
       throws AxelorException {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+    MetaFile generatedMetaFile = bankOrder.getGeneratedMetaFile();
+    if (generatedMetaFile == null) {
+      return;
+    }
     response.setValue(
         "$isMetafileEncrypted",
-        Beans.get(BankOrderEncryptionService.class)
-            .isFileEncrypted(bankOrder.getGeneratedMetaFile()));
+        Beans.get(BankOrderEncryptionService.class).isFileEncrypted(generatedMetaFile));
+  }
+
+  public void encryptUploadedFile(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    if (!Beans.get(AppBankPaymentService.class)
+        .getAppBankPayment()
+        .getEnableBankOrderFileEncryption()) {
+      return;
+    }
+    Context context = request.getContext();
+    boolean isMetafileEncrypted =
+        Optional.ofNullable(context.get("isMetafileEncrypted"))
+            .map(Object::toString)
+            .map(Boolean::valueOf)
+            .orElse(false);
+
+    BankOrder bankOrder = context.asType(BankOrder.class);
+    MetaFile originalFile = bankOrder.getGeneratedMetaFile();
+
+    if (originalFile == null || isMetafileEncrypted) {
+      return;
+    }
+    Beans.get(BankOrderEncryptionService.class).encryptUploadedBankOrderFile(originalFile);
   }
 }
