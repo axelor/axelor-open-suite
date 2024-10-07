@@ -418,9 +418,9 @@ left outer join public.account_account as ParentAccount5 on (ParentAccount4.pare
 left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
+left outer join public.account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
 left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.base_partner_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
+left outer join public.base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 
 where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
@@ -478,9 +478,9 @@ left outer join public.account_account as ParentAccount5 on (ParentAccount4.pare
 left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
+left outer join public.account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
 left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.base_partner_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
+left outer join public.base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.other_date_from IS NULL OR MoveLine.date_val >= AccountingReport.other_date_from) AND

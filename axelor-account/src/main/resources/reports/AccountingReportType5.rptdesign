@@ -237,7 +237,7 @@ left outer join public.base_partner as Partner on (PaymentVoucher.partner  = Par
 
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.base_partner_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
+left outer join public.base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 
 left outer join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join public.base_currency as Currency on (Currency.id = Company.currency) 
