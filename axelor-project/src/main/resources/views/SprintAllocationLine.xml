@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="sprint-allocation-line-grid" title="Sprint allocation lines"
+    model="com.axelor.apps.project.db.SprintAllocationLine" editable="true">
+
+    <field name="sprint" required="true"/>
+    <field name="user" required="true"/>
+    <field name="allocated" required="true"/>
+    <field name="description"/>
+
+  </grid>
+
+  <form name="sprint-allocation-line-form" title="Sprint allocation line"
+    model="com.axelor.apps.project.db.SprintAllocationLine" width="large">
+
+    <panel name="mainPanel">
+      <field name="sprint" required="true"/>
+      <field name="user" required="true"/>
+      <field name="allocated" required="true" colSpan="3"/>
+      <field name="description" colSpan="12"/>
+    </panel>
+
+  </form>
+
+</object-views>
