@@ -52,6 +52,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 @Path("/aos/timesheet")
@@ -65,8 +66,13 @@ public class TimesheetRestController {
   @POST
   @HttpExceptionHandler
   public Response createTimesheet(TimesheetPostRequest requestBody) throws AxelorException {
-    Long[] timerIds = requestBody.getTimerIdList().toArray(new Long[0]);
-    new SecurityCheck().createAccess(Timesheet.class).readAccess(TSTimer.class, timerIds).check();
+    SecurityCheck securityCheck = new SecurityCheck();
+    List<Long> timersId = requestBody.getTimerIdList();
+    if (CollectionUtils.isNotEmpty(timersId)) {
+      Long[] timerIds = timersId.toArray(new Long[0]);
+      securityCheck = securityCheck.readAccess(TSTimer.class, timerIds);
+    }
+    securityCheck.createAccess(Timesheet.class).check();
     RequestValidator.validateBody(requestBody);
 
     List<TSTimer> tsTimerList = requestBody.fetchTSTimers();
@@ -88,11 +94,13 @@ public class TimesheetRestController {
   public Response addTimersToTimesheet(
       @PathParam("timesheetId") Long timesheetId, TimesheetPutRequest requestBody)
       throws AxelorException {
-    Long[] timerIds = requestBody.getTimerIdList().toArray(new Long[0]);
-    new SecurityCheck()
-        .writeAccess(Timesheet.class, timesheetId)
-        .readAccess(TSTimer.class, timerIds)
-        .check();
+    SecurityCheck securityCheck = new SecurityCheck();
+    List<Long> timersId = requestBody.getTimerIdList();
+    if (CollectionUtils.isNotEmpty(timersId)) {
+      Long[] timerIds = timersId.toArray(new Long[0]);
+      securityCheck = securityCheck.readAccess(TSTimer.class, timerIds);
+    }
+    securityCheck.writeAccess(Timesheet.class, timesheetId).check();
     RequestValidator.validateBody(requestBody);
 
     Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, requestBody.getVersion());
