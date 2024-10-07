@@ -21,7 +21,8 @@
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid"/>
-      <field name="fetchLimit"/>
+      <field name="fetchLimit"
+        help="Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used."/>
     </panel>
     <panel name="createdPanel">
       <field name="createdOn" title="Created on"/>

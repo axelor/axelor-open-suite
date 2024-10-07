@@ -240,6 +240,8 @@
 "Examples","Exemples",,
 "Excel",,,
 "Export","Exporter",,
+"Fetch limit",,,
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.","Limite de récupération par lot pour ce traitement de masse. 0 ne sera pas pris en compte. Dans ce cas, la valeur définie dans la configuration de l'application Base sera utilisée.",,
 "Fill project","Remplir le projet",,
 "Filter products by trading name","Filtrer les produits par enseignes",,
 "Finalize","Finaliser",,

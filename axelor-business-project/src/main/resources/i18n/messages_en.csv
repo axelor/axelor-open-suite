@@ -148,6 +148,7 @@
 "ExpensesTotal",,,
 "Factory not found this type of generator",,,
 "Fetch limit",,,
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",,,
 "Financial Data",,,
 "Financial datas",,,
 "Financial follow-up",,,

@@ -382,4 +382,7 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_MISSING_COMPONENTS = /*$$(*/
       "<b>Missing components</b> :<br/>%s" /*)*/;
+
+  public static final String MANUF_ORDER_WASTE_DECLARATION_IN_PRODUCED_LIST = /*$$(*/
+      "Warning: The current product exists in produced products of the manuf order." /*)*/;
 }
