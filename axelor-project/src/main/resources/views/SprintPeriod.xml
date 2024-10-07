@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="sprint-period-grid" title="Sprint periods"
+    model="com.axelor.apps.project.db.SprintPeriod">
+
+    <field name="name"/>
+    <field name="company"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+
+  </grid>
+
+  <form name="sprint-period-form" title="Sprint period"
+    model="com.axelor.apps.project.db.SprintPeriod" width="large">
+
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="company"/>
+      <field name="fromDate"/>
+      <field name="toDate"/>
+    </panel>
+
+  </form>
+
+</object-views>

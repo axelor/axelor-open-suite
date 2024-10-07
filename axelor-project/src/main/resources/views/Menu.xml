@@ -239,4 +239,48 @@
     <view type="form" name="project-check-list-template-form"/>
   </action-view>
 
+  <!-- Sprint menus -->
+
+  <menuitem name="sprint-root" title="Sprint" parent="menu-project-root" order="699"/>
+
+  <menuitem name="sprint-root-sprint" title="Sprints" parent="sprint-root"
+    action="sprint.root.sprints"/>
+
+  <action-view name="sprint.root.sprints" title="Sprints"
+    model="com.axelor.apps.project.db.Sprint">
+    <view type="grid" name="sprint-grid"/>
+    <view type="form" name="sprint-form"/>
+  </action-view>
+
+  <menuitem name="sprint-root-sprint-periods" title="Sprint periods" parent="sprint-root"
+    action="sprint.root.sprint.periods"/>
+
+  <action-view name="sprint.root.sprint.periods" title="Sprint periods"
+    model="com.axelor.apps.project.db.SprintPeriod">
+    <view type="grid" name="sprint-period-grid"/>
+    <view type="form" name="sprint-period-form"/>
+  </action-view>
+
+  <menuitem name="sprint-root-sprint-allocation-lines" title="Sprint allocation lines"
+    parent="sprint-root" action="sprint.root.sprint.allocation.lines"/>
+
+  <action-view name="sprint.root.sprint.allocation.lines"
+    title="Sprint allocation lines" model="com.axelor.apps.project.db.SprintAllocationLine">
+    <view type="grid" name="sprint-allocation-line-grid"/>
+    <view type="form" name="sprint-allocation-line-form"/>
+  </action-view>
+
+  <menuitem name="my-sprint-root-sprint-allocation-lines"
+    title="My sprint allocation lines" parent="sprint-root"
+    action="my.sprint.root.sprint.allocation.lines"/>
+
+  <action-view name="my.sprint.root.sprint.allocation.lines"
+    title="My sprint allocation lines" model="com.axelor.apps.project.db.SprintAllocationLine">
+    <view type="grid" name="sprint-allocation-line-grid"/>
+    <view type="form" name="sprint-allocation-line-form"/>
+    <domain>self.user = :__user__</domain>
+  </action-view>
+
+  <!-- Sprint menus -->
+
 </object-views>
