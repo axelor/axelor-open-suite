@@ -45,19 +45,18 @@ public class DataSharingReferentialLineServiceImpl implements DataSharingReferen
   }
 
   @Override
-  public Query<? extends Model> getQuery(
-      DataSharingReferential dataSharingReferential, Class<? extends Model> modelClass) {
+  public <T extends Model> Query<T> getQuery(
+      DataSharingReferential dataSharingReferential, Class<T> modelClass) {
     return this.getQuery(dataSharingReferential.getDataSharingReferentialLineList(), modelClass);
   }
 
   @Override
-  public Query<? extends Model> getQuery(Class<? extends Model> modelClass) {
+  public <T extends Model> Query<T> getQuery(Class<T> modelClass) {
     return this.getQuery(this.getDataSharingReferentialLineList(modelClass), modelClass);
   }
 
-  protected Query<? extends Model> getQuery(
-      List<DataSharingReferentialLine> dataSharingReferentialLineList,
-      Class<? extends Model> modelClass) {
+  protected <T extends Model> Query<T> getQuery(
+      List<DataSharingReferentialLine> dataSharingReferentialLineList, Class<T> modelClass) {
     if (CollectionUtils.isEmpty(dataSharingReferentialLineList)) {
       return null;
     }
