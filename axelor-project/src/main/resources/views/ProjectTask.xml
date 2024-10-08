@@ -211,7 +211,7 @@
       <field name="taskEndDate" colSpan="4"
         onChange="action-project-task-attrs-set-task-duration"/>
       <field name="taskDeadline" title="Task deadline" colSpan="4"/>
-      <field name="tagSet" widget="TagSelect" x-color-field="colorSelect" form-view="tag-form"
+      <field name="tagSet" widget="TagSelect" x-color-field="color" form-view="tag-form"
         grid-view="tag-simplified-grid" colSpan="4"
         onSelect="action-project-task-method-set-tag-domain"/>
       <field name="progress" onChange="action-project-task-group-progress-onchange"
