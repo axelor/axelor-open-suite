@@ -4,6 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
+import java.util.Optional;
 
 public interface AddressCreationService {
 
@@ -26,6 +27,5 @@ public interface AddressCreationService {
    */
   public void autocompleteAddress(Address address);
 
-  Address fetchAddress(Country country, City city, String zip, String streetName)
-      throws AxelorException;
+  Optional<Address> fetchAddress(Country country, City city, String zip, String streetName);
 }
