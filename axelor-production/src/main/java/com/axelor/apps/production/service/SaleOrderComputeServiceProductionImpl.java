@@ -53,14 +53,16 @@ public class SaleOrderComputeServiceProductionImpl extends SaleOrderComputeServi
                 .map(SaleOrderLineDetails::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         totalPrice = totalPrice.add(subDetailsTotal);
+        saleOrderLine.setPrice(totalPrice);
       }
       if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
         totalPrice =
             totalPrice.add(
                 subSaleOrderLineComputeService.computeSumSubLineList(
                     subSaleOrderLineList, saleOrder));
+        saleOrderLine.setPrice(totalPrice);
       }
-      saleOrderLine.setPrice(totalPrice);
+
       saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
     }
 
