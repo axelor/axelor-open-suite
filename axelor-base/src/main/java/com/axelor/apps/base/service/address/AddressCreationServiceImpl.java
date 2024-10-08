@@ -12,7 +12,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -117,47 +116,50 @@ public class AddressCreationServiceImpl implements AddressCreationService {
   }
 
   @Override
-  public Address fetchAddress(Country country, City city, String zip, String streetName)
-      throws AxelorException {
+  public Optional<Address> fetchAddress(Country country, City city, String zip, String streetName) {
     if (city != null) {
-      if (zip != null) {
-        return Beans.get(AddressRepository.class)
-            .all()
-            .filter(
-                "self.country = :country AND self.zip = :zip AND self.city = :city AND UPPER(self.streetName) = :streetName")
-            .bind("country", country)
-            .bind("zip", zip)
-            .bind("city", city)
-            .bind("streetName", streetName.toUpperCase())
-            .fetchOne();
-      } else {
-        return Beans.get(AddressRepository.class)
-            .all()
-            .filter(
-                "self.country = :country AND self.city = :city AND UPPER(self.streetName) = :streetName")
-            .bind("country", country)
-            .bind("city", city)
-            .bind("streetName", streetName.toUpperCase())
-            .fetchOne();
-      }
+      return fetchAddressWithFoundCity(country, city, zip, streetName);
     } else if (zip != null) {
-      return Optional.ofNullable(
-              Beans.get(AddressRepository.class)
-                  .all()
-                  .filter(
-                      "self.country = :country AND self.zip = :zip AND UPPER(self.streetName) = :streetName")
-                  .bind("country", country)
-                  .bind("zip", zip)
-                  .bind("streetName", streetName.toUpperCase())
-                  .fetchOne())
-          .orElseThrow(
-              () ->
-                  new AxelorException(
-                      TraceBackRepository.CATEGORY_INCONSISTENCY,
-                      I18n.get(BaseExceptionMessage.NO_ADDRESS_FOUND_WITH_INFO)));
-    } else {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.NO_CITY_FOUND));
+      return fetchAddressWithZip(country, zip, streetName);
     }
+    return Optional.empty();
+  }
+
+  protected Optional<Address> fetchAddressWithFoundCity(
+      Country country, City city, String zip, String streetName) {
+    if (zip != null) {
+      return addressRepository
+          .all()
+          .filter(
+              "self.country = :country AND self.zip = :zip AND self.city = :city AND UPPER(self.streetName) = :streetName")
+          .bind("country", country)
+          .bind("zip", zip)
+          .bind("city", city)
+          .bind("streetName", streetName.toUpperCase())
+          .fetchStream()
+          .findFirst();
+    } else {
+      return addressRepository
+          .all()
+          .filter(
+              "self.country = :country AND self.city = :city AND UPPER(self.streetName) = :streetName")
+          .bind("country", country)
+          .bind("city", city)
+          .bind("streetName", streetName.toUpperCase())
+          .fetchStream()
+          .findFirst();
+    }
+  }
+
+  protected Optional<Address> fetchAddressWithZip(Country country, String zip, String streetName) {
+    return addressRepository
+        .all()
+        .filter(
+            "self.country = :country AND self.zip = :zip AND UPPER(self.streetName) = :streetName")
+        .bind("country", country)
+        .bind("zip", zip)
+        .bind("streetName", streetName.toUpperCase())
+        .fetchStream()
+        .findFirst();
   }
 }

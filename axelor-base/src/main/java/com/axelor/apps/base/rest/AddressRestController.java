@@ -4,9 +4,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.rest.dto.AddressPostRequest;
 import com.axelor.apps.base.rest.dto.AddressResponse;
 import com.axelor.apps.base.service.address.AddressCreationService;
+import com.axelor.apps.base.service.address.CityService;
 import com.axelor.apps.base.service.address.CountryService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -47,27 +50,29 @@ public class AddressRestController {
           countryService
               .fetchCountry(countryCode)
               .orElse(countryService.createAndSaveCountry(countryCode, countryCode));
+      CityService cityService = Beans.get(CityService.class);
+      String cityName = requestBody.getCity();
+      String zip = requestBody.getZip();
+      City city = cityService.fetchCity(country, cityName, zip).orElse(null);
+      String streetName = requestBody.getStreetName();
 
       AddressCreationService addressCreationService = Beans.get(AddressCreationService.class);
-      Address address =
-          addressCreationService.fetchAddress(
-              country,
-              requestBody.fetchCity(country),
-              requestBody.getZip(),
-              requestBody.getStreetName());
+      Optional<Address> address =
+          addressCreationService.fetchAddress(country, city, zip, streetName);
 
-      if (address == null) {
-      Optional<Address> address = requestBody.fetchAddress();
       if (address.isEmpty()) {
+        if (cityName != null) {
+          city = cityService.createAndSaveCity(cityName, zip, country);
+        } else {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(BaseExceptionMessage.NO_ADDRESS_FOUND_WITH_INFO));
+        }
         return ResponseConstructor.build(
             Response.Status.CREATED,
             I18n.get("Address created"),
             new AddressResponse(
-                addressCreationService.createAndSaveAddress(
-                    country,
-                    requestBody.fetchCity(country),
-                    requestBody.getZip(),
-                    requestBody.getStreetName())));
+                addressCreationService.createAndSaveAddress(country, city, zip, streetName)));
       }
       return ResponseConstructor.build(
           Response.Status.OK, I18n.get("Address found"), new AddressResponse(address.get()));
