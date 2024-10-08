@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project"
     orderBy="projectStatus, name">
@@ -42,6 +42,11 @@
   <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-method-check-resource-availibility" width="large">
+    <toolbar>
+      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
+        onClick="save,action-project-view-show-planning-panel" if="__config__.app.isApp('employee')"
+        if-module="axelor-human-resource" showIf="isShowPlanning"/>
+    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -63,9 +68,6 @@
         <item name="bookResourceItem" title="Book resource"
           if=" __config__.app.getApp('project')?.resourceManagement"
           action="save,action-project-book-resource"/>
-        <item title="Show planning" action="action-project-view-show-planning-panel"
-          if-module="axelor-human-resource" if="__config__.app.isApp('employee')"
-          showIf="isShowPlanning &amp;&amp; id"/>
         <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
         <item name="topic" title="Topic" action="save,project.topic.all"
           showIf="id &amp;&amp; isShowTopic"/>
@@ -106,7 +108,7 @@
     <panel-tabs name="mainPanelTab">
 
       <panel name="overviewPanel" title="Overview"
-        onTabSelect="action-project-activity-dashboard-method-on-new">
+        onTabSelect="action-project-activity-dashboard-method-on-new,action-project-dashboard-method-on-new">
         <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"/>
         <field name="fromDate" colSpan="3"/>
         <field name="toDate" colSpan="3"/>
@@ -145,8 +147,7 @@
     </panel>
     <panel name="dashboardPanel" title="Dashboard" showTitle="false" colSpan="12"
       canCollapse="true" collapseIf="false">
-      <panel-dashlet name="dashboardPanelDashlet" height="200%"
-        action="project.reporting.projects.dashboard" colSpan="12"/>
+      <panel-include view="project-dashboard-form"/>
     </panel>
     <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject">
@@ -464,6 +465,8 @@
   <action-group name="action-project-on-load-group">
     <action name="action-project-attrs-on-new-load"/>
     <action name="action-project-method-task-status-management-selection-in"/>
+    <action name="action-project-activity-dashboard-method-on-new"/>
+    <action name="action-project-dashboard-method-on-new"/>
   </action-group>
 
   <action-group name="action-project-group-on-new-project">

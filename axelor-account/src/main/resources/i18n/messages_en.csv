@@ -1637,6 +1637,7 @@
 "FailOver Ifrs depreciation end date",,,
 "Fees declaration supporting file",,,
 "Fetch limit",,,
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",,,
 "Field allowing a tax gap during the accounting of a move. Its value specifies the tolerance applied during the tax values control and the move balance control.",,,
 "Field allowing to activate the financial discounts",,,
 "Field allowing to alert the user when, during manual input of a move line, the user inputs an amount in a different position compared to the usual for this account",,,

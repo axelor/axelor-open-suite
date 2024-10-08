@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
@@ -12,7 +12,8 @@
     <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
-    <field name="ticketNumber"/>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
     <field name="name"/>
     <field name="project"/>
     <field name="taskDate"/>
@@ -38,7 +39,9 @@
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
-    <field name="name" width="850"/>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()" width="200"/>
+    <field name="name" width="680"/>
     <field name="projectTaskCategory" width="200"/>
     <field name="taskDate" width="100"/>
     <field name="status" width="100"/>
@@ -57,15 +60,16 @@
         onClick="action-project-task-record-assigned-yourself,save"/>
       <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
         showIf="project.taskStatusManagementSelect != 1"/>
+      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
+        onClick="save,action-project-task-view-show-planning" if="__config__.app.isApp('employee')"
+        if-module="axelor-human-resource" showIf="project.isShowPlanning"/>
     </toolbar>
     <menubar>
-      <menu name="projectTaskMenu" title="Tools">
+      <menu name="projectTaskMenu" title="Tools"
+        if="__config__.app.getApp('project')?.resourceManagement">
         <item name="bookResourceItem" title="Book resource"
           action="save,action-project-task-book-resource"
           if="__config__.app.getApp('project')?.resourceManagement"/>
-        <item title="Show planning" action="action-project-task-view-show-planning"
-          if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
-          showIf="project.isShowPlanning"/>
       </menu>
     </menubar>
 
@@ -181,7 +185,7 @@
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
 
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
-        collapseIf="true" canCollapse="true">
+        collapseIf="false" canCollapse="true">
         <panel-include view="incl-characteristics-panel-form"/>
         <field name="description" colSpan="12" widget="html"/>
       </panel>

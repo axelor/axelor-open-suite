@@ -465,6 +465,8 @@
 "Extra hours' number","Nombre d'heures supplémentaires",,
 "ExtraHours","Heures supplémentaires",,
 "F","F",,
+"Fetch limit",,,
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.","Limite de récupération par lot pour ce traitement de masse. 0 ne sera pas pris en compte. Dans ce cas, la valeur définie dans la configuration de l'application Base sera utilisée.",,
 "File","Fichier",,
 "File types","Types de fichier",,
 "Files","Fichiers",,

@@ -13,7 +13,9 @@ import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -67,7 +69,9 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       }
     }
 
-    return saleOrderLinesList;
+    return saleOrderLinesList.stream()
+        .sorted(Comparator.comparingInt(SaleOrderLine::getSequence))
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -93,6 +97,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
             bomLine.setProduct(subSaleOrderLine.getProduct());
             bomLine.setUnit(subSaleOrderLine.getUnit());
             bomLine.setBillOfMaterial(subSaleOrderLine.getBillOfMaterial());
+            bomLine.setPriority(subSaleOrderLine.getSequence() * 10);
             bom.addBillOfMaterialLineListItem(bomLine);
           }
           // Creating a new one
@@ -148,8 +153,17 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
         subSaleOrderLine.getBillOfMaterial(),
         subSaleOrderLine.getQty(),
         subSaleOrderLine.getUnit(),
-        0,
-        subSaleOrderLine.getProduct().getStockManaged());
+        Optional.ofNullable(subSaleOrderLine.getSequence())
+            .map(seq -> seq * 10)
+            .or(
+                () ->
+                    Optional.ofNullable(subSaleOrderLine.getBillOfMaterialLine())
+                        .map(BillOfMaterialLine::getPriority))
+            .orElse(0),
+        subSaleOrderLine.getProduct().getStockManaged(),
+        Optional.ofNullable(subSaleOrderLine.getBillOfMaterialLine())
+            .map(BillOfMaterialLine::getWasteRate)
+            .orElse(BigDecimal.ZERO));
   }
 
   protected BillOfMaterial customizeBomOf(SaleOrderLine saleOrderLine, int depth)

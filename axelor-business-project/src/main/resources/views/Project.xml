@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="business-project-grid" title="Projects"
     model="com.axelor.apps.project.db.Project">
@@ -47,6 +47,13 @@
     onLoad="action-business-project-project-group-on-load"
     onNew="action-business-project-project-group-on-new"
     onSave="action-project-method-check-resource-availibility">
+    <toolbar>
+      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
+        onClick="save,action-project-view-show-planning-panel" if="__config__.app.isApp('employee')"
+        if-module="axelor-human-resource" showIf="isShowPlanning"/>
+      <button name="showFinancialDatas" icon="clipboard-data" title="Show financial datas"
+        onClick="save,action-project-view-show-financial-datas-panel"/>
+    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -69,11 +76,6 @@
         <item name="bookResourceItem" title="Book resource"
           if=" __config__.app.getApp('project')?.resourceManagement"
           action="save,action-project-book-resource"/>
-        <item title="Show planning" action="action-project-view-show-planning-panel"
-          if-module="axelor-human-resource" if="__config__.app.isApp('employee')"
-          showIf="isShowPlanning &amp;&amp; id"/>
-        <item title="Show financial datas"
-          action="action-project-view-show-financial-datas-panel" showIf="id"/>
         <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
         <item name="topic" title="Topic" action="save,project.topic.all"
           showIf="id &amp;&amp; isShowTopic"/>
@@ -132,7 +134,7 @@
     <panel-tabs name="mainPanelTab">
 
       <panel name="overviewPanel" title="Overview"
-        onTabSelect="action-project-activity-dashboard-method-on-new">
+        onTabSelect="action-project-activity-dashboard-method-on-new,action-project-dashboard-method-on-new">
         <panel name="generalInfoPanel" colSpan="12" title="General information"
           canCollapse="true" collapseIf="false">
           <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"

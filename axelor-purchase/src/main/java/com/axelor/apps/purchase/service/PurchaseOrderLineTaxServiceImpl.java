@@ -216,6 +216,7 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       purchaseOrderLineTax.setInTaxTotal(
           currencyScaleService.getScaledValue(
               purchaseOrderLineTax.getExTaxBase().add(taxTotal), currencyScale));
+      purchaseOrderLineTax.setPercentageTaxTotal(purchaseOrderLineTax.getTaxTotal());
 
       PurchaseOrderLineTax oldPurchaseOrderLineTax =
           getExistingPurchaseOrderLineTax(purchaseOrderLineTax, currentPurchaseOrderLineTaxList);

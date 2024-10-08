@@ -101,14 +101,18 @@ public class ProjectDashboardController {
 
   protected Project getProject(ActionRequest request) {
     Project project = null;
-    Long projectId =
-        Optional.ofNullable(request.getContext().get("_id"))
-            .map(Object::toString)
-            .map(Long::valueOf)
-            .orElse(0l);
-    project = Beans.get(ProjectRepository.class).find(projectId);
-    if (project == null) {
-      project = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
+    if (Project.class.equals(request.getContext().getContextClass())) {
+      project = request.getContext().asType(Project.class);
+    } else {
+      Long projectId =
+          Optional.ofNullable(request.getContext().get("_id"))
+              .map(Object::toString)
+              .map(Long::valueOf)
+              .orElse(0l);
+      project = Beans.get(ProjectRepository.class).find(projectId);
+      if (project == null) {
+        project = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
+      }
     }
 
     return project;

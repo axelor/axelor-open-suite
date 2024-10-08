@@ -910,6 +910,7 @@
 "February",,,
 "Fetch emails",,,
 "Fetch limit",,,
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",,,
 "Field",,,
 "Field displayed in the result of the research",,,
 "Field permission",,,

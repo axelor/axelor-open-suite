@@ -132,12 +132,13 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   }
 
   protected List<Project> getSubprojects(Project project) {
-    Set<Long> contextProjectIds = projectToolService.getRelatedProjectIds(project);
-    contextProjectIds.remove(project.getId());
-    if (contextProjectIds.isEmpty()) {
+    Set<Long> projectIdsSet = new HashSet<>();
+    projectToolService.getChildProjectIds(projectIdsSet, project);
+    projectIdsSet.remove(project.getId());
+    if (projectIdsSet.isEmpty()) {
       return new ArrayList<>();
     }
-    return projectRepo.all().filter("self.id IN ?1", contextProjectIds).fetch();
+    return projectRepo.all().filter("self.id IN ?1", projectIdsSet).fetch();
   }
 
   protected Comparator<ProjectTask> getTaskComparator() {

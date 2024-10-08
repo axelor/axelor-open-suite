@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="business-support-version-project-task-grid" orderBy="-taskDate">
@@ -9,6 +9,8 @@
       <button name="logTimeBtn" icon="clock-history"
         onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
     </toolbar>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
@@ -28,6 +30,8 @@
     <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
@@ -39,23 +43,18 @@
     <field name="project.completedTaskStatus.id" hidden="true"/>
   </grid>
 
-  <form name="project-task-client-form" title="Ticket"
-    model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-onnew"
-    onLoad="action-project-task-group-timer-process" width="large">
-    <toolbar>
-      <button name="logTimeBtn" icon="clock-history" showIf="project.manageTimeSpent"
-        onClick="save,action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
-    </toolbar>
-    <panel name="mainPanel">
-      <panel name="statusPanel" showIf="project.taskStatusManagementSelect != 1"
-        stacked="true" colSpan="12">
-        <field name="status" widget="NavSelect" showTitle="false" x-order="sequence"/>
-        <field name="typeSelect" hidden="true"/>
-      </panel>
-      <field name="$viewerTags" showTitle="false" readonly="true"
-        showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="4" hidden="true">
-        <viewer>
-        	<![CDATA[
+  <form name="business-project-task-form" title="Task"
+    model="com.axelor.apps.project.db.ProjectTask" id="business-project-task-ticket-form"
+    extension="true">
+    <extend target="//panel[@name='projectDetailsPanel']">
+      <insert position="before">
+        <panel name="viewerTagsPanel" colSpan="4">
+          <field name="$viewerTags" showTitle="false" readonly="true"
+            showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="12"
+            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
+            hidden="true">
+            <viewer>
+              <![CDATA[
                    <>
                        <Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
                            {assignment == 1 && <Badge bg="danger">{_t('Task assigned to the client')}</Badge>}
@@ -65,98 +64,66 @@
                            {isOrderAccepted && <Badge bg="success">{_t('Order Accepted')}</Badge>}
                        </Box>
                    </>
-            ]]>
-        </viewer>
-      </field>
-      <field name="$provider" hidden="true" type="string"/>
-      <panel name="detailsPanel" colSpan="8" readonlyIf="id">
-        <field name="fullName" showTitle="false" colSpan="12">
-          <viewer depends="name">
-					<![CDATA[
-						<>
-							<h3>
-								<span>{name}</span>
-							</h3>
-						</>
-					]]>
-          </viewer>
-          <editor>
-            <field name="name" title="Subject" colSpan="12" css="label-bold bold large"
-              required="true"/>
-          </editor>
-        </field>
-        <field name="project" canEdit="false"
-          onChange="action-project-task-group-project-onchange" required="true"/>
-        <field name="parentTask" readonlyIf="project == null"
-          onSelect="action-project-task-attrs-parent-task-configurations"/>
-        <field name="isOrderAccepted" hidden="true" showIf="typeSelect == 'ticket'"/>
-        <field name="isOrderProposed" hidden="true"/>
-        <field name="project.taskStatusManagementSelect" hidden="true"/>
-      </panel>
-      <panel name="actionsPanel" colSpan="4">
-        <button name="acceptOrderBtn" title="Accept Order" hidden="true"
-          showIf="typeSelect == 'ticket' &amp;&amp; invoicingType &amp;&amp; !isOrderAccepted"
-          onClick="action-project-task-attrs-onclick-order-accepted,save" colSpan="12"/>
-        <button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider"
-          hidden="true" onClick="action-project-task-attrs-assginment-provider,save"
-          showIf="assignment == 1 &amp;&amp; typeSelect == 'ticket'"/>
-        <button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer"
-          hidden="true" onClick="action-project-task-attrs-assginment-customer,save"
-          showIf="assignment == 2 &amp;&amp; typeSelect == 'ticket'"/>
-      </panel>
-      <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
-        <field name="taskDate" onChange="action-project-task-attrs-set-task-duration"
-          required="true" readonlyIf="id"/>
-        <field name="projectTaskCategory"
-          onSelect="action-project-task-attrs-project-task-category-configurations" readonlyIf="id"/>
-        <field name="targetVersion" domain=":project member of self.projectSet"
-          form-view="project-version-form" grid-view="project-version-grid" readonlyIf="id"/>
-        <field name="customerReferral" hidden="true" showIf="typeSelect == 'ticket'"
-          onSelect="action-project-task-attrs-customer-referral-domain"
-          if="__config__.app.isApp('business-project')"/>
-        <field name="progress" colSpan="6"
-          onChange="action-project-task-group-progress-onchange" readonlyIf="id"/>
-        <field name="assignment" hidden="true" readonlyIf="id" showIf="typeSelect == 'ticket'"/>
-      </panel>
-    </panel>
-    <panel-include view="incl-customized-field-panel-form"/>
-    <panel-tabs name="mainPanelTab" readonlyIf="id">
-      <panel name="contentPanel" title="Content" colSpan="12">
-        <field name="description" showTitle="false" colSpan="12" widget="html"/>
-      </panel>
-      <panel name="treeViewPanel" title="Tree view" colSpan="12">
-        <panel-dashlet name="taskTreePanel" title="Task Tree" colSpan="12"
-          action="action-view-show-task-tree"/>
-        <panel-related name="finishToStartSetPanel" field="finishToStartSet"
-          colSpan="12">
-          <field name="name"/>
-        </panel-related>
-      </panel>
-      <panel name="financialDataPanel" title="Financial Data" colSpan="12">
-        <field name="invoicingType" if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project"/>
-        <panel name="pricingPanel" showIf="invoicingType == 2" colSpan="12">
-          <field name="quantity" colSpan="4" onChange="action-project-task-group-qty-onchange"/>
-          <field name="invoicingUnit" colSpan="4" domain="self.unitTypeSelect=3"
-            form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
-          <field name="unitPrice" colSpan="4"
-            onChange="action-project-task-group-unit-price-onchange"/>
-          <field name="exTaxTotal" readonly="true" colSpan="4"/>
+	        ]]>
+            </viewer>
+          </field>
         </panel>
-        <panel-dashlet name="validatedTimesheetLinesPanel"
-          if="__config__.app.getApp('timesheet')?.needValidation" showIf="invoicingType == 1"
-          action="action-project-task-dashlet-validated-timesheet-lines"
-          title="Validated Timesheet lines" colSpan="12" canSearch="true" readonly="true"/>
-        <panel-dashlet name="allTimesheetLinesPanel"
-          if="!__config__.app.getApp('timesheet')?.needValidation" showIf="invoicingType == 1"
-          action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
-          colSpan="12" canSearch="true" readonly="true"/>
-      </panel>
-    </panel-tabs>
-    <panel-mail name="mailPanel">
-      <mail-messages/>
-      <mail-followers/>
-    </panel-mail>
+        <field name="$provider" hidden="true" type="string"/>
+      </insert>
+      <insert position="inside">
+        <panel name="actionPanel" colSpan="4">
+          <button name="acceptOrderBtn" title="Accept Order"
+            hideIf="invoicingType != 1  || isOrderAccepted || typeSelect != 'ticket'"
+            onClick="action-project-task-attrs-onclick-order-accepted,save" colSpan="12"
+            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+          <button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider"
+            onClick="action-project-task-attrs-assginment-provider,save"
+            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
+            showIf="assignment == 1 &amp;&amp; typeSelect == 'ticket'"/>
+          <button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer"
+            onClick="action-project-task-attrs-assginment-customer,save"
+            if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
+            showIf="assignment == 2 &amp;&amp; typeSelect == 'ticket'"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <form name="incl-overview-business-project-task-panel-form" title="Overview"
+    model="com.axelor.apps.project.db.ProjectTask"
+    id="incl-overview-business-support-task-panel-form" extension="true">
+
+    <extend target="//field[@name='site']">
+      <insert position="after">
+        <field name="customerReferral"
+          onSelect="action-project-task-attrs-customer-referral-domain"
+          showIf="typeSelect == 'ticket'" if="__config__.app.isApp('business-project')"/>
+        <field name="isPrivate" showIf="typeSelect == 'ticket'" colSpan="6"
+          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+        <field name="isOrderAccepted" colSpan="3" showIf="typeSelect == 'ticket'"
+          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+        <field name="isOrderProposed" hidden="true" colSpan="3"
+          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+      </insert>
+    </extend>
+
+    <extend target="//field[@name='invoicingProgress']">
+      <insert position="before">
+        <field name="targetVersion" if-module="axelor-business-support"
+          if="__config__.app.isApp('business-support')" domain=":project member of self.projectSet"
+          colSpan="4" form-view="project-version-form" grid-view="project-version-grid"/>
+        <field name="assignment" showIf="typeSelect == 'ticket'"
+          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
+          colSpan="4"/>
+      </insert>
+    </extend>
+
+    <extend target="//field[@name='description']">
+      <insert position="after">
+        <field name="internalDescription" colSpan="12" widget="html"
+          if="__config__.app.isApp('business-support')" if-module="axelor-business-support"/>
+      </insert>
+    </extend>
   </form>
 
   <action-view name="action-dashlet-version-view-show-task" title="Ticket associated"
@@ -166,5 +133,24 @@
     <view-param name="popup" value="true"/>
     <domain>self.targetVersion.id = :id</domain>
   </action-view>
+
+  <action-attrs name="action-project-task-attrs-assginment-provider">
+    <attribute name="value" for="assignment" expr="eval: 2"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-assginment-customer">
+    <attribute name="value" for="assignment" expr="eval: 1"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-onclick-order-accepted">
+    <attribute name="value" for="isOrderAccepted" expr="eval:true"/>
+    <attribute name="value" for="assignment" expr="eval:2"/>
+    <attribute name="hidden" for="acceptOrderBtn" expr="eval:true"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-customer-referral-domain">
+    <attribute name="domain" for="customerReferral"
+      expr="eval: &quot; (SELECT role FROM Role role WHERE role.name='role.customer') MEMBER OF self.roles AND self.id IN (SELECT userSet.id FROM Project p INNER JOIN p.membersUserSet userSet WHERE p.id = ${project?.id}) &quot;"/>
+  </action-attrs>
 
 </object-views>
