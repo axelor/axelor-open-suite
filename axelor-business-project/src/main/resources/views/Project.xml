@@ -265,20 +265,11 @@
         <panel-related readonly="true" field="saleOrderLineList" widget="tree-grid"
           canNew="false" canEdit="false" canRemove="false" title="Details Lines (Tree)"
           orderBy="sequence" form-view="sale-order-line-form"
+          x-tree-field-title="Add a new sale order line" summary-view="sale-order-line-summary-form"
+          x-expand-all="subSaleOrderLineList,saleOrderLineDetailsList"
           grid-view="sale-order-line-editable-grid" x-tree-field="subSaleOrderLineList" colSpan="12"
           if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"/>
 
-        <panel-related name="detailLinesPanel" title="Details Lines" readonly="true"
-          colSpan="12" height="30" field="saleOrderLineList" form-view="sale-order-line-form"
-          grid-view="sale-order-line-grid" orderBy="sequence" canNew="false" canEdit="false"
-          canRemove="false"
-          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
-
-        <panel-related name="editableDetailLinesPanel" title="Details Lines"
-          readonly="true" height="30" field="saleOrderLineList" form-view="sale-order-line-form"
-          grid-view="sale-order-line-editable-grid" orderBy="sequence" canNew="false"
-          canEdit="false" canRemove="false" colSpan="12"
-          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_EDITABLE"/>
       </panel>
       <panel-include view="incl-wiki-panel-form"/>
 
