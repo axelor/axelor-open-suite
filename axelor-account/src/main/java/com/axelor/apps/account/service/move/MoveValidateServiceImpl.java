@@ -117,8 +117,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected TaxService taxService;
 
-  protected static final int CALCULATION_SCALE = 10;
-
   @Inject
   public MoveValidateServiceImpl(
       MoveLineControlService moveLineControlService,
@@ -959,7 +957,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       BigDecimal taxAmount =
           lineTotal
               .multiply(taxService.getTotalTaxRateInPercentage(Set.of(taxLine)))
-              .divide(BigDecimal.valueOf(100), CALCULATION_SCALE, RoundingMode.HALF_UP);
+              .divide(
+                  BigDecimal.valueOf(100),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
       if (amountByTaxLineMap.get(taxLine) != null) {
         amountByTaxLineMap.replace(taxLine, amountByTaxLineMap.get(taxLine).add(taxAmount));
       } else {
