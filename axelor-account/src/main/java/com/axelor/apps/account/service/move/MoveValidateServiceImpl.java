@@ -79,8 +79,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -114,6 +116,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected TaxService taxService;
+
+  protected static final int CALCULATION_SCALE = 10;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -874,12 +878,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
     List<MoveLine> moveLineList = move.getMoveLineList();
 
-    BigDecimal linesTaxAmount =
-        moveLineList.stream()
-            .filter(moveLineTaxService::isGenerateMoveLineForAutoTax)
-            .map(this::getTaxAmount)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
+    BigDecimal linesTaxAmount = getLinesTaxAmount(moveLineList, move);
 
     BigDecimal taxLinesAmount =
         moveLineList.stream()
@@ -896,6 +895,35 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.MOVE_TAX_NOT_EQUALS));
     }
+  }
+
+  protected BigDecimal getLinesTaxAmount(List<MoveLine> moveLineList, Move move) {
+    List<MoveLine> moveLineWithTaxList =
+        moveLineList.stream()
+            .filter(moveLineTaxService::isGenerateMoveLineForAutoTax)
+            .collect(Collectors.toList());
+
+    BigDecimal lineTaxAmount = BigDecimal.ZERO;
+    if (ObjectUtils.isEmpty(moveLineWithTaxList)) {
+      return lineTaxAmount;
+    }
+
+    Map<Object, BigDecimal> amountByTaxLineMap = new HashMap<>();
+    for (MoveLine moveLine : moveLineWithTaxList) {
+      getTaxAmount(moveLine, amountByTaxLineMap);
+    }
+
+    if (!ObjectUtils.isEmpty(amountByTaxLineMap)) {
+      for (Map.Entry<Object, BigDecimal> entry : amountByTaxLineMap.entrySet()) {
+        lineTaxAmount =
+            lineTaxAmount.add(
+                entry
+                    .getValue()
+                    .setScale(currencyScaleService.getCompanyScale(move), RoundingMode.HALF_UP));
+      }
+    }
+
+    return lineTaxAmount;
   }
 
   @Override
@@ -915,23 +943,29 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
   }
 
-  protected BigDecimal getTaxAmount(MoveLine moveLine) {
-    if (CollectionUtils.isEmpty(moveLine.getTaxLineSet())) {
-      return BigDecimal.ZERO;
+  protected void getTaxAmount(MoveLine moveLine, Map<Object, BigDecimal> amountByTaxLineMap) {
+    BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
+
+    if (CollectionUtils.isEmpty(moveLine.getTaxLineSet()) || lineTotal.signum() == 0) {
+      return;
     }
 
-    BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
     Set<TaxLine> taxLineSet =
         moveLine.getTaxLineSet().stream()
             .filter(it -> !it.getTax().getIsNonDeductibleTax())
             .collect(Collectors.toSet());
 
-    return lineTotal
-        .multiply(taxService.getTotalTaxRateInPercentage(taxLineSet))
-        .divide(
-            BigDecimal.valueOf(100),
-            currencyScaleService.getCompanyScale(moveLine),
-            RoundingMode.HALF_UP);
+    for (TaxLine taxLine : taxLineSet) {
+      BigDecimal taxAmount =
+          lineTotal
+              .multiply(taxService.getTotalTaxRateInPercentage(Set.of(taxLine)))
+              .divide(BigDecimal.valueOf(100), CALCULATION_SCALE, RoundingMode.HALF_UP);
+      if (amountByTaxLineMap.get(taxLine) != null) {
+        amountByTaxLineMap.replace(taxLine, amountByTaxLineMap.get(taxLine).add(taxAmount));
+      } else {
+        amountByTaxLineMap.put(taxLine, taxAmount);
+      }
+    }
   }
 
   protected BigDecimal getMoveLineSignedValue(MoveLine moveLine) {
