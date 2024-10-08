@@ -10,7 +10,7 @@
   </grid>
 
   <form name="cart-form" title="Cart" model="com.axelor.apps.sale.db.Cart"
-    onNew="action-cart-method-set-default-values" width="large">
+    onNew="action-cart-method-set-default-values" width="large" canNew="false">
     <toolbar>
       <button name="emptyCartBtn" title="Empty cart"
         onClick="save,action-cart-method-empty-cart"/>
