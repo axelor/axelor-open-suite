@@ -1,6 +1,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectToolService;
@@ -32,6 +33,21 @@ public class ProjectMenuBusinessServiceImpl extends ProjectMenuServiceImpl {
     if (projectId != null) {
       builder.context("_showRecord", projectId);
     }
+    return builder.map();
+  }
+
+  @Override
+  public Map<String, Object> getAllProjectTasks() {
+    ActionView.ActionViewBuilder builder =
+        ActionView.define(I18n.get("Tasks"))
+            .model(ProjectTask.class.getName())
+            .add("kanban", "project-task-kanban")
+            .add("grid", "project-task-grid")
+            .add("form", "project-task-form")
+            .domain("self.typeSelect = :_typeSelect AND self.project.isBusinessProject = false")
+            .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
+            .param("search-filters", "project-task-filters");
+
     return builder.map();
   }
 }
