@@ -12,6 +12,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -112,6 +113,51 @@ public class AddressCreationServiceImpl implements AddressCreationService {
         address.setStreet(null);
         address.setAddressL4(null);
       }
+    }
+  }
+
+  @Override
+  public Address fetchAddress(Country country, City city, String zip, String streetName)
+      throws AxelorException {
+    if (city != null) {
+      if (zip != null) {
+        return Beans.get(AddressRepository.class)
+            .all()
+            .filter(
+                "self.country = :country AND self.zip = :zip AND self.city = :city AND UPPER(self.streetName) = :streetName")
+            .bind("country", country)
+            .bind("zip", zip)
+            .bind("city", city)
+            .bind("streetName", streetName.toUpperCase())
+            .fetchOne();
+      } else {
+        return Beans.get(AddressRepository.class)
+            .all()
+            .filter(
+                "self.country = :country AND self.city = :city AND UPPER(self.streetName) = :streetName")
+            .bind("country", country)
+            .bind("city", city)
+            .bind("streetName", streetName.toUpperCase())
+            .fetchOne();
+      }
+    } else if (zip != null) {
+      return Optional.ofNullable(
+              Beans.get(AddressRepository.class)
+                  .all()
+                  .filter(
+                      "self.country = :country AND self.zip = :zip AND UPPER(self.streetName) = :streetName")
+                  .bind("country", country)
+                  .bind("zip", zip)
+                  .bind("streetName", streetName.toUpperCase())
+                  .fetchOne())
+          .orElseThrow(
+              () ->
+                  new AxelorException(
+                      TraceBackRepository.CATEGORY_INCONSISTENCY,
+                      I18n.get(BaseExceptionMessage.NO_ADDRESS_FOUND_WITH_INFO)));
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.NO_CITY_FOUND));
     }
   }
 }

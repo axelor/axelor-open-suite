@@ -179,6 +179,8 @@ import com.axelor.apps.base.service.address.AddressTemplateLineViewService;
 import com.axelor.apps.base.service.address.AddressTemplateLineViewServiceImpl;
 import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.address.AddressTemplateServiceImpl;
+import com.axelor.apps.base.service.address.CountryService;
+import com.axelor.apps.base.service.address.CountryServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorQueryService;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorQueryServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorService;
@@ -491,5 +493,6 @@ public class BaseModule extends AxelorModule {
     bind(DataSharingProductWizardService.class).to(DataSharingProductWizardServiceImpl.class);
     bind(TagService.class).to(TagServiceImpl.class);
     bind(AddressCreationService.class).to(AddressCreationServiceImpl.class);
+    bind(CountryService.class).to(CountryServiceImpl.class);
   }
 }
