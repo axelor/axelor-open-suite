@@ -381,6 +381,8 @@
         x-dirty="false" domain="self.project.id = :id" colSpan="6"/>
       <panel-dashlet action="action-project-view-sprint-allocation-lines"
         name="sprintAllocationLinePanel" colSpan="12"/>
+      <panel-dashlet action="action-project-view-sprints-summary"
+        name="sprintSummaryPanel" readonly="true" colSpan="12"/>
       <panel-dashlet action="action-project-method-tasks-per-sprint"
         name="tasksPerSprintPanel" colSpan="12"/>
       <button onClick="save,action-project-view-attach-tasks-to-sprint"
@@ -892,6 +894,13 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="popup" value="reload"/>
     <context name="_projectId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-project-view-sprints-summary" title="Sprints summary"
+    model="com.axelor.apps.project.db.Sprint">
+    <view type="grid" name="sprint-summary-grid"/>
+    <view type="form" name="sprint-form"/>
+    <domain>self.project.id = :id</domain>
   </action-view>
 
   <!-- ACTION VALIDATE -->
