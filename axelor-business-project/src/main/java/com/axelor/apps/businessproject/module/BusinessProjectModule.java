@@ -113,7 +113,6 @@ import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUp
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingServiceImpl;
-import com.axelor.apps.businessproject.service.sprint.SprintAllocationLineBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.sprint.SprintBusinessProjectServiceImpl;
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
@@ -134,7 +133,6 @@ import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeServiceI
 import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTemplateServiceImpl;
-import com.axelor.apps.project.service.sprint.SprintAllocationLineServiceImpl;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
@@ -234,8 +232,6 @@ public class BusinessProjectModule extends AxelorModule {
 
     bind(ProjectTaskGroupService.class).to(ProjectTaskGroupServiceImpl.class);
     bind(ProjectTaskComputeService.class).to(ProjectTaskComputeServiceImpl.class);
-    bind(SprintAllocationLineServiceImpl.class)
-        .to(SprintAllocationLineBusinessProjectServiceImpl.class);
     bind(SprintHRServiceImpl.class).to(SprintBusinessProjectServiceImpl.class);
   }
 }

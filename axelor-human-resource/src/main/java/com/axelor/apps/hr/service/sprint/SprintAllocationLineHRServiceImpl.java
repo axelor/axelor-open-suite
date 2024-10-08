@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.service.sprint;
+package com.axelor.apps.hr.service.sprint;
 
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
@@ -31,19 +31,19 @@ import com.axelor.apps.project.service.sprint.SprintAllocationLineServiceImpl;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class SprintAllocationLineBusinessProjectServiceImpl
-    extends SprintAllocationLineServiceImpl {
+public class SprintAllocationLineHRServiceImpl extends SprintAllocationLineServiceImpl {
 
   protected LeaveRequestService leaveRequestService;
   protected WeeklyPlanningService weeklyPlanningService;
 
   @Inject
-  public SprintAllocationLineBusinessProjectServiceImpl(
+  public SprintAllocationLineHRServiceImpl(
       SprintAllocationLineRepository sprintAllocationLineRepo,
       LeaveRequestService leaveRequestService,
       WeeklyPlanningService weeklyPlanningService) {
@@ -108,9 +108,9 @@ public class SprintAllocationLineBusinessProjectServiceImpl
               .subtract(sprintAllocationLine.getAllocated());
     }
 
-    valueMap.put("leaves", leaveDayCount);
-    valueMap.put("plannedTime", plannedTime);
-    valueMap.put("remainingTime", remainingTime);
+    valueMap.put("leaves", leaveDayCount.setScale(2, RoundingMode.HALF_UP));
+    valueMap.put("plannedTime", plannedTime.setScale(2, RoundingMode.HALF_UP));
+    valueMap.put("remainingTime", remainingTime.setScale(2, RoundingMode.HALF_UP));
 
     return valueMap;
   }

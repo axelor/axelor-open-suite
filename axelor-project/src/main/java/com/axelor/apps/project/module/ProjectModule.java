@@ -29,6 +29,8 @@ import com.axelor.apps.project.db.repo.ProjectTemplateManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.db.repo.SprintAllocationLineManagementRepository;
 import com.axelor.apps.project.db.repo.SprintAllocationLineRepository;
+import com.axelor.apps.project.db.repo.SprintManagementRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.db.repo.TaskTemplateManagementRepository;
 import com.axelor.apps.project.db.repo.TaskTemplateRepository;
 import com.axelor.apps.project.db.repo.TeamProjectRepository;
@@ -126,5 +128,6 @@ public class ProjectModule extends AxelorModule {
     bind(SprintAllocationLineRepository.class).to(SprintAllocationLineManagementRepository.class);
     bind(SprintAllocationLineService.class).to(SprintAllocationLineServiceImpl.class);
     bind(SprintService.class).to(SprintServiceImpl.class);
+    bind(SprintRepository.class).to(SprintManagementRepository.class);
   }
 }
