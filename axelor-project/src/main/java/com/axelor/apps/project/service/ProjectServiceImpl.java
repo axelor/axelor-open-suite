@@ -329,6 +329,8 @@ public class ProjectServiceImpl implements ProjectService {
       Project project, Integer taskStatusManagement, Set<TaskStatus> taskStatusSet) {
     project.setTaskStatusManagementSelect(taskStatusManagement);
 
-    project.setProjectTaskStatusSet(new HashSet<>(taskStatusSet));
+    if (taskStatusSet != null) {
+      project.setProjectTaskStatusSet(new HashSet<>(taskStatusSet));
+    }
   }
 }
