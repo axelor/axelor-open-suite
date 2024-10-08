@@ -1,4 +1,4 @@
-package com.axelor.apps.supplychain.service.saleorder;
+package com.axelor.apps.supplychain.service.saleorder.onchange;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -27,6 +27,10 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionSer
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.repo.PartnerStockSettingsRepository;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderIntercoService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderTaxNumberService;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import java.util.HashMap;

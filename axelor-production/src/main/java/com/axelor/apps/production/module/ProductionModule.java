@@ -93,7 +93,6 @@ import com.axelor.apps.production.service.SaleOrderLineProductProductionService;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineViewProductionService;
 import com.axelor.apps.production.service.SaleOrderLineViewProductionServiceImpl;
-import com.axelor.apps.production.service.SaleOrderOnLineChangeProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderProductionSyncService;
 import com.axelor.apps.production.service.SaleOrderProductionSyncServiceImpl;
 import com.axelor.apps.production.service.SopService;
@@ -195,6 +194,7 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateS
 import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
+import com.axelor.apps.production.service.saleorder.onchange.SaleOrderOnLineChangeProductionServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
@@ -210,7 +210,7 @@ import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesSupplychainServiceImpl;
-import com.axelor.apps.supplychain.service.saleorder.SaleOrderOnLineChangeSupplyChainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainServiceImpl;
 

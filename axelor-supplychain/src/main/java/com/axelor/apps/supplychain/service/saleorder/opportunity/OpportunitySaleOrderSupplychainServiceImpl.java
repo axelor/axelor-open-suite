@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.supplychain.service.saleorder.opportunity;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;

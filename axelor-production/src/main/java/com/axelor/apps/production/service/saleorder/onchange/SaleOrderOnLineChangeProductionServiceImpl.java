@@ -1,6 +1,7 @@
-package com.axelor.apps.production.service;
+package com.axelor.apps.production.service.saleorder.onchange;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.production.service.SaleOrderProductionSyncService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -11,9 +12,9 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
-import com.axelor.apps.supplychain.service.saleorder.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service.saleorder;
+package com.axelor.apps.supplychain.service.saleorder.merge;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
@@ -35,6 +35,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderCreateSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
