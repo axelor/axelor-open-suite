@@ -19,7 +19,7 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Language;
-import com.axelor.apps.base.service.LanguageService;
+import com.axelor.apps.base.service.language.LanguageService;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import javax.persistence.EntityManager;

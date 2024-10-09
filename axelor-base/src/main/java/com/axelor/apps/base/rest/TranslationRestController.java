@@ -19,18 +19,22 @@
 package com.axelor.apps.base.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Language;
+import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.rest.dto.GlobalTranslationsResponse;
 import com.axelor.apps.base.rest.dto.TranslationResponse;
-import com.axelor.db.Query;
+import com.axelor.apps.base.service.language.LanguageCheckerService;
+import com.axelor.apps.base.service.localization.LocalizationService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaTranslation;
-import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ResponseConstructor;
+import com.axelor.utils.service.translation.TranslationBaseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
@@ -56,7 +60,7 @@ public class TranslationRestController {
   public Response setTranslationJSON(@PathParam("lng") String language, JSONObject translationJson)
       throws AxelorException {
     try {
-      LanguageChecker.check(language);
+      Beans.get(LanguageCheckerService.class).check(language);
       Map<String, String> translationMap =
           new ObjectMapper().readValue(translationJson.toString(), Map.class);
 
@@ -80,18 +84,34 @@ public class TranslationRestController {
   @HttpExceptionHandler
   public Response sendTranslationJSON(@PathParam("lng") String language)
       throws AxelorException, JSONException {
-    LanguageChecker.check(language);
+    LanguageCheckerService languageCheckerService = Beans.get(LanguageCheckerService.class);
+    TranslationBaseService translationBaseService = Beans.get(TranslationBaseService.class);
 
-    Query<MetaTranslation> query =
-        Beans.get(MetaTranslationRepository.class)
-            .all()
-            .filter("self.language = :language " + " AND self.key LIKE :key");
-    query.bind("language", language);
-    query.bind("key", "mobile_app_%");
+    Localization localization = Beans.get(LocalizationService.class).getLocalization(language);
+    languageCheckerService.checkLanguage(localization);
+    Language lang = localization.getLanguage();
+    String key = "mobile_app_%";
+
+    List<MetaTranslation> localizationTranslation =
+        translationBaseService.getTranslations(localization.getCode().replace("_", "-"), key);
+    List<MetaTranslation> countryTranslation =
+        translationBaseService.getTranslations(lang.getCode(), key);
+
+    for (MetaTranslation metaTranslation : countryTranslation) {
+      List<String> keyList =
+          localizationTranslation.stream()
+              .map(MetaTranslation::getKey)
+              .collect(Collectors.toList());
+      if (!keyList.contains(metaTranslation.getKey())) {
+        localizationTranslation.add(metaTranslation);
+      }
+    }
 
     return ResponseConstructor.build(
         Response.Status.OK,
         new GlobalTranslationsResponse(
-            query.fetchStream().map(TranslationResponse::build).collect(Collectors.toList())));
+            localizationTranslation.stream()
+                .map(TranslationResponse::build)
+                .collect(Collectors.toList())));
   }
 }

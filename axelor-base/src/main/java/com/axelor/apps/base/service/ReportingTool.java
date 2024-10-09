@@ -21,6 +21,7 @@ package com.axelor.apps.base.service;
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Localization;
+import com.axelor.apps.base.service.localization.LocaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import java.util.Locale;

@@ -16,21 +16,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.rest;
+package com.axelor.apps.base.service.language;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Language;
+import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.ws.rs.NotFoundException;
 
-public class LanguageChecker {
+public class LanguageCheckerServiceImpl implements LanguageCheckerService {
 
-  public static void check(String languageCode) throws NotFoundException {
+  public void check(String languageCode) throws NotFoundException {
     Query<Language> query = Beans.get(LanguageRepository.class).all().filter("self.code = :code ");
     query.bind("code", languageCode);
     if (query.count() == 0) {
       throw new NotFoundException("Language with code " + languageCode + " was not found.");
+    }
+  }
+
+  @Override
+  public void checkLanguage(Localization localization) throws AxelorException {
+    if (ObjectUtils.isEmpty(localization) || ObjectUtils.isEmpty(localization.getLanguage())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(BaseExceptionMessage.LOCALIZATION_LANGUAGE_EMPTY),
+              localization != null ? localization.getId() : ""));
     }
   }
 }

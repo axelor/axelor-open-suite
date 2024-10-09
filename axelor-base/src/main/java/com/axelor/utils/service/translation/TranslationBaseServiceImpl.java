@@ -16,17 +16,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.utils.service;
+package com.axelor.utils.service.translation;
 
-import com.axelor.apps.base.service.LocaleService;
+import com.axelor.apps.base.service.localization.LocaleService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.db.MetaTranslation;
+import com.axelor.meta.db.repo.MetaTranslationRepository;
+import com.axelor.utils.service.TranslationService;
 import com.google.inject.Inject;
+import java.util.List;
 
 public class TranslationBaseServiceImpl implements TranslationBaseService {
 
   protected UserService userService;
   protected TranslationService translationService;
+  protected MetaTranslationRepository metaTranslationRepository;
 
   @Inject
   public TranslationBaseServiceImpl(
@@ -40,5 +46,17 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
     String language = LocaleService.getLanguageFromLocaleCode(userService.getLocalizationCode());
     String valueTranslation = translationService.getValueTranslation(key, language);
     return key.equals(valueTranslation) ? I18n.get(key) : valueTranslation;
+  }
+
+  @Override
+  public List<MetaTranslation> getTranslations(String language, String key) {
+    Query<MetaTranslation> query =
+        metaTranslationRepository
+            .all()
+            .filter("self.language = :language " + " AND self.key LIKE :key");
+    query.bind("language", language);
+    query.bind("key", key);
+
+    return query.fetch();
   }
 }

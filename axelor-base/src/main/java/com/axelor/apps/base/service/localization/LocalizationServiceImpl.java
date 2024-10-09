@@ -16,14 +16,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.localization;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Localization;
+import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -31,6 +33,14 @@ import java.util.Locale;
 import org.apache.commons.lang3.LocaleUtils;
 
 public class LocalizationServiceImpl implements LocalizationService {
+
+  protected LocalizationRepository localizationRepository;
+
+  @Inject
+  public LocalizationServiceImpl(LocalizationRepository localizationRepository) {
+    this.localizationRepository = localizationRepository;
+  }
+
   @Override
   public void validateLocale(Localization localization) throws AxelorException {
     String localeStr = localization.getCode();
@@ -77,5 +87,16 @@ public class LocalizationServiceImpl implements LocalizationService {
       dateFormatString = dateFormatString.replace("y", "yyyy");
     }
     return dateFormatString;
+  }
+
+  @Override
+  public Localization getLocalization(String localizationCode) throws AxelorException {
+    if (!localizationCode.isEmpty()) {
+      return localizationRepository.findByCode(localizationCode);
+    }
+
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(BaseExceptionMessage.LOCALIZATION_EMPTY));
   }
 }
