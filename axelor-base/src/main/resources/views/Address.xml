@@ -178,6 +178,7 @@
   </action-group>
 
   <action-group name="action-group-base-address-country-change">
+    <action name="action-address-attrs-set-all-required-to-false"/>
     <action name="action-address-record-clear-fields"/>
     <action name="action-base-address-get-address-fields"/>
   </action-group>
@@ -283,6 +284,24 @@
     <field name="zip" expr="eval: street.city.zip" if="street"/>
     <field name="country" expr="eval: street.city.country" if="street"/>
   </action-record>
+
+  <action-attrs name="action-address-attrs-set-all-required-to-false">
+    <attribute for="department" name="required" expr="false"/>
+    <attribute for="subDepartment" name="required" expr="false"/>
+    <attribute for="room" name="required" expr="false"/>
+    <attribute for="floor" name="required" expr="false"/>
+    <attribute for="buildingNumber" name="required" expr="false"/>
+    <attribute for="street" name="required" expr="false"/>
+    <attribute for="streetName" name="required" expr="false"/>
+    <attribute for="postBox" name="required" expr="false"/>
+    <attribute for="buildingName" name="required" expr="false"/>
+    <attribute for="townName" name="required" expr="false"/>
+    <attribute for="townLocationName" name="required" expr="false"/>
+    <attribute for="districtName" name="required" expr="false"/>
+    <attribute for="countrySubDivision" name="required" expr="false"/>
+    <attribute for="city" name="required" expr="false"/>
+    <attribute for="zip" name="required" expr="false"/>
+  </action-attrs>
 
   <search-filters name="address-filters" model="com.axelor.apps.base.db.Address"
     title="Address filters">
