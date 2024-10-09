@@ -1597,9 +1597,11 @@
     									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2"
       if="company != null"/>
     <attribute name="title" for="saleOrderLineList.priceDiscounted"
-      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')" if="inAti"/>
+      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')"
+      if="eval: inAti &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
     <attribute name="title" for="saleOrderLineList.priceDiscounted"
-      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')" if="!inAti"/>
+      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')"
+      if="eval: !inAti &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
   </action-attrs>
 
   <action-record name="action-sale-order-record-set-contact-partner"
@@ -2338,6 +2340,8 @@
     <attribute for="saleOrderLineList.discountTypeSelect" name="hidden"
       expr="eval: !(__config__.app.getApp('sale')?.getIsEditableGridEnabled() &amp;&amp; __config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid())"/>
     <attribute for="saleOrderLineList.discountAmount" name="hidden"
+      expr="eval: !__config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid()"/>
+    <attribute for="saleOrderLineList.priceDiscounted" name="hidden"
       expr="eval: !__config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid()"/>
   </action-attrs>
 
