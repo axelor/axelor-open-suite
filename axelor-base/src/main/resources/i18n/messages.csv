@@ -1419,7 +1419,7 @@
 "No",,,
 "No Return Value",,,
 "No active company for this user, please define an active company.",,,
-"No address found with this country, zip and street name",,,
+"No address found with this country, zip and street name. City name is required to create a new city.",,,
 "No city found",,,
 "No contact to import.",,,
 "No country found for: %s.",,,
