@@ -8,12 +8,12 @@
     editable="true" extension="true">
     <extend target="//field[@name='sequence']">
       <insert position="before">
-        <hilite if="billOfMaterial" color="blue"/>
+        <hilite if="billOfMaterialLine" color="blue"/>
       </insert>
     </extend>
     <extend target="//field[@name='availableStatus']">
       <insert position="after">
-        <field name="billOfMaterial" hidden="true"/>
+        <field name="billOfMaterialLine" hidden="true"/>
       </insert>
     </extend>
   </grid>

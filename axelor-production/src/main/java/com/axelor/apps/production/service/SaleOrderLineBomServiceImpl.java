@@ -1,6 +1,7 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
@@ -88,29 +89,35 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     var bom = saleOrderLine.getBillOfMaterial();
     if (saleOrderLine.getSubSaleOrderLineList() != null) {
       for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
-        if (!saleOrderLineBomLineMappingService.isSyncWithBomLine(subSaleOrderLine)) {
-          var bomLine = subSaleOrderLine.getBillOfMaterialLine();
-          // Updating the existing one
-          if (bomLine != null) {
-            logger.debug("Updating bomLine {} with subSaleOrderLine {}", bomLine, subSaleOrderLine);
-            bomLine.setQty(subSaleOrderLine.getQty());
-            bomLine.setProduct(subSaleOrderLine.getProduct());
-            bomLine.setUnit(subSaleOrderLine.getUnit());
-            bomLine.setBillOfMaterial(subSaleOrderLine.getBillOfMaterial());
-            bomLine.setPriority(subSaleOrderLine.getSequence() * 10);
-            bom.addBillOfMaterialLineListItem(bomLine);
-          }
-          // Creating a new one
-          else {
-            logger.debug(
-                "Creating bomLine from subSaleOrderLine {} and adding it to bom {}",
-                subSaleOrderLine,
-                bom);
-            bomLine = createBomLineFrom(subSaleOrderLine);
-            logger.debug("Created bomLine {}", bomLine);
-            bom.addBillOfMaterialLineListItem(bomLine);
-            subSaleOrderLine.setBillOfMaterialLine(bomLine);
-            billOfMaterialLineRepository.save(bomLine);
+        if (subSaleOrderLine
+            .getProduct()
+            .getProductSubTypeSelect()
+            .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)) {
+          if (!saleOrderLineBomLineMappingService.isSyncWithBomLine(subSaleOrderLine)) {
+            var bomLine = subSaleOrderLine.getBillOfMaterialLine();
+            // Updating the existing one
+            if (bomLine != null) {
+              logger.debug(
+                  "Updating bomLine {} with subSaleOrderLine {}", bomLine, subSaleOrderLine);
+              bomLine.setQty(subSaleOrderLine.getQty());
+              bomLine.setProduct(subSaleOrderLine.getProduct());
+              bomLine.setUnit(subSaleOrderLine.getUnit());
+              bomLine.setBillOfMaterial(subSaleOrderLine.getBillOfMaterial());
+              bomLine.setPriority(subSaleOrderLine.getSequence() * 10);
+              bom.addBillOfMaterialLineListItem(bomLine);
+            }
+            // Creating a new one
+            else {
+              logger.debug(
+                  "Creating bomLine from subSaleOrderLine {} and adding it to bom {}",
+                  subSaleOrderLine,
+                  bom);
+              bomLine = createBomLineFrom(subSaleOrderLine);
+              logger.debug("Created bomLine {}", bomLine);
+              bom.addBillOfMaterialLineListItem(bomLine);
+              subSaleOrderLine.setBillOfMaterialLine(bomLine);
+              billOfMaterialLineRepository.save(bomLine);
+            }
           }
         }
       }
@@ -179,14 +186,19 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
 
     if (saleOrderLine.getSubSaleOrderLineList() != null) {
       for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
-        var bomLine = createBomLineFrom(subSaleOrderLine);
-        // If it is not personalized, we will customize, else just use the personalized one.
-        if (subSaleOrderLine.getIsToProduce() && !bomLine.getBillOfMaterial().getPersonalized()) {
-          subSaleOrderLine.setBillOfMaterial(customizeBomOf(subSaleOrderLine, depth + 1));
+        if (subSaleOrderLine
+            .getProduct()
+            .getProductSubTypeSelect()
+            .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)) {
+          var bomLine = createBomLineFrom(subSaleOrderLine);
+          // If it is not personalized, we will customize, else just use the personalized one.
+          if (subSaleOrderLine.getIsToProduce() && !bomLine.getBillOfMaterial().getPersonalized()) {
+            subSaleOrderLine.setBillOfMaterial(customizeBomOf(subSaleOrderLine, depth + 1));
+          }
+          // Relink billOfMaterialLine
+          subSaleOrderLine.setBillOfMaterialLine(bomLine);
+          personalizedBOM.addBillOfMaterialLineListItem(bomLine);
         }
-        // Relink billOfMaterialLine
-        subSaleOrderLine.setBillOfMaterialLine(bomLine);
-        personalizedBOM.addBillOfMaterialLineListItem(bomLine);
       }
     }
 
@@ -221,10 +233,21 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
                         .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
             .count();
 
-    var nbSubSaleOrderLines =
-        Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).map(List::size).orElse(0);
-    return nbBomLinesAccountable == nbSubSaleOrderLines
+    var subSaleOrderLineListSize =
+        Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
+            .map(SaleOrderLine::getProduct)
+            .map(Product::getProductSubTypeSelect)
+            .filter(type -> type.equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
+            .count();
+
+    return nbBomLinesAccountable == subSaleOrderLineListSize
         && Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
+            .filter(
+                subSaleOrderLine ->
+                    subSaleOrderLine
+                        .getProduct()
+                        .getProductSubTypeSelect()
+                        .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
             .allMatch(saleOrderLineBomLineMappingService::isSyncWithBomLine);
   }
 }
