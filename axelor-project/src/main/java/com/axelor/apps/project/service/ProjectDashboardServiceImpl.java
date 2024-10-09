@@ -52,7 +52,6 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   public Map<String, Object> getData(Project project) {
     Map<String, Object> dataMap = new HashMap<>();
     dataMap.put("$projectId", project.getId());
-    dataMap.put("$name", project.getFullName());
 
     if (StringUtils.notEmpty(project.getDescription())) {
       dataMap.put("$description", Jsoup.parse(project.getDescription()).text());
