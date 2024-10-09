@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.DataSharingProductWizard;
 import com.axelor.apps.base.db.DataSharingReferential;
 import com.axelor.apps.base.db.DataSharingReferentialLine;
 import com.axelor.apps.base.db.repo.DataSharingReferentialLineRepository;
@@ -108,5 +109,20 @@ public class DataSharingReferentialLineServiceImpl implements DataSharingReferen
     dataSharingReferentialLine.setWizardMetaModel(metaModelRepository.findByName(wizardModelName));
     dataSharingReferentialLine.setWizardRefId(wizardRefId);
     return dataSharingReferentialLineRepository.save(dataSharingReferentialLine);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void removeDataSharingReferentialLines(DataSharingProductWizard dataSharingProductWizard) {
+    List<DataSharingReferentialLine> dataSharingReferentialLineList =
+        dataSharingReferentialLineRepository
+            .all()
+            .filter("self.wizardRefId = :id")
+            .bind("id", dataSharingProductWizard.getId())
+            .fetch();
+
+    if (!CollectionUtils.isEmpty(dataSharingReferentialLineList)) {
+      dataSharingReferentialLineList.forEach(dataSharingReferentialLineRepository::remove);
+    }
   }
 }
