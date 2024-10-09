@@ -16,27 +16,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.DataSharingProductWizard;
-import com.axelor.apps.base.db.DataSharingReferential;
-import com.axelor.apps.base.db.DataSharingReferentialLine;
-import com.axelor.db.Model;
-import com.axelor.db.Query;
+import com.axelor.apps.base.service.DataSharingReferentialLineService;
+import com.google.inject.Inject;
 
-public interface DataSharingReferentialLineService {
+public class DataSharingProductWizardManagementRepository
+    extends DataSharingProductWizardRepository {
 
-  <T extends Model> Query<T> getQuery(
-      DataSharingReferential dataSharingReferential, Class<T> modelClass);
+  protected DataSharingReferentialLineService dataSharingReferentialLineService;
 
-  <T extends Model> Query<T> getQuery(Class<T> modelClass);
+  @Inject
+  public DataSharingProductWizardManagementRepository(
+      DataSharingReferentialLineService dataSharingReferentialLineService) {
+    this.dataSharingReferentialLineService = dataSharingReferentialLineService;
+  }
 
-  DataSharingReferentialLine createDataSharingReferentialLine(
-      DataSharingReferential dataSharingReferential,
-      String metaModelName,
-      String condition,
-      String wizardModelName,
-      Long wizardRefId);
-
-  void removeDataSharingReferentialLines(DataSharingProductWizard dataSharingProductWizard);
+  @Override
+  public void remove(DataSharingProductWizard entity) {
+    dataSharingReferentialLineService.removeDataSharingReferentialLines(entity);
+    super.remove(entity);
+  }
 }

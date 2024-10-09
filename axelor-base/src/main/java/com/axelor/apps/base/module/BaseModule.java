@@ -36,6 +36,8 @@ import com.axelor.apps.base.db.repo.BaseBatchBaseRepository;
 import com.axelor.apps.base.db.repo.BaseBatchRepository;
 import com.axelor.apps.base.db.repo.DataBackupManagementRepository;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
+import com.axelor.apps.base.db.repo.DataSharingProductWizardManagementRepository;
+import com.axelor.apps.base.db.repo.DataSharingProductWizardRepository;
 import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
@@ -494,5 +496,7 @@ public class BaseModule extends AxelorModule {
     bind(TagService.class).to(TagServiceImpl.class);
     bind(AddressCreationService.class).to(AddressCreationServiceImpl.class);
     bind(CountryService.class).to(CountryServiceImpl.class);
+    bind(DataSharingProductWizardRepository.class)
+        .to(DataSharingProductWizardManagementRepository.class);
   }
 }
