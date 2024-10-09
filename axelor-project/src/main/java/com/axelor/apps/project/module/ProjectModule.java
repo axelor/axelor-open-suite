@@ -79,6 +79,8 @@ import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.apps.project.service.config.ProjectConfigServiceImpl;
 import com.axelor.apps.project.service.sprint.SprintAllocationLineService;
 import com.axelor.apps.project.service.sprint.SprintAllocationLineServiceImpl;
+import com.axelor.apps.project.service.sprint.SprintService;
+import com.axelor.apps.project.service.sprint.SprintServiceImpl;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkServiceImpl;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkTypeService;
@@ -123,5 +125,6 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectCheckListTemplateService.class).to(ProjectCheckListTemplateServiceImpl.class);
     bind(SprintAllocationLineRepository.class).to(SprintAllocationLineManagementRepository.class);
     bind(SprintAllocationLineService.class).to(SprintAllocationLineServiceImpl.class);
+    bind(SprintService.class).to(SprintServiceImpl.class);
   }
 }
