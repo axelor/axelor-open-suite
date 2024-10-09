@@ -1,8 +1,15 @@
 ---
-title: "Invoice : Fix error when we duplicate invoice and change any field on invoice line"
+title: "Invoice: fixed error when we duplicate an invoice and change any field on invoice line."
 module: axelor-account
 developer: |
   Method signature have changed in InvoiceLineService.class :
-  public void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException
-  became :
-  public Map<String, Object> compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException
+  
+  ```java
+  public void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+  ```
+
+  became
+
+  ```java
+  public Map<String, Object> compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+  ```
