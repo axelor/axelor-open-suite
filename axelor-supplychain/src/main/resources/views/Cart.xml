@@ -17,8 +17,9 @@
     <extend target="//field[@name='partner']">
       <insert position="after">
         <field name="stockLocation" form-view="stock-location-form"
-          grid-view="stock-location-grid" domain="self.company = :company" readonlyIf="!company"
-          onChange="action-cart-method-set-available-status"/>
+          grid-view="stock-location-grid"
+          domain="self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true"
+          readonlyIf="!company" onChange="action-cart-method-set-available-status"/>
       </insert>
     </extend>
   </form>
