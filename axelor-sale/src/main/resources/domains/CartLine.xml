@@ -7,7 +7,8 @@
 
   <entity name="CartLine">
 
-    <many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
+    <many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"
+      required="true"/>
     <decimal name="qty" title="Qty" default="1" precision="20" scale="10"/>
     <many-to-one name="cart" title="Cart" ref="com.axelor.apps.sale.db.Cart"/>
     <many-to-one name="variantProduct" title="Product variant"
