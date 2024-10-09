@@ -42,9 +42,8 @@
         onChange="action-project-planning-time-group-project-task-on-change"/>
       <spacer colSpan="6"/>
       <field name="plannedTime" colSpan="3" readonly="true"/>
-      <field name="timeUnit" colSpan="3" readonly="true"
-        onSelect="action-project-task-attrs-set-time-unit-domain"
-        if="__config__.app.isApp('business-project')"/>
+      <field name="timeUnit" colSpan="3"
+        onSelect="action-project-task-attrs-set-time-unit-domain"/>
       <panel stacked="true" colSpan="3" itemSpan="12">
         <field name="displayPlannedTime" showIf="!$isSelectionOnDisplayPlannedTime"
           onChange="action-project-planning-time-method-compute-planned-time"/>
@@ -101,6 +100,9 @@
         target-name="name" canEdit="false"
         onSelect="action-project-planning-time-attrs-set-site-domain" form-view="site-form"
         grid-view="site-grid" if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+      <field name="timeUnit" showIf="!project.isBusinessProject"
+        onSelect="action-project-task-attrs-set-time-unit-domain"/>
+      <field name="project.isBusinessProject" hidden="true"/>
       <spacer/>
       <button name="addMultipleProjectPlanningTimeBtn" title="Add lines"
         onClick="action-project-planning-time-method-add-multiple-project-planning-time" colSpan="3"
@@ -178,14 +180,11 @@
     <action name="action-project-planning-time-attrs-default"/>
     <action name="action-project-planning-time-method-get-company-config"/>
     <action name="action-project-planning-time-method-get-default-planning-time"/>
-    <action name="action-project-planning-time-method-compute-planned-time"/>
+    <action name="action-project-planning-time-group-project-task-on-change"/>
   </action-group>
 
   <action-attrs name="action-project-planning-time-attrs-default">
     <attribute name="value" for="projectTask" expr="eval:_projectTask"/>
-    <attribute name="value" for="timeUnit" expr="eval:_timeUnit" if="_projectTask"/>
-    <attribute for="timeUnit" name="readonly" expr="eval: true"
-      if="_projectTask &amp;&amp; _timeUnit"/>
     <attribute name="value" for="project" expr="eval:_project"/>
     <attribute name="value" for="userSet" expr="eval:_project.membersUserSet"
       if="_project != null"/>
@@ -193,7 +192,6 @@
       if="_project &amp;&amp; __user__ in __repo__(Project).find(_project.id).membersUserSet"/>
     <attribute name="value" for="product" expr="eval: __user__.employee.product"
       if="_project &amp;&amp; __user__ in __repo__(Project).find(_project.id).membersUserSet &amp;&amp; __user__.employee"/>
-
     <attribute name="value" for="startDateTime" expr="eval: __datetime__"/>
     <attribute name="value" for="endDateTime" expr="eval: __datetime__.plusMinutes(60)"/>
     <attribute name="value" for="employee" expr="eval: _employee" if="_employee"/>
@@ -205,7 +203,6 @@
       if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask' || _projectTask"/>
     <attribute name="value" for="product" expr="eval: __user__.employee.product"
       if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask' &amp;&amp; __parent__?.project &amp;&amp; __user__ in __repo__(Project).find(__parent__.project.id).membersUserSet &amp;&amp; __user__.employee"/>
-    <attribute name="value" for="timeUnit" expr="eval: _project.projectTimeUnit"/>
     <attribute name="value" for="displayTimeUnit" expr="eval: _project.projectTimeUnit"/>
   </action-attrs>
 
@@ -248,13 +245,13 @@
 
   <action-attrs name="action-project-planning-time-attrs-project-task-onChange">
     <attribute for="timeUnit" name="value" expr="eval: projectTask.timeUnit"
-      if="projectTask"/>
+      if="projectTask?.timeUnit"/>
     <attribute for="timeUnit" name="value" expr="eval: project?.projectTimeUnit"
-      if="!projectTask"/>
-    <attribute for="displayTimeUnit" name="value" expr="eval: projectTask.timeUnit"
-      if="projectTask"/>
+      if="!projectTask?.timeUnit"/>
+    <attribute for="displayTimeUnit" name="value" expr="eval: projectTask?.timeUnit"
+      if="projectTask?.timeUnit"/>
     <attribute for="displayTimeUnit" name="value" expr="eval: project?.projectTimeUnit"
-      if="!projectTask"/>
+      if="!projectTask?.timeUnit"/>
     <attribute for="site" name="value" expr="eval: projectTask?.site"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
   </action-attrs>

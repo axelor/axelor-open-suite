@@ -263,7 +263,7 @@
         name="productSet" widget="TagSelect" canEdit="false"
         domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-activity-form"
         grid-view="product-activity-grid"/>
-      <field name="projectTimeUnit"/>
+      <field name="projectTimeUnit" domain="self.unitTypeSelect = 3"/>
       <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
         if-module="axelor-human-resource"/>
       <field name="manageTimeSpent" widget="inline-checkbox"
