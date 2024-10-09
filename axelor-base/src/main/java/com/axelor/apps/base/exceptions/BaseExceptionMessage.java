@@ -677,4 +677,9 @@ public final class BaseExceptionMessage {
       "No zip found in request body or in the found city" /*)*/;
   public static final String NO_ADDRESS_FOUND_WITH_INFO = /*$$(*/
       "No address found with this country, zip and street name" /*)*/;
+
+  public static final String LOCALIZATION_EMPTY = /*$$(*/ "Localization is empty" /*)*/;
+
+  public static final String LOCALIZATION_LANGUAGE_EMPTY = /*$$(*/
+      "Language is empty for the localization %s" /*)*/;
 }

@@ -20,8 +20,8 @@ package com.axelor.apps.report.engine;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.LocaleService;
 import com.axelor.apps.base.service.ReportingTool;
+import com.axelor.apps.base.service.localization.LocaleService;
 import com.axelor.inject.Beans;
 import com.axelor.report.ReportGenerator;
 import com.google.common.base.Strings;

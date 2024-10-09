@@ -16,15 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.utils.service.translation;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Localization;
+import com.axelor.meta.db.MetaTranslation;
+import java.util.List;
 
-public interface LocalizationService {
-  void validateLocale(Localization localization) throws AxelorException;
+public interface TranslationBaseService {
 
-  String getNumberFormat(String localizationCode);
+  public String getValueTranslation(String key);
 
-  String getDateFormat(String localizationCode);
+  List<MetaTranslation> getTranslations(String language, String key);
 }
