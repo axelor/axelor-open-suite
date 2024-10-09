@@ -47,6 +47,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -404,7 +405,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     contract.setName(template.getName());
     contract.setNote(template.getNote());
 
-    ContractVersion version = new ContractVersion();
+    ContractVersion version =
+        Optional.ofNullable(contract.getCurrentContractVersion()).orElse(new ContractVersion());
 
     if (template.getContractLineList() != null && !template.getContractLineList().isEmpty()) {
 
