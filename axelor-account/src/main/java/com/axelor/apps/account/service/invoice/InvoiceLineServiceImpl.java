@@ -367,7 +367,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
+  public Map<String, Object> compute(Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException {
+    Map<String, Object> invoiceLineMap = new HashMap<>();
     BigDecimal exTaxTotal;
     BigDecimal companyExTaxTotal;
     BigDecimal inTaxTotal;
@@ -377,13 +379,16 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal coefficient = invoiceLine.getCoefficient();
 
     invoiceLine.setPriceDiscounted(priceDiscounted);
+    invoiceLineMap.put("priceDiscounted", invoiceLine.getPriceDiscounted());
 
     BigDecimal taxRate = BigDecimal.ZERO;
     Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
       taxRate = taxService.getTotalTaxRateInPercentage(taxLineSet);
       invoiceLine.setTaxRate(taxRate);
+      invoiceLineMap.put("taxRate", invoiceLine.getTaxRate());
       invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
+      invoiceLineMap.put("taxCode", invoiceLine.getTaxCode());
     }
 
     if (!invoice.getInAti()) {
@@ -409,9 +414,15 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     companyInTaxTotal = this.getCompanyExTaxTotal(inTaxTotal, invoice);
 
     invoiceLine.setExTaxTotal(exTaxTotal);
+    invoiceLineMap.put("exTaxTotal", invoiceLine.getExTaxTotal());
     invoiceLine.setInTaxTotal(inTaxTotal);
+    invoiceLineMap.put("inTaxTotal", invoiceLine.getInTaxTotal());
     invoiceLine.setCompanyInTaxTotal(companyInTaxTotal);
+    invoiceLineMap.put("companyInTaxTotal", invoiceLine.getCompanyInTaxTotal());
     invoiceLine.setCompanyExTaxTotal(companyExTaxTotal);
+    invoiceLineMap.put("companyExTaxTotal", invoiceLine.getCompanyExTaxTotal());
+
+    return invoiceLineMap;
   }
 
   @Override
