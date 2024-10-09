@@ -189,6 +189,9 @@ import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServ
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectTaskHRService;
+import com.axelor.apps.hr.service.project.ProjectTaskHRServiceImpl;
+import com.axelor.apps.hr.service.sprint.SprintHRServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseService;
 import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameService;
@@ -246,6 +249,8 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
 import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
 import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
+import com.axelor.apps.project.service.ProjectTaskServiceImpl;
+import com.axelor.apps.project.service.sprint.SprintServiceImpl;
 
 public class HumanResourceModule extends AxelorModule {
 
@@ -370,5 +375,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(ReconcileCheckServiceImpl.class).to(ReconcileCheckServiceHRImpl.class);
     bind(PayrollPreparationExportService.class).to(PayrollPreparationExportServiceImpl.class);
     bind(TimesheetLineRemoveService.class).to(TimesheetLineRemoveServiceImpl.class);
+    bind(ProjectTaskServiceImpl.class).to(ProjectTaskHRServiceImpl.class);
+    bind(ProjectTaskHRService.class).to(ProjectTaskHRServiceImpl.class);
+    bind(SprintServiceImpl.class).to(SprintHRServiceImpl.class);
   }
 }

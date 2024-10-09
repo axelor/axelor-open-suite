@@ -445,14 +445,12 @@
 
     <field name="name"/>
     <field name="assignedTo.name"/>
-    <field name="totalPlannedHrs"/>
 
     <template>
 		<![CDATA[
 			<>
 				<strong>{name}</strong><br /><br />
 				<strong>User:</strong> {assignedTo.name}<br />
-				<strong>Total planned time:</strong> {totalPlannedHrs}
 			</>
 		]]>
     </template>

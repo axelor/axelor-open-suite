@@ -47,16 +47,17 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.project.ProjectTaskHRServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
-import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -83,7 +84,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
-public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
+public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskHRServiceImpl
     implements ProjectTaskBusinessProjectService {
 
   public static final int BIG_DECIMAL_SCALE = 2;
@@ -741,5 +742,27 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       return limit.negate();
     }
     return value;
+  }
+
+  @Override
+  public ProjectPlanningTime createProjectPlanningTime(ProjectTask projectTask, Sprint sprint) {
+
+    if (projectTask.getTimeUnit() == null) {
+      return null;
+    }
+
+    return super.createProjectPlanningTime(projectTask, sprint);
+  }
+
+  @Override
+  protected ProjectPlanningTime createProjectPlanningTime(ProjectTask projectTask) {
+
+    ProjectPlanningTime planningTime = super.createProjectPlanningTime(projectTask);
+
+    Unit timeUnit = projectTask.getTimeUnit();
+    planningTime.setTimeUnit(timeUnit);
+    planningTime.setDisplayTimeUnit(timeUnit);
+
+    return planningTime;
   }
 }
