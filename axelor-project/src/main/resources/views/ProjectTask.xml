@@ -49,6 +49,19 @@
       onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
   </grid>
 
+  <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
+    name="project-task-sprint-grid">
+
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="name"/>
+    <field name="priority"/>
+    <field name="taskDate"/>
+    <field name="sprint"/>
+
+  </grid>
+
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
     width="large">
