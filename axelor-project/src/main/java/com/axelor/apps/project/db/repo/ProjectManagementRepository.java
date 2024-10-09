@@ -29,6 +29,7 @@ import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.StringUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -56,7 +57,8 @@ public class ProjectManagementRepository extends ProjectRepository {
   }
 
   protected void setProjectFullName(Project project) throws AxelorException {
-    Context scriptContext = new Context(Mapper.toMap(project), project.getClass());
+    Context scriptContext =
+        new Context(Mapper.toMap(project), EntityHelper.getEntityClass(project));
     GroovyScriptHelper groovyScriptHelper = new GroovyScriptHelper(scriptContext);
 
     String fullNameGroovyFormula = appProjectService.getAppProject().getFullNameGroovyFormula();
