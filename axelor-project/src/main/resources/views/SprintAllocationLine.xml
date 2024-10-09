@@ -6,9 +6,31 @@
   <grid name="sprint-allocation-line-grid" title="Sprint allocation lines"
     model="com.axelor.apps.project.db.SprintAllocationLine" editable="true">
 
-    <field name="sprint" required="true"/>
-    <field name="user" required="true"/>
-    <field name="allocated" required="true"/>
+    <field name="sprint"
+      onChange="action-sprint-allocation-line-validate,action-sprint-allocation-line-method-compute"
+      required="true" readonlyIf="id"/>
+    <field name="user" onSelect="action-sprint-allocation-line-method-set-user-domain"
+      onChange="action-sprint-allocation-line-validate,action-sprint-allocation-line-method-compute"
+      required="true" readonlyIf="id"/>
+    <field name="allocated" onChange="action-sprint-allocation-line-method-compute"/>
+    <field name="$leaves" title="Leaves" type="decimal" readonly="true"/>
+    <field name="$plannedTime" title="Planned time" type="decimal" readonly="true"/>
+    <field name="$remainingTime" title="Remaining time" type="decimal" readonly="true"/>
+    <field name="description"/>
+
+  </grid>
+
+  <grid name="sprint-allocation-line-sprint-grid" title="Sprint allocation lines"
+    model="com.axelor.apps.project.db.SprintAllocationLine"
+    onNew="action-sprint-allocation-line-attrs-on-new" editable="true">
+
+    <field name="user" onSelect="action-sprint-allocation-line-method-set-user-domain"
+      onChange="action-sprint-allocation-line-validate,action-sprint-allocation-line-method-compute"
+      required="true" readonlyIf="id"/>
+    <field name="allocated" onChange="action-sprint-allocation-line-method-compute"/>
+    <field name="$leaves" title="Leaves" type="decimal" readonly="true"/>
+    <field name="$plannedTime" title="Planned time" type="decimal" readonly="true"/>
+    <field name="$remainingTime" title="Remaining time" type="decimal" readonly="true"/>
     <field name="description"/>
 
   </grid>
@@ -17,12 +39,49 @@
     model="com.axelor.apps.project.db.SprintAllocationLine" width="large">
 
     <panel name="mainPanel">
-      <field name="sprint" required="true"/>
-      <field name="user" required="true"/>
-      <field name="allocated" required="true" colSpan="3"/>
+      <field name="sprint"
+        onChange="action-sprint-allocation-line-validate,action-sprint-allocation-line-method-compute"
+        required="true" readonlyIf="id"/>
+      <field name="user"
+        onChange="action-sprint-allocation-line-validate,action-sprint-allocation-line-method-compute"
+        onSelect="action-sprint-allocation-line-method-set-user-domain" required="true"
+        readonlyIf="id"/>
+      <field name="allocated" onChange="action-sprint-allocation-line-method-compute"
+        colSpan="3"/>
+      <field name="$leaves" title="Leaves" type="decimal" readonly="true" colSpan="3"/>
+      <field name="$plannedTime" title="Planned time" type="decimal" readonly="true"
+        colSpan="3"/>
+      <field name="$remainingTime" title="Remaining time" type="decimal" readonly="true"
+        colSpan="3"/>
       <field name="description" colSpan="12"/>
     </panel>
 
   </form>
+
+  <action-method name="action-sprint-allocation-line-method-set-user-domain">
+    <call class="com.axelor.apps.project.web.SprintAllocationLineController"
+      method="userDomain"/>
+  </action-method>
+
+  <action-method name="action-sprint-allocation-line-method-compute">
+    <call class="com.axelor.apps.project.web.SprintAllocationLineController"
+      method="computeSprintAllocationLine"/>
+  </action-method>
+
+  <action-attrs name="action-sprint-allocation-line-attrs-on-new">
+    <attribute name="value" for="sprint" expr="eval: __parent__"
+      if="__parent__?._model == 'com.axelor.apps.project.db.Sprint'"/>
+  </action-attrs>
+
+  <action-validate name="action-sprint-allocation-line-validate">
+    <error message="Sprint allocation line already exist with selected Sprint and User!"
+      if="sprint &amp;&amp; user &amp;&amp; __repo__(SprintAllocationLine).all().filter('self.sprint=?1 and self.user=?2',sprint,user).fetch().size &gt; 0"
+      action="action-sprint-allocation-line-attrs-reset"/>
+  </action-validate>
+
+  <action-attrs name="action-sprint-allocation-line-attrs-reset">
+    <attribute name="value" for="sprint" expr="eval: null"/>
+    <attribute name="value" for="user" expr="eval: null"/>
+  </action-attrs>
 
 </object-views>

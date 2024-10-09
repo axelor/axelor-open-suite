@@ -113,6 +113,8 @@
         <panel-include view="incl-project-overview-panel-form"/>
       </panel>
 
+      <panel-include view="sprint-project-form"/>
+
       <panel title="Tasks" name="taskPanel">
         <panel-dashlet name="projectTaskDashletPanel" title="Tasks" x-show-bars="true"
           colSpan="12" action="action-project-view-show-project-task" height="200%" canSearch="true"/>
@@ -369,6 +371,19 @@
     </panel>
   </form>
 
+  <form model="com.axelor.apps.project.db.Project" title="Sprint" name="sprint-project-form">
+
+    <panel name="sprintPanel" title="Sprint">
+      <field name="sprint" type="many-to-one" target="com.axelor.apps.project.db.Sprint"
+        title="Sprint"
+        onChange="action-project-method-on-change-sprint,action-project-attrs-on-change-sprint"
+        x-dirty="false" domain="self.project.id = :id" colSpan="6"/>
+      <panel-dashlet action="action-project-view-sprint-allocation-lines"
+        name="sprintAllocationLinePanel" colSpan="12"/>
+    </panel>
+
+  </form>
+
   <kanban columnBy="projectStatus" sequenceBy="orderByState" limit="10" name="project-kanban"
     title="Projects" model="com.axelor.apps.project.db.Project"
     onMove="action-business-project-group-project-status-on-change">
@@ -552,6 +567,10 @@
     <attribute name="value:add" for="membersUserSet" expr="eval: assignedTo"/>
   </action-attrs>
 
+  <action-attrs name="action-project-attrs-on-change-sprint">
+    <attribute name="refresh" for="sprintAllocationLinePanel" expr="eval: true"/>
+  </action-attrs>
+
   <!-- ACTION RECORD -->
 
   <action-record name="action-project-record-bind-customer-project"
@@ -678,6 +697,10 @@
       method="generateCheckListFromTemplate"/>
   </action-method>
 
+  <action-method name="action-project-method-on-change-sprint">
+    <call class="com.axelor.apps.project.web.ProjectController" method="sprintOnChange"/>
+  </action-method>
+
   <!-- ACTION VIEW -->
 
   <action-view name="action-project-open-popup-select-users" title="Select Users"
@@ -801,6 +824,13 @@
     model="com.axelor.apps.project.db.Project">
     <view type="form" name="incl-planning-panel-form"/>
     <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-project-view-sprint-allocation-lines"
+    title="Sprint allocation lines" model="com.axelor.apps.project.db.SprintAllocationLine">
+    <view type="grid" name="sprint-allocation-line-sprint-grid"/>
+    <view type="form" name="sprint-allocation-line-form"/>
+    <domain>self.sprint = :sprint</domain>
   </action-view>
 
   <!-- ACTION VALIDATE -->
