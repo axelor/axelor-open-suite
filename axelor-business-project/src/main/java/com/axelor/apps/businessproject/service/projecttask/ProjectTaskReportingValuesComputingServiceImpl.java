@@ -31,6 +31,7 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -43,6 +44,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class ProjectTaskReportingValuesComputingServiceImpl
     implements ProjectTaskReportingValuesComputingService {
@@ -307,7 +309,10 @@ public class ProjectTaskReportingValuesComputingServiceImpl
       ProjectTask projectTask, boolean unitIsTimeUnit, BigDecimal landingUnitCost) {
     BigDecimal landingCosts;
 
-    if (projectTask.getStatus().getIsCompleted()) {
+    if (Optional.ofNullable(projectTask)
+        .map(ProjectTask::getStatus)
+        .map(TaskStatus::getIsCompleted)
+        .orElse(false)) {
       landingCosts = projectTask.getRealCosts();
     } else {
       landingCosts =

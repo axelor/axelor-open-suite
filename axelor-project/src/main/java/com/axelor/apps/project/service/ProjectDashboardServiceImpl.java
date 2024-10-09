@@ -21,6 +21,7 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskCategoryRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -97,7 +98,14 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
       ProjectTaskCategory category = entry.getKey();
       int totalCount = projectTaskList.size();
       long closedCount =
-          projectTaskList.stream().filter(task -> task.getStatus().getIsCompleted()).count();
+          projectTaskList.stream()
+              .filter(
+                  task ->
+                      Optional.ofNullable(task)
+                          .map(ProjectTask::getStatus)
+                          .map(TaskStatus::getIsCompleted)
+                          .orElse(false))
+              .count();
 
       categoryMap.put(
           "categoryId", Optional.ofNullable(category).map(ProjectTaskCategory::getId).orElse(0L));
