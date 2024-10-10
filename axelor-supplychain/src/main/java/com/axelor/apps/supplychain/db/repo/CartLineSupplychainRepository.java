@@ -26,7 +26,6 @@ import com.axelor.apps.sale.db.repo.CartLineManagementRepository;
 import com.axelor.apps.supplychain.service.cartline.CartLineAvailabilityService;
 import com.google.inject.Inject;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class CartLineSupplychainRepository extends CartLineManagementRepository {
 
@@ -49,8 +48,8 @@ public class CartLineSupplychainRepository extends CartLineManagementRepository 
       }
       return super.populate(json, context);
     } catch (Exception e) {
-      TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e.getMessage(), e);
+      TraceBackService.trace(e);
+      throw new RuntimeException(e.getMessage(), e);
     }
   }
 }
