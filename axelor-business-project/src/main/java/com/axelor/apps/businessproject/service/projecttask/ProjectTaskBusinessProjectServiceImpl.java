@@ -765,4 +765,19 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskHRServiceI
 
     return planningTime;
   }
+
+  @Override
+  public BigDecimal calculatePlannedTime(ProjectTask projectTask) {
+
+    BigDecimal progress = projectTask.getProgress();
+
+    if (progress.compareTo(BigDecimal.ZERO) == 0) {
+      return projectTask
+          .getBudgetedTime()
+          .subtract(projectTask.getSpentTime())
+          .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    return super.calculatePlannedTime(projectTask);
+  }
 }

@@ -34,6 +34,8 @@ import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -164,6 +166,10 @@ public class ProjectTaskHRServiceImpl extends ProjectTaskServiceImpl
     planningTime.setEmployee(employee);
     planningTime.setStartDateTime(fromDateTime);
     planningTime.setEndDateTime(toDateTime);
+
+    BigDecimal plannedTime = calculatePlannedTime(planningTime.getProjectTask());
+    planningTime.setPlannedTime(plannedTime);
+    planningTime.setDisplayPlannedTime(plannedTime);
   }
 
   @Override
@@ -234,6 +240,10 @@ public class ProjectTaskHRServiceImpl extends ProjectTaskServiceImpl
     planningTime.setStartDateTime(sprintPeriod.getFromDate().atStartOfDay());
     planningTime.setEndDateTime(sprintPeriod.getToDate().atStartOfDay());
 
+    BigDecimal plannedTime = calculatePlannedTime(projectTask);
+    planningTime.setPlannedTime(plannedTime);
+    planningTime.setDisplayPlannedTime(plannedTime);
+
     return planningTime;
   }
 
@@ -246,5 +256,25 @@ public class ProjectTaskHRServiceImpl extends ProjectTaskServiceImpl
     return Optional.ofNullable(projectPlanningTimeList).orElseGet(Collections::emptyList).stream()
         .filter(planningTime -> shouldUpdatePlanningTime(planningTime, employee, sprintPeriod))
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public BigDecimal calculatePlannedTime(ProjectTask projectTask) {
+
+    BigDecimal progress = projectTask.getProgress();
+
+    if (progress.compareTo(BigDecimal.ZERO) == 0) {
+      return projectTask.getBudgetedTime().setScale(2, RoundingMode.HALF_UP);
+    }
+
+    BigDecimal hundred = new BigDecimal("100");
+
+    BigDecimal estimatedTime = projectTask.getBudgetedTime();
+    BigDecimal remainingPercentage = hundred.subtract(progress);
+
+    return remainingPercentage
+        .multiply(estimatedTime)
+        .divide(hundred, 2, RoundingMode.HALF_UP)
+        .setScale(2, RoundingMode.HALF_UP);
   }
 }

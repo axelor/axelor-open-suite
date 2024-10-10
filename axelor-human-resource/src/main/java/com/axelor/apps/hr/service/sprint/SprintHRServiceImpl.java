@@ -29,7 +29,7 @@ import com.axelor.apps.project.service.sprint.SprintServiceImpl;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
@@ -51,15 +51,14 @@ public class SprintHRServiceImpl extends SprintServiceImpl {
   @Transactional(rollbackOn = Exception.class)
   public void attachTasksToSprint(Sprint sprint, List<ProjectTask> projectTasks) {
 
-    if (sprint.getSprintPeriod() == null) {
-      return;
-    }
-
     if (CollectionUtils.isNotEmpty(projectTasks)) {
 
       for (ProjectTask task : projectTasks) {
         attachTaskToSprint(sprint, task);
-        projectTaskRepo.save(task);
+
+        if (!sprint.getProjectTaskList().contains(task)) {
+          projectTaskRepo.save(task);
+        }
       }
     }
   }
@@ -71,28 +70,16 @@ public class SprintHRServiceImpl extends SprintServiceImpl {
             .map(ProjectTask::getAssignedTo)
             .map(User::getEmployee)
             .orElse(null);
-
-    if (assignedEmployee == null) {
-      return;
-    }
-
+    SprintPeriod sprintPeriod = sprint.getSprintPeriod();
     Sprint currentSprint = task.getSprint();
 
-    SprintPeriod sprintPeriod = sprint.getSprintPeriod();
+    if (currentSprint == null || !currentSprint.equals(sprint)) {
+      task.setSprint(sprint);
+    }
 
-    LocalDateTime sprintStart =
-        Optional.ofNullable(sprintPeriod)
-            .map(SprintPeriod::getFromDate)
-            .map(date -> date.atStartOfDay())
-            .orElse(null);
-
-    LocalDateTime sprintEnd =
-        Optional.ofNullable(sprintPeriod)
-            .map(SprintPeriod::getToDate)
-            .map(date -> date.atStartOfDay())
-            .orElse(null);
-
-    task.setSprint(sprint);
+    if (assignedEmployee == null || sprintPeriod == null) {
+      return;
+    }
 
     List<ProjectPlanningTime> projectPlanningTimeList =
         projectTaskHRService.getExistingPlanningTime(
@@ -103,8 +90,11 @@ public class SprintHRServiceImpl extends SprintServiceImpl {
     if (CollectionUtils.isNotEmpty(projectPlanningTimeList)) {
       projectPlanningTimeList.forEach(
           planning -> {
-            planning.setStartDateTime(sprintStart);
-            planning.setEndDateTime(sprintEnd);
+            planning.setStartDateTime(sprintPeriod.getFromDate().atStartOfDay());
+            planning.setEndDateTime(sprintPeriod.getToDate().atStartOfDay());
+            BigDecimal plannedTime = projectTaskHRService.calculatePlannedTime(task);
+            planning.setPlannedTime(plannedTime);
+            planning.setDisplayPlannedTime(plannedTime);
           });
     } else {
       ProjectPlanningTime planningTime =
