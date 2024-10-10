@@ -47,6 +47,9 @@ public class SaleOrderComplementaryProductServiceImpl
         break;
       }
     }
+    if (originSoLine == null) {
+      return saleOrderLineList;
+    }
 
     boolean isSubLine = parentSol != null;
     createNewLine(saleOrder, originSoLine, parentSol, isSubLine);
@@ -74,18 +77,24 @@ public class SaleOrderComplementaryProductServiceImpl
       for (ComplementaryProductSelected compProductSelected : complementaryProductSelectedList) {
         // Search if there is already a line for this product to modify or remove
         SaleOrderLine newSoLine = null;
-        for (SaleOrderLine soLine : saleOrderLineList) {
-          if (originSoLine.getManualId().equals(soLine.getParentId())
-              && soLine.getProduct() != null
-              && soLine.getProduct().equals(compProductSelected.getProduct())) {
-            // Edit line if it already exists instead of recreating, otherwise remove if already
-            // exists and is no longer selected
-            if (compProductSelected.getIsSelected()) {
-              newSoLine = soLine;
-            } else {
-              saleOrderLineList.remove(soLine);
+        if (CollectionUtils.isNotEmpty(saleOrderLineList)) {
+          for (SaleOrderLine soLine : saleOrderLineList) {
+            if (originSoLine.getManualId().equals(soLine.getParentId())
+                && soLine.getProduct() != null
+                && soLine.getProduct().equals(compProductSelected.getProduct())) {
+              // Edit line if it already exists instead of recreating, otherwise remove if already
+              // exists and is no longer selected
+              if (compProductSelected.getIsSelected()) {
+                newSoLine = soLine;
+              } else {
+                if (isSubLine) {
+                  originSoLine.removeSubSaleOrderLineListItem(soLine);
+                } else {
+                  saleOrder.removeSaleOrderLineListItem(soLine);
+                }
+              }
+              break;
             }
-            break;
           }
         }
 
@@ -100,9 +109,12 @@ public class SaleOrderComplementaryProductServiceImpl
       }
       originSoLine.setIsComplementaryProductsUnhandledYet(false);
     }
-
-    for (int i = 0; i < saleOrderLineList.size(); i++) {
-      saleOrderLineList.get(i).setSequence(i + 1);
+    List<SaleOrderLine> updatedSaleOrderLineList =
+        isSubLine
+            ? parentSaleOrderLine.getSubSaleOrderLineList()
+            : saleOrder.getSaleOrderLineList();
+    for (int i = 0; i < updatedSaleOrderLineList.size(); i++) {
+      updatedSaleOrderLineList.get(i).setSequence(i + 1);
     }
   }
 
@@ -143,11 +155,10 @@ public class SaleOrderComplementaryProductServiceImpl
 
       newSoLine.setParentId(originSoLine.getManualId());
 
-      int targetIndex = saleOrderLineList.indexOf(originSoLine) + 1;
       if (isSubLine) {
         parentSaleOrderLine.addSubSaleOrderLineListItem(newSoLine);
       } else {
-        saleOrderLineList.add(targetIndex, newSoLine);
+        saleOrder.addSaleOrderLineListItem(newSoLine);
       }
     }
   }
@@ -157,11 +168,7 @@ public class SaleOrderComplementaryProductServiceImpl
     Pair<SaleOrderLine, SaleOrderLine> pair = new MutablePair<>();
     SaleOrderLine unhandledSol = null;
     if (saleOrderLine.getIsComplementaryProductsUnhandledYet()) {
-      unhandledSol = saleOrderLine;
-    }
-
-    if (unhandledSol != null) {
-      return Pair.of(unhandledSol, parentSol);
+      return Pair.of(saleOrderLine, parentSol);
     }
 
     List<SaleOrderLine> subLines = saleOrderLine.getSubSaleOrderLineList();
@@ -172,10 +179,14 @@ public class SaleOrderComplementaryProductServiceImpl
               .findAny()
               .orElse(null);
       if (unhandledSol != null) {
-        pair = Pair.of(unhandledSol, saleOrderLine);
+        return Pair.of(unhandledSol, saleOrderLine);
       }
+
       for (SaleOrderLine subLine : subLines) {
         pair = getUnhandledSol(subLine, saleOrderLine);
+        if (pair != null && pair.getLeft() != null) {
+          return pair;
+        }
       }
     }
     return pair;
