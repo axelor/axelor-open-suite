@@ -25,6 +25,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.SprintPeriod;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.service.sprint.SprintServiceImpl;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
@@ -40,9 +41,11 @@ public class SprintHRServiceImpl extends SprintServiceImpl {
 
   @Inject
   public SprintHRServiceImpl(
-      ProjectTaskRepository projectTaskRepo, ProjectTaskHRService projectTaskHRService) {
+      ProjectTaskRepository projectTaskRepo,
+      SprintRepository sprintRepo,
+      ProjectTaskHRService projectTaskHRService) {
 
-    super(projectTaskRepo);
+    super(projectTaskRepo, sprintRepo);
 
     this.projectTaskHRService = projectTaskHRService;
   }

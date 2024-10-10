@@ -25,4 +25,27 @@
 
   </form>
 
+  <form model="com.axelor.utils.db.Wizard" title="Sprint period generator"
+    name="sprint-period-generator-wizard-form" width="large">
+
+    <panel name="mainPanel">
+      <field name="company" title="Company" type="many-to-one"
+        target="com.axelor.apps.base.db.Company" required="true" x-dirty="false"/>
+      <spacer name="dateSpacer"/>
+      <field name="fromDate" title="From" type="date" required="true" x-dirty="false"/>
+      <field name="toDate" title="To" type="date" required="true" x-dirty="false"/>
+      <field name="nbOfDaysPerSprint" title="Nb of days per sprint" type="integer" min="0"
+        required="true" x-dirty="false"/>
+      <field name="considerWeekend" title="Consider weekend" type="boolean"
+        widget="boolean-switch" x-dirty="false"/>
+      <button onClick="action-sprint-period-method-generate" name="generate" title="Generate"/>
+    </panel>
+
+  </form>
+
+  <action-method name="action-sprint-period-method-generate">
+    <call class="com.axelor.apps.project.web.SprintPeriodController"
+      method="generateSprintPeriods"/>
+  </action-method>
+
 </object-views>

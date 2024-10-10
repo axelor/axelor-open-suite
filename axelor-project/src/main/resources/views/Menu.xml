@@ -273,6 +273,24 @@
     <domain>self.user = :__user__</domain>
   </action-view>
 
+  <menuitem name="sprint-root-sprint-period-generator" title="Sprint period generator"
+    parent="sprint-root" action="sprint.root.sprint.period.generator"/>
+
+  <action-view name="sprint.root.sprint.period.generator"
+    title="Sprint period generator" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="sprint-period-generator-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+  </action-view>
+
+  <menuitem name="sprint-root-sprint-generator" title="Sprint generator"
+    parent="sprint-root" action="sprint.root.sprint.generator"/>
+
+  <action-view name="sprint.root.sprint.generator" title="Sprint generator"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="sprint-generator-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+  </action-view>
+
   <!-- Sprint menus -->
 
 </object-views>

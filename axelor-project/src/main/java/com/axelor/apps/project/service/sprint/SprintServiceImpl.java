@@ -18,21 +18,33 @@
  */
 package com.axelor.apps.project.service.sprint;
 
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.SprintPeriod;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SprintServiceImpl implements SprintService {
 
   protected ProjectTaskRepository projectTaskRepo;
+  protected SprintRepository sprintRepo;
 
   @Inject
-  public SprintServiceImpl(ProjectTaskRepository projectTaskRepo) {
+  public SprintServiceImpl(ProjectTaskRepository projectTaskRepo, SprintRepository sprintRepo) {
 
     this.projectTaskRepo = projectTaskRepo;
+    this.sprintRepo = sprintRepo;
   }
 
   @Override
@@ -45,5 +57,51 @@ public class SprintServiceImpl implements SprintService {
               task.setSprint(sprint);
               projectTaskRepo.save(task);
             });
+  }
+
+  @Override
+  public String sprintPeriodDomain(Set<Project> projects) {
+
+    if (CollectionUtils.isEmpty(projects)) {
+      return "self.id in (0)";
+    }
+
+    String companyIds =
+        projects.stream()
+            .filter(project -> project.getCompany() != null)
+            .map(project -> project.getCompany().getId().toString())
+            .distinct()
+            .collect(Collectors.joining(","));
+
+    return "self.company.id in (" + companyIds + ") and self.toDate >= '" + LocalDate.now() + "'";
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public List<Sprint> generateSprints(Set<Project> projects, Set<SprintPeriod> sprintPeriods) {
+
+    List<Sprint> sprintList = new ArrayList<>();
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d");
+
+    projects.forEach(
+        project -> {
+          sprintPeriods.forEach(
+              sprintPeriod -> {
+                Sprint sprint = new Sprint();
+                sprint.setName(
+                    I18n.get("Sprint")
+                        + " "
+                        + formatter.format(sprintPeriod.getFromDate())
+                        + " - "
+                        + formatter.format(sprintPeriod.getToDate()));
+                sprint.setSprintPeriod(sprintPeriod);
+                sprint.setProject(project);
+                sprintRepo.save(sprint);
+                sprintList.add(sprint);
+              });
+        });
+
+    return sprintList;
   }
 }

@@ -18,18 +18,17 @@
  */
 package com.axelor.apps.project.service.sprint;
 
-import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.project.db.SprintPeriod;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
-public interface SprintService {
+public interface SprintPeriodService {
 
-  public void attachTasksToSprint(Sprint sprint, List<ProjectTask> projectTasks);
-
-  public String sprintPeriodDomain(Set<Project> projects);
-
-  public List<Sprint> generateSprints(Set<Project> projects, Set<SprintPeriod> sprintPeriods);
+  public List<SprintPeriod> generateSprintPeriods(
+      Company company,
+      LocalDate fromDate,
+      LocalDate toDate,
+      int nbOfDaysPerSprint,
+      boolean considerWeekend);
 }
