@@ -23,6 +23,7 @@ import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.SprintPeriod;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProjectTaskHRService {
@@ -36,4 +37,6 @@ public interface ProjectTaskHRService {
       List<ProjectPlanningTime> projectPlanningTimeList,
       Employee employee,
       SprintPeriod sprintPeriod);
+
+  public BigDecimal calculatePlannedTime(ProjectTask projectTask);
 }
