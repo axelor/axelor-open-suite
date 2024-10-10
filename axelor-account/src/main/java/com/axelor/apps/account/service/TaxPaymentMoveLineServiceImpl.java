@@ -23,7 +23,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import org.apache.commons.collections.CollectionUtils;
 
 public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService {
 
