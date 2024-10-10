@@ -114,7 +114,7 @@
       <button name="confirmBtn" title="Confirm"
         onClick="action-purchase-order-method-merge-from-pop-up" colSpan="12" width="200px"
         showIf="!toStockMove"/>
-      <button name="confirmBtn" title="Confirmer"
+      <button name="confirmBtn" title="Confirm"
         onClick="action-supplychain-stock-move-method-generate-invoice-from-pop-up" colSpan="12"
         width="200px" showIf="toStockMove" if="__config__.app.isApp('supplychain')"/>
     </panel>
