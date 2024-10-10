@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="sprint-period-grid" title="Sprint periods"
+    model="com.axelor.apps.project.db.SprintPeriod">
+
+    <field name="name"/>
+    <field name="company"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+
+  </grid>
+
+  <form name="sprint-period-form" title="Sprint period"
+    model="com.axelor.apps.project.db.SprintPeriod" width="large">
+
+    <panel name="mainPanel">
+      <field name="name" required="true"/>
+      <field name="company" required="true"/>
+      <field name="fromDate" required="true"/>
+      <field name="toDate" required="true"/>
+    </panel>
+
+  </form>
+
+  <form model="com.axelor.utils.db.Wizard" title="Sprint period generator"
+    name="sprint-period-generator-wizard-form" width="large">
+
+    <panel name="mainPanel">
+      <field name="company" title="Company" type="many-to-one"
+        target="com.axelor.apps.base.db.Company" required="true" x-dirty="false"/>
+      <spacer name="dateSpacer"/>
+      <field name="fromDate" title="From" type="date" required="true" x-dirty="false"/>
+      <field name="toDate" title="To" type="date" required="true" x-dirty="false"/>
+      <field name="nbOfDaysPerSprint" title="Nb of days per sprint" type="integer" min="0"
+        required="true" x-dirty="false"/>
+      <field name="considerWeekend" title="Consider weekend" type="boolean"
+        widget="boolean-switch" x-dirty="false"/>
+      <button onClick="action-sprint-period-method-generate" name="generate" title="Generate"/>
+    </panel>
+
+  </form>
+
+  <action-method name="action-sprint-period-method-generate">
+    <call class="com.axelor.apps.project.web.SprintPeriodController"
+      method="generateSprintPeriods"/>
+  </action-method>
+
+</object-views>
