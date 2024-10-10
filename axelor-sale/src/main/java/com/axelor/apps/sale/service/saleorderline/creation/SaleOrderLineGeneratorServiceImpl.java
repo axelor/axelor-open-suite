@@ -29,6 +29,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeService;
@@ -56,6 +57,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
   protected SaleOrderLineOnChangeService saleOrderLineOnChangeService;
 
   protected ProductMultipleQtyService productMultipleQtyService;
+  protected SaleOrderComplementaryProductService saleOrderComplementaryProductService;
 
   @Inject
   public SaleOrderLineGeneratorServiceImpl(
@@ -68,10 +70,10 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderLineDomainService saleOrderLineDomainService,
       SaleOrderService saleOrderService,
-      SaleOrderOnLineChangeService saleOrderOnLineChangeService,
       AppSaleService appSaleService,
       SaleOrderLineOnChangeService saleOrderLineOnChangeService,
-      ProductMultipleQtyService productMultipleQtyService) {
+      ProductMultipleQtyService productMultipleQtyService,
+      SaleOrderComplementaryProductService saleOrderComplementaryProductService) {
     this.saleOrderLineInitValueService = saleOrderLineInitValueService;
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
     this.saleOrderLineRepository = saleOrderLineRepository;
@@ -81,10 +83,10 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderLineDomainService = saleOrderLineDomainService;
     this.saleOrderService = saleOrderService;
-    this.saleOrderOnLineChangeService = saleOrderOnLineChangeService;
     this.appSaleService = appSaleService;
     this.saleOrderLineOnChangeService = saleOrderLineOnChangeService;
     this.productMultipleQtyService = productMultipleQtyService;
+    this.saleOrderComplementaryProductService = saleOrderComplementaryProductService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -109,7 +111,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
 
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
     saleOrderComputeService.computeSaleOrder(saleOrder);
-    saleOrderOnLineChangeService.handleComplementaryProducts(saleOrder);
+    saleOrderComplementaryProductService.handleComplementaryProducts(saleOrder);
     saleOrderRepository.save(saleOrder);
 
     return saleOrderLine;

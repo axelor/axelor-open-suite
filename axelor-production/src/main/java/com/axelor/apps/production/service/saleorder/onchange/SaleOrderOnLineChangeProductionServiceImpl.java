@@ -6,12 +6,12 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
-import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
@@ -33,7 +33,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
-      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
+      SaleOrderComplementaryProductService saleOrderComplementaryProductService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService,
       AppProductionService appProductionService,
@@ -46,7 +46,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
         saleOrderLineRepository,
         saleOrderLineComputeService,
         saleOrderLinePackService,
-        saleOrderLineOnProductChangeService,
+        saleOrderComplementaryProductService,
         saleOrderSupplychainService,
         saleOrderShipmentService);
     this.appProductionService = appProductionService;
