@@ -24,6 +24,7 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsBomService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
@@ -107,7 +108,7 @@ public class SaleOrderLineController {
         Beans.get(SaleOrderLineDomainProductionService.class).getProdProcessDomain(saleOrderLine));
   }
 
-  public void generateSubLines(ActionRequest request, ActionResponse response) throws Exception {
+  public void bomOnChange(ActionRequest request, ActionResponse response) throws Exception {
     var saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     var saleOrder = saleOrderLine.getSaleOrder();
 
@@ -119,10 +120,17 @@ public class SaleOrderLineController {
         && saleOrder != null
         && !saleOrderLineBomService.isUpdated(saleOrderLine)) {
 
-      response.setValue(
-          "subSaleOrderLineList",
-          saleOrderLineBomService.createSaleOrderLinesFromBom(
-              saleOrderLine.getBillOfMaterial(), saleOrder));
+      BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
+
+      if (billOfMaterial != null && saleOrder != null) {
+        response.setValue(
+            "subSaleOrderLineList",
+            saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder));
+        response.setValue(
+            "saleOrderLineDetailsList",
+            Beans.get(SaleOrderLineDetailsBomService.class)
+                .createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder));
+      }
     }
   }
 }
