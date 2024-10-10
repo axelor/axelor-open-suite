@@ -31,7 +31,22 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
     BigDecimal taxRate = taxPaymentMoveLine.getTaxRate().divide(new BigDecimal(100));
     BigDecimal base = taxPaymentMoveLine.getDetailPaymentAmount();
     taxPaymentMoveLine.setTaxAmount(base.multiply(taxRate).setScale(2, RoundingMode.HALF_UP));
+
+    if (isReverseTax(taxPaymentMoveLine)) {
+      taxPaymentMoveLine.setTaxAmount(taxPaymentMoveLine.getTaxAmount().negate());
+    }
     return taxPaymentMoveLine;
+  }
+
+  protected boolean isReverseTax(TaxPaymentMoveLine taxPaymentMoveLine) {
+    return taxPaymentMoveLine.getFiscalPosition() != null
+        && taxPaymentMoveLine.getFiscalPosition().getTaxEquivList().stream()
+            .anyMatch(
+                taxEquiv ->
+                    taxEquiv.getReverseChargeTax() != null
+                        && taxEquiv
+                            .getReverseChargeTax()
+                            .equals(taxPaymentMoveLine.getOriginTaxLine().getTax()));
   }
 
   @Override
