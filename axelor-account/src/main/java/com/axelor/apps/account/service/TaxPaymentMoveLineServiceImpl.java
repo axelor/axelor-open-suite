@@ -47,10 +47,10 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
         && taxPaymentMoveLine.getFiscalPosition().getTaxEquivList().stream()
             .anyMatch(
                 taxEquiv ->
-                    CollectionUtils.isNotEmpty(taxEquiv.getReverseChargeTaxSet())
+                    taxEquiv.getReverseChargeTax() != null
                         && taxEquiv
-                            .getReverseChargeTaxSet()
-                            .contains(taxPaymentMoveLine.getOriginTaxLine().getTax()));
+                            .getReverseChargeTax()
+                            .equals(taxPaymentMoveLine.getOriginTaxLine().getTax()));
   }
 
   @Override
