@@ -1,9 +1,10 @@
 ---
-title: "Tax payment move line : negate reverse taxes from fiscal position."
+title: "Tax payment move line: fixed an issue where reverse taxes were not reverted, which was making VAT statement reports wrong."
 module: axelor-account
 developer: |
-  Script to correct data:
-  
+  "Please run this SQL script if you have the issue related to reverse taxes in VAT statement report:
+
+```sql
   UPDATE account_tax_payment_move_line tpml
   SET tax_amount = -tax_amount
   WHERE tpml.fiscal_position IS NOT NULL
@@ -15,3 +16,4 @@ developer: |
   LEFT JOIN account_tax_line tl ON tax.id = tl.tax 
   WHERE ate.fiscal_position = tpml.fiscal_position AND tl.id = tpml.origin_tax_line
   );
+```"
