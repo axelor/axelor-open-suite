@@ -27,7 +27,7 @@
         <field name="subDepartment" colSpan="12" x-bind="{{subDepartment|uppercase}}"/>
         <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
         <field name="floor" x-bind="{{floor|uppercase}}" colSpan="12"/>
-        <field name="buildingNumber" onChange="action-address-record-change-streetName"
+        <field name="buildingNumber" onChange="action-address-record-change-building-number"
           x-bind="{{buildingNumber|uppercase}}" colSpan="12"/>
         <field name="street" canNew="true" colSpan="12"
           onChange="action-address-record-change-streetName"
@@ -99,7 +99,7 @@
         <field name="subDepartment" colSpan="12" x-bind="{{subDepartment|uppercase}}"/>
         <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
         <field name="floor" x-bind="{{floor|uppercase}}" colSpan="12"/>
-        <field name="buildingNumber" onChange="action-address-record-change-streetName"
+        <field name="buildingNumber" onChange="action-address-record-change-building-number"
           x-bind="{{buildingNumber|uppercase}}" colSpan="12"/>
         <field name="street" canNew="true" colSpan="12"
           onChange="action-address-record-change-streetName"
@@ -281,6 +281,15 @@
     <field name="city" expr="eval: street.city" if="street"/>
     <field name="zip" expr="eval: street.city.zip" if="street"/>
     <field name="country" expr="eval: street.city.country" if="street"/>
+  </action-record>
+
+  <action-record name="action-address-record-change-building-number"
+    model="com.axelor.apps.base.db.Address">
+    <field name="streetName" expr="eval: buildingNumber + ' ' + street?.name"
+      if="buildingNumber &amp;&amp; street"/>
+    <field name="streetName" expr="eval: street?.name" if="!buildingNumber &amp;&amp; street"/>
+    <field name="streetName" expr="eval: null"
+      if="!street &amp;&amp; __config__.app.getApp('base')?.getStoreStreets()"/>
   </action-record>
 
   <search-filters name="address-filters" model="com.axelor.apps.base.db.Address"

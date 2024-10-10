@@ -1,0 +1,3 @@
+---
+title: "Address: fix the problem that sometimes when we change the building number, the street name is removed."
+module: axelor-base
