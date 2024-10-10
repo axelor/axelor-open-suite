@@ -1419,7 +1419,7 @@
 "No","Non",,
 "No Return Value","Aucune valeur",,
 "No active company for this user, please define an active company.","Aucune société active pour cet utilisateur, merci de définir une société active.",,
-"No address found with this country, zip and street name","Aucune adresse n'a été trouvée pour ce pays, ce code postal et ce nom de rue.",,
+"No address found with this country, zip and street name. City name is required to create a new city.","Aucune adresse n'a été trouvée pour ce pays, ce code postal et ce nom de rue. Merci de remplir le nom de la ville.",,
 "No city found","Aucune ville trouvée.",,
 "No contact to import.","Aucun contact à importer.",,
 "No country found for: %s.","Aucun pays trouvé pour: %s.",,
