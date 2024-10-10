@@ -61,8 +61,8 @@
   </form>
 
   <action-group name="action-configurator-group-create-configurator">
-    <action name="action-configurator-attrs-create-configurator"/>
     <action name="save"/>
+    <action name="action-configurator-attrs-create-configurator"/>
     <action name="action-configurator-update-indicators"/>
   </action-group>
 
