@@ -18,6 +18,7 @@
  */
 package com.axelor.utils.service.translation;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.meta.db.MetaTranslation;
 import java.util.List;
 
@@ -25,5 +26,6 @@ public interface TranslationBaseService {
 
   public String getValueTranslation(String key);
 
-  List<MetaTranslation> getTranslations(String language, String key);
+  List<MetaTranslation> getLocalizationTranslations(String language, String key)
+      throws AxelorException;
 }

@@ -19,13 +19,10 @@
 package com.axelor.apps.base.rest;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Language;
-import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.rest.dto.GlobalTranslationsResponse;
 import com.axelor.apps.base.rest.dto.TranslationResponse;
 import com.axelor.apps.base.service.language.LanguageCheckerService;
-import com.axelor.apps.base.service.localization.LocalizationService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -45,7 +42,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
 @Path("/aos/translation")
@@ -82,30 +78,13 @@ public class TranslationRestController {
   @Path("/{lng}")
   @GET
   @HttpExceptionHandler
-  public Response sendTranslationJSON(@PathParam("lng") String language)
-      throws AxelorException, JSONException {
-    LanguageCheckerService languageCheckerService = Beans.get(LanguageCheckerService.class);
-    TranslationBaseService translationBaseService = Beans.get(TranslationBaseService.class);
+  public Response sendTranslationJSON(@PathParam("lng") String language) throws AxelorException {
 
-    Localization localization = Beans.get(LocalizationService.class).getLocalization(language);
-    languageCheckerService.checkLanguage(localization);
-    Language lang = localization.getLanguage();
     String key = "mobile_app_%";
+    language = language.replace("-", "_");
 
     List<MetaTranslation> localizationTranslation =
-        translationBaseService.getTranslations(localization.getCode().replace("_", "-"), key);
-    List<MetaTranslation> countryTranslation =
-        translationBaseService.getTranslations(lang.getCode(), key);
-
-    for (MetaTranslation metaTranslation : countryTranslation) {
-      List<String> keyList =
-          localizationTranslation.stream()
-              .map(MetaTranslation::getKey)
-              .collect(Collectors.toList());
-      if (!keyList.contains(metaTranslation.getKey())) {
-        localizationTranslation.add(metaTranslation);
-      }
-    }
+        Beans.get(TranslationBaseService.class).getLocalizationTranslations(language, key);
 
     return ResponseConstructor.build(
         Response.Status.OK,

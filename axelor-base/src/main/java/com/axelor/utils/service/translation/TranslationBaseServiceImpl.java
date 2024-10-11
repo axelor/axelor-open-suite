@@ -18,27 +18,45 @@
  */
 package com.axelor.utils.service.translation;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Language;
+import com.axelor.apps.base.db.Localization;
+import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.apps.base.service.language.LanguageCheckerService;
 import com.axelor.apps.base.service.localization.LocaleService;
+import com.axelor.apps.base.service.localization.LocalizationService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.utils.service.TranslationService;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TranslationBaseServiceImpl implements TranslationBaseService {
 
   protected UserService userService;
   protected TranslationService translationService;
   protected MetaTranslationRepository metaTranslationRepository;
+  protected LocalizationService localizationService;
+  protected LanguageCheckerService languageCheckerService;
 
   @Inject
   public TranslationBaseServiceImpl(
-      UserService userService, TranslationService translationService) {
+      UserService userService,
+      TranslationService translationService,
+      MetaTranslationRepository metaTranslationRepository,
+      LocalizationService localizationService,
+      LanguageCheckerService languageCheckerService) {
     this.userService = userService;
     this.translationService = translationService;
+    this.metaTranslationRepository = metaTranslationRepository;
+    this.localizationService = localizationService;
+    this.languageCheckerService = languageCheckerService;
   }
 
   @Override
@@ -48,8 +66,7 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
     return key.equals(valueTranslation) ? I18n.get(key) : valueTranslation;
   }
 
-  @Override
-  public List<MetaTranslation> getTranslations(String language, String key) {
+  protected List<MetaTranslation> getTranslations(String language, String key) {
     Query<MetaTranslation> query =
         metaTranslationRepository
             .all()
@@ -58,5 +75,41 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
     query.bind("key", key);
 
     return query.fetch();
+  }
+
+  @Override
+  public List<MetaTranslation> getLocalizationTranslations(String requestLanguage, String key)
+      throws AxelorException {
+    List<MetaTranslation> metaTranslationList = new ArrayList<>();
+    List<MetaTranslation> localizationTranslation = new ArrayList<>();
+    List<MetaTranslation> countryTranslation;
+    Language language = null;
+
+    try {
+      Localization localization = localizationService.getLocalization(requestLanguage);
+      languageCheckerService.checkLanguage(localization);
+      language = localization.getLanguage();
+      localizationTranslation = this.getTranslations(localization.getCode().replace("_", "-"), key);
+    } catch (AxelorException e) {
+      Language lang = Beans.get(LanguageRepository.class).findByCode(requestLanguage);
+      if (lang == null) {
+        throw new AxelorException(e, e.getCategory());
+      }
+      language = lang;
+    } finally {
+      countryTranslation = this.getTranslations(language.getCode(), key);
+    }
+
+    metaTranslationList.addAll(localizationTranslation);
+
+    for (MetaTranslation metaTranslation : countryTranslation) {
+      List<String> keyList =
+          metaTranslationList.stream().map(MetaTranslation::getKey).collect(Collectors.toList());
+      if (!keyList.contains(metaTranslation.getKey())) {
+        metaTranslationList.add(metaTranslation);
+      }
+    }
+
+    return metaTranslationList;
   }
 }
