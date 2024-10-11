@@ -372,14 +372,16 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
    */
   protected void setDummySaleOrderSeq(
       SaleOrderMergingResult result, List<SaleOrder> saleOrderList) {
-    result
-        .getSaleOrder()
-        .setSaleOrderSeq(
-            StringHelper.cutTooLongString(
-                saleOrderList.stream()
-                    .map(SaleOrder::getSaleOrderSeq)
-                    .filter(s -> s != null && !s.isEmpty())
-                    .collect(Collectors.joining("-"))));
+    if (result.getSaleOrder() != null) {
+      result
+          .getSaleOrder()
+          .setSaleOrderSeq(
+              StringHelper.cutTooLongString(
+                  saleOrderList.stream()
+                      .map(SaleOrder::getSaleOrderSeq)
+                      .filter(s -> s != null && !s.isEmpty())
+                      .collect(Collectors.joining("-"))));
+    }
   }
 
   @Override
