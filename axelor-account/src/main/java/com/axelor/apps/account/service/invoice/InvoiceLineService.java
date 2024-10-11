@@ -63,7 +63,7 @@ public interface InvoiceLineService {
 
   Unit getUnit(Product product, boolean isPurchase);
 
-  void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+  Map<String, Object> compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
 
   Map<String, Object> resetProductInformation(Invoice invoice) throws AxelorException;
 

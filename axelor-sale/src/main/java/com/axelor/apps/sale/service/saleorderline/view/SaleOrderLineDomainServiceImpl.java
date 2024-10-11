@@ -1,6 +1,5 @@
 package com.axelor.apps.sale.service.saleorderline.view;
 
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -53,13 +52,6 @@ public class SaleOrderLineDomainServiceImpl implements SaleOrderLineDomainServic
         && !CollectionUtils.isEmpty(saleOrder.getCompany().getTradingNameList())) {
       domain +=
           " AND " + saleOrder.getTradingName().getId() + " member of self.tradingNameSellerSet";
-    }
-
-    if (isSubLine) {
-      domain +=
-          String.format(
-              " AND self.productSubTypeSelect = %d",
-              ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT);
     }
 
     // The standard way to do this would be to override the method in HR module.

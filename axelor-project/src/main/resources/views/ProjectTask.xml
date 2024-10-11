@@ -215,10 +215,8 @@
         grid-view="tag-simplified-grid" colSpan="4"
         onSelect="action-project-task-method-set-tag-domain"/>
       <field name="progress" onChange="action-project-task-group-progress-onchange"
-        showIf="project.isShowProgress &amp;&amp; !$readonly()" colSpan="4" min="0"/>
-      <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; !$readonly()"/>
-      <field name="progress" showIf="project.isShowProgress &amp;&amp; $readonly()"
-        colSpan="4" widget="SelectProgress"/>
+        showIf="project.isShowProgress" colSpan="4" min="0" max="100" widget="Slider" x-step="1"
+        x-scale="0"/>
       <field name="project.isShowProgress" hidden="true"/>
       <field name="project.isShowSection" hidden="true"/>
       <field name="project.isShowStatus" hidden="true"/>

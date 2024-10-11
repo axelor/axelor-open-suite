@@ -30,7 +30,7 @@
       <field name="partner.currency" form-view="currency-form" grid-view="currency-grid"
         hidden="true" showIf="partner"/>
       <panel-related field="cartLineList" form-view="cart-line-form"
-        grid-view="cart-line-grid" colSpan="12"/>
+        grid-view="cart-line-grid" colSpan="12" showIf="company"/>
     </panel>
   </form>
 

@@ -28,6 +28,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.service.PurchaseOrderMergingService;
+import com.axelor.apps.purchase.service.PurchaseOrderMergingService.PurchaseOrderMergingResult;
+import com.axelor.apps.purchase.service.PurchaseOrderMergingViewService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingService;
 import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingService.SaleOrderMergingResult;
@@ -87,6 +91,7 @@ public class StockMoveInvoiceController {
         Map<Long, BigDecimal> qtyToInvoiceMap =
             stockMoveInvoiceService.getQtyToInvoiceMap(operationSelect, stockMoveLineListContext);
         Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
+        Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
 
         if (ObjectUtils.notEmpty(saleOrderSet)) {
           SaleOrderMergingResult result =
@@ -106,10 +111,24 @@ public class StockMoveInvoiceController {
           invoice =
               stockMoveInvoiceService.createInvoiceFromSaleOrder(
                   stockMove, result.getSaleOrder(), qtyToInvoiceMap);
-        } else if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
+        } else if (ObjectUtils.notEmpty(purchaseOrderSet)) {
+          PurchaseOrderMergingResult result =
+              Beans.get(PurchaseOrderMergingService.class)
+                  .simulateMergePurchaseOrders(new ArrayList<>(purchaseOrderSet));
+          if (result.isConfirmationNeeded()) {
+            ActionViewBuilder confirmView =
+                Beans.get(PurchaseOrderMergingViewService.class)
+                    .buildConfirmView(result, new ArrayList<>(purchaseOrderSet));
+            confirmView.context("stockMoveId", stockMove.getId());
+            confirmView.context("qtyToInvoiceMap", qtyToInvoiceMap);
+            confirmView.context("toStockMove", true);
+
+            response.setView(confirmView.map());
+            return;
+          }
           invoice =
               stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
-                  stockMove, stockMove.getPurchaseOrderSet().iterator().next(), qtyToInvoiceMap);
+                  stockMove, result.getPurchaseOrder(), null);
         } else {
           invoice =
               stockMoveInvoiceService.createInvoiceFromOrderlessStockMove(
@@ -136,6 +155,7 @@ public class StockMoveInvoiceController {
       stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
       Invoice invoice = null;
       Map<Long, BigDecimal> qtyToInvoiceMap = null;
+      StockMoveInvoiceService stockMoveInvoiceService = Beans.get(StockMoveInvoiceService.class);
 
       if (request.getContext().get("qtyToInvoiceMap") != null) {
         qtyToInvoiceMap =
@@ -152,8 +172,16 @@ public class StockMoveInvoiceController {
                 .simulateMergeSaleOrdersWithContext(
                     new ArrayList<>(stockMove.getSaleOrderSet()), context);
         invoice =
-            Beans.get(StockMoveInvoiceService.class)
-                .createInvoiceFromSaleOrder(stockMove, result.getSaleOrder(), qtyToInvoiceMap);
+            stockMoveInvoiceService.createInvoiceFromSaleOrder(
+                stockMove, result.getSaleOrder(), qtyToInvoiceMap);
+      } else if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
+        PurchaseOrderMergingResult result =
+            Beans.get(PurchaseOrderMergingService.class)
+                .simulateMergePurchaseOrdersWithContext(
+                    new ArrayList<>(stockMove.getPurchaseOrderSet()), context);
+        invoice =
+            stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
+                stockMove, result.getPurchaseOrder(), qtyToInvoiceMap);
       }
       if (invoice != null) {
         response.setCanClose(true);
@@ -666,6 +694,8 @@ public class StockMoveInvoiceController {
       } else if (!stockMoveLines.isEmpty()) {
 
         Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
+        Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
+
         if (ObjectUtils.notEmpty(saleOrderSet)) {
           SaleOrderMergingResult result =
               Beans.get(SaleOrderMergingService.class)
@@ -683,10 +713,23 @@ public class StockMoveInvoiceController {
           invoice =
               stockMoveInvoiceService.createInvoiceFromSaleOrder(
                   stockMove, result.getSaleOrder(), null);
-        } else if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
+        } else if (ObjectUtils.notEmpty(purchaseOrderSet)) {
+          PurchaseOrderMergingResult result =
+              Beans.get(PurchaseOrderMergingService.class)
+                  .simulateMergePurchaseOrders(new ArrayList<>(purchaseOrderSet));
+          if (result.isConfirmationNeeded()) {
+            ActionViewBuilder confirmView =
+                Beans.get(PurchaseOrderMergingViewService.class)
+                    .buildConfirmView(result, new ArrayList<>(purchaseOrderSet));
+            confirmView.context("stockMoveId", stockMove.getId());
+            confirmView.context("toStockMove", true);
+
+            response.setView(confirmView.map());
+            return;
+          }
           invoice =
               stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
-                  stockMove, stockMove.getPurchaseOrderSet().iterator().next(), null);
+                  stockMove, result.getPurchaseOrder(), null);
         } else {
           invoice = stockMoveInvoiceService.createInvoiceFromOrderlessStockMove(stockMove, null);
         }
