@@ -23,7 +23,6 @@
       name="qiDecisionDistributionList" title="Distributions" mappedBy="qiResolution"/>
 
     <track>
-      <field name="qi"/>
       <field name="defaultWrittenBy"/>
       <field name="defaultWrittenOn"/>
       <field name="decisionsWrittenBy"/>
