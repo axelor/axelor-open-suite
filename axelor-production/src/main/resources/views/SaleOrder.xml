@@ -15,7 +15,7 @@
           x-tree-field-title="Add a new sale order line" summary-view="sale-order-line-summary-form"
           x-expand-all="subSaleOrderLineList,saleOrderLineDetailsList"
           onChange="action-sale-order-method-on-line-change"
-          if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
           editable="true">
         </panel-related>
       </replace>
