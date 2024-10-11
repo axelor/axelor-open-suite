@@ -43,8 +43,10 @@ public class CartLineSupplychainRepository extends CartLineManagementRepository 
     try {
       if (json != null && json.get("id") != null) {
         CartLine cartLine = find((Long) json.get("id"));
-        Cart cart = cartLine.getCart();
-        json.putAll(cartLineAvailabilityService.setAvailableStatus(cart, cartLine));
+        if (cartLine != null) {
+          Cart cart = cartLine.getCart();
+          json.putAll(cartLineAvailabilityService.setAvailableStatus(cart, cartLine));
+        }
       }
       return super.populate(json, context);
     } catch (Exception e) {
