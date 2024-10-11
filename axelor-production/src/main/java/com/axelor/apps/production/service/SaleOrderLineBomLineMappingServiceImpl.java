@@ -12,14 +12,11 @@ import java.util.Optional;
 
 public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomLineMappingService {
 
-  protected final SaleOrderLineBomService saleOrderLineBomService;
   protected final SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
 
   @Inject
   public SaleOrderLineBomLineMappingServiceImpl(
-      SaleOrderLineBomService saleOrderLineBomService,
       SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService) {
-    this.saleOrderLineBomService = saleOrderLineBomService;
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
   }
 
