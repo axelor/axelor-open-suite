@@ -101,6 +101,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
@@ -305,5 +307,7 @@ public class SaleModule extends AxelorModule {
     bind(CartSaleOrderGeneratorService.class).to(CartSaleOrderGeneratorServiceImpl.class);
     bind(SaleOrderRestService.class).to(SaleOrderRestServiceImpl.class);
     bind(SubSaleOrderLineComputeService.class).to(SubSaleOrderLineComputeServiceImpl.class);
+    bind(SaleOrderComplementaryProductService.class)
+        .to(SaleOrderComplementaryProductServiceImpl.class);
   }
 }

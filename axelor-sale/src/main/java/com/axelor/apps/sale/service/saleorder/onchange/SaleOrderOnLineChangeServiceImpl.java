@@ -19,24 +19,20 @@
 package com.axelor.apps.sale.service.saleorder.onchange;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.sale.db.ComplementaryProductSelected;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
-import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.db.EntityHelper;
-import com.axelor.db.JpaSequence;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeService {
@@ -47,7 +43,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
   protected SaleOrderLineRepository saleOrderLineRepository;
   protected SaleOrderLineComputeService saleOrderLineComputeService;
   protected SaleOrderLinePackService saleOrderLinePackService;
-  protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
+  protected SaleOrderComplementaryProductService saleOrderComplementaryProductService;
 
   @Inject
   public SaleOrderOnLineChangeServiceImpl(
@@ -58,7 +54,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
-      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService) {
+      SaleOrderComplementaryProductService saleOrderComplementaryProductService) {
     this.appSaleService = appSaleService;
     this.saleOrderService = saleOrderService;
     this.saleOrderMarginService = saleOrderMarginService;
@@ -66,90 +62,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderLineComputeService = saleOrderLineComputeService;
     this.saleOrderLinePackService = saleOrderLinePackService;
-    this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
-  }
-
-  @Override
-  public List<SaleOrderLine> handleComplementaryProducts(SaleOrder saleOrder)
-      throws AxelorException {
-    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    if (saleOrderLineList == null) {
-      saleOrderLineList = new ArrayList<>();
-    }
-
-    SaleOrderLine originSoLine = null;
-    for (SaleOrderLine soLine : saleOrderLineList) {
-      if (soLine.getIsComplementaryProductsUnhandledYet()) {
-        originSoLine = soLine;
-        if (originSoLine.getManualId() == null || originSoLine.getManualId().equals("")) {
-          this.setNewManualId(originSoLine);
-        }
-        break;
-      }
-    }
-
-    if (originSoLine != null
-        && originSoLine.getProduct() != null
-        && originSoLine.getSelectedComplementaryProductList() != null) {
-      for (ComplementaryProductSelected compProductSelected :
-          originSoLine.getSelectedComplementaryProductList()) {
-        // Search if there is already a line for this product to modify or remove
-        SaleOrderLine newSoLine = null;
-        for (SaleOrderLine soLine : saleOrderLineList) {
-          if (originSoLine.getManualId().equals(soLine.getParentId())
-              && soLine.getProduct() != null
-              && soLine.getProduct().equals(compProductSelected.getProduct())) {
-            // Edit line if it already exists instead of recreating, otherwise remove if already
-            // exists and is no longer selected
-            if (compProductSelected.getIsSelected()) {
-              newSoLine = soLine;
-            } else {
-              saleOrderLineList.remove(soLine);
-            }
-            break;
-          }
-        }
-
-        if (newSoLine == null) {
-          if (compProductSelected.getIsSelected()) {
-            newSoLine = new SaleOrderLine();
-            newSoLine.setProduct(compProductSelected.getProduct());
-            newSoLine.setSaleOrder(saleOrder);
-            newSoLine.setQty(
-                originSoLine
-                    .getQty()
-                    .multiply(compProductSelected.getQty())
-                    .setScale(appSaleService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
-            saleOrderLineOnProductChangeService.computeLineFromProduct(newSoLine);
-
-            newSoLine.setParentId(originSoLine.getManualId());
-
-            int targetIndex = saleOrderLineList.indexOf(originSoLine) + 1;
-            saleOrderLineList.add(targetIndex, newSoLine);
-          }
-        } else {
-          newSoLine.setQty(
-              originSoLine
-                  .getQty()
-                  .multiply(compProductSelected.getQty())
-                  .setScale(appSaleService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
-
-          saleOrderLineOnProductChangeService.computeLineFromProduct(newSoLine);
-        }
-      }
-      originSoLine.setIsComplementaryProductsUnhandledYet(false);
-    }
-
-    for (int i = 0; i < saleOrderLineList.size(); i++) {
-      saleOrderLineList.get(i).setSequence(i + 1);
-    }
-
-    return saleOrderLineList;
-  }
-
-  @Transactional
-  protected void setNewManualId(SaleOrderLine saleOrderLine) {
-    saleOrderLine.setManualId(JpaSequence.nextValue("sale.order.line.idSeq"));
+    this.saleOrderComplementaryProductService = saleOrderComplementaryProductService;
   }
 
   @Override
@@ -183,7 +96,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
 
   @Override
   public void onLineChange(SaleOrder saleOrder) throws AxelorException {
-    this.handleComplementaryProducts(saleOrder);
+    saleOrderComplementaryProductService.handleComplementaryProducts(saleOrder);
     if (saleOrder.getSaleOrderLineList() != null
         && saleOrder.getSaleOrderLineList().stream()
             .anyMatch(
