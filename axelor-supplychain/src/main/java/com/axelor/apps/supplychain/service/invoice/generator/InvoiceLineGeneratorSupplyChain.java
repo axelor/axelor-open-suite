@@ -237,9 +237,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     }
 
     if (stockMoveLine != null) {
-      this.price = stockMoveLine.getUnitPriceUntaxed();
-      this.inTaxPrice = stockMoveLine.getUnitPriceTaxed();
-
       this.price =
           unitConversionService.convert(
               stockMoveLine.getUnit(),
