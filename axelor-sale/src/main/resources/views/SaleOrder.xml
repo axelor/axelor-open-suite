@@ -262,6 +262,7 @@
         onClick="action-sale-order-group-recompute-prices-btn" showIf="statusSelect == 1"
         icon="fa-calculator"
         if="__config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotation()"/>
+      <button name="openLinesBtn" title="Show lines" onClick="sc.root.sale.order.lines" readonlyIf="!id"/>
     </toolbar>
     <menubar>
       <menu name="saleOrderToolsMenu" title="Tools">
