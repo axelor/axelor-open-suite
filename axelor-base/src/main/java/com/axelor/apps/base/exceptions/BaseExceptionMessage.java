@@ -677,4 +677,9 @@ public final class BaseExceptionMessage {
       "No zip found in request body or in the found city" /*)*/;
   public static final String NO_ADDRESS_FOUND_WITH_INFO = /*$$(*/
       "No address found with this country, zip and street name" /*)*/;
+
+  public static final String RECURSIVE_MODEL_MAXIMUM_DEPTH_REACHED = /*$$(*/
+      "Maximum depth has been reached when checking recursive loop for %s.  " /*)*/;
+  public static final String RECURSIVE_MODEL_LOOP_DETECTED = /*$$(*/
+      "Loop has been detected with model %s. <br/> Recursive models must not be the parent of themselves at any level." /*)*/;
 }

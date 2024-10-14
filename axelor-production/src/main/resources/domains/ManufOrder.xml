@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ManufOrder">
+  <entity name="ManufOrder" implements="com.axelor.apps.base.interfaces.RecursiveModel">
 
     <many-to-one name="manufOrderMergeResult"
       ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order merge result"/>
@@ -130,6 +130,13 @@
     <one-to-many name="outsourcingStockMoveList"
       ref="com.axelor.apps.stock.db.StockMove" title="Outsourcing stock moves"
       mappedBy="outsourcingManufOrder"/>
+
+    <many-to-one name="parent" ref="com.axelor.apps.production.db.ManufOrder"
+      transient="true">
+      <![CDATA[
+        return this.getParentMO();
+	  	]]>
+    </many-to-one>
 
 
     <unique-constraint columns="manufOrderSeq,company"/>
