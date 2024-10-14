@@ -86,6 +86,7 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
     Language language = null;
 
     try {
+      requestLanguage = requestLanguage.replace("-", "_");
       Localization localization = localizationService.getLocalization(requestLanguage);
       languageCheckerService.checkLanguage(localization);
       language = localization.getLanguage();

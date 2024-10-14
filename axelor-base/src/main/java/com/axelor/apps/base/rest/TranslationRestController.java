@@ -81,7 +81,6 @@ public class TranslationRestController {
   public Response sendTranslationJSON(@PathParam("lng") String language) throws AxelorException {
 
     String key = "mobile_app_%";
-    language = language.replace("-", "_");
 
     List<MetaTranslation> localizationTranslation =
         Beans.get(TranslationBaseService.class).getLocalizationTranslations(language, key);
