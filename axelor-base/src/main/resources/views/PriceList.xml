@@ -23,7 +23,8 @@
   </grid>
 
   <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
-    onNew="action-group-base-pricelist-onnew" onSave="action-price-list-method-check-anomaly"
+    onNew="action-group-base-pricelist-onnew"
+    onSave="action-price-list-method-check-anomaly,action-price-list-method-check-dates"
     width="large">
     <panel name="mainPanel">
       <field name="title"/>
