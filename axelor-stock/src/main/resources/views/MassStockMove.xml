@@ -27,7 +27,7 @@
       <field name="cartStockLocation"
         domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
     </panel>
-    <panel name="productNeedPanel">
+    <panel name="productNeedPanel" showIf="cartStockLocation &amp;&amp; company">
       <field name="commonFromStockLocation"
         domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
       <field name="commonToStockLocation"
@@ -40,7 +40,7 @@
       <button name="generatePickedLinesBtn" title="Generate picked products"
         onClick="save,action-mass-stock-move-method-generate-picked-lines"/>
     </panel>
-    <panel name="pickedProductPanel">
+    <panel name="pickedProductPanel" showIf="cartStockLocation &amp;&amp; company">
       <button name="selectPickedProductFromStockLocationBtn"
         title="Select products from location"
         onClick="save,action-mass-stock-move-method-select-picked-product-from-stock-location"
@@ -52,7 +52,7 @@
       <button name="cancelPickingBtn" title="Cancel picking"
         onClick="action-mass-stock-move-method-cancel-picking" icon="fa-undo"/>
     </panel>
-    <panel name="storedProductPanel">
+    <panel name="storedProductPanel" showIf="cartStockLocation &amp;&amp; company">
       <panel-related field="storedProductList" grid-view="stored-product-grid"
         form-view="stored-product-form" colSpan="12" canNew="company != null" onChange="save"/>
       <button name="realizeStoringBtn" title="Store all / the rest"
