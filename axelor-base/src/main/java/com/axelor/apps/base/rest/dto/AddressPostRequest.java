@@ -1,15 +1,14 @@
 package com.axelor.apps.base.rest.dto;
 
 import com.axelor.utils.api.RequestPostStructure;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 public class AddressPostRequest extends RequestPostStructure {
 
-  @NotNull @NotEmpty private String country;
+  @NotBlank private String country;
   private String city;
   private String zip;
-  @NotNull @NotEmpty private String streetName;
+  @NotBlank private String streetName;
 
   public String getCountry() {
     return country;
@@ -20,6 +19,9 @@ public class AddressPostRequest extends RequestPostStructure {
   }
 
   public String getCity() {
+    if (city == null || city.isBlank()) {
+      return null;
+    }
     return city;
   }
 
@@ -28,6 +30,9 @@ public class AddressPostRequest extends RequestPostStructure {
   }
 
   public String getZip() {
+    if (zip == null || zip.isBlank()) {
+      return null;
+    }
     return zip;
   }
 

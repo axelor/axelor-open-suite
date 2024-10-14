@@ -61,12 +61,14 @@ public class AddressRestController {
           addressCreationService.fetchAddress(country, city, zip, streetName);
 
       if (address.isEmpty()) {
-        if (cityName != null) {
-          city = cityService.createAndSaveCity(cityName, zip, country);
-        } else {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(BaseExceptionMessage.NO_ADDRESS_FOUND_WITH_INFO));
+        if (city == null) {
+          if (cityName != null) {
+            city = cityService.createAndSaveCity(cityName, zip, country);
+          } else {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(BaseExceptionMessage.NO_ADDRESS_FOUND_WITH_INFO));
+          }
         }
         return ResponseConstructor.build(
             Response.Status.CREATED,
