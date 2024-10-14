@@ -28,7 +28,6 @@ import com.axelor.apps.base.service.localization.LocalizationService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.utils.service.TranslationService;
@@ -44,6 +43,7 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
   protected MetaTranslationRepository metaTranslationRepository;
   protected LocalizationService localizationService;
   protected LanguageCheckerService languageCheckerService;
+  protected LanguageRepository languageRepository;
 
   @Inject
   public TranslationBaseServiceImpl(
@@ -51,12 +51,14 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
       TranslationService translationService,
       MetaTranslationRepository metaTranslationRepository,
       LocalizationService localizationService,
-      LanguageCheckerService languageCheckerService) {
+      LanguageCheckerService languageCheckerService,
+      LanguageRepository languageRepository) {
     this.userService = userService;
     this.translationService = translationService;
     this.metaTranslationRepository = metaTranslationRepository;
     this.localizationService = localizationService;
     this.languageCheckerService = languageCheckerService;
+    this.languageRepository = languageRepository;
   }
 
   @Override
@@ -92,7 +94,7 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
       language = localization.getLanguage();
       localizationTranslation = this.getTranslations(localization.getCode().replace("_", "-"), key);
     } catch (AxelorException e) {
-      Language lang = Beans.get(LanguageRepository.class).findByCode(requestLanguage);
+      Language lang = languageRepository.findByCode(requestLanguage);
       if (lang == null) {
         throw new AxelorException(e, e.getCategory());
       }
