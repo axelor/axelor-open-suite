@@ -5,7 +5,7 @@
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockLocation">
+  <entity name="StockLocation" implements="com.axelor.apps.base.interfaces.RecursiveModel">
 
     <string name="name" title="Name" required="true"/>
     <many-to-one name="parentStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
@@ -35,6 +35,13 @@
       ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
     <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
 
+    <many-to-one name="parent" ref="com.axelor.apps.stock.db.StockLocation"
+      transient="true">
+      <![CDATA[
+        return this.getParentStockLocation();
+	  	]]>
+    </many-to-one>
+
     <finder-method name="findByCompany" using="company"/>
     <finder-method name="findByPartner" using="partner"/>
 
@@ -52,5 +59,8 @@
 
 	]]></extra-code>
 
+    <entity-listener class="com.axelor.apps.base.listener.RecursiveModelListener"/>
+
   </entity>
+
 </domain-models>
