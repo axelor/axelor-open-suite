@@ -111,19 +111,10 @@
       <panel-include view="incl-overview-project-task-panel-form"/>
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
-        <panel-dashlet name="validatedTimesheetLinesPanel" x-show-bars="true"
-          action="action-project-task-dashlet-validated-timesheet-lines"
-          title="Validated Timesheet lines" colSpan="12" canSearch="true"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
-        <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
-          action="action-project-task-dashlet-waiting-timesheet-lines"
-          title="Waiting Timesheet lines" colSpan="12" canSearch="true"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
-        <panel-dashlet name="allTimesheetLinesPanel" x-show-bars="true"
-          action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
-          colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
-        <field name="project.isShowTimeSpent" hidden="true"/>
+        if="__config__.app.isApp('timesheet')" showIf="project.manageTimeSpent">
+        <panel-include view="incl-log-times-projec-task-panel-form"/>
+
+        <field name="project.manageTimeSpent" hidden="true"/>
         <panel name="timerPanel" title="Timer" showIf="id" if-module="axelor-helpdesk"
           if="__config__.app.isApp('helpdesk')" canCollapse="true" collapseIf="false">
           <panel name="actionsPanel" title="Actions">
@@ -190,6 +181,23 @@
         <field name="description" colSpan="12" widget="html"/>
       </panel>
       <panel-include view="incl-customized-field-panel-form"/>
+    </panel>
+  </form>
+
+  <form name="incl-log-times-projec-task-panel-form" title="Project task"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <panel title="Log Times" name="logTimesPanel" showTitle="false" colSpan="12" itemSpan="12">
+      <panel-dashlet name="validatedTimesheetLinesPanel" x-show-bars="true"
+        action="action-project-task-dashlet-validated-timesheet-lines"
+        title="Validated Timesheet lines" colSpan="12" canSearch="true"
+        if="__config__.app.getApp('timesheet')?.needValidation"/>
+      <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
+        action="action-project-task-dashlet-waiting-timesheet-lines" title="Waiting Timesheet lines"
+        colSpan="12" canSearch="true" if="__config__.app.getApp('timesheet')?.needValidation"/>
+      <panel-dashlet name="allTimesheetLinesPanel" x-show-bars="true"
+        action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
+        colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
+      <field name="project.manageTimeSpent" hidden="true"/>
     </panel>
   </form>
 

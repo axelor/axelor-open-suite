@@ -267,8 +267,10 @@
 
       <panel-include view="incl-checklist-panel-form"/>
 
-      <panel-include if-module="axelor-human-resource"
-        view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
+      <panel title="Log Times" name="logTimesPanel" if-module="axelor-human-resource"
+        if="__config__.app.isApp('timesheet')">
+        <panel-include view="incl-log-times-panel-form"/>
+      </panel>
 
       <panel title="Invoicing" name="invoicingPanel">
         <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
