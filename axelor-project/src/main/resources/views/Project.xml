@@ -124,8 +124,10 @@
 
       <panel-include view="incl-checklist-panel-form"/>
 
-      <panel-include if-module="axelor-human-resource"
-        view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
+      <panel title="Log Times" name="logTimesPanel" if-module="axelor-human-resource"
+        if="__config__.app.isApp('timesheet')">
+        <panel-include view="incl-log-times-panel-form"/>
+      </panel>
 
       <panel title="Configurations" name="configurationsPanel">
         <panel-include view="incl-project-config-panel-form"/>
@@ -230,9 +232,9 @@
 
   <form name="incl-log-times-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel title="Log Times" name="logTimesPanel" showIf="isShowTimeSpent">
+    <panel title="Log Times" name="logTimesPanel" showTitle="false" colSpan="12" itemSpan="12">
       <panel-dashlet name="validatedTimesheetsPanel" x-show-bars="true"
-        if="__config__.app.getApp('timesheet')?.needValidation"
+        if="__config__.app.getApp('timesheet')?.needValidation" height="200%"
         action="action-project-dashlet-validated-timesheet-lines" title="Validated Timesheet lines"
         colSpan="12" canSearch="true"/>
       <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
@@ -267,7 +269,7 @@
       <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
         if-module="axelor-human-resource"/>
       <field name="manageTimeSpent" widget="inline-checkbox"
-        onChange="action-project-record-manage-timespent-reset-values"
+        onChange="action-project-record-manage-timespent-reset-values, action-attrs-project-show-log-time-panel"
         if="__config__.app.isApp('timesheet')"/>
     </panel>
     <panel name="taskConfigurationPanel" title="Task configuration" colSpan="12"
@@ -467,6 +469,7 @@
     <action name="action-project-method-task-status-management-selection-in"/>
     <action name="action-project-activity-dashboard-method-on-new"/>
     <action name="action-project-dashboard-method-on-new"/>
+    <action name="action-attrs-project-show-log-time-panel"/>
   </action-group>
 
   <action-group name="action-project-group-on-new-project">
@@ -553,6 +556,10 @@
   <action-attrs name="action-attrs-project-add-member"
     model="com.axelor.apps.project.db.Project">
     <attribute name="value:add" for="membersUserSet" expr="eval: assignedTo"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-project-show-log-time-panel">
+    <attribute for="logTimesPanel" name="hidden" expr="eval: !manageTimeSpent"/>
   </action-attrs>
 
   <!-- ACTION RECORD -->
