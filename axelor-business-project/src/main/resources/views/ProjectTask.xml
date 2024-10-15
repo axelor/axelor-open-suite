@@ -287,6 +287,8 @@
         </panel>
       </panel>
 
+      <panel-include view="incl-checklist-task-panel-form"/>
+
       <panel-include view="incl-links-panel-form"/>
     </panel-tabs>
     <panel name="attrsPanel">
@@ -432,14 +434,12 @@
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
 
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
-        collapseIf="true" canCollapse="true">
+        collapseIf="false" canCollapse="true">
         <panel-include view="incl-characteristics-panel-form"/>
         <field name="invoicingProgress" readonly="true" colSpan="4"
           showIf="invoicingType == 4"/>
         <field name="description" colSpan="12" widget="html"/>
       </panel>
-
-      <panel-include view="incl-checklist-task-panel-form"/>
 
       <panel-include view="incl-customized-field-panel-form"/>
     </panel>
