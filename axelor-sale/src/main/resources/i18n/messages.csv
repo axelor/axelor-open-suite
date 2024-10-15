@@ -357,6 +357,7 @@
 "Next invoicing start period date",,,
 "Next pricing",,,
 "No Of Units",,,
+"No order line needs to be generated for this cart.",,,
 "No pricing scale used for this record",,,
 "No product family is set for this product: %s",,,
 "No unit is set for this product: %s",,,

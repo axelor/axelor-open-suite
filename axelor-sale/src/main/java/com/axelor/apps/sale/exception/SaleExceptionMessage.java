@@ -163,4 +163,7 @@ public final class SaleExceptionMessage {
 
   public static final String PRODUCT_UNIT_IS_NULL = /*$$(*/
       "No unit is set for this product: %s" /*)*/;
+
+  public static final String NO_ORDER_LINE_NEEDS_TO_BE_GENERATED = /*$$(*/
+      "No order line needs to be generated for this cart." /*)*/;
 }

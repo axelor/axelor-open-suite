@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class CartSaleOrderGeneratorSupplychainServiceImpl
     extends CartSaleOrderGeneratorServiceImpl {
@@ -89,6 +90,14 @@ public class CartSaleOrderGeneratorSupplychainServiceImpl
     if (cartOrderCreationModeSelect == SaleConfigRepository.CREATE_ORDER_WITH_MISSING_PRODUCTS) {
       return super.createSaleOrder(cart, cartLineList);
     }
-    return super.createSaleOrder(cart, availableCartLineList);
+    if (cartOrderCreationModeSelect == SaleConfigRepository.IGNORE_MISSING_PRODUCTS) {
+      if (CollectionUtils.isEmpty(availableCartLineList)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SaleExceptionMessage.NO_ORDER_LINE_NEEDS_TO_BE_GENERATED));
+      }
+      return super.createSaleOrder(cart, availableCartLineList);
+    }
+    return null;
   }
 }
