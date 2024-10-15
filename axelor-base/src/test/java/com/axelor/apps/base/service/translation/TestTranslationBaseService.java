@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
@@ -84,12 +85,15 @@ public class TestTranslationBaseService {
         };
   }
 
-  // Localization tests
   @Test
   void testGetLocalizationTranslationsFR() throws AxelorException {
     List<MetaTranslation> expectedList = new ArrayList<>();
     expectedList.add(createMetaTranslation("fr_1", "fr", "fr_1"));
     expectedList.add(createMetaTranslation("fr_2", "fr", "fr_2"));
+    expectedList.add(createMetaTranslation("fr_3", "fr", "fr_3"));
+    expectedList.add(createMetaTranslation("mobile_app_fr_1", "fr", "mobile_app_fr_1"));
+    expectedList.add(createMetaTranslation("mobile_app_fr_2", "fr", "mobile_app_fr_2"));
+    expectedList.add(createMetaTranslation("mobile_app_fr_3", "fr", "mobile_app_fr_3"));
 
     List<MetaTranslation> result = translationBaseService.getLocalizationTranslations("fr", "");
     assertTranslationsEquals(expectedList, result);
@@ -97,72 +101,77 @@ public class TestTranslationBaseService {
 
   @Test
   void testGetLocalizationTranslationsEN() throws AxelorException {
-    // List<MetaTranslation> result = translationBaseService.getLocalizationTranslations("en", "");
+    List<MetaTranslation> expectedList = new ArrayList<>();
+    expectedList.add(createMetaTranslation("en_1", "en", "en_1"));
+    expectedList.add(createMetaTranslation("en_2", "en", "en_2"));
+    expectedList.add(createMetaTranslation("en_3", "en", "en_3"));
+    expectedList.add(createMetaTranslation("mobile_app_en_1", "en", "mobile_app_en_1"));
+    expectedList.add(createMetaTranslation("mobile_app_en_2", "en", "mobile_app_en_2"));
+    expectedList.add(createMetaTranslation("mobile_app_en_3", "en", "mobile_app_en_3"));
 
-    // Assertions.assertEquals(metaTranslationList, result);
+    List<MetaTranslation> result = translationBaseService.getLocalizationTranslations("en", "");
+    assertTranslationsEquals(expectedList, result);
   }
 
   @Test
-  void testGetLocalizationTranslationsTest() throws AxelorException {
-    // List<MetaTranslation> result = translationBaseService.getLocalizationTranslations("test",
-    // "");
-
-    // Assertions.assertEquals(metaTranslationList, result);
-  }
-
-  @Test
-  void testGetMobileAppLocalizationTranslationsFR_FR() throws AxelorException {
-    // List<MetaTranslation> result = translationBaseService.getLocalizationTranslations("fr-FR",
-    // "mobile_app_");
-
-    // Assertions.assertEquals(metaTranslationList, result);
-  }
-
-  @Test
-  void testGetMobileAppLocalizationTranslationsFR_FR2() throws AxelorException {
-    // List<MetaTranslation> result = translationBaseService.getLocalizationTranslations("fr_FR",
-    // "mobile_app_");
-
-    // Assertions.assertEquals(metaTranslationList, result);
+  void testGetLocalizationTranslationsTest() {
+    Assertions.assertThrows(
+        AxelorException.class,
+        () -> translationBaseService.getLocalizationTranslations("test", ""));
   }
 
   @Test
   void testGetMobileAppLocalizationTranslationsFR_CA() throws AxelorException {
-    // List<MetaTranslation> result = translationBaseService.getLocalizationTranslations("fr-CA",
-    // "mobile_app_");
+    List<MetaTranslation> expectedList = new ArrayList<>();
+    expectedList.add(createMetaTranslation("mobile_app_fr_1", "fr", "mobile_app_fr_1"));
+    expectedList.add(createMetaTranslation("mobile_app_fr_3", "fr", "mobile_app_fr_3"));
+    expectedList.add(createMetaTranslation("mobile_app_fr_2", "fr-CA", "mobile_app_fr_CA_2"));
 
-    // Assertions.assertEquals(metaTranslationList, result);
+    List<MetaTranslation> result =
+        translationBaseService.getLocalizationTranslations("fr-CA", "mobile_app_");
+    assertTranslationsEquals(expectedList, result);
   }
 
   @Test
   void testGetMobileAppLocalizationTranslationsFR_CA2() throws AxelorException {
-    // List<MetaTranslation> result = translationBaseService.getLocalizationTranslations("fr_CA",
-    // "mobile_app_");
+    List<MetaTranslation> expectedList = new ArrayList<>();
+    expectedList.add(createMetaTranslation("mobile_app_fr_1", "fr", "mobile_app_fr_1"));
+    expectedList.add(createMetaTranslation("mobile_app_fr_3", "fr", "mobile_app_fr_3"));
+    expectedList.add(createMetaTranslation("mobile_app_fr_2", "fr-CA", "mobile_app_fr_CA_2"));
 
-    // Assertions.assertEquals(metaTranslationList, result);
+    List<MetaTranslation> result =
+        translationBaseService.getLocalizationTranslations("fr_CA", "mobile_app_");
+    assertTranslationsEquals(expectedList, result);
   }
 
   @Test
   void testGetMobileAppLanguageTranslationsFR() throws AxelorException {
-    // List<MetaTranslation> result = translationBaseService.getLocalizationTranslations("fr",
-    // "mobile_app_");
+    List<MetaTranslation> expectedList = new ArrayList<>();
+    expectedList.add(createMetaTranslation("mobile_app_fr_1", "fr", "mobile_app_fr_1"));
+    expectedList.add(createMetaTranslation("mobile_app_fr_2", "fr", "mobile_app_fr_2"));
+    expectedList.add(createMetaTranslation("mobile_app_fr_3", "fr", "mobile_app_fr_3"));
 
-    // Assertions.assertEquals(metaTranslationList, result);
+    List<MetaTranslation> result =
+        translationBaseService.getLocalizationTranslations("fr", "mobile_app_");
+    assertTranslationsEquals(expectedList, result);
   }
 
   @Test
   void testGetMobileAppLanguageTranslationsEN() throws AxelorException {
-    // List<MetaTranslation> result = translationBaseService.getLocalizationTranslations("en",
-    // "mobile_app_");
+    List<MetaTranslation> expectedList = new ArrayList<>();
+    expectedList.add(createMetaTranslation("mobile_app_en_1", "fr", "mobile_app_en_1"));
+    expectedList.add(createMetaTranslation("mobile_app_en_2", "fr", "mobile_app_en_2"));
+    expectedList.add(createMetaTranslation("mobile_app_en_3", "fr", "mobile_app_en_3"));
 
-    // Assertions.assertEquals(metaTranslationList, result);
+    List<MetaTranslation> result =
+        translationBaseService.getLocalizationTranslations("en", "mobile_app_");
+    assertTranslationsEquals(expectedList, result);
   }
 
   @Test
-  void testGetMobileAppLocalizationTranslationsTest() throws AxelorException {
-    // List<MetaTranslation> result = translationBaseService.getLocalizationTranslations("test",
-    // "mobile_app_");
-
-    // Assertions.assertEquals(metaTranslationList, result);
+  void testGetMobileAppLocalizationTranslationsTest() {
+    Assertions.assertThrows(
+        AxelorException.class,
+        () -> translationBaseService.getLocalizationTranslations("test", "mobile_app_"));
   }
 }
