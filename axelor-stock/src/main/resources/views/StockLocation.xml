@@ -37,6 +37,7 @@
     <field name="serialNumber"/>
   </grid>
 
+
   <tree name="stock-location-tree" title="Stock Locations">
     <column name="name" type="string"/>
     <column name="typeSelect" type="integer"/>

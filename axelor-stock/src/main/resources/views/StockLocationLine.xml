@@ -23,6 +23,14 @@
       onClick="action-stock-location-line-view-open-stock-correction-form"/>
   </grid>
 
+  <grid name="stock-location-line-mass-stock-move-cart-grid" title="Stock Locations content"
+    model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product, trackingNumber"
+    x-selector="none">
+    <field name="product" form-view="product-form" grid-view="product-grid"/>
+    <field name="currentQty" aggregate="sum" x-scale="2"/>
+    <field name="trackingNumber" domain="self.product = :product"/>
+  </grid>
+
   <form name="stock-location-line-form" title="Stock Location content"
     model="com.axelor.apps.stock.db.StockLocationLine" width="large"
     onSave="action-stock-location-line-record-is-avg-price-changed"
