@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form id="hr-sprint-form" name="sprint-form" title="Sprint"
+    model="com.axelor.apps.project.db.Sprint" extension="true">
+
+    <extend target="/">
+      <attribute name="onSave" value="save,action-sprint-method-attach-tasks-to-sprint"/>
+    </extend>
+
+  </form>
+
+  <action-method name="action-sprint-method-attach-tasks-to-sprint">
+    <call class="com.axelor.apps.hr.web.project.SprintHRController"
+      method="attachTasksToSprint"/>
+  </action-method>
+
+</object-views>

@@ -150,7 +150,12 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup-save" value="false"/>
     <view-param name="forceTitle" value="true"/>
-    <context name="_project" expr="eval:__parent__"/>
+    <context name="_project" expr="eval:__parent__"
+      if="__parent__?._model == 'com.axelor.apps.project.db.Project'"/>
+    <context name="_project" expr="eval:__parent__?.project"
+      if="eval: __parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
+    <context name="_projectTask" expr="eval:__parent__"
+      if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <context name="_timePlannedPopup" expr="eval: true"/>
   </action-view>
 
@@ -177,10 +182,13 @@
   </action-attrs>
 
   <action-group name="action-project-planning-time-group-default">
-    <action name="action-project-planning-time-attrs-default"/>
-    <action name="action-project-planning-time-method-get-company-config"/>
-    <action name="action-project-planning-time-method-get-default-planning-time"/>
-    <action name="action-project-planning-time-group-project-task-on-change"/>
+    <action name="action-project-planning-time-attrs-default" if="_project"/>
+    <action name="action-project-planning-time-method-get-company-config" if="_project"/>
+    <action name="action-project-planning-time-method-get-default-planning-time"
+      if="_project"/>
+    <action name="action-project-planning-time-group-project-task-on-change" if="_project"/>
+    <action name="action-project-planning-time-attrs-project-task-default" if="_projectTask"/>
+    <action name="action-project-planning-time-method-update-from-task-sprint"/>
   </action-group>
 
   <action-attrs name="action-project-planning-time-attrs-default">
@@ -241,6 +249,7 @@
   <action-group name="action-project-planning-time-group-project-task-on-change">
     <action name="action-project-planning-time-attrs-project-task-onChange"/>
     <action name="action-project-planning-time-method-compute-planned-time"/>
+    <action name="action-project-planning-time-method-update-from-task-sprint"/>
   </action-group>
 
   <action-attrs name="action-project-planning-time-attrs-project-task-onChange">
@@ -259,6 +268,19 @@
   <action-attrs name="action-project-planning-time-attrs-set-site-domain">
     <attribute for="site" name="domain"
       expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-planning-time-attrs-project-task-default">
+    <attribute name="value" for="projectTask"
+      expr="eval: __repo__(ProjectTask).find(_projectTask?.id)"/>
+    <attribute name="readonly" for="projectTask" expr="eval: true"/>
+    <attribute name="value" for="timeUnit,displayTimeUnit"
+      expr="eval: __repo__(ProjectTask).find(_projectTask?.id)?.timeUnit"/>
+    <attribute name="value" for="project" expr="eval: _projectTask?.project"/>
+    <attribute name="value" for="employee" expr="eval: __user__?.employee"
+      if="__user__ in __repo__(Project).find(_projectTask?.project?.id)?.membersUserSet"/>
+    <attribute name="value" for="product" expr="eval: __user__?.employee?.product"
+      if="__user__ in __repo__(Project).find(_projectTask?.project?.id)?.membersUserSet &amp;&amp; __user__?.employee"/>
   </action-attrs>
 
   <action-method name="action-project-planning-time-method-set-default-site">
@@ -296,6 +318,11 @@
   <action-method name="action-project-planning-time-method-get-default-planning-time">
     <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
       method="getDefaultPlanningTime"/>
+  </action-method>
+
+  <action-method name="action-project-planning-time-method-update-from-task-sprint">
+    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
+      method="updateFromTaskSprint"/>
   </action-method>
 
 </object-views>
