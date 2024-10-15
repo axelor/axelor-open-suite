@@ -248,7 +248,7 @@
       <button name="printBtn" title="Reports" icon="fa-print" hideIf="clientPartner == null"
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
       <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
-        onClick="action-send-by-email-with-template"/>
+        onClick="action-send-by-email-with-template" hidden="true" showIf="id"/>
     </toolbar>
     <menubar>
       <menu name="saleOrderToolsMenu" title="Tools">
