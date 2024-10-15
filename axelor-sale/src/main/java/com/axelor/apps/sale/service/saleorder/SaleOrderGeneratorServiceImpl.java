@@ -103,13 +103,19 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   protected void checkClientPartner(Partner clientPartner, SaleOrder saleOrder)
       throws AxelorException {
     Company company = saleOrder.getCompany();
-    String domain = saleOrderDomainService.getPartnerBaseDomain(saleOrder.getCompany());
-    if (!partnerRepository
-        .all()
-        .filter(domain)
-        .bind("company", company)
-        .fetch()
-        .contains(clientPartner)) {
+    String domain =
+        saleOrderDomainService.getPartnerBaseDomain(saleOrder.getCompany())
+            + " AND self.id = :clientPartnerId";
+    boolean isValidPartner =
+        clientPartner != null
+            && partnerRepository
+                    .all()
+                    .filter(domain)
+                    .bind("company", company)
+                    .bind("clientPartnerId", clientPartner.getId())
+                    .fetchOne()
+                != null;
+    if (!isValidPartner) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.CLIENT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS),
