@@ -125,5 +125,8 @@ public interface PaymentSessionValidateService {
 
   void updateStatus(PaymentSession paymentSession);
 
+  // Will be override in bank payment module
+  String getMoveOrigin(PaymentSession paymentSession);
+
   public LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm);
 }

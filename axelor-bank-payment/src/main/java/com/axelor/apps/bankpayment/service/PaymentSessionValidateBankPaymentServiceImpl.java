@@ -287,4 +287,12 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     paymentSessionBankOrderService.manageInvoicePayment(
         paymentSession, invoiceTerm, pair.getRight());
   }
+
+  @Override
+  public String getMoveOrigin(PaymentSession paymentSession) {
+    if (paymentSession.getBankOrder() != null) {
+      return paymentSession.getBankOrder().getBankOrderSeq();
+    }
+    return super.getMoveOrigin(paymentSession);
+  }
 }
