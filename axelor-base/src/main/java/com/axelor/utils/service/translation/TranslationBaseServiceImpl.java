@@ -90,7 +90,7 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
     try {
       requestLanguage = requestLanguage.replace("-", "_");
       Localization localization = localizationService.getLocalization(requestLanguage);
-      languageCheckerService.checkLanguage(localization);
+      languageCheckerService.checkLanguage(localization, requestLanguage);
       language = localization.getLanguage();
       localizationTranslation = this.getTranslations(localization.getCode().replace("_", "-"), key);
     } catch (AxelorException e) {

@@ -18,11 +18,9 @@
  */
 package com.axelor.apps.base.service.language;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.repo.LanguageRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
@@ -41,13 +39,13 @@ public class LanguageCheckerServiceImpl implements LanguageCheckerService {
   }
 
   @Override
-  public void checkLanguage(Localization localization) throws AxelorException {
+  public void checkLanguage(Localization localization, String requestLanguage)
+      throws NotFoundException {
     if (ObjectUtils.isEmpty(localization) || ObjectUtils.isEmpty(localization.getLanguage())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+      throw new NotFoundException(
           String.format(
               I18n.get(BaseExceptionMessage.LOCALIZATION_LANGUAGE_EMPTY),
-              localization != null ? localization.getId() : ""));
+              localization != null ? localization.getId() : requestLanguage));
     }
   }
 }
