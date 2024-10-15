@@ -84,7 +84,7 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
       throws AxelorException {
     List<MetaTranslation> metaTranslationList = new ArrayList<>();
     List<MetaTranslation> localizationTranslation = new ArrayList<>();
-    List<MetaTranslation> countryTranslation;
+    List<MetaTranslation> countryTranslation = new ArrayList<>();
     Language language = null;
 
     try {
@@ -100,7 +100,9 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
       }
       language = lang;
     } finally {
-      countryTranslation = this.getTranslations(language.getCode(), key);
+      if (language != null) {
+        countryTranslation = this.getTranslations(language.getCode(), key);
+      }
     }
 
     metaTranslationList.addAll(localizationTranslation);
