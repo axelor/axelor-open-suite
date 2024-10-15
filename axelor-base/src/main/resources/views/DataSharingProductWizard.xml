@@ -13,7 +13,7 @@
     onSave="action-data-sharing-product-wizard-group-onsave">
     <panel name="mainPanel">
       <field name="dataSharingReferential" form-view="data-sharing-referential-form"
-        grid-view="data-sharing-referential-grid" readonlyIf="id"/>
+        grid-view="data-sharing-referential-grid" readonlyIf="id" canNew="true"/>
       <panel-related name="productCategorySetPanel" field="productCategorySet"
         form-view="product-category-form" grid-view="product-category-grid" canNew="false"
         canEdit="false" colSpan="12"/>
