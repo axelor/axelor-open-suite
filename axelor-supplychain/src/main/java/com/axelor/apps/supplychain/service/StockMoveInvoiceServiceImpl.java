@@ -48,7 +48,7 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
-import com.axelor.apps.supplychain.service.saleorder.SaleOrderMergingServiceSupplyChain;
+import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -156,19 +156,14 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
       SaleOrder saleOrder = saleOrderMergingServiceSupplyChain.getDummyMergedSaleOrder(stockMove);
       invoice = createInvoiceFromSaleOrder(stockMove, saleOrder, qtyToInvoiceMap);
+    } else if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
+      PurchaseOrder purchaseOrder =
+          purchaseOrderMergingSupplychainService.getDummyMergedPurchaseOrder(stockMove);
+      invoice = createInvoiceFromPurchaseOrder(stockMove, purchaseOrder, qtyToInvoiceMap);
     } else {
-      Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
-      if (ObjectUtils.notEmpty(purchaseOrderSet)) {
-        PurchaseOrder purchaseOrder =
-            purchaseOrderMergingSupplychainService.getDummyMergedPurchaseOrder(stockMove);
-        invoice = createInvoiceFromPurchaseOrder(stockMove, purchaseOrder, qtyToInvoiceMap);
-        invoice.setExternalReference(fillExternalReferenceInvoiceFromInStockMove(purchaseOrderSet));
-        invoice.setInternalReference(
-            fillInternalReferenceInvoiceFromInStockMove(stockMove, purchaseOrderSet));
-      } else {
-        invoice = createInvoiceFromOrderlessStockMove(stockMove, qtyToInvoiceMap);
-      }
+      invoice = createInvoiceFromOrderlessStockMove(stockMove, qtyToInvoiceMap);
     }
+
     return invoice;
   }
 
@@ -209,9 +204,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       if (invoice.getInvoiceLineList() == null || invoice.getInvoiceLineList().isEmpty()) {
         return null;
       }
-      invoice.setExternalReference(
-          fillExternalReferenceInvoiceFromOutStockMove(stockMove.getSaleOrderSet()));
-      this.extendInternalReference(stockMove, invoice);
+      Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
+      invoice.setExternalReference(fillExternalReferenceInvoiceFromOutStockMove(saleOrderSet));
+      invoice.setInternalReference(
+          fillInternalReferenceInvoiceFromOutStockMove(stockMove, saleOrderSet));
 
       invoice.setDeliveryAddress(stockMove.getToAddress());
       invoice.setDeliveryAddressStr(stockMove.getToAddressStr());
@@ -304,6 +300,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       if (invoice.getInvoiceLineList() == null || invoice.getInvoiceLineList().isEmpty()) {
         return null;
       }
+      Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
+      invoice.setExternalReference(fillExternalReferenceInvoiceFromInStockMove(purchaseOrderSet));
+      invoice.setInternalReference(
+          fillInternalReferenceInvoiceFromInStockMove(stockMove, purchaseOrderSet));
+
       invoice.setAddressStr(
           Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
 

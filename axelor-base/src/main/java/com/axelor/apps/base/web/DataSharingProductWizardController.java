@@ -20,6 +20,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.DataSharingProductWizard;
 import com.axelor.apps.base.db.DataSharingReferentialLine;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.DataSharingProductWizardService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -43,7 +44,7 @@ public class DataSharingProductWizardController {
           Beans.get(DataSharingProductWizardService.class)
               .generateDataSharingReferentialLines(dataSharingProductWizard);
       if (CollectionUtils.isEmpty(dataSharingReferentialLineList)) {
-        return;
+        response.setError(I18n.get(BaseExceptionMessage.DATA_SHARING_MISSING_ELEMENTS));
       }
       ActionViewBuilder actionViewBuilder =
           ActionView.define(I18n.get("Data sharing referential lines"))

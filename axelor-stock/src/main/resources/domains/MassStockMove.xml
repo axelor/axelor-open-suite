@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -19,7 +19,7 @@
       ref="com.axelor.apps.stock.db.StockLocation" title="Common source location"/>
     <many-to-one name="commonToStockLocation"
       ref="com.axelor.apps.stock.db.StockLocation" title="Common destination location"/>
-    <one-to-many name="productToMoveList"
+    <one-to-many name="massStockMoveNeedList"
       ref="com.axelor.apps.stock.db.MassStockMoveNeed" title="Products to move"
       mappedBy="massStockMove"/>
     <integer name="statusSelect" selection="stock.mass.stock.move.status.select"

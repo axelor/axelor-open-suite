@@ -1,0 +1,2 @@
+title: "Invoice: fixed rounding issue on taxes on ventilated move accounting."
+module: axelor-account

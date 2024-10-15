@@ -5,6 +5,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
+import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -86,13 +87,6 @@ public class SaleOrderLineOnChangeServiceImpl implements SaleOrderLineOnChangeSe
       saleOrderLine.setProductName(I18n.get(ITranslation.SALE_ORDER_LINE_END_OF_PACK));
       saleOrderLineMap.put("productName", saleOrderLine.getProductName());
     }
-    return saleOrderLineMap;
-  }
-
-  @Override
-  public Map<String, Object> productOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
-    Map<String, Object> saleOrderLineMap = new HashMap<>();
     return saleOrderLineMap;
   }
 

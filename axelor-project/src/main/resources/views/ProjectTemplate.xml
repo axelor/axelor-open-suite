@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="project-template-grid" model="com.axelor.apps.project.db.ProjectTemplate"
     title="Project template">
@@ -67,8 +67,7 @@
         <field name="taskStatusManagementSelect" widget="RadioSelect" colSpan="12"
           onChange="action-project-template-record-manage-task-status-set"/>
         <field name="projectTaskStatusSet" widget="TagSelect" colSpan="12"
-          showIf="taskStatusManagementSelect == 2 || taskStatusManagementSelect == 3"
-          requiredIf="taskStatusManagementSelect == 2" readonlyIf="taskStatusManagementSelect == 3"
+          showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2"
           canEdit="false"/>
         <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect" canEdit="false"
           requiredIf="taskStatusManagementSelect == 4"/>
@@ -120,7 +119,7 @@
     model="com.axelor.apps.project.db.ProjectTemplate">
     <field name="projectTaskStatusSet"
       expr="eval: __config__.app.getApp('project')?.getDefaultTaskStatusSet()"
-      if="taskStatusManagementSelect == 2 || taskStatusManagementSelect == 3"/>
+      if="taskStatusManagementSelect == 2"/>
     <field name="projectTaskStatusSet" expr="eval: null"
       if="taskStatusManagementSelect == 1 || taskStatusManagementSelect == 4"/>
   </action-record>

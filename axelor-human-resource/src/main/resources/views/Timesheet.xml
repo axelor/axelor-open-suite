@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
     canNew="false" groupBy="employee" orderBy="employee,-fromDate">
@@ -336,6 +336,7 @@
     <action name="action-timesheet-attrs-title-project"/>
     <action name="action-timesheet-attrs-from-date-on-new"/>
     <action name="action-timesheet-attrs-panels"/>
+    <action name="action-validate-check-user-employee"/>
   </action-group>
 
   <action-group name="action-timesheet-group-to-date-onchange">

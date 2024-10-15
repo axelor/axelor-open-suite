@@ -41,7 +41,7 @@ import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
-import com.axelor.apps.supplychain.service.saleorder.SaleOrderMergingServiceSupplyChain;
+import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

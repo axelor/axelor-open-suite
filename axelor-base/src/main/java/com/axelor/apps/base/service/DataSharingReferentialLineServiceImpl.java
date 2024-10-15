@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.DataSharingProductWizard;
 import com.axelor.apps.base.db.DataSharingReferential;
 import com.axelor.apps.base.db.DataSharingReferentialLine;
 import com.axelor.apps.base.db.repo.DataSharingReferentialLineRepository;
@@ -45,16 +46,28 @@ public class DataSharingReferentialLineServiceImpl implements DataSharingReferen
   }
 
   @Override
-  public Query<? extends Model> getQuery(Class<? extends Model> modelClass) {
-    List<DataSharingReferentialLine> dataSharingReferentialLineList =
-        getDataSharingReferentialLineList(modelClass);
+  public <T extends Model> Query<T> getQuery(
+      DataSharingReferential dataSharingReferential, Class<T> modelClass) {
+    return this.getQuery(dataSharingReferential.getDataSharingReferentialLineList(), modelClass);
+  }
+
+  @Override
+  public <T extends Model> Query<T> getQuery(Class<T> modelClass) {
+    return this.getQuery(this.getDataSharingReferentialLineList(modelClass), modelClass);
+  }
+
+  protected <T extends Model> Query<T> getQuery(
+      List<DataSharingReferentialLine> dataSharingReferentialLineList, Class<T> modelClass) {
     if (CollectionUtils.isEmpty(dataSharingReferentialLineList)) {
       return null;
     }
+
     List<String> conditionList = getConditionList(dataSharingReferentialLineList);
+
     if (CollectionUtils.isEmpty(conditionList)) {
       return null;
     }
+
     String condition = String.join(" OR ", conditionList);
     return JPA.all(modelClass).filter(condition);
   }
@@ -96,5 +109,20 @@ public class DataSharingReferentialLineServiceImpl implements DataSharingReferen
     dataSharingReferentialLine.setWizardMetaModel(metaModelRepository.findByName(wizardModelName));
     dataSharingReferentialLine.setWizardRefId(wizardRefId);
     return dataSharingReferentialLineRepository.save(dataSharingReferentialLine);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void removeDataSharingReferentialLines(DataSharingProductWizard dataSharingProductWizard) {
+    List<DataSharingReferentialLine> dataSharingReferentialLineList =
+        dataSharingReferentialLineRepository
+            .all()
+            .filter("self.wizardRefId = :id")
+            .bind("id", dataSharingProductWizard.getId())
+            .fetch();
+
+    if (!CollectionUtils.isEmpty(dataSharingReferentialLineList)) {
+      dataSharingReferentialLineList.forEach(dataSharingReferentialLineRepository::remove);
+    }
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="sale-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
@@ -28,7 +28,8 @@
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="externalReference"/>
     <field name="creationDate"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
@@ -67,7 +68,8 @@
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="externalReference"/>
     <field name="confirmationDateTime"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
@@ -185,7 +187,7 @@
         domain="self.company = company and self.typeSelect = 1" form-view="stock-location-form"
         grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')"/>
       <field name="$contactPartner" title="Contact partner" type="many-to-one"
-        target="com.axelor.apps.base.db.Partner"
+        target="com.axelor.apps.base.db.Partner" x-image-field="picture"
         domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
         colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
@@ -399,19 +401,19 @@
         <field name="clientPartner" required="true" hideIf="company == null"
           readonlyIf="statusSelect > 1" onChange="action-sale-order-method-client-partner-onchange"
           onSelect="action-sale-order-method-set-client-partner-domain" form-view="partner-form"
-          grid-view="partner-grid" colSpan="3"/>
-        <field name="contactPartner" colSpan="3"
+          grid-view="partner-grid" colSpan="3" x-image-field="picture"/>
+        <field name="contactPartner" colSpan="3" x-image-field="picture"
           onChange="action-record-so-contact-partner-change"
           onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true"
           canEdit="false" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 
-        <field name="invoicedPartner"
+        <field name="invoicedPartner" x-image-field="picture"
           if="__config__.app.getApp('base')?.activatePartnerRelations" required="true"
           hideIf="company == null || clientPartner == null" readonlyIf="statusSelect > 1"
           onChange="action-group-sale-order-supplychain-set-main-invoicing-address"
           onSelect="action-sale-order-supplychain-method-set-invoiced-partner-domain"
           form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
-        <field name="deliveredPartner"
+        <field name="deliveredPartner" x-image-field="picture"
           if="__config__.app.getApp('base')?.activatePartnerRelations" requiredIf="true"
           hideIf="company == null || clientPartner == null" readonlyIf="statusSelect > 1"
           onChange="action-group-sale-order-supplychain-set-delivery-address"
@@ -446,7 +448,7 @@
             hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true"
             canEdit="false" onChange="action-sale-order-method-address-str"
             onSelect="action-sale-order-attrs-domain-main-invoicing-address"
-            form-view="address-partner-address-form" grid-view="address-grid"/>
+            form-view="address-form" grid-view="address-grid"/>
           <field name="mainInvoicingAddressStr"
             readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
             <viewer><![CDATA[<>{mainInvoicingAddressStr}</>]]></viewer>
@@ -457,8 +459,8 @@
             hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true"
             canEdit="false"
             onChange="action-sale-order-method-address-str,action-sale-order-attrs-set-is-ispm-required"
-            onSelect="action-sale-order-attrs-domain-delivery-address"
-            form-view="address-partner-address-form" grid-view="address-grid"/>
+            onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-form"
+            grid-view="address-grid"/>
           <field name="deliveryAddressStr"
             readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
             <viewer><![CDATA[<>{deliveryAddressStr}</>]]></viewer>
@@ -483,17 +485,29 @@
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canMove="true"
-          if="!__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
 
-        <panel-related name="saleOrderLineTreePanel" colSpan="12"
+        <panel-related name="saleOrderLineEditableTreePanel" colSpan="12"
           title="Details Lines (Tree)" field="saleOrderLineList" orderBy="sequence" canMove="true"
           form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
           widget="tree-grid" x-tree-field="subSaleOrderLineList"
           x-tree-field-title="Add a new sale order line"
+          onNew="action-sale-order-line-method-onnew-editable"
           onChange="action-sale-order-method-on-line-change"
-          if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
           editable="true">
         </panel-related>
+
+        <field name="saleOrderLineList" readonlyIf="clientPartner == null" colSpan="12"
+          height="30" widget="MasterDetail" form-view="sale-order-line-form"
+          tree-view="sale-order-line-tree" grid-view="sale-order-line-grid"
+          summary-view="sale-order-master-details-form" field="saleOrderLineList"
+          target="com.axelor.apps.sale.db.SaleOrderLine"
+          canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          title="Details Lines" orderBy="sequence"
+          onChange="action-sale-order-method-on-line-change" canMove="true"
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_TREE_LINE"/>
 
         <panel-related name="editableDetailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == null || statusSelect != 1" colSpan="12" height="30"
@@ -503,7 +517,8 @@
           onNew="action-sale-order-line-method-onnew-editable"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          canMove="true" if="__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
+          canMove="true"
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_EDITABLE"/>
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
@@ -534,10 +549,10 @@
           onChange="action-sale-order-record-freight-carrier"
           domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form"
           grid-view="freight-carrier-mode-grid"/>
-        <field name="carrierPartner" canEdit="false"
+        <field name="carrierPartner" canEdit="false" x-image-field="picture"
           domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
           form-view="partner-form" grid-view="partner-grid"/>
-        <field name="forwarderPartner" canEdit="false"
+        <field name="forwarderPartner" canEdit="false" x-image-field="picture"
           domain="self.isContact = FALSE AND (self.isCarrier = TRUE OR self.isSupplier = TRUE) AND :company MEMBER OF self.companySet"
           form-view="partner-form" grid-view="partner-grid"/>
         <field name="incoterm" canEdit="false" form-view="incoterm-form"
@@ -950,14 +965,14 @@
             hideIf="$readonly() || statusSelect &gt; 1"
             onChange="action-sale-order-method-address-str"
             onSelect="action-sale-order-attrs-domain-main-invoicing-address"
-            form-view="address-partner-address-form" grid-view="address-grid"/>
+            form-view="address-form" grid-view="address-grid"/>
         </panel>
         <panel name="deliveryAddressPanel" stacked="true">
           <field name="deliveryAddress" canNew="true"
             hideIf="$readonly() || statusSelect &gt; 1"
             onChange="action-sale-order-method-address-str"
-            onSelect="action-sale-order-attrs-domain-delivery-address"
-            form-view="address-partner-address-form" grid-view="address-grid"/>
+            onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-form"
+            grid-view="address-grid"/>
         </panel>
         <field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
           <viewer>
@@ -1064,7 +1079,8 @@
     <field name="saleOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="externalReference"/>
     <field name="creationDate"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
@@ -1095,27 +1111,28 @@
     <panel-tabs readonly="true" name="mainPanelTab">
       <panel name="customerInformationPanel" title="Customer information" showTitle="false">
         <field name="clientPartner" required="true" form-view="partner-form"
-          grid-view="partner-grid" canView="false" domain=":company member of self.companySet"/>
+          x-image-field="picture" grid-view="partner-grid" canView="false"
+          domain=":company member of self.companySet"/>
         <panel stacked="true" name="mainInvoicingAddressPanel">
           <field name="mainInvoicingAddress" canNew="true"
             hideIf="$readonly() || statusSelect &gt; 1"
             onChange="action-sale-order-method-address-str"
             onSelect="action-sale-order-attrs-domain-main-invoicing-address"
-            form-view="address-partner-address-form" grid-view="address-grid"/>
+            form-view="address-form" grid-view="address-grid"/>
           <field name="mainInvoicingAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
             <viewer><![CDATA[<>{mainInvoicingAddressStr}</>]]></viewer>
           </field>
         </panel>
 
-        <field name="contactPartner"
+        <field name="contactPartner" x-image-field="picture"
           domain="self.isContact = true AND :company member of self.companySet"
           form-view="partner-contact-form" grid-view="partner-contact-grid" canView="false"/>
         <panel stacked="true" name="deliveryAddressPanel">
           <field name="deliveryAddress" canNew="true"
             hideIf="$readonly() || statusSelect &gt; 1"
             onChange="action-sale-order-method-address-str"
-            onSelect="action-sale-order-attrs-domain-delivery-address"
-            form-view="address-partner-address-form" grid-view="address-grid"/>
+            onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-form"
+            grid-view="address-grid"/>
           <field name="deliveryAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
             <viewer><![CDATA[<>{deliveryAddressStr}</>]]></viewer>
           </field>
@@ -2200,7 +2217,7 @@
 
   <action-attrs name="action-sale-order-attrs-editable-display-discount-amount">
     <attribute for="saleOrderLineList.discountTypeSelect" name="hidden"
-      expr="eval: !(__config__.app.getApp('sale')?.getIsEditableGridEnabled() &amp;&amp; __config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid())"/>
+      expr="eval: !(__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_EDITABLE &amp;&amp; __config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid())"/>
     <attribute for="saleOrderLineList.discountAmount" name="hidden"
       expr="eval: !__config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid()"/>
   </action-attrs>

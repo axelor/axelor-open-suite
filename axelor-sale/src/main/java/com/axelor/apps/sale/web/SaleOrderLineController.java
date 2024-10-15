@@ -34,16 +34,16 @@ import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDomainService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDummyService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineInitValueService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineMultipleQtyService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineViewService;
+import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValueService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDomainService;
+import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDummyService;
+import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -135,15 +135,11 @@ public class SaleOrderLineController {
 
       try {
         Map<String, Object> saleOrderLineMap =
-            saleOrderLineProductService.computeProductInformation(saleOrderLine, saleOrder);
-        saleOrderLineMap.putAll(
-            Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, saleOrderLine));
+            Beans.get(SaleOrderLineOnProductChangeService.class)
+                .computeLineFromProduct(saleOrder, saleOrderLine);
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineDummyService.class)
                 .getOnProductChangeDummies(saleOrderLine, saleOrder));
-        saleOrderLineMap.putAll(
-            Beans.get(SaleOrderLineOnChangeService.class)
-                .productOnChange(saleOrderLine, saleOrder));
         response.setAttrs(
             Beans.get(SaleOrderLineViewService.class)
                 .getProductOnChangeAttrs(saleOrderLine, saleOrder));
@@ -230,12 +226,17 @@ public class SaleOrderLineController {
     try {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      var isSubLine =
+          Optional.ofNullable(request.getContext())
+              .map(Context::getParent)
+              .map(parentContext -> parentContext.getContextClass().equals(SaleOrderLine.class))
+              .orElse(false);
       SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
       response.setAttr(
           "product",
           "domain",
           Beans.get(SaleOrderLineDomainService.class)
-              .computeProductDomain(saleOrderLine, saleOrder));
+              .computeProductDomain(saleOrderLine, saleOrder, isSubLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

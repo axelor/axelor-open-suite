@@ -21,6 +21,7 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskCategoryRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -51,7 +52,6 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   public Map<String, Object> getData(Project project) {
     Map<String, Object> dataMap = new HashMap<>();
     dataMap.put("$projectId", project.getId());
-    dataMap.put("$name", project.getFullName());
 
     if (StringUtils.notEmpty(project.getDescription())) {
       dataMap.put("$description", Jsoup.parse(project.getDescription()).text());
@@ -97,7 +97,14 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
       ProjectTaskCategory category = entry.getKey();
       int totalCount = projectTaskList.size();
       long closedCount =
-          projectTaskList.stream().filter(task -> task.getStatus().getIsCompleted()).count();
+          projectTaskList.stream()
+              .filter(
+                  task ->
+                      Optional.ofNullable(task)
+                          .map(ProjectTask::getStatus)
+                          .map(TaskStatus::getIsCompleted)
+                          .orElse(false))
+              .count();
 
       categoryMap.put(
           "categoryId", Optional.ofNullable(category).map(ProjectTaskCategory::getId).orElse(0L));
@@ -132,12 +139,13 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   }
 
   protected List<Project> getSubprojects(Project project) {
-    Set<Long> contextProjectIds = projectToolService.getRelatedProjectIds(project);
-    contextProjectIds.remove(project.getId());
-    if (contextProjectIds.isEmpty()) {
+    Set<Long> projectIdsSet = new HashSet<>();
+    projectToolService.getChildProjectIds(projectIdsSet, project);
+    projectIdsSet.remove(project.getId());
+    if (projectIdsSet.isEmpty()) {
       return new ArrayList<>();
     }
-    return projectRepo.all().filter("self.id IN ?1", contextProjectIds).fetch();
+    return projectRepo.all().filter("self.id IN ?1", projectIdsSet).fetch();
   }
 
   protected Comparator<ProjectTask> getTaskComparator() {

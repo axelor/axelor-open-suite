@@ -19,7 +19,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.db.mapper.Mapper;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductService {
 
@@ -240,9 +241,11 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     saleOrderLineMap.put("companyExTaxTotal", null);
     saleOrderLineMap.put("description", null);
     saleOrderLineMap.put("typeSelect", SaleOrderLineRepository.TYPE_NORMAL);
-    line.clearSelectedComplementaryProductList();
-    saleOrderLineMap.put(
-        "selectedComplementaryProductList", line.getSelectedComplementaryProductList());
+    if (CollectionUtils.isNotEmpty(line.getSelectedComplementaryProductList())) {
+      line.clearSelectedComplementaryProductList();
+      saleOrderLineMap.put(
+          "selectedComplementaryProductList", line.getSelectedComplementaryProductList());
+    }
     saleOrderLineMap.put("taxLineSet", Sets.newHashSet());
     saleOrderLineMap.put("taxEquiv", null);
 

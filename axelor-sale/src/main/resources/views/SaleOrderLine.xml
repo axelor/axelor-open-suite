@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="sale-order-line-grid" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
@@ -11,7 +11,8 @@
     <hilite color="success" if="deliveryState == 3"/>
     <field name="$hasWarning" hidden="true"/>
     <button name="treeIconButton" showIf="hasTree" onClick="refresh" readonlyIf="true"
-      icon="list-ul" if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
+      icon="list-ul"
+      if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
       icon="fa-exclamation-triangle"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
@@ -68,7 +69,7 @@
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
       readonlyIf="!product || typeSelect != 0"/>
     <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"/>
-    <field name="product" canEdit="false"
+    <field name="product" canEdit="false" x-image-field="picture"
       onChange="action-sale-order-line-method-get-product-information"
       onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
       grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
@@ -81,7 +82,7 @@
     <field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange"
       validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
     <field name="price" colSpan="3"
-      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable"
+      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable || subSaleOrderLineList.length &gt; 0"
       onChange="action-sale-order-line-method-onchange-price" hidden="true"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -241,11 +242,11 @@
             </field>
 
           </panel>
-          <field name="product" canEdit="false"
+          <field name="product" canEdit="false" x-image-field="picture"
             onChange="action-sale-order-line-method-get-product-information"
             onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
             grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
-          <field name="product" canEdit="false"
+          <field name="product" canEdit="false" x-image-field="picture"
             onChange="action-sale-order-line-method-get-product-information"
             onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
             grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
@@ -265,7 +266,7 @@
             onChange="action-sale-order-line-method-unit-onchange" requiredIf="typeSelect == 0"
             canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
           <field name="price" colSpan="3"
-            readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
+            readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable || subSaleOrderLineList.length &gt; 0"
             onChange="action-sale-order-line-method-onchange-price" hidden="true"/>
           <field name="inTaxPrice" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
@@ -461,7 +462,7 @@
       </panel>
     </panel>
     <panel name="product2Panel" hideIf="typeSelect == 1">
-      <field name="product" canEdit="false"
+      <field name="product" canEdit="false" x-image-field="picture"
         onChange="action-sale-order-line-method-get-product-information"
         onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
         grid-view="product-grid"/>

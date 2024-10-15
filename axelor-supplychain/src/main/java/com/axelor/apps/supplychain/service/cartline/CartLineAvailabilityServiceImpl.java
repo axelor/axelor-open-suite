@@ -18,12 +18,13 @@
  */
 package com.axelor.apps.supplychain.service.cartline;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.stock.service.StockLocationLineFetchService;
+import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -36,18 +37,18 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class CartLineAvailabilityServiceImpl implements CartLineAvailabilityService {
 
-  protected StockLocationLineFetchService stockLocationLineFetchService;
+  protected ProductStockLocationService productStockLocationService;
   protected AppBaseService appBaseService;
 
   @Inject
   public CartLineAvailabilityServiceImpl(
-      StockLocationLineFetchService stockLocationLineFetchService, AppBaseService appBaseService) {
-    this.stockLocationLineFetchService = stockLocationLineFetchService;
+      ProductStockLocationService productStockLocationService, AppBaseService appBaseService) {
+    this.productStockLocationService = productStockLocationService;
     this.appBaseService = appBaseService;
   }
 
   @Override
-  public void setAvailableStatus(Cart cart) {
+  public void setAvailableStatus(Cart cart) throws AxelorException {
     List<CartLine> cartLineList = cart.getCartLineList();
     if (CollectionUtils.isEmpty(cartLineList)) {
       return;
@@ -58,26 +59,34 @@ public class CartLineAvailabilityServiceImpl implements CartLineAvailabilityServ
   }
 
   @Override
-  public Map<String, Object> setAvailableStatus(Cart cart, CartLine cartLine) {
-    Product product = cartLine.getProduct();
-    if (product != null && product.getIsModel() && cartLine.getVariantProduct() != null) {
-      product = cartLine.getVariantProduct();
-    }
-    BigDecimal availableQty =
-        stockLocationLineFetchService.getAvailableQty(cart.getStockLocation(), product);
-    BigDecimal qty = cartLine.getQty();
+  public Map<String, Object> setAvailableStatus(Cart cart, CartLine cartLine)
+      throws AxelorException {
+    Product product =
+        cartLine.getVariantProduct() != null ? cartLine.getVariantProduct() : cartLine.getProduct();
+    String availableStatus = null;
+    int availableStatusSelect = 0;
 
-    if (availableQty.compareTo(qty) >= 0) {
-      cartLine.setAvailableStatus(I18n.get("Available"));
-      cartLine.setAvailableStatusSelect(SaleOrderLineRepository.STATUS_AVAILABLE);
-    } else {
-      BigDecimal missingQty =
-          availableQty
-              .subtract(qty)
-              .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
-      cartLine.setAvailableStatus(I18n.get("Missing") + " (" + missingQty + ")");
-      cartLine.setAvailableStatusSelect(SaleOrderLineRepository.STATUS_MISSING);
+    if (product != null && product.getStockManaged()) {
+      BigDecimal availableQty =
+          productStockLocationService.getAvailableQty(
+              product, cart.getCompany(), cart.getStockLocation());
+      BigDecimal qty = cartLine.getQty();
+
+      if (availableQty.compareTo(qty) >= 0) {
+        availableStatus = I18n.get("Available");
+        availableStatusSelect = SaleOrderLineRepository.STATUS_AVAILABLE;
+      } else {
+        BigDecimal missingQty =
+            availableQty
+                .subtract(qty)
+                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
+        availableStatus = I18n.get("Missing") + " (" + missingQty + ")";
+        availableStatusSelect = SaleOrderLineRepository.STATUS_MISSING;
+      }
     }
+    cartLine.setAvailableStatus(availableStatus);
+    cartLine.setAvailableStatusSelect(availableStatusSelect);
+
     Map<String, Object> cartLineMap = new HashMap<>();
     cartLineMap.put("availableStatus", cartLine.getAvailableStatus());
     cartLineMap.put("availableStatusSelect", cartLine.getAvailableStatusSelect());
@@ -85,7 +94,8 @@ public class CartLineAvailabilityServiceImpl implements CartLineAvailabilityServ
   }
 
   @Override
-  public List<CartLine> getAvailableCartLineList(Cart cart, List<CartLine> cartLineList) {
+  public List<CartLine> getAvailableCartLineList(Cart cart, List<CartLine> cartLineList)
+      throws AxelorException {
     List<CartLine> availableCartLineList = new ArrayList<>();
     for (CartLine cartLine : cartLineList) {
       Product product = cartLine.getProduct();
@@ -93,7 +103,8 @@ public class CartLineAvailabilityServiceImpl implements CartLineAvailabilityServ
         product = cartLine.getVariantProduct();
       }
       BigDecimal availableQty =
-          stockLocationLineFetchService.getAvailableQty(cart.getStockLocation(), product);
+          productStockLocationService.getAvailableQty(
+              product, cart.getCompany(), cart.getStockLocation());
       if (availableQty.compareTo(cartLine.getQty()) >= 0) {
         availableCartLineList.add(cartLine);
       }

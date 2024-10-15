@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ProjectTaskCategoryServiceImpl implements ProjectTaskCategoryService {
@@ -61,7 +62,12 @@ public class ProjectTaskCategoryServiceImpl implements ProjectTaskCategoryServic
     BigDecimal oldValue = BigDecimal.ZERO;
     for (TaskStatusProgressByCategory taskStatusProgressByCategory :
         projectTaskCategory.getTaskStatusProgressByCategoryList().stream()
-            .filter(progress -> !progress.getTaskStatus().getIsCompleted())
+            .filter(
+                progress ->
+                    !Optional.ofNullable(progress)
+                        .map(TaskStatusProgressByCategory::getTaskStatus)
+                        .map(TaskStatus::getIsCompleted)
+                        .orElse(true))
             .sorted(Comparator.comparing(progress -> progress.getTaskStatus().getSequence()))
             .collect(Collectors.toList())) {
       if (taskStatusProgressByCategory.getProgress().compareTo(oldValue) < 0) {

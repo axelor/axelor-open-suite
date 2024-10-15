@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid id="supplychain-cart-grid" name="cart-grid" title="Carts"
     model="com.axelor.apps.sale.db.Cart" extension="true">
@@ -17,8 +17,9 @@
     <extend target="//field[@name='partner']">
       <insert position="after">
         <field name="stockLocation" form-view="stock-location-form"
-          grid-view="stock-location-grid" domain="self.company = :company" readonlyIf="!company"
-          onChange="action-cart-method-set-available-status"/>
+          grid-view="stock-location-grid"
+          domain="self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true"
+          readonlyIf="!company" onChange="action-cart-method-set-available-status"/>
       </insert>
     </extend>
   </form>

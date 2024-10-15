@@ -37,7 +37,6 @@ import com.axelor.apps.businessproduction.service.ProductionOrderSaleOrderServic
 import com.axelor.apps.businessproduction.service.ProductionOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderWizardServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderLineBusinessProductionServiceImpl;
-import com.axelor.apps.businessproduction.service.SaleOrderWorkflowServiceBusinessProductionImpl;
 import com.axelor.apps.businessproduction.service.TimesheetBusinessProductionWorkflowServiceImpl;
 import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductionService;
 import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductionServiceImpl;
@@ -46,6 +45,7 @@ import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessSer
 import com.axelor.apps.businessproduction.service.TimesheetLineRemoveBusinessProductionServiceImpl;
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessService;
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessServiceImpl;
+import com.axelor.apps.businessproduction.service.saleorder.status.SaleOrderWorkflowServiceBusinessProductionImpl;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateServiceImpl;

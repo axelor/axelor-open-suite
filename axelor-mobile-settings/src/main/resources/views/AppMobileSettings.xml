@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="app-mobile-settings-config-form" title="App mobile"
     model="com.axelor.studio.db.AppMobileSettings" width="large"
@@ -150,6 +150,12 @@
           colSpan="4"/>
         <field name="isGenericProductShown" widget="boolean-switch" colSpan="4"/>
         <field name="isConfiguratorProductShown" widget="boolean-switch" colSpan="4"/>
+      </panel>
+      <panel name="projectConfigPanel" title="Project" itemSpan="12"
+        showIf="isProjectAppEnabled">
+        <field name="reportingTypesToDisplaySelect" widget="SingleSelect" placeholder="All"
+          colSpan="6"/>
+        <field name="isTimesheetProjectInvoicingEnabled" widget="boolean-switch" colSpan="6"/>
       </panel>
     </panel-tabs>
 

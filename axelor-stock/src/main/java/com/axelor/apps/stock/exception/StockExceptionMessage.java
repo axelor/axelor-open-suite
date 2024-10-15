@@ -340,4 +340,13 @@ public final class StockExceptionMessage {
 
   public static final String MASS_STOCK_MOVE_NO_SEQUENCE = /*$$(*/
       "There's no configured sequence for mass stock move for the company %s" /*)*/;
+
+  public static final String LOCATIONS_ARE_EMPTY = /*$$(*/
+      "Source and destination locations are empty" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_COULD_NOT_CREATE_PICKED_PRODUCT_FROM_NEED = /*$$(*/
+      "Impossible to create a picked product for product %s, no stock found for company %s" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_NO_FROM_STOCK_LOCATION_SELECTED = /*$$(*/
+      "No stock location has been selected." /*)*/;
 }

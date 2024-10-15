@@ -126,9 +126,9 @@ public class InvoiceLineController {
     }
 
     try {
-      Beans.get(InvoiceLineService.class).compute(invoice, invoiceLine);
-
-      response.setValues(invoiceLine);
+      Map<String, Object> invoiceLineMap =
+          Beans.get(InvoiceLineService.class).compute(invoice, invoiceLine);
+      response.setValues(invoiceLineMap);
       response.setAttr(
           "priceDiscounted",
           "hidden",

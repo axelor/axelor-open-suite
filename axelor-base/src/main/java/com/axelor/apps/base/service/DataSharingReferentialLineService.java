@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.DataSharingProductWizard;
 import com.axelor.apps.base.db.DataSharingReferential;
 import com.axelor.apps.base.db.DataSharingReferentialLine;
 import com.axelor.db.Model;
@@ -25,7 +26,10 @@ import com.axelor.db.Query;
 
 public interface DataSharingReferentialLineService {
 
-  Query<? extends Model> getQuery(Class<? extends Model> modelClass);
+  <T extends Model> Query<T> getQuery(
+      DataSharingReferential dataSharingReferential, Class<T> modelClass);
+
+  <T extends Model> Query<T> getQuery(Class<T> modelClass);
 
   DataSharingReferentialLine createDataSharingReferentialLine(
       DataSharingReferential dataSharingReferential,
@@ -33,4 +37,6 @@ public interface DataSharingReferentialLineService {
       String condition,
       String wizardModelName,
       Long wizardRefId);
+
+  void removeDataSharingReferentialLines(DataSharingProductWizard dataSharingProductWizard);
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -341,7 +341,7 @@
             onChange="action-record-base-partner-set-business-card"/>
           <field name="functionBusinessCard"/>
         </panel>
-        <field name="partnerTagSet" widget="TagSelect" x-color-field="colorSelect"
+        <field name="tagSet" widget="TagSelect" x-color-field="colorSelect"
           grid-view="tag-simplified-grid" form-view="tag-form"
           onSelect="action-partner-attrs-set-partner-tag-domain"/>
       </panel>
@@ -549,8 +549,9 @@
           if-module="axelor-purchase"
           if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
         <field name="supplierQualityRating" hidden="true"/>
-        <field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false"
-          colSpan="3" onChange="action-record-set-supplier-quality-rating"/>
+        <field name="supplierQualityRatingSelect" widget="Rating"
+          x-rating-color="black,black,black,black,black" colSpan="3"
+          onChange="action-record-set-supplier-quality-rating"/>
         <field name="supplierArrivalProductQty" colSpan="3"/>
         <spacer name="supplierSpacer"/>
         <field name="partnerProductQualityRatingList" colSpan="12"
@@ -1743,7 +1744,7 @@
   </action-attrs>
 
   <action-attrs name="action-partner-attrs-set-partner-tag-domain">
-    <attribute name="domain" for="partnerTagSet"
+    <attribute name="domain" for="tagSet"
       expr="eval: &quot; ${__repo__(MetaModel).findByName('Partner')?.id} member of self.concernedModelSet AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
   </action-attrs>
 

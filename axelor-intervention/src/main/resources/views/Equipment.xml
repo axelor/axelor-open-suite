@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid model="com.axelor.apps.intervention.db.Equipment" title="Equipments"
     name="equipment-grid">
@@ -154,7 +154,7 @@
       <field name="scheduleOfOperation" hidden="true" showIf="typeSelect != 'place'"/>
       <field name="specificAccessSchedule" hidden="true" showIf="typeSelect != 'place'"/>
       <field name="contract" form-view="contract-form" hidden="true" canNew="false"
-        domain="self.partner = :partner AND self.currentContractVersion.statusSelect = 3"
+        domain="self.partner = :partner AND self.currentContractVersion.statusSelect = 3  AND self.contractTypeSelect = 1"
         showIf="typeSelect != 'place'"/>
       <field name="comments" colSpan="12"/>
     </panel>

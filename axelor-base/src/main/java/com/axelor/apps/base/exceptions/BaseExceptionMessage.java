@@ -664,5 +664,20 @@ public final class BaseExceptionMessage {
       "This product comes in multiple quantities, so please specify a quantity that is a multiple of at least one from the list %s." /*)*/;
 
   public static final String QUANTITY_NOT_MULTIPLE = /*$$(*/
-      "This product comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
+      "The product %s comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
+
+  public static final String NO_DEFAULT_ADDRESS_TEMPLATE = /*$$(*/
+      "Please fill the default address template." /*)*/;
+
+  public static final String NO_COUNTRY_FOUND = /*$$(*/ "No country found for: %s." /*)*/;
+  public static final String CITY_AND_ZIP_BOTH_EMPTY = /*$$(*/
+      "The city and postcode cannot be empty at the same time." /*)*/;
+  public static final String NO_CITY_FOUND = /*$$(*/ "No city found" /*)*/;
+  public static final String NO_ZIP_FOUND = /*$$(*/
+      "No zip found in request body or in the found city" /*)*/;
+  public static final String NO_ADDRESS_FOUND_WITH_INFO = /*$$(*/
+      "No address found with this country, zip and street name. City name is required to create a new city." /*)*/;
+
+  public static final String DATA_SHARING_MISSING_ELEMENTS = /*$$(*/
+      "Please fill in or modify some elements to be able to register" /*)*/;
 }

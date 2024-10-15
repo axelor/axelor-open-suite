@@ -6,6 +6,9 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import java.util.Map;
 
 public interface SaleOrderLineProductProductionService {
+  Map<String, Object> computeProductInformationProduction(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
+
   Map<String, Object> setBillOfMaterial(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 }

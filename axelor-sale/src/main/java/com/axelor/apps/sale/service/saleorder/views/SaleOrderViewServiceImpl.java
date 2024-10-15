@@ -16,6 +16,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppSale;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -171,7 +172,8 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
   protected Map<String, Map<String, Object>> hideDiscount() {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     AppSale appSale = appSaleService.getAppSale();
-    boolean editableGridEnabled = appSale.getIsEditableGridEnabled();
+    boolean editableGridEnabled =
+        appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_EDITABLE;
     boolean discountOnEditableGridEnabled = appSale.getIsDiscountEnabledOnEditableGrid();
 
     attrs.put(

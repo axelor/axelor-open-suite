@@ -14,7 +14,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineViewServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewServiceImpl;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;

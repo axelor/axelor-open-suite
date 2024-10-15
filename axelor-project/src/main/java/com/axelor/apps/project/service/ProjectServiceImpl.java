@@ -53,7 +53,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -304,25 +303,41 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   protected void manageTaskStatus(Project project, ProjectTemplate projectTemplate) {
-    Set<TaskStatus> taskStatusSet =
-        Optional.ofNullable(projectTemplate)
-            .map(ProjectTemplate::getProjectTaskStatusSet)
-            .orElse(null);
     Integer taskStatusManagement =
         Optional.ofNullable(projectTemplate)
             .map(ProjectTemplate::getTaskStatusManagementSelect)
-            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_APP);
+            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT);
+
+    Set<TaskStatus> taskStatusSet = null;
+    if (taskStatusManagement == ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT) {
+      taskStatusSet =
+          Optional.ofNullable(projectTemplate)
+              .map(ProjectTemplate::getProjectTaskStatusSet)
+              .orElse(
+                  Optional.ofNullable(appProjectService.getAppProject())
+                      .map(AppProject::getDefaultTaskStatusSet)
+                      .orElse(null));
+    }
 
     initTaskStatus(project, taskStatusManagement, taskStatusSet);
   }
 
   protected void manageTaskStatus(Project project, Project parentProject) {
-    Set<TaskStatus> taskStatusSet =
-        Optional.ofNullable(parentProject).map(Project::getProjectTaskStatusSet).orElse(null);
     Integer taskStatusManagement =
         Optional.ofNullable(parentProject)
             .map(Project::getTaskStatusManagementSelect)
-            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_APP);
+            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT);
+
+    Set<TaskStatus> taskStatusSet = null;
+    if (taskStatusManagement == ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT) {
+      taskStatusSet =
+          Optional.ofNullable(parentProject)
+              .map(Project::getProjectTaskStatusSet)
+              .orElse(
+                  Optional.ofNullable(appProjectService.getAppProject())
+                      .map(AppProject::getDefaultTaskStatusSet)
+                      .orElse(null));
+    }
 
     initTaskStatus(project, taskStatusManagement, taskStatusSet);
   }
@@ -331,18 +346,8 @@ public class ProjectServiceImpl implements ProjectService {
       Project project, Integer taskStatusManagement, Set<TaskStatus> taskStatusSet) {
     project.setTaskStatusManagementSelect(taskStatusManagement);
 
-    switch (taskStatusManagement) {
-      case ProjectRepository.TASK_STATUS_MANAGEMENT_APP:
-        project.setProjectTaskStatusSet(
-            new HashSet<>(
-                Objects.requireNonNull(
-                    Optional.ofNullable(appProjectService.getAppProject())
-                        .map(AppProject::getDefaultTaskStatusSet)
-                        .orElse(null))));
-        break;
-      case ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT:
-        project.setProjectTaskStatusSet(new HashSet<>(taskStatusSet));
-        break;
+    if (!ObjectUtils.isEmpty(taskStatusSet)) {
+      project.setProjectTaskStatusSet(new HashSet<>(taskStatusSet));
     }
   }
 }

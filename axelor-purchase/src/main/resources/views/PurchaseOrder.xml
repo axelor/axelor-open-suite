@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="purchase-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
@@ -20,7 +20,8 @@
     <field name="purchaseOrderSeq" width="120"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="externalReference"/>
     <field name="orderDate"/>
     <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
@@ -49,7 +50,8 @@
     <field name="purchaseOrderSeq" width="120"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="externalReference"/>
     <field name="orderDate"/>
     <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
@@ -66,7 +68,8 @@
   <grid orderBy="-orderDate,-purchaseOrderSeq" edit-icon="true" name="my-purchase-order-grid"
     title="Supplier RFQs/POs" model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="purchaseOrderSeq" width="120"/>
-    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="externalReference"/>
     <field name="orderDate"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
@@ -106,12 +109,17 @@
         domain="self.company = company and self.typeSelect = 1" form-view="stock-location-form"
         grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')"/>
       <field name="$contactPartner" title="Contact partner" type="many-to-one"
-        target="com.axelor.apps.base.db.Partner"
+        x-image-field="picture" target="com.axelor.apps.base.db.Partner"
         domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
         colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+      <field name="toStockMove" hidden="true" colSpan="6"/>
       <button name="confirmBtn" title="Confirm"
-        onClick="action-purchase-order-method-merge-from-pop-up" colSpan="12" width="200px"/>
+        onClick="action-purchase-order-method-merge-from-pop-up" colSpan="12" width="200px"
+        showIf="!toStockMove"/>
+      <button name="confirmBtn" title="Confirm"
+        onClick="action-supplychain-stock-move-method-generate-invoice-from-pop-up" colSpan="12"
+        width="200px" showIf="toStockMove" if="__config__.app.isApp('supplychain')"/>
     </panel>
   </form>
 
@@ -181,11 +189,11 @@
         <field name="supplierPartner" canEdit="false" hideIf="company == null" colSpan="3"
           onChange="action-group-purchase-order-partner-onchange" readonlyIf="statusSelect >= 3"
           onSelect="action-set-supplier-partner-domain" form-view="partner-form"
-          grid-view="partner-grid"/>
+          grid-view="partner-grid" x-image-field="picture"/>
         <field name="contactPartner" onChange="action-record-po-contact-partner-change"
           onSelect="action-attrs-po-domain-on-contact-partner" domain="self.isContact = true"
           colSpan="3" form-view="partner-contact-form" grid-view="partner-contact-grid"
-          hideIf="company == null"/>
+          hideIf="company == null" x-image-field="picture"/>
         <field name="versionNumber"
           if="__config__.app.getApp('purchase')?.getManagePurchaseOrderVersion()" colSpan="3"/>
         <panel name="inAtiAndIntercoPanel" colSpan="3">

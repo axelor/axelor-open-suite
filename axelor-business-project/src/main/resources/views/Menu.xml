@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <menuitem name="menu-business-project-root" parent="menu-project-root" order="50"
     title="Business projects" icon="fa-tasks" icon-background="#3f6bb9"
@@ -22,7 +22,7 @@
   </action-view>
 
   <menuitem name="business-project-task-all" parent="menu-business-project-root"
-    order="300" title="Tasks" action="business.project.task.all"/>
+    order="300" title="Business project tasks" action="business.project.task.all"/>
 
   <action-view name="business.project.task.all" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask">
@@ -30,7 +30,7 @@
     <view type="grid" name="business-project-task-grid"/>
     <view type="form" name="business-project-task-form"/>
     <view-param name="search-filters" value="project-filters"/>
-    <domain>self.typeSelect = :_typeSelect</domain>
+    <domain>self.typeSelect = :_typeSelect AND self.project.isBusinessProject = true</domain>
     <context name="_typeSelect" expr="eval: __repo__(ProjectTask).TYPE_TASK"/>
   </action-view>
 
@@ -45,7 +45,7 @@
   </action-view>
 
   <menuitem name="business-project-root-invoicing-project" order="400"
-    parent="menu-project-root" title="Invoicing project"
+    parent="menu-business-project-root" title="Invoicing project"
     action="business.project.root.invoicing.project" if="__config__.app.isApp('business-project')"/>
 
   <action-view name="business.project.root.invoicing.project" title="Invoicing project"
