@@ -35,6 +35,7 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.ws.rs.NotFoundException;
 
 public class TranslationBaseServiceImpl implements TranslationBaseService {
 
@@ -93,10 +94,14 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
       languageCheckerService.checkLanguage(localization, requestLanguage);
       language = localization.getLanguage();
       localizationTranslation = this.getTranslations(localization.getCode().replace("_", "-"), key);
-    } catch (AxelorException e) {
+    } catch (NotFoundException | AxelorException e) {
       Language lang = languageRepository.findByCode(requestLanguage);
       if (lang == null) {
-        throw new AxelorException(e, e.getCategory());
+        if (e.getClass().equals(NotFoundException.class)) {
+          throw new NotFoundException(e.getMessage());
+        } else if (e.getClass().equals(AxelorException.class)) {
+          throw new AxelorException(((AxelorException) e).getCategory(), e.getMessage());
+        }
       }
       language = lang;
     } finally {
