@@ -1,0 +1,3 @@
+---
+title: "SaleOrder sequence should not reset to draft sequence while creating new version"
+module: axelor-sale
