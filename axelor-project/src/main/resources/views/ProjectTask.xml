@@ -301,7 +301,7 @@
 
   <form name="incl-checklist-task-panel-form" title="Check list"
     model="com.axelor.apps.project.db.ProjectTask">
-    <panel name="templatePanel" title="Check list">
+    <panel name="templatePanel" title="Check list" colSpan="12" itemSpan="12">
       <field name="$projectCheckListTemplate" title="Check list template" type="Many-to-one"
         target="com.axelor.apps.project.db.ProjectCheckListTemplate"
         domain="self.typeSelect = 'task'"/>
