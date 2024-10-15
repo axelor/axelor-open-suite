@@ -379,7 +379,7 @@
 "Order bloqued message","Message pour les cmdes bloquées",,
 "Order completed","Commande terminée",,
 "Order confirmed","Commande confirmée",,
-"Order creation mode from cart if stock is missing","Mode de création de commande pour les panier si il manque du stock",,
+"Order creation for cart when stock is missing","Création de commande pour le panier en cas de stock manquant",,
 "Original product",,,
 "Original sale order",,,
 "Other information","Autres informations",,
