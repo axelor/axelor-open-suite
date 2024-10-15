@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form id="hr-project-task-form" name="project-task-form" title="Task"
+    model="com.axelor.apps.project.db.ProjectTask" extension="true">
+
+    <extend target="/">
+      <attribute name="onSave"
+        value="action-project-task-method-update-project-planning-time"/>
+    </extend>
+
+  </form>
+
+  <action-method name="action-project-task-method-update-project-planning-time">
+    <call class="com.axelor.apps.hr.web.project.ProjectTaskHRController"
+      method="updateProjectPlanningTime"/>
+  </action-method>
+
+</object-views>
