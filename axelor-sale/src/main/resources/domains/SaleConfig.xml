@@ -33,7 +33,7 @@
     <many-to-one name="saleOrderPrintTemplate" title="Sale order template"
       ref="com.axelor.apps.base.db.PrintingTemplate"/>
     <integer name="cartOrderCreationModeSelect"
-      title="Order creation mode from cart if stock is missing"
+      title="Order creation for cart when stock is missing"
       selection="cart.order.creation.mode.select" default="0"
       help="This configuration blocks the creation of orders, or ignores missing products, if there are products missing from the cart."/>
 
