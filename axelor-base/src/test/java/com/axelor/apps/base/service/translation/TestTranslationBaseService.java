@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.ws.rs.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -116,7 +117,7 @@ public class TestTranslationBaseService {
   @Test
   void testGetLocalizationTranslationsTest() {
     Assertions.assertThrows(
-        AxelorException.class,
+        NotFoundException.class,
         () -> translationBaseService.getLocalizationTranslations("test", ""));
   }
 
@@ -171,7 +172,7 @@ public class TestTranslationBaseService {
   @Test
   void testGetMobileAppLocalizationTranslationsTest() {
     Assertions.assertThrows(
-        AxelorException.class,
+        NotFoundException.class,
         () -> translationBaseService.getLocalizationTranslations("test", "mobile_app_"));
   }
 }
