@@ -32,7 +32,7 @@
 
     </panel>
     <panel name="listDisplayPanel" itemSpan="12" colSpan="12">
-      <help><![CDATA[Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.]]></help>
+      <help><![CDATA[Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.<br>Tree line: Activate multi-level sale order lines. (Older version of the Editable tree display. Will be removed in the next version.)]]></help>
       <field name="listDisplayTypeSelect" colSpan="6"/>
       <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
         showIf="listDisplayTypeSelect == 1" colSpan="6"/>

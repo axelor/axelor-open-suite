@@ -17,15 +17,19 @@
 
   <form title="Mass stock move" name="mass-stock-move-form"
     model="com.axelor.apps.stock.db.MassStockMove" onNew="action-mass-stock-move-method-on-new">
-    <panel name="statusPanel">
-      <field name="statusSelect" widget="NavSelect" required="true" readonly="true"
+    <panel name="identificationPanel" readonlyIf="statusSelect > 1" sidebar="true"
+      canCollapse="true" title="Header">
+      <field name="statusSelect" widget="SwitchSelect" required="true" readonly="true"
         showTitle="false" colSpan="12"/>
-    </panel>
-    <panel name="identificationPanel" readonlyIf="statusSelect > 1">
       <field name="sequence"/>
       <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
       <field name="cartStockLocation"
         domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+    </panel>
+    <panel name="cartContentPanel" sidebar="true" title="Cart contents" canCollapse="true">
+      <panel-dashlet
+        action="action-mass-stock-move-view-show-cart-stock-location-lines" colSpan="12"
+        showTitle="false"/>
     </panel>
     <panel name="productNeedPanel">
       <field name="commonFromStockLocation"
@@ -106,6 +110,18 @@
     <call class="com.axelor.apps.stock.web.MassStockMoveController"
       method="selectPickedProductFromStockLocation"/>
   </action-method>
+
+
+  <action-view name="action-mass-stock-move-view-show-cart-stock-location-lines"
+    title="Cart stock location content" model="com.axelor.apps.stock.db.StockLocationLine">
+    <view type="grid" name="stock-location-line-mass-stock-move-cart-grid"/>
+    <view type="form" name="stock-location-line-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <domain>self.currentQty > 0 and (self.stockLocation = :cartStockLocation OR
+      self.detailsStockLocation = :cartStockLocation)</domain>
+    <context name="cartStockLocation" expr="eval: __this__?.cartStockLocation"/>
+
+  </action-view>
 
 
 </object-views>
