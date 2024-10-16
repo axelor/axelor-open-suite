@@ -19,13 +19,26 @@
 package com.axelor.apps.project.service.sprint;
 
 import com.axelor.apps.project.db.AllocationPeriod;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SprintServiceImpl implements SprintService {
+
+  protected ProjectTaskRepository projectTaskRepo;
+
+  @Inject
+  public SprintServiceImpl(ProjectTaskRepository projectTaskRepo) {
+
+    this.projectTaskRepo = projectTaskRepo;
+  }
 
   @Override
   public LocalDate computeFromDate(Sprint sprint) {
@@ -57,5 +70,17 @@ public class SprintServiceImpl implements SprintService {
         .filter(Objects::nonNull)
         .max(LocalDate::compareTo)
         .orElse(null);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void attachTasksToSprint(Sprint sprint, List<ProjectTask> projectTasks) {
+
+    projectTasks.stream()
+        .forEach(
+            task -> {
+              task.setSprint(sprint);
+              projectTaskRepo.save(task);
+            });
   }
 }
