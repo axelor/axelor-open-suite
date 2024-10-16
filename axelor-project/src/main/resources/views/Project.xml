@@ -115,6 +115,8 @@
         <panel-include view="incl-project-overview-panel-form"/>
       </panel>
 
+      <panel-include view="sprint-project-form"/>
+
       <panel title="Tasks" name="taskPanel">
         <panel-dashlet name="projectTaskDashletPanel" title="Tasks" x-show-bars="true"
           colSpan="12" action="action-project-view-show-project-task" height="200%" canSearch="true"/>
@@ -370,6 +372,35 @@
     </panel>
   </form>
 
+  <form model="com.axelor.apps.project.db.Project" title="Sprint" name="sprint-project-form">
+
+    <panel name="sprintPanel" title="Sprint">
+      <panel-dashlet action="action-project-method-tasks-per-sprint"
+        name="tasksPerSprintPanel" colSpan="12"/>
+      <button onClick="save,action-project-view-attach-tasks-to-sprint"
+        name="attachTasksToSprintBtn" title="Attach tasks to sprint" icon="link"/>
+    </panel>
+
+  </form>
+
+  <form model="com.axelor.utils.db.Wizard" title="Attach tasks to sprint"
+    name="attach-tasks-to-sprint-wizard-form">
+
+    <panel name="mainPanel">
+      <field name="sprint" title="Sprint" type="many-to-one"
+        target="com.axelor.apps.project.db.Sprint" domain="self.project.id = :_projectId"
+        colSpan="6"/>
+      <field name="projectTasks" title="Project tasks" type="many-to-many"
+        target="com.axelor.apps.project.db.ProjectTask" grid-view="project-task-sprint-grid"
+        domain="self.project.id = :_projectId and (self.sprint = null or self.sprint != :sprint)"
+        canNew="false" colSpan="12"/>
+      <button onClick="action-project-method-attach-tasks-to-sprint"
+        name="attachTasksToSprintBtn" title="Attach tasks to sprint"
+        readonlyIf="!sprint || !projectTasks"/>
+    </panel>
+
+  </form>
+
   <kanban columnBy="projectStatus" sequenceBy="orderByState" limit="10" name="project-kanban"
     title="Projects" model="com.axelor.apps.project.db.Project"
     onMove="action-business-project-group-project-status-on-change">
@@ -401,6 +432,24 @@
 	    </>
 		]]>
     </template>
+  </kanban>
+
+  <kanban columnBy="sprint" model="com.axelor.apps.project.db.ProjectTask"
+    sequenceBy="sequence" title="Tasks per sprint" name="project-task-sprint-kanban"
+    draggable="true">
+
+    <field name="name"/>
+    <field name="assignedTo.name"/>
+
+    <template>
+		<![CDATA[
+			<>
+				<strong>{name}</strong><br /><br />
+				<strong>User:</strong> {assignedTo.name}<br />
+			</>
+		]]>
+    </template>
+
   </kanban>
 
   <tree name="project-project-task-tree" title="Tasks">
@@ -681,6 +730,14 @@
       method="generateCheckListFromTemplate"/>
   </action-method>
 
+  <action-method name="action-project-method-tasks-per-sprint">
+    <call class="com.axelor.apps.project.web.ProjectMenuController" method="viewTasksPerSprint"/>
+  </action-method>
+
+  <action-method name="action-project-method-attach-tasks-to-sprint">
+    <call class="com.axelor.apps.project.web.ProjectController" method="attachTasksToSprint"/>
+  </action-method>
+
   <!-- ACTION VIEW -->
 
   <action-view name="action-project-open-popup-select-users" title="Select Users"
@@ -804,6 +861,17 @@
     model="com.axelor.apps.project.db.Project">
     <view type="form" name="incl-planning-panel-form"/>
     <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-project-view-attach-tasks-to-sprint"
+    title="Attach tasks to sprint" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="attach-tasks-to-sprint-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup" value="reload"/>
+    <context name="_projectId" expr="eval: id"/>
   </action-view>
 
   <!-- ACTION VALIDATE -->
