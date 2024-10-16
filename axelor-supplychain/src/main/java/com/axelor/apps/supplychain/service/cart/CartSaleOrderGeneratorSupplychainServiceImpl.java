@@ -86,12 +86,12 @@ public class CartSaleOrderGeneratorSupplychainServiceImpl
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.BLOCK_ORDER_CREATION));
     }
-    SaleOrder saleOrder;
-    if (cartOrderCreationModeSelect == SaleConfigRepository.CREATE_ORDER_WITH_MISSING_PRODUCTS) {
-      saleOrder = super.createSaleOrder(cart, cartLineList);
-    } else {
-      saleOrder = super.createSaleOrder(cart, availableCartLineList);
-    }
+    SaleOrder saleOrder =
+        super.createSaleOrder(
+            cart,
+            cartOrderCreationModeSelect == SaleConfigRepository.CREATE_ORDER_WITH_MISSING_PRODUCTS
+                ? cartLineList
+                : availableCartLineList);
     saleOrder.setStockLocation(cart.getStockLocation());
     return saleOrder;
   }
