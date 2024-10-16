@@ -241,11 +241,13 @@
         <field name="partner" canEdit="false" requiredIf="contact == null"
           readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
           domain="self.isContact = false AND :company member of self.companySet"
-          form-view="partner-form" grid-view="partner-grid"/>
+          form-view="partner-form" grid-view="partner-grid"
+          onChange="action-opportunity-record-set-contact"/>
         <field name="contact" canEdit="false" requiredIf="partner == null"
           readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
-          domain="self.isContact = true AND :company member of self.companySet"
-          form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+          form-view="partner-contact-form" grid-view="partner-contact-grid"
+          onSelect="action-opportunity-attrs-set-contact-domain"
+          onChange="action-opportunity-record-set-partner"/>
       </panel>
       <panel name="postitPanel" title="Memo" canCollapse="true">
         <field name="memo" showTitle="false" colSpan="12"/>
@@ -705,5 +707,26 @@
     <call class="com.axelor.apps.crm.web.OpportunityController"
       method="kanbanOpportunityOnMove"/>
   </action-method>
+
+  <action-attrs name="action-opportunity-attrs-set-contact-domain">
+    <attribute for="contact" if="partner &amp;&amp; !partner?.contactPartnerSet?.empty"
+      name="domain"
+      expr="eval: &quot; self.id IN (${partner?.contactPartnerSet?.collect{it.id}.join(',')}) &quot;"/>
+    <attribute for="contact" if="partner &amp;&amp; partner?.contactPartnerSet?.empty"
+      name="domain" expr="eval: &quot; self.id IN (0) &quot;"/>
+    <attribute for="contact" if="!partner" name="domain"
+      expr="eval: &quot; self.isContact = true AND :company member of self.companySet &quot;"/>
+  </action-attrs>
+
+  <action-record name="action-opportunity-record-set-contact"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="contact"
+      expr="eval: partner?.contactPartnerSet?.size() == 1 ? partner?.contactPartnerSet[0] : null"/>
+  </action-record>
+
+  <action-record name="action-opportunity-record-set-partner"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="partner" expr="eval: contact?.mainPartner" if="!partner"/>
+  </action-record>
 
 </object-views>
