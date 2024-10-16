@@ -14,12 +14,14 @@
 
   <form id="supplychain-cart-form" name="cart-form" title="Cart"
     model="com.axelor.apps.sale.db.Cart" extension="true">
-    <extend target="//field[@name='partner']">
+    <extend target="//field[@name='partner.currency']">
       <insert position="after">
         <field name="stockLocation" form-view="stock-location-form"
           grid-view="stock-location-grid"
           domain="self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true"
           readonlyIf="!company" onChange="action-cart-method-set-available-status"/>
+        <button name="refreshAvailabilityBtn" title="Refresh availability"
+          onClick="action-cart-method-set-available-status"/>
       </insert>
     </extend>
   </form>
