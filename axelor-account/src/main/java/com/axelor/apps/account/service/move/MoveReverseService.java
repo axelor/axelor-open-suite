@@ -38,4 +38,7 @@ public interface MoveReverseService {
 
   List<Move> massReverse(List<Move> moveList, Map<String, Object> assistantMap)
       throws AxelorException;
+
+  void checkReversionDate(List<Move> moveList, Map<String, Object> assistantMap)
+      throws AxelorException;
 }
