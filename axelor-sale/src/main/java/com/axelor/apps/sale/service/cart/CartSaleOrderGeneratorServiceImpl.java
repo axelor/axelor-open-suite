@@ -67,9 +67,12 @@ public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGenerator
   @Transactional(rollbackOn = Exception.class)
   protected SaleOrder createSaleOrder(Cart cart, List<CartLine> cartLineList)
       throws JsonProcessingException, AxelorException {
-    if (CollectionUtils.isNotEmpty(cartLineList)) {
-      checkProduct(cartLineList);
+    if (CollectionUtils.isEmpty(cartLineList)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.NO_ORDER_LINE_NEEDS_TO_BE_GENERATED));
     }
+    checkProduct(cartLineList);
     SaleOrder saleOrder =
         saleOrderGeneratorService.createSaleOrder(
             cart.getPartner(), cart.getCompany(), null, null, null);
