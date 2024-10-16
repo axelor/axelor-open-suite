@@ -5,6 +5,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
+import com.axelor.apps.stock.translation.ITranslation;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -39,6 +40,7 @@ public class PickedProductManagementRepository extends PickedProductRepository {
             massStockMovableProductQuantityService.getCurrentAvailableQty(
                 pickedProduct, sourceStockLocation));
         json.put("nbDecimalQty", appBaseService.getNbDecimalDigitForQty());
+        json.put("state", pickedProduct.getStockMoveLine() != null ? ITranslation.MASS_STOCK_MOVE_NEED_PICKED:ITranslation.MASS_STOCK_MOVE_NEED_TO_PICK);
       } catch (Exception e) {
         json.put("currentQty", BigDecimal.ZERO);
         TraceBackService.trace(e);

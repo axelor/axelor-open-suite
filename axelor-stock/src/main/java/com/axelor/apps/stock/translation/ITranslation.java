@@ -31,4 +31,6 @@ public interface ITranslation {
   String MANUAL_CORRECTION = /*$$(*/ "value:Manual correction"; /*)*/
 
   String MASS_STOCK_MOVE_NEED_CREATED = /*$$(*/ "Lines created successfully"; /*)*/
+  String MASS_STOCK_MOVE_NEED_PICKED = /*$$(*/ "Picked"; /*)*/
+  String MASS_STOCK_MOVE_NEED_TO_PICK = /*$$(*/ "To pick"; /*)*/
 }

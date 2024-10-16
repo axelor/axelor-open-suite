@@ -5,7 +5,7 @@
 
   <grid name="picked-product-grid" title="Picked products"
     model="com.axelor.apps.stock.db.PickedProduct" editable="true"
-    onNew="action-picked-product-group-onnew">
+    onNew="action-picked-product-group-onnew" groupBy="state">
     <field name="fromStockLocation"
       onSelect="action-picked-product-method-set-domain-from-stock-location"
       onChange="action-picked-product-method-set-current-qty" readonlyIf="stockMoveLine"/>
@@ -27,6 +27,7 @@
       onClick="action-picked-product-method-cancel-picking" readonlyIf="stockMoveLine == null"/>
     <field name="stockMoveLine" hidden="true"/>
     <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
+    <field name="state" title="State" hidden="true" type="string"/>
   </grid>
 
   <form name="picked-product-form" title="Picked products"
