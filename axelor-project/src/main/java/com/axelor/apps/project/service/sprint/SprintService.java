@@ -18,12 +18,16 @@
  */
 package com.axelor.apps.project.service.sprint;
 
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface SprintService {
 
   public LocalDate computeFromDate(Sprint sprint);
 
   public LocalDate computeToDate(Sprint sprint);
+
+  public void attachTasksToSprint(Sprint sprint, List<ProjectTask> projectTasks);
 }
