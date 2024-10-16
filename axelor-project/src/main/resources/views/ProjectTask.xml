@@ -52,6 +52,19 @@
       onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
   </grid>
 
+  <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
+    name="project-task-sprint-grid">
+
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="name"/>
+    <field name="priority"/>
+    <field name="taskDate"/>
+    <field name="sprint"/>
+
+  </grid>
+
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
     width="large">
@@ -146,6 +159,7 @@
       <panel-include view="incl-checklist-task-panel-form"/>
 
       <panel-include view="incl-links-panel-form"/>
+      <panel-include view="sprint-project-task-form"/>
     </panel-tabs>
 
     <panel-mail name="mailPanel">
@@ -322,6 +336,15 @@
         widget="tree-grid" x-tree-field="projectCheckListItemList"
         x-tree-field-title="Add a new check list item" editable="true"/>
     </panel>
+  </form>
+
+  <form model="com.axelor.apps.project.db.ProjectTask" title="Sprint"
+    name="sprint-project-task-form">
+
+    <panel name="sprintPanel" title="Sprint">
+      <field name="sprint" title="Sprint" domain="self.project = :project"/>
+    </panel>
+
   </form>
 
   <gantt name="task-gantt" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
