@@ -1,0 +1,3 @@
+---
+title: "Inventory: after an import, display filename instead of file path in the confirmation message."
+module: axelor-stock
