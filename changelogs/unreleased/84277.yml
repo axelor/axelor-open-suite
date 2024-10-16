@@ -1,0 +1,7 @@
+---
+title: "StockLocation: added a filter to not select itself or any sub stock locations as parent stock location"
+module: axelor-stock
+developer: |
+  Created new interface and class `StockLocationAttrsService' and 'StockLocationAttrsServiceImpl`. 
+  In `stock-location-form` changed parentStockLocation onSelect action from `action-stock-location-attrs-set-parent-stock-location-domain`
+  to `action-stock-location-method-set-parent-stock-location-domain`, the former action has not been removed.
