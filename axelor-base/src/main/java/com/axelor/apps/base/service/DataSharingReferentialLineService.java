@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.DataSharingProductWizard;
 import com.axelor.apps.base.db.DataSharingReferential;
 import com.axelor.apps.base.db.DataSharingReferentialLine;
 import com.axelor.db.Model;
@@ -36,4 +37,6 @@ public interface DataSharingReferentialLineService {
       String condition,
       String wizardModelName,
       Long wizardRefId);
+
+  void removeDataSharingReferentialLines(DataSharingProductWizard dataSharingProductWizard);
 }

@@ -20,6 +20,12 @@
 
     <unique-constraint columns="code,name"/>
 
+    <track>
+      <field name="activeTaxLine"/>
+      <field name="taxType"/>
+      <field name="manageByAmount"/>
+    </track>
+
   </entity>
 
 </domain-models>

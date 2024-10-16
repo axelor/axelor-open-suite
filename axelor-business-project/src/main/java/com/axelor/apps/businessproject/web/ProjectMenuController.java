@@ -94,7 +94,6 @@ public class ProjectMenuController {
         ActionView.define(I18n.get("Related Tasks"))
             .model(ProjectTask.class.getName())
             .add("grid", "business-project-task-grid")
-            .add("tree", "business-project-project-task-tree")
             .add("kanban", "project-task-kanban")
             .add("form", "business-project-task-form")
             .param("details-view", "true")

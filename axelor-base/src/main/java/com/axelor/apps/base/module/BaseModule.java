@@ -36,6 +36,8 @@ import com.axelor.apps.base.db.repo.BaseBatchBaseRepository;
 import com.axelor.apps.base.db.repo.BaseBatchRepository;
 import com.axelor.apps.base.db.repo.DataBackupManagementRepository;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
+import com.axelor.apps.base.db.repo.DataSharingProductWizardManagementRepository;
+import com.axelor.apps.base.db.repo.DataSharingProductWizardRepository;
 import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
@@ -119,6 +121,8 @@ import com.axelor.apps.base.service.LocalizationServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
+import com.axelor.apps.base.service.MetaFileService;
+import com.axelor.apps.base.service.MetaFileServiceImpl;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
 import com.axelor.apps.base.service.PartnerLinkService;
@@ -179,6 +183,8 @@ import com.axelor.apps.base.service.address.AddressTemplateLineViewService;
 import com.axelor.apps.base.service.address.AddressTemplateLineViewServiceImpl;
 import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.address.AddressTemplateServiceImpl;
+import com.axelor.apps.base.service.address.CityService;
+import com.axelor.apps.base.service.address.CityServiceImpl;
 import com.axelor.apps.base.service.address.CountryService;
 import com.axelor.apps.base.service.address.CountryServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorQueryService;
@@ -485,6 +491,7 @@ public class BaseModule extends AxelorModule {
     bind(TranslationBaseService.class).to(TranslationBaseServiceImpl.class);
     bind(UserPermissionResponseComputeService.class)
         .to(UserPermissionResponseComputeServiceImpl.class);
+    bind(MetaFileService.class).to(MetaFileServiceImpl.class);
     bind(PrintingTemplateComputeNameService.class).to(PrintingTemplateComputeNameServiceImpl.class);
     bind(ProductFireService.class).to(ProductFireServiceImpl.class);
     bind(ProductPriceService.class).to(ProductPriceServiceImpl.class);
@@ -493,6 +500,9 @@ public class BaseModule extends AxelorModule {
     bind(DataSharingProductWizardService.class).to(DataSharingProductWizardServiceImpl.class);
     bind(TagService.class).to(TagServiceImpl.class);
     bind(AddressCreationService.class).to(AddressCreationServiceImpl.class);
+    bind(CityService.class).to(CityServiceImpl.class);
     bind(CountryService.class).to(CountryServiceImpl.class);
+    bind(DataSharingProductWizardRepository.class)
+        .to(DataSharingProductWizardManagementRepository.class);
   }
 }

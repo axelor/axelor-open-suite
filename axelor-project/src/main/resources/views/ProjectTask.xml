@@ -111,19 +111,10 @@
       <panel-include view="incl-overview-project-task-panel-form"/>
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
-        <panel-dashlet name="validatedTimesheetLinesPanel" x-show-bars="true"
-          action="action-project-task-dashlet-validated-timesheet-lines"
-          title="Validated Timesheet lines" colSpan="12" canSearch="true"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
-        <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
-          action="action-project-task-dashlet-waiting-timesheet-lines"
-          title="Waiting Timesheet lines" colSpan="12" canSearch="true"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
-        <panel-dashlet name="allTimesheetLinesPanel" x-show-bars="true"
-          action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
-          colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
-        <field name="project.isShowTimeSpent" hidden="true"/>
+        if="__config__.app.isApp('timesheet')" showIf="project.manageTimeSpent">
+        <panel-include view="incl-log-times-projec-task-panel-form"/>
+
+        <field name="project.manageTimeSpent" hidden="true"/>
         <panel name="timerPanel" title="Timer" showIf="id" if-module="axelor-helpdesk"
           if="__config__.app.isApp('helpdesk')" canCollapse="true" collapseIf="false">
           <panel name="actionsPanel" title="Actions">
@@ -193,6 +184,23 @@
     </panel>
   </form>
 
+  <form name="incl-log-times-projec-task-panel-form" title="Project task"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <panel title="Log Times" name="logTimesPanel" showTitle="false" colSpan="12" itemSpan="12">
+      <panel-dashlet name="validatedTimesheetLinesPanel" x-show-bars="true"
+        action="action-project-task-dashlet-validated-timesheet-lines"
+        title="Validated Timesheet lines" colSpan="12" canSearch="true"
+        if="__config__.app.getApp('timesheet')?.needValidation"/>
+      <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
+        action="action-project-task-dashlet-waiting-timesheet-lines" title="Waiting Timesheet lines"
+        colSpan="12" canSearch="true" if="__config__.app.getApp('timesheet')?.needValidation"/>
+      <panel-dashlet name="allTimesheetLinesPanel" x-show-bars="true"
+        action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
+        colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
+      <field name="project.manageTimeSpent" hidden="true"/>
+    </panel>
+  </form>
+
   <form name="incl-characteristics-panel-form" title="Characteristics"
     model="com.axelor.apps.project.db.ProjectTask">
     <panel name="mainPanel" colSpan="12">
@@ -215,10 +223,8 @@
         grid-view="tag-simplified-grid" colSpan="4"
         onSelect="action-project-task-method-set-tag-domain"/>
       <field name="progress" onChange="action-project-task-group-progress-onchange"
-        showIf="project.isShowProgress &amp;&amp; !$readonly()" colSpan="4" min="0"/>
-      <spacer colSpan="8" showIf="project.isShowProgress &amp;&amp; !$readonly()"/>
-      <field name="progress" showIf="project.isShowProgress &amp;&amp; $readonly()"
-        colSpan="4" widget="SelectProgress"/>
+        showIf="project.isShowProgress" colSpan="4" min="0" max="100" widget="Slider" x-step="1"
+        x-scale="0"/>
       <field name="project.isShowProgress" hidden="true"/>
       <field name="project.isShowSection" hidden="true"/>
       <field name="project.isShowStatus" hidden="true"/>
@@ -303,7 +309,7 @@
 
   <form name="incl-checklist-task-panel-form" title="Check list"
     model="com.axelor.apps.project.db.ProjectTask">
-    <panel name="templatePanel" title="Check list">
+    <panel name="templatePanel" title="Check list" colSpan="12" itemSpan="12">
       <field name="$projectCheckListTemplate" title="Check list template" type="Many-to-one"
         target="com.axelor.apps.project.db.ProjectCheckListTemplate"
         domain="self.typeSelect = 'task'"/>

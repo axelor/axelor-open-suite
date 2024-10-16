@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.repo.CartLineManagementRepository;
@@ -39,11 +40,18 @@ public class CartLineSupplychainRepository extends CartLineManagementRepository 
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    if (json != null && json.get("id") != null) {
-      CartLine cartLine = find((Long) json.get("id"));
-      Cart cart = cartLine.getCart();
-      json.putAll(cartLineAvailabilityService.setAvailableStatus(cart, cartLine));
+    try {
+      if (json != null && json.get("id") != null) {
+        CartLine cartLine = find((Long) json.get("id"));
+        if (cartLine != null) {
+          Cart cart = cartLine.getCart();
+          json.putAll(cartLineAvailabilityService.setAvailableStatus(cart, cartLine));
+        }
+      }
+      return super.populate(json, context);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      throw new RuntimeException(e.getMessage(), e);
     }
-    return super.populate(json, context);
   }
 }

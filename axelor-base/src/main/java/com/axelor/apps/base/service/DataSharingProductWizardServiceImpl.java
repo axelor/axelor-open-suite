@@ -46,8 +46,11 @@ public class DataSharingProductWizardServiceImpl implements DataSharingProductWi
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public List<DataSharingReferentialLine> generateDataSharingReferentialLines(
       DataSharingProductWizard dataSharingProductWizard) {
+    dataSharingReferentialLineService.removeDataSharingReferentialLines(dataSharingProductWizard);
+
     Set<Product> productSet = dataSharingProductWizard.getProductSet();
     Set<ProductCategory> productCategorySet = dataSharingProductWizard.getProductCategorySet();
     DataSharingReferential dataSharingReferential =
@@ -76,26 +79,5 @@ public class DataSharingProductWizardServiceImpl implements DataSharingProductWi
       }
     }
     return dataSharingReferentialLineList;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void deleteDataSharingReferentialLines(List<Long> dataSharingProductWizardIds) {
-    for (long dataSharingProductWizardId : dataSharingProductWizardIds) {
-      List<DataSharingReferentialLine> dataSharingReferentialLineList =
-          getDataSharingReferentialLines(dataSharingProductWizardId);
-      if (!CollectionUtils.isEmpty(dataSharingReferentialLineList)) {
-        dataSharingReferentialLineList.forEach(dataSharingReferentialLineRepository::remove);
-      }
-    }
-  }
-
-  protected List<DataSharingReferentialLine> getDataSharingReferentialLines(
-      long dataSharingProductWizardId) {
-    return dataSharingReferentialLineRepository
-        .all()
-        .filter("self.wizardRefId = :id")
-        .bind("id", dataSharingProductWizardId)
-        .fetch();
   }
 }

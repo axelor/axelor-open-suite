@@ -37,6 +37,9 @@ import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class CartSaleOrderGeneratorSupplychainServiceImpl
@@ -68,17 +71,28 @@ public class CartSaleOrderGeneratorSupplychainServiceImpl
       throws JsonProcessingException, AxelorException {
     SaleConfig saleConfig = saleConfigService.getSaleConfig(cart.getCompany());
     int cartOrderCreationModeSelect = saleConfig.getCartOrderCreationModeSelect();
+    List<CartLine> availableCartLineList =
+        cartLineAvailabilityService.getAvailableCartLineList(cart, cartLineList);
 
-    if (cartOrderCreationModeSelect == SaleConfigRepository.BLOCK_ORDER_CREATION) {
+    List<CartLine> sortedCartLineList = new ArrayList<>(cartLineList);
+    List<CartLine> sortedAvailableCartLineList = new ArrayList<>(availableCartLineList);
+
+    Collections.sort(sortedCartLineList, Comparator.comparing(CartLine::getId));
+    Collections.sort(sortedAvailableCartLineList, Comparator.comparing(CartLine::getId));
+
+    if (cartOrderCreationModeSelect == SaleConfigRepository.BLOCK_ORDER_CREATION
+        && !sortedCartLineList.equals(sortedAvailableCartLineList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.BLOCK_ORDER_CREATION));
     }
-    if (cartOrderCreationModeSelect == SaleConfigRepository.CREATE_ORDER_WITH_MISSING_PRODUCTS) {
-      return super.createSaleOrder(cart, cartLineList);
-    }
-    super.checkProduct(cartLineList);
-    return super.createSaleOrder(
-        cart, cartLineAvailabilityService.getAvailableCartLineList(cart, cartLineList));
+    SaleOrder saleOrder =
+        super.createSaleOrder(
+            cart,
+            cartOrderCreationModeSelect == SaleConfigRepository.CREATE_ORDER_WITH_MISSING_PRODUCTS
+                ? cartLineList
+                : availableCartLineList);
+    saleOrder.setStockLocation(cart.getStockLocation());
+    return saleOrder;
   }
 }

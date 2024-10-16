@@ -20,20 +20,17 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.DataSharingProductWizard;
 import com.axelor.apps.base.db.DataSharingReferentialLine;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.DataSharingProductWizardService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.StringHelper;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class DataSharingProductWizardController {
@@ -47,7 +44,7 @@ public class DataSharingProductWizardController {
           Beans.get(DataSharingProductWizardService.class)
               .generateDataSharingReferentialLines(dataSharingProductWizard);
       if (CollectionUtils.isEmpty(dataSharingReferentialLineList)) {
-        return;
+        response.setError(I18n.get(BaseExceptionMessage.DATA_SHARING_MISSING_ELEMENTS));
       }
       ActionViewBuilder actionViewBuilder =
           ActionView.define(I18n.get("Data sharing referential lines"))
@@ -59,26 +56,6 @@ public class DataSharingProductWizardController {
                       "self.id in (%s)",
                       StringHelper.getIdListString(dataSharingReferentialLineList)));
       response.setView(actionViewBuilder.map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  public void deleteDataSharingReferentialLines(ActionRequest request, ActionResponse response) {
-    try {
-      Context context = request.getContext();
-      List<Integer> ids = (List<Integer>) context.get("_ids");
-      List<Long> dataSharingProductWizardIds = new ArrayList<>();
-
-      if (!ObjectUtils.isEmpty(ids)) {
-        dataSharingProductWizardIds =
-            ids.stream().map(id -> Long.parseLong(id.toString())).collect(Collectors.toList());
-      } else {
-        dataSharingProductWizardIds.add(context.asType(DataSharingProductWizard.class).getId());
-      }
-      Beans.get(DataSharingProductWizardService.class)
-          .deleteDataSharingReferentialLines(dataSharingProductWizardIds);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -4,22 +4,16 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="data-sharing-product-wizard-grid" title="Data sharing product assistant"
-    model="com.axelor.apps.base.db.DataSharingProductWizard"
-    onDelete="action-data-sharing-product-wizard-method-delete-data-sharing-referential-lines">
+    model="com.axelor.apps.base.db.DataSharingProductWizard">
     <field name="dataSharingReferential"/>
   </grid>
 
   <form name="data-sharing-product-wizard-form" title="Data sharing product assistant"
-    model="com.axelor.apps.base.db.DataSharingProductWizard" width="large" canSave="false"
-    onDelete="action-data-sharing-product-wizard-method-delete-data-sharing-referential-lines">
-    <toolbar>
-      <button name="generateBtn" title="Generate" hidden="true"
-        onClick="action-data-sharing-product-wizard-group-generate-data-sharing-referential-lines"
-        showIf="(productCategorySet &amp;&amp; productCategorySet.length > 0) || (productSet &amp;&amp; productSet.length > 0)"/>
-    </toolbar>
+    model="com.axelor.apps.base.db.DataSharingProductWizard" width="large"
+    onSave="action-data-sharing-product-wizard-group-onsave">
     <panel name="mainPanel">
       <field name="dataSharingReferential" form-view="data-sharing-referential-form"
-        grid-view="data-sharing-referential-grid" readonlyIf="id"/>
+        grid-view="data-sharing-referential-grid" readonlyIf="id" canNew="true"/>
       <panel-related name="productCategorySetPanel" field="productCategorySet"
         form-view="product-category-form" grid-view="product-category-grid" canNew="false"
         canEdit="false" colSpan="12"/>
@@ -29,25 +23,28 @@
     </panel>
   </form>
 
-  <action-group
-    name="action-data-sharing-product-wizard-group-generate-data-sharing-referential-lines">
-    <action name="save"/>
-    <action
-      name="action-data-sharing-product-wizard-method-delete-data-sharing-referential-lines"/>
-    <action
-      name="action-data-sharing-product-wizard-method-generate-data-sharing-referential-lines"/>
-  </action-group>
-
   <action-method
     name="action-data-sharing-product-wizard-method-generate-data-sharing-referential-lines">
     <call class="com.axelor.apps.base.web.DataSharingProductWizardController"
       method="generateDataSharingReferentialLines"/>
   </action-method>
 
-  <action-method
-    name="action-data-sharing-product-wizard-method-delete-data-sharing-referential-lines">
-    <call class="com.axelor.apps.base.web.DataSharingProductWizardController"
-      method="deleteDataSharingReferentialLines"/>
-  </action-method>
+  <action-group name="action-data-sharing-product-wizard-group-onsave">
+    <action name="action-data-sharing-product-wizard-validate-referential"/>
+    <action name="action-data-sharing-product-wizard-validate-elements"/>
+    <action name="save"/>
+    <action
+      name="action-data-sharing-product-wizard-method-generate-data-sharing-referential-lines"/>
+  </action-group>
+
+  <action-validate name="action-data-sharing-product-wizard-validate-referential">
+    <error message="A wizard already exists for this sharing referential."
+      if="__repo__(DataSharingProductWizard).all().filter('self.dataSharingReferential = :dataSharingReferential AND self.id != :id').bind('dataSharingReferential',dataSharingReferential).bind('id',id).count() > 0"/>
+  </action-validate>
+
+  <action-validate name="action-data-sharing-product-wizard-validate-elements">
+    <error message="Please fill in or modify at least one element before saving."
+      if="(!productCategorySet || productCategorySet.size() == 0) &amp;&amp; (!productSet || productSet.size() == 0)"/>
+  </action-validate>
 
 </object-views>

@@ -103,7 +103,8 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       Product activity,
       BigDecimal dailyWorkHrs,
       LocalDateTime taskEndDateTime,
-      Site site)
+      Site site,
+      Unit defaultTimeUnit)
       throws AxelorException {
     ProjectPlanningTime planningTime =
         super.createProjectPlanningTime(
@@ -115,9 +116,10 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
             activity,
             dailyWorkHrs,
             taskEndDateTime,
-            site);
+            site,
+            defaultTimeUnit);
 
-    if (!appBusinessProjectService.isApp("business-project")) {
+    if (!appBusinessProjectService.isApp("business-project") || !project.getIsBusinessProject()) {
       return planningTime;
     }
 
