@@ -62,20 +62,8 @@ public class TimesheetLineRestController {
         .createAccess(TimesheetLine.class)
         .writeAccess(Timesheet.class, requestBody.getTimesheetId());
     RequestValidator.validateBody(requestBody);
-    Timesheet timesheet = null;
-    if (requestBody.getTimesheetId() != null) {
-      timesheet = requestBody.fetchTimesheet();
-    } else {
-      TimesheetLine queryTimesheetLine = new TimesheetLine();
-      queryTimesheetLine.setEmployee(
-          Optional.ofNullable(AuthUtils.getUser()).map(User::getEmployee).orElse(null));
-      queryTimesheetLine.setProject(requestBody.fetchProject());
-      queryTimesheetLine.setDate(requestBody.getDate());
-      timesheet =
-          Beans.get(TimesheetCreateService.class)
-              .getOrCreateTimesheet(queryTimesheetLine)
-              .getTimesheet();
-    }
+
+    Timesheet timesheet = getTimesheet(requestBody);
 
     TimesheetLine timesheetLine =
         Beans.get(TimesheetLineCreateService.class)
@@ -124,5 +112,24 @@ public class TimesheetLineRestController {
         Response.Status.OK,
         "Timesheet line successfully updated.",
         new TimesheetLineResponse(timesheetLine));
+  }
+
+  public Timesheet getTimesheet(TimesheetLinePostRequest requestBody) {
+    Timesheet timesheet = null;
+    if (requestBody.getTimesheetId() != null) {
+      timesheet = requestBody.fetchTimesheet();
+    } else {
+      TimesheetLine queryTimesheetLine = new TimesheetLine();
+      queryTimesheetLine.setEmployee(
+          Optional.ofNullable(AuthUtils.getUser()).map(User::getEmployee).orElse(null));
+      queryTimesheetLine.setProject(requestBody.fetchProject());
+      queryTimesheetLine.setDate(requestBody.getDate());
+      timesheet =
+          Beans.get(TimesheetCreateService.class)
+              .getOrCreateTimesheet(queryTimesheetLine)
+              .getTimesheet();
+    }
+
+    return timesheet;
   }
 }
