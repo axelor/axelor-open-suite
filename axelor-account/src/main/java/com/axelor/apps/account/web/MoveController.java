@@ -94,6 +94,12 @@ public class MoveController {
           Beans.get(ExtractContextMoveService.class)
               .getMapFromMoveWizardGenerateReverseForm(context);
 
+      if (((LocalDate) assistantMap.get("dateOfReversion")).isBefore(move.getDate())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.REVERSE_DATE_CAN_NOT_BE_BEFORE_MOVE_DATE));
+      }
+
       Move newMove = Beans.get(MoveReverseService.class).generateReverse(move, assistantMap);
       if (newMove != null) {
         response.setView(
@@ -112,19 +118,48 @@ public class MoveController {
   }
 
   @SuppressWarnings("unchecked")
+  public void checkReversionDate(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      List<Long> moveIds = (List<Long>) context.get("_ids");
+
+      if (CollectionUtils.isEmpty(moveIds)) {
+        return;
+      }
+
+      List<Move> moveList = getNonSimulatedMoves(moveIds);
+
+      if (CollectionUtils.isEmpty(moveList)) {
+        return;
+      }
+
+      Map<String, Object> assistantMap =
+          Beans.get(ExtractContextMoveService.class).getMapFromMoveWizardMassReverseForm(context);
+
+      Beans.get(MoveReverseService.class).checkReversionDate(moveList, assistantMap);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
+    }
+  }
+
+  protected List<Move> getNonSimulatedMoves(List<Long> moveIds) {
+    return Beans.get(MoveRepository.class)
+        .all()
+        .filter("self.id IN :moveList AND self.statusSelect <> :simulatedStatus")
+        .bind("moveList", moveIds)
+        .bind("simulatedStatus", MoveRepository.STATUS_SIMULATED)
+        .fetch();
+  }
+
+  @SuppressWarnings("unchecked")
   public void massReverseMove(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
       List<Long> moveIds = (List<Long>) context.get("_ids");
 
       if (CollectionUtils.isNotEmpty(moveIds)) {
-        List<Move> moveList =
-            Beans.get(MoveRepository.class)
-                .all()
-                .filter("self.id IN :moveList AND self.statusSelect <> :simulatedStatus")
-                .bind("moveList", moveIds)
-                .bind("simulatedStatus", MoveRepository.STATUS_SIMULATED)
-                .fetch();
+        List<Move> moveList = getNonSimulatedMoves(moveIds);
 
         if (CollectionUtils.isNotEmpty(moveList)) {
           Map<String, Object> assistantMap =

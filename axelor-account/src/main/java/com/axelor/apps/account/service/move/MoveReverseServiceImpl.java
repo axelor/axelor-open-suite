@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -35,7 +36,11 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -274,7 +279,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         dateOfReversion =
             extractContextMoveService.getDateOfReversion(null, move, dateOfReversionSelect);
       }
-
+      if (dateOfReversion.isBefore(move.getDate())) {
+        continue;
+      }
       reverseMoveList.add(
           this.generateReverse(
               move,
@@ -285,5 +292,34 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     }
 
     return reverseMoveList;
+  }
+
+  @Override
+  public void checkReversionDate(List<Move> moveList, Map<String, Object> assistantMap)
+      throws AxelorException {
+    int dateOfReversionSelect = (int) assistantMap.get("dateOfReversionSelect");
+    boolean isChooseDate = dateOfReversionSelect == MoveRepository.DATE_OF_REVERSION_CHOOSE_DATE;
+    LocalDate dateOfReversion =
+        isChooseDate ? (LocalDate) assistantMap.get("dateOfReversion") : null;
+
+    List<String> errorList = new ArrayList<>();
+
+    for (Move move : moveList) {
+      if (!isChooseDate) {
+        dateOfReversion =
+            extractContextMoveService.getDateOfReversion(null, move, dateOfReversionSelect);
+      }
+      if (dateOfReversion.isBefore(move.getDate())) {
+        errorList.add(move.getReference());
+      }
+    }
+    if (ObjectUtils.notEmpty(errorList)) {
+      StringHtmlListBuilder errorMessageBuilder = new StringHtmlListBuilder();
+      errorList.forEach(errorMessageBuilder::append);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MASS_REVERSE_DATE_CAN_NOT_BE_BEFORE_MOVE_DATE),
+          errorMessageBuilder.toString());
+    }
   }
 }

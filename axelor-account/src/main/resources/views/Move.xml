@@ -512,7 +512,7 @@
         title="Hide move lines in bank reconciliation" type="boolean"
         if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" colSpan="12"/>
       <button name="generateReverseBtn" title="Reverse" icon="fa-exchange"
-        onClick="action-move-method-mass-reverse-move,close"
+        onClick="action-move-method-check-reversion-date,action-move-method-mass-reverse-move,close"
         readonlyIf="dateOfReversionSelect == 4 &amp;&amp; !dateOfReversion"/>
     </panel>
   </form>
@@ -632,6 +632,10 @@
 
   <action-method name="action-move-method-mass-reverse-move">
     <call class="com.axelor.apps.account.web.MoveController" method="massReverseMove"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-reversion-date">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkReversionDate"/>
   </action-method>
 
   <!-- OTHER ACTION METHOD -->
