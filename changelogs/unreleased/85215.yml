@@ -1,0 +1,5 @@
+---
+title: "LunchVouchers: Fix employees list filter"
+module: axelor-human-resource
+developer: |
+  Remove all filters that were based on User object to keep only those on Employee
