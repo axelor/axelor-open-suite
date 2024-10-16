@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="Sprint">
+
+    <string name="name" title="Name"/>
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <many-to-many name="allocationPeriodSet"
+      ref="com.axelor.apps.project.db.AllocationPeriod" title="Allocation periods"/>
+    <date name="fromDate" title="From date"/>
+    <date name="toDate" title="To date"/>
+    <string name="description" title="Description" large="true"/>
+    <one-to-many name="projectTaskList" ref="com.axelor.apps.project.db.ProjectTask"
+      title="Tasks" mappedBy="sprint" orphanRemoval="false"/>
+    <integer name="sequence" title="Sequence"/>
+    <boolean name="isBacklog" title="Is backlog?" default="false"/>
+
+  </entity>
+
+</domain-models>
