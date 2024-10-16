@@ -384,7 +384,7 @@
     <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
       if-module="axelor-human-resource" showIf="project.isShowPlanning">
       <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-        x-show-bars="false" action="action-project-task-dashlet-project-planning-time" colSpan="12"
+        x-show-bars="true" action="action-project-task-dashlet-project-planning-time" colSpan="12"
         canSearch="true"/>
       <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
       <field name="project.isShowPlanning" hidden="true"/>
