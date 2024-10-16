@@ -87,8 +87,11 @@ public class CartSaleOrderGeneratorSupplychainServiceImpl
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.BLOCK_ORDER_CREATION));
     }
+    SaleOrder saleOrder;
     if (cartOrderCreationModeSelect == SaleConfigRepository.CREATE_ORDER_WITH_MISSING_PRODUCTS) {
-      return super.createSaleOrder(cart, cartLineList);
+      saleOrder = super.createSaleOrder(cart, cartLineList);
+    } else {
+      saleOrder = super.createSaleOrder(cart, availableCartLineList);
     }
     if (cartOrderCreationModeSelect == SaleConfigRepository.IGNORE_MISSING_PRODUCTS) {
       if (CollectionUtils.isEmpty(availableCartLineList)) {
@@ -98,6 +101,7 @@ public class CartSaleOrderGeneratorSupplychainServiceImpl
       }
       return super.createSaleOrder(cart, availableCartLineList);
     }
-    return null;
+    saleOrder.setStockLocation(cart.getStockLocation());
+    return saleOrder;
   }
 }

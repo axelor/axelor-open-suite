@@ -4,7 +4,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -46,18 +45,18 @@ public class CountryServiceImpl implements CountryService {
     Country fetchedCountry;
     switch (country.length()) {
       case 2:
-        fetchedCountry = Beans.get(CountryRepository.class).findByAlpha2Code(country);
+        fetchedCountry = countryRepository.findByAlpha2Code(country);
         break;
       case 3:
         if (!StringHelper.isDigital(country)) {
-          fetchedCountry = Beans.get(CountryRepository.class).findByAlpha3Code(country);
+          fetchedCountry = countryRepository.findByAlpha3Code(country);
         } else {
-          fetchedCountry = Beans.get(CountryRepository.class).findByNumericCode(country);
+          fetchedCountry = countryRepository.findByNumericCode(country);
         }
         break;
       default:
         fetchedCountry =
-            Beans.get(CountryRepository.class)
+            countryRepository
                 .all()
                 .filter("UPPER(self.name) = :name")
                 .bind("name", country.toUpperCase())
