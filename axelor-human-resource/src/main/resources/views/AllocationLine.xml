@@ -21,7 +21,7 @@
 
   <grid name="allocation-line-sprint-grid" title="Allocation lines"
     model="com.axelor.apps.project.db.AllocationLine" onNew="action-allocation-line-attrs-on-new"
-    editable="true">
+    groupBy="allocationPeriod" orderBy="-allocationPeriod.fromDate" editable="true">
 
     <field name="user" onSelect="action-allocation-line-method-set-user-domain"
       onChange="action-allocation-line-validate" required="true"/>
