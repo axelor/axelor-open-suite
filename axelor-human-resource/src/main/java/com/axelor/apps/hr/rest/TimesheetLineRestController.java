@@ -24,9 +24,12 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.rest.dto.TimesheetLinePostRequest;
 import com.axelor.apps.hr.rest.dto.TimesheetLinePutRequest;
 import com.axelor.apps.hr.rest.dto.TimesheetLineResponse;
+import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -34,6 +37,7 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.Optional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -58,8 +62,21 @@ public class TimesheetLineRestController {
         .createAccess(TimesheetLine.class)
         .writeAccess(Timesheet.class, requestBody.getTimesheetId());
     RequestValidator.validateBody(requestBody);
+    Timesheet timesheet = null;
+    if (requestBody.getTimesheetId() != null) {
+      timesheet = requestBody.fetchTimesheet();
+    } else {
+      TimesheetLine queryTimesheetLine = new TimesheetLine();
+      queryTimesheetLine.setEmployee(
+          Optional.ofNullable(AuthUtils.getUser()).map(User::getEmployee).orElse(null));
+      queryTimesheetLine.setProject(requestBody.fetchProject());
+      queryTimesheetLine.setDate(requestBody.getDate());
+      timesheet =
+          Beans.get(TimesheetCreateService.class)
+              .getOrCreateTimesheet(queryTimesheetLine)
+              .getTimesheet();
+    }
 
-    Timesheet timesheet = requestBody.fetchTimesheet();
     TimesheetLine timesheetLine =
         Beans.get(TimesheetLineCreateService.class)
             .createTimesheetLine(
@@ -67,7 +84,7 @@ public class TimesheetLineRestController {
                 requestBody.fetchProjectTask(),
                 requestBody.fetchProduct(),
                 requestBody.getDate(),
-                requestBody.fetchTimesheet(),
+                timesheet,
                 requestBody.getDuration(),
                 requestBody.getComments(),
                 requestBody.isToInvoice());
