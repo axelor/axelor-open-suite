@@ -33,4 +33,6 @@ public interface ITranslation {
   String MASS_STOCK_MOVE_NEED_CREATED = /*$$(*/ "Lines created successfully"; /*)*/
   String MASS_STOCK_MOVE_NEED_PICKED = /*$$(*/ "Picked"; /*)*/
   String MASS_STOCK_MOVE_NEED_TO_PICK = /*$$(*/ "To pick"; /*)*/
+  String MASS_STOCK_MOVE_NEED_STORED = /*$$(*/ "Stored"; /*)*/
+  String MASS_STOCK_MOVE_NEED_TO_STORE = /*$$(*/ "To store"; /*)*/
 }
