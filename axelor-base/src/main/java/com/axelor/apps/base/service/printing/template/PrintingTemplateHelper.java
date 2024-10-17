@@ -29,7 +29,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.helpers.StringHelper;
 import com.axelor.utils.helpers.file.PdfHelper;
-import com.axelor.utils.service.TranslationBaseService;
+import com.axelor.utils.service.translation.TranslationBaseService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

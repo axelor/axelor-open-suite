@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.localization;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Localization;
@@ -27,4 +27,6 @@ public interface LocalizationService {
   String getNumberFormat(String localizationCode);
 
   String getDateFormat(String localizationCode);
+
+  Localization getLocalization(String localizationCode) throws AxelorException;
 }
