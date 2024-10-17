@@ -1,3 +1,14 @@
+## [7.1.32] (2024-10-17)
+
+### Fixes
+#### Sale
+
+* Complementary product selected: correctly prevent the user from modfying selected complementary product on a confirmed sale order.
+
+#### Stock
+
+* Stock API: fixed issue on stock correction creation request.
+
 ## [7.1.31] (2024-10-03)
 
 ### Fixes
@@ -1399,6 +1410,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.32]: https://github.com/axelor/axelor-open-suite/compare/v7.1.31...v7.1.32
 [7.1.31]: https://github.com/axelor/axelor-open-suite/compare/v7.1.30...v7.1.31
 [7.1.30]: https://github.com/axelor/axelor-open-suite/compare/v7.1.29...v7.1.30
 [7.1.29]: https://github.com/axelor/axelor-open-suite/compare/v7.1.28...v7.1.29
