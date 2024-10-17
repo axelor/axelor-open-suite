@@ -97,11 +97,7 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
     } catch (NotFoundException | AxelorException e) {
       Language lang = languageRepository.findByCode(requestLanguage);
       if (lang == null) {
-        if (e.getClass().equals(NotFoundException.class)) {
-          throw new NotFoundException(e.getMessage());
-        } else if (e.getClass().equals(AxelorException.class)) {
-          throw new AxelorException(((AxelorException) e).getCategory(), e.getMessage());
-        }
+        throw e;
       }
       language = lang;
     } finally {
