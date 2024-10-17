@@ -66,5 +66,17 @@
 
   <input file="project_project_config.csv" type="com.axelor.apps.project.db.ProjectConfig"
     separator=";"/>
+
+  <input file="project_check_list_template.csv"
+    type="com.axelor.apps.project.db.ProjectCheckListTemplate" separator=";"
+    search="self.importId = :importId"/>
+
+  <input file="project_check_list_template_line.csv"
+    type="com.axelor.apps.project.db.ProjectCheckListItem" separator=";"
+    search="self.importId = :importId"/>
+
+  <input file="project_check_list_template_line.csv"
+    type="com.axelor.apps.project.db.ProjectCheckListItem" separator=";"
+    search="self.importId = :importId" update="true"/>
 </csv-inputs>
 
