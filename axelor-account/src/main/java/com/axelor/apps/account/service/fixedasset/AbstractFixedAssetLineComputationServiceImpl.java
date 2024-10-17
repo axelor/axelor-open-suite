@@ -327,11 +327,13 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
         fixedAsset.getComputationMethodSelect())) {
       nextDate = null;
+      int endDayOfMonth =
+          depreciationDate.getMonth() == Month.FEBRUARY ? depreciationDate.getDayOfMonth() : 30;
       nbDaysBetweenAcqAndFirstDepDate =
           nbDaysBetween(
               isUSProrataTemporis,
               acquisitionDate.withDayOfMonth(1),
-              depreciationDate.withDayOfMonth(30));
+              depreciationDate.withDayOfMonth(endDayOfMonth));
     } else {
       nbDaysBetweenAcqAndFirstDepDate =
           nbDaysBetween(isUSProrataTemporis, acquisitionDate, depreciationDate);
