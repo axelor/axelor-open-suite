@@ -5,7 +5,8 @@
 
   <grid name="picked-product-grid" title="Picked products"
     model="com.axelor.apps.stock.db.PickedProduct" editable="true"
-    onNew="action-picked-product-group-onnew" groupBy="state">
+    onNew="action-picked-product-group-onnew" groupBy="state,fromStockLocation"
+    orderBy="pickedProduct">
     <field name="fromStockLocation"
       onSelect="action-picked-product-method-set-domain-from-stock-location"
       onChange="action-picked-product-method-set-current-qty" readonlyIf="stockMoveLine"/>

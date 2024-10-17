@@ -5,7 +5,8 @@
 
   <grid name="stored-product-grid" title="Stored products"
     model="com.axelor.apps.stock.db.StoredProduct" editable="true"
-    onNew="action-stored-product-group-onnew" groupBy="state">
+    onNew="action-stored-product-group-onnew" groupBy="state,toStockLocation"
+    orderBy="storedProduct">
     <field name="storedProduct" onChange="action-stored-product-group-product-onchange"
       required="true" onSelect="action-stored-product-method-stored-product-domain"
       readonlyIf="stockMoveLine"/>
