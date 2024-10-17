@@ -1,3 +1,0 @@
----
-title: "Sale Order: fixed an issue were sequence was reset when going back to draft by creating a new version."
-module: axelor-sale

@@ -1,3 +1,48 @@
+## [7.2.24] (2024-10-17)
+
+### Fixes
+#### Account
+
+* Tax payment move line: fixed an issue where reverse taxes were not reverted, which was making VAT statement reports wrong.
+
+#### Human Resource
+
+* Lunch vouchers: fixed an issue where some employees were not included in lunch voucher computation.
+
+#### Project
+
+* Project: fixed code when generating project from sale order.
+
+#### Sale
+
+* Sale order: fixed an issue were sequence was reset when going back to draft by creating a new version.
+* Complementary product selected: correctly prevent the user from modfying selected complementary product on a confirmed sale order.
+
+#### Stock
+
+* Stock API: fixed issue on stock correction creation request.
+
+
+### Developer
+
+#### Account
+
+Please run this SQL script if you have the issue related to reverse taxes in VAT statement report:
+
+```sql
+  UPDATE account_tax_payment_move_line tpml
+  SET tax_amount = -tax_amount
+  WHERE tpml.fiscal_position IS NOT NULL
+  AND EXISTS (
+  SELECT 1
+  FROM account_tax_equiv_reverse_charge_tax_set terc
+  LEFT JOIN account_tax_equiv ate ON ate.id = terc.account_tax_equiv
+  LEFT JOIN account_tax tax ON tax.id = terc.reverse_charge_tax_set 
+  LEFT JOIN account_tax_line tl ON tax.id = tl.tax 
+  WHERE ate.fiscal_position = tpml.fiscal_position AND tl.id = tpml.origin_tax_line
+  );
+```
+
 ## [7.2.23] (2024-10-03)
 
 ### Fixes
@@ -1199,6 +1244,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.24]: https://github.com/axelor/axelor-open-suite/compare/v7.2.23...v7.2.24
 [7.2.23]: https://github.com/axelor/axelor-open-suite/compare/v7.2.22...v7.2.23
 [7.2.22]: https://github.com/axelor/axelor-open-suite/compare/v7.2.21...v7.2.22
 [7.2.21]: https://github.com/axelor/axelor-open-suite/compare/v7.2.20...v7.2.21
