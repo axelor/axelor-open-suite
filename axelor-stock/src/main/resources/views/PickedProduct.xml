@@ -19,7 +19,8 @@
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
       readonly="true"/>
     <field name="unit" readonly="true"/>
-    <field name="pickedQty" x-scale="nbDecimalQty" readonlyIf="stockMoveLine"/>
+    <field name="pickedQty" title="Picked qty / Qty to pick" x-scale="nbDecimalQty"
+      readonlyIf="stockMoveLine"/>
     <button name="realizePickingBtn" title="Realize picking"
       onClick="action-picked-product-method-realize-picking" readonlyIf="stockMoveLine != null"
       icon="fa-play" hideIf="!id"/>
@@ -29,6 +30,18 @@
     <field name="stockMoveLine" hidden="true"/>
     <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
     <field name="state" title="State" hidden="true" type="string"/>
+  </grid>
+
+  <grid name="picked-product-to-pick-grid" title="Picked products"
+    model="com.axelor.apps.stock.db.PickedProduct" canEdit="false">
+    <field name="fromStockLocation"/>
+    <field name="pickedProduct"/>
+    <field name="trackingNumber"/>
+    <field name="unit" readonly="true"/>
+    <field name="pickedQty" title="Qty to pick" x-scale="nbDecimalQty"
+      readonlyIf="stockMoveLine"/>
+    <field name="stockMoveLine" hidden="true"/>
+    <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
   </grid>
 
   <form name="picked-product-form" title="Picked products"
