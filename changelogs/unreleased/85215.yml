@@ -1,5 +1,3 @@
 ---
-title: "LunchVouchers: Fix employees list filter"
+title: "Lunch vouchers: fixed an issue where some employees were not included in lunch voucher computation."
 module: axelor-human-resource
-developer: |
-  Remove all filters that were based on User object to keep only those on Employee
