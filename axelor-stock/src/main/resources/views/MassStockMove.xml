@@ -8,7 +8,8 @@
     <field name="sequence"/>
     <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
     <field name="statusSelect" required="true"/>
-    <field name="cartStockLocation" domain="self.company = :company AND self.typeSelect != 3"/>
+    <field name="cartStockLocation" domain="self.company = :company AND self.typeSelect != 3"
+      onChange="action-mass-stock-move-attrs-refresh-cart-content"/>
     <field name="commonFromStockLocation"
       omain="self.company = :company AND self.typeSelect != 3"/>
     <field name="commonToStockLocation"
@@ -23,35 +24,42 @@
     </panel>
     <panel name="identificationPanel" hidden="true" showIf="stepSelect == 1"
       readonlyIf="statusSelect > 1">
-      <field name="sequence"/>
+      <field name="statusSelect" widget="SwitchSelect" required="true" readonly="true"
+        showTitle="false" colSpan="12"/>
       <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
       <field name="cartStockLocation"
+        onChange="action-mass-stock-move-attrs-refresh-cart-content"
         domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+      <field name="commonFromStockLocation"
+        domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+      <field name="commonToStockLocation"
+        domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+      <panel-dashlet name="cartStockLocationContentPanel"
+        action="action-mass-stock-move-view-show-cart-stock-location-lines" colSpan="12"
+        showTitle="false" canSearch="true"/>
     </panel>
     <panel name="identificationPanel" hidden="true" showIf="stepSelect != 1"
       readonlyIf="statusSelect > 1" sidebar="true" canCollapse="true" title="Header">
       <field name="statusSelect" widget="SwitchSelect" required="true" readonly="true"
         showTitle="false" colSpan="12"/>
       <field name="sequence"/>
-      <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
+      <field name="company"
+        onChange="action-mass-stock-move-record-company-on-change,action-mass-stock-move-attrs-refresh-cart-content"/>
       <field name="cartStockLocation"
         domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
       <field name="commonFromStockLocation"
         domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
       <field name="commonToStockLocation"
         domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+
     </panel>
     <panel name="cartContentPanel" sidebar="true" title="Cart contents" hidden="true"
       canCollapse="true" showIf="stepSelect != 1">
-      <panel-dashlet
+      <panel-dashlet name="cartStockLocationContentPanel"
         action="action-mass-stock-move-view-show-cart-stock-location-lines" colSpan="12"
         showTitle="false" canSearch="true"/>
     </panel>
     <panel name="productNeedPanel" hidden="true" showIf="stepSelect == 2">
-      <field name="commonFromStockLocation"
-        domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
-      <field name="commonToStockLocation"
-        domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
       <button name="fillProductsToMoveMvtBtn" title="Fill in products from movements"
         onClick="save,action-mass-stock-move-method-fetch-stock-move-lines"/>
       <panel-related field="massStockMoveNeedList"
@@ -136,7 +144,12 @@
       self.detailsStockLocation = :cartStockLocation)</domain>
     <context name="cartStockLocation" expr="eval: __this__?.cartStockLocation"/>
 
+
   </action-view>
+
+  <action-attrs name="action-mass-stock-move-attrs-refresh-cart-content">
+    <attribute for="cartStockLocationContentPanel" name="refresh" expr="eval: true"/>
+  </action-attrs>
 
 
 </object-views>
