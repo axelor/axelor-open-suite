@@ -1,3 +1,0 @@
----
-title: "Timesheet API: fixed an error occurring when creating a timesheet without timer"
-module: axelor-human-resource
