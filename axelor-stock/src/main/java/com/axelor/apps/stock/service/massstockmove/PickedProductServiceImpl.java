@@ -3,6 +3,7 @@ package com.axelor.apps.stock.service.massstockmove;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.stock.db.MassStockMove;
@@ -13,6 +14,7 @@ import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -34,7 +36,9 @@ public class PickedProductServiceImpl implements PickedProductService {
   public PickedProductServiceImpl(
       StockLocationLineRepository stockLocationLineRepository,
       ProductCompanyService productCompanyService,
-      PickedProductRepository pickedProductRepository) {
+      PickedProductRepository pickedProductRepository,
+      StockLocationRepository stockLocationRepository,
+      ProductRepository productRepository) {
     this.stockLocationLineRepository = stockLocationLineRepository;
     this.productCompanyService = productCompanyService;
     this.pickedProductRepository = pickedProductRepository;
@@ -135,6 +139,16 @@ public class PickedProductServiceImpl implements PickedProductService {
     }
 
     return massStockMove.getPickedProductList();
+  }
+
+  @Override
+  public PickedProduct copy(PickedProduct src, PickedProduct dest) {
+    dest.setPickedQty(src.getPickedQty());
+    dest.setTrackingNumber(src.getTrackingNumber());
+    dest.setPickedProduct(src.getPickedProduct());
+    dest.setFromStockLocation(src.getFromStockLocation());
+    dest.setUnit(src.getUnit());
+    return dest;
   }
 
   protected boolean isAlreadyAdded(

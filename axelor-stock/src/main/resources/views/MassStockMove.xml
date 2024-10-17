@@ -20,7 +20,7 @@
     model="com.axelor.apps.stock.db.MassStockMove" onNew="action-mass-stock-move-method-on-new">
     <panel name="stepPanel">
       <field name="stepSelect" widget="Stepper" x-stepper-show-description="true"
-        x-stepper-completed="false" showTitle="false" colSpan="12"/>
+        x-stepper-completed="false" showTitle="false" colSpan="12" onChange="save"/>
     </panel>
     <panel name="identificationPanel" hidden="true" showIf="stepSelect == 1"
       readonlyIf="statusSelect > 1">
@@ -143,8 +143,6 @@
     <domain>self.currentQty > 0 and (self.stockLocation = :cartStockLocation OR
       self.detailsStockLocation = :cartStockLocation)</domain>
     <context name="cartStockLocation" expr="eval: __this__?.cartStockLocation"/>
-
-
   </action-view>
 
   <action-attrs name="action-mass-stock-move-attrs-refresh-cart-content">

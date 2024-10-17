@@ -9,6 +9,7 @@ import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancel
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeService;
 import com.axelor.apps.stock.service.massstockmove.PickedProductAttrsService;
+import com.axelor.apps.stock.service.massstockmove.PickedProductService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -30,14 +31,17 @@ public class PickedProductController {
 
   public void realizePicking(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    var pickedProduct =
+    var pickedProduct = request.getContext().asType(PickedProduct.class);
+
+    var pickedProductInDB =
         Optional.of(request.getContext().asType(PickedProduct.class))
-            .map(pp -> Beans.get(PickedProductRepository.class).find(pp.getId()));
+            .map(pp -> Beans.get(PickedProductRepository.class).find(pp.getId()))
+            .map(
+                productInDb ->
+                    Beans.get(PickedProductService.class).copy(pickedProduct, productInDb))
+            .orElse(pickedProduct);
 
-    if (pickedProduct.isPresent()) {
-      Beans.get(MassStockMovableProductRealizeService.class).realize(pickedProduct.get());
-    }
-
+    Beans.get(MassStockMovableProductRealizeService.class).realize(pickedProductInDB);
     response.setReload(true);
   }
 
