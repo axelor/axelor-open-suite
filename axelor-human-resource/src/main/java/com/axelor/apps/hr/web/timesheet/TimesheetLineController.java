@@ -26,7 +26,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
-import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.timesheet.TimesheetQueryService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
@@ -160,8 +160,9 @@ public class TimesheetLineController {
   public void setTimesheet(ActionRequest request, ActionResponse response) {
     try {
       TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-      timesheetLine = Beans.get(TimesheetCreateService.class).getOrCreateTimesheet(timesheetLine);
-      response.setValue("timesheet", timesheetLine.getTimesheet());
+      Timesheet timesheet =
+          Beans.get(TimesheetCreateService.class).getOrCreateTimesheet(timesheetLine);
+      response.setValue("timesheet", timesheet);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -177,7 +178,7 @@ public class TimesheetLineController {
       }
 
       List<Timesheet> timesheetList =
-          Beans.get(TimesheetService.class).getTimesheetQuery(timesheetLine).fetch();
+          Beans.get(TimesheetQueryService.class).getTimesheetQuery(timesheetLine).fetch();
       idList = StringHelper.getIdListString(timesheetList);
 
       response.setAttr("timesheet", "domain", "self.id IN (" + idList + ")");
