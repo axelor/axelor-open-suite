@@ -10,9 +10,14 @@
       <insert position="after">
         <field name="allocationLineList" grid-view="allocation-line-sprint-grid"
           form-view="allocation-line-form" showIf="id" colSpan="12"/>
-        <button onClick="save,action-sprint-method-generate-allocations"
+        <button
+          onClick="action-sprint-group-on-save,save,action-sprint-method-generate-allocations"
           name="generateAllocations" title="Generate allocations" showIf="id"/>
       </insert>
+    </extend>
+
+    <extend target="/">
+      <attribute name="onSave" value="action-sprint-group-on-save"/>
     </extend>
 
   </form>
@@ -20,5 +25,20 @@
   <action-method name="action-sprint-method-generate-allocations">
     <call class="com.axelor.apps.hr.web.project.SprintController" method="generateAllocations"/>
   </action-method>
+
+  <action-method name="action-sprint-method-update-or-create-project-plannings">
+    <call class="com.axelor.apps.hr.web.project.SprintController"
+      method="updateProjectPlannings"/>
+  </action-method>
+
+  <action-validate name="action-sprint-validate-upadte-or-create-project-plannings">
+    <alert message="Do you want to create/update project planning lines?"
+      confirm-btn-title="Yes" cancel-btn-title="No" action="save"/>
+  </action-validate>
+
+  <action-group name="action-sprint-group-on-save">
+    <action name="action-sprint-validate-upadte-or-create-project-plannings"/>
+    <action name="action-sprint-method-update-or-create-project-plannings"/>
+  </action-group>
 
 </object-views>
