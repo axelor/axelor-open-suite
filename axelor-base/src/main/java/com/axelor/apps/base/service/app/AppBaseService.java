@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.base.service.app;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.AddressTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.studio.app.service.AppService;
@@ -81,6 +83,8 @@ public interface AppBaseService extends AppService {
   public String getDefaultPartnerLocale();
 
   // Conversion de devise
+
+  AddressTemplate getDefaultAddressTemplate() throws AxelorException;
 
   /**
    * Get 0% vat

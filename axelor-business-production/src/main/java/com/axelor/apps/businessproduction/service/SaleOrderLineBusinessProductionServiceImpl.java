@@ -24,11 +24,12 @@ import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
-import com.axelor.apps.supplychain.service.SaleOrderLineCreateSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCreateSupplychainServiceImpl;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
@@ -37,16 +38,18 @@ public class SaleOrderLineBusinessProductionServiceImpl
 
   @Inject
   public SaleOrderLineBusinessProductionServiceImpl(
-      SaleOrderLineService saleOrderLineService,
       AppSaleService appSaleService,
       AppBaseService appBaseService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLinePackService saleOrderLinePackService,
       AnalyticLineModelService analyticLineModelService,
       SupplyChainConfigService supplyChainConfigService,
       ReservedQtyService reservedQtyService) {
     super(
-        saleOrderLineService,
         appSaleService,
         appBaseService,
+        saleOrderLineComputeService,
+        saleOrderLinePackService,
         analyticLineModelService,
         supplyChainConfigService,
         reservedQtyService);

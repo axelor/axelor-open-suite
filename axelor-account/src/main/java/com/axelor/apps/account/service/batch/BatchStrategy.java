@@ -204,7 +204,17 @@ public abstract class BatchStrategy extends AbstractBatch {
     this.cfonbExportService.testBankDetailsField(accountingBatch.getBankDetails());
   }
 
+  @Override
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_ACCOUNTING_BATCH);
+  }
+
+  @Override
+  protected Integer getFetchLimit() {
+    Integer batchFetchLimit = this.batch.getAccountingBatch().getFetchLimit();
+    if (batchFetchLimit == 0) {
+      batchFetchLimit = super.getFetchLimit();
+    }
+    return batchFetchLimit;
   }
 }

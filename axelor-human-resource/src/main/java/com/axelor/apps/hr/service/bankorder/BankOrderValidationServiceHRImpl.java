@@ -31,6 +31,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderSequenceService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationServiceImpl;
 import com.axelor.apps.base.AxelorException;
@@ -66,6 +67,7 @@ public class BankOrderValidationServiceHRImpl extends BankOrderValidationService
       BankOrderLineOriginService bankOrderLineOriginService,
       PaymentSessionValidateService paymentSessionValidateService,
       ReconcileService reconcileService,
+      BankOrderSequenceService bankOrderSequenceService,
       ExpenseRepository expenseRepository,
       ExpensePaymentService expensePaymentService) {
     super(
@@ -82,7 +84,8 @@ public class BankOrderValidationServiceHRImpl extends BankOrderValidationService
         bankOrderMoveService,
         bankOrderLineOriginService,
         paymentSessionValidateService,
-        reconcileService);
+        reconcileService,
+        bankOrderSequenceService);
     this.expenseRepository = expenseRepository;
     this.expensePaymentService = expensePaymentService;
   }

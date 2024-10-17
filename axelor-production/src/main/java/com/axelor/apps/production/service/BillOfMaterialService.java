@@ -52,6 +52,9 @@ public interface BillOfMaterialService {
   BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth)
       throws AxelorException;
 
+  BillOfMaterial getCustomizedBom(BillOfMaterial billOfMaterial, int depth, boolean deepCopy)
+      throws AxelorException;
+
   void addRawMaterials(long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
       throws AxelorException;
 

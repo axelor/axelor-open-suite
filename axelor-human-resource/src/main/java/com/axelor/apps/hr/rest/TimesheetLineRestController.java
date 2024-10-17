@@ -59,7 +59,7 @@ public class TimesheetLineRestController {
         .writeAccess(Timesheet.class, requestBody.getTimesheetId());
     RequestValidator.validateBody(requestBody);
 
-    Timesheet timesheet = requestBody.fetchTimesheet();
+    Timesheet timesheet = TimesheetLinePostRequestHelper.fetchOrCreateTimesheet(requestBody);
     TimesheetLine timesheetLine =
         Beans.get(TimesheetLineCreateService.class)
             .createTimesheetLine(
@@ -67,7 +67,7 @@ public class TimesheetLineRestController {
                 requestBody.fetchProjectTask(),
                 requestBody.fetchProduct(),
                 requestBody.getDate(),
-                requestBody.fetchTimesheet(),
+                timesheet,
                 requestBody.getDuration(),
                 requestBody.getComments(),
                 requestBody.isToInvoice());

@@ -18,17 +18,17 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlService;
+import com.axelor.apps.businessproject.service.BusinessProjectService;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectHistoryService;
@@ -112,30 +112,22 @@ public class ProjectController {
             .model(InvoicingProject.class.getName())
             .add("form", "invoicing-project-form")
             .param("forceEdit", "true")
-            .param("show-toolbar", "false")
             .context("_project", project)
             .map());
   }
 
+  @ErrorException
   public void getPartnerData(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Project project = request.getContext().asType(Project.class);
     Partner partner = project.getClientPartner();
 
-    AnalyticDistributionTemplate analyticDistributionTemplate =
-        Beans.get(ProjectAnalyticTemplateService.class)
-            .getDefaultAnalyticDistributionTemplate(project);
-    response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
-    if (partner != null) {
+    project = Beans.get(BusinessProjectService.class).computePartnerData(project, partner);
 
-      response.setValue("currency", partner.getCurrency());
-
-      response.setValue(
-          "priceList",
-          project.getClientPartner() != null
-              ? Beans.get(PartnerPriceListService.class)
-                  .getDefaultPriceList(project.getClientPartner(), PriceListRepository.TYPE_SALE)
-              : null);
+    if (project != null) {
+      response.setValue("analyticDistributionTemplate", project.getAnalyticDistributionTemplate());
+      response.setValue("currency", project.getCurrency());
+      response.setValue("priceList", project.getPriceList());
 
       response.setValue(
           "contactPartner",
@@ -257,5 +249,38 @@ public class ProjectController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  @ErrorException
+  public void convertProject(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Object projectId = request.getContext().get("_projectId");
+    if (projectId == null) {
+      return;
+    }
+
+    Project project = Beans.get(ProjectRepository.class).find(Long.valueOf(projectId.toString()));
+    Company company = (Company) request.getContext().get("company");
+    Partner clientPartner = (Partner) request.getContext().get("clientPartner");
+    if (clientPartner == null || company == null) {
+      response.setError(
+          I18n.get(
+              BusinessProjectExceptionMessage
+                  .PROJECT_BUSINESS_PROJECT_MISSING_CLIENT_PARTNER_COMPANY));
+    }
+
+    Beans.get(BusinessProjectService.class).setAsBusinessProject(project, company, clientPartner);
+
+    ActionView.ActionViewBuilder builder =
+        ActionView.define(I18n.get("Business project"))
+            .model(Project.class.getName())
+            .add("grid", "project-grid")
+            .add("form", "business-project-form")
+            .add("kanban", "project-kanban")
+            .param("search-filters", "project-project-filters")
+            .context("_showRecord", project.getId())
+            .domain("self.isBusinessProject = true");
+    response.setCanClose(true);
+    response.setView(builder.map());
   }
 }
