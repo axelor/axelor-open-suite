@@ -19,7 +19,7 @@
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
       readonly="true"/>
     <field name="unit" readonly="true"/>
-    <field name="storedQty" x-scale="nbDecimalQty"/>
+    <field name="storedQty" title="Stored qty / Qty to store" x-scale="nbDecimalQty"/>
     <button name="realizeStoringBtn" title="Realize storing"
       onClick="action-stored-product-method-realize-storing" readonlyIf="stockMoveLine != null"
       icon="fa-play" hideIf="!id"/>
