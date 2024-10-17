@@ -250,6 +250,7 @@ public class ProjectTaskController {
 
     Set<TaskStatus> taskStatusSet =
         Beans.get(TaskStatusToolService.class).getTaskStatusSet(project, projectTask);
+    boolean isHidden = true;
 
     if (!ObjectUtils.isEmpty(taskStatusSet)) {
       response.setAttr(
@@ -259,9 +260,9 @@ public class ProjectTaskController {
               .map(TaskStatus::getId)
               .map(String::valueOf)
               .collect(Collectors.joining(",")));
-    } else {
-      response.setAttr("statusPanel", "hidden", true);
+      isHidden = false;
     }
+    response.setAttr("statusPanel", "hidden", isHidden);
   }
 
   @ErrorException

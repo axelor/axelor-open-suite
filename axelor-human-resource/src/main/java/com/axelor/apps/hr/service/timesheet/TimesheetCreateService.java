@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.google.inject.persist.Transactional;
+import com.axelor.apps.project.db.Project;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +35,7 @@ public interface TimesheetCreateService {
 
   Timesheet createTimesheet(LocalDate fromDate, LocalDate toDate) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
-  TimesheetLine getOrCreateTimesheet(TimesheetLine timesheetLine);
+  Timesheet getOrCreateTimesheet(TimesheetLine timesheetLine);
+
+  Timesheet getOrCreateTimesheet(Employee employee, Project project, LocalDate date);
 }

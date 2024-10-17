@@ -178,6 +178,12 @@
     <panel-tabs name="mainPanelTab">
       <panel-include view="incl-overview-business-project-task-panel-form"/>
 
+      <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
+        if="__config__.app.isApp('timesheet')" showIf="project.manageTimeSpent">
+        <panel-include view="incl-log-times-projec-task-panel-form"/>
+        <field name="project.manageTimeSpent" hidden="true"/>
+      </panel>
+
       <panel name="timeFollowUpPanel" title="Time follow-up">
         <field name="timeUnit" colSpan="4" readonlyIf="saleOrderLine || parentTask"
           onSelect="action-project-task-attrs-set-time-unit-domain"
@@ -287,6 +293,8 @@
         </panel>
       </panel>
 
+      <panel-include view="incl-checklist-task-panel-form"/>
+
       <panel-include view="incl-links-panel-form"/>
     </panel-tabs>
     <panel name="attrsPanel">
@@ -367,22 +375,6 @@
           <field name="landingMarkup" hidden="true"/>
         </panel>
       </panel>
-
-      <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
-        <panel-dashlet name="validatedTimesheetLinesPanel" x-show-bars="true"
-          action="action-project-task-dashlet-validated-timesheet-lines"
-          title="Validated Timesheet lines" colSpan="12" canSearch="true"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
-        <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
-          action="action-project-task-dashlet-waiting-timesheet-lines"
-          title="Waiting Timesheet lines" colSpan="12" canSearch="true"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
-        <panel-dashlet name="allTimesheetLinesPanel" x-show-bars="true"
-          action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
-          colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
-        <field name="project.isShowTimeSpent" hidden="true"/>
-      </panel>
     </panel-tabs>
   </form>
 
@@ -432,14 +424,12 @@
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
 
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
-        collapseIf="true" canCollapse="true">
+        collapseIf="false" canCollapse="true">
         <panel-include view="incl-characteristics-panel-form"/>
         <field name="invoicingProgress" readonly="true" colSpan="4"
           showIf="invoicingType == 4"/>
         <field name="description" colSpan="12" widget="html"/>
       </panel>
-
-      <panel-include view="incl-checklist-task-panel-form"/>
 
       <panel-include view="incl-customized-field-panel-form"/>
     </panel>

@@ -50,11 +50,8 @@
 
 
         <field name="theme" widget="theme-select"/>
-        <panel name="actionsPanel" stacked="true">
-          <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
-          <field name="__actionSelect" title="Action" widget="SuggestBox" canNew="false"
-            target="com.axelor.meta.db.MetaAction" target-name="name" domain="self.home = true"/>
-        </panel>
+        <field name="homeAction" widget="ref-text" x-target="com.axelor.meta.db.MetaAction"
+          x-target-name="name" domain="self.type = 'action-view' and self.home = true"/>
         <field name="singleTab" widget="inline-checkbox" colSpan="3"/>
         <field name="noHelp" widget="inline-checkbox" colSpan="3"/>
         <field name="change" title="Change password?" showIf="id &amp;&amp; !$readonly()"
@@ -176,11 +173,8 @@
           onChange="action-base-user-record-change-language" form-view="localization-form"
           grid-view="localization-grid"/>
         <field name="theme" widget="theme-select"/>
-        <panel name="actionsPanel" stacked="true">
-          <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
-          <field name="__actionSelect" title="Action" widget="SuggestBox" canNew="false"
-            target="com.axelor.meta.db.MetaAction" target-name="name" domain="self.home = true"/>
-        </panel>
+        <field name="homeAction" widget="ref-text" x-target="com.axelor.meta.db.MetaAction"
+          x-target-name="name" domain="self.type = 'action-view' and self.home = true"/>
         <field name="singleTab" widget="inline-checkbox" colSpan="3"/>
         <field name="noHelp" widget="inline-checkbox" colSpan="3"/>
         <field name="language" hidden="true"/>

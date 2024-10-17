@@ -46,6 +46,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -312,7 +313,8 @@ public class AccountingReportController {
 
   public void setAccountingReportTypeDomain(ActionRequest request, ActionResponse response) {
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    boolean isCustom = (boolean) request.getContext().get("_isCustom");
+    boolean isCustom =
+        Optional.ofNullable((Boolean) request.getContext().get("_isCustom")).orElse(false);
     String accountingReportTypeIds = "0";
 
     if (!isCustom || CollectionUtils.isNotEmpty(accountingReport.getCompanySet())) {

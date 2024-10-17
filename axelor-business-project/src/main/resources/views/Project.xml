@@ -66,6 +66,8 @@
           action="save,action-project-method-all-open-tasks" showIf="id"/>
         <item name="allTasks" title="All tasks" action="save,action-project-method-all-tasks"
           showIf="id"/>
+        <item name="allTasksTree" title="All tasks (tree)"
+          action="save, action-view-show-business-project-task-tree" showIf="id"/>
       </menu>
       <menu name="projectToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
         <item title="Compute project totals"
@@ -265,8 +267,10 @@
 
       <panel-include view="incl-checklist-panel-form"/>
 
-      <panel-include if-module="axelor-human-resource"
-        view="incl-log-times-panel-form" if="__config__.app.isApp('timesheet')"/>
+      <panel title="Log Times" name="logTimesPanel" if-module="axelor-human-resource"
+        if="__config__.app.isApp('timesheet')">
+        <panel-include view="incl-log-times-panel-form"/>
+      </panel>
 
       <panel title="Invoicing" name="invoicingPanel">
         <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
@@ -716,7 +720,7 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="grid" name="business-project-task-project-grid"/>
     <view type="form" name="business-project-task-form"/>
-    <domain>self.project.id = :_id AND self.parentTask = null</domain>
+    <domain>self.project.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 
@@ -734,6 +738,14 @@
     title="Financial datas" model="com.axelor.apps.project.db.Project">
     <view type="form" name="business-project-financial-datas-form"/>
     <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-view-show-business-project-task-tree"
+    title="Project Task Tree" model="com.axelor.apps.project.db.ProjectTask">
+    <view type="tree" name="project-project-task-tree"/>
+    <view type="form" name="business-project-task-form"/>
+    <domain>self.project.id = :_id AND self.parentTask = null</domain>
+    <context name="_id" expr="eval: id"/>
   </action-view>
 
   <!-- Sales -->

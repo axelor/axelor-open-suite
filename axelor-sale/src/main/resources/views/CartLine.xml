@@ -9,7 +9,7 @@
       domain="self.parentProduct IS NULL" onChange="action-cart-line-group-product-onchange"/>
     <field name="product.code"/>
     <field name="price" x-scale="$nbDecimalDigitForUnitPrice" readonly="true"/>
-    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty" min="0" validIf="qty > 0"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
     <field name="variantProduct" form-view="product-form"
       grid-view="product-product-variant-grid" domain="self.parentProduct = :product"
@@ -25,7 +25,7 @@
         domain="self.parentProduct IS NULL" onChange="action-cart-line-group-product-onchange"/>
       <field name="product.code"/>
       <field name="price" x-scale="$nbDecimalDigitForUnitPrice" readonly="true"/>
-      <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+      <field name="qty" x-scale="$nbDecimalDigitForQty" min="0" validIf="qty > 0"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
       <field name="variantProduct" form-view="product-form"
         grid-view="product-product-variant-grid" domain="self.parentProduct = :product"

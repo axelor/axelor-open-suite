@@ -487,7 +487,7 @@
           canMove="true"
           if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
 
-        <panel-related name="saleOrderLineTreePanel" colSpan="12"
+        <panel-related name="saleOrderLineEditableTreePanel" colSpan="12"
           title="Details Lines (Tree)" field="saleOrderLineList" orderBy="sequence" canMove="true"
           form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
           widget="tree-grid" x-tree-field="subSaleOrderLineList"
@@ -497,6 +497,17 @@
           if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
           editable="true">
         </panel-related>
+
+        <field name="saleOrderLineList" readonlyIf="clientPartner == null" colSpan="12"
+          height="30" widget="MasterDetail" form-view="sale-order-line-form"
+          tree-view="sale-order-line-tree" grid-view="sale-order-line-grid"
+          summary-view="sale-order-master-details-form" field="saleOrderLineList"
+          target="com.axelor.apps.sale.db.SaleOrderLine"
+          canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          title="Details Lines" orderBy="sequence"
+          onChange="action-sale-order-method-on-line-change" canMove="true"
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_TREE_LINE"/>
 
         <panel-related name="editableDetailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == null || statusSelect != 1" colSpan="12" height="30"
@@ -1476,7 +1487,6 @@
     <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
     <action name="action-sale-order-attrs-list-selection-in-type-select"/>
-    <action name="action-sale-order-attrs-editable-display-discount-amount"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -1517,9 +1527,11 @@
     									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2"
       if="company != null"/>
     <attribute name="title" for="saleOrderLineList.priceDiscounted"
-      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')" if="inAti"/>
+      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')"
+      if="eval: inAti &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
     <attribute name="title" for="saleOrderLineList.priceDiscounted"
-      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')" if="!inAti"/>
+      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')"
+      if="eval: !inAti &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
   </action-attrs>
 
   <action-record name="action-sale-order-record-from-partner"
@@ -2202,13 +2214,6 @@
   <action-attrs name="action-sale-order-attrs-list-selection-in-type-select">
     <attribute name="selection-in" for="saleOrderLineList.typeSelect"
       expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-order-attrs-editable-display-discount-amount">
-    <attribute for="saleOrderLineList.discountTypeSelect" name="hidden"
-      expr="eval: !(__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_EDITABLE &amp;&amp; __config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid())"/>
-    <attribute for="saleOrderLineList.discountAmount" name="hidden"
-      expr="eval: !__config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid()"/>
   </action-attrs>
 
 </object-views>

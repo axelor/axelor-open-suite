@@ -48,6 +48,7 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
@@ -637,7 +638,8 @@ public class SaleOrderController {
 
     try {
       List<SaleOrderLine> saleOrderLineList =
-          Beans.get(SaleOrderOnLineChangeService.class).handleComplementaryProducts(saleOrder);
+          Beans.get(SaleOrderComplementaryProductService.class)
+              .handleComplementaryProducts(saleOrder);
       response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

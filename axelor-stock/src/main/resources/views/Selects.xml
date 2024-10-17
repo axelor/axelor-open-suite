@@ -163,4 +163,11 @@
     <option value="4">Canceled</option>
   </selection>
 
+  <selection name="stock.mass.stock.move.step.select">
+    <option value="1" data-description="Information"/>
+    <option value="2" data-description="Prepare products to move"/>
+    <option value="3" data-description="Pick products"/>
+    <option value="4" data-description="Store products"/>
+  </selection>
+
 </object-views>
