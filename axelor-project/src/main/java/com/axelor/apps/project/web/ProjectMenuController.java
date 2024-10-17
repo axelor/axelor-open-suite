@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.project.web;
 
+import static com.axelor.apps.base.web.tool.ControllerTool.createTagActionView;
+
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.project.db.Project;
@@ -99,5 +101,11 @@ public class ProjectMenuController {
     }
     project = Beans.get(ProjectRepository.class).find(project.getId());
     response.setView(Beans.get(ProjectMenuService.class).getAllProjectRelatedTasks(project));
+  }
+
+  public void referentialTags(ActionRequest request, ActionResponse response) {
+    String packageName = "com.axelor.apps.project";
+    String fieldName = "com.axelor.apps.project.db.ProjectTask";
+    response.setView(createTagActionView(packageName, fieldName));
   }
 }
