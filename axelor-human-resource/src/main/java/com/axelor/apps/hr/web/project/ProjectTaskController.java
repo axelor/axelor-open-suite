@@ -16,17 +16,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service.sprint;
+package com.axelor.apps.hr.web.project;
 
-import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.Sprint;
-import java.util.List;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import java.util.Arrays;
 
-public interface SprintHRService {
+public class ProjectTaskController {
 
-  public void generateAllocations(Sprint sprint) throws AxelorException;
+  public void updateProjectPlannings(ActionRequest request, ActionResponse response) {
 
-  public void attachTasksToSprintWithProjectPlannings(
-      Sprint sprint, List<ProjectTask> projectTasks);
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    Beans.get(ProjectPlanningTimeService.class)
+        .updateProjectPlannings(projectTask.getSprint(), Arrays.asList(projectTask));
+  }
 }

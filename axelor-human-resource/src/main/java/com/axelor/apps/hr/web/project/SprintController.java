@@ -20,6 +20,7 @@ package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.sprint.SprintHRService;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.SprintRepository;
@@ -42,5 +43,12 @@ public class SprintController {
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void updateProjectPlannings(ActionRequest request, ActionResponse response) {
+
+    Sprint sprint = request.getContext().asType(Sprint.class);
+    Beans.get(ProjectPlanningTimeService.class)
+        .updateProjectPlannings(sprint, sprint.getProjectTaskList());
   }
 }
