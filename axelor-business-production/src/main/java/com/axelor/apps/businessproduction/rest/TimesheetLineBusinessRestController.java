@@ -25,6 +25,7 @@ import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessSer
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.rest.TimesheetLineRestController;
 import com.axelor.apps.hr.rest.dto.TimesheetLineResponse;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
 import com.axelor.inject.Beans;
@@ -59,7 +60,8 @@ public class TimesheetLineBusinessRestController {
     new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
     RequestValidator.validateBody(requestBody);
 
-    Timesheet timesheet = requestBody.fetchTimesheet();
+    Timesheet timesheet = Beans.get(TimesheetLineRestController.class).getTimesheet(requestBody);
+
     TimesheetLine timesheetLine =
         Beans.get(TimesheetLineCreateBusinessService.class)
             .createTimesheetLine(
@@ -67,7 +69,7 @@ public class TimesheetLineBusinessRestController {
                 requestBody.fetchProjectTask(),
                 requestBody.fetchProduct(),
                 requestBody.getDate(),
-                requestBody.fetchTimesheet(),
+                timesheet,
                 requestBody.getDuration(),
                 requestBody.getComments(),
                 requestBody.isToInvoice(),
