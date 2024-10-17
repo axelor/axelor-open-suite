@@ -9,6 +9,7 @@ import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancel
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductRealizeService;
 import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsService;
+import com.axelor.apps.stock.service.massstockmove.StoredProductService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -54,13 +55,17 @@ public class StoredProductController {
 
   public void realizeStoring(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    var storedProduct =
-        Optional.of(request.getContext().asType(StoredProduct.class))
-            .map(sp -> Beans.get(StoredProductRepository.class).find(sp.getId()));
+    var storedProduct = request.getContext().asType(StoredProduct.class);
 
-    if (storedProduct.isPresent()) {
-      Beans.get(MassStockMovableProductRealizeService.class).realize(storedProduct.get());
-    }
+    var storedProductInDb =
+        Optional.of(request.getContext().asType(StoredProduct.class))
+            .map(pp -> Beans.get(StoredProductRepository.class).find(pp.getId()))
+            .map(
+                productInDb ->
+                    Beans.get(StoredProductService.class).copy(storedProduct, productInDb))
+            .orElse(storedProduct);
+
+    Beans.get(MassStockMovableProductRealizeService.class).realize(storedProductInDb);
 
     response.setReload(true);
   }

@@ -23,4 +23,6 @@ public interface PickedProductService {
 
   List<PickedProduct> generatePickedProductsFromStockLocation(
       MassStockMove massStockMove, StockLocation stockLocation) throws AxelorException;
+
+  PickedProduct copy(PickedProduct src, PickedProduct dest);
 }
