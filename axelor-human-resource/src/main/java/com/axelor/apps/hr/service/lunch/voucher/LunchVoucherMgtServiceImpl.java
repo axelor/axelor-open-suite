@@ -123,9 +123,8 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
         Beans.get(EmployeeRepository.class)
             .all()
             .filter(
-                "self.mainEmploymentContract.payCompany = :company AND (self.user.expiresOn is null OR self.user.expiresOn >= :fromDate) AND self.hireDate <= :toDate AND self.user.blocked = false AND (self.external = false OR self.external is null)")
+                "self.mainEmploymentContract.payCompany = :company AND self.hireDate <= :toDate AND (self.external = false OR self.external is null)")
             .bind("company", company)
-            .bind("fromDate", fromDate)
             .bind("toDate", toDate)
             .fetch();
 
