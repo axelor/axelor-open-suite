@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid model="com.axelor.apps.intervention.db.Intervention" title="Intervention"
     name="intervention-grid">
@@ -70,7 +70,7 @@
       <field name="company" grid-view="company-grid" form-view="company-form"
         onChange="action-intervention-record-emptying-trading-name" required="true" colSpan="4"/>
       <field name="tradingName" grid-view="trading-name-grid" form-view="trading-name-form"
-        required="true" domain=":company MEMBER OF self.companySet"
+        required="true" domain="self.company = :company"
         if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()" colSpan="4"/>
       <field name="deliveredPartner" grid-view="partner-grid" form-view="partner-form"
         onSelect="action-intervention-attrs-set-delivered-partner-domain"

@@ -57,7 +57,9 @@ public class PrintingGeneratorFactoryProviderImpl implements PrintingGeneratorFa
 
   protected Class<? extends PrintingGeneratorFactory> findClass(String klassName) {
     return MetaScanner.findSubTypesOf(PrintingGeneratorFactory.class)
-        .within(ClassUtils.getPackageName(klassName)).find().stream()
+        .within(ClassUtils.getPackageName(klassName))
+        .find()
+        .stream()
         .filter(c -> c.getName().equals(klassName))
         .findFirst()
         .orElse(null);

@@ -19,7 +19,7 @@
 package com.axelor.apps.businesssupport.db.repo;
 
 import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
-import com.axelor.apps.businessproject.service.ProjectTaskProgressUpdateService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.google.inject.Inject;
 

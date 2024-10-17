@@ -18,11 +18,23 @@
  */
 package com.axelor.apps.businessproduction.db.repo;
 
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
+import com.axelor.apps.production.service.manuforder.ManufOrderCreateBarcodeService;
+import com.axelor.apps.production.service.operationorder.OperationOrderCreateBarcodeService;
+import com.google.inject.Inject;
 
 public class ManufOrderBusinessProductionManagementRepository
     extends ManufOrderManagementRepository {
+
+  @Inject
+  public ManufOrderBusinessProductionManagementRepository(
+      SequenceService sequenceService,
+      OperationOrderCreateBarcodeService operationOrderCreateBarcodeService,
+      ManufOrderCreateBarcodeService manufOrderCreateBarcodeService) {
+    super(sequenceService, operationOrderCreateBarcodeService, manufOrderCreateBarcodeService);
+  }
 
   @Override
   public ManufOrder copy(ManufOrder entity, boolean deep) {

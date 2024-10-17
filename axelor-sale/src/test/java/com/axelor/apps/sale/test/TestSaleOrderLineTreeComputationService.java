@@ -21,7 +21,7 @@ package com.axelor.apps.sale.test;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationService;
+import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeComputationService;
 import com.axelor.meta.loader.LoaderHelper;
 import com.axelor.utils.junit.BaseTest;
 import com.google.inject.Inject;

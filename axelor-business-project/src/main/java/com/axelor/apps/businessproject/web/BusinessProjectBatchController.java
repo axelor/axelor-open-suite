@@ -68,7 +68,7 @@ public class BusinessProjectBatchController {
       values.put("title", I18n.get("Updated tasks"));
       values.put("model", ProjectTask.class.getName());
       values.put("grid", "business-project-project-task-grid");
-      values.put("form", "project-task-form");
+      values.put("form", "business-project-task-form");
       values.put("search-filters", "project-task-filters");
 
       this.showRecords(request, response, values);

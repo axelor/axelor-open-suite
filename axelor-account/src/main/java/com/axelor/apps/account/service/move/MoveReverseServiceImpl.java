@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
@@ -59,7 +60,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected ExtractContextMoveService extractContextMoveService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
-  protected MoveToolService moveToolService;
+  protected MoveLineToolService moveLineToolService;
   protected UnreconcileService unReconcileService;
   protected MoveInvoiceTermService moveInvoiceTermService;
 
@@ -73,7 +74,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       ExtractContextMoveService extractContextMoveService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentCancelService invoicePaymentCancelService,
-      MoveToolService moveToolService,
+      MoveLineToolService moveLineToolService,
       UnreconcileService unReconcileService,
       MoveInvoiceTermService moveInvoiceTermService) {
 
@@ -85,7 +86,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     this.extractContextMoveService = extractContextMoveService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
-    this.moveToolService = moveToolService;
+    this.moveLineToolService = moveLineToolService;
     this.unReconcileService = unReconcileService;
     this.moveInvoiceTermService = moveInvoiceTermService;
   }
@@ -231,7 +232,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
 
     BigDecimal currencyAmount = originMoveLine.getCurrencyAmount();
 
-    currencyAmount = moveToolService.computeCurrencyAmountSign(currencyAmount, isDebit);
+    currencyAmount = moveLineToolService.computeCurrencyAmountSign(currencyAmount, isDebit);
 
     MoveLine reverseMoveLine =
         moveLineCreateService.createMoveLine(

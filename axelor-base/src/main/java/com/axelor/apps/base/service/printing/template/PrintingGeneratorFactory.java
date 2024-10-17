@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.printing.template.model.TemplatePrint;
 import com.axelor.common.FileUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.service.TranslationBaseService;
+import com.axelor.utils.service.translation.TranslationBaseService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

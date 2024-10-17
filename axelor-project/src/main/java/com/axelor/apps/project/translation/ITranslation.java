@@ -22,9 +22,6 @@ public interface ITranslation {
 
   public static final String PROJECTS_APP_NAME = /* $$( */ "value:Projects"; /* ) */
 
-  public static final String PROJECT_CODE_ERROR =
-      /* $$( */ "Project code is already used. Please provide unique code"; /* ) */
-
   // Project Status
   public static final String PROJECT_STATUS_NEW = /*$$(*/ "value:New"; /*)*/
 
@@ -38,4 +35,6 @@ public interface ITranslation {
   public static final String PROJECT_PRIORITY_LOW = /*$$(*/ "value:Low"; /*)*/
 
   public static final String PROJECT_PRIORITY_HIGH = /*$$(*/ "value:High"; /*)*/
+
+  public static final String ADD_CHECK_LIST_ITEM_TREE = /*$$(*/ "Add a new check list item"; /*)*/
 }

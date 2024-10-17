@@ -1,4 +1,4 @@
-"importId";"name";"modelName";"statusSelect";"toAttach"
-"82";"Maintenance bill of materials";"com.axelor.apps.production.db.BillOfMaterial";"1";false
-"83";"Maintenance manuf order";"com.axelor.apps.production.db.ManufOrder";"1";false
-"84";"Maintenance prod process";"com.axelor.apps.production.db.ProdProcess";"1";false
+"importId";"name";"modelName";"statusSelect";"toAttach";"scriptFieldName"
+"82";"Maintenance bill of materials";"com.axelor.apps.production.db.BillOfMaterial";"1";false;"${__i18n__.get('Bill of Materials') + '-' + BillOfMaterial.name + (BillOfMaterial.versionNumber > 1 ? '-V' + BillOfMaterial.versionNumber : '') + '-' + date}"
+"83";"Maintenance manuf order";"com.axelor.apps.production.db.ManufOrder";"1";false;"${__i18n__.get('Manufacturing order') + ' ' + ManufOrder.manufOrderSeq}"
+"84";"Maintenance prod process";"com.axelor.apps.production.db.ProdProcess";"1";false;"${ProdProcess.name}"

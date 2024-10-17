@@ -24,6 +24,7 @@ import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationDomainService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineUnreconciliationService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
@@ -73,7 +74,8 @@ public class BankReconciliationLineController {
           Beans.get(BankReconciliationLineService.class);
 
       if (ObjectUtils.notEmpty(bankReconciliationLineDatabase.getMoveLine())) {
-        bankReconciliationLineService.unreconcileLine(bankReconciliationLineDatabase);
+        Beans.get(BankReconciliationLineUnreconciliationService.class)
+            .unreconcileLine(bankReconciliationLineDatabase);
       }
 
       if (ObjectUtils.notEmpty(moveLine)) {

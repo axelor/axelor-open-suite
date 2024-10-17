@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="purchase-order-line-purchase-order-grid" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -145,7 +145,7 @@
 	          ]]></viewer>
         </field>
         <spacer name="receiptStateSpacer" if="__config__.app.isApp('supplychain')"/>
-        <field name="product" canEdit="false"
+        <field name="product" canEdit="false" x-image-field="picture"
           onChange="action-group-purchase-purchase-orderline-product-onchange"
           onSelect="action-purchase-order-line-attrs-product-domain" form-view="product-form"
           grid-view="product-purchase-grid"/>
@@ -239,7 +239,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()"
         title="Business Project" if-module="axelor-business-project">
         <field name="project" domain="self.isBusinessProject = true" title="Business Project"
-          requiredIf="toInvoice &amp;&amp; !isTitleLine" form-view="project-form"
+          requiredIf="toInvoice &amp;&amp; !isTitleLine" form-view="business-project-form"
           grid-view="project-grid" canEdit="false"/>
         <field name="toInvoice"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()"
@@ -251,7 +251,8 @@
           </viewer>
         </field>
         <field name="projectTask" title="Project Task" domain="self.project = :project"
-          form-view="project-task-form" grid-view="project-task-grid" canEdit="false"/>
+          form-view="business-project-task-form" grid-view="business-project-task-grid"
+          canEdit="false"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
@@ -435,11 +436,11 @@
 
   <action-attrs name="action-purchase-order-line-attrs-product-domain">
     <attribute name="domain" for="product"
-      if="!__config__.app.getApp('purchase')?.enablePurchasesProductByTradName || _parent?.company?.tradingNameSet == null || _parent?.company?.tradingNameSet.isEmpty()"
+      if="!__config__.app.getApp('purchase')?.enablePurchasesProductByTradName || _parent?.company?.tradingNameList == null || _parent?.company?.tradingNameList.isEmpty()"
       expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.dtype = 'Product'&quot;
 			+ (isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog() ? &quot; and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.supplierPartner?.id})&quot; : &quot;&quot;)
       + (__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.find({it.name == 'purchasable'}) ? &quot; and (SELECT purchasable FROM ProductCompany productCompany WHERE productCompany.product.id = self.id AND productCompany.company.id = ${__parent__ ? __parent__.company.id : purchaseOrder.company.id}) IS TRUE&quot; : &quot;&quot;)
-			+ (__config__.app.getApp('purchase')?.enablePurchasesProductByTradName &amp;&amp; _parent?.company?.tradingNameSet != null &amp;&amp; !_parent?.company?.tradingNameSet.isEmpty() ? &quot; and ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet &quot; : &quot;&quot;)"/>
+			+ (__config__.app.getApp('purchase')?.enablePurchasesProductByTradName &amp;&amp; _parent?.company?.tradingNameList != null &amp;&amp; !_parent?.company?.tradingNameList.isEmpty() ? &quot; and ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet &quot; : &quot;&quot;)"/>
   </action-attrs>
 
   <action-attrs name="action-purchase-order-line-attrs-discountamount-title">

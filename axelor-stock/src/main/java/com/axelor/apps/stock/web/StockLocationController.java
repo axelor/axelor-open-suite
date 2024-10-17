@@ -25,8 +25,9 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationAttrsService;
+import com.axelor.apps.stock.service.StockLocationDomainService;
 import com.axelor.apps.stock.service.StockLocationPrintService;
-import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.utils.StockLocationUtilsService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -117,7 +118,7 @@ public class StockLocationController {
     if (stockLocation.getIsValued()) {
       response.setValue(
           "stockLocationValue",
-          Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));
+          Beans.get(StockLocationUtilsService.class).getStockLocationValue(stockLocation));
     }
   }
 
@@ -148,5 +149,11 @@ public class StockLocationController {
         "parentStockLocation",
         "domain",
         Beans.get(StockLocationAttrsService.class).getParentStockLocationDomain(stockLocation));
+  }
+
+  public void getSiteDomain(ActionRequest request, ActionResponse response) {
+    StockLocation stockLocation = request.getContext().asType(StockLocation.class);
+    response.setAttr(
+        "site", "domain", Beans.get(StockLocationDomainService.class).getSiteDomain(stockLocation));
   }
 }

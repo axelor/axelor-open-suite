@@ -79,6 +79,7 @@ public interface OperationOrderService {
       List<ProdProduct> prodProductList,
       List<StockMoveLine> stockMoveLineList)
       throws AxelorException;
+
   /**
    * Check the realized consumed stock move lines in operation order has not changed.
    *
@@ -97,8 +98,6 @@ public interface OperationOrderService {
    */
   void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
       throws AxelorException;
-
-  void createBarcode(OperationOrder operationOrder);
 
   long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
       throws AxelorException;

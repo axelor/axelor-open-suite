@@ -39,6 +39,7 @@ public interface FixedAssetDerogatoryLineService {
       FixedAssetLine fixedAssetLine,
       FixedAssetLine fiscalFixedAssetLine,
       int statusSelect);
+
   /**
    * This method will generate a fixedAssetDerogatoryLine list based on fixedAsset's fiscal and
    * economic lines that are planned. Keep in mind that it will not compute realized lines, and

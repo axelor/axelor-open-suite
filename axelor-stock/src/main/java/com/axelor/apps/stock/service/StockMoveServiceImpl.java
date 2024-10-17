@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.InventoryLine;
+import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -235,6 +236,34 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (typeSelect == StockMoveRepository.TYPE_INCOMING) {
       stockMove.setIsWithReturnSurplus(company.getStockConfig().getIsWithReturnSurplus());
     }
+    return stockMove;
+  }
+
+  @Override
+  public StockMove createStockMove(
+      Address fromAddress,
+      Address toAddress,
+      Company company,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      LocalDate realDate,
+      LocalDate estimatedDate,
+      int typeSelect,
+      MassStockMove massStockMove)
+      throws AxelorException {
+    StockMove stockMove =
+        createStockMove(
+            fromAddress,
+            toAddress,
+            company,
+            fromStockLocation,
+            toStockLocation,
+            realDate,
+            estimatedDate,
+            null,
+            StockMoveRepository.TYPE_INTERNAL);
+    stockMove.setMassStockMove(massStockMove);
+
     return stockMove;
   }
 
@@ -566,6 +595,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       throws AxelorException {
     sendMailForStockMove(stockMove, template);
   }
+
   /**
    * Generate and send mail. Throws exception if the template is not found or if there is an error
    * while generating the message.

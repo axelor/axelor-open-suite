@@ -53,6 +53,9 @@ public interface PrintingTemplatePrintService {
       PrintingTemplate template, PrintingGenFactoryContext context, String outputFileName)
       throws AxelorException;
 
+  File getPrintFile(PrintingTemplate template, PrintingGenFactoryContext context, Boolean toAttach)
+      throws AxelorException;
+
   File getPrintFile(
       PrintingTemplate template,
       PrintingGenFactoryContext context,

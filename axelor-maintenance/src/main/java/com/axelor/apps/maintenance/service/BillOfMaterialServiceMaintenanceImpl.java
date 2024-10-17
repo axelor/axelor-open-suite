@@ -82,9 +82,7 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
     return printingTemplatePrintService.getPrintLink(
-        maintenanceBOMPrintTemplate,
-        new PrintingGenFactoryContext(billOfMaterial),
-        getFileName(billOfMaterial) + "-${date}");
+        maintenanceBOMPrintTemplate, new PrintingGenFactoryContext(billOfMaterial));
   }
 
   @Override

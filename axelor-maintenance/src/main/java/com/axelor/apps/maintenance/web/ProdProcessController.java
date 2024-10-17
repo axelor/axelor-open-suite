@@ -56,9 +56,7 @@ public class ProdProcessController {
       String fileLink =
           Beans.get(PrintingTemplatePrintService.class)
               .getPrintLink(
-                  maintenanceProdProcessPrintTemplate,
-                  new PrintingGenFactoryContext(prodProcess),
-                  title);
+                  maintenanceProdProcessPrintTemplate, new PrintingGenFactoryContext(prodProcess));
 
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {

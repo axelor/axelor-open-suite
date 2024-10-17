@@ -43,8 +43,6 @@ public interface MoveLineService {
 
   void setIsSelectedBankReconciliation(MoveLine moveLine);
 
-  public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr);
-
   boolean checkManageCutOffDates(MoveLine moveLine);
 
   boolean checkManageCutOffDates(MoveLine moveLine, int functionalOriginSelect);

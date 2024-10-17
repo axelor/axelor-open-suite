@@ -34,6 +34,8 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceTaxComputeService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
@@ -61,6 +63,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -402,7 +405,9 @@ public abstract class InvoiceGenerator {
     if (invoice.getInvoiceLineTaxList() == null) {
       invoice.setInvoiceLineTaxList(new ArrayList<InvoiceLineTax>());
     } else {
+      List<InvoiceLineTax> invoiceLineTaxList = getUpdatedInvoiceLineTax(invoice);
       invoice.getInvoiceLineTaxList().clear();
+      invoice.getInvoiceLineTaxList().addAll(invoiceLineTaxList);
     }
   }
 
@@ -417,13 +422,9 @@ public abstract class InvoiceGenerator {
 
     // In the invoice currency
     invoice.setExTaxTotal(BigDecimal.ZERO);
-    invoice.setTaxTotal(BigDecimal.ZERO);
-    invoice.setInTaxTotal(BigDecimal.ZERO);
 
     // In the company accounting currency
     invoice.setCompanyExTaxTotal(BigDecimal.ZERO);
-    invoice.setCompanyTaxTotal(BigDecimal.ZERO);
-    invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 
@@ -442,31 +443,7 @@ public abstract class InvoiceGenerator {
               invoice, invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal())));
     }
 
-    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
-
-      // In the invoice currency
-      invoice.setTaxTotal(
-          currencyScaleService.getScaledValue(
-              invoice, invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal())));
-
-      // In the company accounting currency
-      invoice.setCompanyTaxTotal(
-          currencyScaleService.getCompanyScaledValue(
-              invoice, invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal())));
-    }
-
-    // In the invoice currency
-    invoice.setInTaxTotal(
-        currencyScaleService.getScaledValue(
-            invoice, invoice.getExTaxTotal().add(invoice.getTaxTotal())));
-
-    // In the company accounting currency
-    invoice.setCompanyInTaxTotal(
-        currencyScaleService.getCompanyScaledValue(
-            invoice, invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal())));
-    invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
-
-    invoice.setAmountRemaining(invoice.getInTaxTotal());
+    Beans.get(InvoiceTaxComputeService.class).recomputeInvoiceTaxAmounts(invoice);
 
     invoice.setHasPendingPayments(false);
 
@@ -478,5 +455,25 @@ public abstract class InvoiceGenerator {
     logger.debug(
         "Invoice amounts : W.T. = {}, Tax = {}, A.T.I. = {}",
         new Object[] {invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal()});
+  }
+
+  protected List<InvoiceLineTax> getUpdatedInvoiceLineTax(Invoice invoice) {
+    List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<>();
+
+    if (ObjectUtils.isEmpty(invoice.getInvoiceLineTaxList())) {
+      return invoiceLineTaxList;
+    }
+
+    invoiceLineTaxList.addAll(
+        invoice.getInvoiceLineTaxList().stream()
+            .filter(
+                invoiceLineTax ->
+                    Beans.get(InvoiceLineTaxToolService.class).isManageByAmount(invoiceLineTax)
+                        && invoiceLineTax
+                                .getTaxTotal()
+                                .compareTo(invoiceLineTax.getPercentageTaxTotal())
+                            != 0)
+            .collect(Collectors.toList()));
+    return invoiceLineTaxList;
   }
 }

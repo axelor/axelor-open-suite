@@ -82,7 +82,9 @@ public class FixedAssetAttrsServiceImpl implements FixedAssetAttrsService {
     this.addAttr(
         "splitTypeSelect",
         "value",
-        qty.compareTo(BigDecimal.ONE) == 0 ? FixedAssetRepository.SPLIT_TYPE_AMOUNT : 0,
+        qty.compareTo(BigDecimal.ONE) == 0
+            ? FixedAssetRepository.SPLIT_TYPE_AMOUNT
+            : FixedAssetRepository.SPLIT_TYPE_QUANTITY,
         attrsMap);
   }
 

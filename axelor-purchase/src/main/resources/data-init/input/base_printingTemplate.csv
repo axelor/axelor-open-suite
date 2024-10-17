@@ -1,2 +1,3 @@
-"importId";"name";"modelName";"statusSelect";"toAttach"
-"25";"PurchaseOrder";"com.axelor.apps.purchase.db.PurchaseOrder";"2";"false"
+"importId";"name";"modelName";"statusSelect";"toAttach";"scriptFieldName"
+"25";"PurchaseOrder";"com.axelor.apps.purchase.db.PurchaseOrder";"2";"false";"${__i18n__.get(PurchaseOrder.statusSelect == 1 || PurchaseOrder.statusSelect == 2 ? 'Purchase quotation' : 'Purchase order') + ' ' + PurchaseOrder.purchaseOrderSeq +
+((com.axelor.inject.Beans.get(com.axelor.apps.purchase.service.app.AppPurchaseService.class).getAppPurchase().getManagePurchaseOrderVersion() && PurchaseOrder.versionNumber > 1) ? '-V' + PurchaseOrder.versionNumber : '') + '-' + date}"

@@ -19,10 +19,13 @@
 package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderEncryptionService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppBankPayment;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -34,6 +37,21 @@ public class AppBankPaymentController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkPasswordPresentInConfig(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AppBankPayment appBankPayment = request.getContext().asType(AppBankPayment.class);
+
+    if (appBankPayment.getEnableBankOrderFileEncryption()) {
+      try {
+        Beans.get(BankOrderEncryptionService.class).checkAndGetEncryptionPassword();
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
+        response.setValue("enableBankOrderFileEncryption", false);
+        response.setError(e.getMessage());
+      }
     }
   }
 }

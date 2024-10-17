@@ -289,6 +289,7 @@
 "The total amount is greater than the budget distribution total.","Le montant total est supérieur au montant total de la répartition budgétaire.",,
 "There is a budget overrun for %s. The available balance is %.2f %s.","Il y a un dépassement budgétaire pour le niveau budgétaire %s. Le solde budgétaire disponible est de %.2f %s.",,
 "There is already a budget key using the same combination of company, dates, accounts and analytic accounts and axis than the budget line %s","Il existe déjà une clé budgétaire utilisant cette même combinaison de société, dates, comptes comptables, comptes et axes analytiques que la ligne budgétaire %s",,
+"This field is only used for budget key computation and will not be used as account in the invoice","Ce champ n'est utilisé que pour le calcul de la clé budgétaire et ne sera pas utilisé comme compte dans la facture.",,
 "To","A",,
 "To be committed amount","Reste à engager",,
 "To date","A",,

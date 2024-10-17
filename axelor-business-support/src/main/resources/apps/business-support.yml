@@ -5,6 +5,7 @@ typeSelect: standard
 installOrder: 2310
 description: |
    axelor-business-support
+image: app-business-support.png
 modules: 
    axelor-business-support
 dependsOn:

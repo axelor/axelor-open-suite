@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid id="production-sale-order-line-editable-grid" name="sale-order-line-editable-grid"
+    title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence"
+    editable="true" extension="true">
+    <extend target="//field[@name='sequence']">
+      <insert position="before">
+        <hilite if="billOfMaterialLine" color="blue"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='availableStatus']">
+      <insert position="after">
+        <field name="billOfMaterialLine" hidden="true"/>
+      </insert>
+    </extend>
+  </grid>
 
   <form name="sale-order-line-form" id="production-sale-order-line-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
@@ -9,17 +24,16 @@
       <insert position="after">
         <spacer colSpan="6"/>
         <panel name="billOfMaterialPanel" if="__config__.app.isApp('production')">
-          <field name="billOfMaterial"
-            onSelect="action-sale-order-line-attrs-bill-of-material-domain"
+          <field name="billOfMaterial" onSelect="action-sale-order-line-method-set-bom-domain"
             form-view="bill-of-material-form" grid-view="bill-of-material-grid" canEdit="true"
-            colSpan="12"/>
+            colSpan="12" onChange="action-sale-order-line-method-general-sub-lines"/>
           <button name="customizeBOMBtn" title="Customize BOM"
             if="__config__.app.getApp('production')?.allowPersonalizedBOM"
             onClick="action-production-method-customize-bill-of-material"/>
         </panel>
         <panel name="prodProcessPanel" if="__config__.app.isApp('production')">
           <field name="prodProcess"
-            onSelect="action-sale-order-line-attrs-prod-process-domain"
+            onSelect="action-sale-order-line-method-set-prod-process-domain"
             form-view="prod-process-form" grid-view="prod-process-grid" canEdit="true" colSpan="12"/>
           <button name="customizeProdProcessBtn" title="Customize production process"
             onClick="action-production-method-customize-prod-process"
@@ -34,8 +48,7 @@
     <extend target="//field[@name='supplierPartner']">
       <insert position="after">
         <panel name="billOfMaterialPanel" if="__config__.app.isApp('production')">
-          <field name="billOfMaterial"
-            onSelect="action-sale-order-line-attrs-bill-of-material-domain"
+          <field name="billOfMaterial" onSelect="action-sale-order-line-method-set-bom-domain"
             form-view="bill-of-material-form" grid-view="bill-of-material-grid" canEdit="true"
             colSpan="12"/>
           <button name="customizeBOMBtn" title="Customize BOM"
@@ -44,7 +57,7 @@
         </panel>
         <panel name="prodProcessPanel" if="__config__.app.isApp('production')">
           <field name="prodProcess"
-            onSelect="action-sale-order-line-attrs-prod-process-domain"
+            onSelect="action-sale-order-line-method-set-prod-process-domain"
             form-view="prod-process-form" grid-view="prod-process-grid" canEdit="true" colSpan="12"/>
           <button name="customizeProdProcessBtn" title="Customize production process"
             onClick="action-production-method-customize-prod-process"
@@ -59,9 +72,23 @@
       method="customizeBillOfMaterial"/>
   </action-method>
 
+  <action-method name="action-sale-order-line-method-general-sub-lines">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController"
+      method="generateSubLines"/>
+  </action-method>
+
   <action-method name="action-production-method-customize-prod-process">
     <call class="com.axelor.apps.production.web.SaleOrderLineController"
       method="createCustomizedProdProcess"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-set-bom-domain">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController" method="setBomDomain"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-set-prod-process-domain">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController"
+      method="setProdProcessDomain"/>
   </action-method>
 
 </object-views>

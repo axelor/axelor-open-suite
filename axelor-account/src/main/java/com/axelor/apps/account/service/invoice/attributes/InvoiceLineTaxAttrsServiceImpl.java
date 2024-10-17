@@ -67,6 +67,16 @@ public class InvoiceLineTaxAttrsServiceImpl implements InvoiceLineTaxAttrsServic
   }
 
   @Override
+  public void addPercentageTaxTotalScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
+    this.addAttr(
+        this.computeField("percentageTaxTotal", prefix),
+        "scale",
+        currencyScaleService.getScale(invoice),
+        attrsMap);
+  }
+
+  @Override
   public void addInTaxTotalScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(

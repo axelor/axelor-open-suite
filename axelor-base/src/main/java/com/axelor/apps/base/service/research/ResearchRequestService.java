@@ -32,7 +32,4 @@ public interface ResearchRequestService {
   public String getStringResearchKeyDomain(ResearchRequest researchRequest);
 
   public String getDateResearchKeyDomain(ResearchRequest researchRequest);
-
-  Map<String, Object> getResultObjectView(ResearchResultLine researchResultLine)
-      throws AxelorException;
 }

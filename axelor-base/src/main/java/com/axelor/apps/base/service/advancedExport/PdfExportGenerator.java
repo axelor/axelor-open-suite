@@ -18,93 +18,70 @@
  */
 package com.axelor.apps.base.service.advancedExport;
 
-import be.quodlibet.boxable.BaseTable;
-import be.quodlibet.boxable.Cell;
-import be.quodlibet.boxable.Row;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.lowagie.text.Document;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 public class PdfExportGenerator extends AdvancedExportGenerator {
 
-  private PDDocument pdfDocument;
-  private PDPage pdPage;
-  private Row<PDPage> row;
-  private PDPageContentStream contentStream;
-  private BaseTable baseTable;
-  private Cell<PDPage> cell;
   private AdvancedExport advancedExport;
 
-  private File exportFile;
+  private Document document;
+  private PdfPTable table;
 
+  private File exportFile;
   private String exportFileName;
 
   public PdfExportGenerator(AdvancedExport advancedExport) throws AxelorException {
-    this.advancedExport = advancedExport;
-    exportFileName = advancedExport.getMetaModel().getName() + ".pdf";
-    pdfDocument = new PDDocument();
-    pdPage = new PDPage();
-    pdfDocument.addPage(pdPage);
-
     try {
-      contentStream = new PDPageContentStream(pdfDocument, pdPage);
-      exportFile = File.createTempFile(advancedExport.getMetaModel().getName(), ".pdf");
 
-      int bottomMargin = 100;
-      int margin = 10;
-      float tableWidth = pdPage.getMediaBox().getWidth() - (2 * margin);
-      float yStartNewPage = pdPage.getMediaBox().getHeight() - (2 * margin);
+      this.advancedExport = advancedExport;
+      this.exportFileName = advancedExport.getMetaModel().getName();
+      this.exportFile = File.createTempFile(exportFileName, ".pdf");
 
-      baseTable =
-          new BaseTable(
-              700,
-              yStartNewPage,
-              bottomMargin,
-              tableWidth,
-              margin,
-              pdfDocument,
-              pdPage,
-              true,
-              true);
-      row = baseTable.createRow(15f);
-
+      this.document = new Document();
+      this.table = new PdfPTable(advancedExport.getAdvancedExportLineList().size());
+      this.table.setWidthPercentage(100);
+      PdfWriter.getInstance(document, new FileOutputStream(exportFile));
     } catch (IOException e) {
       TraceBackService.trace(e);
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
+    document.open();
   }
 
   @Override
   public void generateHeader() throws AxelorException {
+    Font font = getFont(8);
     for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
-      cell =
-          row.createCell(
-              (float) 100 / advancedExport.getAdvancedExportLineList().size(),
-              advancedExportLine.getTitle());
-      cell.setFillColor(Color.LIGHT_GRAY);
+      PdfPCell cell = getHeaderCell(font, advancedExportLine.getTitle());
+      table.addCell(cell);
     }
   }
 
   @SuppressWarnings("rawtypes")
   @Override
   public void generateBody(List<List> dataList) throws AxelorException {
+    Font font = getFont(7);
     for (List listObj : dataList) {
-      row = baseTable.createRow(15f);
       for (Object value : listObj) {
-        String columnValue = getColumnValue(value);
-        cell =
-            row.createCell(
-                ((float) 100 / advancedExport.getAdvancedExportLineList().size()), columnValue);
+        PdfPCell cell = getCell(font, getColumnValue(value));
+        table.addCell(cell);
       }
     }
   }
@@ -120,17 +97,26 @@ public class PdfExportGenerator extends AdvancedExportGenerator {
     return columnValue;
   }
 
+  protected PdfPCell getHeaderCell(Font font, String value) {
+    PdfPCell cell = getCell(font, value);
+    cell.setBackgroundColor(Color.LIGHT_GRAY);
+    return cell;
+  }
+
+  protected PdfPCell getCell(Font font, String value) {
+    Phrase phrase = new Phrase(value, font);
+    PdfPCell cell = new PdfPCell(phrase);
+    return cell;
+  }
+
+  protected Font getFont(float size) {
+    return FontFactory.getFont(FontFactory.HELVETICA, size);
+  }
+
   @Override
   public void close() throws AxelorException {
-    try {
-      baseTable.draw();
-      contentStream.close();
-      pdfDocument.save(exportFile);
-      pdfDocument.close();
-    } catch (IOException e) {
-      TraceBackService.trace(e);
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
-    }
+    document.add(table);
+    document.close();
   }
 
   @Override
@@ -145,6 +131,6 @@ public class PdfExportGenerator extends AdvancedExportGenerator {
 
   @Override
   public String getFileName() {
-    return exportFileName;
+    return exportFileName + ".pdf";
   }
 }

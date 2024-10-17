@@ -19,7 +19,9 @@
 package com.axelor.apps.base.service.tax;
 
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.base.interfaces.PricedOrder;
@@ -30,6 +32,7 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Optional;
 import java.util.Set;
 
 public class OrderLineTaxServiceImpl implements OrderLineTaxService {
@@ -79,6 +82,7 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
                       AppBaseService.COMPUTATION_SCALING,
                       RoundingMode.HALF_UP));
       orderLineTax.setTaxTotal(currencyScaleService.getScaledValue(taxTotal, currencyScale));
+      orderLineTax.setPercentageTaxTotal(orderLineTax.getTaxTotal());
     }
     orderLineTax.setInTaxTotal(
         currencyScaleService.getScaledValue(exTaxBase.add(taxTotal), currencyScale));
@@ -95,5 +99,24 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
     } else {
       pricedOrder.setSpecificNotes(partnerNote);
     }
+  }
+
+  @Override
+  public boolean isManageByAmount(OrderLineTax orderLineTax) {
+    return Optional.ofNullable(orderLineTax)
+        .map(OrderLineTax::getTaxLine)
+        .map(TaxLine::getTax)
+        .map(Tax::getManageByAmount)
+        .orElse(false);
+  }
+
+  @Override
+  public BigDecimal computeInTaxTotal(OrderLineTax orderLineTax, Currency currency) {
+    int currencyScale = currencyScaleService.getCurrencyScale(currency);
+    if (orderLineTax.getTaxTotal().signum() <= 0) {
+      return currencyScaleService.getScaledValue(orderLineTax.getExTaxBase(), currencyScale);
+    }
+    return currencyScaleService.getScaledValue(
+        orderLineTax.getExTaxBase().add(orderLineTax.getTaxTotal()), currencyScale);
   }
 }

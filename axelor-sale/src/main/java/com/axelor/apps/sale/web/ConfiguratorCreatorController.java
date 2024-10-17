@@ -19,7 +19,6 @@
 package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.exception.HandleExceptionResponse;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
@@ -42,6 +41,7 @@ import org.slf4j.LoggerFactory;
 public class ConfiguratorCreatorController {
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   /**
    * Called from the configurator creator form on formula changes
    *
@@ -49,7 +49,6 @@ public class ConfiguratorCreatorController {
    * @param response
    * @throws AxelorException
    */
-  @HandleExceptionResponse
   public void updateAndActivate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
@@ -69,7 +68,6 @@ public class ConfiguratorCreatorController {
    * @param response
    * @throws IOException
    */
-  @HandleExceptionResponse
   public void importConfiguratorCreators(ActionRequest request, ActionResponse response)
       throws IOException {
     String pathDiff = (String) ((Map) request.getContext().get("dataFile")).get("filePath");
@@ -78,7 +76,6 @@ public class ConfiguratorCreatorController {
     response.setValue("importLog", importLog);
   }
 
-  @HandleExceptionResponse
   public void updateAttributes(ActionRequest request, ActionResponse response) {
     ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
     creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());

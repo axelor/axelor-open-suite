@@ -82,8 +82,7 @@ public class BatchUpdateStockHistory extends BatchStrategy {
 
       int offset = 0;
 
-      while (!(productList = productQuery.order("id").fetch(FETCH_LIMIT, offset)).isEmpty()) {
-
+      while (!(productList = productQuery.order("id").fetch(getFetchLimit(), offset)).isEmpty()) {
         for (Product product : productList) {
           ++offset;
           try {
@@ -102,6 +101,7 @@ public class BatchUpdateStockHistory extends BatchStrategy {
           }
         }
         JPA.clear();
+        findBatch();
       }
     } catch (AxelorException e) {
       TraceBackService.trace(

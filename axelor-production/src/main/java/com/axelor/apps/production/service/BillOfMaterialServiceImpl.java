@@ -142,43 +142,50 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Transactional(rollbackOn = {Exception.class})
   public BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth)
       throws AxelorException {
+    BillOfMaterial personalizedBOM = getCustomizedBom(billOfMaterial, depth, true);
+    if (personalizedBOM == null) return null;
+    List<BillOfMaterialLine> billOfMaterialLineList = billOfMaterial.getBillOfMaterialLineList();
+
+    for (BillOfMaterialLine billOfMaterialLine : billOfMaterialLineList) {
+      if (billOfMaterialLine.getBillOfMaterial() != null) {
+        billOfMaterialLine.setBillOfMaterial(
+            customizeBillOfMaterial(billOfMaterialLine.getBillOfMaterial(), depth + 1));
+      }
+    }
+
+    return billOfMaterialRepo.save(personalizedBOM);
+  }
+
+  @Override
+  public BillOfMaterial getCustomizedBom(BillOfMaterial billOfMaterial, int depth, boolean deepCopy)
+      throws AxelorException {
+    if (billOfMaterial == null) {
+      return null;
+    }
     if (depth > 1000) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(ProductionExceptionMessage.MAX_DEPTH_REACHED));
     }
 
-    if (billOfMaterial != null) {
-      long noOfPersonalizedBOM =
-          billOfMaterialRepo
-                  .all()
-                  .filter(
-                      "self.product = ?1 AND self.personalized = true", billOfMaterial.getProduct())
-                  .count()
-              + 1;
-      BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, true);
-      String name =
-          personalizedBOM.getName()
-              + " ("
-              + I18n.get(ProductionExceptionMessage.BOM_1)
-              + " "
-              + noOfPersonalizedBOM
-              + ")";
-      personalizedBOM.setName(name);
-      personalizedBOM.setPersonalized(true);
-      List<BillOfMaterialLine> billOfMaterialLineList = billOfMaterial.getBillOfMaterialLineList();
-
-      for (BillOfMaterialLine billOfMaterialLine : billOfMaterialLineList) {
-        if (billOfMaterialLine.getBillOfMaterial() != null) {
-          billOfMaterialLine.setBillOfMaterial(
-              customizeBillOfMaterial(billOfMaterialLine.getBillOfMaterial(), depth + 1));
-        }
-      }
-
-      return billOfMaterialRepo.save(personalizedBOM);
-    }
-
-    return null;
+    long noOfPersonalizedBOM =
+        billOfMaterialRepo
+                .all()
+                .filter(
+                    "self.product = ?1 AND self.personalized = true", billOfMaterial.getProduct())
+                .count()
+            + 1;
+    BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, deepCopy);
+    String name =
+        personalizedBOM.getName()
+            + " ("
+            + I18n.get(ProductionExceptionMessage.BOM_1)
+            + " "
+            + noOfPersonalizedBOM
+            + ")";
+    personalizedBOM.setName(name);
+    personalizedBOM.setPersonalized(true);
+    return personalizedBOM;
   }
 
   @Override

@@ -22,20 +22,11 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.meta.CallMethod;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public interface StockLocationService {
-
-  @CallMethod
-  BigDecimal getRealQtyOfProductInStockLocations(
-      Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException;
-
-  @CallMethod
-  BigDecimal getFutureQtyOfProductInStockLocations(
-      Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException;
 
   public Map<String, Object> getStockIndicators(Long productId, Long companyId, Long locationId)
       throws AxelorException;
@@ -53,8 +44,6 @@ public interface StockLocationService {
       StockLocation stockLocation, boolean isVirtualInclude);
 
   List<Long> getAllLocationAndSubLocation(Long stockLocationId, boolean isVirtualInclude);
-
-  public BigDecimal getStockLocationValue(StockLocation stockLocation);
 
   public List<Long> getAllLocationAndSubLocationId(
       StockLocation stockLocation, boolean isVirtualInclude);

@@ -80,7 +80,7 @@ public interface PaymentSessionValidateService {
   boolean generatePaymentsFirst(PaymentSession paymentSession);
 
   InvoicePayment generatePendingPaymentFromInvoiceTerm(
-      PaymentSession paymentSession, InvoiceTerm invoiceTerm);
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) throws AxelorException;
 
   BigDecimal getReconciledAmount(
       PaymentSession paymentSession,

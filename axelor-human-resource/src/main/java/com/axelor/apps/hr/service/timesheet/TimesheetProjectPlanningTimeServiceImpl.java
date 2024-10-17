@@ -116,7 +116,7 @@ public class TimesheetProjectPlanningTimeServiceImpl
     timesheetLine.setTimesheet(timesheet);
     timesheetLine.setEmployee(timesheet.getEmployee());
     timesheetLine.setProduct(projectPlanningTime.getProduct());
-    if (project.getIsShowTimeSpent()) {
+    if (project.getManageTimeSpent()) {
       timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
       Site site = projectPlanningTime.getSite();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -27,10 +27,6 @@
       precision="20" scale="3"/>
     <integer name="saleOrderTypeSelect" title="Type" required="true" default="1"
       selection="supplychain.sale.order.type.select"/>
-    <!-- Onglet échéancier -->
-    <one-to-many name="saleOrderScheduleLineList"
-      ref="com.axelor.apps.sale.db.SaleOrderScheduleLine" mappedBy="saleOrder"
-      title="Schedule line list"/>
     <one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable"
       title="Timetable" mappedBy="saleOrder" copy="false"/>
     <boolean name="interco" title="Interco"/>

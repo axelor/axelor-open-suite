@@ -100,7 +100,6 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
   @Override
   public File print(ManufOrder manufOrder) throws AxelorException {
     manufOrder = manufOrderRepository.find(manufOrder.getId());
-    String title = getFileName(manufOrder);
     Company company = manufOrder.getCompany();
     PrintingTemplate maintenanceManufOrderPrintTemplate = null;
     if (ObjectUtils.notEmpty(company)) {
@@ -115,7 +114,7 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
     return printingTemplatePrintService.getPrintFile(
-        maintenanceManufOrderPrintTemplate, new PrintingGenFactoryContext(manufOrder), title);
+        maintenanceManufOrderPrintTemplate, new PrintingGenFactoryContext(manufOrder));
   }
 
   @Override

@@ -22,12 +22,14 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.PaymentConditionToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -626,14 +628,20 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         return invoice.getDueDate();
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
         SaleOrder saleOrder = (SaleOrder) forecastModel;
-        return saleOrder.getExpectedRealisationDate() == null
-            ? saleOrder.getCreationDate().plusDays(forecastRecapLineType.getEstimatedDuration())
-            : saleOrder.getExpectedRealisationDate();
+        return getOrderDate(
+            forecastRecapLineType,
+            saleOrder.getExpectedRealisationDate(),
+            saleOrder.getCreationDate(),
+            saleOrder.getEstimatedDeliveryDate(),
+            saleOrder.getPaymentCondition());
       case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
         PurchaseOrder purchaseOrder = (PurchaseOrder) forecastModel;
-        return purchaseOrder.getExpectedRealisationDate() == null
-            ? purchaseOrder.getOrderDate().plusDays(forecastRecapLineType.getEstimatedDuration())
-            : purchaseOrder.getExpectedRealisationDate();
+        return getOrderDate(
+            forecastRecapLineType,
+            purchaseOrder.getExpectedRealisationDate(),
+            purchaseOrder.getOrderDate(),
+            purchaseOrder.getEstimatedReceiptDate(),
+            purchaseOrder.getPaymentCondition());
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
         Expense expense = (Expense) forecastModel;
         return expense.getValidationDateTime().toLocalDate();
@@ -660,6 +668,21 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                     CashManagementExceptionMessage.UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE),
                 forecastRecapLineType.getElementSelect()));
     }
+  }
+
+  protected LocalDate getOrderDate(
+      ForecastRecapLineType forecastRecapLineType,
+      LocalDate expectedRealisationDate,
+      LocalDate orderDate,
+      LocalDate estimatedDate,
+      PaymentCondition paymentCondition) {
+    if (expectedRealisationDate != null) {
+      return expectedRealisationDate;
+    }
+    LocalDate baseDate = (estimatedDate != null) ? estimatedDate : orderDate;
+    LocalDate newEstimatedDate = baseDate.plusDays(forecastRecapLineType.getEstimatedDuration());
+
+    return PaymentConditionToolService.getMaxDueDate(paymentCondition, newEstimatedDate);
   }
 
   /** Returns the name used in generated forecast line */

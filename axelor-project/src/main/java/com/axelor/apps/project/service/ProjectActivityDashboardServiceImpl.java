@@ -25,6 +25,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
@@ -56,7 +57,7 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
   @Inject protected MailMessageRepository mailMessageRepo;
   @Inject protected ProjectTaskRepository projectTaskRepo;
   @Inject protected WikiRepository wikiRepo;
-  @Inject protected ProjectService projectService;
+  @Inject protected ProjectToolService projectToolService;
   @Inject protected ObjectMapper objectMapper;
   @Inject protected ProjectRepository projectRepo;
 
@@ -76,10 +77,10 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
 
     if (projectId != null) {
       project = projectRepo.find(projectId);
-      projectService.getChildProjectIds(projectIdSet, project);
+      projectIdSet = projectToolService.getRelatedProjectIds(project);
     } else {
-      project = AuthUtils.getUser().getContextProject();
-      projectIdSet = projectService.getContextProjectIds();
+      project = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
+      projectIdSet = projectToolService.getActiveProjectIds();
     }
 
     for (MailMessage message : mailMessageList) {

@@ -18,25 +18,15 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ProdProductService {
+public interface ProdProductService {
 
   // TODO add conversion unit
-  public BigDecimal computeQuantity(List<ProdProduct> prodProductList) {
+  BigDecimal computeQuantity(List<ProdProduct> prodProductList);
 
-    BigDecimal qty = BigDecimal.ZERO;
-
-    if (prodProductList != null) {
-
-      for (ProdProduct prodProduct : prodProductList) {
-
-        qty = qty.add(prodProduct.getQty());
-      }
-    }
-
-    return qty;
-  }
+  boolean existInFinishedProduct(ManufOrder manufOrder, ProdProduct prodProduct);
 }

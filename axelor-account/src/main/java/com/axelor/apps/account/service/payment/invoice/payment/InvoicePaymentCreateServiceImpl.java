@@ -44,14 +44,15 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.shiro.util.CollectionUtils;
@@ -67,6 +68,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   protected InvoiceTermService invoiceTermService;
   protected InvoiceService invoiceService;
   protected PfpService pfpService;
+  protected ReconcileRepository reconcileRepository;
+  protected InvoiceRepository invoiceRepository;
 
   @Inject
   public InvoicePaymentCreateServiceImpl(
@@ -77,7 +80,9 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
       InvoiceService invoiceService,
-      PfpService pfpService) {
+      PfpService pfpService,
+      ReconcileRepository reconcileRepository,
+      InvoiceRepository invoiceRepository) {
 
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
@@ -87,6 +92,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     this.invoiceTermService = invoiceTermService;
     this.invoiceService = invoiceService;
     this.pfpService = pfpService;
+    this.reconcileRepository = reconcileRepository;
+    this.invoiceRepository = invoiceRepository;
   }
 
   /**
@@ -300,10 +307,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     } else {
       filterString.append("self.creditMoveLine = ?");
     }
-    return Beans.get(ReconcileRepository.class)
-        .all()
-        .filter(filterString.toString(), moveLine)
-        .fetch();
+    return reconcileRepository.all().filter(filterString.toString(), moveLine).fetch();
   }
 
   @Override
@@ -350,7 +354,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       LocalDate paymentDate,
       LocalDate bankDepositDate,
       String chequeNumber,
-      PaymentSession paymentSession) {
+      PaymentSession paymentSession)
+      throws AxelorException {
     if (CollectionUtils.isEmpty(invoiceTermList)) {
       return null;
     }
@@ -379,7 +384,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoicePayment.setManualChange(true);
     invoice.addInvoicePaymentListItem(invoicePayment);
 
-    invoiceTermPaymentService.initInvoiceTermPayments(invoicePayment, invoiceTermList);
+    invoiceTermPaymentService.initInvoiceTermPayments(
+        invoicePayment, invoiceTermList, invoicePayment.getPaymentDate());
     invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
 
     invoicePayment.setAmount(
@@ -395,7 +401,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       PaymentMode paymentMode,
       BankDetails companyBankDetails,
       LocalDate paymentDate,
-      PaymentSession paymentSession) {
+      PaymentSession paymentSession)
+      throws AxelorException {
     return this.createInvoicePayment(
         Collections.singletonList(invoiceTerm),
         paymentMode,
@@ -416,7 +423,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       LocalDate bankDepositDate,
       String chequeNumber)
       throws AxelorException {
-    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
     List<InvoicePayment> invoicePaymentList = new ArrayList<>();
 
     for (Long invoiceId : invoiceList) {
@@ -455,7 +461,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       LocalDate paymentDate,
       LocalDate bankDepositDate,
       String chequeNumber,
-      boolean holdback) {
+      boolean holdback)
+      throws AxelorException {
     List<InvoiceTerm> invoiceTermList =
         invoice.getInvoiceTermList().stream()
             .filter(
@@ -491,7 +498,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     List<Long> invoiceToPay = new ArrayList<>();
 
     for (Long invoiceId : invoiceIdList) {
-      Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
+      Invoice invoice = invoiceRepository.find(invoiceId);
 
       if ((invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED
               && invoice.getOperationSubTypeSelect()
@@ -556,11 +563,10 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
           this.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
       invoicePayment.setReconcile(reconcile);
 
-      List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
+      List<InvoiceTerm> invoiceTermList = Arrays.asList(invoiceTerm);
 
-      invoiceTermList.add(invoiceTerm);
-
-      invoiceTermService.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
+      invoiceTermService.updateInvoiceTerms(
+          invoiceTermList, invoicePayment, amount, reconcile, new HashMap<>());
     } else {
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
     }

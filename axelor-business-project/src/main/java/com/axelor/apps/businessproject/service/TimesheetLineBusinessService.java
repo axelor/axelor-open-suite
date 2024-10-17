@@ -18,11 +18,8 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
-import com.axelor.db.Query;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.persist.Transactional;
 
@@ -33,11 +30,7 @@ public interface TimesheetLineBusinessService {
   @Transactional
   public TimesheetLine updateTimesheetLines(TimesheetLine timesheetLine);
 
-  public TimesheetLine setTimesheet(TimesheetLine timesheetLine) throws AxelorException;
-
   public QueryBuilder<TimesheetLine> getTimesheetLineInvoicingFilter();
 
   public void timsheetLineInvoicing(Project project);
-
-  Query<Timesheet> getTimesheetQuery(TimesheetLine timesheetLine);
 }

@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -44,6 +45,7 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -55,9 +57,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
@@ -78,6 +82,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   protected MoveValidateService moveValidateService;
   protected MoveSimulateService moveSimulateService;
   protected MoveRepository moveRepo;
+  protected MoveToolService moveToolService;
   protected boolean end = false;
   protected Move resultMove;
   protected BigDecimal resultMoveAmount;
@@ -94,7 +99,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
       MoveSimulateService moveSimulateService,
-      MoveRepository moveRepo) {
+      MoveRepository moveRepo,
+      MoveToolService moveToolService) {
     this.partnerRepository = partnerRepository;
     this.yearRepository = yearRepository;
     this.accountRepository = accountRepository;
@@ -105,6 +111,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     this.moveValidateService = moveValidateService;
     this.moveSimulateService = moveSimulateService;
     this.moveRepo = moveRepo;
+    this.moveToolService = moveToolService;
   }
 
   @Override
@@ -543,5 +550,35 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
         return this.account.equals(other.account) && other.partner == null;
       }
     }
+  }
+
+  public Integer getDaybookMoveCount(AccountingBatch accountingBatch) throws AxelorException {
+
+    if (AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS
+            != accountingBatch.getActionSelect()
+        || accountingBatch.getYear() == null) {
+      return 0;
+    }
+
+    Set<Year> yearSet = new HashSet<>();
+    yearSet.add(accountingBatch.getYear());
+
+    int daybookMoveCount = 0;
+
+    if (accountingBatch.getCompany() != null
+        && accountConfigService
+            .getAccountConfig(accountingBatch.getCompany())
+            .getAccountingDaybook()) {
+      List<Move> moveList =
+          moveToolService.findMoveByYear(yearSet, List.of(MoveRepository.STATUS_DAYBOOK));
+      if (!ObjectUtils.isEmpty(moveList)) {
+        return (int)
+            moveList.stream()
+                .filter(
+                    m -> m.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
+                .count();
+      }
+    }
+    return 0;
   }
 }

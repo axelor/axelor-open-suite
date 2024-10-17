@@ -37,10 +37,6 @@ public interface MoveLineControlService {
 
   boolean displayInvoiceTermWarningMessage(MoveLine moveLine);
 
-  Move setMoveLineDates(Move move) throws AxelorException;
-
-  Move setMoveLineOriginDates(Move move) throws AxelorException;
-
   /**
    * Method that controls if moveLine.account.company is the same moveLine.move.company
    *

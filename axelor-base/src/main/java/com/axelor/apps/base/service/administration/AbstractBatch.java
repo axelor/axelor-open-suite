@@ -300,4 +300,14 @@ public abstract class AbstractBatch {
 
     return batch;
   }
+
+  protected Integer getFetchLimit() {
+    Integer defaultBatchFetchLimit = appBaseService.getAppBase().getDefaultBatchFetchLimit();
+
+    // if not value, default will be 1
+    if (defaultBatchFetchLimit == 0) {
+      defaultBatchFetchLimit = FETCH_LIMIT;
+    }
+    return defaultBatchFetchLimit;
+  }
 }

@@ -26,13 +26,14 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.service.ProdProcessService;
+import com.axelor.apps.production.service.ProdProcessWorkflowService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.collect.Lists;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.inject.Singleton;
 import java.util.List;
 
@@ -96,8 +97,7 @@ public class ProdProcessController {
     ProdProcess prodProcess =
         prodProcessRepository.find(request.getContext().asType(ProdProcess.class).getId());
 
-    List<ProdProcess> prodProcessSet = Lists.newArrayList();
-    prodProcessSet =
+    List<ProdProcess> prodProcessSet =
         prodProcessRepository
             .all()
             .filter("self.originalProdProcess = :origin")
@@ -107,15 +107,14 @@ public class ProdProcessController {
 
     if (!prodProcessSet.isEmpty()) {
 
-      String existingVersions = "";
-      for (ProdProcess prodProcessVersion : prodProcessSet) {
-        existingVersions += "<li>" + prodProcessVersion.getFullName() + "</li>";
-      }
+      StringHtmlListBuilder builder = new StringHtmlListBuilder();
+      prodProcessSet.stream().map(ProdProcess::getFullName).forEach(builder::append);
+
       message =
           String.format(
               I18n.get(
-                  "This production process already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"),
-              existingVersions);
+                  "This production process already has the following versions : <br/> %s And these versions may also have ones. Do you still wish to create a new one ?"),
+              builder.toString());
     } else {
       message = I18n.get("Do you really wish to create a new version of this production process ?");
     }
@@ -139,5 +138,52 @@ public class ProdProcessController {
             .param("search-filters", "prod-process-filters")
             .context("_showRecord", String.valueOf(copy.getId()))
             .map());
+  }
+
+  public void setDraftStaus(ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      Beans.get(ProdProcessWorkflowService.class).setDraftStatus(prodProcess);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setValidateStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      Beans.get(ProdProcessWorkflowService.class).setValidateStatus(prodProcess);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setApplicableStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      Beans.get(ProdProcessWorkflowService.class).setApplicableStatus(prodProcess);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setObsoleteStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      Beans.get(ProdProcessWorkflowService.class).setObsoleteStatus(prodProcess);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

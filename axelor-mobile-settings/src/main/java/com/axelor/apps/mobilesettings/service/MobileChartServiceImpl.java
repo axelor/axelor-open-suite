@@ -45,19 +45,25 @@ public class MobileChartServiceImpl implements MobileChartService {
     List<MobileChartValueResponse> mobileChartValueResponseList = new ArrayList<>();
     for (Object objectValues : resultList) {
 
-      String label = getLabel(((Object[]) objectValues)[0]);
-      double value = getDoubleValue(((Object[]) objectValues)[1]);
+      String label = getString(((Object[]) objectValues)[0]);
+      Object value;
+
+      if (((Object[]) objectValues)[1] instanceof String) {
+        value = getString(((Object[]) objectValues)[1]);
+      } else {
+        value = getDoubleValue(((Object[]) objectValues)[1]);
+      }
       mobileChartValueResponseList.add(new MobileChartValueResponse(label, value));
     }
     return mobileChartValueResponseList;
   }
 
-  protected String getLabel(Object label) {
-    if (label == null) {
+  protected String getString(Object value) {
+    if (value == null) {
       return "null";
     }
 
-    return label.toString();
+    return value.toString();
   }
 
   protected double getDoubleValue(Object value) {

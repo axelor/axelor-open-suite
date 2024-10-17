@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="ProjectTaskLink">
+
+    <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask"
+      title="Project task"/>
+    <many-to-one name="relatedTask" ref="com.axelor.apps.project.db.ProjectTask"
+      title="Related task"/>
+    <many-to-one name="projectTaskLinkType"
+      ref="com.axelor.apps.project.db.ProjectTaskLinkType" title="Link type"/>
+    <many-to-one name="projectTaskLink" ref="com.axelor.apps.project.db.ProjectTaskLink"/>
+  </entity>
+
+</domain-models>

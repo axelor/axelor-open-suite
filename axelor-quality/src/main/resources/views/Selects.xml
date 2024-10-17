@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <selection name="quality.alert.priority.select">
     <option color="green" value="1">Low</option>
@@ -75,15 +75,6 @@
 
   <selection name="team.type.select" id="quality.team.type.select">
     <option value="quality">Quality</option>
-  </selection>
-
-  <selection name="quality.measuring.point.measuring.note.select">
-    <option value="0" icon="img/rating/rating-0.00.png">0</option>
-    <option value="1" icon="img/rating/rating-1.00.png">1</option>
-    <option value="2" icon="img/rating/rating-2.00.png">2</option>
-    <option value="3" icon="img/rating/rating-3.00.png">3</option>
-    <option value="4" icon="img/rating/rating-4.00.png">4</option>
-    <option value="5" icon="img/rating/rating-5.00.png">5</option>
   </selection>
 
   <selection name="quality.measuring.point.measuring.type.select">

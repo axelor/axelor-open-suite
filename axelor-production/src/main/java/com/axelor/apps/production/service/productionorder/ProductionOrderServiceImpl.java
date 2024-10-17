@@ -62,13 +62,19 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       throws AxelorException {
 
     ProductionOrder productionOrder = new ProductionOrder();
+    Company company =
+        Optional.ofNullable(billOfMaterial).map(BillOfMaterial::getCompany).orElse(null);
     if (saleOrder != null) {
       productionOrder.setClientPartner(saleOrder.getClientPartner());
       productionOrder.setSaleOrder(saleOrder);
+      productionOrder.setProductionOrderSeq(
+          String.format(
+              "%s - %s",
+              saleOrder.getFullName(), this.getProductionOrderSeq(productionOrder, company)));
+    } else {
+      productionOrder.setProductionOrderSeq(this.getProductionOrderSeq(productionOrder, company));
     }
-    Company company =
-        Optional.ofNullable(billOfMaterial).map(BillOfMaterial::getCompany).orElse(null);
-    productionOrder.setProductionOrderSeq(this.getProductionOrderSeq(productionOrder, company));
+
     return productionOrder;
   }
 

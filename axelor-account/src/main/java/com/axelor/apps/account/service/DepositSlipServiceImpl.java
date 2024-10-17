@@ -161,12 +161,11 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         .bind("model", depositSlip.getClass().getName())
         .bind("filename", filename + ".pdf")
         .fetchStream()
-        .forEach(dmsFile -> metaFiles.delete(dmsFile));
+        .forEach(metaFiles::delete);
   }
 
   public String getFilename(
-      DepositSlip depositSlip, BankDetails bankDetails, LocalDate chequeDueDate)
-      throws AxelorException {
+      DepositSlip depositSlip, BankDetails bankDetails, LocalDate chequeDueDate) {
 
     StringBuilder stringBuilder = new StringBuilder(depositSlip.getDepositNumber());
     stringBuilder = stringBuilder.append('-').append(bankDetails.getBankCode());

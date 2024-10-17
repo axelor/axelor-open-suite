@@ -36,7 +36,6 @@ public class AddressBaseRepository extends AddressRepository {
   @Override
   public Address save(Address entity) {
 
-    entity.setFullName(addressService.computeFullName(entity));
     try {
       EntityManager em = JPA.em().getEntityManagerFactory().createEntityManager();
       Address oldAddressObject =
@@ -47,6 +46,7 @@ public class AddressBaseRepository extends AddressRepository {
       }
       AddressTemplateService addressTemplateService = Beans.get(AddressTemplateService.class);
       addressTemplateService.setFormattedFullName(entity);
+      entity.setFullName(addressService.computeFullName(entity).toUpperCase());
       addressTemplateService.checkRequiredAddressFields(entity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

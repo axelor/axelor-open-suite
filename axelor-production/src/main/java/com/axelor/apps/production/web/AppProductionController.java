@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.production.web;
 
-import com.axelor.apps.base.service.exception.HandleExceptionResponse;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -37,7 +36,6 @@ public class AppProductionController {
     response.setReload(true);
   }
 
-  @HandleExceptionResponse
   public void checkIfOutsourcingDisabled(ActionRequest request, ActionResponse response) {
     AppProduction app = request.getContext().asType(AppProduction.class);
     if (app.getId() == null) {

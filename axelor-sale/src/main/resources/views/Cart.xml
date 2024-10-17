@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="cart-grid" title="Carts" model="com.axelor.apps.sale.db.Cart">
+    <field name="user"/>
+    <field name="company"/>
+    <field name="partner"/>
+  </grid>
+
+  <form name="cart-form" title="Cart" model="com.axelor.apps.sale.db.Cart"
+    onNew="action-cart-method-set-default-values" width="large" canNew="false">
+    <toolbar>
+      <button name="emptyCartBtn" title="Empty cart"
+        onClick="save,action-cart-method-empty-cart"/>
+      <button name="createSaleOrderBtn" title="Create the sale order"
+        onClick="save,action-method-cart-create-sale-order" hidden="true"
+        showIf="cartLineList &amp;&amp; cartLineList.length > 0"/>
+    </toolbar>
+
+    <panel name="mainPanel">
+      <field name="user" form-view="user-form" grid-view="user-grid" readonly="true"/>
+      <field name="company" form-view="company-form" grid-view="company-grid"
+        onChange="action-cart-record-reset-fields" onSelect="action-cart-attrs-set-company-domain"
+        readonlyIf="cartLineList &amp;&amp; cartLineList.length > 0"/>
+      <field name="partner" form-view="partner-form" grid-view="partner-grid" canNew="true"
+        readonlyIf="!company" onSelect="action-method-cart-set-partner-domain"
+        onChange="action-cart-method-update-price"/>
+      <field name="partner.currency" form-view="currency-form" grid-view="currency-grid"
+        hidden="true" showIf="partner"/>
+      <panel-related field="cartLineList" form-view="cart-line-form"
+        grid-view="cart-line-grid" colSpan="12" showIf="company"/>
+    </panel>
+  </form>
+
+  <action-method name="action-cart-method-set-default-values">
+    <call class="com.axelor.apps.sale.web.CartController" method="setDefaultValues"/>
+  </action-method>
+
+  <action-method name="action-cart-method-empty-cart">
+    <call class="com.axelor.apps.sale.web.CartController" method="emptyCart"/>
+  </action-method>
+
+  <action-method name="action-method-cart-create-sale-order">
+    <call class="com.axelor.apps.sale.web.CartController" method="createSaleOrder"/>
+  </action-method>
+
+  <action-method name="action-method-cart-set-partner-domain">
+    <call class="com.axelor.apps.sale.web.CartController" method="getCartPartnerDomain"/>
+  </action-method>
+
+  <action-attrs name="action-cart-attrs-set-company-domain">
+    <attribute name="domain" for="company"
+      expr="eval: 'self.id IN (' + __user__?.companySet?.collect{it.id}.join(',') + ')'"
+      if="__user__?.companySet &amp;&amp; !__user__?.companySet?.isEmpty()"/>
+  </action-attrs>
+
+  <action-record name="action-cart-record-reset-fields"
+    model="com.axelor.apps.sale.db.Cart">
+    <field name="partner" expr="eval: null" if="!company"/>
+    <field name="stockLocation" expr="eval: null"
+      if="!company &amp;&amp; __config__.app.isApp('supplychain')"/>
+  </action-record>
+
+  <action-method name="action-cart-method-update-price">
+    <call class="com.axelor.apps.sale.web.CartController" method="updatePrice"/>
+  </action-method>
+
+</object-views>

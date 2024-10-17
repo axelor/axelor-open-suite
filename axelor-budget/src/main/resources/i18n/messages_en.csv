@@ -289,6 +289,7 @@
 "The total amount is greater than the budget distribution total.",,,
 "There is a budget overrun for %s. The available balance is %.2f %s.",,,
 "There is already a budget key using the same combination of company, dates, accounts and analytic accounts and axis than the budget line %s",,,
+"This field is only used for budget key computation and will not be used as account in the invoice",,,
 "To",,,
 "To be committed amount",,,
 "To date",,,

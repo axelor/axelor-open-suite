@@ -1,4 +1,7 @@
-"importId";"name";"modelName";"statusSelect";"toAttach"
-"26";"SaleOrder PDF";"com.axelor.apps.sale.db.SaleOrder";"2";"false"
-"124";"SaleOrder XLSX";"com.axelor.apps.sale.db.SaleOrder";"2";"false"
-"125";"SaleOrder DOC";"com.axelor.apps.sale.db.SaleOrder";"2";"false"
+"importId";"name";"modelName";"statusSelect";"toAttach";"scriptFieldName"
+"26";"SaleOrder PDF";"com.axelor.apps.sale.db.SaleOrder";"2";"false";"${__i18n__.get(SaleOrder.statusSelect == 1 ||SaleOrder.statusSelect == 2 ? 'Sale quotation' : 'Sale order') + ' ' +SaleOrder.saleOrderSeq +
+((com.axelor.inject.Beans.get(com.axelor.apps.sale.service.app.AppSaleService.class).getAppSale().getManageSaleOrderVersion() && SaleOrder.versionNumber > 1) ? '-V' + SaleOrder.versionNumber : '') + '-' + date}"
+"124";"SaleOrder XLSX";"com.axelor.apps.sale.db.SaleOrder";"2";"false";"${__i18n__.get(SaleOrder.statusSelect == 1 ||SaleOrder.statusSelect == 2 ? 'Sale quotation' : 'Sale order') + ' ' +SaleOrder.saleOrderSeq +
+((com.axelor.inject.Beans.get(com.axelor.apps.sale.service.app.AppSaleService.class).getAppSale().getManageSaleOrderVersion() && SaleOrder.versionNumber > 1) ? '-V' + SaleOrder.versionNumber : '') + '-' + date}"
+"125";"SaleOrder DOC";"com.axelor.apps.sale.db.SaleOrder";"2";"false";"${__i18n__.get(SaleOrder.statusSelect == 1 ||SaleOrder.statusSelect == 2 ? 'Sale quotation' : 'Sale order') + ' ' +SaleOrder.saleOrderSeq +
+((com.axelor.inject.Beans.get(com.axelor.apps.sale.service.app.AppSaleService.class).getAppSale().getManageSaleOrderVersion() && SaleOrder.versionNumber > 1) ? '-V' + SaleOrder.versionNumber : '') + '-' + date}"

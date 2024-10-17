@@ -121,14 +121,13 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
       boolean toAttach)
       throws AxelorException {
     saleOrderService.checkPrintingSettings(saleOrder);
-    String title = saleOrderService.getFileName(saleOrder);
 
     PrintingGenFactoryContext factoryContext =
         new PrintingGenFactoryContext(EntityHelper.getEntity(saleOrder));
     factoryContext.setContext(Map.of("ProformaInvoice", proforma));
 
     return printingTemplatePrintService.getPrintFile(
-        saleOrderPrintTemplate, factoryContext, title + " - ${date}", toAttach);
+        saleOrderPrintTemplate, factoryContext, toAttach);
   }
 
   /** Return the name for the printed sale orders. */

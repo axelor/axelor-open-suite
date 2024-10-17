@@ -1836,6 +1836,12 @@ and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = 
                     <property name="analysis">measure</property>
                 </structure>
                 <structure>
+                    <property name="columnName">show_percentage</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">show_percentage</text-property>
+                    <text-property name="heading">show_percentage</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">tax_type_count</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">tax_type_count</text-property>
@@ -1901,47 +1907,52 @@ and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = 
                     </structure>
                     <structure>
                         <property name="position">5</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
                         <property name="name">tax_type</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">7</property>
                         <property name="name">tax_type_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">8</property>
                         <property name="name">tax_type_code</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">9</property>
                         <property name="name">tax_code</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">10</property>
                         <property name="name">type_select</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">11</property>
+                        <property name="name">show_percentage</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
                         <property name="name">tax_type_count</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">13</property>
                         <property name="name">unique_tax_type_names</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">14</property>
                         <property name="name">seq</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
-                        <property name="name">number_of_decimals</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -1981,64 +1992,71 @@ and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = 
                 </structure>
                 <structure>
                     <property name="position">5</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
                     <property name="name">tax_type</property>
                     <property name="nativeName">tax_type</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">7</property>
                     <property name="name">tax_type_name</property>
                     <property name="nativeName">tax_type_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">8</property>
                     <property name="name">tax_type_code</property>
                     <property name="nativeName">tax_type_code</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">9</property>
                     <property name="name">tax_code</property>
                     <property name="nativeName">tax_code</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">10</property>
                     <property name="name">type_select</property>
                     <property name="nativeName">type_select</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">11</property>
+                    <property name="name">show_percentage</property>
+                    <property name="nativeName">show_percentage</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
                     <property name="name">tax_type_count</property>
                     <property name="nativeName">tax_type_count</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">13</property>
                     <property name="name">unique_tax_type_names</property>
                     <property name="nativeName">unique_tax_type_names</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">14</property>
                     <property name="name">seq</property>
                     <property name="nativeName">seq</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">number_of_decimals</property>
-                    <property name="nativeName">number_of_decimals</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
@@ -2060,6 +2078,11 @@ FROM (
         TaxType.code as tax_type_code,
         Tax.code AS tax_code,
         TaxType.type_select,
+        (CASE WHEN (Tax.manage_by_amount = false) 
+        OR (ABS(InvoiceLineTax.percentage_tax_total - InvoiceLineTax.tax_total) < AccountConfig.allowed_tax_gap AND Tax.manage_by_amount = true) 
+    	THEN true
+     	ELSE false 
+		END) AS show_percentage,
         COUNT(TaxType.name) OVER (PARTITION BY TaxType.name) AS tax_type_count
     FROM
     	account_invoice_line_tax as InvoiceLineTax
@@ -2070,6 +2093,8 @@ FROM (
 		left outer join account_tax_type as TaxType on (TaxType.id = Tax.tax_type)
 		left outer join meta_select AS MetaSelect on (MetaSelect.name = 'tax.type.type.select')
 		left outer join meta_select_item MetaSelectItem on (MetaSelectItem.select_id = MetaSelect.id AND MetaSelectItem.value = cast( TaxType.type_select AS text ))
+		left outer join base_company as Company on (Invoice.company = Company.id)
+		left outer join account_account_config as AccountConfig on (AccountConfig.company = Company.id)
     WHERE
         Invoice.id = ?
 ) AS main_query
@@ -4512,11 +4537,19 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <text-property name="displayName">code</text-property>
                     <text-property name="heading">code</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">manage_by_amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">manage_by_amount</text-property>
+                    <text-property name="heading">manage_by_amount</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
+                    <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
                     <expression name="defaultValue" type="javascript">0</expression>
                     <property name="isInput">true</property>
@@ -4534,6 +4567,11 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                         <property name="position">2</property>
                         <property name="name">code</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">manage_by_amount</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -4553,8 +4591,15 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">manage_by_amount</property>
+                    <property name="nativeName">manage_by_amount</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select TaxLine.value,Tax.code
+            <xml-property name="queryText"><![CDATA[select TaxLine.value,Tax.code, Tax.manage_by_amount
 from account_invoice_line_tax_line_set as InvoiceLineTaxLine
 left outer join account_tax_line as TaxLine on (TaxLine.id = InvoiceLineTaxLine.tax_line_set)
 left outer join account_tax as Tax on (Tax.id = TaxLine.tax)
@@ -7741,7 +7786,7 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="6059">
+                                <cell id="6242">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -8555,6 +8600,12 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                                 <property name="dataType">decimal</property>
                                                 <property name="allowExport">true</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">manage_by_amount</property>
+                                                <text-property name="displayName">manage_by_amount</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["manage_by_amount"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
                                         </list-property>
                                         <column id="6058"/>
                                         <detail>
@@ -8564,7 +8615,7 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                                         <property name="fontSize">8pt</property>
                                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF>row["code"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF format="###0.00' %'{RoundingMode=HALF_UP}">row["value"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>row["code"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF format="###0.00' %'{RoundingMode=HALF_UP}">if(!row["manage_by_amount"] || (row["manage_by_amount"] &amp;&amp; row["value"] > 0)) row["value"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                             </row>
@@ -9900,6 +9951,12 @@ else{ 1.00 }
                                                 </list-property>
                                                 <property name="allowExport">true</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">show_percentage</property>
+                                                <text-property name="displayName">show_percentage</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["show_percentage"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
                                         </list-property>
                                         <list-property name="filter">
                                             <structure>
@@ -10162,7 +10219,7 @@ else{ 1.00 }
                                                         <property name="borderLeftWidth">thin</property>
                                                         <property name="borderRightStyle">solid</property>
                                                         <property name="borderRightWidth">thin</property>
-                                                        <data id="6075">
+                                                        <data id="6246">
                                                             <property name="fontSize">8pt</property>
                                                             <property name="fontWeight">bold</property>
                                                             <structure name="numberFormat">
@@ -10213,9 +10270,25 @@ else{ 1.00 }
                                                     <property name="borderTopWidth">thin</property>
                                                     <text id="4714">
                                                         <property name="textAlign">right</property>
+                                                        <list-property name="visibility">
+                                                            <structure>
+                                                                <property name="format">all</property>
+                                                                <expression name="valueExpr" type="javascript">!row["show_percentage"]</expression>
+                                                            </structure>
+                                                        </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[<VALUE-OF format="###0.00' %'{RoundingMode=HALF_UP}">row["value"]</VALUE-OF>]]></text-property>
                                                     </text>
+                                                    <label id="6252">
+                                                        <property name="textAlign">center</property>
+                                                        <list-property name="visibility">
+                                                            <structure>
+                                                                <property name="format">all</property>
+                                                                <expression name="valueExpr" type="javascript">row["show_percentage"]</expression>
+                                                            </structure>
+                                                        </list-property>
+                                                        <text-property name="text">-</text-property>
+                                                    </label>
                                                 </cell>
                                                 <cell id="4715">
                                                     <property name="borderBottomColor">#000000</property>
@@ -11003,11 +11076,11 @@ else{ 1.00 }
                                                 <property name="showIfBlank">false</property>
                                                 <property name="canShrink">false</property>
                                                 <property name="overflow">hidden</property>
-                                                <grid id="6076">
+                                                <grid id="6248">
                                                     <property name="dataBindingRef">InvoiceLineTaxTable</property>
-                                                    <column id="6077"/>
-                                                    <row id="6078">
-                                                        <cell id="6079">
+                                                    <column id="6249"/>
+                                                    <row id="6250">
+                                                        <cell id="6251">
                                                             <text id="5693">
                                                                 <property name="fontSize">10pt</property>
                                                                 <property name="fontWeight">normal</property>
@@ -12947,8 +13020,35 @@ else {'Invoice.totalTaxes'}</value>
                                     <property name="rowSpan">1</property>
                                     <text id="5981">
                                         <property name="fontSize">8pt</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'value:'+row["invoice_product_statement"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["invoice_product_statement"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+	row["translation"]
+} else {
+	row._outer["invoice_product_statement"]
+}</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5980"/>
@@ -12965,8 +13065,35 @@ else {'Invoice.totalTaxes'}</value>
                                     <property name="rowSpan">1</property>
                                     <text id="5155">
                                         <property name="fontSize">8pt</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'value:'+row["SaleLegalNote"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["SaleLegalNote"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+	row["translation"]
+} else {
+	row._outer["SaleLegalNote"]
+}</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5091"/>
@@ -13160,8 +13287,35 @@ else {'Invoice.totalTaxes'}</value>
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
                                     <text id="5144">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'value:'+row["ClientBox"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["ClientBox"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+	row["translation"]
+} else {
+	row._outer["ClientBox"]
+}</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5128"/>
@@ -13837,8 +13991,35 @@ else {'Invoice.totalTaxes'}</value>
                     <property name="rowSpan">1</property>
                     <text id="5215">
                         <property name="fontSize">9pt</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'value:'+row["termsAndConditions"]</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["termsAndConditions"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+	row["translation"]
+} else {
+	row._outer["termsAndConditions"]
+}</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>

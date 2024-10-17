@@ -18,9 +18,7 @@
  */
 package com.axelor.apps.businessproject.service.batch;
 
-import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
@@ -32,7 +30,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.List;
 
-public class BatchComputeProjectTotalsService extends AbstractBatch {
+public class BatchComputeProjectTotalsService extends BatchStrategy {
 
   protected ProjectRepository projectRepository;
 
@@ -54,8 +52,7 @@ public class BatchComputeProjectTotalsService extends AbstractBatch {
             .all()
             .order("id")
             .filter("self.isBusinessProject = true AND self.projectStatus.isCompleted = false");
-    while (!(projectList = projectQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
-      findBatch();
+    while (!(projectList = projectQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
       for (Project project : projectList) {
         ++offset;
         try {
@@ -72,6 +69,7 @@ public class BatchComputeProjectTotalsService extends AbstractBatch {
         }
       }
       JPA.clear();
+      findBatch();
     }
   }
 
@@ -88,9 +86,5 @@ public class BatchComputeProjectTotalsService extends AbstractBatch {
 
     addComment(comment);
     super.stop();
-  }
-
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BUSINESS_PROJECT_BATCH);
   }
 }

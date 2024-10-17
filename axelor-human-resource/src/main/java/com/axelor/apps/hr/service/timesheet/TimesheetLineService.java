@@ -29,7 +29,6 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface TimesheetLineService {
 
@@ -77,15 +76,6 @@ public interface TimesheetLineService {
    * @return a {@link java.time.Duration}.
    */
   Duration computeTotalDuration(List<TimesheetLine> timesheetLineList);
-
-  /**
-   * Calculates time spent on the project base on timesheet lines for the validated {@link
-   * Timesheet}.
-   *
-   * @param timesheetLineList
-   * @return {@link Map}
-   */
-  Map<Project, BigDecimal> getProjectTimeSpentMap(List<TimesheetLine> timesheetLineList);
 
   public void checkDailyLimit(
       Timesheet timesheet, TimesheetLine currentTimesheetLine, BigDecimal hoursDuration)

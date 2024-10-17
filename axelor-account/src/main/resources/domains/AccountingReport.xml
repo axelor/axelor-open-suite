@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -31,7 +31,6 @@
     <datetime name="publicationDateTime" title="Last print date" tz="true" readonly="true"/>
     <boolean name="global" title="Global" default="false"/>
     <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
-    <boolean name="globalByDate" title="Subtotal by date" default="false"/>
 
     <boolean name="isComparativeBalance" title="Comparative balance" default="false"/>
     <many-to-one name="otherYear" ref="com.axelor.apps.base.db.Year" title="Year"/>
@@ -54,6 +53,10 @@
       default="false"/>
     <boolean name="displayOpeningAccountingMoves" title="Display opening accounting moves"
       default="true"/>
+    <many-to-many ref="com.axelor.apps.base.db.Tag" name="partnerTagSet"
+      title="Partners tags"/>
+    <many-to-many ref="com.axelor.apps.base.db.Tag" name="accountTagSet"
+      title="Accounts tags"/>
 
     <!--Report 7 : Partner genereal ledger -->
     <boolean name="displayOnlyNotCompletelyLetteredMoveLines"

@@ -64,7 +64,8 @@ public interface InvoicePaymentCreateService {
       PaymentMode paymentMode,
       BankDetails companyBankDetails,
       LocalDate paymentDate,
-      PaymentSession paymentSession);
+      PaymentSession paymentSession)
+      throws AxelorException;
 
   /**
    * Create an invoice payment for each invoice

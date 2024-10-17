@@ -37,7 +37,7 @@ import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputation
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderComputeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
@@ -57,7 +57,7 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
     extends PaymentSessionBillOfExchangeValidateServiceImpl {
 
   protected PaymentSessionBankOrderService paymentSessionBankOrderService;
-  protected BankOrderService bankOrderService;
+  protected BankOrderComputeService bankOrderComputeService;
   protected BankOrderValidationService bankOrderValidationService;
   protected BankOrderRepository bankOrderRepo;
 
@@ -77,7 +77,7 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
       InvoiceTermReplaceService invoiceTermReplaceService,
       InvoicePaymentValidateService invoicePaymentValidateService,
       PaymentSessionBankOrderService paymentSessionBankOrderService,
-      BankOrderService bankOrderService,
+      BankOrderComputeService bankOrderComputeService,
       BankOrderValidationService bankOrderValidationService,
       BankOrderRepository bankOrderRepo) {
     super(
@@ -95,7 +95,7 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
         invoiceTermReplaceService,
         invoicePaymentValidateService);
     this.paymentSessionBankOrderService = paymentSessionBankOrderService;
-    this.bankOrderService = bankOrderService;
+    this.bankOrderComputeService = bankOrderComputeService;
     this.bankOrderValidationService = bankOrderValidationService;
     this.bankOrderRepo = bankOrderRepo;
   }
@@ -124,7 +124,7 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
       throws AxelorException {
     if (paymentSession.getBankOrder() != null) {
       BankOrder bankOrder = bankOrderRepo.find(paymentSession.getBankOrder().getId());
-      bankOrderService.updateTotalAmounts(bankOrder);
+      bankOrderComputeService.updateTotalAmounts(bankOrder);
       bankOrderRepo.save(bankOrder);
 
       if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()

@@ -33,6 +33,7 @@ import com.axelor.ui.QuickMenuItem;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class ActiveCompanyUpdateQuickMenuCreator implements QuickMenuCreator {
@@ -54,7 +55,14 @@ public class ActiveCompanyUpdateQuickMenuCreator implements QuickMenuCreator {
       return null;
     }
 
-    return new QuickMenu(I18n.get("Active company"), 1, true, getItems());
+    return new QuickMenu(
+        Optional.ofNullable(AuthUtils.getUser())
+            .map(User::getActiveCompany)
+            .map(Company::getName)
+            .orElse(I18n.get("Active company")),
+        1,
+        true,
+        getItems());
   }
 
   protected boolean hasConfigEnabled() {

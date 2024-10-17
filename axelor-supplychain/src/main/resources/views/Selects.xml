@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -190,6 +190,21 @@
     id="supplychain.stock.tracking.number.origin.move.type.select">
     <option value="3">Sale</option>
     <option value="4">Purchase</option>
+  </selection>
+
+  <selection name="sale.order.delivery.state">
+    <option value="1">Not delivered</option>
+    <option value="2">Partially delivered</option>
+    <option value="3">Delivered</option>
+  </selection>
+
+  <selection name="sale.batch.action.select" id="supplychain.sale.batch.action.select">
+    <option value="1">Invoicing</option>
+  </selection>
+
+  <selection name="cart.line.available.status.select">
+    <option value="1">Available</option>
+    <option value="2">Missing</option>
   </selection>
 
 </object-views>

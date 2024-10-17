@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -54,8 +54,7 @@
       title="Expected duration of recurring revenue (in months)"/>
     <date name="recurringStartDate" title="Recurring start date"/>
     <date name="recurringEndDate" title="Recurring end date"/>
-    <integer name="opportunityRating" title="Opportunity scoring"
-      selection="gold.rating.icon.select"/>
+    <integer name="opportunityRating" title="Opportunity scoring"/>
 
     <finder-method name="findByPartner" using="partner" all="true"/>
 

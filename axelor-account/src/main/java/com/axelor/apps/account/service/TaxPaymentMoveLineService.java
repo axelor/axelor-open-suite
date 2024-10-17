@@ -18,8 +18,13 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.base.AxelorException;
+import java.math.BigDecimal;
 
 public interface TaxPaymentMoveLineService {
 
@@ -28,4 +33,13 @@ public interface TaxPaymentMoveLineService {
 
   public TaxPaymentMoveLine getReverseTaxPaymentMoveLine(TaxPaymentMoveLine taxPaymentMoveLine)
       throws AxelorException;
+
+  TaxPaymentMoveLine createTaxPaymentMoveLineWithFixedAmount(
+      Invoice invoice,
+      BigDecimal paymentRatio,
+      int vatSystemSelect,
+      MoveLine invoiceMoveLine,
+      TaxLine taxLine,
+      MoveLine customerPaymentMoveLine,
+      Reconcile reconcile);
 }

@@ -39,8 +39,6 @@ public interface InvoiceTermFinancialDiscountService {
       BigDecimal financialDiscountAmount,
       BigDecimal remainingAmountAfterFinDiscount);
 
-  BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal);
-
   void computeAmountRemainingAfterFinDiscount(InvoiceTerm invoiceTerm);
 
   LocalDate computeFinancialDiscountDeadlineDate(InvoiceTerm invoiceTerm);

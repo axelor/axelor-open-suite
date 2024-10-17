@@ -24,7 +24,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
-import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.project.service.ProjectToolService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,13 +34,13 @@ public class ProjectDashboardHRServiceImpl extends ProjectDashboardServiceImpl {
 
   @Inject TimesheetLineRepository timsheetLineRepo;
   @Inject TimesheetLineService timesheetLineService;
-  @Inject ProjectService projectService;
+  @Inject ProjectToolService projectToolService;
 
   @Override
   public Map<String, Object> getData(Project project) {
     Map<String, Object> dataMap = super.getData(project);
     dataMap.put("$spentTime", getSpentTime(project));
-    dataMap.put("$isShowTimeSpent", project.getIsShowTimeSpent());
+    dataMap.put("$manageTimeSpent", project.getManageTimeSpent());
     return dataMap;
   }
 
@@ -48,7 +48,7 @@ public class ProjectDashboardHRServiceImpl extends ProjectDashboardServiceImpl {
     List<TimesheetLine> timesheetLineList =
         timsheetLineRepo
             .all()
-            .filter("self.project.id IN ?1", projectService.getContextProjectIds())
+            .filter("self.project.id IN ?1", projectToolService.getRelatedProjectIds(project))
             .fetch();
     BigDecimal totalDuration = BigDecimal.ZERO;
     for (TimesheetLine timesheetLine : timesheetLineList) {

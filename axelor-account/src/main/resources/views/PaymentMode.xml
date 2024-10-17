@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="payment-mode-form" title="Payment Mode"
     model="com.axelor.apps.account.db.PaymentMode" id="account-payment-mode-form" extension="true">
@@ -15,6 +15,10 @@
     <extend target="//panel[@name='mainPanel']/field[@name='inOutSelect']">
       <attribute name="onChange"
         value="action-payment-mode-group-empty,action-payment-mode-record-accounting-trigger-init-cheque-in"/>
+      <insert position="after">
+        <field name="interestRate" colSpan="3"
+          if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
+      </insert>
     </extend>
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
@@ -42,6 +46,15 @@
               <field name="moveAccountingDateSelect" requiredIf="canSelectInPaymentSession"
                 onChange="action-group-payment-mode-move-accounting-date-onchange"/>
             </panel>
+          </panel>
+          <panel name="interestRateHistoryPanel" title="Interest rate history"
+            if="__config__.app.getApp('account')?.enableLatePaymentInterest">
+            <button name="saveInterestRateBtn"
+              title="Save and historize the new interest rate"
+              onClick="save,action-payment-mode-method-save-interest-rate-history"/>
+            <field name="interestRateHistoryLineList" colSpan="12" onChange="save"
+              form-view="interest-rate-history-line-form"
+              grid-view="interest-rate-history-line-grid" x-order="-fromDate"/>
           </panel>
         </panel-tabs>
       </insert>
@@ -100,5 +113,10 @@
     model="com.axelor.apps.account.db.PaymentMode">
     <field name="bankOrderFileFormat" expr="eval: null"/>
   </action-record>
+
+  <action-method name="action-payment-mode-method-save-interest-rate-history">
+    <call class="com.axelor.apps.account.web.PaymentModeController"
+      method="saveInterestRateToHistory"/>
+  </action-method>
 
 </object-views>

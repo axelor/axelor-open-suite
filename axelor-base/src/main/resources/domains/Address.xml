@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Address">
     <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"
       required="true"/>
-    <string name="department" title="Department"/>
-    <string name="subDepartment" title="Sub Department"/>
+    <string name="department" title="Department"
+      help="Identification of a division of a large organisation or building."/>
+    <string name="subDepartment" title="Sub Department"
+      help="Identification of a sub-division of a large organisation or building. Displayed if department field is filled."/>
 
 
     <string name="addressL2" title="Recipient details"/>
@@ -18,22 +20,31 @@
     <string name="addressL5" title="Distribution precisions (POB, Village...)"/>
     <string name="addressL6" title="Zip/City"/>
 
-    <string name="streetName" title="Street"/>
+    <string name="streetName" title="Street"
+      help="Name of a street or thoroughfare. If the building number is not displayed, then the number that identifies the position of a building in the street must be included in this model."/>
     <many-to-one name="street" ref="com.axelor.apps.base.db.Street" title="Street"/>
-    <string name="buildingNumber" title="Building number"/>
-    <string name="buildingName" title="Building"/>
-    <string name="floor" title="Floor"/>
-    <string name="postBox" title="Post box"/>
-    <string name="room" title="Room"/>
+    <string name="buildingNumber" title="Building number"
+      help="Number that identifies the position of a building on a street."/>
+    <string name="buildingName" title="Building" help="Name of the building or house."/>
+    <string name="floor" title="Floor" help="Floor or storey within a building."/>
+    <string name="postBox" title="Post box"
+      help="Numbered box in a post office, assigned to a person or organisation, where letters are kept until called for."/>
+    <string name="room" title="Room"
+      help="The number of a room on the floor where the adressee is located."/>
 
-    <string name="townName" title="Town"/>
+    <string name="townName" title="Town"
+      help="Name of a built-up area, with defined boundaries, and a local government; most commonly the name of a town where the address is located. This field will be autofilled when selecting a city within a list onto the database."/>
     <many-to-one name="city" ref="City" title="City" massUpdate="true"/>
 
-    <string name="zip" title="Zip code"/>
-    <string name="townLocationName" title="Town Location"/>
-    <string name="districtName" title="District"/>
+    <string name="zip" title="Zip code"
+      help="Identifier consisting of a group of letters and/or numbers that is added to a postal address to assist the sorting of mail."/>
+    <string name="townLocationName" title="Town Location"
+      help="Specific location name within the town (GB : Village/Hamlets, DE/AT: Stadtteil,Bezirk ...)"/>
+    <string name="districtName" title="District"
+      help="Identifies a subdivision within a country sub-division (hierarchically below the Country subdivision field). If the country sub-division is a State/Province, then the district name can be the County."/>
 
-    <string name="countrySubDivision" title="Country sub division"/>
+    <string name="countrySubDivision" title="Country sub division"
+      help="Identifies a subdivision of a country such as a state, a region, a province, a municipality which is used in the address (and commonly defined in the ISO 3166-2). For example, CA for California in the United States, ON for Ontario in Canada, BEIJING or GUANGDONG in China."/>
 
     <decimal name="latit" title="Latitude" precision="38" scale="18" nullable="true"/>
     <decimal name="longit" title="Longitude" precision="38" scale="18" nullable="true"/>

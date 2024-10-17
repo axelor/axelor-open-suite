@@ -25,6 +25,8 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.InvoiceJournalService;
+import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.base.AxelorException;
@@ -52,7 +54,8 @@ public class VentilateAdvancePaymentRefundState extends VentilateState {
       InvoiceTermService invoiceTermService,
       AccountingSituationService accountingSituationService,
       InvoiceJournalService invoiceJournalService,
-      AdvancePaymentRefundService advancePaymentRefundService) {
+      InvoicePfpValidateService invoicePfpValidateService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     super(
         sequenceService,
         moveCreateFromInvoiceService,
@@ -64,8 +67,9 @@ public class VentilateAdvancePaymentRefundState extends VentilateState {
         fixedAssetGenerationService,
         invoiceTermService,
         accountingSituationService,
-        invoiceJournalService);
-    this.advancePaymentRefundService = advancePaymentRefundService;
+        invoiceJournalService,
+        invoicePfpValidateService,
+        invoiceTermPfpToolService);
   }
 
   @Override

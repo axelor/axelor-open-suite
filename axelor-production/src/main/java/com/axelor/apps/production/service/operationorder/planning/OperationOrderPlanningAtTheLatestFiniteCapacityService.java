@@ -150,7 +150,8 @@ public class OperationOrderPlanningAtTheLatestFiniteCapacityService
     if (prodProcessLine != null) {
       machines.addAll(
           Optional.ofNullable(prodProcessLine.getWorkCenterGroup())
-              .map(WorkCenterGroup::getWorkCenterSet).stream()
+              .map(WorkCenterGroup::getWorkCenterSet)
+              .stream()
               .flatMap(Collection::stream)
               .map(WorkCenter::getMachine)
               .filter(m -> !machine.getId().equals(m.getId()))

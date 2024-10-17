@@ -26,15 +26,16 @@ import com.axelor.apps.account.service.invoice.InvoiceViewService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingService;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingService.PurchaseOrderMergingResult;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingViewService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.SaleOrderMergingResult;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewService;
+import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingService;
+import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingService.SaleOrderMergingResult;
+import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingViewService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
@@ -652,6 +653,8 @@ public class StockMoveInvoiceController {
       List<Map<String, Object>> stockMoveLines =
           Beans.get(StockMoveInvoiceService.class).getStockMoveLinesToInvoice(stockMove);
       response.setValue("$stockMoveLines", stockMoveLines);
+      response.setValue(
+          "$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

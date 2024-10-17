@@ -31,7 +31,6 @@ import javax.validation.constraints.NotNull;
 
 public class TimesheetLinePostRequest extends RequestPostStructure {
 
-  @NotNull
   @Min(0)
   private Long timesheetId;
 

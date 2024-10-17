@@ -58,7 +58,10 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
 
   @Override
   public boolean importDemoDataExcel(File excelFile, File logFile)
-      throws FileNotFoundException, IOException, AxelorException, ParseException,
+      throws FileNotFoundException,
+          IOException,
+          AxelorException,
+          ParseException,
           ClassNotFoundException {
     Workbook workBook = new XSSFWorkbook(new FileInputStream(excelFile));
     FileOutputStream out = new FileOutputStream(logFile);

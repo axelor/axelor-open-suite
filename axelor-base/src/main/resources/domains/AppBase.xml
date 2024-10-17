@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -114,6 +114,8 @@
       default="false"/>
 
     <boolean name="enableTaxNumbers" title="Enable tax numbers"/>
+    <many-to-one name="defaultAddressTemplate"
+      ref="com.axelor.apps.base.db.AddressTemplate" title="Default address template"/>
 
     <many-to-one name="passwordChangedTemplate" ref="com.axelor.message.db.Template"
       title="Template for changed password"/>
@@ -178,6 +180,10 @@
     <boolean name="isActivateCompanyChangeShortcut" default="false"
       title="Activate the company change shortcut"
       help="This configuration allows quick access to the active company change"/>
+
+    <integer name="defaultBatchFetchLimit" title="Default batch fetch limit"
+      help="Default fetch limit for batches. 0 will not be taken into account. In this case, the default value (10) will be used."
+      min="0"/>
 
     <extra-code>
 	   		<![CDATA[
@@ -258,6 +264,7 @@
       <field name="activatePartnerRelations" on="UPDATE"/>
       <field name="enablePricingScale" on="UPDATE"/>
       <field name="isPricingComputingOrder" on="UPDATE"/>
+      <field name="defaultBatchFetchLimit" on="UPDATE"/>
       <!-- 32 fields -->
     </track>
 

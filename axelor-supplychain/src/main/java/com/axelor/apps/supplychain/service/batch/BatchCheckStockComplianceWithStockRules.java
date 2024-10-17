@@ -20,8 +20,6 @@ package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -44,7 +42,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
 
-public class BatchCheckStockComplianceWithStockRules extends AbstractBatch {
+public class BatchCheckStockComplianceWithStockRules extends BatchStrategy {
 
   protected final StockRulesService stockRulesService;
   protected final StockRulesSupplychainService stockRulesSupplychainService;
@@ -72,11 +70,12 @@ public class BatchCheckStockComplianceWithStockRules extends AbstractBatch {
     int offset = 0;
     Map<StockRules, List<StockLocationLine>> stockLocationLinesByStockRules;
     while ((stockLocationLinesByStockRules =
-            getNonCompliantStockLocationLinesByStockRules(AbstractBatch.FETCH_LIMIT, offset))
+            getNonCompliantStockLocationLinesByStockRules(getFetchLimit(), offset))
         != null) {
       if (ObjectUtils.isEmpty(stockLocationLinesByStockRules)) {
-        offset += AbstractBatch.FETCH_LIMIT;
+        offset += getFetchLimit();
         JPA.clear();
+        findBatch();
         continue;
       }
       for (Map.Entry<StockRules, List<StockLocationLine>> stockLocationsByStockRule :
@@ -92,8 +91,9 @@ public class BatchCheckStockComplianceWithStockRules extends AbstractBatch {
             TraceBackService.trace(e, null, batch.getId());
           }
         }
-        offset += AbstractBatch.FETCH_LIMIT;
+        offset += getFetchLimit();
         JPA.clear();
+        findBatch();
       }
     }
   }
@@ -202,10 +202,5 @@ public class BatchCheckStockComplianceWithStockRules extends AbstractBatch {
     /* Don't change the groupingBy lambda expression to a method reference, it will throw a ClassNotFoundException */
     return typedQuery.getResultList().stream()
         .collect(Collectors.groupingBy(sll -> sll.getStockLocation()));
-  }
-
-  @Override
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_SUPPLYCHAIN_BATCH);
   }
 }

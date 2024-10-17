@@ -21,14 +21,18 @@ package com.axelor.apps.businessproject.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.businessproject.service.SaleOrderLineDomainProjectService;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
@@ -127,5 +131,15 @@ public class SaleOrderLineProjectController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setProjectDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    response.setAttr(
+        "project",
+        "domain",
+        Beans.get(SaleOrderLineDomainProjectService.class).getProjectDomain(saleOrder));
   }
 }

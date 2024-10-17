@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.pricing;
 
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.PricingRule;
+import com.axelor.db.Model;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 
@@ -58,7 +59,7 @@ public interface PricingObserver {
   void updateFieldToPopulate(MetaField field);
 
   /** Update the observer that the computation started */
-  void computationStarted();
+  void computationStarted(Model model);
 
   /** Update the observer that the computation finished */
   void computationFinished();

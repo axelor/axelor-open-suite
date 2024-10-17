@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="account-grid" title="Accounting.Accounts"
     model="com.axelor.apps.account.db.Account">
@@ -111,6 +111,9 @@
         <field name="compatibleAccountSet" widget="TagSelect"
           showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"
           domain="self.company = :company"/>
+        <field name="tagSet" widget="TagSelect" x-color-field="colorSelect"
+          grid-view="tag-simplified-grid" form-view="tag-form"
+          onSelect="action-account-attrs-set-account-tag-domain"/>
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12"
           hideIf="accountType.technicalTypeSelect == 'view'">
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
@@ -532,6 +535,11 @@
   <action-attrs name="action-attrs-account-set-is-retrieved-on-payment-session">
     <attribute name="value" for="isRetrievedOnPaymentSession"
       expr="eval: useForPartnerBalance"/>
+  </action-attrs>
+
+  <action-attrs name="action-account-attrs-set-account-tag-domain">
+    <attribute name="domain" for="tagSet"
+      expr="eval: &quot; ${__repo__(MetaModel).findByName('Account')?.id} member of self.concernedModelSet AND (:company IS NULL OR :company member of self.companySet OR self.companySet IS EMPTY) &quot;"/>
   </action-attrs>
 
   <action-view name="action-account-view-accounting-report-config-line" title=""
