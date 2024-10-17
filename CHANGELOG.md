@@ -1,3 +1,14 @@
+## [6.5.44] (2024-10-17)
+
+### Fixes
+#### Sale
+
+* Complementary product selected: correctly prevent the user from modfying selected complementary product on a confirmed sale order.
+
+#### Stock
+
+* Stock API: fixed issue on stock correction creation request.
+
 ## [6.5.43] (2024-10-03)
 
 ### Fixes
@@ -1549,6 +1560,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.44]: https://github.com/axelor/axelor-open-suite/compare/v6.5.43...v6.5.44
 [6.5.43]: https://github.com/axelor/axelor-open-suite/compare/v6.5.42...v6.5.43
 [6.5.42]: https://github.com/axelor/axelor-open-suite/compare/v6.5.41...v6.5.42
 [6.5.41]: https://github.com/axelor/axelor-open-suite/compare/v6.5.40...v6.5.41
