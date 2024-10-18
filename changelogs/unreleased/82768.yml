@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed an issue preventing from editing a sale order with editable grid and pending order modification enabled"
+module: axelor-sale
