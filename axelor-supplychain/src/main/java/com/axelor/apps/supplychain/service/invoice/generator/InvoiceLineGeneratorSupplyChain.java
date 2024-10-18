@@ -234,9 +234,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
             accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
         invoiceLine.setFixedAssetCategory(fixedAssetCategory);
       }
-    }
-
-    if (stockMoveLine != null) {
+    } else if (stockMoveLine != null) {
       this.price =
           unitConversionService.convert(
               stockMoveLine.getUnit(),
