@@ -49,6 +49,7 @@ import com.axelor.apps.hr.db.repo.PartnerHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectPlanningTimeHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
+import com.axelor.apps.hr.db.repo.SprintHRRepository;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineHRRepository;
@@ -189,6 +190,10 @@ import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServ
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.sprint.AllocationLineService;
+import com.axelor.apps.hr.service.sprint.AllocationLineServiceImpl;
+import com.axelor.apps.hr.service.sprint.SprintHRService;
+import com.axelor.apps.hr.service.sprint.SprintHRServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseService;
 import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameService;
@@ -246,8 +251,10 @@ import com.axelor.apps.hr.service.user.UserHrServiceImpl;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
 import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
+import com.axelor.apps.project.service.sprint.SprintServiceImpl;
 
 public class HumanResourceModule extends AxelorModule {
 
@@ -373,5 +380,9 @@ public class HumanResourceModule extends AxelorModule {
     bind(ReconcileCheckServiceImpl.class).to(ReconcileCheckServiceHRImpl.class);
     bind(PayrollPreparationExportService.class).to(PayrollPreparationExportServiceImpl.class);
     bind(TimesheetLineRemoveService.class).to(TimesheetLineRemoveServiceImpl.class);
+    bind(SprintHRService.class).to(SprintHRServiceImpl.class);
+    bind(SprintServiceImpl.class).to(SprintHRServiceImpl.class);
+    bind(AllocationLineService.class).to(AllocationLineServiceImpl.class);
+    bind(SprintRepository.class).to(SprintHRRepository.class);
   }
 }
