@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form id="hr-sprint-project-form" model="com.axelor.apps.project.db.Project" title="Sprint"
+    name="sprint-project-form" extension="true">
+
+    <extend target="//panel-dashlet[@name='tasksPerSprintPanel']">
+      <insert position="before">
+        <field name="sprint" domain="self.project.id = :id"
+          onChange="action-project-attrs-refresh-allocation-lines-on-sprint-change"/>
+        <field name="allocationPeriodSet" onSelect="action-project-attrs-set-periods-domain"
+          widget="tag-select"
+          onChange="action-project-attrs-refresh-allocation-lines-on-sprint-change" canNew="false"
+          canEdit="false"/>
+        <panel-dashlet action="action-project-method-view-allocation-lines"
+          name="allocationLinePanel" colSpan="12"/>
+      </insert>
+    </extend>
+
+  </form>
+
+  <kanban columnBy="sprint" model="com.axelor.apps.project.db.ProjectTask"
+    sequenceBy="sequence" title="Tasks per sprint" id="hr-project-task-sprint-kanban"
+    name="project-task-sprint-kanban" draggable="true">
+
+    <field name="name"/>
+    <field name="assignedTo.name"/>
+    <field name="totalPlannedHrs"/>
+
+    <template>
+		<![CDATA[
+			<>
+				<strong>{name}</strong><br /><br />
+				<strong>User:</strong> {assignedTo.name}<br />
+				<strong>Total planned time:</strong> {totalPlannedHrs}
+			</>
+		]]>
+    </template>
+
+  </kanban>
+
+  <action-method name="action-project-method-view-allocation-lines">
+    <call class="com.axelor.apps.hr.web.project.ProjectMenuController"
+      method="viewAllocationLines"/>
+  </action-method>
+
+  <action-attrs name="action-project-attrs-refresh-allocation-lines-on-sprint-change">
+    <attribute name="refresh" for="allocationLinePanel" expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-set-periods-domain">
+    <attribute name="domain" for="allocationPeriodSet"
+      expr="eval: &quot;self.id in (${(sprint?.allocationPeriodSet?.collect{it.id})?.join(',')})&quot;"/>
+  </action-attrs>
+
+</object-views>
