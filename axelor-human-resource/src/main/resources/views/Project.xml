@@ -16,6 +16,8 @@
           canEdit="false"/>
         <panel-dashlet action="action-project-method-view-allocation-lines"
           name="allocationLinePanel" colSpan="12"/>
+        <panel-dashlet action="action-project-view-sprints-summary"
+          name="sprintSummaryPanel" readonly="true" colSpan="12"/>
       </insert>
     </extend>
 
@@ -56,5 +58,12 @@
       confirm-btn-title="Yes" cancel-btn-title="No"
       action="action-project-method-attach-tasks-to-sprint"/>
   </action-validate>
+
+  <action-view name="action-project-view-sprints-summary" title="Sprints summary"
+    model="com.axelor.apps.project.db.Sprint">
+    <view type="grid" name="sprint-summary-grid"/>
+    <view type="form" name="sprint-form"/>
+    <domain>self.project.id = :id</domain>
+  </action-view>
 
 </object-views>
