@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid id="business-support-sprint-grid" name="sprint-grid" title="Sprints"
+    model="com.axelor.apps.project.db.Sprint" extension="true">
+
+    <extend target="//field[@name='toDate']">
+      <insert position="after">
+        <field name="targetVersion"/>
+      </insert>
+    </extend>
+
+  </grid>
+
+  <form id="business-support-sprint-form" name="sprint-form" title="Sprint"
+    model="com.axelor.apps.project.db.Sprint" extension="true">
+
+    <extend target="//field[@name='toDate']">
+      <insert position="after">
+        <field name="targetVersion" onSelect="action-sprint-method-set-target-version-domain"/>
+      </insert>
+    </extend>
+
+  </form>
+
+  <action-method name="action-sprint-method-set-target-version-domain">
+    <call class="com.axelor.apps.businesssupport.web.SprintController"
+      method="targetVersionDomain"/>
+  </action-method>
+
+</object-views>
