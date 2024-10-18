@@ -18,25 +18,9 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.common.StringUtils;
-import com.google.common.base.Strings;
-import java.util.Locale;
+import com.axelor.meta.db.MetaFile;
+import java.io.IOException;
 
-public class LocaleService {
-  public static Locale computeLocaleByLocaleCode(String localeCode) {
-    if (Strings.isNullOrEmpty(localeCode)) {
-      return null;
-    }
-    String[] parts = localeCode.split("_");
-    String languageCode = parts.length > 0 ? parts[0] : "";
-    String country = parts.length > 1 ? parts[1] : "";
-    return new Locale(languageCode, country);
-  }
-
-  public static String getLanguageFromLocaleCode(String localeCode) {
-    if (StringUtils.isEmpty(localeCode)) {
-      return null;
-    }
-    return localeCode.split("_")[0];
-  }
+public interface MetaFileService {
+  MetaFile copyMetaFile(MetaFile metaFile) throws IOException;
 }

@@ -34,7 +34,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
-import com.axelor.utils.service.TranslationBaseService;
+import com.axelor.utils.service.translation.TranslationBaseService;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;

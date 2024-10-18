@@ -1487,7 +1487,6 @@
     <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
     <action name="action-sale-order-attrs-list-selection-in-type-select"/>
-    <action name="action-sale-order-attrs-editable-display-discount-amount"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -1528,9 +1527,11 @@
     									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2"
       if="company != null"/>
     <attribute name="title" for="saleOrderLineList.priceDiscounted"
-      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')" if="inAti"/>
+      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')"
+      if="eval: inAti &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
     <attribute name="title" for="saleOrderLineList.priceDiscounted"
-      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')" if="!inAti"/>
+      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')"
+      if="eval: !inAti &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
   </action-attrs>
 
   <action-record name="action-sale-order-record-from-partner"
@@ -2213,13 +2214,6 @@
   <action-attrs name="action-sale-order-attrs-list-selection-in-type-select">
     <attribute name="selection-in" for="saleOrderLineList.typeSelect"
       expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-order-attrs-editable-display-discount-amount">
-    <attribute for="saleOrderLineList.discountTypeSelect" name="hidden"
-      expr="eval: !(__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_EDITABLE &amp;&amp; __config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid())"/>
-    <attribute for="saleOrderLineList.discountAmount" name="hidden"
-      expr="eval: !__config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid()"/>
   </action-attrs>
 
 </object-views>

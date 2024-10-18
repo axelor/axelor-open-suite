@@ -1,3 +1,85 @@
+## [8.1.9] (2024-10-17)
+
+### Fixes
+#### Base
+
+* Webapp: updated Axelor Open Platform dependency to 7.1.7.
+* Update axelor-studio dependency to 3.1.4.
+* Price list: fixed check on dates on save.
+* Partner: when duplicating a partner, do not copy partner addresses and correctly create a copy of the original partner's picture.
+* Home action: fixed display issue in user and group form views.
+
+#### Account
+
+* Invoice: fixed error when we duplicate an invoice and change any field on invoice line.
+* Account: computed amounts when we change invoice date.
+* Tax payment move line: fixed an issue where reverse taxes were not reverted, which was making VAT statement reports wrong.
+* Invoice: fixed rounding issue on taxes on ventilated move accounting.
+* Accounting report: fixed amounts with currency decimal digits in accounting report 'Revenue and expenditure state'.
+* Accounting report: fixed NPE when selecting report type on form opened from year closure.
+
+#### Human Resource
+
+* Timesheet API: fixed an error occurring when creating a timesheet without timer
+* Lunch vouchers: fixed an issue where some employees were not included in lunch voucher computation.
+
+#### Project
+
+* Project: fixed code when generating project from sale order.
+
+#### Sale
+
+* Sale Order: fixed an issue were sequence was reset when going back to draft by creating a new version.
+* Sale order: added discounted unit price to editable grid.
+* Complementary product selected: correctly prevent the user from modfying selected complementary product on a confirmed sale order.
+
+#### Stock
+
+* Stock API: fixed issue on stock correction creation request.
+* Inventory: after an import, display filename instead of file path in the confirmation message.
+* Stock location: added a filter to not select itself or any sub stock locations as parent stock location.
+
+
+### Developer
+
+#### Account
+
+Method signature have changed in InvoiceLineService.class :
+
+```java
+public void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+```
+
+became
+
+```java
+public Map<String, Object> compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+```
+
+---
+
+Please run this SQL script if you have the issue related to reverse taxes in VAT statement report:
+
+```sql
+  UPDATE account_tax_payment_move_line tpml
+  SET tax_amount = -tax_amount
+  WHERE tpml.fiscal_position IS NOT NULL
+  AND EXISTS (
+  SELECT 1
+  FROM account_tax_equiv_reverse_charge_tax_set terc
+  LEFT JOIN account_tax_equiv ate ON ate.id = terc.account_tax_equiv
+  LEFT JOIN account_tax tax ON tax.id = terc.reverse_charge_tax_set 
+  LEFT JOIN account_tax_line tl ON tax.id = tl.tax 
+  WHERE ate.fiscal_position = tpml.fiscal_position AND tl.id = tpml.origin_tax_line
+  );
+```
+
+#### Stock
+
+Created new interface and class `StockLocationAttrsService' and 'StockLocationAttrsServiceImpl`. 
+In `stock-location-form` changed parentStockLocation onSelect action from `action-stock-location-attrs-set-parent-stock-location-domain`
+to `action-stock-location-method-set-parent-stock-location-domain`, the former action has not been removed.
+
 ## [8.1.8] (2024-10-03)
 
 ### Fixes
@@ -643,6 +725,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.9]: https://github.com/axelor/axelor-open-suite/compare/v8.1.8...v8.1.9
 [8.1.8]: https://github.com/axelor/axelor-open-suite/compare/v8.1.7...v8.1.8
 [8.1.7]: https://github.com/axelor/axelor-open-suite/compare/v8.1.6...v8.1.7
 [8.1.6]: https://github.com/axelor/axelor-open-suite/compare/v8.1.5...v8.1.6

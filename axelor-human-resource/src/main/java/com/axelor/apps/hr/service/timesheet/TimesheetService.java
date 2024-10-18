@@ -20,8 +20,6 @@ package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Timesheet;
-import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.db.Query;
 
 public interface TimesheetService {
 
@@ -34,6 +32,4 @@ public interface TimesheetService {
    * @return the updated timesheet
    */
   void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
-
-  Query<Timesheet> getTimesheetQuery(TimesheetLine timesheetLine);
 }

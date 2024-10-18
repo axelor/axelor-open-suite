@@ -18,30 +18,27 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.db.Language;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.google.common.io.Files;
+import com.google.inject.Inject;
+import java.io.File;
+import java.io.IOException;
 
-public interface LanguageService {
-  /**
-   * This method saves the modifications of an existing Language obj into the related MetaSelectItem
-   * obj.
-   *
-   * @param language
-   * @param oldName
-   * @param oldCode
-   */
-  public void saveExistingLanguageToMetaSelect(Language language, String oldName, String oldCode);
+public class MetaFileServiceImpl implements MetaFileService {
+  protected final MetaFiles metaFiles;
 
-  /**
-   * This method saves a Language obj into a new MetaSelectItem obj.
-   *
-   * @param language
-   */
-  public void saveNewLanguageToMetaSelect(Language language);
+  @Inject
+  public MetaFileServiceImpl(MetaFiles metaFiles) {
+    this.metaFiles = metaFiles;
+  }
 
-  /**
-   * When we remove a Language obj, the related record in select.language should also be removed.
-   *
-   * @param language
-   */
-  public void removeLanguageLinkedMetaSelectItem(Language language);
+  @Override
+  public MetaFile copyMetaFile(MetaFile metaFile) throws IOException {
+    String copiedFileName = Files.getNameWithoutExtension(metaFile.getFileName()) + "_copy";
+    File copiedFile =
+        File.createTempFile(copiedFileName, "." + Files.getFileExtension(metaFile.getFilePath()));
+    Files.copy(new File(MetaFiles.getPath(metaFile).toString()), copiedFile);
+    return metaFiles.upload(copiedFile);
+  }
 }

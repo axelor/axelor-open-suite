@@ -16,21 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.rest;
+package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.db.Language;
-import com.axelor.apps.base.db.repo.LanguageRepository;
-import com.axelor.db.Query;
-import com.axelor.inject.Beans;
-import javax.ws.rs.NotFoundException;
+import com.axelor.apps.stock.db.StockLocation;
 
-public class LanguageChecker {
+public interface StockLocationAttrsService {
 
-  public static void check(String languageCode) throws NotFoundException {
-    Query<Language> query = Beans.get(LanguageRepository.class).all().filter("self.code = :code ");
-    query.bind("code", languageCode);
-    if (query.count() == 0) {
-      throw new NotFoundException("Language with code " + languageCode + " was not found.");
-    }
-  }
+  String getParentStockLocationDomain(StockLocation stockLocation);
 }
