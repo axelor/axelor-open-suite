@@ -235,6 +235,9 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         invoiceLine.setFixedAssetCategory(fixedAssetCategory);
       }
     } else if (stockMoveLine != null) {
+      this.price = stockMoveLine.getUnitPriceUntaxed();
+      this.inTaxPrice = stockMoveLine.getUnitPriceTaxed();
+
       this.price =
           unitConversionService.convert(
               stockMoveLine.getUnit(),
