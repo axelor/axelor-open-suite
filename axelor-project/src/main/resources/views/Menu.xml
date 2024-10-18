@@ -145,7 +145,8 @@
   <action-view name="project.tags" title="Tags" model="com.axelor.apps.base.db.Tag">
     <view type="grid" name="tag-simplified-grid"/>
     <view type="form" name="tag-form"/>
-    <context name="_packageName" expr="eval: 'com.axelor.apps.project'"/>
+    <domain>:_packageName IN self.concernedModelSet.packageName</domain>
+    <context name="_packageName" expr="eval: 'com.axelor.apps.project.db'"/>
     <context name="_fieldModel" expr="eval: 'com.axelor.apps.project.db.ProjectTask'"/>
   </action-view>
 
