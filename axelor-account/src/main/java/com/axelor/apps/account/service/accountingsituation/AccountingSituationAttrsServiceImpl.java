@@ -105,6 +105,7 @@ public class AccountingSituationAttrsServiceImpl implements AccountingSituationA
         "analyticsPanel",
         "hidden",
         partner == null
+            || company == null
             || company.getAccountConfig() == null
             || company.getAccountConfig().getAnalyticDistributionTypeSelect()
                 != AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER,
@@ -146,7 +147,6 @@ public class AccountingSituationAttrsServiceImpl implements AccountingSituationA
     }
     String domain = "(self.archived = false OR self.archived is null)";
     List<AccountingSituation> partnerAccountingSituationList = partner.getAccountingSituationList();
-    partnerAccountingSituationList.remove(accountingSituation);
     if (ObjectUtils.isEmpty(partnerAccountingSituationList)) {
       return domain;
     }
