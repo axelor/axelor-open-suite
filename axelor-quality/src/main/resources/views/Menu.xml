@@ -173,7 +173,8 @@
   <action-view name="quality.tags" title="Tags" model="com.axelor.apps.base.db.Tag">
     <view type="grid" name="tag-simplified-grid"/>
     <view type="form" name="tag-form"/>
-    <context name="_packageName" expr="eval: 'com.axelor.apps.quality'"/>
+    <domain>:_packageName IN self.concernedModelSet.packageName</domain>
+    <context name="_packageName" expr="eval: 'com.axelor.apps.quality.db'"/>
   </action-view>
 
   <menuitem name="quality-control-point-type" parent="quality-configurations"
