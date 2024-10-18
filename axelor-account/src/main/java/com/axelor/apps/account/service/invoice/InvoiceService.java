@@ -224,6 +224,7 @@ public interface InvoiceService {
    * @return
    */
   List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice);
+
   /**
    * Filter a set of advance payment invoice. If the amount of the payment is greater than the total
    * of the invoice, we filter it. If there is no remaining amount in the move lines of the advance
@@ -296,8 +297,6 @@ public interface InvoiceService {
   void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice);
-
-  public void validatePfp(Long invoiceId) throws AxelorException;
 
   void updateUnpaidInvoiceTerms(Invoice invoice);
 

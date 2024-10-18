@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <menuitem name="invoice-root" title="Invoicing" order="-1000"
-    if="__config__.app.isApp('invoice')" icon="fa-file-text-o" icon-background="#31b4a9"/>
+    if="__config__.app.isApp('invoice')" icon="file-text" icon-background="#31b4a9"/>
 
   <menuitem name="invoice-root-custinvoices" parent="invoice-root" order="100"
     title="Cust. Invoices" action="invoice.root.custinvoices"/>
@@ -139,7 +139,7 @@
     icon="fa-bar-chart" title="Reportings"/>
 
   <menuitem name="account-root" title="Accounting" order="-900"
-    if="__config__.app.isApp('account')" icon="fa-calculator" icon-background="#2fa042"/>
+    if="__config__.app.isApp('account')" icon="calculator-fill" icon-background="#2fa042"/>
   <menuitem name="account-root-move" parent="account-root" title="Moves" order="100"/>
 
   <menuitem name="account-root-move-move" parent="account-root-move" title="Moves"

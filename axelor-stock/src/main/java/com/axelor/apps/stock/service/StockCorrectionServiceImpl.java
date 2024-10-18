@@ -52,6 +52,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   protected StockMoveService stockMoveService;
   protected StockMoveLineService stockMoveLineService;
   protected StockCorrectionRepository stockCorrectionRepository;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
   public StockCorrectionServiceImpl(
@@ -61,7 +62,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       AppBaseService baseService,
       StockMoveService stockMoveService,
       StockCorrectionRepository stockCorrectionRepository,
-      StockMoveLineService stockMoveLineService) {
+      StockMoveLineService stockMoveLineService,
+      StockLocationLineFetchService stockLocationLineFetchService) {
     this.stockConfigService = stockConfigService;
     this.productCompanyService = productCompanyService;
     this.stockLocationLineService = stockLocationLineService;
@@ -69,6 +71,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     this.stockMoveService = stockMoveService;
     this.stockCorrectionRepository = stockCorrectionRepository;
     this.stockMoveLineService = stockMoveLineService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   @Override
@@ -108,11 +111,11 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     StockLocationLine stockLocationLine;
     if (stockCorrection.getTrackingNumber() == null) {
       stockLocationLine =
-          stockLocationLineService.getStockLocationLine(
+          stockLocationLineFetchService.getStockLocationLine(
               stockCorrection.getStockLocation(), stockCorrection.getProduct());
     } else {
       stockLocationLine =
-          stockLocationLineService.getDetailLocationLine(
+          stockLocationLineFetchService.getDetailLocationLine(
               stockCorrection.getStockLocation(),
               stockCorrection.getProduct(),
               stockCorrection.getTrackingNumber());
@@ -329,7 +332,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
   protected BigDecimal getProductBaseQty(StockCorrection stockCorrection) {
     StockLocationLine stockLocationLine = getProductStockLocationLine(stockCorrection);
-    return stockLocationLine.getCurrentQty();
+    return stockLocationLine != null ? stockLocationLine.getCurrentQty() : BigDecimal.ZERO;
   }
 
   @Override

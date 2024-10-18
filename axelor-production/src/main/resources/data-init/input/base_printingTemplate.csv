@@ -1,9 +1,9 @@
-"importId";"name";"modelName";"statusSelect";"toAttach"
-"9";"ManufOrder";"com.axelor.apps.production.db.ManufOrder";"2";false
-"19";"OperationOrder";"com.axelor.apps.production.db.OperationOrder";"2";false
-"61";"ProdProcess";"com.axelor.apps.production.db.ProdProcess";"2";false
-"62";"Bill of Material";"com.axelor.apps.production.db.BillOfMaterial";"2";false
-"63";"Raw material requirement";"com.axelor.apps.production.db.RawMaterialRequirement";"2";false
-"64";"Cost sheet";"com.axelor.apps.production.db.CostSheet";"2";false
-"65";"Work in progress valuation";"com.axelor.apps.production.db.ProductionBatch";"2";false
-"66";"Mps Charge";"com.axelor.apps.production.db.MpsCharge";"2";false
+"importId";"name";"modelName";"statusSelect";"toAttach";"scriptFieldName"
+"9";"ManufOrder";"com.axelor.apps.production.db.ManufOrder";"2";false;"${__i18n__.get('Manufacturing order') + ' ' + ManufOrder.manufOrderSeq}"
+"19";"OperationOrder";"com.axelor.apps.production.db.OperationOrder";"2";false;"${'Op ' + OperationOrder.name + '-' + date}"
+"61";"ProdProcess";"com.axelor.apps.production.db.ProdProcess";"2";false;"${ProdProcess.name}"
+"62";"Bill of Material";"com.axelor.apps.production.db.BillOfMaterial";"2";false;"${__i18n__.get('Bill of Materials') + '-' + BillOfMaterial.name + (BillOfMaterial.versionNumber > 1 ? '-V' + BillOfMaterial.versionNumber : '') + '-' + date}"
+"63";"Raw material requirement";"com.axelor.apps.production.db.RawMaterialRequirement";"2";false;"${__i18n__.get('Raw material requirement') + ' ' + RawMaterialRequirement.code}"
+"64";"Cost sheet";"com.axelor.apps.production.db.CostSheet";"2";false;"${__i18n__.get('Cost sheet') + ' ' + CostSheet.id + '-' + date}"
+"65";"Work in progress valuation";"com.axelor.apps.production.db.ProductionBatch";"2";false;"${__i18n__.get('Work in progress valuation') + ' ' + ProductionBatch.id + '-' + date}"
+"66";"Mps Charge";"com.axelor.apps.production.db.MpsCharge";"2";false;"${__i18n__.get('Mps Charge') + ' ' + MpsCharge.id + '-' + date}"

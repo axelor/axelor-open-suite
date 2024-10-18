@@ -75,6 +75,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
   protected BankOrderLineOriginService bankOrderLineOriginService;
   protected PaymentSessionValidateService paymentSessionValidateService;
   protected ReconcileService reconcileService;
+  protected BankOrderSequenceService bankOrderSequenceService;
 
   @Inject
   public BankOrderValidationServiceImpl(
@@ -91,7 +92,8 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
       BankOrderMoveService bankOrderMoveService,
       BankOrderLineOriginService bankOrderLineOriginService,
       PaymentSessionValidateService paymentSessionValidateService,
-      ReconcileService reconcileService) {
+      ReconcileService reconcileService,
+      BankOrderSequenceService bankOrderSequenceService) {
     this.accountConfigService = accountConfigService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.invoicePaymentMoveCreateService = invoicePaymentMoveCreateService;
@@ -106,6 +108,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
     this.bankOrderLineOriginService = bankOrderLineOriginService;
     this.paymentSessionValidateService = paymentSessionValidateService;
     this.reconcileService = reconcileService;
+    this.bankOrderSequenceService = bankOrderSequenceService;
   }
 
   @Override
@@ -259,7 +262,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
 
     bankOrderService.setNbOfLines(bankOrder);
 
-    bankOrderService.setSequenceOnBankOrderLines(bankOrder);
+    bankOrderSequenceService.setSequenceOnBankOrderLines(bankOrder);
 
     bankOrderService.generateFile(bankOrder);
 

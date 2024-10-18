@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee"
     orderBy="contactPartner.simpleFullName">
@@ -383,7 +383,7 @@
     </panel>
 
     <panel name="personalInfoPanel" title="Personal information" colSpan="12"
-      showIf="stepByStepSelect == 5" canCollapse="true" collapseIf="true">
+      showIf="stepByStepSelect == 5" canCollapse="true">
       <field name="birthDate" colSpan="4"/>
       <field name="maritalStatus" colSpan="4"/>
       <field name="sexSelect" colSpan="4"/>
@@ -415,7 +415,7 @@
     <panel-tabs name="mainPanelTab" showIf="stepByStepSelect == 5">
       <panel name="employmentContractsPanel" title="Employment contracts">
         <panel name="contractualInfoPanel" title="Contractual information" colSpan="12"
-          canCollapse="true" collapseIf="true">
+          canCollapse="true">
           <field name="hireDate" colSpan="4"
             onChange="action-employee-attrs-set-seniority-date"/>
           <field name="seniorityDate" colSpan="4"/>
@@ -657,7 +657,7 @@
   </form>
 
   <cards name="employee-card" title="Employee" model="com.axelor.apps.hr.db.Employee"
-    css="rect-image" orderBy="name">
+    css="rect-image" orderBy="contactPartner.simpleFullName">
     <toolbar>
       <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print"
         onClick="action-print-employee-phonebook"/>

@@ -1,0 +1,7 @@
+"importId";"sequence";"name";"isCompleted";"defaultProgress"
+1;1;"Nouveau";"false";0
+2;2;"En cours";"false";30
+3;3;"Feedback";"false";50
+4;4;"Résolu";"false";60
+5;5;"Terminé";"true";100
+6;6;"Annulé";"true";0

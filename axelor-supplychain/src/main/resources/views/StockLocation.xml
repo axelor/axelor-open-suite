@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form id="stock-location-supplychain-form" name="stock-location-form" title="Stock location"
+    model="com.axelor.apps.stock.db.StockLocation" extension="true">
+    <extend target="//toolbar">
+      <insert position="inside">
+        <button name="addToCartBtn" title="Add to cart"
+          onClick="save,action-stock-location-method-add-to-cart" icon="cart-plus-fill"
+          if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-method name="action-stock-location-method-add-to-cart">
+    <call class="com.axelor.apps.supplychain.web.StockLocationController" method="addToCart"/>
+  </action-method>
+
+</object-views>

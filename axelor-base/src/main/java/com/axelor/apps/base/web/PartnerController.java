@@ -57,10 +57,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBaseRepository;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.io.IOException;
@@ -189,7 +187,7 @@ public class PartnerController {
 
     String fileLink =
         Beans.get(PrintingTemplatePrintService.class)
-            .getPrintLink(clientSituationPrintTemplate, factoryContext, name + "-${date}");
+            .getPrintLink(clientSituationPrintTemplate, factoryContext);
 
     LOG.debug("Printing " + name);
 
@@ -320,13 +318,10 @@ public class PartnerController {
       }
     }
     if (!ibanInError.isEmpty()) {
-
-      Function<String, String> addLi = s -> "<li>".concat(s).concat("</li>");
-
       response.setError(
           String.format(
               I18n.get(BaseExceptionMessage.BANK_DETAILS_2),
-              "<ul>" + Joiner.on("").join(Iterables.transform(ibanInError, addLi)) + "<ul>"));
+              StringHtmlListBuilder.formatMessage(ibanInError)));
     }
   }
 

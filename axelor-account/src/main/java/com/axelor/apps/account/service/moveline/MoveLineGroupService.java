@@ -101,8 +101,6 @@ public interface MoveLineGroupService {
   Map<String, Map<String, Object>> getAnalyticMoveLineOnChangeAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException;
 
-  void computeDateOnChangeValues(MoveLine moveLine, Move move) throws AxelorException;
-
   Map<String, Object> getTaxLineOnChangesValuesMap(MoveLine moveLine, Move move)
       throws AxelorException;
 }

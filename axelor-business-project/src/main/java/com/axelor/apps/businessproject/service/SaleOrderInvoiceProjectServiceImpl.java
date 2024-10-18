@@ -39,16 +39,17 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceServiceImpl;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -68,16 +69,16 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
       InvoiceServiceSupplychainImpl invoiceService,
-      SaleOrderLineService saleOrderLineService,
       StockMoveRepository stockMoveRepository,
-      InvoiceTermService invoiceTermService,
       SaleOrderWorkflowService saleOrderWorkflowService,
+      InvoiceTermService invoiceTermService,
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
       CurrencyScaleService currencyScaleService,
+      OrderInvoiceService orderInvoiceService,
+      InvoiceTaxService invoiceTaxService,
       AppBusinessProjectService appBusinessProjectService) {
-
     super(
         appBaseService,
         appStockService,
@@ -85,14 +86,15 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
         saleOrderRepo,
         invoiceRepo,
         invoiceService,
-        saleOrderLineService,
         stockMoveRepository,
-        invoiceTermService,
         saleOrderWorkflowService,
+        invoiceTermService,
         commonInvoiceService,
         invoiceLineOrderService,
         saleInvoicingStateService,
-        currencyScaleService);
+        currencyScaleService,
+        orderInvoiceService,
+        invoiceTaxService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 

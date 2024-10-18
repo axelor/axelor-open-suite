@@ -19,9 +19,12 @@
 package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.service.project.PlannedTimeValueService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
+import com.axelor.apps.project.db.PlannedTimeValue;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.service.config.ProjectConfigService;
@@ -31,6 +34,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -115,13 +119,21 @@ public class ProjectPlanningTimeController {
     response.setValue(
         "plannedTime",
         Beans.get(ProjectPlanningTimeService.class).computePlannedTime(projectPlanningTime));
-    if (Beans.get(ProjectConfigService.class)
-        .getProjectConfig(projectPlanningTime.getProject().getCompany())
-        .getIsSelectionOnDisplayPlannedTime()) {
+    Optional<Company> optCompany =
+        Optional.ofNullable(projectPlanningTime)
+            .map(ProjectPlanningTime::getProject)
+            .map(Project::getCompany);
+    if (optCompany.isPresent()
+        && Beans.get(ProjectConfigService.class)
+            .getProjectConfig(optCompany.get())
+            .getIsSelectionOnDisplayPlannedTime()) {
       if (projectPlanningTime.getDisplayPlannedTimeRestricted() != null) {
         response.setValue(
             "displayPlannedTime",
-            projectPlanningTime.getDisplayPlannedTimeRestricted().getPlannedTime());
+            Optional.of(projectPlanningTime)
+                .map(ProjectPlanningTime::getDisplayPlannedTimeRestricted)
+                .map(PlannedTimeValue::getPlannedTime)
+                .orElse(BigDecimal.ZERO));
       }
     } else {
       response.setValue(
@@ -159,11 +171,17 @@ public class ProjectPlanningTimeController {
     ProjectPlanningTime projectPlanningTime =
         request.getContext().asType(ProjectPlanningTime.class);
 
-    response.setValue(
-        "$isSelectionOnDisplayPlannedTime",
-        Beans.get(ProjectConfigService.class)
-            .getProjectConfig(projectPlanningTime.getProject().getCompany())
-            .getIsSelectionOnDisplayPlannedTime());
+    Optional<Company> optCompany =
+        Optional.ofNullable(projectPlanningTime)
+            .map(ProjectPlanningTime::getProject)
+            .map(Project::getCompany);
+    if (optCompany.isPresent()) {
+      response.setValue(
+          "$isSelectionOnDisplayPlannedTime",
+          Beans.get(ProjectConfigService.class)
+              .getProjectConfig(optCompany.get())
+              .getIsSelectionOnDisplayPlannedTime());
+    }
   }
 
   public void getDefaultPlanningTime(ActionRequest request, ActionResponse response)

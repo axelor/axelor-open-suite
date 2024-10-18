@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <!-- VUE GENERALE -->
 
@@ -37,7 +37,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement" width="200"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"
+      x-image-field="picture"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
@@ -85,7 +86,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement" width="200"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"
+      x-image-field="picture"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="operationTypeSelect"/>
     <field name="invoiceDate" width="120"/>
@@ -135,7 +137,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement" width="200"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"
+      x-image-field="picture"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
@@ -189,7 +192,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement" width="200"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"
+      x-image-field="picture"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
       width="160"/>
@@ -242,7 +246,8 @@
     <field name="company" form-view="company-form" grid-view="company-grid" width="200"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="supplierInvoiceNb"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
     <field name="originDate"/>
@@ -305,7 +310,8 @@
     <field name="supplierInvoiceNb"/>
     <field name="operationTypeSelect"/>
     <field name="operationSubTypeSelect"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="originDate"/>
     <field name="invoiceDate"/>
     <field name="dueDate"/>
@@ -434,6 +440,7 @@
 	                        		{operationSubTypeSelect == 7 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Periodic contract')}</Badge>}
 	                        		{operationSubTypeSelect == 1 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Standard credit note')}</Badge>}
 	                        		{operationSubTypeSelect == 2 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Advance payment credit note')}</Badge>}
+	                        		{operationSubTypeSelect == 9 && operationTypeSelect == 3 && <Badge bg="info">{_t('Late payment interest invoice')}</Badge>}
 
 	                        		{(operationTypeSelect == 3 || operationTypeSelect == 4) && partner.factorizedCustomer && <Badge bg="info">{_t('Factorized customer')}</Badge>}
 	                        	</Box>
@@ -499,8 +506,8 @@
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="statusSelect != 1"
           onChange="action-invoice-method-printing-settings-default-values"
-          domain=":company MEMBER OF self.companySet"
-          requiredIf="statusSelect == 1 &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
+          domain="self.company = :company"
+          requiredIf="statusSelect == 1 &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0"
           form-view="trading-name-form" grid-view="trading-name-grid" colSpan="4"/>
         <field name="inAti" onChange="action-invoice-attrs-in-ati" hidden="true"
           readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" colSpan="2"/>
@@ -515,23 +522,24 @@
           <field name="createdByInterco" readonly="true"/>
         </panel>
       </panel>
-      <field name="company.tradingNameSet"
+      <field name="company.tradingNameList"
         if="__config__.app.getApp('base')?.enableTradingNamesManagement" hidden="true" colSpan="12"/>
     </panel>
 
     <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
       <field name="partner" colSpan="4" canEdit="false" readonlyIf="statusSelect != 1"
-        onChange="action-invoice-group-partner-onchange"
+        onChange="action-invoice-group-partner-onchange" x-image-field="picture"
         onSelect="action-invoice-method-set-partner-domain" form-view="partner-form"
         grid-view="partner-grid"/>
       <field name="contactPartner" colSpan="4" canEdit="false"
-        onSelect="action-set-partner-domain"
+        onSelect="action-set-partner-domain" x-image-field="picture"
         domain="self.isContact = true AND :company member of self.companySet"
         readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <field name="thirdPartyPayerPartner" colSpan="4" domain="self.isThirdPartyPayer IS TRUE"
         showIf="[1,3].includes(operationTypeSelect)" form-view="partner-form"
-        grid-view="partner-grid" onChange="action-invoice-method-update-subrogation-partner"
+        x-image-field="picture" grid-view="partner-grid"
+        onChange="action-invoice-method-update-subrogation-partner"
         if="__config__.app.getApp('base')?.activatePartnerRelations"/>
       <field name="paymentMode" colSpan="4" canEdit="false" widget="SuggestBox"
         onSelect="action-set-payment-mode-domain"
@@ -563,7 +571,7 @@
         <field name="address" hideIf="$readonly() || statusSelect &gt; 1"
           onSelect="action-invoice-attrs-domain-address"
           onChange="action-method-invoice-address-str" canEdit="false" canNew="true"
-          form-view="address-partner-address-form" grid-view="address-grid"/>
+          form-view="address-form" grid-view="address-grid"/>
         <field name="addressStr" readonlyIf="statusSelect &gt; 1" height="5">
           <viewer><![CDATA[<>{addressStr}</>]]></viewer>
 
@@ -622,8 +630,11 @@
           grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change"
           canMove="true" orderBy="sequence" height="30"/>
       </panel>
-      <panel name="invoiceTaxPanel" title="Tax" showTitle="false">
-        <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
+      <panel name="invoiceTaxPanel" title="Tax" showTitle="false"
+        readonlyIf="statusSelect != 1">
+        <panel-related name="invoiceLineTaxListPanel" readonlyIf="statusSelect != 1"
+          field="invoiceLineTaxList" canRemove="false" canNew="false"
+          onChange="action-invoice-method-compute,action-invoice-method-generate-invoice-terms"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
       <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
@@ -642,8 +653,8 @@
           showIf="operationTypeSelect == 3">
           <field name="deliveryAddress" hideIf="$readonly() || statusSelect &gt; 1"
             onSelect="action-invoice-attrs-domain-delivery-address"
-            onChange="action-method-invoice-compute-delivery-address-str"
-            form-view="address-partner-address-form" canEdit="false" canNew="true" colSpan="6"/>
+            onChange="action-method-invoice-compute-delivery-address-str" form-view="address-form"
+            canEdit="false" canNew="true" colSpan="6"/>
           <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
             grid-view="incoterm-grid"
             if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
@@ -666,7 +677,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         title="Business project" colSpan="12" if-module="axelor-business-project">
         <field name="project" onSelect="action-invoice-attrs-domain-project"
-          form-view="project-form" grid-view="project-grid" colSpan="6"/>
+          form-view="business-project-form" grid-view="project-grid" colSpan="6"/>
         <button name="updateLinesBtn" title="Update lines with selected project"
           onClick="save,action-invoice-business-project-method-update-lines,save" colSpan="6"
           readonlyIf="!project"/>
@@ -859,6 +870,11 @@
         </panel>
       </panel>
       <panel name="invoicePaymentPanel" title="Payments details" showIf="statusSelect != 1">
+        <button name="Generate late payment interest invoice"
+          title="Generate late payment interest invoice"
+          onClick="action-invoice-method-generate-late-payment-invoice"
+          showIf="operationTypeSelect == 3 &amp;&amp; operationSubTypeSelect != 9"
+          if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
         <panel name="pfpValidationPanel" colSpan="12"
           if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
           showIf="pfpValidateStatusSelect > 0">
@@ -873,6 +889,9 @@
           field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid"
           form-view="invoice-payment-form" canNew="false" canRemove="false"/>
         <field name="amountPaid" hidden="true"/>
+        <panel-dashlet action="action-invoice-view-late-interest-invoices"
+          showIf="operationTypeSelect == 3 &amp;&amp; operationSubTypeSelect != 9" colSpan="12"
+          if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
       </panel>
       <panel name="pfpAccountConfigPanel"
         if="__config__.app.getApp('account')?.getActivatePassedForPayment()" hidden="true">
@@ -903,7 +922,7 @@
         onClick="action-invoice-group-on-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="action-invoice-group-ventilate-button"
+        onClick="action-invoice-group-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-validate-and-ventilate-onclick"/>
@@ -987,9 +1006,12 @@
 								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
 								{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
+								{(typeSelect == 10 || typeSelect == 11) && <span> {_t('Foreign exchange on')} </span>}
 								<span>{$fmt('paymentDate')}</span>
 							</Box>
-							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{(typeSelect == 8 || typeSelect == 10) && <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{typeSelect == 11 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{typeSelect != 8 && typeSelect != 10 && typeSelect != 11 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
 						</Box>
 
 						{applyFinancialDiscount &&
@@ -1005,6 +1027,7 @@
 									{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
 									{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 									{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
+									{(typeSelect == 10 || typeSelect == 11) && <span> {_t('Foreign exchange on')} </span>}
 									<span>{$fmt('paymentDate')}</span>
 								</Box>
 								{financialDiscountTaxAmount > 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(financialDiscountTotalAmount).toFixed(currency.numberOfDecimals)}</Box>}
@@ -1076,8 +1099,11 @@
     <panel-stack name="otherDetailsPanel" sidebar="true" hideIf="partner == null">
       <panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6"
         canCollapse="true" collapseIf="true">
-        <field name="internalReference"/>
-        <field name="externalReference"/>
+        <field name="internalReference" widget="string"/>
+        <field name="externalReference" widget="string"/>
+        <field name="latePaymentInterestSourceInvoice" grid-view="invoice-grid"
+          form-view="invoice-form" showIf="operationSubTypeSelect == 9"
+          if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true"
         collapseIf="true">
@@ -1173,19 +1199,19 @@
         onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1"
         form-view="currency-form" grid-view="currency-grid"/>
       <field name="project" if-module="axelor-business-project"
-        onSelect="action-invoice-attrs-domain-project" form-view="project-form"
+        onSelect="action-invoice-attrs-domain-project" form-view="business-project-form"
         grid-view="project-grid" if="__config__.app.isApp('project')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"/>
     </panel>
 
     <panel name="invoicingInfoPanel" title="Invoicing information">
       <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"
-        readonlyIf="statusSelect != 1"
+        readonlyIf="statusSelect != 1" x-image-field="picture"
         onChange="action-group-account-invoice-partner-onchange-client"
         onSelect="action-invoice-method-set-partner-domain" canView="false"/>
       <field name="contactPartner" canEdit="false" onSelect="action-set-partner-domain"
         domain="self.isContact = true AND :company member of self.companySet"
-        form-view="partner-contact-form" grid-view="partner-contact-grid"
+        form-view="partner-contact-form" grid-view="partner-contact-grid" x-image-field="picture"
         readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" canView="false"/>
       <field name="$partnerBankDetailsListWarning" showTitle="false" hidden="true"
         readonly="true" colSpan="12">
@@ -1198,8 +1224,8 @@
       <panel name="addressDetailsPanel" stacked="true">
         <field name="address" hideIf="$readonly() || statusSelect &gt; 1"
           onSelect="action-invoice-attrs-domain-address"
-          onChange="action-method-invoice-address-str" form-view="address-partner-address-form"
-          canEdit="false" canNew="true"/>
+          onChange="action-method-invoice-address-str" form-view="address-form" canEdit="false"
+          canNew="true"/>
         <field name="addressStr" readonlyIf="statusSelect &gt; 1" height="5">
           <viewer><![CDATA[<>{addressStr}</>]]></viewer>
         </field>
@@ -1240,8 +1266,8 @@
 
     <panel-stack name="otherDetailsPanel" sidebar="true">
       <panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6">
-        <field name="internalReference"/>
-        <field name="externalReference"/>
+        <field name="internalReference" widget="string"/>
+        <field name="externalReference" widget="string"/>
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
         <field name="invoiceDate" onChange="action-invoice-group-invoice-date-on-change"/>
@@ -1256,7 +1282,7 @@
         onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="action-invoice-group-ventilate-button"
+        onClick="action-invoice-group-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
         <button name="cancelBtn" title="Cancel"
@@ -1323,9 +1349,12 @@
 								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
 								{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
+								{(typeSelect == 10 || typeSelect == 11) && <span> {_t('Foreign exchange on')} </span>}
 								<span>{$fmt('paymentDate')}</span>
 							</Box>
-							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{(typeSelect == 8 || typeSelect == 11) && <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{typeSelect == 10 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+							{typeSelect != 8 && typeSelect != 10 && typeSelect != 11 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
 						</Box>
 					</>
                 ]]>
@@ -1367,7 +1396,8 @@
   <grid name="invoice-direct-debit-grid" title="Debited invoices"
     model="com.axelor.apps.account.db.Invoice">
     <field name="invoiceId"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="operationTypeSelect"/>
     <field name="operationSubTypeSelect"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
@@ -1428,7 +1458,7 @@
       <field name="paymentModeToCheck" hidden="true" colOffset="3"/>
       <field name="paymentConditionToCheck" hidden="true" colOffset="3"/>
       <field name="$contactPartner" title="Contact partner" type="many-to-one"
-        target="com.axelor.apps.base.db.Partner"
+        target="com.axelor.apps.base.db.Partner" x-image-field="picture"
         domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
         colOffset="3" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
@@ -1527,6 +1557,16 @@
       <button name="cancelConfirmBtn" title="Invoice.refuseToPayBtn"
         onClick="action-invoice-refusal-to-pay-cancel-reason-check,action-invoice-method-refusal-to-pay"
         colOffset="4" colSpan="4"/>
+    </panel>
+  </form>
+
+  <form name="supplier-invoice-wizard-form" title="Supplier invoice"
+    model="com.axelor.apps.account.db.Invoice"
+    onLoad="action-invoice-record-set-initial-invoicenb-origin-date"
+    onSave="action-invoice-validate-check-origin-date,action-invoice-group-ventilate-button">
+    <panel name="mainPanel" colSpan="12">
+      <field name="supplierInvoiceNb" colSpan="6" required="true"/>
+      <field name="originDate" colSpan="6" required="true"/>
     </panel>
   </form>
 
@@ -1641,7 +1681,6 @@
       if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect > 0"/>
     <action name="action-invoice-record-set-dummy-field-localization"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
-    <action name="action-invoice-record-set-payment-condition"/>
     <action name="action-method-invoice-address-str"/>
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect) &amp;&amp; operationSubTypeSelect != 2"/>
@@ -1675,6 +1714,13 @@
     <action name="action-invoice-group-before-ventilate"/>
     <action name="save"/>
     <action name="action-invoice-method-ventilate"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-ventilate">
+    <action name="action-invoice-method-set-supplier-invoice-number-and-origin-date"
+      if="(!supplierInvoiceNb || !originDate) &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2)"/>
+    <action name="action-invoice-group-ventilate-button"
+      if="(supplierInvoiceNb &amp;&amp; originDate &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2)) || (operationTypeSelect == 3 || operationTypeSelect == 4)"/>
   </action-group>
 
   <action-group name="action-invoice-group-before-ventilate">
@@ -1908,7 +1954,6 @@
 
   <action-record name="action-invoice-record-partner-change"
     model="com.axelor.apps.account.db.Invoice">
-    <field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
     <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"/>
     <field name="address"
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
@@ -2016,6 +2061,13 @@
     model="com.axelor.apps.account.db.Invoice">
     <field name="thirdPartyPayerPartner"
       expr="call: com.axelor.apps.account.service.PartnerAccountService:getPayedByPartner(partner)"/>
+  </action-record>
+
+  <action-record name="action-invoice-record-set-initial-invoicenb-origin-date"
+    model="com.axelor.apps.account.db.Invoice">
+    <field name="supplierInvoiceNb" expr="eval: _supplierInvoiceNb"/>
+    <field name="originDate" expr="eval: _originDate" if="_originDate"/>
+    <field name="originDate" expr="eval: __config__.date" if="!_originDate"/>
   </action-record>
 
   <!-- ACTION ATTRS -->
@@ -2188,6 +2240,12 @@
     <alert message="At least one pfp validator is missing, do you wish to continue ?"
       if="com.axelor.inject.Beans.get(com.axelor.apps.account.service.invoice.InvoiceTermService.class).getPfpValidatorUserCondition(__this__, null)
           &amp;&amp; invoiceTermList.any{it -> !it.pfpValidatorUser}"/>
+  </action-validate>
+
+
+  <action-validate name="action-invoice-validate-check-origin-date">
+    <error message="Invoice date of origin can't be in the future."
+      if="originDate?.isAfter(__config__.date)"/>
   </action-validate>
 
   <!-- ACTION METHOD -->
@@ -2448,6 +2506,12 @@
 
   <action-method name="action-invoice-method-manage-refund-titles">
     <call class="com.axelor.apps.account.web.InvoiceController" method="manageRefundFields"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-method-set-supplier-invoice-number-and-origin-date">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setSupplierInvoiceNbAndOriginDate"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
@@ -2857,5 +2921,17 @@
   <action-method name="action-invoice-method-compute-invoice-amounts">
     <call class="com.axelor.apps.account.web.InvoiceController" method="computeInvoiceAmounts"/>
   </action-method>
+
+  <action-method name="action-invoice-method-generate-late-payment-invoice">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="generateLatePaymentInvoice"/>
+  </action-method>
+
+  <action-view name="action-invoice-view-late-interest-invoices"
+    title="Late interest invoices" model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="invoice-grid"/>
+    <view type="form" name="invoice-form"/>
+    <domain>self.latePaymentInterestSourceInvoice.id = :id</domain>
+  </action-view>
 
 </object-views>

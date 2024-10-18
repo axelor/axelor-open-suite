@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <kanban columnBy="leadStatus" model="com.axelor.apps.crm.db.Lead" sequenceBy="sequence"
     title="Leads" name="lead-kanban" draggable="true" limit="10"
@@ -80,7 +80,7 @@
     <field name="contactDate"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
     <field name="leadStatus" title="Status"/>
-    <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
+    <field name="leadScoringSelect" widget="Rating"/>
     <button name="grabLeadBtn" hideIf="user.id == _internalUserId" icon="fa-suitcase"
       help="Take charge" onClick="action-lead-method-assign-to-me"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
@@ -261,7 +261,7 @@
     </panel-tabs>
 
     <panel name="actionsPanel" sidebar="true"
-      hideIf="user.id == _internalUserId &amp;&amp; (!id || isConverted || $isLost) &amp;&amp; !partner">
+      hideIf="user.id == _internalUserId &amp;&amp; (!id || isConverted) &amp;&amp; !partner">
       <button name="grabLeadBtn" title="Take in charge" hideIf="user.id == _internalUserId"
         icon="fa-suitcase" onClick="save,action-lead-method-assign-to-me"/>
       <button name="convertBtn" title="Convert" hideIf="!id || isConverted || $isLost"
@@ -270,6 +270,8 @@
         onClick="action-lead-view-show-partner"/>
       <button name="loseBtn" title="Lose" hideIf="!id || isConverted || $isLost"
         onClick="action-lead-view-lose" css="btn-danger" icon="fa-times-circle"/>
+      <button name="resetBtn" title="Reset" showIf="$isLost"
+        onClick="action-lead-method-reset" icon="fa-refresh"/>
     </panel>
 
     <panel sidebar="true" name="activityPanel" title="Activity" colSpan="12" showIf="id">
@@ -292,7 +294,7 @@
     </panel>
 
     <panel sidebar="true" name="marketingPanel" title="Marketing" colSpan="12">
-      <field name="leadScoringSelect" widget="ImageSelect" x-labels="false" colSpan="6"/>
+      <field name="leadScoringSelect" widget="Rating" colSpan="6"/>
       <field name="sizeSelect" colSpan="6"/>
       <field name="isKeyAccount" colSpan="6"/>
       <field name="isNurturing" colSpan="6"/>
@@ -300,8 +302,9 @@
         grid-view="source-grid" canNew="true"/>
       <field name="type" grid-view="partner-category-grid" form-view="partner-category-form"
         colSpan="6"/>
-      <field name="leadTagSet" widget="TagSelect" x-color-field="colorSelect"
-        grid-view="lead-tag-grid" form-view="lead-tag-form"/>
+      <field name="tagSet" widget="TagSelect" x-color-field="color"
+        grid-view="tag-simplified-grid" form-view="tag-form"
+        onSelect="action-lead-attrs-set-lead-tag-domain"/>
     </panel>
 
     <panel-mail name="mailPanel">
@@ -643,4 +646,13 @@
   <action-method name="action-lead-method-rollback-lead-status">
     <call class="com.axelor.apps.crm.web.LeadController" method="rollbackLeadStatus"/>
   </action-method>
+
+  <action-method name="action-lead-method-reset">
+    <call class="com.axelor.apps.crm.web.LeadController" method="resetLead"/>
+  </action-method>
+
+  <action-attrs name="action-lead-attrs-set-lead-tag-domain">
+    <attribute name="domain" for="tagSet"
+      expr="eval: &quot; ${__repo__(MetaModel).findByName('Lead')?.id} member of self.concernedModelSet AND (:company IS NULL OR :company member of self.companySet OR self.companySet IS EMPTY) &quot;"/>
+  </action-attrs>
 </object-views>

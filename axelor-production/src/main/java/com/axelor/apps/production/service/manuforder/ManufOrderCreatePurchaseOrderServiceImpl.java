@@ -162,8 +162,8 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
       purchaseOrder.setFreightCarrierMode(supplierPartner.getFreightCarrierMode());
       purchaseOrder.setNotes(supplierPartner.getPurchaseOrderComments());
 
-      if (supplierPartner.getPaymentCondition() != null) {
-        purchaseOrder.setPaymentCondition(supplierPartner.getPaymentCondition());
+      if (supplierPartner.getOutPaymentCondition() != null) {
+        purchaseOrder.setPaymentCondition(supplierPartner.getOutPaymentCondition());
       } else {
         purchaseOrder.setPaymentCondition(
             purchaseOrder.getCompany().getAccountConfig().getDefPaymentCondition());

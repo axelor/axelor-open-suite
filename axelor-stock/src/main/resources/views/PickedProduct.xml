@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="picked-product-grid" title="Picked products"
+    model="com.axelor.apps.stock.db.PickedProduct" editable="true"
+    onNew="action-picked-product-group-onnew" groupBy="state" orderBy="-stockMoveLine">
+    <field name="fromStockLocation"
+      onSelect="action-picked-product-method-set-domain-from-stock-location"
+      onChange="action-picked-product-method-set-current-qty" readonlyIf="stockMoveLine"/>
+    <field name="pickedProduct"
+      onSelect="action-picked-product-method-set-picked-product-domain"
+      onChange="action-picked-product-group-product-onchange" required="true"
+      readonlyIf="stockMoveLine"/>
+    <field name="trackingNumber" title="Tracking no."
+      onSelect="action-picked-product-method-set-tracking-number-domain"
+      onChange="action-picked-product-method-set-current-qty" readonlyIf="stockMoveLine"/>
+    <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
+      readonly="true"/>
+    <field name="unit" readonly="true"/>
+    <field name="pickedQty" title="Picked qty / Qty to pick" x-scale="nbDecimalQty"
+      readonlyIf="stockMoveLine"/>
+    <button name="realizePickingBtn" title="Realize picking"
+      onClick="action-picked-product-method-realize-picking" readonlyIf="stockMoveLine != null"
+      icon="fa-play" hideIf="!id"/>
+    <button name="cancelPickingBtn" icon="fa-undo"
+      onClick="action-picked-product-method-cancel-picking" readonlyIf="stockMoveLine == null"
+      hideIf="!id"/>
+    <field name="stockMoveLine" hidden="true"/>
+    <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
+    <field name="state" title="State" hidden="true" type="string"/>
+  </grid>
+
+  <grid name="picked-product-to-pick-grid" title="Picked products"
+    model="com.axelor.apps.stock.db.PickedProduct" canEdit="false">
+    <field name="fromStockLocation"/>
+    <field name="pickedProduct"/>
+    <field name="trackingNumber"/>
+    <field name="unit" readonly="true"/>
+    <field name="pickedQty" title="Qty to pick" x-scale="nbDecimalQty"
+      readonlyIf="stockMoveLine"/>
+    <field name="stockMoveLine" hidden="true"/>
+    <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
+  </grid>
+
+  <form name="picked-product-form" title="Picked products"
+    model="com.axelor.apps.stock.db.PickedProduct" onNew="action-picked-product-group-onnew"
+    onLoad="action-picked-product-method-set-current-qty" canDelete="false">
+    <panel name="mainPanel" readonlyIf="stockMoveLine">
+      <field name="fromStockLocation"
+        onSelect="action-picked-product-method-set-domain-from-stock-location"
+        onChange="action-picked-product-method-set-current-qty"/>
+      <field name="pickedProduct"
+        onSelect="action-picked-product-method-set-picked-product-domain"
+        onChange="action-picked-product-group-product-onchange"/>
+      <field name="trackingNumber"
+        onSelect="action-picked-product-method-set-tracking-number-domain"
+        onChange="action-picked-product-method-set-current-qty"/>
+      <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
+        readonly="true"/>
+      <field name="unit" readonly="true"/>
+      <field name="pickedQty" x-scale="nbDecimalQty"/>
+      <field name="stockMoveLine" showIf="stockMoveLine != null"/>
+      <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-method name="action-picked-product-method-set-current-qty">
+    <call class="com.axelor.apps.stock.web.PickedProductController" method="setCurrentQty"/>
+  </action-method>
+
+
+  <action-record name="action-picked-product-record-set-tracking-number"
+    model="com.axelor.apps.stock.db.PickedProduct">
+    <field name="trackingNumber" expr="eval: null"
+      if="(__repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2', pickedProduct, fromStockLocation)?.fetchOne()?.trackingNumber) != trackingNumber"/>
+  </action-record>
+
+  <action-method name="action-picked-product-method-set-domain-from-stock-location">
+    <call class="com.axelor.apps.stock.web.PickedProductController"
+      method="setFromStockLocationDomain"/>
+  </action-method>
+
+  <action-group name="action-picked-product-group-product-onchange">
+    <action name="action-picked-product-record-set-unit"/>
+    <action name="action-picked-product-attrs-tracking-number-required"/>
+    <action name="action-picked-product-record-set-tracking-number"/>
+    <action name="action-picked-product-method-set-current-qty"/>
+  </action-group>
+
+  <action-record name="action-picked-product-record-set-unit"
+    model="com.axelor.apps.stock.db.PickedProduct">
+    <field name="unit" expr="eval: pickedProduct?.unit"/>
+  </action-record>
+
+  <action-attrs name="action-picked-product-attrs-tracking-number-required">
+    <attribute name="required" for="trackingNumber"
+      expr="eval: pickedProduct != null &amp;&amp; com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(pickedProduct, 'trackingNumberConfiguration', __parent__?.company) != null"/>
+  </action-attrs>
+
+  <action-method name="action-picked-product-method-set-tracking-number-domain">
+    <call class="com.axelor.apps.stock.web.PickedProductController"
+      method="setTrackingNumberDomain"/>
+  </action-method>
+
+  <action-record name="action-picked-product-record-default-location"
+    model="com.axelor.apps.stock.db.PickedProduct">
+    <field name="fromStockLocation" expr="eval: __parent__?.commonFromStockLocation"/>
+  </action-record>
+
+  <action-group name="action-picked-product-group-onnew">
+    <action name="action-picked-product-record-default-location"/>
+  </action-group>
+
+  <action-method name="action-picked-product-method-realize-picking">
+    <call class="com.axelor.apps.stock.web.PickedProductController" method="realizePicking"/>
+  </action-method>
+
+  <action-method name="action-picked-product-method-cancel-picking">
+    <call class="com.axelor.apps.stock.web.PickedProductController" method="cancelPicking"/>
+  </action-method>
+
+  <action-method name="action-picked-product-method-set-picked-product-domain">
+    <call class="com.axelor.apps.stock.web.PickedProductController"
+      method="setPickedProductDomain"/>
+  </action-method>
+
+
+</object-views>

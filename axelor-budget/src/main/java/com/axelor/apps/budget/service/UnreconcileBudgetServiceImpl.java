@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.reconcile.ReconcileToolService;
 import com.axelor.apps.account.service.reconcile.UnreconcileServiceImpl;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapService;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.UnreconcileGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -53,6 +54,7 @@ public class UnreconcileBudgetServiceImpl extends UnreconcileServiceImpl {
       InvoicePaymentCancelService invoicePaymentCancelService,
       MoveLineTaxService moveLineTaxService,
       PaymentMoveLineDistributionService paymentMoveLineDistributionService,
+      ForeignExchangeGapService foreignExchangeGapService,
       ReconcileRepository reconcileRepository,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoiceTermPaymentRepository invoiceTermPaymentRepository,
@@ -67,6 +69,7 @@ public class UnreconcileBudgetServiceImpl extends UnreconcileServiceImpl {
         invoicePaymentCancelService,
         moveLineTaxService,
         paymentMoveLineDistributionService,
+        foreignExchangeGapService,
         reconcileRepository,
         invoicePaymentRepository,
         invoiceTermPaymentRepository);

@@ -1,22 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="task-status-grid" title="Task status"
     model="com.axelor.apps.project.db.TaskStatus" orderBy="sequence" canMove="true">
     <field name="name"/>
     <field name="isCompleted"/>
+    <field name="defaultProgress"
+      if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask"/>
     <field name="sequence" hidden="true"/>
   </grid>
 
   <form name="task-status-form" title="Task status"
     model="com.axelor.apps.project.db.TaskStatus">
-    <panel name="mainPanel">
+    <panel name="mainPanel" itemSpan="4">
       <field name="name"/>
-      <field name="isCompleted"/>
+      <field name="isCompleted" onChange="action-task-status-record-set-default-progress"/>
+      <field name="defaultProgress"
+        onChange="action-task-status-group-default-progress-onchange"
+        if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask"/>
       <field name="sequence" hidden="true"/>
     </panel>
   </form>
+
+  <action-group name="action-task-status-group-default-progress-onchange">
+    <action name="action-task-status-method-category-validate"/>
+    <action name="action-task-status-method-update-existing-progress"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-record name="action-task-status-record-set-default-progress"
+    model="com.axelor.apps.project.db.TaskStatus">
+    <field name="defaultProgress" expr="eval: 100"
+      if="isCompleted &amp;&amp; defaultProgress == 0"/>
+    <field name="defaultProgress" expr="eval: 0"
+      if="!isCompleted &amp;&amp; defaultProgress == 100"/>
+  </action-record>
+
+  <action-method name="action-task-status-method-category-validate">
+    <call class="com.axelor.apps.project.web.TaskStatusController"
+      method="validateProgressOnCategory"/>
+  </action-method>
+
+  <action-method name="action-task-status-method-update-existing-progress">
+    <call class="com.axelor.apps.project.web.TaskStatusController"
+      method="updateExistingProgressOnCategory"/>
+  </action-method>
 
 </object-views>

@@ -475,6 +475,10 @@ left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
+left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+left outer join public.base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR InvoiceTerm.due_date >= AccountingReport.date_from) AND
@@ -482,6 +486,8 @@ where
 Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
+(ReportAccountTagSet.account_tag_set IS NULL OR AccountTagSet.account_account = Account.id) AND
+(ReportPartnerTagSet.partner_tag_set IS NULL OR PartnerTagSet.base_partner = MoveLine.partner) AND
 Account.reconcile_ok = true AND InvoiceTerm.amount_remaining != 0
 AND Move.ignore_in_accounting_ok is not true AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (CASE
@@ -489,7 +495,8 @@ AND (CASE
     WHEN AccountingReport.display_closing_accounting_moves IS TRUE THEN Move.functional_origin_select IN (2,3,4)
     WHEN AccountingReport.display_opening_accounting_moves IS TRUE THEN Move.functional_origin_select IN (1,3,4)
     ELSE Move.functional_origin_select IN (3,4)
-END OR Move.functional_origin_select IS NULL)
+END OR Move.functional_origin_select IS NULL) AND
+(AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal)
 group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,MoveLine.name, Currency.number_of_decimals]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">

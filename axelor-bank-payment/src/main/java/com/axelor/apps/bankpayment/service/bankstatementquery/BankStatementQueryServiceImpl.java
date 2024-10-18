@@ -59,7 +59,6 @@ public class BankStatementQueryServiceImpl implements BankStatementQueryService 
   protected MoveLine evalMoveLine(
       BankStatementQuery bankStatementQuery, BankStatementLine bankStatementLine, Move move)
       throws AxelorException {
-    Objects.requireNonNull(move);
     Context scriptContext =
         new Context(Mapper.toMap(bankStatementLine), BankStatementLineAFB120.class);
     scriptContext.put("generatedMove", EntityHelper.getEntity(move));
