@@ -102,7 +102,7 @@ public class SaleOrderRestController {
         .createAccess(SaleOrderLine.class)
         .writeAccess(SaleOrder.class, saleOrderId)
         .check();
-    SaleOrder saleOrder = ObjectFinder.find(SaleOrder.class, saleOrderId, ObjectFinder.NO_VERSION);
+    SaleOrder saleOrder = ObjectFinder.find(SaleOrder.class, saleOrderId, requestBody.getVersion());
     SaleOrderLineGeneratorService saleorderLineCreateService =
         Beans.get(SaleOrderLineGeneratorService.class);
     Product product = requestBody.getSaleOrderLine().fetchProduct();
