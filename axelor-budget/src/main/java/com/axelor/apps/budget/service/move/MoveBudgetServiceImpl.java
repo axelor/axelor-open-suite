@@ -141,14 +141,18 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
       return false;
     }
 
-    List<MoveLine> moveLineList =
-        move.getMoveLineList().stream()
-            .filter(it -> budgetAccountService.checkAccountType(it.getAccount()))
-            .collect(Collectors.toList());
+    List<MoveLine> moveLineList = getRequiredBudgetMoveLines(move);
 
     return CollectionUtils.isNotEmpty(moveLineList)
         && moveLineList.stream()
             .anyMatch(ml -> CollectionUtils.isNotEmpty(ml.getBudgetDistributionList()));
+  }
+
+  @Override
+  public List<MoveLine> getRequiredBudgetMoveLines(Move move) {
+    return move.getMoveLineList().stream()
+        .filter(it -> budgetAccountService.checkAccountType(it.getAccount()))
+        .collect(Collectors.toList());
   }
 
   @Override
