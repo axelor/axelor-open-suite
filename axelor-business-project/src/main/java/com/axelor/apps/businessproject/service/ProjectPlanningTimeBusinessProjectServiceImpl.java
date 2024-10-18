@@ -40,6 +40,7 @@ import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -149,5 +150,41 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
     }
 
     return planningTime;
+  }
+
+  @Override
+  protected ProjectPlanningTime updatePlanningTime(
+      Sprint sprint, ProjectTask projectTask, ProjectPlanningTime planningTime) {
+
+    return setPlanningTimeUnits(
+        projectTask, super.updatePlanningTime(sprint, projectTask, planningTime));
+  }
+
+  @Override
+  protected ProjectPlanningTime createPlanningTime(Sprint sprint, ProjectTask projectTask) {
+
+    return setPlanningTimeUnits(projectTask, super.createPlanningTime(sprint, projectTask));
+  }
+
+  protected ProjectPlanningTime setPlanningTimeUnits(
+      ProjectTask projectTask, ProjectPlanningTime planningTime) {
+
+    Unit timeUnit =
+        projectTask.getTimeUnit() != null
+            ? projectTask.getTimeUnit()
+            : projectTask.getProject().getProjectTimeUnit();
+
+    planningTime.setTimeUnit(timeUnit);
+    planningTime.setDisplayTimeUnit(timeUnit);
+
+    return planningTime;
+  }
+
+  @Override
+  protected boolean isValidProjectTask(ProjectTask projectTask) {
+
+    return super.isValidProjectTask(projectTask)
+        && (projectTask.getTimeUnit() != null
+            || projectTask.getProject().getProjectTimeUnit() != null);
   }
 }

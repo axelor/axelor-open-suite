@@ -118,7 +118,9 @@
   <form name="business-project-task-form" title="Task"
     model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-business-project-project-task-group-on-new"
-    onLoad="action-business-project-project-task-group-on-load" width="large">
+    onLoad="action-business-project-project-task-group-on-load"
+    onSave="action-sprint-validate-upadte-or-create-project-plannings,action-project-task-method-update-project-plannings"
+    width="large">
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
@@ -296,6 +298,7 @@
       <panel-include view="incl-checklist-task-panel-form"/>
 
       <panel-include view="incl-links-panel-form"/>
+      <panel-include view="sprint-project-task-form"/>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -383,7 +386,7 @@
     <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
       if-module="axelor-human-resource" showIf="project.isShowPlanning">
       <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-        x-show-bars="false" action="action-project-task-dashlet-project-planning-time" colSpan="12"
+        x-show-bars="true" action="action-project-task-dashlet-project-planning-time" colSpan="12"
         canSearch="true"/>
       <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
       <field name="project.isShowPlanning" hidden="true"/>
