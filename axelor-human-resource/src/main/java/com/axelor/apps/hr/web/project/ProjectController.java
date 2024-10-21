@@ -18,7 +18,9 @@
  */
 package com.axelor.apps.hr.web.project;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.service.sprint.SprintHRService;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -26,6 +28,7 @@ import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,5 +60,20 @@ public class ProjectController {
     Beans.get(SprintHRService.class).attachTasksToSprintWithProjectPlannings(sprint, projectTasks);
 
     response.setCanClose(true);
+  }
+
+  public void defaultSprintAndPeriods(ActionRequest request, ActionResponse response) {
+
+    Project project = request.getContext().asType(Project.class);
+
+    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(project.getCompany());
+    Sprint sprint = Beans.get(SprintRepository.class).findByProjectAndDate(project, todayDate);
+
+    if (sprint != null) {
+      response.setValue("sprint", sprint);
+      response.setValue(
+          "allocationPeriodSet",
+          Beans.get(SprintHRService.class).defaultAllocationPeriods(sprint, todayDate));
+    }
   }
 }

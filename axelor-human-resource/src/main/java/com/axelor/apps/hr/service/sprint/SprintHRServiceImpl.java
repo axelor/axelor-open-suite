@@ -35,8 +35,10 @@ import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -116,5 +118,40 @@ public class SprintHRServiceImpl extends SprintServiceImpl implements SprintHRSe
       projectPlanningTimeService.updateProjectPlannings(sprint, projectTasks);
       attachTasksToSprint(sprint, projectTasks);
     }
+  }
+
+  @Override
+  public Set<AllocationPeriod> defaultAllocationPeriods(Sprint sprint, LocalDate date) {
+
+    Set<AllocationPeriod> allocationPeriodSet = sprint.getAllocationPeriodSet();
+    Set<AllocationPeriod> filteredAllocationPeriodSet = new HashSet<>();
+
+    if (CollectionUtils.isNotEmpty(allocationPeriodSet)) {
+      Optional<AllocationPeriod> currentPeriodOpt =
+          allocationPeriodSet.stream()
+              .filter(
+                  period ->
+                      !date.isBefore(period.getFromDate()) && !date.isAfter(period.getToDate()))
+              .findFirst();
+
+      if (currentPeriodOpt.isPresent()) {
+        AllocationPeriod currentPeriod = currentPeriodOpt.get();
+        filteredAllocationPeriodSet.add(currentPeriod);
+
+        LocalDate nextDate = currentPeriod.getToDate().plusDays(3);
+
+        Optional<AllocationPeriod> nextPeriodOpt =
+            allocationPeriodSet.stream()
+                .filter(
+                    period ->
+                        !nextDate.isBefore(period.getFromDate())
+                            && !nextDate.isAfter(period.getToDate()))
+                .findFirst();
+
+        nextPeriodOpt.ifPresent(filteredAllocationPeriodSet::add);
+      }
+    }
+
+    return filteredAllocationPeriodSet;
   }
 }
