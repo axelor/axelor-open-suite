@@ -19,6 +19,10 @@
     <integer name="sequence" title="Sequence"/>
     <boolean name="isBacklog" title="Is backlog?" default="false"/>
 
+    <finder-method name="findByProjectAndDate" using="project,LocalDate:date"
+      filter="self.project = :project and :date between self.fromDate and self.toDate"/>
+    <finder-method name="findByProject" using="project" all="true"/>
+
   </entity>
 
 </domain-models>

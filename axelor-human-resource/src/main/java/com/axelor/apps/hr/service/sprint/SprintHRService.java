@@ -19,9 +19,12 @@
 package com.axelor.apps.hr.service.sprint;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.project.db.AllocationPeriod;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface SprintHRService {
 
@@ -29,4 +32,6 @@ public interface SprintHRService {
 
   public void attachTasksToSprintWithProjectPlannings(
       Sprint sprint, List<ProjectTask> projectTasks);
+
+  public Set<AllocationPeriod> defaultAllocationPeriods(Sprint sprint, LocalDate date);
 }
