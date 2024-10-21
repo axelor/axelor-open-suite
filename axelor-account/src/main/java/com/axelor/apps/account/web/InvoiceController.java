@@ -77,7 +77,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -1058,8 +1057,10 @@ public class InvoiceController {
         .map(idList -> idList.stream().map(String::valueOf).collect(Collectors.joining(",")))
         .orElseGet(
             () ->
-                StringHelper.getIdListString(
-                    request.getCriteria().createQuery(Invoice.class).fetch()));
+                request.getCriteria().createQuery(Invoice.class).select("id").fetch(0, 0).stream()
+                    .map(m -> (Long) m.get("id"))
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(",")));
   }
 
   public void checkInvoiceLinesAnalyticDistribution(
