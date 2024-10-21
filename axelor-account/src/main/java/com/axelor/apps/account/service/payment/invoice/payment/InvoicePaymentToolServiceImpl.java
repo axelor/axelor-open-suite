@@ -425,7 +425,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
               invoicePayment.getCurrency());
 
       if (!invoicePayment.getManualChange()
-          || (invoicePayment.getAmount().compareTo(payableCurrencyAmount) > 0 && !allowExcessPayment(invoicePayment))) {
+          || (invoicePayment.getAmount().compareTo(payableCurrencyAmount) > 0
+              && !allowExcessPayment(invoicePayment))) {
         invoicePayment.setAmount(payableCurrencyAmount);
         amountError = !invoicePayment.getApplyFinancialDiscount();
       }
@@ -549,7 +550,11 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected boolean allowExcessPayment(InvoicePayment invoicePayment) {
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
     if (!ObjectUtils.isEmpty(paymentMode)) {
-      AccountManagement accountManagement = paymentModeService.getAccountManagement(paymentMode, invoicePayment.getInvoice().getCompany(), invoicePayment.getCompanyBankDetails());
+      AccountManagement accountManagement =
+          paymentModeService.getAccountManagement(
+              paymentMode,
+              invoicePayment.getInvoice().getCompany(),
+              invoicePayment.getCompanyBankDetails());
       if (accountManagement != null && accountManagement.getJournal() != null) {
         return accountManagement.getJournal().getExcessPaymentOk();
       }

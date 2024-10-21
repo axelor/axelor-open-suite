@@ -82,7 +82,7 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
         invoiceTermToolService,
         invoiceTermPaymentToolService,
         foreignExchangeGapToolService,
-            paymentModeService);
+        paymentModeService);
     this.partnerSupplychainService = partnerSupplychainService;
     this.saleOrderComputeService = saleOrderComputeService;
     this.purchaseOrderService = purchaseOrderService;
