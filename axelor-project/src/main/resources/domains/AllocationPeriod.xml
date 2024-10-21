@@ -12,6 +12,8 @@
     <date name="fromDate" title="From date"/>
     <date name="toDate" title="To date"/>
 
+    <finder-method name="findByCompanyAndDates" using="company,fromDate,toDate"/>
+
   </entity>
 
 </domain-models>
