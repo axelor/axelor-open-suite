@@ -237,7 +237,7 @@
   <menuitem name="sprint-root" title="Sprint" parent="menu-project-root" order="699"/>
 
   <menuitem name="sprint-root-sprint" title="Sprints" parent="sprint-root"
-    action="sprint.root.sprints"/>
+    action="sprint.root.sprints" order="1"/>
 
   <action-view name="sprint.root.sprints" title="Sprints"
     model="com.axelor.apps.project.db.Sprint">
@@ -246,12 +246,31 @@
   </action-view>
 
   <menuitem name="sprint-root-allocation-periods" title="Allocation periods"
-    parent="sprint-root" action="sprint.root.allocation.periods"/>
+    parent="sprint-root" action="sprint.root.allocation.periods" order="2"/>
 
   <action-view name="sprint.root.allocation.periods" title="Allocation periods"
     model="com.axelor.apps.project.db.AllocationPeriod">
     <view type="grid" name="allocation-period-grid"/>
     <view type="form" name="allocation-period-form"/>
+  </action-view>
+
+  <menuitem name="sprint-root-sprint-generator" title="Sprint generator"
+    parent="sprint-root" action="sprint.root.sprint.generator" order="5"/>
+
+  <action-view name="sprint.root.sprint.generator" title="Sprint generator"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="sprint-generator-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+  </action-view>
+
+  <menuitem name="sprint-root-allocation-period-generator"
+    title="Allocation period generator" parent="sprint-root"
+    action="sprint.root.allocation.period.generator" order="6"/>
+
+  <action-view name="sprint.root.allocation.period.generator"
+    title="Allocation period generator" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="allocation-period-generator-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
   </action-view>
 
   <!-- Sprint menus -->
