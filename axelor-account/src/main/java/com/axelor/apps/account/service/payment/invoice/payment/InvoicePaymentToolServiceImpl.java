@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -59,6 +60,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +80,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected InvoiceTermToolService invoiceTermToolService;
   protected InvoiceTermPaymentToolService invoiceTermPaymentToolService;
   protected ForeignExchangeGapToolService foreignExchangeGapToolService;
+  protected PaymentModeService paymentModeService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -94,7 +97,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       InvoiceTermFilterService invoiceTermFilterService,
       InvoiceTermToolService invoiceTermToolService,
       InvoiceTermPaymentToolService invoiceTermPaymentToolService,
-      ForeignExchangeGapToolService foreignExchangeGapToolService) {
+      ForeignExchangeGapToolService foreignExchangeGapToolService,
+      PaymentModeService paymentModeService) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
@@ -108,6 +112,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     this.invoiceTermToolService = invoiceTermToolService;
     this.invoiceTermPaymentToolService = invoiceTermPaymentToolService;
     this.foreignExchangeGapToolService = foreignExchangeGapToolService;
+    this.paymentModeService = paymentModeService;
   }
 
   @Override
@@ -420,7 +425,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
               invoicePayment.getCurrency());
 
       if (!invoicePayment.getManualChange()
-          || invoicePayment.getAmount().compareTo(payableCurrencyAmount) > 0) {
+          || (invoicePayment.getAmount().compareTo(payableCurrencyAmount) > 0 && !allowExcessPayment(invoicePayment))) {
         invoicePayment.setAmount(payableCurrencyAmount);
         amountError = !invoicePayment.getApplyFinancialDiscount();
       }
@@ -539,5 +544,16 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     }
 
     return amountInCurrency;
+  }
+
+  protected boolean allowExcessPayment(InvoicePayment invoicePayment) {
+    PaymentMode paymentMode = invoicePayment.getPaymentMode();
+    if (!ObjectUtils.isEmpty(paymentMode)) {
+      AccountManagement accountManagement = paymentModeService.getAccountManagement(paymentMode, invoicePayment.getInvoice().getCompany(), invoicePayment.getCompanyBankDetails());
+      if (accountManagement != null && accountManagement.getJournal() != null) {
+        return accountManagement.getJournal().getExcessPaymentOk();
+      }
+    }
+    return false;
   }
 }

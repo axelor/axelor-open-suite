@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
@@ -66,7 +67,8 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
       InvoiceTermFilterService invoiceTermFilterService,
       InvoiceTermToolService invoiceTermToolService,
       InvoiceTermPaymentToolService invoiceTermPaymentToolService,
-      ForeignExchangeGapToolService foreignExchangeGapToolService) {
+      ForeignExchangeGapToolService foreignExchangeGapToolService,
+      PaymentModeService paymentModeService) {
     super(
         invoiceRepo,
         moveToolService,
@@ -79,7 +81,8 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
         invoiceTermFilterService,
         invoiceTermToolService,
         invoiceTermPaymentToolService,
-        foreignExchangeGapToolService);
+        foreignExchangeGapToolService,
+            paymentModeService);
     this.partnerSupplychainService = partnerSupplychainService;
     this.saleOrderComputeService = saleOrderComputeService;
     this.purchaseOrderService = purchaseOrderService;
