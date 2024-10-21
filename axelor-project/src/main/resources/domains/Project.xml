@@ -129,9 +129,6 @@
 
     <many-to-one ref="com.axelor.apps.project.db.Sprint" name="sprint" title="Sprint"
       transient="true"/>
-    <many-to-many name="allocationPeriodSet"
-      ref="com.axelor.apps.project.db.AllocationPeriod" title="Allocation periods" transient="true"/>
-
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>
 

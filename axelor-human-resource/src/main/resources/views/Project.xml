@@ -9,11 +9,12 @@
     <extend target="//panel-dashlet[@name='tasksPerSprintPanel']">
       <insert position="before">
         <field name="sprint" domain="self.project.id = :id"
-          onChange="action-project-attrs-refresh-allocation-lines-on-sprint-change"/>
-        <field name="allocationPeriodSet" onSelect="action-project-attrs-set-periods-domain"
-          widget="tag-select"
+          onChange="action-project-attrs-refresh-allocation-lines-on-sprint-change" x-dirty="false"/>
+        <field name="allocationPeriodSet" type="many-to-many"
+          target="com.axelor.apps.project.db.AllocationPeriod" title="Allocation periods"
+          onSelect="action-project-attrs-set-periods-domain" widget="tag-select"
           onChange="action-project-attrs-refresh-allocation-lines-on-sprint-change" canNew="false"
-          canEdit="false"/>
+          canEdit="false" x-dirty="false"/>
         <panel-dashlet action="action-project-method-view-allocation-lines"
           name="allocationLinePanel" colSpan="12"/>
         <panel-dashlet action="action-project-view-sprints-summary"
@@ -44,6 +45,11 @@
       method="attachTasksToSprintWithProjectPlannings"/>
   </action-method>
 
+  <action-method name="action-project-method-default-sprint-and-periods">
+    <call class="com.axelor.apps.hr.web.project.ProjectController"
+      method="defaultSprintAndPeriods"/>
+  </action-method>
+
   <action-attrs name="action-project-attrs-refresh-allocation-lines-on-sprint-change">
     <attribute name="refresh" for="allocationLinePanel" expr="eval: true"/>
   </action-attrs>
@@ -65,5 +71,14 @@
     <view type="form" name="sprint-form"/>
     <domain>self.project.id = :id</domain>
   </action-view>
+
+  <action-group id="hr-action-project-on-load-group"
+    name="action-project-on-load-group">
+    <action name="action-project-attrs-on-new-load"/>
+    <action name="action-project-method-task-status-management-selection-in"/>
+    <action name="action-project-activity-dashboard-method-on-new"/>
+    <action name="action-project-dashboard-method-on-new"/>
+    <action name="action-project-method-default-sprint-and-periods"/>
+  </action-group>
 
 </object-views>
