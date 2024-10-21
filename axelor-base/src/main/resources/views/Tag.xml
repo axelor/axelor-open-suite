@@ -22,7 +22,7 @@
   </grid>
 
   <form title="Tag" name="tag-form" model="com.axelor.apps.base.db.Tag"
-    onNew="action-tag-method-set-concerned-model">
+    onNew="action-tag-method-on-new">
     <panel name="mainPanel" colSpan="12">
       <field name="name"/>
       <field name="concernedModelSet" placeholder="All" form-view="meta-model-form"
@@ -43,8 +43,8 @@
     <call class="com.axelor.apps.base.web.TagController" method="setConcernedModelsDomain"/>
   </action-method>
 
-  <action-method name="action-tag-method-set-concerned-model">
-    <call class="com.axelor.apps.base.web.TagController" method="setDefaultConcernedModel"/>
+  <action-method name="action-tag-method-on-new">
+    <call class="com.axelor.apps.base.web.TagController" method="onNew"/>
   </action-method>
 
 </object-views>
