@@ -1053,14 +1053,27 @@ public class InvoiceController {
 
   @SuppressWarnings("unchecked")
   protected String getIdListString(ActionRequest request) {
-    return Optional.ofNullable((List<Integer>) request.getContext().get("_ids"))
-        .map(idList -> idList.stream().map(String::valueOf).collect(Collectors.joining(",")))
-        .orElseGet(
-            () ->
-                request.getCriteria().createQuery(Invoice.class).select("id").fetch(0, 0).stream()
-                    .map(m -> (Long) m.get("id"))
-                    .map(String::valueOf)
-                    .collect(Collectors.joining(",")));
+
+    String idListString =
+        Optional.ofNullable((List<Integer>) request.getContext().get("_ids"))
+            .map(idList -> idList.stream().map(String::valueOf).collect(Collectors.joining(",")))
+            .orElseGet(
+                () ->
+                    request
+                        .getCriteria()
+                        .createQuery(Invoice.class)
+                        .select("id")
+                        .fetch(0, 0)
+                        .stream()
+                        .map(m -> (Long) m.get("id"))
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(",")));
+
+    if (idListString.isBlank()) {
+      return "0";
+    }
+
+    return idListString;
   }
 
   public void checkInvoiceLinesAnalyticDistribution(
