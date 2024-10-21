@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="allocation-period-grid" title="Allocation periods"
-    model="com.axelor.apps.project.db.AllocationPeriod">
+    model="com.axelor.apps.project.db.AllocationPeriod" orderBy="fromDate">
 
     <field name="name"/>
     <field name="company"/>
@@ -24,5 +24,33 @@
     </panel>
 
   </form>
+
+  <form model="com.axelor.utils.db.Wizard" title="Allocation period generator"
+    name="allocation-period-generator-wizard-form" width="large">
+
+    <panel name="mainPanel">
+      <field name="company" title="Company" type="many-to-one"
+        target="com.axelor.apps.base.db.Company" required="true" x-dirty="false"/>
+      <spacer name="dateSpacer"/>
+      <field name="fromDate" title="From" type="date"
+        onChange="action-group-sprint-and-period-generator-validate-dates" required="true"
+        x-dirty="false"/>
+      <field name="toDate" title="To" type="date"
+        onChange="action-group-sprint-and-period-generator-validate-dates" required="true"
+        x-dirty="false"/>
+      <field name="numberOfWeeksPerPeriod" title="Number of weeks (per period)" type="integer"
+        min="1" required="true" x-dirty="false"/>
+      <spacer name="generateBtnSpacer"/>
+      <button onClick="action-allocation-period-generator-method-generate-allocation-periods"
+        name="generate" title="Generate"/>
+    </panel>
+
+  </form>
+
+  <action-method
+    name="action-allocation-period-generator-method-generate-allocation-periods">
+    <call class="com.axelor.apps.project.web.AllocationPeriodController"
+      method="generateAllocationPeriods"/>
+  </action-method>
 
 </object-views>

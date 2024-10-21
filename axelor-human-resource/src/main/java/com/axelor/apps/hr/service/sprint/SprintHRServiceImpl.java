@@ -29,6 +29,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
+import com.axelor.apps.project.service.sprint.AllocationPeriodService;
 import com.axelor.apps.project.service.sprint.SprintServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
@@ -43,7 +44,6 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class SprintHRServiceImpl extends SprintServiceImpl implements SprintHRService {
 
-  protected SprintRepository sprintRepo;
   protected AllocationLineService allocationLineHRService;
   protected ProjectPlanningTimeService projectPlanningTimeService;
 
@@ -51,12 +51,12 @@ public class SprintHRServiceImpl extends SprintServiceImpl implements SprintHRSe
   public SprintHRServiceImpl(
       ProjectTaskRepository projectTaskRepo,
       SprintRepository sprintRepo,
+      AllocationPeriodService allocationPeriodService,
       AllocationLineService allocationLineHRService,
       ProjectPlanningTimeService projectPlanningTimeService) {
 
-    super(projectTaskRepo);
+    super(projectTaskRepo, sprintRepo, allocationPeriodService);
 
-    this.sprintRepo = sprintRepo;
     this.allocationLineHRService = allocationLineHRService;
     this.projectPlanningTimeService = projectPlanningTimeService;
   }
