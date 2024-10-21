@@ -1028,41 +1028,46 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   @Transactional
-  public boolean splitStockMoveLines(
+  public void splitStockMoveLines(
       StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty)
       throws AxelorException {
 
-    boolean selected = false;
-
-    for (StockMoveLine moveLine : stockMoveLines) {
-      if (moveLine.isSelected()) {
-        selected = true;
-        StockMoveLine line = stockMoveLineRepo.find(moveLine.getId());
-        BigDecimal totalQty = line.getQty();
-        LOG.debug("Move Line selected: {}, Qty: {}", line, totalQty);
-        while (splitQty.compareTo(totalQty) < 0) {
-          totalQty = totalQty.subtract(splitQty);
-          StockMoveLine newLine = stockMoveLineRepo.copy(line, false);
-          newLine.setQty(splitQty);
-          newLine.setRealQty(splitQty);
-          newLine.setStockMove(line.getStockMove());
-          stockMoveLineRepo.save(newLine);
-        }
-        LOG.debug("Qty remains: {}", totalQty);
-        if (totalQty.compareTo(BigDecimal.ZERO) > 0) {
-          StockMoveLine newLine = stockMoveLineRepo.copy(line, false);
-          newLine.setQty(totalQty);
-          newLine.setRealQty(totalQty);
-          newLine.setStockMove(line.getStockMove());
-          stockMoveLineRepo.save(newLine);
-          LOG.debug("New line created: {}", newLine);
-        }
-        stockMove.removeStockMoveLineListItem(line);
-        stockMoveLineRepo.remove(line);
-      }
+    if (CollectionUtils.isEmpty(stockMoveLines)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(StockExceptionMessage.STOCK_MOVE_15));
     }
 
-    return selected;
+    for (StockMoveLine moveLine : stockMoveLines) {
+      moveLine = stockMoveLineRepo.find(moveLine.getId());
+      BigDecimal totalQty = moveLine.getQty();
+      BigDecimal remainder = totalQty.remainder(splitQty);
+
+      if (remainder.compareTo(BigDecimal.ZERO) == 0) {
+        splitLine(stockMove, splitQty, moveLine, totalQty);
+      } else {
+        splitLine(stockMove, splitQty, moveLine, totalQty);
+        copyLine(stockMove, moveLine, remainder);
+      }
+    }
+    stockMoveRepo.save(stockMove);
+  }
+
+  protected void splitLine(
+      StockMove stockMove, BigDecimal splitQty, StockMoveLine moveLine, BigDecimal totalQty) {
+    moveLine.setQty(splitQty);
+    moveLine.setRealQty(splitQty);
+
+    int limit = totalQty.divide(splitQty).intValue();
+    for (int counter = 1; counter < limit; counter++) {
+      copyLine(stockMove, moveLine, splitQty);
+    }
+  }
+
+  protected void copyLine(StockMove stockMove, StockMoveLine moveLine, BigDecimal remainder) {
+    StockMoveLine newLine = stockMoveLineRepo.copy(moveLine, false);
+    newLine.setQty(remainder);
+    newLine.setRealQty(remainder);
+    stockMove.addStockMoveLineListItem(newLine);
   }
 
   @Override

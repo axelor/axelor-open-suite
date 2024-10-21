@@ -481,11 +481,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public boolean splitStockMoveLines(
+  public void splitStockMoveLines(
       StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty)
       throws AxelorException {
     checkAssociatedInvoiceLine(stockMoveLines);
-    return super.splitStockMoveLines(stockMove, stockMoveLines, splitQty);
+    super.splitStockMoveLines(stockMove, stockMoveLines, splitQty);
   }
 
   /**
