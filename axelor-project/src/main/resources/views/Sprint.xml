@@ -34,13 +34,61 @@
 
   </form>
 
+  <form model="com.axelor.utils.db.Wizard" title="Sprint generator"
+    name="sprint-generator-wizard-form" width="large">
+
+    <panel name="mainPanel">
+      <field name="company" title="Company" type="many-to-one"
+        target="com.axelor.apps.base.db.Company" required="true" x-dirty="false"/>
+      <field name="projects" title="Projects" target="com.axelor.apps.project.db.Project"
+        type="many-to-many" domain="self.company = :company" widget="TagSelect" required="true"
+        x-dirty="false" colSpan="12"/>
+      <field name="fromDate" title="From" type="date"
+        onChange="action-group-sprint-and-period-generator-validate-dates" required="true"
+        x-dirty="false"/>
+      <field name="toDate" title="To" type="date"
+        onChange="action-group-sprint-and-period-generator-validate-dates" required="true"
+        x-dirty="false"/>
+      <button onClick="action-sprint-generator-method-generate-sprints" name="generate"
+        title="Generate"/>
+    </panel>
+
+  </form>
+
   <action-attrs name="action-sprint-attrs-allocation-period-domain">
     <attribute name="domain" for="allocationPeriodSet"
       expr="eval: &quot;self.company = ${project?.company?.id}&quot;"/>
   </action-attrs>
 
+  <action-attrs name="action-sprint-and-period-generator-reset-dates">
+    <attribute name="value" for="fromDate,toDate" expr="eval: null"/>
+  </action-attrs>
+
   <action-method name="action-sprint-method-compute-dates">
     <call class="com.axelor.apps.project.web.SprintController" method="computeDates"/>
   </action-method>
+
+  <action-method name="action-sprint-generator-method-generate-sprints">
+    <call class="com.axelor.apps.project.web.SprintController" method="generateSprints"/>
+  </action-method>
+
+  <action-condition name="action-sprint-and-period-generator-condition-dates">
+    <check error="Invalid date" field="toDate"
+      if="fromDate &amp;&amp; toDate &amp;&amp; (toDate &lt; fromDate)"/>
+  </action-condition>
+
+  <action-validate name="action-sprint-and-period-generator-validate-dates">
+    <error message="Start date must be a Monday"
+      if="eval: fromDate &amp;&amp; java.time.LocalDate.parse(fromDate).dayOfWeek != java.time.DayOfWeek.MONDAY"
+      action="action-sprint-and-period-generator-reset-dates"/>
+    <error message="End date must be a Friday"
+      if="eval: toDate &amp;&amp; java.time.LocalDate.parse(toDate).dayOfWeek != java.time.DayOfWeek.FRIDAY"
+      action="action-sprint-and-period-generator-reset-dates"/>
+  </action-validate>
+
+  <action-group name="action-group-sprint-and-period-generator-validate-dates">
+    <action name="action-sprint-and-period-generator-condition-dates"/>
+    <action name="action-sprint-and-period-generator-validate-dates"/>
+  </action-group>
 
 </object-views>

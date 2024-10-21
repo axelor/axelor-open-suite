@@ -722,7 +722,7 @@
   <!-- Sprint menus -->
 
   <menuitem name="sprint-root-allocation-lines" title="Allocation lines"
-    parent="sprint-root" action="sprint.root.allocation.lines"/>
+    parent="sprint-root" action="sprint.root.allocation.lines" order="3"/>
 
   <action-view name="sprint.root.allocation.lines" title="Allocation lines"
     model="com.axelor.apps.project.db.AllocationLine">
@@ -730,10 +730,10 @@
     <view type="form" name="allocation-line-form"/>
   </action-view>
 
-  <menuitem name="my-sprint-root-allocation-lines" title="My allocation lines"
-    parent="sprint-root" action="my.sprint.root.allocation.lines"/>
+  <menuitem name="sprint-root-my-allocation-lines" title="My allocation lines"
+    parent="sprint-root" action="sprint.root.my.allocation.lines" order="4"/>
 
-  <action-view name="my.sprint.root.allocation.lines" title="My allocation lines"
+  <action-view name="sprint.root.my.allocation.lines" title="My allocation lines"
     model="com.axelor.apps.project.db.AllocationLine">
     <view type="grid" name="allocation-line-grid"/>
     <view type="form" name="allocation-line-form"/>
