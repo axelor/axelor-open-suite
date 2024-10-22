@@ -354,7 +354,7 @@ public class ProductServiceImpl implements ProductService {
     return extraPrice;
   }
 
-  private List<ProductVariant> getProductVariantList(ProductVariantConfig productVariantConfig) {
+  protected List<ProductVariant> getProductVariantList(ProductVariantConfig productVariantConfig) {
 
     List<ProductVariant> productVariantList = Lists.newArrayList();
 
@@ -372,7 +372,7 @@ public class ProductServiceImpl implements ProductService {
     return productVariantList;
   }
 
-  private List<ProductVariant> getProductVariantList(
+  protected List<ProductVariant> getProductVariantList(
       ProductVariantConfig productVariantConfig, ProductVariantValue productVariantValue1) {
 
     List<ProductVariant> productVariantList = Lists.newArrayList();
@@ -397,7 +397,7 @@ public class ProductServiceImpl implements ProductService {
     return productVariantList;
   }
 
-  private List<ProductVariant> getProductVariantList(
+  protected List<ProductVariant> getProductVariantList(
       ProductVariantConfig productVariantConfig,
       ProductVariantValue productVariantValue1,
       ProductVariantValue productVariantValue2) {
@@ -427,7 +427,7 @@ public class ProductServiceImpl implements ProductService {
     return productVariantList;
   }
 
-  private List<ProductVariant> getProductVariantList(
+  protected List<ProductVariant> getProductVariantList(
       ProductVariantConfig productVariantConfig,
       ProductVariantValue productVariantValue1,
       ProductVariantValue productVariantValue2,
@@ -464,7 +464,7 @@ public class ProductServiceImpl implements ProductService {
     return productVariantList;
   }
 
-  private List<ProductVariant> getProductVariantList(
+  protected List<ProductVariant> getProductVariantList(
       ProductVariantConfig productVariantConfig,
       ProductVariantValue productVariantValue1,
       ProductVariantValue productVariantValue2,
