@@ -66,7 +66,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.StringTool;
 import com.axelor.utils.db.Wizard;
 import com.google.common.base.Function;
 import com.google.inject.Singleton;
@@ -76,6 +75,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -1049,8 +1049,7 @@ public class InvoiceController {
 
   public void showCustomerInvoiceLines(ActionRequest request, ActionResponse response) {
     try {
-      String idList =
-          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      String idList = getIdListString(request);
       response.setView(
           ActionView.define(I18n.get("Customer Invoice Line"))
               .model(InvoiceLine.class.getName())
@@ -1065,6 +1064,27 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  protected String getIdListString(ActionRequest request) {
+
+    String idListString =
+        Optional.ofNullable((List<Integer>) request.getContext().get("_ids"))
+            .map(idList -> idList.stream().map(String::valueOf).collect(Collectors.joining(",")))
+            .orElseGet(
+                () ->
+                    request.getCriteria().createQuery(Invoice.class).select("id").fetch(0, 0)
+                        .stream()
+                        .map(m -> (Long) m.get("id"))
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(",")));
+
+    if (idListString.isBlank()) {
+      return "0";
+    }
+
+    return idListString;
   }
 
   public void checkInvoiceLinesAnalyticDistribution(
@@ -1113,8 +1133,7 @@ public class InvoiceController {
 
   public void showSupplierInvoiceLines(ActionRequest request, ActionResponse response) {
     try {
-      String idList =
-          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      String idList = getIdListString(request);
       response.setView(
           ActionView.define(I18n.get("Supplier Invoice Line"))
               .model(InvoiceLine.class.getName())
