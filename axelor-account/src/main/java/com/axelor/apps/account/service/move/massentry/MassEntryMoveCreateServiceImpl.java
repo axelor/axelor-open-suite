@@ -98,95 +98,108 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public Move generateMassEntryMove(Move move) throws AxelorException {
     Move newMove = new Move();
-    User user = AuthUtils.getUser();
     boolean authorizeSimulatedMove = move.getJournal().getAuthorizeSimulatedMove();
 
     if (move.getJournal().getCompany() != null) {
-      newMove =
-          moveCreateService.createMove(
-              move.getJournal(),
-              move.getCompany(),
-              move.getCurrency(),
-              move.getPartner(),
-              move.getDate(),
-              move.getOriginDate(),
-              move.getPaymentMode(),
-              move.getPartner() != null ? move.getPartner().getFiscalPosition() : null,
-              move.getPartnerBankDetails(),
-              MoveRepository.TECHNICAL_ORIGIN_MASS_ENTRY,
-              move.getFunctionalOriginSelect(),
-              false,
-              false,
-              false,
-              move.getOrigin(),
-              move.getDescription(),
-              move.getCompanyBankDetails());
-      newMove.setPaymentCondition(move.getPaymentCondition());
-      newMove.setPfpValidatorUser(move.getPfpValidatorUser());
-      newMove.setPfpValidateStatusSelect(move.getPfpValidateStatusSelect());
-
-      moveRecordSetService.setThirdPartyPayerPartner(newMove);
-
-      int counter = 1;
-
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        BigDecimal amount = moveLine.getDebit().add(moveLine.getCredit());
-
-        MoveLine newMoveLine =
-            moveLineCreateService.createMoveLine(
-                newMove,
-                moveLine.getPartner(),
-                moveLine.getAccount(),
-                amount,
-                moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
-                moveLine.getDate(),
-                moveLine.getOriginDate(),
-                counter,
-                moveLine.getOrigin(),
-                moveLine.getName());
-        newMoveLine.setVatSystemSelect(moveLine.getVatSystemSelect());
-        newMoveLine.setCutOffStartDate(moveLine.getCutOffStartDate());
-        newMoveLine.setCutOffEndDate(moveLine.getCutOffEndDate());
-        newMove.getMoveLineList().add(newMoveLine);
-
-        newMoveLine.setTaxLineSet(moveLine.getTaxLineSet());
-
-        moveLineComputeAnalyticService.generateAnalyticMoveLines(newMoveLine);
-        moveLineMassEntryRecordService.setAnalytics(newMoveLine, moveLine);
-        if (ObjectUtils.notEmpty(moveLine.getAnalyticMoveLineList())) {
-          newMoveLine.clearAnalyticMoveLineList();
-          for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
-            newMoveLine.addAnalyticMoveLineListItem(
-                analyticMoveLineRepository.copy(analyticMoveLine, false));
-          }
-        }
-
-        counter++;
-      }
-
-      if (!periodCheckService.isAuthorizedToAccountOnPeriod(newMove, user)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            String.format(
-                I18n.get(AccountExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
-                newMove.getReference()));
-      }
-
-      if (move.getStatusSelect() != MoveRepository.STATUS_NEW) {
-        if (authorizeSimulatedMove) {
-          moveSimulateService.simulate(newMove);
-        } else {
-          moveValidateService.accounting(newMove);
-        }
-      } else {
-        moveRepository.save(newMove);
-      }
+      newMove = createMassEntryMove(move);
+      accoutingMassEntryMove(newMove, move.getStatusSelect(), authorizeSimulatedMove);
     }
 
     return newMove;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Move createMassEntryMove(Move move) throws AxelorException {
+    User user = AuthUtils.getUser();
+
+    Move newMove =
+        moveCreateService.createMove(
+            move.getJournal(),
+            move.getCompany(),
+            move.getCurrency(),
+            move.getPartner(),
+            move.getDate(),
+            move.getOriginDate(),
+            move.getPaymentMode(),
+            move.getPartner() != null ? move.getPartner().getFiscalPosition() : null,
+            move.getPartnerBankDetails(),
+            MoveRepository.TECHNICAL_ORIGIN_MASS_ENTRY,
+            move.getFunctionalOriginSelect(),
+            false,
+            false,
+            false,
+            move.getOrigin(),
+            move.getDescription(),
+            move.getCompanyBankDetails());
+    newMove.setPaymentCondition(move.getPaymentCondition());
+    newMove.setPfpValidatorUser(move.getPfpValidatorUser());
+    newMove.setPfpValidateStatusSelect(move.getPfpValidateStatusSelect());
+
+    moveRecordSetService.setThirdPartyPayerPartner(newMove);
+
+    int counter = 1;
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      BigDecimal amount = moveLine.getDebit().add(moveLine.getCredit());
+
+      MoveLine newMoveLine =
+          moveLineCreateService.createMoveLine(
+              newMove,
+              moveLine.getPartner(),
+              moveLine.getAccount(),
+              amount,
+              moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
+              moveLine.getDate(),
+              moveLine.getOriginDate(),
+              counter,
+              moveLine.getOrigin(),
+              moveLine.getName());
+      newMoveLine.setVatSystemSelect(moveLine.getVatSystemSelect());
+      newMoveLine.setCutOffStartDate(moveLine.getCutOffStartDate());
+      newMoveLine.setCutOffEndDate(moveLine.getCutOffEndDate());
+      newMove.getMoveLineList().add(newMoveLine);
+
+      newMoveLine.setTaxLineSet(moveLine.getTaxLineSet());
+
+      moveLineComputeAnalyticService.generateAnalyticMoveLines(newMoveLine);
+      moveLineMassEntryRecordService.setAnalytics(newMoveLine, moveLine);
+      if (ObjectUtils.notEmpty(moveLine.getAnalyticMoveLineList())) {
+        newMoveLine.clearAnalyticMoveLineList();
+        for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+          newMoveLine.addAnalyticMoveLineListItem(
+              analyticMoveLineRepository.copy(analyticMoveLine, false));
+        }
+      }
+
+      counter++;
+    }
+
+    if (!periodCheckService.isAuthorizedToAccountOnPeriod(newMove, user)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(AccountExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
+              newMove.getReference()));
+    }
+
+    return newMove;
+  }
+
+  @Override
+  public void accoutingMassEntryMove(Move newMove, int statusSelect, boolean authorizeSimulatedMove)
+      throws AxelorException {
+    if (statusSelect != MoveRepository.STATUS_NEW) {
+      if (authorizeSimulatedMove) {
+        moveSimulateService.simulate(newMove);
+      } else {
+        moveValidateService.accounting(newMove);
+      }
+    } else {
+      moveRepository.save(newMove);
+    }
   }
 
   @Override
@@ -228,7 +241,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     return moveResult;
   }
 
-  private void fillMoveWithMoveLineMassEntry(
+  public void fillMoveWithMoveLineMassEntry(
       Move move, List<MoveLineMassEntry> moveLineMassEntryList, int temporaryMoveNumber) {
     boolean firstMoveLine = true;
 

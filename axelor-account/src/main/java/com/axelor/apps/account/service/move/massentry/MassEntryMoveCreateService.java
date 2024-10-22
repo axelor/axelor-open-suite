@@ -27,6 +27,11 @@ public interface MassEntryMoveCreateService {
 
   Move generateMassEntryMove(Move move) throws AxelorException;
 
+  Move createMassEntryMove(Move move) throws AxelorException;
+
+  void accoutingMassEntryMove(Move newMove, int statusSelect, boolean authorizeSimulatedMove)
+      throws AxelorException;
+
   List<Move> createMoveListFromMassEntryList(Move parentMove);
 
   Move createMoveFromMassEntryList(Move parentMove, int temporaryMoveNumber);
