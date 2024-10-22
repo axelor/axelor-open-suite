@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ContractVersionServiceImpl extends ContractVersionRepository
     implements ContractVersionService {
@@ -188,15 +189,21 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
 
   public void computeTotals(ContractVersion contractVersion) {
     List<ContractLine> contractLineList = contractVersion.getContractLineList();
-    contractVersion.setInitialExTaxTotalPerYear(
-        contractLineList.stream()
-            .map(ContractLine::getInitialPricePerYear)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO));
-    contractVersion.setYearlyExTaxTotalRevalued(
-        contractLineList.stream()
-            .map(ContractLine::getYearlyPriceRevalued)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO));
+    BigDecimal initialExTaxTotalPerYear = BigDecimal.ZERO;
+    BigDecimal yearlyExTaxTotalRevalued = BigDecimal.ZERO;
+    if (CollectionUtils.isNotEmpty(contractLineList)) {
+      initialExTaxTotalPerYear =
+          contractLineList.stream()
+              .map(ContractLine::getInitialPricePerYear)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      yearlyExTaxTotalRevalued =
+          contractLineList.stream()
+              .map(ContractLine::getYearlyPriceRevalued)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+    }
+    contractVersion.setInitialExTaxTotalPerYear(initialExTaxTotalPerYear);
+    contractVersion.setYearlyExTaxTotalRevalued(yearlyExTaxTotalRevalued);
   }
 }
