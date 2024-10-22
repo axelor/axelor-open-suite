@@ -269,4 +269,12 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
             .toLowerCase()); // Because day of week are traduced with a upperCase at the first
     // letter
   }
+
+  @Override
+  public boolean checkDateIsWeekend(WeeklyPlanning weeklyPlanning, LocalDate date) {
+
+    DayPlanning dayPlanning = weeklyPlanning != null ? findDayPlanning(weeklyPlanning, date) : null;
+
+    return dayPlanning != null && dayPlanning.getIsWeekend();
+  }
 }
