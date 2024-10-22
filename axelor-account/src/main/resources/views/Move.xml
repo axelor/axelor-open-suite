@@ -112,7 +112,7 @@
           <field name="functionalOriginSelect"
             readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2 &amp;&amp; statusSelect != 5"
             colSpan="3"
-            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
+            hideIf="(journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect) || (!journal.authorizedFunctionalOriginSelect &amp;&amp; !functionalOriginSelect) || !journal || !journal.authorizedFunctionalOriginSelect.split(',').length"/>
           <spacer showIf="$validateJournalRole"/>
           <label name="$userNotAuthorizedOnJournal" showIf="$validateJournalRole"
             title="Warning, you're not authorized to edit moves on this journal." css="label-danger"/>
