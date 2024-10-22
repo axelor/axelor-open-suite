@@ -71,6 +71,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
@@ -459,5 +460,21 @@ public class PartnerController {
     response.setValue(
         "$positiveBalanceBtn",
         Beans.get(CurrencyScaleService.class).getCompanyScaledValue(company, balance.abs()));
+  }
+
+  public void setParentPartnerDomain(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    List<Partner> parentPartnerList = Beans.get(PartnerService.class).getParentPartnerList(partner);
+    if (ObjectUtils.notEmpty(parentPartnerList)) {
+      response.setAttr(
+          "parentPartner",
+          "domain",
+          String.format(
+              "self.id IN (%s)",
+              parentPartnerList.stream()
+                  .map(Partner::getId)
+                  .map(String::valueOf)
+                  .collect(Collectors.joining(","))));
+    }
   }
 }

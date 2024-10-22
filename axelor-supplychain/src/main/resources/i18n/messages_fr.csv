@@ -662,6 +662,7 @@
 "The trading name must be the same for all sale orders.","L’enseigne doit être identique pour toutes les cmdes clients.",,
 "There are no lines to invoice","Il n'y a pas de lignes à facturer",,
 "There are no selected timetables to invoice","Il n’y a pas d’échéanciers sélectionnés à facturer",,
+"There is a configuration error, partner %s is its own parent.","Il y a une erreur de configuration, le tiers %s est son propre parent.",,
 "There is at least one draft or planned stock move for this sale order.","Il existe au moins un mouvement de stock brouillon ou planifié pour cette commande.",,
 "There is no analytic distribution on %s purchase order line","Veuillez renseigner un modèle de répartition analytique dans les lignes de commandes des produits %s",,
 "There is no analytic distribution on %s sale order line","Veuillez renseigner un modèle de répartition analytique dans les lignes de commandes des produits %s",,

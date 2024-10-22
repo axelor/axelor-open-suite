@@ -146,4 +146,6 @@ public interface PartnerService {
    * @return
    */
   String getPhoneNumberFieldName(String actionName);
+
+  public List<Partner> getParentPartnerList(Partner partner);
 }
