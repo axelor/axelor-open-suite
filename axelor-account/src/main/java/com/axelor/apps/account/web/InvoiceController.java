@@ -73,7 +73,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -1050,12 +1049,27 @@ public class InvoiceController {
 
   @SuppressWarnings("unchecked")
   protected String getIdListString(ActionRequest request) {
-    return Optional.ofNullable((List<Integer>) request.getContext().get("_ids"))
-        .map(idList -> idList.stream().map(String::valueOf).collect(Collectors.joining(",")))
-        .orElseGet(
-            () ->
-                StringHelper.getIdListString(
-                    request.getCriteria().createQuery(Invoice.class).fetch()));
+
+    String idListString =
+        Optional.ofNullable((List<Integer>) request.getContext().get("_ids"))
+            .map(idList -> idList.stream().map(String::valueOf).collect(Collectors.joining(",")))
+            .orElseGet(
+                () ->
+                    request
+                        .getCriteria()
+                        .createQuery(Invoice.class)
+                        .select("id")
+                        .fetch(0, 0)
+                        .stream()
+                        .map(m -> (Long) m.get("id"))
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(",")));
+
+    if (idListString.isBlank()) {
+      return "0";
+    }
+
+    return idListString;
   }
 
   public void checkInvoiceLinesAnalyticDistribution(
