@@ -173,8 +173,6 @@ public class PayVoucherElementToPayService {
         payVoucherElementToPay.getRemainingAmount().add(financialDiscountAmount));
     payVoucherElementToPay.setAmountToPay(
         payVoucherElementToPay.getAmountToPay().add(financialDiscountAmount));
-    /* payVoucherElementToPay.setRemainingAmountAfterPayment(
-    payVoucherElementToPay.getRemainingAmountAfterPayment().add(financialDiscountAmount));*/
   }
 
   public void updateRemainingAmountsWithFinancialDiscount(
