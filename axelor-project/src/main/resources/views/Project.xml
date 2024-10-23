@@ -110,8 +110,9 @@
       <panel name="overviewPanel" title="Overview"
         onTabSelect="action-project-activity-dashboard-method-on-new,action-project-dashboard-method-on-new">
         <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"/>
-        <field name="fromDate" colSpan="3"/>
-        <field name="toDate" colSpan="3"/>
+        <field name="company" form-view="company-form" grid-view="company-grid" colSpan="2"/>
+        <field name="fromDate" colSpan="2"/>
+        <field name="toDate" colSpan="2"/>
         <panel-include view="incl-project-overview-panel-form"/>
       </panel>
 
@@ -528,6 +529,7 @@
 
   <action-attrs name="action-project-defaults"
     model="com.axelor.apps.project.db.Project">
+    <attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
     <attribute name="value" for="fromDate" expr="eval: __datetime__"/>
     <attribute name="value" for="assignedTo" expr="eval: __user__"/>
     <attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
