@@ -104,6 +104,7 @@ public class AccountingReportPrintServiceImpl implements AccountingReportPrintSe
             accountingReport.getCompany() != null
                 ? accountingReport.getCompany().getTimezone()
                 : null)
+        .addParam("ExportTypeSelect", accountingReport.getExportTypeSelect())
         .addFormat(accountingReport.getExportTypeSelect())
         .toAttach(accountingReport)
         .generate()
