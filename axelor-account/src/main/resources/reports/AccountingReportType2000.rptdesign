@@ -19,6 +19,14 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[function formatNumber(number) {
+	var exportTypeSelect = params["ExportTypeSelect"];
+	var numberOfDecimals = vars["numberOfDecimals"];
+	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
+	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
+	var formatPattern = basePart + decimalPart;
+	return Formatter.format(number, formatPattern);
+}]]></method>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
@@ -87,6 +95,17 @@
             <simple-property-list name="defaultValue">
                 <value type="constant"></value>
             </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="ExportTypeSelect" id="4332">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -272,6 +291,7 @@
                 </list-property>
             </structure>
             <property name="rowFetchLimit">0</property>
+            <method name="onFetch"><![CDATA[vars["numberOfDecimals"] = dataSetRow["number_of_decimals"];]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -2170,7 +2190,7 @@ this.height=row["logo_height"];]]></method>
                                             <property name="borderTopStyle">none</property>
                                             <property name="textAlign">right</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["TotalPerAnalyticJournal"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["TotalPerAnalyticJournal"])</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4267">
@@ -2270,7 +2290,7 @@ this.height=row["logo_height"];]]></method>
                                             <property name="borderTopStyle">none</property>
                                             <property name="textAlign">right</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["TotalPerAnalyticAxis"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["TotalPerAnalyticAxis"])</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4244">
@@ -2400,7 +2420,7 @@ this.height=row["logo_height"];]]></method>
                                             <property name="borderTopStyle">none</property>
                                             <property name="textAlign">right</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["TotalPerAnalyticAccount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["TotalPerAnalyticAccount"])</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4301">
@@ -2483,7 +2503,7 @@ this.height=row["logo_height"];]]></method>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["amount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["amount"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4243">
@@ -2519,7 +2539,7 @@ this.height=row["logo_height"];]]></method>
                 </cell>
             </row>
         </grid>
-        <grid id="4323">
+        <grid id="4328">
             <property name="marginTop">10pt</property>
             <property name="dataSet">AnalyticMoveLineDS</property>
             <list-property name="visibility">
@@ -2536,9 +2556,9 @@ this.height=row["logo_height"];]]></method>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <column id="4324"/>
-            <row id="4325">
-                <cell id="4326">
+            <column id="4329"/>
+            <row id="4330">
+                <cell id="4331">
                     <text id="4327">
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
@@ -2565,4 +2585,9 @@ this.height=row["logo_height"];]]></method>
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="numberOfDecimals">
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>
