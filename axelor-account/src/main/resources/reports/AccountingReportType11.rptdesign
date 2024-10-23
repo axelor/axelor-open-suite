@@ -19,6 +19,14 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[function formatNumber(number) {
+	var exportTypeSelect = params["ExportTypeSelect"];
+	var numberOfDecimals = vars["numberOfDecimals"];
+	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
+	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
+	var formatPattern = basePart + decimalPart;
+	return Formatter.format(number, formatPattern);
+}]]></method>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">auto layout</property>
@@ -87,6 +95,17 @@
             <simple-property-list name="defaultValue">
                 <value type="constant"></value>
             </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="ExportTypeSelect" id="5353">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -284,6 +303,7 @@
                 </list-property>
             </structure>
             <property name="rowFetchLimit">0</property>
+            <method name="onFetch"><![CDATA[vars["numberOfDecimals"] = dataSetRow["number_of_decimals"];]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1960,7 +1980,7 @@ this.height=row["logo_height"];]]></method>
                                 <property name="textAlign">right</property>
                                 <structure name="toc"/>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sumDebitOfTheDay"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sumDebitOfTheDay"])</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="4295">
@@ -1973,7 +1993,7 @@ this.height=row["logo_height"];]]></method>
                                 <property name="textAlign">right</property>
                                 <structure name="toc"/>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sumCreditOfTheDay"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sumCreditOfTheDay"])</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                     </row>
@@ -2076,7 +2096,7 @@ this.height=row["logo_height"];]]></method>
                                 <property name="textAlign">right</property>
                                 <structure name="toc"/>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumDebitPerDate"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["SumDebitPerDate"])</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="4262">
@@ -2092,7 +2112,7 @@ this.height=row["logo_height"];]]></method>
                                 <property name="textAlign">right</property>
                                 <structure name="toc"/>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumCreditPerDate"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["SumCreditPerDate"])</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                     </row>
@@ -2167,7 +2187,7 @@ this.height=row["logo_height"];]]></method>
                             <property name="textAlign">right</property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["DebitMoveLine"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["DebitMoveLine"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4364">
@@ -2175,7 +2195,7 @@ this.height=row["logo_height"];]]></method>
                             <property name="textAlign">right</property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["CreditMoveLine"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["CreditMoveLine"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
@@ -2210,7 +2230,7 @@ this.height=row["logo_height"];]]></method>
                             </list-property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumDebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["SumDebit"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="3375">
@@ -2225,7 +2245,7 @@ this.height=row["logo_height"];]]></method>
                             </list-property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumCredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["SumCredit"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
@@ -2600,7 +2620,7 @@ this.height=row["logo_height"];]]></method>
                                                 <property name="textAlign">right</property>
                                                 <structure name="toc"/>
                                                 <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumDebitPerAccount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["SumDebitPerAccount"])</VALUE-OF>]]></text-property>
                                             </text>
                                         </cell>
                                     </row>
@@ -2745,7 +2765,7 @@ this.height=row["logo_height"];]]></method>
                                                 <property name="textAlign">right</property>
                                                 <structure name="toc"/>
                                                 <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumCreditPerAccount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["SumCreditPerAccount"])</VALUE-OF>]]></text-property>
                                             </text>
                                         </cell>
                                     </row>
@@ -2811,7 +2831,7 @@ this.height=row["logo_height"];]]></method>
                             </list-property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalDebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["totalDebit"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4589">
@@ -2838,7 +2858,7 @@ this.height=row["logo_height"];]]></method>
                             </list-property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalCredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["totalCredit"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
@@ -2889,4 +2909,9 @@ this.height=row["logo_height"];]]></method>
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="numberOfDecimals">
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>
