@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form id="hr-project-task-form" name="project-task-form" title="Task"
+    model="com.axelor.apps.project.db.ProjectTask" extension="true">
+
+    <extend target="/">
+      <attribute name="onSave"
+        value="action-sprint-validate-upadte-or-create-project-plannings,action-project-task-method-update-project-plannings"/>
+    </extend>
+
+  </form>
+
+  <kanban columnBy="sprint" model="com.axelor.apps.project.db.ProjectTask"
+    sequenceBy="sequence" title="Tasks per sprint" id="hr-project-task-sprint-kanban"
+    name="project-task-sprint-kanban" draggable="true"
+    onMove="action-project-task-method-update-project-plannings">
+
+    <field name="name"/>
+    <field name="assignedTo.name"/>
+    <field name="totalPlannedHrs"/>
+
+    <template>
+		<![CDATA[
+			<>
+				<strong>{name}</strong><br /><br />
+				<strong>User:</strong> {assignedTo.name}<br />
+				<strong>Total planned time:</strong> {totalPlannedHrs}
+			</>
+		]]>
+    </template>
+
+  </kanban>
+
+  <action-method name="action-project-task-method-update-project-plannings">
+    <call class="com.axelor.apps.hr.web.project.ProjectTaskController"
+      method="updateProjectPlannings"/>
+  </action-method>
+
+</object-views>
