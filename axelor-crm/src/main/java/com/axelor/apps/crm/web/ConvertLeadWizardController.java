@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
@@ -316,10 +315,9 @@ public class ConvertLeadWizardController {
   protected List<PartnerAddress> generateAddress(ActionRequest request, Partner partner)
       throws AxelorException {
     Lead lead = this.findLead(request);
-    Address primaryAddress = Beans.get(ConvertLeadWizardService.class).createPrimaryAddress(lead);
-    if (primaryAddress != null) {
-      primaryAddress.setFullName(Beans.get(AddressService.class).computeFullName(primaryAddress));
-      Beans.get(PartnerService.class).addPartnerAddress(partner, primaryAddress, true, true, true);
+    Address address = lead.getAddress();
+    if (address != null) {
+      Beans.get(PartnerService.class).addPartnerAddress(partner, address, true, true, true);
     }
     return partner.getPartnerAddressList();
   }

@@ -202,7 +202,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
       this.addParams(
           "self."
               + model
-              + "primaryCountry "
+              + "address.country "
               + "IN ("
               + StringHelper.getIdListString(crmReporting.getCountrySet())
               + ")");

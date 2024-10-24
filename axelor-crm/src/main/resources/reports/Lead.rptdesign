@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -259,41 +259,21 @@
                     </structure>
                     <structure>
                         <property name="position">21</property>
-                        <property name="name">primary_address</property>
+                        <property name="name">full_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">22</property>
-                        <property name="name">primary_state</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">23</property>
-                        <property name="name">primary_city</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">24</property>
-                        <property name="name">primary_postal_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">25</property>
-                        <property name="name">primary_country</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">26</property>
                         <property name="name">job_title</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">27</property>
+                        <property name="position">23</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">28</property>
+                        <property name="position">24</property>
                         <property name="name">company_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -424,48 +404,24 @@
                 </structure>
                 <structure>
                     <property name="position">21</property>
-                    <property name="name">primary_address</property>
-                    <property name="nativeName">primary_address</property>
+                    <property name="name">full_name</property>
+                    <property name="nativeName">full_name</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="position">22</property>
-                    <property name="name">primary_state</property>
-                    <property name="nativeName">primary_state</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">23</property>
-                    <property name="name">primary_city</property>
-                    <property name="nativeName">primary_city</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">24</property>
-                    <property name="name">primary_postal_code</property>
-                    <property name="nativeName">primary_postal_code</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">25</property>
-                    <property name="name">primary_country</property>
-                    <property name="nativeName">primary_country</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">26</property>
                     <property name="name">job_title</property>
                     <property name="nativeName">job_title</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">27</property>
+                    <property name="position">23</property>
                     <property name="name">user_name</property>
                     <property name="nativeName">user_name</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">28</property>
+                    <property name="position">24</property>
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
@@ -478,7 +434,7 @@ Company.width as logo_width,
 Lead.description,Lead.created_on, Lead.updated_on, Lead.created_by, Lead.updated_by, Lead.title_select,
 Lead.name as lead_name, Lead.first_name as lead_first_name,LeadStatus.name as lead_status,Source.name AS source_name,
 IndustrySector.name as industry_sector_select, messageEmailAddress.address AS email, Lead.fixed_phone, Lead.mobile_phone, Lead.web_site, Lead.enterprise_name,
-Lead.primary_address, Region.name as primary_state, City.name as primary_city, Lead.primary_postal_code, PrimaryCountry.name as primary_country,Function.name as job_title, AuthUser.full_name as user_name, Company.name as company_name
+Address.full_name, Function.name as job_title, AuthUser.full_name as user_name, Company.name as company_name
 from crm_lead as Lead 
 left join crm_lead_status as LeadStatus on (Lead.lead_status = LeadStatus.id)
 left join base_function as Function on (Lead.job_title_function = Function.id)
@@ -488,10 +444,8 @@ left join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left join base_partner as Partner on (Lead.partner = Partner.id)
 left join base_industry_sector as IndustrySector on (IndustrySector.id = Lead.industry_sector)
 left join base_source as Source on (Lead.source = Source.id)
-left join base_country as PrimaryCountry on (Lead.primary_country = PrimaryCountry.id)
 left join message_email_address as messageEmailAddress On messageEmailAddress.id=Lead.email_address
-left join base_city as City on (Lead.primary_city = City.id)
-left join base_region as Region on (Lead.primary_state = Region.id)
+left join base_address as Address on (Lead.address = Address.id)
 where Lead.id in (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -2760,36 +2714,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">primary_address</property>
-                    <text-property name="displayName">primary_address</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["primary_address"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">primary_state</property>
-                    <text-property name="displayName">primary_state</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["primary_state"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">primary_city</property>
-                    <text-property name="displayName">primary_city</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["primary_city"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">primary_postal_code</property>
-                    <text-property name="displayName">primary_postal_code</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["primary_postal_code"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">primary_country</property>
-                    <text-property name="displayName">primary_country</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["primary_country"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">job_title</property>
                     <text-property name="displayName">job_title</text-property>
                     <expression name="expression" type="javascript">dataSetRow["job_title"]</expression>
@@ -2805,6 +2729,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <property name="name">company_name</property>
                     <text-property name="displayName">company_name</text-property>
                     <expression name="expression" type="javascript">dataSetRow["company_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">full_name</property>
+                    <text-property name="displayName">full_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["full_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
@@ -3442,36 +3372,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                                         <property name="fontWeight">normal</property>
                                         <property name="color">#3C3C3C</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["primary_address"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                            </row>
-                            <row id="3771">
-                                <property name="height">0.6085416666666666cm</property>
-                                <cell id="3772">
-                                    <property name="colSpan">6</property>
-                                    <property name="rowSpan">1</property>
-                                    <text id="3800">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="fontWeight">normal</property>
-                                        <property name="color">#3C3C3C</property>
-                                        <structure name="toc"/>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["primary_city"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["primary_state"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["primary_postal_code"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                            </row>
-                            <row id="3792">
-                                <property name="height">0.6085416666666666cm</property>
-                                <cell id="3793">
-                                    <property name="colSpan">6</property>
-                                    <property name="rowSpan">1</property>
-                                    <text id="3801">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="fontWeight">normal</property>
-                                        <property name="color">#3C3C3C</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["primary_country"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["full_name"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
