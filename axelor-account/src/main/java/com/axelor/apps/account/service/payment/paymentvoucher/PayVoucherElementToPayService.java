@@ -171,8 +171,8 @@ public class PayVoucherElementToPayService {
       PayVoucherElementToPay payVoucherElementToPay, BigDecimal financialDiscountAmount) {
     payVoucherElementToPay.setRemainingAmount(
         payVoucherElementToPay.getRemainingAmount().add(financialDiscountAmount));
-    payVoucherElementToPay.setAmountToPay(
-        payVoucherElementToPay.getAmountToPay().add(financialDiscountAmount));
+    payVoucherElementToPay.setRemainingAmountAfterPayment(
+        payVoucherElementToPay.getRemainingAmountAfterPayment().add(financialDiscountAmount));
   }
 
   public void updateRemainingAmountsWithFinancialDiscount(
