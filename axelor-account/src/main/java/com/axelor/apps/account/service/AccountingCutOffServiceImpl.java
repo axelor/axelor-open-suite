@@ -44,6 +44,7 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -88,6 +89,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected CurrencyService currencyService;
   protected TaxAccountToolService taxAccountToolService;
   protected MoveLineRepository moveLineRepository;
+  protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
   protected int counter = 0;
 
   @Inject
@@ -111,7 +113,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       MoveLineService moveLineService,
       CurrencyService currencyService,
       TaxAccountToolService taxAccountToolService,
-      MoveLineRepository moveLineRepository) {
+      MoveLineRepository moveLineRepository,
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
 
     this.moveCreateService = moveCreateService;
     this.moveToolService = moveToolService;
@@ -133,6 +136,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.currencyService = currencyService;
     this.taxAccountToolService = taxAccountToolService;
     this.moveLineRepository = moveLineRepository;
+    this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
   @Override
@@ -465,6 +469,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         cutOffMoveLine.clearAnalyticMoveLineList();
 
         // Copy analytic move lines
+        moveLineMassEntryRecordService.setAnalytics(cutOffMoveLine, moveLine);
         this.copyAnalyticMoveLines(moveLine, cutOffMoveLine, amountInCurrency.abs());
 
         if (CollectionUtils.isEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {

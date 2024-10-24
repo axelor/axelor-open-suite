@@ -47,6 +47,7 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -122,7 +123,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       CurrencyService currencyService,
       TaxAccountToolService taxAccountToolService,
       BankDetailsService bankDetailsService,
-      MoveLineRepository moveLineRepository) {
+      MoveLineRepository moveLineRepository,
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
 
     super(
         moveCreateService,
@@ -144,7 +146,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
         moveLineService,
         currencyService,
         taxAccountToolService,
-        moveLineRepository);
+        moveLineRepository,
+        moveLineMassEntryRecordService);
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.saleOrderRepository = saleOrderRepository;
