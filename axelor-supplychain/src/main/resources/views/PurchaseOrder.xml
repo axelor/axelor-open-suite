@@ -87,4 +87,14 @@
       method="getFromStockLocation"/>
   </action-method>
 
+  <action-group id="supplychain-action-group-purchase-order-merge-action"
+    name="action-group-purchase-order-merge-action" if-module="axelor-supplychain">
+    <action name="action-purchase-order-method-merge-supplychain"/>
+  </action-group>
+
+  <action-method name="action-purchase-order-method-merge-supplychain">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="mergePurchaseOrder" if="__config__.app.isApp('supplychain')"/>
+  </action-method>
+
 </object-views>

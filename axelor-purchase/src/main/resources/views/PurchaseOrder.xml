@@ -592,9 +592,7 @@
   </action-group>
 
   <action-group name="action-group-purchase-order-merge-action">
-    <action name="action-purchase-order-method-merge-purchase"
-      if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
-    <action name="action-purchase-order-method-merge-supplychain"/>
+    <action name="action-purchase-order-method-merge-purchase"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-partner-onchange">
@@ -866,12 +864,6 @@
   <action-method name="action-purchase-order-method-price-list-domain">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
       method="changePriceListDomain"/>
-  </action-method>
-
-  <action-method name="action-purchase-order-method-merge-supplychain"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="mergePurchaseOrder" if="__config__.app.isApp('supplychain')"/>
   </action-method>
 
   <action-method
