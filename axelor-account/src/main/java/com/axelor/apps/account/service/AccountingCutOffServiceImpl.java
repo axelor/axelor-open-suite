@@ -44,6 +44,7 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -92,6 +93,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected TaxAccountToolService taxAccountToolService;
   protected MoveLineRepository moveLineRepository;
   protected CurrencyScaleService currencyScaleService;
+  protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
   protected int counter = 0;
 
   @Inject
@@ -116,7 +118,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       CurrencyService currencyService,
       TaxAccountToolService taxAccountToolService,
       MoveLineRepository moveLineRepository,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
     this.moveCreateService = moveCreateService;
     this.moveToolService = moveToolService;
     this.moveLineToolService = moveLineToolService;
@@ -138,6 +141,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.taxAccountToolService = taxAccountToolService;
     this.moveLineRepository = moveLineRepository;
     this.currencyScaleService = currencyScaleService;
+    this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
   @Override
@@ -470,6 +474,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         cutOffMoveLine.clearAnalyticMoveLineList();
 
         // Copy analytic move lines
+        moveLineMassEntryRecordService.setAnalytics(cutOffMoveLine, moveLine);
         this.copyAnalyticMoveLines(moveLine, cutOffMoveLine, amountInCurrency.abs());
 
         if (CollectionUtils.isEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
