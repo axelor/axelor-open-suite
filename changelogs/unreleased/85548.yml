@@ -1,0 +1,3 @@
+---
+title: "Move: blocked generation of reverse move if reverse move date is before the date of the move to reverse."
+module: axelor-account
