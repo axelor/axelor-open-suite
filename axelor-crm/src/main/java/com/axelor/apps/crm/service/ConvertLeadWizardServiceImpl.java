@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressExportService;
 import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
@@ -83,6 +84,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
   protected AddressExportService addressExportService;
 
+  protected AddressTemplateService addressTemplateService;
+
   @Inject
   public ConvertLeadWizardServiceImpl(
       LeadService leadService,
@@ -96,7 +99,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       AppCrmService appCrmService,
       MultiRelatedRepository multiRelatedRepository,
       ConvertWizardOpportunityService convertWizardOpportunityService,
-      PartnerRepository partnerRepository) {
+      PartnerRepository partnerRepository,
+      AddressTemplateService addressTemplateService) {
     this.leadService = leadService;
     this.convertWizardService = convertWizardService;
     this.addressService = addressService;
@@ -109,6 +113,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     this.multiRelatedRepository = multiRelatedRepository;
     this.convertWizardOpportunityService = convertWizardOpportunityService;
     this.partnerRepository = partnerRepository;
+    this.addressTemplateService = addressTemplateService;
   }
 
   /**
@@ -153,9 +158,10 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     }
   }
 
-  protected void setAddress(Partner partner, Address primaryAddress) {
+  protected void setAddress(Partner partner, Address primaryAddress) throws AxelorException {
 
     if (primaryAddress != null) {
+      addressTemplateService.setFormattedFullName(primaryAddress);
       primaryAddress.setFullName(addressService.computeFullName(primaryAddress));
       if (!partner.getIsContact()) {
         partnerService.addPartnerAddress(partner, primaryAddress, true, true, true);
