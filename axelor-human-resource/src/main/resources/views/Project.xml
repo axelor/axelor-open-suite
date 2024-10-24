@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form id="hr-sprint-project-form" model="com.axelor.apps.project.db.Project" title="Sprint"
+    name="sprint-project-form" extension="true">
+
+    <extend target="//panel-dashlet[@name='tasksPerSprintPanel']">
+      <insert position="before">
+        <field name="sprint" domain="self.project.id = :id"
+          onChange="action-project-attrs-refresh-allocation-lines-on-sprint-change"/>
+        <field name="allocationPeriodSet" onSelect="action-project-attrs-set-periods-domain"
+          widget="tag-select"
+          onChange="action-project-attrs-refresh-allocation-lines-on-sprint-change" canNew="false"
+          canEdit="false"/>
+        <panel-dashlet action="action-project-method-view-allocation-lines"
+          name="allocationLinePanel" colSpan="12"/>
+        <panel-dashlet action="action-project-view-sprints-summary"
+          name="sprintSummaryPanel" readonly="true" colSpan="12"/>
+      </insert>
+    </extend>
+
+  </form>
+
+  <form id="hr-attach-tasks-to-sprint-wizard-form" model="com.axelor.utils.db.Wizard"
+    title="Attach tasks to sprint" name="attach-tasks-to-sprint-wizard-form" extension="true">
+
+    <extend target="//button[@name='attachTasksToSprintBtn']">
+      <attribute name="onClick"
+        value="action-project-validate-upadte-or-create-project-plannings,action-project-method-attach-tasks-to-sprint-with-project-plannings"/>
+    </extend>
+
+  </form>
+
+  <action-method name="action-project-method-view-allocation-lines">
+    <call class="com.axelor.apps.hr.web.project.ProjectMenuController"
+      method="viewAllocationLines"/>
+  </action-method>
+
+  <action-method
+    name="action-project-method-attach-tasks-to-sprint-with-project-plannings">
+    <call class="com.axelor.apps.hr.web.project.ProjectController"
+      method="attachTasksToSprintWithProjectPlannings"/>
+  </action-method>
+
+  <action-attrs name="action-project-attrs-refresh-allocation-lines-on-sprint-change">
+    <attribute name="refresh" for="allocationLinePanel" expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-set-periods-domain">
+    <attribute name="domain" for="allocationPeriodSet"
+      expr="eval: &quot;self.id in (${(sprint?.allocationPeriodSet?.collect{it.id})?.join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-validate name="action-project-validate-upadte-or-create-project-plannings">
+    <alert message="Do you want to create/update project planning lines?"
+      confirm-btn-title="Yes" cancel-btn-title="No"
+      action="action-project-method-attach-tasks-to-sprint"/>
+  </action-validate>
+
+  <action-view name="action-project-view-sprints-summary" title="Sprints summary"
+    model="com.axelor.apps.project.db.Sprint">
+    <view type="grid" name="sprint-summary-grid"/>
+    <view type="form" name="sprint-form"/>
+    <domain>self.project.id = :id</domain>
+  </action-view>
+
+</object-views>
