@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <kanban columnBy="sprint" model="com.axelor.apps.project.db.ProjectTask"
+    sequenceBy="sequence" title="Tasks per sprint" id="hr-project-task-sprint-kanban"
+    name="project-task-sprint-kanban" draggable="true"
+    onMove="action-project-task-group-sprint-on-change">
+
+    <field name="name"/>
+    <field name="assignedTo.name"/>
+    <field name="totalPlannedHrs"/>
+
+    <template>
+		<![CDATA[
+			<>
+				<strong>{name}</strong><br /><br />
+				<strong>User:</strong> {assignedTo.name}<br />
+				<strong>Total planned time:</strong> {totalPlannedHrs}
+			</>
+		]]>
+    </template>
+
+  </kanban>
+
+  <form model="com.axelor.apps.project.db.ProjectTask" title="Sprint"
+    id="hr-sprint-project-task-form" name="sprint-project-task-form" extension="true">
+
+    <extend target="//field[@name='sprint']">
+      <attribute name="onChange" value="save,action-project-task-group-sprint-on-change"/>
+    </extend>
+
+  </form>
+
+  <action-method name="action-project-task-method-update-project-plannings">
+    <call class="com.axelor.apps.hr.web.project.ProjectTaskController"
+      method="updateProjectPlannings"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-sprint-kanban-on-move">
+    <call class="com.axelor.apps.hr.web.project.ProjectTaskController"
+      method="sprintKanbanOnMove"/>
+  </action-method>
+
+  <action-validate name="action-project-task-validate-upadte-project-plannings">
+    <alert message="Do you want to create/update project planning lines?"
+      confirm-btn-title="Yes" cancel-btn-title="No" if="!__parent__"/>
+    <alert message="Do you want to create/update project planning lines?"
+      confirm-btn-title="Yes" cancel-btn-title="No"
+      action="action-project-task-method-sprint-kanban-on-move"
+      if="__parent__?._model == 'com.axelor.apps.project.db.Project'"/>
+  </action-validate>
+
+  <action-group name="action-project-task-group-sprint-on-change">
+    <action name="action-project-task-validate-upadte-project-plannings"/>
+    <action name="action-project-task-method-update-project-plannings"/>
+  </action-group>
+
+</object-views>

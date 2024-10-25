@@ -21,9 +21,11 @@ package com.axelor.apps.hr.service.sprint;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.AllocationLine;
 import com.axelor.apps.project.db.AllocationPeriod;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
@@ -43,17 +45,20 @@ public class SprintHRServiceImpl extends SprintServiceImpl implements SprintHRSe
 
   protected SprintRepository sprintRepo;
   protected AllocationLineService allocationLineHRService;
+  protected ProjectPlanningTimeService projectPlanningTimeService;
 
   @Inject
   public SprintHRServiceImpl(
       ProjectTaskRepository projectTaskRepo,
       SprintRepository sprintRepo,
-      AllocationLineService allocationLineHRService) {
+      AllocationLineService allocationLineHRService,
+      ProjectPlanningTimeService projectPlanningTimeService) {
 
     super(projectTaskRepo);
 
     this.sprintRepo = sprintRepo;
     this.allocationLineHRService = allocationLineHRService;
+    this.projectPlanningTimeService = projectPlanningTimeService;
   }
 
   @Override
@@ -100,6 +105,16 @@ public class SprintHRServiceImpl extends SprintServiceImpl implements SprintHRSe
     if (!allocationLinesToSave.isEmpty()) {
       allocationLinesToSave.forEach(sprint::addAllocationLineListItem);
       sprintRepo.save(sprint);
+    }
+  }
+
+  @Override
+  public void attachTasksToSprintWithProjectPlannings(
+      Sprint sprint, List<ProjectTask> projectTasks) {
+
+    if (CollectionUtils.isNotEmpty(projectTasks)) {
+      projectPlanningTimeService.updateProjectPlannings(sprint, projectTasks);
+      attachTasksToSprint(sprint, projectTasks);
     }
   }
 }

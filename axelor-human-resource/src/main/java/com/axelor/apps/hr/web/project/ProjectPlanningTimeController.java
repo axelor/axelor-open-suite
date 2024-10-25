@@ -200,17 +200,22 @@ public class ProjectPlanningTimeController {
         projectPlanningTimeService.getDefaultPlanningRestrictedTime(projectPlanningTime));
   }
 
-  public void updateDatesFromSprint(ActionRequest request, ActionResponse response) {
+  public void updateFromSprint(ActionRequest request, ActionResponse response) {
 
     ProjectPlanningTime projectPlanningTime =
         request.getContext().asType(ProjectPlanningTime.class);
 
     ProjectTask projectTask = projectPlanningTime.getProjectTask();
 
-    if (projectTask != null) {
+    if (projectTask != null && projectTask.getSprint() != null) {
       Sprint sprint = projectTask.getSprint();
 
-      if (sprint != null && sprint.getFromDate() != null && sprint.getToDate() != null) {
+      BigDecimal plannedTime =
+          Beans.get(ProjectPlanningTimeService.class).calculatePlannedTime(projectTask);
+      response.setValue("plannedTime", plannedTime);
+      response.setValue("displayPlannedTime", plannedTime);
+
+      if (sprint.getFromDate() != null && sprint.getToDate() != null) {
         response.setValue("startDateTime", sprint.getFromDate());
         response.setValue("endDateTime", sprint.getToDate());
       }
