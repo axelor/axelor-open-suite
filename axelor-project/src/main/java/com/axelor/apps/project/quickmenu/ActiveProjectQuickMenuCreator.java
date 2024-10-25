@@ -23,6 +23,7 @@ import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.web.UserController;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.AppProject;
@@ -33,6 +34,7 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -73,7 +75,7 @@ public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
         Optional.ofNullable(user).map(User::getProjectSet).orElse(new HashSet<>());
     List<QuickMenuItem> items = new ArrayList<>();
 
-    if (projectSet.size() <= 1) {
+    if (ObjectUtils.isEmpty(projectSet)) {
       return items;
     }
 
@@ -81,7 +83,9 @@ public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
     String action = UserController.class.getName() + ":" + "setActiveProject";
 
     for (Project project : projectSet) {
-      if (!Boolean.TRUE.equals(project.getArchived())) {
+      if (!Boolean.TRUE.equals(project.getArchived())
+          && (project.getCompany() == null
+              || (Objects.equals(project.getCompany(), user.getActiveCompany())))) {
         QuickMenuItem item =
             new QuickMenuItem(
                 project.getName(),
