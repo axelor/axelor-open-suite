@@ -406,26 +406,25 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     String moveLineQueryStr = StringUtils.join(moveLineQueryList, " AND ");
 
-    com.axelor.db.Query<MoveLine> moveLineQuery =
+    List<Long> idList =
         moveLineRepo
             .all()
             .filter(moveLineQueryStr)
             .order("move.accountingDate")
             .order("date")
-            .order("name");
+            .order("name")
+            .select("id")
+            .fetch(0, 0)
+            .stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(Collectors.toList());
 
     int offset = 0;
     List<Long> moveLineIdList;
     List<Move> moveList = new ArrayList<>();
     String exportNumber = null;
 
-    while (!(moveLineIdList =
-            moveLineQuery
-                .fetchStream(10000, offset)
-                .map(MoveLine::getId)
-                .collect(Collectors.toList()))
-        .isEmpty()) {
-
+    while (!(moveLineIdList = idList.subList(10000, offset)).isEmpty()) {
       for (Long id : moveLineIdList) {
         MoveLine moveLine = moveLineRepo.find(id);
         offset++;
