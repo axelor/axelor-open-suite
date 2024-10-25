@@ -290,9 +290,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
   @Override
   public String getMoveOrigin(PaymentSession paymentSession) {
+    String origin = super.getMoveOrigin(paymentSession);
     if (paymentSession.getBankOrder() != null) {
-      return paymentSession.getBankOrder().getBankOrderSeq();
+      origin = origin.concat(String.format(" %s", paymentSession.getBankOrder().getBankOrderSeq()));
     }
-    return super.getMoveOrigin(paymentSession);
+    return origin;
   }
 }

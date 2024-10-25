@@ -69,6 +69,7 @@ import com.google.inject.persist.Transactional;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -566,10 +567,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   protected String getMoveDescription(PaymentSession paymentSession, BigDecimal amount) {
     return String.format(
-        "%s %s - %s%s",
-        paymentSession.getSequence(),
+        "%s - %s%s",
         paymentSession.getName(),
-        amount,
+        amount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
         paymentSession.getCurrency() == null ? "" : paymentSession.getCurrency().getCode());
   }
 
