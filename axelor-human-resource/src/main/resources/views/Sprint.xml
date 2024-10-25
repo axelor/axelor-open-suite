@@ -18,16 +18,14 @@
 
     <extend target="//field[@name='projectTaskList']">
       <insert position="after">
-        <field name="allocationLineList" grid-view="allocation-line-sprint-grid"
-          form-view="allocation-line-form" showIf="id" colSpan="12"/>
-        <button onClick="save,action-sprint-method-generate-allocations"
-          name="generateAllocations" title="Generate allocations" showIf="id"/>
+        <panel-dashlet action="action-sprint-view-allocation-lines" showIf="id"
+          colSpan="12"/>
       </insert>
     </extend>
 
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
-        <panel name="totalsPanel" colSpan="12">
+        <panel name="totalsPanel" showIf="id" colSpan="12">
           <field name="$totalAllocatedTime" title="Total allocated time" type="decimal"
             readonly="true" colSpan="4"/>
           <field name="$totalEstimatedTime" title="Total estimated time" type="decimal"
@@ -44,8 +42,11 @@
 
   </form>
 
-  <action-method name="action-sprint-method-generate-allocations">
-    <call class="com.axelor.apps.hr.web.project.SprintController" method="generateAllocations"/>
-  </action-method>
+  <action-view name="action-sprint-view-allocation-lines" title="Allocation lines"
+    model="com.axelor.apps.project.db.AllocationLine">
+    <view type="grid" name="allocation-line-project-grid"/>
+    <view type="form" name="allocation-line-form"/>
+    <domain>self.project = :project and self.allocationPeriod in :allocationPeriodSet</domain>
+  </action-view>
 
 </object-views>

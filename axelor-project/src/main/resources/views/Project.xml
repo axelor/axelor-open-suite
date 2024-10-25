@@ -378,10 +378,10 @@
   <form model="com.axelor.apps.project.db.Project" title="Sprint" name="sprint-project-form">
 
     <panel name="sprintPanel" title="Sprint">
+      <button onClick="save,action-project-view-attach-tasks-to-sprint"
+        name="attachTasksToSprintBtn" title="Attach tasks to sprint" icon="link" colSpan="2"/>
       <panel-dashlet action="action-project-method-tasks-per-sprint"
         name="tasksPerSprintPanel" colSpan="12"/>
-      <button onClick="save,action-project-view-attach-tasks-to-sprint"
-        name="attachTasksToSprintBtn" title="Attach tasks to sprint" icon="link"/>
     </panel>
 
   </form>

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.web.project;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.AllocationLine;
 import com.axelor.apps.project.db.AllocationPeriod;
 import com.axelor.apps.project.db.Project;
@@ -29,6 +30,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -63,26 +65,32 @@ public class ProjectMenuController {
                                     Long.parseLong(period.get("id").toString())))
                         .forEach(allocationPeriodSet::add));
 
-    if (sprint == null && allocationPeriodSet.isEmpty()) {
+    if (sprint == null && CollectionUtils.isEmpty(allocationPeriodSet)) {
       sprintList = Beans.get(SprintRepository.class).findByProject(project).fetch();
 
       if (CollectionUtils.isNotEmpty(sprintList)) {
-        sprintList.forEach(s -> allocationPeriodSet.addAll(s.getAllocationPeriodSet()));
+        LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(project.getCompany());
+        sprintList.forEach(
+            s ->
+                s.getAllocationPeriodSet().stream()
+                    .filter(
+                        period ->
+                            period.getFromDate() != null
+                                && period.getFromDate().isAfter(todayDate)
+                                && !allocationPeriodSet.contains(period))
+                    .forEach(allocationPeriodSet::add));
       }
-    }
-
-    if (sprint != null && CollectionUtils.isEmpty(allocationPeriodSet)) {
+    } else if (sprint != null && CollectionUtils.isEmpty(allocationPeriodSet)) {
       allocationPeriodSet.addAll(sprint.getAllocationPeriodSet());
     }
 
     ActionView.ActionViewBuilder actionViewBuilder =
         ActionView.define(I18n.get("Allocation lines"))
             .model(AllocationLine.class.getName())
-            .add("grid", "allocation-line-sprint-grid")
+            .add("grid", "allocation-line-project-grid")
             .add("form", "allocation-line-form")
-            .domain(
-                "self.sprint in :_sprintList and self.allocationPeriod in :_allocationPeriodSet")
-            .context("_sprintList", sprintList)
+            .domain("self.project = :_project and self.allocationPeriod in :_allocationPeriodSet")
+            .context("_project", project)
             .context("_allocationPeriodSet", allocationPeriodSet);
 
     response.setView(actionViewBuilder.map());

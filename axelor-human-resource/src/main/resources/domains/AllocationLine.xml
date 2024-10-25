@@ -7,7 +7,7 @@
 
   <entity name="AllocationLine">
 
-    <many-to-one name="sprint" ref="com.axelor.apps.project.db.Sprint" title="Sprint"/>
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="allocationPeriod"
       ref="com.axelor.apps.project.db.AllocationPeriod" title="Allocation period"/>
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
@@ -17,9 +17,12 @@
     <decimal name="availableAllocation" title="Available allocation"/>
     <string name="description" title="Description" large="true"/>
 
-    <finder-method name="findBySprintAndPeriodAndUser"
-      using="sprint,allocationPeriod,user"/>
+    <finder-method name="findByProjectAndPeriodAndUser"
+      using="project,allocationPeriod,user"/>
     <finder-method name="findByPeriodAndUser" using="allocationPeriod,user" all="true"/>
+    <finder-method name="findByProjectAndPeriods"
+      using="project,java.util.Set&lt;AllocationPeriod&gt;:allocationPeriodSet" all="true"
+      filter="self.project = :project and self.allocationPeriod in :allocationPeriodSet"/>
 
   </entity>
 

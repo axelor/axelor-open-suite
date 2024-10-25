@@ -24,6 +24,7 @@ import com.axelor.apps.hr.service.sprint.AllocationLineService;
 import com.axelor.apps.project.db.AllocationLine;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.repo.AllocationLineRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
@@ -43,7 +44,10 @@ public class SprintHRRepository extends SprintRepository {
     BigDecimal totalEstimatedTime = BigDecimal.ZERO;
     BigDecimal totalRemainingTime = BigDecimal.ZERO;
 
-    List<AllocationLine> allocationLineList = sprint.getAllocationLineList();
+    List<AllocationLine> allocationLineList =
+        Beans.get(AllocationLineRepository.class)
+            .findByProjectAndPeriods(sprint.getProject(), sprint.getAllocationPeriodSet())
+            .fetch();
 
     if (CollectionUtils.isNotEmpty(allocationLineList)) {
       AllocationLineService allocationLineService = Beans.get(AllocationLineService.class);
@@ -61,7 +65,9 @@ public class SprintHRRepository extends SprintRepository {
                   allocationLineService.getLeaves(
                       allocationLine.getAllocationPeriod(), allocationLine.getUser()),
                   allocationLineService.getAlreadyAllocated(
-                      sprint, allocationLine.getAllocationPeriod(), allocationLine.getUser()));
+                      allocationLine.getProject(),
+                      allocationLine.getAllocationPeriod(),
+                      allocationLine.getUser()));
         } catch (AxelorException e) {
           TraceBackService.trace(e);
         }
