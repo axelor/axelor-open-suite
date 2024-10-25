@@ -1,0 +1,3 @@
+---
+title: "Lead: fixed an issue preventing lead conversion when having only CRM module."
+module: axelor-crm

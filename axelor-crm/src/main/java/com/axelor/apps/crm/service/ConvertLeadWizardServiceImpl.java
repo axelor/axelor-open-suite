@@ -141,7 +141,9 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
         partner.setCurrency(activeCompany.getCurrency());
       }
     }
-    Beans.get(BaseConvertLeadWizardService.class).setPartnerFields(partner);
+    if (appBaseService.isApp("supplychain")) {
+      Beans.get(BaseConvertLeadWizardService.class).setPartnerFields(partner);
+    }
 
     return partner;
   }
