@@ -246,7 +246,7 @@
   <action-group name="action-project-planning-time-group-project-task-on-change">
     <action name="action-project-planning-time-attrs-project-task-onChange"/>
     <action name="action-project-planning-time-method-compute-planned-time"/>
-    <action name="action-project-planning-time-method-update-dates-from-sprint"/>
+    <action name="action-project-planning-time-method-update-from-sprint"/>
   </action-group>
 
   <action-attrs name="action-project-planning-time-attrs-project-task-onChange">
@@ -304,9 +304,9 @@
       method="getDefaultPlanningTime"/>
   </action-method>
 
-  <action-method name="action-project-planning-time-method-update-dates-from-sprint">
+  <action-method name="action-project-planning-time-method-update-from-sprint">
     <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
-      method="updateDatesFromSprint"/>
+      method="updateFromSprint"/>
   </action-method>
 
 </object-views>
