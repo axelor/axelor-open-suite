@@ -21,18 +21,18 @@ package com.axelor.apps.hr.service.sprint;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.AllocationLine;
 import com.axelor.apps.project.db.AllocationPeriod;
-import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import java.math.BigDecimal;
 
 public interface AllocationLineService {
 
   public AllocationLine createAllocationLineIfNotExists(
-      Sprint sprint, AllocationPeriod period, User user) throws AxelorException;
+      Project project, AllocationPeriod period, User user) throws AxelorException;
 
   public BigDecimal getLeaves(AllocationPeriod period, User user) throws AxelorException;
 
-  public BigDecimal getAlreadyAllocated(Sprint sprint, AllocationPeriod period, User user);
+  public BigDecimal getAlreadyAllocated(Project project, AllocationPeriod period, User user);
 
   public BigDecimal getAvailableAllocation(
       AllocationPeriod period, User user, BigDecimal leaves, BigDecimal alreadyAllocated);

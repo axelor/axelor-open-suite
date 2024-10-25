@@ -6,15 +6,23 @@
   <form id="hr-sprint-project-form" model="com.axelor.apps.project.db.Project" title="Sprint"
     name="sprint-project-form" extension="true">
 
-    <extend target="//panel-dashlet[@name='tasksPerSprintPanel']">
+    <extend target="//button[@name='attachTasksToSprintBtn']">
       <insert position="before">
         <field name="sprint" domain="self.project.id = :id"
-          onChange="action-project-attrs-refresh-allocation-lines-on-sprint-change" x-dirty="false"/>
+          onChange="action-project-attrs-update-allocation-period-set,action-project-attrs-refresh-allocation-lines"
+          x-dirty="false" colSpan="4"/>
         <field name="allocationPeriodSet" type="many-to-many"
           target="com.axelor.apps.project.db.AllocationPeriod" title="Allocation periods"
           onSelect="action-project-attrs-set-periods-domain" widget="tag-select"
-          onChange="action-project-attrs-refresh-allocation-lines-on-sprint-change" canNew="false"
-          canEdit="false" x-dirty="false"/>
+          onChange="action-project-attrs-refresh-allocation-lines" canNew="false" canEdit="false"
+          x-dirty="false" colSpan="4"/>
+        <button onClick="save,action-project-view-generate-allocations"
+          name="generateAllocations" title="Generate allocations" colSpan="2"/>
+      </insert>
+    </extend>
+
+    <extend target="//panel-dashlet[@name='tasksPerSprintPanel']">
+      <insert position="before">
         <panel-dashlet action="action-project-method-view-allocation-lines"
           name="allocationLinePanel" colSpan="12"/>
         <panel-dashlet action="action-project-view-sprints-summary"
@@ -34,6 +42,19 @@
 
   </form>
 
+  <form model="com.axelor.utils.db.Wizard" title="Generate allocations"
+    name="generate-allocations-wizard-form" onNew="action-generate-allocations-attrs-on-new">
+
+    <panel name="mainPanel">
+      <field name="allocationPeriodSet" type="many-to-many"
+        target="com.axelor.apps.project.db.AllocationPeriod" title="Allocation periods"
+        widget="tag-select" canNew="false" canEdit="false" x-dirty="false"/>
+      <button onClick="action-project-method-generate-allocations" name="generateAllocations"
+        title="Generate allocations"/>
+    </panel>
+
+  </form>
+
   <action-method name="action-project-method-view-allocation-lines">
     <call class="com.axelor.apps.hr.web.project.ProjectMenuController"
       method="viewAllocationLines"/>
@@ -45,18 +66,34 @@
       method="attachTasksToSprintWithProjectPlannings"/>
   </action-method>
 
-  <action-method name="action-project-method-default-sprint-and-periods">
-    <call class="com.axelor.apps.hr.web.project.ProjectController"
-      method="defaultSprintAndPeriods"/>
+  <action-method name="action-project-method-generate-allocations">
+    <call class="com.axelor.apps.hr.web.project.ProjectController" method="generateAllocations"/>
   </action-method>
 
-  <action-attrs name="action-project-attrs-refresh-allocation-lines-on-sprint-change">
+  <action-attrs name="action-project-attrs-refresh-allocation-lines">
     <attribute name="refresh" for="allocationLinePanel" expr="eval: true"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-periods-domain">
     <attribute name="domain" for="allocationPeriodSet"
-      expr="eval: &quot;self.id in (${(sprint?.allocationPeriodSet?.collect{it.id})?.join(',')})&quot;"/>
+      expr="eval: sprint ? &quot;self.id in (${(sprint?.allocationPeriodSet?.collect{it.id})?.join(',')})&quot; : &quot;self.company.id = ${company?.id}&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-update-allocation-period-set">
+    <attribute name="value" for="allocationPeriodSet"
+      expr="eval: __repo__(AllocationPeriod).all().filter('self.id in (?)',sprint?.allocationPeriodSet?.collect{it.id}).fetch().toSet()"
+      if="sprint"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-default-allocation-periods">
+    <attribute name="value" for="allocationPeriodSet"
+      expr="eval: sprint?.allocationPeriodSet"/>
+  </action-attrs>
+
+  <action-attrs name="action-generate-allocations-attrs-on-new">
+    <attribute name="value" for="allocationPeriodSet" expr="eval: _allocationPeriodSet"/>
+    <attribute name="domain" for="allocationPeriodSet"
+      expr="eval: _allocationPeriodDomain"/>
   </action-attrs>
 
   <action-validate name="action-project-validate-upadte-project-plannings">
@@ -72,13 +109,16 @@
     <domain>self.project.id = :id</domain>
   </action-view>
 
-  <action-group id="hr-action-project-on-load-group"
-    name="action-project-on-load-group">
-    <action name="action-project-attrs-on-new-load"/>
-    <action name="action-project-method-task-status-management-selection-in"/>
-    <action name="action-project-activity-dashboard-method-on-new"/>
-    <action name="action-project-dashboard-method-on-new"/>
-    <action name="action-project-method-default-sprint-and-periods"/>
-  </action-group>
+  <action-view name="action-project-view-generate-allocations"
+    title="Generate allocations" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="generate-allocations-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_allocationPeriodSet" expr="eval: allocationPeriodSet"/>
+    <context name="_allocationPeriodDomain"
+      expr="eval: sprint ? &quot;self.id in (${(sprint?.allocationPeriodSet?.collect{it.id})?.join(',')})&quot; : &quot;self.company.id = ${company?.id}&quot;"/>
+    <context name="_projectId" expr="eval: id"/>
+  </action-view>
 
 </object-views>

@@ -20,18 +20,17 @@ package com.axelor.apps.hr.service.sprint;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.AllocationPeriod;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
 public interface SprintHRService {
 
-  public void generateAllocations(Sprint sprint) throws AxelorException;
+  public void generateAllocations(Project project, Set<AllocationPeriod> allocationPeriodSet)
+      throws AxelorException;
 
   public void attachTasksToSprintWithProjectPlannings(
       Sprint sprint, List<ProjectTask> projectTasks);
-
-  public Set<AllocationPeriod> defaultAllocationPeriods(Sprint sprint, LocalDate date);
 }

@@ -26,10 +26,11 @@ import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysService;
 import com.axelor.apps.project.db.AllocationLine;
 import com.axelor.apps.project.db.AllocationPeriod;
-import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.AllocationLineRepository;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -57,18 +58,19 @@ public class AllocationLineServiceImpl implements AllocationLineService {
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public AllocationLine createAllocationLineIfNotExists(
-      Sprint sprint, AllocationPeriod period, User user) throws AxelorException {
+      Project project, AllocationPeriod period, User user) throws AxelorException {
 
-    if (allocationLineRepo.findBySprintAndPeriodAndUser(sprint, period, user) == null) {
+    if (allocationLineRepo.findByProjectAndPeriodAndUser(project, period, user) == null) {
       AllocationLine allocationLine = new AllocationLine();
 
-      allocationLine.setSprint(sprint);
+      allocationLine.setProject(project);
       allocationLine.setAllocationPeriod(period);
       allocationLine.setUser(user);
 
       BigDecimal leaves = getLeaves(period, user);
-      BigDecimal alreadyAllocated = getAlreadyAllocated(sprint, period, user);
+      BigDecimal alreadyAllocated = getAlreadyAllocated(project, period, user);
       BigDecimal availableAllocation =
           getAvailableAllocation(period, user, leaves, alreadyAllocated);
 
@@ -77,7 +79,7 @@ public class AllocationLineServiceImpl implements AllocationLineService {
       allocationLine.setAlreadyAllocated(alreadyAllocated);
       allocationLine.setAvailableAllocation(availableAllocation);
 
-      return allocationLine;
+      return allocationLineRepo.save(allocationLine);
     }
 
     return null;
@@ -119,18 +121,18 @@ public class AllocationLineServiceImpl implements AllocationLineService {
   }
 
   @Override
-  public BigDecimal getAlreadyAllocated(Sprint sprint, AllocationPeriod period, User user) {
+  public BigDecimal getAlreadyAllocated(Project project, AllocationPeriod period, User user) {
 
     BigDecimal alreadyAllocated = BigDecimal.ZERO;
 
-    if (sprint != null && period != null && user != null) {
+    if (project != null && period != null && user != null) {
       List<AllocationLine> allocationLineList =
           allocationLineRepo.findByPeriodAndUser(period, user).fetch();
 
       if (CollectionUtils.isNotEmpty(allocationLineList)) {
         alreadyAllocated =
             allocationLineList.stream()
-                .filter(line -> !line.getSprint().equals(sprint))
+                .filter(line -> !line.getProject().equals(project))
                 .map(AllocationLine::getAllocated)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
       }

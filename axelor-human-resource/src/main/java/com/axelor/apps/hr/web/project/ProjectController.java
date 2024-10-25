@@ -18,19 +18,26 @@
  */
 package com.axelor.apps.hr.web.project;
 
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.service.sprint.SprintHRService;
+import com.axelor.apps.project.db.AllocationPeriod;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.repo.AllocationPeriodRepository;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ProjectController {
@@ -62,18 +69,33 @@ public class ProjectController {
     response.setCanClose(true);
   }
 
-  public void defaultSprintAndPeriods(ActionRequest request, ActionResponse response) {
+  public void generateAllocations(ActionRequest request, ActionResponse response) {
 
-    Project project = request.getContext().asType(Project.class);
+    Set<AllocationPeriod> allocationPeriodSet = new HashSet<>();
 
-    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(project.getCompany());
-    Sprint sprint = Beans.get(SprintRepository.class).findByProjectAndDate(project, todayDate);
+    AllocationPeriodRepository allocationPeriodRepo = Beans.get(AllocationPeriodRepository.class);
 
-    if (sprint != null) {
-      response.setValue("sprint", sprint);
-      response.setValue(
-          "allocationPeriodSet",
-          Beans.get(SprintHRService.class).defaultAllocationPeriods(sprint, todayDate));
+    Optional.ofNullable(request.getContext().get("allocationPeriodSet"))
+        .ifPresent(
+            context ->
+                ((List<LinkedHashMap<String, Object>>) context)
+                    .stream()
+                        .map(
+                            period ->
+                                allocationPeriodRepo.find(
+                                    Long.parseLong(period.get("id").toString())))
+                        .forEach(allocationPeriodSet::add));
+
+    Project project =
+        Beans.get(ProjectRepository.class)
+            .find(((Number) request.getContext().get("_projectId")).longValue());
+
+    try {
+      Beans.get(SprintHRService.class).generateAllocations(project, allocationPeriodSet);
+      response.setInfo(I18n.get("Allocations generated successfully for all periods and users"));
+      response.setCanClose(true);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

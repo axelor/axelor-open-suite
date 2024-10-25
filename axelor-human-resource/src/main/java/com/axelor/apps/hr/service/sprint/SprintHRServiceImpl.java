@@ -22,7 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
-import com.axelor.apps.project.db.AllocationLine;
 import com.axelor.apps.project.db.AllocationPeriod;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -34,11 +33,7 @@ import com.axelor.apps.project.service.sprint.SprintServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -64,49 +59,27 @@ public class SprintHRServiceImpl extends SprintServiceImpl implements SprintHRSe
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
-  public void generateAllocations(Sprint sprint) throws AxelorException {
-
-    Set<AllocationPeriod> allocationPeriods = sprint.getAllocationPeriodSet();
-
-    if (CollectionUtils.isEmpty(allocationPeriods)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get("No allocation periods found for the sprint"));
-    }
+  public void generateAllocations(Project project, Set<AllocationPeriod> allocationPeriodSet)
+      throws AxelorException {
 
     Set<User> projectUsers =
-        Optional.ofNullable(sprint.getProject())
-            .map(Project::getMembersUserSet)
-            .orElse(Collections.emptySet());
+        Optional.ofNullable(project).map(Project::getMembersUserSet).orElse(Collections.emptySet());
 
     if (CollectionUtils.isEmpty(projectUsers)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get("No members found for the project"));
     }
 
-    List<AllocationLine> allocationLinesToSave = new ArrayList<>();
-
-    for (AllocationPeriod period : allocationPeriods) {
+    for (AllocationPeriod period : allocationPeriodSet) {
 
       for (User user : projectUsers) {
 
         try {
-          AllocationLine allocationLine =
-              allocationLineHRService.createAllocationLineIfNotExists(sprint, period, user);
-
-          if (allocationLine != null) {
-            allocationLinesToSave.add(allocationLine);
-          }
+          allocationLineHRService.createAllocationLineIfNotExists(project, period, user);
         } catch (AxelorException e) {
           TraceBackService.trace(e);
         }
       }
-    }
-
-    if (!allocationLinesToSave.isEmpty()) {
-      allocationLinesToSave.forEach(sprint::addAllocationLineListItem);
-      sprintRepo.save(sprint);
     }
   }
 
@@ -118,40 +91,5 @@ public class SprintHRServiceImpl extends SprintServiceImpl implements SprintHRSe
       projectPlanningTimeService.updateProjectPlannings(sprint, projectTasks);
       attachTasksToSprint(sprint, projectTasks);
     }
-  }
-
-  @Override
-  public Set<AllocationPeriod> defaultAllocationPeriods(Sprint sprint, LocalDate date) {
-
-    Set<AllocationPeriod> allocationPeriodSet = sprint.getAllocationPeriodSet();
-    Set<AllocationPeriod> filteredAllocationPeriodSet = new HashSet<>();
-
-    if (CollectionUtils.isNotEmpty(allocationPeriodSet)) {
-      Optional<AllocationPeriod> currentPeriodOpt =
-          allocationPeriodSet.stream()
-              .filter(
-                  period ->
-                      !date.isBefore(period.getFromDate()) && !date.isAfter(period.getToDate()))
-              .findFirst();
-
-      if (currentPeriodOpt.isPresent()) {
-        AllocationPeriod currentPeriod = currentPeriodOpt.get();
-        filteredAllocationPeriodSet.add(currentPeriod);
-
-        LocalDate nextDate = currentPeriod.getToDate().plusDays(3);
-
-        Optional<AllocationPeriod> nextPeriodOpt =
-            allocationPeriodSet.stream()
-                .filter(
-                    period ->
-                        !nextDate.isBefore(period.getFromDate())
-                            && !nextDate.isAfter(period.getToDate()))
-                .findFirst();
-
-        nextPeriodOpt.ifPresent(filteredAllocationPeriodSet::add);
-      }
-    }
-
-    return filteredAllocationPeriodSet;
   }
 }

@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.service.sprint.AllocationLineService;
 import com.axelor.apps.project.db.AllocationLine;
 import com.axelor.apps.project.db.AllocationPeriod;
-import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -35,12 +35,10 @@ public class AllocationLineController {
 
     AllocationLine allocationLine = request.getContext().asType(AllocationLine.class);
 
-    Sprint sprint = allocationLine.getSprint();
+    Project project = allocationLine.getProject();
 
     String domain =
-        sprint != null && sprint.getProject() != null
-            ? sprint.getProject().getId() + " member of self.projectSet"
-            : "self.id in (0)";
+        project != null ? project.getId() + " member of self.projectSet" : "self.id in (0)";
 
     response.setAttr("user", "domain", domain);
   }
@@ -49,14 +47,14 @@ public class AllocationLineController {
 
     AllocationLine allocationLine = request.getContext().asType(AllocationLine.class);
 
-    Sprint sprint = allocationLine.getSprint();
+    Project project = allocationLine.getProject();
     AllocationPeriod period = allocationLine.getAllocationPeriod();
     User user = allocationLine.getUser();
 
     AllocationLineService allocationLineService = Beans.get(AllocationLineService.class);
 
     BigDecimal leaves = allocationLineService.getLeaves(period, user);
-    BigDecimal alreadyAllocated = allocationLineService.getAlreadyAllocated(sprint, period, user);
+    BigDecimal alreadyAllocated = allocationLineService.getAlreadyAllocated(project, period, user);
     BigDecimal availableAllocation =
         allocationLineService.getAvailableAllocation(period, user, leaves, alreadyAllocated);
 

@@ -23,7 +23,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.service.sprint.AllocationLineService;
 import com.axelor.apps.project.db.AllocationLine;
 import com.axelor.apps.project.db.AllocationPeriod;
-import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.AllocationLineRepository;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
@@ -39,7 +39,7 @@ public class AllocationLineHRRepository extends AllocationLineRepository {
 
     AllocationPeriod period = allocationLine.getAllocationPeriod();
     User user = allocationLine.getUser();
-    Sprint sprint = allocationLine.getSprint();
+    Project project = allocationLine.getProject();
 
     BigDecimal leaves = BigDecimal.ZERO;
     BigDecimal alreadyAllocated = BigDecimal.ZERO;
@@ -49,7 +49,7 @@ public class AllocationLineHRRepository extends AllocationLineRepository {
 
     try {
       leaves = allocationLineService.getLeaves(period, user);
-      alreadyAllocated = allocationLineService.getAlreadyAllocated(sprint, period, user);
+      alreadyAllocated = allocationLineService.getAlreadyAllocated(project, period, user);
       availableAllocation =
           allocationLineService.getAvailableAllocation(period, user, leaves, alreadyAllocated);
     } catch (AxelorException e) {
