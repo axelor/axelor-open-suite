@@ -437,24 +437,6 @@
     </template>
   </kanban>
 
-  <kanban columnBy="sprint" model="com.axelor.apps.project.db.ProjectTask"
-    sequenceBy="sequence" title="Tasks per sprint" name="project-task-sprint-kanban"
-    draggable="true">
-
-    <field name="name"/>
-    <field name="assignedTo.name"/>
-
-    <template>
-		<![CDATA[
-			<>
-				<strong>{name}</strong><br /><br />
-				<strong>User:</strong> {assignedTo.name}<br />
-			</>
-		]]>
-    </template>
-
-  </kanban>
-
   <tree name="project-project-task-tree" title="Tasks">
 
     <column name="name" type="string"/>
