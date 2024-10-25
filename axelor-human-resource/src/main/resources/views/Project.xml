@@ -21,29 +21,25 @@
 
   </form>
 
-  <kanban columnBy="sprint" model="com.axelor.apps.project.db.ProjectTask"
-    sequenceBy="sequence" title="Tasks per sprint" id="hr-project-task-sprint-kanban"
-    name="project-task-sprint-kanban" draggable="true">
+  <form id="hr-attach-tasks-to-sprint-wizard-form" model="com.axelor.utils.db.Wizard"
+    title="Attach tasks to sprint" name="attach-tasks-to-sprint-wizard-form" extension="true">
 
-    <field name="name"/>
-    <field name="assignedTo.name"/>
-    <field name="totalPlannedHrs"/>
+    <extend target="//button[@name='attachTasksToSprintBtn']">
+      <attribute name="onClick"
+        value="action-project-validate-upadte-project-plannings,action-project-method-attach-tasks-to-sprint-with-project-plannings"/>
+    </extend>
 
-    <template>
-		<![CDATA[
-			<>
-				<strong>{name}</strong><br /><br />
-				<strong>User:</strong> {assignedTo.name}<br />
-				<strong>Total planned time:</strong> {totalPlannedHrs}
-			</>
-		]]>
-    </template>
-
-  </kanban>
+  </form>
 
   <action-method name="action-project-method-view-allocation-lines">
     <call class="com.axelor.apps.hr.web.project.ProjectMenuController"
       method="viewAllocationLines"/>
+  </action-method>
+
+  <action-method
+    name="action-project-method-attach-tasks-to-sprint-with-project-plannings">
+    <call class="com.axelor.apps.hr.web.project.ProjectController"
+      method="attachTasksToSprintWithProjectPlannings"/>
   </action-method>
 
   <action-attrs name="action-project-attrs-refresh-allocation-lines-on-sprint-change">
@@ -54,5 +50,11 @@
     <attribute name="domain" for="allocationPeriodSet"
       expr="eval: &quot;self.id in (${(sprint?.allocationPeriodSet?.collect{it.id})?.join(',')})&quot;"/>
   </action-attrs>
+
+  <action-validate name="action-project-validate-upadte-project-plannings">
+    <alert message="Do you want to create/update project planning lines?"
+      confirm-btn-title="Yes" cancel-btn-title="No"
+      action="action-project-method-attach-tasks-to-sprint"/>
+  </action-validate>
 
 </object-views>
