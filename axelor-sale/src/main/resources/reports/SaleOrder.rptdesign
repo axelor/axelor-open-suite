@@ -2511,128 +2511,6 @@ left outer join account_tax_line AS TaxLine on (TaxLine.id = SaleOrderLineTaxLin
 left outer join account_tax As Tax on (Tax.id = TaxLine.tax)
 where SaleOrderLineTaxLine.sale_sale_order_line = ?;]]></xml-property>
         </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="OrderLineProc" id="5791">
-            <list-property name="columnHints"/>
-            <list-property name="parameters"/>
-            <structure name="cachedMetaData"/>
-            <property name="dataSource">Data Source</property>
-            <list-property name="resultSet"/>
-            <xml-property name="queryText"><![CDATA[DROP FUNCTION IF EXISTS sale_order_line_proc(bigint);
-CREATE OR REPLACE FUNCTION sale_order_line_proc(orderId bigint)
-RETURNS table("SaleOrderId" bigint, id bigint, "ProductName" varchar,
-    "product_category_name" varchar, description text, product_type_select varchar,
-    quantity numeric, unit_price numeric, "totalDiscountAmount" numeric,
-    ex_tax_total numeric, in_tax_total numeric, "CurrencyCode" varchar,
-    "productPicture" varchar, sequence int, "typeSelect" int, in_ati boolean, "productCode" varchar,
-    "product_category_code" varchar, sale_order_type_select int,
-    "CustomerProductCode" varchar, "CustomerProductName" varchar,
-    "EstimatedShippingDate" date, price_discounted numeric, "showTotal" boolean,
-    "hideUnitAmounts" boolean, "UnitCode" varchar, "packHideUnitAmounts" boolean) as
-$func$
-BEGIN
-IF (SELECT true FROM pg_attribute WHERE attrelid = 'sale_sale_order'::regclass AND attname = 'sale_order_type_select') THEN
-return query
-SELECT
-    SaleOrder.id as "SaleOrderId",
-    SOLine.id,
-    SOLine.product_name as "ProductName",
-    ProductCategory.name as product_category_name,
-    SOLine.description,
-    Product.product_type_select,
-    SOLine.qty as "quantity",
-    (CASE WHEN SaleOrder.in_ati
-        THEN SOLine.in_tax_price
-        ELSE SOLine.price END)
-        as "unit_price",
-    (SOLine.price_discounted
-        - (CASE WHEN SaleOrder.in_ati
-        THEN SOLine.in_tax_price
-        ELSE SOLine.price END))
-        * SOLine.qty
-        as "totalDiscountAmount",
-    SOLine.ex_tax_total,
-    SOLine.in_tax_total,
-    Currency.code as "CurrencyCode",
-    MetaFile.file_path as "productPicture",
-    SOLine.sequence,
-    SOLine.type_select as "typeSelect",
-    SaleOrder.in_ati,
-    Product.code as "productCode",
-    ProductCategory.code as product_category_code,
-    SaleOrder.sale_order_type_select,
-    CustomerCatalog.product_customer_code as "CustomerProductCode",
-    CustomerCatalog.product_customer_name as "CustomerProductName",
-    SOLine.estimated_shipping_date as "EstimatedShippingDate",
-    SOLine.price_discounted as "price_discounted",
-    SOLine.is_show_total as "showTotal",
-    SOLine.is_hide_unit_amounts as "hideUnitAmounts",
-    Unit.label_to_printing as "UnitCode",
-	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
-	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
-
-from sale_sale_order as SaleOrder
-left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
-left outer join base_product as Product on (SOLine.product = Product.id)
-left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
-left outer join base_unit as Unit on (SOLine.unit = Unit.id)
-left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
-left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
-left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
-where SaleOrder.id = orderId;
-ELSE
-return query
-SELECT
-    SaleOrder.id as "SaleOrderId",
-    SOLine.id,
-    SOLine.product_name as "ProductName",
-    ProductCategory.name as product_category_name,
-    SOLine.description,
-    Product.product_type_select,
-    SOLine.qty as "quantity",
-    (CASE WHEN SaleOrder.in_ati
-        THEN SOLine.in_tax_price
-        ELSE SOLine.price END)
-        as "unit_price",
-    (SOLine.price_discounted
-        - (CASE WHEN SaleOrder.in_ati
-        THEN SOLine.in_tax_price
-        ELSE SOLine.price END))
-        * SOLine.qty
-        as "totalDiscountAmount",
-    SOLine.ex_tax_total,
-    SOLine.in_tax_total,
-    Currency.code as "CurrencyCode",
-    MetaFile.file_path as "productPicture",
-    SOLine.sequence,
-    SOLine.type_select as "typeSelect",
-    SaleOrder.in_ati,
-    Product.code as "productCode",
-    ProductCategory.code as product_category_code,
-    1 as sale_order_type_select,
-    CustomerCatalog.product_customer_code as "CustomerProductCode",
-    CustomerCatalog.product_customer_name as "CustomerProductName",
-    SOLine.estimated_shipping_date as "EstimatedShippingDate",
-    SOLine.price_discounted as "price_discounted",
-    SOLine.is_show_total as "showTotal",
-    SOLine.is_hide_unit_amounts as "hideUnitAmounts",
-    Unit.label_to_printing as "UnitCode",
-	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
-	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
-
-from sale_sale_order as SaleOrder
-left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
-left outer join base_product as Product on (SOLine.product = Product.id)
-left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
-left outer join base_unit as Unit on (SOLine.unit = Unit.id)
-left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
-left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
-left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
-where SaleOrder.id = orderId;
-END IF;
-END;
-$func$ LANGUAGE plpgsql;
-]]></xml-property>
-        </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.SPSelectDataSet" name="SaleOrderProc" id="5802">
             <list-property name="columnHints"/>
             <list-property name="parameters"/>
@@ -2851,6 +2729,125 @@ END IF;
 END;
 $func$ LANGUAGE plpgsql;
 
+]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.SPSelectDataSet" name="OrderLineProc" id="5810">
+            <structure name="cachedMetaData"/>
+            <property name="dataSource">Data Source</property>
+            <xml-property name="queryText"><![CDATA[DROP FUNCTION IF EXISTS sale_order_line_proc(bigint);
+CREATE OR REPLACE FUNCTION sale_order_line_proc(orderId bigint)
+RETURNS table("SaleOrderId" bigint, id bigint, "ProductName" varchar,
+    "product_category_name" varchar, description text, product_type_select varchar,
+    quantity numeric, unit_price numeric, "totalDiscountAmount" numeric,
+    ex_tax_total numeric, in_tax_total numeric, "CurrencyCode" varchar,
+    "productPicture" varchar, sequence int, "typeSelect" int, in_ati boolean, "productCode" varchar,
+    "product_category_code" varchar, sale_order_type_select int,
+    "CustomerProductCode" varchar, "CustomerProductName" varchar,
+    "EstimatedShippingDate" date, price_discounted numeric, "showTotal" boolean,
+    "hideUnitAmounts" boolean, "UnitCode" varchar, "packHideUnitAmounts" boolean) as
+$func$
+BEGIN
+IF (SELECT true FROM pg_attribute WHERE attrelid = 'sale_sale_order'::regclass AND attname = 'sale_order_type_select') THEN
+return query
+SELECT
+    SaleOrder.id as "SaleOrderId",
+    SOLine.id,
+    SOLine.product_name as "ProductName",
+    ProductCategory.name as product_category_name,
+    SOLine.description,
+    Product.product_type_select,
+    SOLine.qty as "quantity",
+    (CASE WHEN SaleOrder.in_ati
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END)
+        as "unit_price",
+    (SOLine.price_discounted
+        - (CASE WHEN SaleOrder.in_ati
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END))
+        * SOLine.qty
+        as "totalDiscountAmount",
+    SOLine.ex_tax_total,
+    SOLine.in_tax_total,
+    Currency.code as "CurrencyCode",
+    MetaFile.file_path as "productPicture",
+    SOLine.sequence,
+    SOLine.type_select as "typeSelect",
+    SaleOrder.in_ati,
+    Product.code as "productCode",
+    ProductCategory.code as product_category_code,
+    SaleOrder.sale_order_type_select,
+    CustomerCatalog.product_customer_code as "CustomerProductCode",
+    CustomerCatalog.product_customer_name as "CustomerProductName",
+    SOLine.estimated_shipping_date as "EstimatedShippingDate",
+    SOLine.price_discounted as "price_discounted",
+    SOLine.is_show_total as "showTotal",
+    SOLine.is_hide_unit_amounts as "hideUnitAmounts",
+    Unit.label_to_printing as "UnitCode",
+	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
+	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
+
+from sale_sale_order as SaleOrder
+left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
+left outer join base_product as Product on (SOLine.product = Product.id)
+left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
+left outer join base_unit as Unit on (SOLine.unit = Unit.id)
+left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
+left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
+left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
+where SaleOrder.id = orderId;
+ELSE
+return query
+SELECT
+    SaleOrder.id as "SaleOrderId",
+    SOLine.id,
+    SOLine.product_name as "ProductName",
+    ProductCategory.name as product_category_name,
+    SOLine.description,
+    Product.product_type_select,
+    SOLine.qty as "quantity",
+    (CASE WHEN SaleOrder.in_ati
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END)
+        as "unit_price",
+    (SOLine.price_discounted
+        - (CASE WHEN SaleOrder.in_ati
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END))
+        * SOLine.qty
+        as "totalDiscountAmount",
+    SOLine.ex_tax_total,
+    SOLine.in_tax_total,
+    Currency.code as "CurrencyCode",
+    MetaFile.file_path as "productPicture",
+    SOLine.sequence,
+    SOLine.type_select as "typeSelect",
+    SaleOrder.in_ati,
+    Product.code as "productCode",
+    ProductCategory.code as product_category_code,
+    1 as sale_order_type_select,
+    CustomerCatalog.product_customer_code as "CustomerProductCode",
+    CustomerCatalog.product_customer_name as "CustomerProductName",
+    SOLine.estimated_shipping_date as "EstimatedShippingDate",
+    SOLine.price_discounted as "price_discounted",
+    SOLine.is_show_total as "showTotal",
+    SOLine.is_hide_unit_amounts as "hideUnitAmounts",
+    Unit.label_to_printing as "UnitCode",
+	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
+	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
+
+from sale_sale_order as SaleOrder
+left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
+left outer join base_product as Product on (SOLine.product = Product.id)
+left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
+left outer join base_unit as Unit on (SOLine.unit = Unit.id)
+left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
+left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
+left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
+where SaleOrder.id = orderId;
+END IF;
+END;
+$func$ LANGUAGE plpgsql;
 ]]></xml-property>
         </oda-data-set>
     </data-sets>
