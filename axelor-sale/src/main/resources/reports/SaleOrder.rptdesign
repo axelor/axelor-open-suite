@@ -2578,7 +2578,7 @@ left outer join base_unit as Unit on (SOLine.unit = Unit.id)
 left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
 left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
 left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
-where SaleOrder.id = saleOrderId;
+where SaleOrder.id = orderId;
 ELSE
 return query
 SELECT
