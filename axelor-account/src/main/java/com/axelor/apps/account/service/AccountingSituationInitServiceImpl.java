@@ -151,7 +151,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
       AccountConfig accountConfig, AccountingSituation situation, int creationMode)
       throws AxelorException {
     Partner partner = situation.getPartner();
-    if (partner.getIsCustomer() == Boolean.FALSE || situation.getCustomerAccount() != null) return;
+    if (!partner.getIsCustomer() || situation.getCustomerAccount() != null) return;
 
     if (accountConfig.getCustomerAccount() == null) {
       throw new AxelorException(
@@ -207,7 +207,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
       AccountConfig accountConfig, AccountingSituation situation, int creationMode)
       throws AxelorException {
     Partner partner = situation.getPartner();
-    if (partner.getIsSupplier() == Boolean.FALSE || situation.getSupplierAccount() != null) return;
+    if (!partner.getIsSupplier() || situation.getSupplierAccount() != null) return;
 
     if (accountConfig.getSupplierAccount() == null) {
       throw new AxelorException(
@@ -264,7 +264,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
       AccountConfig accountConfig, AccountingSituation situation, int creationMode)
       throws AxelorException {
     Partner partner = situation.getPartner();
-    if (partner.getIsEmployee() == Boolean.FALSE || situation.getEmployeeAccount() != null) return;
+    if (!partner.getIsEmployee() || situation.getEmployeeAccount() != null) return;
 
     if (accountConfig.getEmployeeAccount() == null) {
       throw new AxelorException(
