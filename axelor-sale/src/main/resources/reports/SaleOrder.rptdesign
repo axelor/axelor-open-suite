@@ -1437,74 +1437,12 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", SaleOrder.creation_date as "CreationDate", 
-CONCAT(SalemanPartner.name, ' ', SalemanPartner.first_name) as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
-SalemanEmailAddress.address as "SalemanEmail", SaleConfig.display_saleman_on_printing as "DisplaySaleman", 
-SaleOrder.shipment_date as "ShipmentDate", SaleConfig.sale_order_client_box as "ClientBox", 
-SaleConfig.sale_order_legal_note as "LegalNote", SaleConfig.display_del_cond_on_printing as "DisplayDeliveryCondition", 
-Company.name as "CompanyName", coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path,
-Company.height as "logo_height", Company.width as "logo_width",
-ClientPartner.partner_seq as "CustomerCode", ClientPartner.partner_type_select, ClientPartner.name as "ClientPartName",
-ClientPartner.first_name as "ClientPartFirstName", ClientPartner.title_select as "ClientTitle", 
-ContactPartner.name as "ContactName", ContactPartner.first_name as "ContactFirstName",
-InvoicingCountry.name as "invoicecountry", DeliveryCountry.name as "DeliveryCountry",
-SaleOrder.main_invoicing_address_str as "invoicingAddress",
-SaleOrder.delivery_address_str as "deliveryAddress",
-PaymentCondition.name as "PaymentCondName", PaymentMode.name as "PaymentMode",
-SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total, BankAddress.address as "bank_address", 
-BankDetail.iban, Bank.code as "bic", Currency.code as "CurrencyCode", Currency.number_of_decimals, SaleOrder.external_reference, 
-PrintingSettings.pdf_header as "header", PrintingSettings.pdf_footer as "footer", SaleOrder.description as "description",  
-Duration.value as "durationValue", Duration.type_select as "durationType", 
-SaleOrder.estimated_shipping_date as "estimatedShippingDate", SaleOrder.delivery_condition as "deliveryCondition",
-SaleOrder.hide_discount as "hideDiscount", SaleConfig.display_product_code_on_printing as "displayProductCodeOnPrinting", 
-SaleConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting",
-SaleConfig.display_estim_ship_date_on_printing as "displayEstimShipDateOnPrinting",
-SaleOrder.sale_order_type_select,SaleOrder.status_select, SaleOrder.specific_notes,
-SaleOrder.version_number as "versionNumber",
-PrintingSettings.logo_position_select as "logoPosition",
-SignatureFile.file_path as "salesperson_signature_path",
-SaleOrder.periodicity_type_select,
-SaleOrder.number_of_periods,
-SaleOrder.subscription_text,
-SaleOrder.end_of_validity_date,
-SaleOrder.in_ati,
-SaleOrder.is_ispm_required as "isIspmRequired",
-SaleConfig.display_customer_code_on_printing as "displayCustomerCodeOnPrinting",
-SaleConfig.display_product_picture_on_printing as "displayProductPictureOnPrinting",
-SaleOrder.proforma_comments as "ProformaComments",
-AppSale.enable_pack_management as "enablePackMangement",
-SalespersonUser.use_signature_for_sales_quotations as "useSignature",
-ContactPartner.title_select as "contactPartnerTitleSelect",
-PrintingSettings.table_font_size as "tableFontSize"
-from sale_sale_order as SaleOrder
-left outer join base_company as Company on (SaleOrder.company = Company.id)
-left outer join studio_app_sale as AppSale on true 
-left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
-left outer join base_partner as ClientPartner on (SaleOrder.client_partner = ClientPartner.id)
-left outer join base_partner as ContactPartner on (SaleOrder.contact_partner = ContactPartner.id)
-left outer join base_address as InvoicingAddress on (SaleOrder.main_invoicing_address = InvoicingAddress.id)
-left outer join base_country as InvoicingCountry on (InvoicingAddress.country = InvoicingCountry.id)
-left outer join account_payment_condition as PaymentCondition on (SaleOrder.payment_condition = PaymentCondition.id)
-left outer join account_payment_mode as PaymentMode on (SaleOrder.payment_mode = PaymentMode.id)
-left outer join base_address as DeliveryAddress on (SaleOrder.delivery_address = DeliveryAddress.id)
-left outer join base_country as DeliveryCountry on (DeliveryAddress.country = DeliveryCountry.id)
-left outer join base_bank_details as BankDetail on (SaleOrder.company_bank_details = BankDetail.id)
-left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
-left outer join base_printing_settings as PrintingSettings on (SaleOrder.printing_settings = PrintingSettings.id AND 
-AppSale.printing_config_per_sale_order = true ) OR (Company.printing_settings = PrintingSettings.id 
-AND (AppSale.printing_config_per_sale_order = null OR AppSale.printing_config_per_sale_order = false 
-OR SaleOrder.printing_settings is null )) 
-left outer join auth_user as SalespersonUser on (SaleOrder.salesperson_user = SalespersonUser.id) 
-left outer join base_partner as SalemanPartner on (SalespersonUser.partner = SalemanPartner.id) 
-left outer join message_email_address as SalemanEmailAddress on (SalemanPartner.email_address = SalemanEmailAddress.id) 
-left outer join sale_sale_config as SaleConfig on (SaleConfig.company = Company.id) 
-left outer join base_duration as Duration on (SaleOrder.duration = Duration.id) 
-left outer join base_bank as Bank on (BankDetail.bank = Bank.id)
-left outer join base_bank_address as BankAddress on (BankDetail.bank_address = BankAddress.id)
-left outer join meta_file as SignatureFile on SalespersonUser.electronic_signature = SignatureFile.id
-left outer join base_trading_name as TradingName on (TradingName.id = SaleOrder.trading_name)
-left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
-where SaleOrder.id = ?]]></xml-property>
+            <xml-property name="queryText"><![CDATA[WITH SO AS (
+    select * from sale_order_proc(cast(? as bigint))
+)
+
+SELECT * FROM SO;
+]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="OrderLineDS" id="3678">
             <property name="nullsOrdering">nulls lowest</property>
@@ -1963,53 +1901,8 @@ where SaleOrder.id = ?]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH SOL AS (
-SELECT
-    SaleOrder.id as SaleOrderId,
-    SOLine.id,
-    SOLine.product_name as "ProductName",
-    ProductCategory.name as product_category_name,
-    SOLine.description,
-    Product.product_type_select,
-    SOLine.qty as "quantity",
-    (CASE WHEN SaleOrder.in_ati
-        THEN SOLine.in_tax_price
-        ELSE SOLine.price END)
-        as "unit_price",
-    (SOLine.price_discounted
-        - (CASE WHEN SaleOrder.in_ati
-        THEN SOLine.in_tax_price
-        ELSE SOLine.price END))
-        * SOLine.qty
-        as "totalDiscountAmount",
-    SOLine.ex_tax_total,
-    SOLine.in_tax_total,
-    Currency.code as "CurrencyCode",
-    MetaFile.file_path as "productPicture",
-    SOLine.sequence,
-    SOLine.type_select as "typeSelect",
-    SaleOrder.in_ati,
-    Product.code as "productCode",
-    ProductCategory.code as product_category_code,
-    SaleOrder.sale_order_type_select,
-    CustomerCatalog.product_customer_code as "CustomerProductCode",
-    CustomerCatalog.product_customer_name as "CustomerProductName",
-    SOLine.estimated_shipping_date as "EstimatedShippingDate",
-    SOLine.price_discounted as "price_discounted",
-    SOLine.is_show_total as "showTotal",
-    SOLine.is_hide_unit_amounts as "hideUnitAmounts",
-    Unit.label_to_printing as "UnitCode",
-	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
-	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
-
-from sale_sale_order as SaleOrder
-left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
-left outer join base_product as Product on (SOLine.product = Product.id)
-left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
-left outer join base_unit as Unit on (SOLine.unit = Unit.id)
-left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
-left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
-left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
-where SaleOrder.id = ?)
+      select * from sale_order_line_proc(cast(? as bigint))
+)
 
 SELECT
     SOL.id,
@@ -2038,7 +1931,7 @@ SELECT
 	SOL."packHideUnitAmounts"
 FROM SOL
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
-LEFT JOIN sale_sale_order SaleOrder ON (SOL.SaleOrderId = SaleOrder.id)
+LEFT JOIN sale_sale_order SaleOrder ON (SOL."SaleOrderId" = SaleOrder.id)
 WHERE  AppBase.is_regroup_products_on_printings IS NULL OR AppBase.is_regroup_products_on_printings IS FALSE
 OR SaleOrder.group_products_on_printings IS NULL OR SaleOrder.group_products_on_printings IS FALSE
 OR ( (AppBase.regroup_products_type_select NOT LIKE '%products%' AND SOL.product_type_select = 'storable')
@@ -2075,7 +1968,7 @@ SELECT
 	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts"
 FROM SOL
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
-LEFT JOIN sale_sale_order SaleOrder ON (SOL.SaleOrderId = SaleOrder.id)
+LEFT JOIN sale_sale_order SaleOrder ON (SOL."SaleOrderId" = SaleOrder.id)
 WHERE AppBase.is_regroup_products_on_printings IS TRUE AND SaleOrder.group_products_on_printings IS TRUE
 AND AppBase.regroup_products_level_select = 'category'
 AND ((AppBase.regroup_products_type_select LIKE '%products%' AND SOL.product_type_select = 'storable')
@@ -2115,13 +2008,12 @@ SELECT
 	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts"
 FROM SOL
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
-LEFT JOIN sale_sale_order SaleOrder ON (SOL.SaleOrderId = SaleOrder.id)
+LEFT JOIN sale_sale_order SaleOrder ON (SOL."SaleOrderId" = SaleOrder.id)
 WHERE AppBase.is_regroup_products_on_printings IS TRUE AND SaleOrder.group_products_on_printings IS TRUE
 AND AppBase.regroup_products_level_select = 'global'
 AND ((AppBase.regroup_products_type_select LIKE '%products%' AND SOL.product_type_select = 'storable')
     OR (AppBase.regroup_products_type_select LIKE '%services%' AND SOL.product_type_select = 'service'))
 group by AppBase.regroup_products_label_products, AppBase.regroup_products_label_services, SOL.product_type_select, SOL."UnitCode", SOL."CurrencyCode";
-
 ]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SaleOrderLineTaxDS" id="3422">
@@ -2372,26 +2264,7 @@ group by AppBase.regroup_products_label_products, AppBase.regroup_products_label
     (Case when main_query.tax_type_code IN ('VAT','TVA') THEN 999
     Else 0 END ) as seq
 FROM (
-    SELECT
-        TaxLine.value, 
-        SOLineTax.ex_tax_base, 
-        SOLineTax.tax_total, 
-        SOrder.sale_order_type_select, 
-        MetaSelectItem.title AS tax_type, 
-        TaxType.name AS tax_type_name,
-        TaxType.code as tax_type_code,
-        Tax.code AS tax_code,
-        COUNT(TaxType.name) OVER (PARTITION BY TaxType.name) AS tax_type_count
-    FROM
-        sale_sale_order_line_tax AS SOLineTax
-        INNER JOIN sale_sale_order AS SOrder ON (SOLineTax.sale_order = SOrder.id)
-        LEFT OUTER JOIN account_tax_line AS TaxLine ON (SOLineTax.tax_line = TaxLine.id)
-        LEFT OUTER JOIN account_tax AS Tax ON (Tax.id = TaxLine.tax)
-        LEFT OUTER JOIN account_tax_type AS TaxType ON (TaxType.id = Tax.tax_type)
-        LEFT OUTER JOIN meta_select AS MetaSelect ON (MetaSelect.name = 'tax.type.type.select')
-        LEFT OUTER JOIN meta_select_item MetaSelectItem ON (MetaSelectItem.select_id = MetaSelect.id AND MetaSelectItem.value = CAST(TaxType.type_select AS TEXT))
-    WHERE
-        SOrder.id = ?
+  SELECT * FROM sale_order_line_tax_proc(cast(? as bigint))
 ) AS main_query
 CROSS JOIN (
     SELECT COUNT(DISTINCT TaxType.name) AS unique_tax_type_names
@@ -2637,6 +2510,349 @@ from sale_sale_order_line_tax_line_set AS SaleOrderLineTaxLine
 left outer join account_tax_line AS TaxLine on (TaxLine.id = SaleOrderLineTaxLine.tax_line_set)
 left outer join account_tax As Tax on (Tax.id = TaxLine.tax)
 where SaleOrderLineTaxLine.sale_sale_order_line = ?;]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="OrderLineProc" id="5791">
+            <list-property name="columnHints"/>
+            <list-property name="parameters"/>
+            <structure name="cachedMetaData"/>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet"/>
+            <xml-property name="queryText"><![CDATA[DROP FUNCTION IF EXISTS sale_order_line_proc(bigint);
+CREATE OR REPLACE FUNCTION sale_order_line_proc(orderId bigint)
+RETURNS table("SaleOrderId" bigint, id bigint, "ProductName" varchar,
+    "product_category_name" varchar, description text, product_type_select varchar,
+    quantity numeric, unit_price numeric, "totalDiscountAmount" numeric,
+    ex_tax_total numeric, in_tax_total numeric, "CurrencyCode" varchar,
+    "productPicture" varchar, sequence int, "typeSelect" int, in_ati boolean, "productCode" varchar,
+    "product_category_code" varchar, sale_order_type_select int,
+    "CustomerProductCode" varchar, "CustomerProductName" varchar,
+    "EstimatedShippingDate" date, price_discounted numeric, "showTotal" boolean,
+    "hideUnitAmounts" boolean, "UnitCode" varchar, "packHideUnitAmounts" boolean) as
+$func$
+BEGIN
+IF (SELECT true FROM pg_attribute WHERE attrelid = 'sale_sale_order'::regclass AND attname = 'sale_order_type_select') THEN
+return query
+SELECT
+    SaleOrder.id as "SaleOrderId",
+    SOLine.id,
+    SOLine.product_name as "ProductName",
+    ProductCategory.name as product_category_name,
+    SOLine.description,
+    Product.product_type_select,
+    SOLine.qty as "quantity",
+    (CASE WHEN SaleOrder.in_ati
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END)
+        as "unit_price",
+    (SOLine.price_discounted
+        - (CASE WHEN SaleOrder.in_ati
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END))
+        * SOLine.qty
+        as "totalDiscountAmount",
+    SOLine.ex_tax_total,
+    SOLine.in_tax_total,
+    Currency.code as "CurrencyCode",
+    MetaFile.file_path as "productPicture",
+    SOLine.sequence,
+    SOLine.type_select as "typeSelect",
+    SaleOrder.in_ati,
+    Product.code as "productCode",
+    ProductCategory.code as product_category_code,
+    SaleOrder.sale_order_type_select,
+    CustomerCatalog.product_customer_code as "CustomerProductCode",
+    CustomerCatalog.product_customer_name as "CustomerProductName",
+    SOLine.estimated_shipping_date as "EstimatedShippingDate",
+    SOLine.price_discounted as "price_discounted",
+    SOLine.is_show_total as "showTotal",
+    SOLine.is_hide_unit_amounts as "hideUnitAmounts",
+    Unit.label_to_printing as "UnitCode",
+	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
+	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
+
+from sale_sale_order as SaleOrder
+left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
+left outer join base_product as Product on (SOLine.product = Product.id)
+left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
+left outer join base_unit as Unit on (SOLine.unit = Unit.id)
+left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
+left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
+left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
+where SaleOrder.id = saleOrderId;
+ELSE
+return query
+SELECT
+    SaleOrder.id as "SaleOrderId",
+    SOLine.id,
+    SOLine.product_name as "ProductName",
+    ProductCategory.name as product_category_name,
+    SOLine.description,
+    Product.product_type_select,
+    SOLine.qty as "quantity",
+    (CASE WHEN SaleOrder.in_ati
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END)
+        as "unit_price",
+    (SOLine.price_discounted
+        - (CASE WHEN SaleOrder.in_ati
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END))
+        * SOLine.qty
+        as "totalDiscountAmount",
+    SOLine.ex_tax_total,
+    SOLine.in_tax_total,
+    Currency.code as "CurrencyCode",
+    MetaFile.file_path as "productPicture",
+    SOLine.sequence,
+    SOLine.type_select as "typeSelect",
+    SaleOrder.in_ati,
+    Product.code as "productCode",
+    ProductCategory.code as product_category_code,
+    1 as sale_order_type_select,
+    CustomerCatalog.product_customer_code as "CustomerProductCode",
+    CustomerCatalog.product_customer_name as "CustomerProductName",
+    SOLine.estimated_shipping_date as "EstimatedShippingDate",
+    SOLine.price_discounted as "price_discounted",
+    SOLine.is_show_total as "showTotal",
+    SOLine.is_hide_unit_amounts as "hideUnitAmounts",
+    Unit.label_to_printing as "UnitCode",
+	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
+	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
+
+from sale_sale_order as SaleOrder
+left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
+left outer join base_product as Product on (SOLine.product = Product.id)
+left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
+left outer join base_unit as Unit on (SOLine.unit = Unit.id)
+left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
+left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
+left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
+where SaleOrder.id = orderId;
+END IF;
+END;
+$func$ LANGUAGE plpgsql;
+]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.SPSelectDataSet" name="SaleOrderProc" id="5802">
+            <list-property name="columnHints"/>
+            <list-property name="parameters"/>
+            <structure name="cachedMetaData"/>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet"/>
+            <xml-property name="queryText"><![CDATA[DROP FUNCTION IF EXISTS sale_order_proc(bigint);
+CREATE OR REPLACE FUNCTION sale_order_proc(saleOrderId bigint)
+RETURNS table(id bigint, "saleOrderSeq" varchar, "CreationDate" date, "SalemanName" text, "SalemanPhone" varchar, "SalemanEmail" varchar, "DisplaySaleman" boolean, "ShipmentDate" date, "ClientBox" text, "LegalNote" text, "DisplayDeliveryCondition" boolean, "CompanyName" varchar, "logo_path" varchar, "logo_height" integer, "logo_width" integer, "CustomerCode" varchar, "partner_type_select" integer, "ClientPartName" varchar, "ClientPartFirstName" varchar, "ClientTitle" integer, "ContactName" varchar, "ContactFirstName" varchar, "invoicecountry" varchar, "DeliveryCountry" varchar, "invoicingAddress" text, "deliveryAddress" text, "PaymentCondName" varchar, "PaymentMode" varchar, "ex_tax_total" numeric, "tax_total" numeric, "in_tax_total" numeric, "bank_address" varchar, "iban" varchar, "bic" varchar, "CurrencyCode" varchar, "number_of_decimals" integer, "external_reference" varchar, "header" text, "footer" text, "description" text, "durationValue" integer, "durationType" integer, "estimatedShippingDate" date, "deliveryCondition" text, "hideDiscount" boolean, "displayProductCodeOnPrinting" boolean, "displayTaxDetailOnPrinting" boolean, "displayEstimShipDateOnPrinting" boolean, "sale_order_type_select" integer, "status_select" integer, "specific_notes" text, "versionNumber" integer, "logoPosition" integer, "salesperson_signature_path" varchar, "periodicity_type_select" integer, "number_of_periods" integer, "subscription_text" text, "end_of_validity_date" date, "in_ati" boolean, "isIspmRequired" boolean, "displayCustomerCodeOnPrinting" boolean, "displayProductPictureOnPrinting" boolean, "ProformaComments" text, "enablePackMangement" boolean, "useSignature" boolean, "contactPartnerTitleSelect" integer, "tableFontSize" numeric) as
+$func$
+BEGIN
+IF (SELECT COUNT(to_regclass('account_payment_condition')) = 0) THEN
+return query
+  select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", SaleOrder.creation_date as "CreationDate", 
+  CONCAT(SalemanPartner.name, ' ', SalemanPartner.first_name) as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
+  SalemanEmailAddress.address as "SalemanEmail", SaleConfig.display_saleman_on_printing as "DisplaySaleman", 
+  date '2000-01-01' as "ShipmentDate", SaleConfig.sale_order_client_box as "ClientBox",
+  SaleConfig.sale_order_legal_note as "LegalNote", SaleConfig.display_del_cond_on_printing as "DisplayDeliveryCondition", 
+  Company.name as "CompanyName", coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path,
+  Company.height as "logo_height", Company.width as "logo_width",
+  ClientPartner.partner_seq as "CustomerCode", ClientPartner.partner_type_select, ClientPartner.name as "ClientPartName",
+  ClientPartner.first_name as "ClientPartFirstName", ClientPartner.title_select as "ClientTitle", 
+  ContactPartner.name as "ContactName", ContactPartner.first_name as "ContactFirstName",
+  InvoicingCountry.name as "invoicecountry", DeliveryCountry.name as "DeliveryCountry",
+  SaleOrder.main_invoicing_address_str as "invoicingAddress",
+  SaleOrder.delivery_address_str as "deliveryAddress",
+  ''::varchar as "PaymentCondName", ''::varchar as "PaymentMode",
+  SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total, BankAddress.address as "bank_address", 
+  BankDetail.iban, Bank.code as "bic", Currency.code as "CurrencyCode", Currency.number_of_decimals, SaleOrder.external_reference, 
+  PrintingSettings.pdf_header as "header", PrintingSettings.pdf_footer as "footer", SaleOrder.description as "description",  
+  Duration.value as "durationValue", Duration.type_select as "durationType", 
+  SaleOrder.estimated_shipping_date as "estimatedShippingDate", SaleOrder.delivery_condition as "deliveryCondition",
+  SaleOrder.hide_discount as "hideDiscount", SaleConfig.display_product_code_on_printing as "displayProductCodeOnPrinting", 
+  SaleConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting",
+  SaleConfig.display_estim_ship_date_on_printing as "displayEstimShipDateOnPrinting",
+  1,SaleOrder.status_select, SaleOrder.specific_notes,
+  SaleOrder.version_number as "versionNumber",
+  PrintingSettings.logo_position_select as "logoPosition",
+  SignatureFile.file_path as "salesperson_signature_path",
+  SaleOrder.periodicity_type_select,
+  SaleOrder.number_of_periods,
+  SaleOrder.subscription_text,
+  SaleOrder.end_of_validity_date,
+  SaleOrder.in_ati,
+  true as "isIspmRequired",
+  SaleConfig.display_customer_code_on_printing as "displayCustomerCodeOnPrinting",
+  SaleConfig.display_product_picture_on_printing as "displayProductPictureOnPrinting",
+  SaleOrder.proforma_comments as "ProformaComments",
+  AppSale.enable_pack_management as "enablePackMangement",
+  SalespersonUser.use_signature_for_sales_quotations as "useSignature",
+  ContactPartner.title_select as "contactPartnerTitleSelect",
+  PrintingSettings.table_font_size as "tableFontSize"
+  from sale_sale_order as SaleOrder
+  left outer join base_company as Company on (SaleOrder.company = Company.id)
+  left outer join studio_app_sale as AppSale on true 
+  left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
+  left outer join base_partner as ClientPartner on (SaleOrder.client_partner = ClientPartner.id)
+  left outer join base_partner as ContactPartner on (SaleOrder.contact_partner = ContactPartner.id)
+  left outer join base_address as InvoicingAddress on (SaleOrder.main_invoicing_address = InvoicingAddress.id)
+  left outer join base_country as InvoicingCountry on (InvoicingAddress.country = InvoicingCountry.id)
+  left outer join base_address as DeliveryAddress on (SaleOrder.delivery_address = DeliveryAddress.id)
+  left outer join base_country as DeliveryCountry on (DeliveryAddress.country = DeliveryCountry.id)
+  left outer join base_bank_details as BankDetail on (SaleOrder.company_bank_details = BankDetail.id)
+  left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
+  left outer join base_printing_settings as PrintingSettings on (SaleOrder.printing_settings = PrintingSettings.id AND 
+    AppSale.printing_config_per_sale_order = true ) OR (Company.printing_settings = PrintingSettings.id 
+    AND (AppSale.printing_config_per_sale_order = null OR AppSale.printing_config_per_sale_order = false 
+      OR SaleOrder.printing_settings is null )) 
+  left outer join auth_user as SalespersonUser on (SaleOrder.salesperson_user = SalespersonUser.id) 
+  left outer join base_partner as SalemanPartner on (SalespersonUser.partner = SalemanPartner.id) 
+  left outer join message_email_address as SalemanEmailAddress on (SalemanPartner.email_address = SalemanEmailAddress.id) 
+  left outer join sale_sale_config as SaleConfig on (SaleConfig.company = Company.id) 
+  left outer join base_duration as Duration on (SaleOrder.duration = Duration.id) 
+  left outer join base_bank as Bank on (BankDetail.bank = Bank.id)
+  left outer join base_bank_address as BankAddress on (BankDetail.bank_address = BankAddress.id)
+  left outer join meta_file as SignatureFile on SalespersonUser.electronic_signature = SignatureFile.id
+  left outer join base_trading_name as TradingName on (TradingName.id = SaleOrder.trading_name)
+  left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
+  where SaleOrder.id = saleOrderId;
+  ELSE
+return query
+select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", SaleOrder.creation_date as "CreationDate", 
+CONCAT(SalemanPartner.name, ' ', SalemanPartner.first_name) as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
+SalemanEmailAddress.address as "SalemanEmail", SaleConfig.display_saleman_on_printing as "DisplaySaleman", 
+SaleOrder.shipment_date as "ShipmentDate", SaleConfig.sale_order_client_box as "ClientBox", 
+SaleConfig.sale_order_legal_note as "LegalNote", SaleConfig.display_del_cond_on_printing as "DisplayDeliveryCondition", 
+Company.name as "CompanyName", coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path,
+Company.height as "logo_height", Company.width as "logo_width",
+ClientPartner.partner_seq as "CustomerCode", ClientPartner.partner_type_select, ClientPartner.name as "ClientPartName",
+ClientPartner.first_name as "ClientPartFirstName", ClientPartner.title_select as "ClientTitle", 
+ContactPartner.name as "ContactName", ContactPartner.first_name as "ContactFirstName",
+InvoicingCountry.name as "invoicecountry", DeliveryCountry.name as "DeliveryCountry",
+SaleOrder.main_invoicing_address_str as "invoicingAddress",
+SaleOrder.delivery_address_str as "deliveryAddress",
+PaymentCondition.name as "PaymentCondName", PaymentMode.name as "PaymentMode",
+SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total, BankAddress.address as "bank_address", 
+BankDetail.iban, Bank.code as "bic", Currency.code as "CurrencyCode", Currency.number_of_decimals, SaleOrder.external_reference, 
+PrintingSettings.pdf_header as "header", PrintingSettings.pdf_footer as "footer", SaleOrder.description as "description",  
+Duration.value as "durationValue", Duration.type_select as "durationType", 
+SaleOrder.estimated_shipping_date as "estimatedShippingDate", SaleOrder.delivery_condition as "deliveryCondition",
+SaleOrder.hide_discount as "hideDiscount", SaleConfig.display_product_code_on_printing as "displayProductCodeOnPrinting", 
+SaleConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting",
+SaleConfig.display_estim_ship_date_on_printing as "displayEstimShipDateOnPrinting",
+SaleOrder.sale_order_type_select,SaleOrder.status_select, SaleOrder.specific_notes,
+SaleOrder.version_number as "versionNumber",
+PrintingSettings.logo_position_select as "logoPosition",
+SignatureFile.file_path as "salesperson_signature_path",
+SaleOrder.periodicity_type_select,
+SaleOrder.number_of_periods,
+SaleOrder.subscription_text,
+SaleOrder.end_of_validity_date,
+SaleOrder.in_ati,
+SaleOrder.is_ispm_required as "isIspmRequired",
+SaleConfig.display_customer_code_on_printing as "displayCustomerCodeOnPrinting",
+SaleConfig.display_product_picture_on_printing as "displayProductPictureOnPrinting",
+SaleOrder.proforma_comments as "ProformaComments",
+AppSale.enable_pack_management as "enablePackMangement",
+SalespersonUser.use_signature_for_sales_quotations as "useSignature",
+ContactPartner.title_select as "contactPartnerTitleSelect",
+PrintingSettings.table_font_size as "tableFontSize"
+from sale_sale_order as SaleOrder
+left outer join base_company as Company on (SaleOrder.company = Company.id)
+left outer join studio_app_sale as AppSale on true 
+left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
+left outer join base_partner as ClientPartner on (SaleOrder.client_partner = ClientPartner.id)
+left outer join base_partner as ContactPartner on (SaleOrder.contact_partner = ContactPartner.id)
+left outer join base_address as InvoicingAddress on (SaleOrder.main_invoicing_address = InvoicingAddress.id)
+left outer join base_country as InvoicingCountry on (InvoicingAddress.country = InvoicingCountry.id)
+left outer join account_payment_condition as PaymentCondition on (SaleOrder.payment_condition = PaymentCondition.id)
+left outer join account_payment_mode as PaymentMode on (SaleOrder.payment_mode = PaymentMode.id)
+left outer join base_address as DeliveryAddress on (SaleOrder.delivery_address = DeliveryAddress.id)
+left outer join base_country as DeliveryCountry on (DeliveryAddress.country = DeliveryCountry.id)
+left outer join base_bank_details as BankDetail on (SaleOrder.company_bank_details = BankDetail.id)
+left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
+left outer join base_printing_settings as PrintingSettings on (SaleOrder.printing_settings = PrintingSettings.id AND 
+AppSale.printing_config_per_sale_order = true ) OR (Company.printing_settings = PrintingSettings.id 
+AND (AppSale.printing_config_per_sale_order = null OR AppSale.printing_config_per_sale_order = false 
+OR SaleOrder.printing_settings is null )) 
+left outer join auth_user as SalespersonUser on (SaleOrder.salesperson_user = SalespersonUser.id) 
+left outer join base_partner as SalemanPartner on (SalespersonUser.partner = SalemanPartner.id) 
+left outer join message_email_address as SalemanEmailAddress on (SalemanPartner.email_address = SalemanEmailAddress.id) 
+left outer join sale_sale_config as SaleConfig on (SaleConfig.company = Company.id) 
+left outer join base_duration as Duration on (SaleOrder.duration = Duration.id) 
+left outer join base_bank as Bank on (BankDetail.bank = Bank.id)
+left outer join base_bank_address as BankAddress on (BankDetail.bank_address = BankAddress.id)
+left outer join meta_file as SignatureFile on SalespersonUser.electronic_signature = SignatureFile.id
+left outer join base_trading_name as TradingName on (TradingName.id = SaleOrder.trading_name)
+left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
+where SaleOrder.id = saleOrderId;
+END IF;
+END;
+$func$ LANGUAGE plpgsql;
+]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.SPSelectDataSet" name="SaleOrderLineTaxProc" id="5804">
+            <structure name="cachedMetaData"/>
+            <property name="dataSource">Data Source</property>
+            <xml-property name="queryText"><![CDATA[DROP FUNCTION IF EXISTS sale_order_line_tax_proc(bigint);
+CREATE OR REPLACE FUNCTION sale_order_line_tax_proc(saleOrderId bigint)
+RETURNS table(value numeric,
+  ex_tax_base numeric,
+  tax_total numeric,
+  sale_order_type_select integer,
+  tax_type varchar,
+  tax_type_name varchar,
+  tax_type_code varchar,
+  tax_code varchar,
+  tax_type_count bigint) as
+$func$
+BEGIN
+IF (SELECT true FROM pg_attribute WHERE attrelid = 'sale_sale_order'::regclass AND attname = 'sale_order_type_select') THEN
+return query
+    SELECT
+        TaxLine.value, 
+        SOLineTax.ex_tax_base, 
+        SOLineTax.tax_total, 
+        SOrder.sale_order_type_select, 
+        MetaSelectItem.title AS tax_type, 
+        TaxType.name AS tax_type_name,
+        TaxType.code as tax_type_code,
+        Tax.code AS tax_code,
+        COUNT(TaxType.name) OVER (PARTITION BY TaxType.name) AS tax_type_count
+    FROM
+        sale_sale_order_line_tax AS SOLineTax
+        INNER JOIN sale_sale_order AS SOrder ON (SOLineTax.sale_order = SOrder.id)
+        LEFT OUTER JOIN account_tax_line AS TaxLine ON (SOLineTax.tax_line = TaxLine.id)
+        LEFT OUTER JOIN account_tax AS Tax ON (Tax.id = TaxLine.tax)
+        LEFT OUTER JOIN account_tax_type AS TaxType ON (TaxType.id = Tax.tax_type)
+        LEFT OUTER JOIN meta_select AS MetaSelect ON (MetaSelect.name = 'tax.type.type.select')
+        LEFT OUTER JOIN meta_select_item MetaSelectItem ON (MetaSelectItem.select_id = MetaSelect.id AND MetaSelectItem.value = CAST(TaxType.type_select AS TEXT))
+    WHERE
+        SOrder.id = saleOrderId;
+  ELSE
+return query
+    SELECT
+        TaxLine.value, 
+        SOLineTax.ex_tax_base, 
+        SOLineTax.tax_total, 
+        1 as sale_order_type_select, 
+        MetaSelectItem.title AS tax_type, 
+        TaxType.name AS tax_type_name,
+        TaxType.code as tax_type_code,
+        Tax.code AS tax_code,
+        COUNT(TaxType.name) OVER (PARTITION BY TaxType.name) AS tax_type_count
+    FROM
+        sale_sale_order_line_tax AS SOLineTax
+        INNER JOIN sale_sale_order AS SOrder ON (SOLineTax.sale_order = SOrder.id)
+        LEFT OUTER JOIN account_tax_line AS TaxLine ON (SOLineTax.tax_line = TaxLine.id)
+        LEFT OUTER JOIN account_tax AS Tax ON (Tax.id = TaxLine.tax)
+        LEFT OUTER JOIN account_tax_type AS TaxType ON (TaxType.id = Tax.tax_type)
+        LEFT OUTER JOIN meta_select AS MetaSelect ON (MetaSelect.name = 'tax.type.type.select')
+        LEFT OUTER JOIN meta_select_item MetaSelectItem ON (MetaSelectItem.select_id = MetaSelect.id AND MetaSelectItem.value = CAST(TaxType.type_select AS TEXT))
+    WHERE
+        SOrder.id = saleOrderId;
+END IF;
+END;
+$func$ LANGUAGE plpgsql;
+
+]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -3273,6 +3489,53 @@ where SaleOrderLineTaxLine.sale_sale_order_line = ?;]]></xml-property>
             <column id="3348">
                 <property name="width">0.4in</property>
             </column>
+            <row id="5792">
+                <property name="borderBottomStyle">solid</property>
+                <property name="borderBottomWidth">thin</property>
+                <property name="height">0.9789583333333334cm</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5793">
+                    <property name="colSpan">8</property>
+                    <property name="rowSpan">1</property>
+                    <method name="onRender"><![CDATA[var logoPosition = row["logoPosition"];
+
+if (logoPosition == 2) {
+   this.getStyle().setTextAlign('right')
+   this.getStyle().setPaddingRight('10%');
+}]]></method>
+                    <property name="fontSize">8pt</property>
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <property name="paddingTop">0pt</property>
+                    <property name="paddingLeft">0pt</property>
+                    <property name="paddingBottom">0pt</property>
+                    <property name="paddingRight">0pt</property>
+                    <property name="textAlign">left</property>
+                    <property name="overflow">hidden</property>
+                    <text id="5801">
+                        <property name="dataSet">OrderLineProc</property>
+                        <property name="contentType">auto</property>
+                        <text-property name="content"><![CDATA[Used to load SaleOrderLineProc]]></text-property>
+                    </text>
+                    <text id="5803">
+                        <property name="dataSet">SaleOrderProc</property>
+                        <property name="contentType">auto</property>
+                        <text-property name="content"><![CDATA[Used to load SaleOrderProc]]></text-property>
+                    </text>
+                    <text id="5805">
+                        <property name="dataSet">SaleOrderLineTaxProc</property>
+                        <property name="contentType">auto</property>
+                        <text-property name="content"><![CDATA[Used to load SaleOrderLineTaxProc]]></text-property>
+                    </text>
+                </cell>
+            </row>
             <row id="3349">
                 <property name="borderBottomStyle">solid</property>
                 <property name="borderBottomWidth">thin</property>
