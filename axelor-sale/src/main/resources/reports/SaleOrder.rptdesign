@@ -4091,6 +4091,12 @@ this.height = row["logo_height"];]]></method>
                             <cell id="3881"/>
                         </row>
                         <row id="3654">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["PaymentCondName"] == null || row["PaymentCondName"].length &lt;= 0</expression>
+                                </structure>
+                            </list-property>
                             <cell id="3655">
                                 <text id="3645">
                                     <property name="fontSize">9pt</property>
@@ -4171,6 +4177,12 @@ this.height = row["logo_height"];]]></method>
                             </cell>
                         </row>
                         <row id="3656">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["PaymentMode"] == null || row["PaymentMode"].length &lt;= 0</expression>
+                                </structure>
+                            </list-property>
                             <cell id="3657">
                                 <text id="3646">
                                     <property name="fontSize">9pt</property>
@@ -4290,6 +4302,12 @@ this.height = row["logo_height"];]]></method>
                             </cell>
                         </row>
                         <row id="3864">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["ShipmentDate"] == null || row["ShipmentDate"] == '1583-01-01'</expression>
+                                </structure>
+                            </list-property>
                             <cell id="3865">
                                 <text id="5489">
                                     <property name="fontSize">9pt</property>
