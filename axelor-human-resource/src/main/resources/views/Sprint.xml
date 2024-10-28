@@ -3,6 +3,16 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
+  <grid name="sprint-summary-grid" title="Sprints summary"
+    model="com.axelor.apps.project.db.Sprint">
+
+    <field name="name"/>
+    <field name="$totalAllocatedTime" title="Total allocated time" type="decimal"/>
+    <field name="$totalEstimatedTime" title="Total estimated time" type="decimal"/>
+    <field name="$totalRemainingTime" title="Total remaining time" type="decimal"/>
+
+  </grid>
+
   <form id="hr-sprint-form" name="sprint-form" title="Sprint"
     model="com.axelor.apps.project.db.Sprint" extension="true">
 
@@ -13,6 +23,23 @@
         <button onClick="save,action-sprint-method-generate-allocations"
           name="generateAllocations" title="Generate allocations" showIf="id"/>
       </insert>
+    </extend>
+
+    <extend target="//panel[@name='mainPanel']">
+      <insert position="after">
+        <panel name="totalsPanel" colSpan="12">
+          <field name="$totalAllocatedTime" title="Total allocated time" type="decimal"
+            readonly="true" colSpan="4"/>
+          <field name="$totalEstimatedTime" title="Total estimated time" type="decimal"
+            readonly="true" colSpan="4"/>
+          <field name="$totalRemainingTime" title="Total remaining time" type="decimal"
+            readonly="true" colSpan="4"/>
+        </panel>
+      </insert>
+    </extend>
+
+    <extend target="/">
+      <attribute name="onSave" value="action-sprint-group-on-save"/>
     </extend>
 
   </form>
