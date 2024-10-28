@@ -1,26 +1,11 @@
-/*
- * Axelor Business Solutions
- *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-package com.axelor.apps.budget.service.move;
+package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -38,20 +23,27 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.businessproject.service.MoveValidateServiceBusinessProjectImpl;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MoveValidateBudgetServiceImpl extends MoveValidateServiceBusinessProjectImpl {
+public class MoveValidateServiceBusinessProjectImpl extends MoveValidateHRServiceImpl {
 
-  protected MoveBudgetService moveBudgetService;
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
-  public MoveValidateBudgetServiceImpl(
+  public MoveValidateServiceBusinessProjectImpl(
       MoveLineControlService moveLineControlService,
       MoveLineToolService moveLineToolService,
       AccountConfigService accountConfigService,
@@ -74,7 +66,6 @@ public class MoveValidateBudgetServiceImpl extends MoveValidateServiceBusinessPr
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       ExpenseRepository expenseRepository,
-      MoveBudgetService moveBudgetService,
       TaxService taxService) {
     super(
         moveLineControlService,
@@ -100,16 +91,33 @@ public class MoveValidateBudgetServiceImpl extends MoveValidateServiceBusinessPr
         moveLineFinancialDiscountService,
         expenseRepository,
         taxService);
-    this.moveBudgetService = moveBudgetService;
   }
 
   @Override
-  public void accounting(Move move) throws AxelorException {
+  protected void checkMoveLineInvoiceTermBalance(Move move) throws AxelorException {
 
-    if (!moveBudgetService.isBudgetInLines(move)) {
-      moveBudgetService.autoComputeBudgetDistribution(move);
+    log.debug(
+        "Well-balanced move line invoice terms validation on account move {}", move.getReference());
+    BigDecimal financialDiscount = this.getInvoiceTermFinancialDiscount(move);
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
+          || !moveLine.getAccount().getUseForPartnerBalance()) {
+        return;
+      }
+      BigDecimal totalMoveLineInvoiceTerm =
+          moveLine.getInvoiceTermList().stream()
+              .map(InvoiceTerm::getCompanyAmount)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      totalMoveLineInvoiceTerm =
+          totalMoveLineInvoiceTerm.add(move.getInvoice().getCompanyHoldBacksTotal());
+      if (totalMoveLineInvoiceTerm.compareTo(moveLine.getDebit().max(moveLine.getCredit())) != 0) {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT),
+            moveLine.getName());
+      }
     }
-
-    super.accounting(move);
   }
 }

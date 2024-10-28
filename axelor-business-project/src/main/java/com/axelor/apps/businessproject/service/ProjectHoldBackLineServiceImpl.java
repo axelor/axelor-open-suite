@@ -488,9 +488,12 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
       projectHoldBackATI.setName(holdBack.getName());
       projectHoldBackATI.setInvoice(invoice);
       BigDecimal amount = BigDecimal.ZERO;
+      BigDecimal percentage = BigDecimal.ZERO;
       for (ProjectHoldBackLine line : holdBackLines) {
+        percentage = percentage.add(line.getPercentage());
         amount = amount.add(calculateHoldBackLinePrice(invoiceLineList, line));
       }
+      projectHoldBackATI.setPercentage(percentage);
       projectHoldBackATI.setAmount(amount);
       projectHoldBackATI.setCompanyAmount(
           invoiceServiceProject.getAmountInCompanyCurrency(amount, invoice));

@@ -9,6 +9,7 @@
     <string name="name" required="true" namecolumn="true"/>
     <decimal name="amount" title="Amount"/>
     <decimal name="companyAmount" title="Amount"/>
+    <decimal name="percentage" title="Percentage"/>
     <many-to-one name="projectHoldBack" ref="com.axelor.apps.project.db.ProjectHoldBack"
       title="HoldBack product" required="true"/>
     <boolean name="isVentilatedProjectHoldBackATI" title="Ventilated hold back ATI"

@@ -29,7 +29,6 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServ
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
-import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -42,10 +41,11 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.businessproject.service.MoveLineCreateServiceBusinessProjectImpl;
 import com.google.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
-public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
+public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceBusinessProjectImpl {
 
   protected BudgetToolsService budgetToolsService;
 

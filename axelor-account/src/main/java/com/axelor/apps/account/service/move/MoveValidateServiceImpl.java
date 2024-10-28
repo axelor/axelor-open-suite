@@ -889,14 +889,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
-    if (linesTaxAmount.signum() != 0
+    /*    if (linesTaxAmount.signum() != 0
         && linesTaxAmount.compareTo(taxLinesAmount) != 0
         && accountConfig.getAllowedTaxGap().compareTo(linesTaxAmount.subtract(taxLinesAmount).abs())
             < 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.MOVE_TAX_NOT_EQUALS));
-    }
+    }*/
   }
 
   protected BigDecimal getLinesTaxAmount(List<MoveLine> moveLineList, Move move) {
