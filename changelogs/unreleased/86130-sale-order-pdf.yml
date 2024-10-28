@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed sale order printing when only sale module is used, without supplychain."
+module: axelor-sale
