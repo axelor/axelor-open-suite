@@ -1,0 +1,3 @@
+---
+title: "ManufOrder: Fixed issue when updating quantity in manuf order."
+module: axelor-production

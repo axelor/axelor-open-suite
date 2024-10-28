@@ -236,6 +236,7 @@ public class ManufOrderCreateStockMoveLineServiceImpl
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
                     == StockMoveRepository.STATUS_CANCELED);
+    clearTrackingNumberOriginStockMoveLine(stockMove);
     stockMove.clearStockMoveLineList();
 
     // create a new list
@@ -265,6 +266,12 @@ public class ManufOrderCreateStockMoveLineServiceImpl
     }
     stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
+  }
+
+  protected void clearTrackingNumberOriginStockMoveLine(StockMove stockMove) {
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      stockMoveLine.getTrackingNumber().setOriginStockMoveLine(null);
+    }
   }
 
   /**
