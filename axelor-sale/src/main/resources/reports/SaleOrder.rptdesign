@@ -2852,7 +2852,6 @@ END;
 $func$ LANGUAGE plpgsql;
 
 ]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -2898,6 +2897,36 @@ $func$ LANGUAGE plpgsql;
             <property name="rightMargin">0.15625in</property>
             <property name="headerHeight">0cm</property>
             <property name="footerHeight">2.4cm</property>
+            <page-header>
+                <grid id="5806">
+                    <column id="5807"/>
+                    <row id="5808">
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">true</expression>
+                            </structure>
+                        </list-property>
+                        <cell id="5809">
+                            <text id="5801">
+                                <property name="dataSet">OrderLineProc</property>
+                                <property name="contentType">auto</property>
+                                <text-property name="content"><![CDATA[Used to load SaleOrderLineProc]]></text-property>
+                            </text>
+                            <text id="5803">
+                                <property name="dataSet">SaleOrderProc</property>
+                                <property name="contentType">auto</property>
+                                <text-property name="content"><![CDATA[Used to load SaleOrderProc]]></text-property>
+                            </text>
+                            <text id="5805">
+                                <property name="dataSet">SaleOrderLineTaxProc</property>
+                                <property name="contentType">auto</property>
+                                <text-property name="content"><![CDATA[Used to load SaleOrderLineTaxProc]]></text-property>
+                            </text>
+                        </cell>
+                    </row>
+                </grid>
+            </page-header>
             <page-footer>
                 <grid id="4314">
                     <property name="height">2.487083333333333cm</property>
@@ -3489,53 +3518,6 @@ $func$ LANGUAGE plpgsql;
             <column id="3348">
                 <property name="width">0.4in</property>
             </column>
-            <row id="5792">
-                <property name="borderBottomStyle">solid</property>
-                <property name="borderBottomWidth">thin</property>
-                <property name="height">0.9789583333333334cm</property>
-                <list-property name="visibility">
-                    <structure>
-                        <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">true</expression>
-                    </structure>
-                </list-property>
-                <cell id="5793">
-                    <property name="colSpan">8</property>
-                    <property name="rowSpan">1</property>
-                    <method name="onRender"><![CDATA[var logoPosition = row["logoPosition"];
-
-if (logoPosition == 2) {
-   this.getStyle().setTextAlign('right')
-   this.getStyle().setPaddingRight('10%');
-}]]></method>
-                    <property name="fontSize">8pt</property>
-                    <property name="borderBottomStyle">none</property>
-                    <property name="borderLeftStyle">none</property>
-                    <property name="borderRightStyle">none</property>
-                    <property name="borderTopStyle">none</property>
-                    <property name="paddingTop">0pt</property>
-                    <property name="paddingLeft">0pt</property>
-                    <property name="paddingBottom">0pt</property>
-                    <property name="paddingRight">0pt</property>
-                    <property name="textAlign">left</property>
-                    <property name="overflow">hidden</property>
-                    <text id="5801">
-                        <property name="dataSet">OrderLineProc</property>
-                        <property name="contentType">auto</property>
-                        <text-property name="content"><![CDATA[Used to load SaleOrderLineProc]]></text-property>
-                    </text>
-                    <text id="5803">
-                        <property name="dataSet">SaleOrderProc</property>
-                        <property name="contentType">auto</property>
-                        <text-property name="content"><![CDATA[Used to load SaleOrderProc]]></text-property>
-                    </text>
-                    <text id="5805">
-                        <property name="dataSet">SaleOrderLineTaxProc</property>
-                        <property name="contentType">auto</property>
-                        <text-property name="content"><![CDATA[Used to load SaleOrderLineTaxProc]]></text-property>
-                    </text>
-                </cell>
-            </row>
             <row id="3349">
                 <property name="borderBottomStyle">solid</property>
                 <property name="borderBottomWidth">thin</property>
