@@ -1,0 +1,3 @@
+---
+title: "Expense: fixed an issue preventing to go to reimbursed status with a payment mode generating a bank order."
+axelor-module: axelor-human-resource
