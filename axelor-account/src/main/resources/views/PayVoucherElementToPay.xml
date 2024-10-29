@@ -41,7 +41,7 @@
         x-scale="currency.numberOfDecimals"/>
       <field name="applyFinancialDiscount" readonlyIf="$isFinancialDiscountReadonly"
         showIf="invoiceTerm.applyFinancialDiscount"
-        onChange="action-pay-voucher-element-to-pay-method-update-financial-discount"
+        onChange="action-pay-voucher-element-to-pay-method-update-financial-discount,action-pay-voucher-element-to-pay-group-amount-to-pay-onchange"
         if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
       <field name="moveLineGenerated" form-view="move-line-form" grid-view="move-line-grid"
         showIf="moveLineGenerated"/>
