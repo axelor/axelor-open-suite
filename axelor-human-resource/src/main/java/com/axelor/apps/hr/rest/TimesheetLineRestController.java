@@ -33,9 +33,7 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -45,7 +43,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/timesheet-line")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -57,10 +54,12 @@ public class TimesheetLineRestController {
   @POST
   @HttpExceptionHandler
   public Response createTimesheetLine(TimesheetLinePostRequest requestBody) throws AxelorException {
-    new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
+    new SecurityCheck()
+        .createAccess(TimesheetLine.class)
+        .writeAccess(Timesheet.class, requestBody.getTimesheetId());
     RequestValidator.validateBody(requestBody);
 
-    Timesheet timesheet = requestBody.fetchTimesheet();
+    Timesheet timesheet = TimesheetLinePostRequestHelper.fetchOrCreateTimesheet(requestBody);
     TimesheetLine timesheetLine =
         Beans.get(TimesheetLineCreateService.class)
             .createTimesheetLine(
@@ -68,7 +67,7 @@ public class TimesheetLineRestController {
                 requestBody.fetchProjectTask(),
                 requestBody.fetchProduct(),
                 requestBody.getDate(),
-                requestBody.fetchTimesheet(),
+                timesheet,
                 requestBody.getDuration(),
                 requestBody.getComments(),
                 requestBody.isToInvoice());
@@ -87,7 +86,7 @@ public class TimesheetLineRestController {
   public Response updateTimesheetLine(
       @PathParam("timesheetLineId") Long timesheetLineId, TimesheetLinePutRequest requestBody)
       throws AxelorException {
-    new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
+    new SecurityCheck().writeAccess(TimesheetLine.class, timesheetLineId).check();
     RequestValidator.validateBody(requestBody);
 
     TimesheetLine timesheetLine =

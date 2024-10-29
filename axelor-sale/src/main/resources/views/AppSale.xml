@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="app-sale-config-form" title="App sale" model="com.axelor.studio.db.AppSale"
     canDelete="false" canNew="false" width="large" onLoad="action-sale-attrs-set-hidden">
@@ -27,12 +27,16 @@
       <field name="saleUnit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
-      <field name="isEditableGridEnabled" widget="boolean-switch"/>
+      <field name="isEnableCalculationEntireQuotation" widget="boolean-switch"/>
+      <field name="isCartManagementEnabled" widget="boolean-switch"/>
+
+    </panel>
+    <panel name="listDisplayPanel" itemSpan="12" colSpan="12">
+      <help><![CDATA[Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.<br>Tree line: Activate multi-level sale order lines. (Older version of the Editable tree display. Will be removed in the next version.)]]></help>
+      <field name="listDisplayTypeSelect" colSpan="6"
+        onChange="action-app-sale-attrs-reset-discount-enabled"/>
       <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
-        showIf="isEditableGridEnabled"/>
-      <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
-        hidden="true"/>
-      <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>
+        showIf="listDisplayTypeSelect != 0" colSpan="6"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"
@@ -65,8 +69,10 @@
     model="com.axelor.studio.db.AppSale">
     <attribute name="hidden" for="enableSalesProductByTradName"
       expr="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <attribute for="isEnableCalculationEntireQuotationUsingPricing" name="hidden"
-      expr="eval: !__config__.app.getApp('base')?.enablePricingScale"/>
   </action-attrs>
 
+  <action-attrs name="action-app-sale-attrs-reset-discount-enabled">
+    <attribute for="isDiscountEnabledOnEditableGrid" name="value" expr="eval: false"
+      if="eval: listDisplayTypeSelect == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
+  </action-attrs>
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="expense-line-project-grid" title="Expense lines"
     model="com.axelor.apps.hr.db.ExpenseLine">
@@ -75,7 +75,7 @@
   <action-attrs name="action-expense-line-attrs-domain-project"
     id="business-project-action-expense-line-attrs-domain-project">
     <attribute name="domain" for="project"
-      expr="eval: &quot; self.projectStatus = 2 AND self.imputable = true AND (${__parent__?.employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__parent__?.employee?.user?.id}) &quot;"/>
+      expr="eval: &quot; self.projectStatus = 2 AND (${__parent__?.employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__parent__?.employee?.user?.id}) &quot;"/>
   </action-attrs>
 
   <action-method name="action-expense-line-method-update-to-invoice">

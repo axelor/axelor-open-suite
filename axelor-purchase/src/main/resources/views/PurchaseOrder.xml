@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="purchase-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
@@ -20,7 +20,8 @@
     <field name="purchaseOrderSeq" width="120"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="externalReference"/>
     <field name="orderDate"/>
     <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
@@ -49,7 +50,8 @@
     <field name="purchaseOrderSeq" width="120"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="externalReference"/>
     <field name="orderDate"/>
     <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
@@ -66,7 +68,8 @@
   <grid orderBy="-orderDate,-purchaseOrderSeq" edit-icon="true" name="my-purchase-order-grid"
     title="Supplier RFQs/POs" model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="purchaseOrderSeq" width="120"/>
-    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="externalReference"/>
     <field name="orderDate"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
@@ -106,12 +109,17 @@
         domain="self.company = company and self.typeSelect = 1" form-view="stock-location-form"
         grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')"/>
       <field name="$contactPartner" title="Contact partner" type="many-to-one"
-        target="com.axelor.apps.base.db.Partner"
+        x-image-field="picture" target="com.axelor.apps.base.db.Partner"
         domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
         colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+      <field name="toStockMove" hidden="true" colSpan="6"/>
       <button name="confirmBtn" title="Confirm"
-        onClick="action-purchase-order-method-merge-from-pop-up" colSpan="12" width="200px"/>
+        onClick="action-purchase-order-method-merge-from-pop-up" colSpan="12" width="200px"
+        showIf="!toStockMove"/>
+      <button name="confirmBtn" title="Confirm"
+        onClick="action-supplychain-stock-move-method-generate-invoice-from-pop-up" colSpan="12"
+        width="200px" showIf="toStockMove" if="__config__.app.isApp('supplychain')"/>
     </panel>
   </form>
 
@@ -158,7 +166,7 @@
 	          </>
 	        ]]></viewer>
         </field>
-        <field name="company.tradingNameSet" hidden="true" colSpan="12"/>
+        <field name="company.tradingNameList" hidden="true" colSpan="12"/>
         <field name="company" canEdit="false" colSpan="3" widget="SuggestBox"
           onChange="action-group-purchase-order-company-change-actions" form-view="company-form"
           grid-view="company-grid" readonlyIf="statusSelect >= 3 || supplierPartner != null"/>
@@ -166,9 +174,9 @@
           form-view="trading-name-form"
           if="__config__.app.getApp('base')?.enableTradingNamesManagement" colSpan="3"
           readonlyIf="(purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3"
-          domain=":company MEMBER OF self.companySet"
+          domain="self.company = :company"
           onChange="action-purchase-order-method-printing-settings-default-value,action-purchase-order-record-set-stock-location"
-          requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
+          requiredIf="company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0"/>
         <label name="tradingNameLabel"
           if="!(__config__.app.getApp('base')?.enableTradingNamesManagement)" colSpan="3"/>
         <field name="currency" canEdit="false" colSpan="3" form-view="currency-form"
@@ -181,11 +189,11 @@
         <field name="supplierPartner" canEdit="false" hideIf="company == null" colSpan="3"
           onChange="action-group-purchase-order-partner-onchange" readonlyIf="statusSelect >= 3"
           onSelect="action-set-supplier-partner-domain" form-view="partner-form"
-          grid-view="partner-grid"/>
+          grid-view="partner-grid" x-image-field="picture"/>
         <field name="contactPartner" onChange="action-record-po-contact-partner-change"
           onSelect="action-attrs-po-domain-on-contact-partner" domain="self.isContact = true"
           colSpan="3" form-view="partner-contact-form" grid-view="partner-contact-grid"
-          hideIf="company == null"/>
+          hideIf="company == null" x-image-field="picture"/>
         <field name="versionNumber"
           if="__config__.app.getApp('purchase')?.getManagePurchaseOrderVersion()" colSpan="3"/>
         <panel name="inAtiAndIntercoPanel" colSpan="3">
@@ -211,7 +219,7 @@
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab"
-      hideIf="supplierPartner == null || ($enablePurchasesProductByTradName &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
+      hideIf="supplierPartner == null || ($enablePurchasesProductByTradName &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0 &amp;&amp; tradingName == null)">
       <panel name="contentPanel" title="Content" colSpan="12">
         <panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList"
           canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3"
@@ -220,10 +228,11 @@
           canMove="true" orderBy="sequence" height="30"/>
         <field name="notes" colSpan="12" x-lite="true" widget="html"/>
       </panel>
-      <panel name="taxPanel" title="Tax" colSpan="12">
-        <panel-related name="purchaseOrderLineTaxListPanel"
-          field="purchaseOrderLineTaxList" readonly="true" title="Tax Lines" colSpan="12"
-          grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
+      <panel name="taxPanel" title="Tax" colSpan="12" readonlyIf="statusSelect != 1">
+        <panel-related name="purchaseOrderLineTaxListPanel" canRemove="false"
+          canNew="false" field="purchaseOrderLineTaxList" title="Tax Lines" colSpan="12"
+          grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"
+          onChange="action-purchase-order-method-compute"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" colSpan="12">
         <field name="estimatedReceiptDate" colSpan="3"
@@ -253,13 +262,13 @@
         title="Business project" colSpan="12" if-module="axelor-business-project">
         <field name="contract" readonly="true" hidden="true" showIf="contract"
           form-view="contract-form" grid-view="contract-grid"/>
-        <field name="project" domain="self.isBusinessProject = true" form-view="project-form"
-          grid-view="project-grid" colSpan="6"/>
+        <field name="project" domain="self.isBusinessProject = true"
+          form-view="business-project-form" grid-view="project-grid" colSpan="6"/>
         <button name="updateLinesBtn" title="Update lines with selected project"
           onClick="save,action-business-project-purchase-order-method-update-lines,save" colSpan="6"
           readonlyIf="!project"/>
         <field name="projectTask" domain="self.project = :project"
-          form-view="project-task-form" grid-view="project-task-grid" colSpan="6"/>
+          form-view="business-project-task-form" grid-view="business-project-task-grid" colSpan="6"/>
       </panel>
       <panel name="POManagementPanel" title="PO Management"
         if-module="axelor-supplier-management" colSpan="12"
@@ -334,6 +343,9 @@
         showIf="statusSelect == 4" if-module="axelor-supplychain"
         onClick="save,action-purchase-order-method-set-status-to-validated"
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder"/>
+      <button name="separateInNewQuotationBtn" title="Separate in a new quotation"
+        showIf="statusSelect == 1"
+        onClick="save,action-purchase-order-method-separate-in-new-quotation"/>
     </panel>
 
     <panel name="intaxTotalPanel" sidebar="true" hideIf="supplierPartner == null">
@@ -723,10 +735,10 @@
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="currency" expr="eval: supplierPartner?.currency"/>
     <field name="fiscalPosition" expr="eval: supplierPartner?.fiscalPosition"/>
-    <field name="paymentCondition" expr="eval: supplierPartner?.paymentCondition"
-      if="supplierPartner?.paymentCondition != null"/>
+    <field name="paymentCondition" expr="eval: supplierPartner?.outPaymentCondition"
+      if="supplierPartner?.outPaymentCondition != null"/>
     <field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition"
-      if="supplierPartner?.paymentCondition == null"/>
+      if="supplierPartner?.outPaymentCondition == null"/>
     <field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode"
       if="supplierPartner?.outPaymentMode != null"/>
     <field name="paymentMode" expr="eval: company?.accountConfig?.outPaymentMode"
@@ -1055,6 +1067,11 @@
     name="action-purchase-order-method-convert-selected-lines-to-merge-lines">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderMergingController"
       method="convertSelectedLinesToMergeLines"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-separate-in-new-quotation">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
+      method="separateInNewQuotation"/>
   </action-method>
 
 </object-views>

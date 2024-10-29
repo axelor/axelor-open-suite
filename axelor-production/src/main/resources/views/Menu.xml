@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
 
   <menuitem name="manufacturing-root" title="Manufacturing" order="-600"
-    if="__config__.app.isApp('production')" icon="fa-cogs" icon-background="#84429f"/>
+    if="__config__.app.isApp('production')" icon="gear-fill" icon-background="#84429f"/>
 
   <menuitem name="manufacturing-root-products" parent="manufacturing-root" order="100"
     title="Products" action="manufacturing.root.products"/>

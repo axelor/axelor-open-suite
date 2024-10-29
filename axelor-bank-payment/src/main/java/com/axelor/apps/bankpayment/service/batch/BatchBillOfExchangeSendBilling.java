@@ -127,10 +127,11 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     Query<Invoice> query = buildOrderedQueryFetchLcrAccountedInvoices(accountingBatch, anomalyList);
 
     int offSet = 0;
-    while (!(invoicesList = query.fetch(FETCH_LIMIT, offSet)).isEmpty()) {
+    while (!(invoicesList = query.fetch(getFetchLimit(), offSet)).isEmpty()) {
       sortInvoicesPerPartner(invoicesList, mapPartnerInvoices);
-      offSet += FETCH_LIMIT;
+      offSet += getFetchLimit();
       JPA.clear();
+      findBatch();
     }
 
     try {
@@ -161,7 +162,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
       }
       addBatchSet(batch, invoice);
       counter++;
-      if (counter % FETCH_LIMIT == 0) {
+      if (counter % getFetchLimit() == 0) {
         JPA.clear();
       }
     }

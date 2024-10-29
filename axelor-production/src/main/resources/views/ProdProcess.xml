@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="prod-process-grid" title="Production process"
     model="com.axelor.apps.production.db.ProdProcess">
@@ -41,8 +41,7 @@
     </toolbar>
 
     <panel name="mainPanel">
-      <field name="statusSelect" showTitle="false" colSpan="12" readonly="false"
-        widget="NavSelect"/>
+      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
       <panel name="namePanel" stacked="true" colSpan="8">
         <field name="fullName" hidden="true" showIf="$readonly()" showTitle="false"
           css="label-bold bold large"/>
@@ -88,12 +87,11 @@
           domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"
           colSpan="4"/>
         <field name="residualProductsDefaultStockLocation"
-          domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
-          colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
+          onSelect="action-prod-process-attrs-residual-stocklocation-domain" colSpan="4"
+          form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="producedProductStockLocation" canEdit="false"
           grid-view="stock-location-grid" form-view="stock-location-form"
-          domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"
-          colSpan="4"/>
+          onSelect="action-prod-process-attrs-produced-product-stocklocation-domain" colSpan="4"/>
         <field name="launchQty"/>
         <field name="stockMoveRealizeOrderSelect"/>
         <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"
@@ -143,6 +141,16 @@
       <field name="versionNumber" colSpan="3"/>
       <field name="originalProdProcess" grid-view="prod-process-grid"
         form-view="prod-process-form" colSpan="3" readonly="true"/>
+    </panel>
+    <panel name="actionPanel" sidebar="true">
+      <button onClick="save,action-prod-process-method-set-validate-status"
+        name="validateBtn" title="Validate" showIf="statusSelect == 1"/>
+      <button onClick="save,action-prod-process-method-set-applicable-status"
+        name="makeItApplicableBtn" title="Make it applicable" showIf="statusSelect == 2"/>
+      <button onClick="save,action-prod-process-method-set-obsolete-status"
+        name="makeItObsoleteBtn" title="Make it obsolete" showIf="statusSelect == 3"/>
+      <button onClick="save,action-prod-process-method-set-draft-status"
+        name="backToDraftBtn" title="Back to draft" showIf="statusSelect > 1"/>
     </panel>
 
     <panel-mail name="mailPanel">
@@ -285,6 +293,16 @@
     <context name="prodProcessId" expr="eval: id"/>
   </action-view>
 
+  <action-attrs name="action-prod-process-attrs-residual-stocklocation-domain">
+    <attribute name="domain" for="residualProductsDefaultStockLocation"
+      expr="eval: &quot; self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3 AND self.id != ${producedProductStockLocation?.id} &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-prod-process-attrs-produced-product-stocklocation-domain">
+    <attribute name="domain" for="producedProductStockLocation"
+      expr="eval: &quot; self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3 AND self.id != ${residualProductsDefaultStockLocation?.id} &quot;"/>
+  </action-attrs>
+
   <search-filters name="prod-process-filters"
     model="com.axelor.apps.production.db.ProdProcess" title="Prod process filters">
     <field name="company" hidden="true"
@@ -292,4 +310,23 @@
     <field name="workshopStockLocation" hidden="true"
       if="!__config__.app.getApp('production')?.getManageWorkshop()"/>
   </search-filters>
+
+  <action-method name="action-prod-process-method-set-draft-status">
+    <call class="com.axelor.apps.production.web.ProdProcessController" method="setDraftStaus"/>
+  </action-method>
+
+  <action-method name="action-prod-process-method-set-validate-status">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="setValidateStatus"/>
+  </action-method>
+
+  <action-method name="action-prod-process-method-set-applicable-status">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="setApplicableStatus"/>
+  </action-method>
+
+  <action-method name="action-prod-process-method-set-obsolete-status">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="setObsoleteStatus"/>
+  </action-method>
 </object-views>

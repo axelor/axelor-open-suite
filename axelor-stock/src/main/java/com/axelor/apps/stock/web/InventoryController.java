@@ -83,11 +83,9 @@ public class InventoryController {
       }
 
       String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
-      String outputName = Beans.get(InventoryService.class).computeExportFileName(inventory);
       String fileLink =
           Beans.get(PrintingTemplatePrintService.class)
-              .getPrintLink(
-                  inventoryPrintTemplate, new PrintingGenFactoryContext(inventory), outputName);
+              .getPrintLink(inventoryPrintTemplate, new PrintingGenFactoryContext(inventory));
 
       logger.debug("Printing " + name);
 
@@ -127,7 +125,8 @@ public class InventoryController {
 
       Path filePath = Beans.get(InventoryService.class).importFile(inventory);
       response.setInfo(
-          String.format(I18n.get(StockExceptionMessage.INVENTORY_8), filePath.toString()));
+          String.format(
+              I18n.get(StockExceptionMessage.INVENTORY_8), filePath.getFileName().toString()));
 
       response.setReload(true);
     } catch (Exception e) {

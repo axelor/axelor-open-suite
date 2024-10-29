@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <menuitem title="Contracts" name="contracts-root" order="-1500"
-    if="__config__.app.isApp('contract')" icon="fa-briefcase" icon-background="blue"/>
+    if="__config__.app.isApp('contract')" icon="briefcase-fill" icon-background="#2196f3"/>
 
   <menuitem title="Customer contracts" name="contracts-root-customer-all"
     action="contracts.root.customer.all" parent="contracts-root" order="100"/>
@@ -148,9 +148,10 @@
     action="contracts.conf.customer.partner.price.list" order="800"/>
 
   <action-view name="contracts.conf.customer.partner.price.list"
-    title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
+    title="Customer price lists" model="com.axelor.apps.base.db.PartnerPriceList">
     <view type="grid" name="partner-price-list-grid"/>
     <view type="form" name="partner-price-list-form"/>
+    <view-param name="forceTitle" value="true"/>
     <domain>self.typeSelect = 3</domain>
     <context name="_typeSelect" expr="eval: 3"/>
   </action-view>
@@ -160,9 +161,10 @@
     action="contracts.conf.supplier.partner.price.list" order="900"/>
 
   <action-view name="contracts.conf.supplier.partner.price.list"
-    title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
+    title="Supplier price lists" model="com.axelor.apps.base.db.PartnerPriceList">
     <view type="grid" name="partner-price-list-grid"/>
     <view type="form" name="partner-price-list-form"/>
+    <view-param name="forceTitle" value="true"/>
     <domain>self.typeSelect = 4</domain>
     <context name="_typeSelect" expr="eval: 4"/>
   </action-view>

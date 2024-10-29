@@ -18,22 +18,25 @@
  */
 package com.axelor.apps.mobilesettings.service;
 
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.apps.mobilesettings.db.MobileConfig;
 import com.axelor.apps.mobilesettings.db.MobileDashboard;
-import com.axelor.apps.mobilesettings.db.MobileMenu;
 import com.axelor.apps.mobilesettings.db.MobileShortcut;
 import com.axelor.apps.mobilesettings.db.repo.MobileConfigRepository;
 import com.axelor.apps.mobilesettings.rest.dto.MobileConfigResponse;
+import com.axelor.apps.mobilesettings.rest.dto.MobileMenuResponse;
 import com.axelor.apps.mobilesettings.rest.dto.MobileSettingsResponse;
 import com.axelor.apps.mobilesettings.rest.dto.MobileShortcutResponse;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.studio.db.AppMobileSettings;
 import com.axelor.studio.db.repo.AppMobileSettingsRepository;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -101,7 +104,11 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getMinimalRequiredMobileAppVersion(),
         getFieldsToShowOnTimesheet(appMobileSettings.getFieldsToShowOnTimesheet()),
         getAuthorizedDashboardIdList(appMobileSettings),
-        getAuthorizedShortcutList(appMobileSettings));
+        getAuthorizedShortcutList(appMobileSettings),
+        appMobileSettings.getIsGenericProductShown(),
+        appMobileSettings.getIsConfiguratorProductShown(),
+        getProductTypesToDisplay(appMobileSettings),
+        getReportingTypesToDisplay(appMobileSettings));
   }
 
   protected List<Long> getAuthorizedDashboardIdList(AppMobileSettings appMobileSettings) {
@@ -161,60 +168,98 @@ public class MobileSettingsResponseComputeServiceImpl
                 appMobileSettings.getIsStockAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_STOCK)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_STOCK)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_STOCK)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_STOCK)),
         new MobileConfigResponse(
             MobileConfigRepository.APP_SEQUENCE_MANUFACTURING,
             checkConfigWithRoles(
                 appMobileSettings.getIsProductionAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_MANUFACTURING)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_MANUFACTURING)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_MANUFACTURING)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_MANUFACTURING)),
         new MobileConfigResponse(
             MobileConfigRepository.APP_SEQUENCE_CRM,
             checkConfigWithRoles(
                 appMobileSettings.getIsCrmAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_CRM)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_CRM)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_CRM)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_CRM)),
         new MobileConfigResponse(
             MobileConfigRepository.APP_SEQUENCE_HELPDESK,
             checkConfigWithRoles(
                 appMobileSettings.getIsHelpdeskAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_HELPDESK)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_HELPDESK)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_HELPDESK)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_HELPDESK)),
         new MobileConfigResponse(
             MobileConfigRepository.APP_SEQUENCE_HR,
             checkConfigWithRoles(
                 appMobileSettings.getIsHRAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_HR)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_HR)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_HR)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_HR)),
         new MobileConfigResponse(
             MobileConfigRepository.APP_SEQUENCE_QUALITY,
             checkConfigWithRoles(
                 appMobileSettings.getIsQualityAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_QUALITY)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_QUALITY)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_QUALITY)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_QUALITY)),
         new MobileConfigResponse(
             MobileConfigRepository.APP_SEQUENCE_INTERVENTION,
             checkConfigWithRoles(
                 appMobileSettings.getIsInterventionAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_INTERVENTION)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_INTERVENTION)));
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_INTERVENTION)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_INTERVENTION)),
+        new MobileConfigResponse(
+            MobileConfigRepository.APP_SEQUENCE_SALE,
+            checkConfigWithRoles(
+                appMobileSettings.getIsSaleAppEnabled(),
+                getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_SALE)
+                    .getAuthorizedRoles()),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_SALE)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_SALE)),
+        new MobileConfigResponse(
+            MobileConfigRepository.APP_SEQUENCE_PROJECT,
+            checkConfigWithRoles(
+                appMobileSettings.getIsProjectAppEnabled(),
+                getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_PROJECT)
+                    .getAuthorizedRoles()),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_PROJECT)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_PROJECT)));
   }
 
-  protected List<String> getRestrictedMenusFromApp(String appSequence) {
+  protected List<MobileMenuResponse> getAccessibleMenusFromApp(String appSequence) {
     MobileConfig mobileConfig = getMobileConfigFromAppSequence(appSequence);
     if (mobileConfig.getIsCustomizeMenuEnabled()) {
-      return mobileConfig.getMenus().stream()
+      return mobileConfig.getMenuList().stream()
           .filter(
               mobileMenu ->
-                  !UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
-                      AuthUtils.getUser(), mobileMenu.getAuthorizedRoles()))
-          .map(MobileMenu::getTechnicalName)
+                  mobileMenu.getAuthorizedRoles().isEmpty()
+                      || UserRoleToolService.checkUserRolesPermissionExcludingEmpty(
+                          AuthUtils.getUser(), mobileMenu.getAuthorizedRoles()))
+          .map(
+              mobileMenu ->
+                  new MobileMenuResponse(
+                      mobileMenu.getName(),
+                      mobileMenu.getTechnicalName(),
+                      mobileMenu.getMenuOrder()))
           .collect(Collectors.toList());
     }
     return List.of();
@@ -231,5 +276,25 @@ public class MobileSettingsResponseComputeServiceImpl
                 AppMobileSettingsRepository.IMPUTATION_ON_MANUF_ORDER,
                 AppMobileSettingsRepository.IMPUTATION_ON_OPERATION_ORDER,
                 AppMobileSettingsRepository.IMPUTATION_ON_ACTIVITY));
+  }
+
+  protected List<String> getProductTypesToDisplay(AppMobileSettings appMobileSettings) {
+    String productTypesToDisplay = appMobileSettings.getProductTypesToDisplaySelect();
+    if (StringUtils.isEmpty(productTypesToDisplay)) {
+      return List.of(
+          ProductRepository.PRODUCT_TYPE_STORABLE, ProductRepository.PRODUCT_TYPE_SERVICE);
+    }
+    return Arrays.stream(productTypesToDisplay.split(",")).collect(Collectors.toList());
+  }
+
+  protected List<String> getReportingTypesToDisplay(AppMobileSettings appMobileSettings) {
+    String reportingTypesToDisplay = appMobileSettings.getReportingTypesToDisplaySelect();
+    if (StringUtils.isEmpty(reportingTypesToDisplay)) {
+      return List.of(
+          AppMobileSettingsRepository.REPORTING_TYPE_DISPLAY_INDICATORS,
+          AppMobileSettingsRepository.REPORTING_TYPE_DISPLAY_ACTIVITIES,
+          AppMobileSettingsRepository.REPORTING_TYPE_DISPLAY_NONE);
+    }
+    return Arrays.stream(reportingTypesToDisplay.split(",")).collect(Collectors.toList());
   }
 }

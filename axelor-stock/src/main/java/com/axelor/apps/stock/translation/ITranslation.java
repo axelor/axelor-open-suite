@@ -29,4 +29,10 @@ public interface ITranslation {
   public static final String STOCK_ON_TIME_DELIVERIES = /*$$(*/ "OnTime Deliveries"; /*)*/
 
   String MANUAL_CORRECTION = /*$$(*/ "value:Manual correction"; /*)*/
+
+  String MASS_STOCK_MOVE_NEED_CREATED = /*$$(*/ "Lines created successfully"; /*)*/
+  String MASS_STOCK_MOVE_NEED_PICKED = /*$$(*/ "Picked"; /*)*/
+  String MASS_STOCK_MOVE_NEED_TO_PICK = /*$$(*/ "To pick"; /*)*/
+  String MASS_STOCK_MOVE_NEED_STORED = /*$$(*/ "Stored"; /*)*/
+  String MASS_STOCK_MOVE_NEED_TO_STORE = /*$$(*/ "To store"; /*)*/
 }

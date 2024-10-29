@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="invoice-supplier-grid" id="budget-invoice-supplier-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" extension="true">
@@ -66,7 +66,7 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-invoice-method-budget-validate-ventilation"
       if="__config__.app.isApp('budget')"/>
-    <action name="action-invoice-group-ventilate-button"/>
+    <action name="action-invoice-group-ventilate"/>
   </action-group>
 
   <action-method name="action-invoice-method-budget-auto-compute-budget-distribution">

@@ -19,15 +19,13 @@
 package com.axelor.apps.contract.batch;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractBatch;
 import com.axelor.apps.contract.db.repo.AbstractContractRepository;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
-import com.axelor.apps.contract.service.ContractService;
+import com.axelor.apps.contract.service.ContractInvoicingService;
 import com.axelor.apps.contract.translation.ITranslation;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -40,19 +38,19 @@ import java.util.stream.Collectors;
 import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BatchContractInvoicing extends AbstractBatch {
+public class BatchContractInvoicing extends BatchStrategy {
 
   protected ContractRepository contractRepository;
-  protected ContractService contractService;
+  protected ContractInvoicingService contractInvoicingService;
   protected ContractBatchRepository contractBatchRepository;
 
   @Inject
   public BatchContractInvoicing(
       ContractRepository contractRepository,
-      ContractService contractService,
+      ContractInvoicingService contractInvoicingService,
       ContractBatchRepository contractBatchRepository) {
     this.contractRepository = contractRepository;
-    this.contractService = contractService;
+    this.contractInvoicingService = contractInvoicingService;
     this.contractBatchRepository = contractBatchRepository;
   }
 
@@ -103,24 +101,29 @@ public class BatchContractInvoicing extends AbstractBatch {
   @Transactional
   public void invoiceContracts(List<Contract> contractList) throws AxelorException {
     if (contractList.size() == 1) {
-      contractService.invoicingContract(contractList.get(0));
+      contractInvoicingService.invoicingContract(contractList.get(0));
     }
 
     if (contractList.size() > 1) {
-      contractService.invoicingContracts(contractList);
+      contractInvoicingService.invoicingContracts(contractList);
     }
   }
 
   @Override
   protected void process() {
+    int offset = 0;
     for (List<Long> idList : getIdsGroupedBy()) {
+      ++offset;
       try {
         invoiceContracts(findContractsInList(idList));
         incrementDone();
-        JPA.clear();
       } catch (Exception e) {
         incrementAnomaly();
         TraceBackService.trace(e, "Contract invoicing batch", batch.getId());
+      }
+      if (offset % getFetchLimit() == 0) {
+        JPA.clear();
+        findBatch();
       }
     }
   }
@@ -133,10 +136,5 @@ public class BatchContractInvoicing extends AbstractBatch {
             I18n.get(ITranslation.CONTRACT_BATCH_EXECUTION_RESULT),
             batch.getDone(),
             batch.getAnomaly()));
-  }
-
-  @Override
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_CONTRACT_BATCH);
   }
 }

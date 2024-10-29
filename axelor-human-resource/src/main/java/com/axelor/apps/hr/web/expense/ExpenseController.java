@@ -101,7 +101,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author axelor */
+/**
+ * @author axelor
+ */
 @Singleton
 public class ExpenseController {
 
@@ -682,23 +684,27 @@ public class ExpenseController {
 
       Context context = request.getContext();
       ExpenseLine expenseLine = context.asType(ExpenseLine.class);
+      BigDecimal distance = BigDecimal.ZERO;
+      BigDecimal amount = BigDecimal.ZERO;
 
       if (Strings.isNullOrEmpty(expenseLine.getFromCity())
-          || Strings.isNullOrEmpty(expenseLine.getToCity())) {
+          || Strings.isNullOrEmpty(expenseLine.getToCity())
+          || expenseLine.getKilometricTypeSelect() == null
+          || expenseLine.getKilometricTypeSelect() == 0) {
+        response.setValue("distance", distance);
+        response.setValue("totalAmount", amount);
+        response.setValue("untaxedAmount", amount);
         return;
       }
 
       KilometricService kilometricService = Beans.get(KilometricService.class);
-      BigDecimal distance = kilometricService.computeDistance(expenseLine);
+      distance = kilometricService.computeDistance(expenseLine);
       expenseLine.setDistance(distance);
       response.setValue("distance", distance);
 
       // Compute kilometric expense.
 
-      if (expenseLine.getKilometricAllowParam() == null
-          || expenseLine.getExpenseDate() == null
-          || expenseLine.getKilometricTypeSelect() == null
-          || expenseLine.getKilometricTypeSelect() == 0) {
+      if (expenseLine.getKilometricAllowParam() == null || expenseLine.getExpenseDate() == null) {
         return;
       }
 
@@ -711,7 +717,7 @@ public class ExpenseController {
             AuthUtils.getUser().getName());
       }
 
-      BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);
+      amount = kilometricService.computeKilometricExpense(expenseLine, employee);
       response.setValue("totalAmount", amount);
       response.setValue("untaxedAmount", amount);
 

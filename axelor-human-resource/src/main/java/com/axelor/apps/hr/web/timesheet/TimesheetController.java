@@ -129,7 +129,7 @@ public class TimesheetController {
                 .find(((Integer) productContext.get("id")).longValue());
       }
       if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
-        product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getEmployee());
+        product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getEmployee(), null);
       }
 
       timesheet =
@@ -574,7 +574,6 @@ public class TimesheetController {
       BigDecimal periodTotal =
           Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet);
 
-      response.setAttr("periodTotal", "value", periodTotal);
       response.setAttr("$periodTotalConvert", "hidden", false);
       response.setAttr(
           "$periodTotalConvert",

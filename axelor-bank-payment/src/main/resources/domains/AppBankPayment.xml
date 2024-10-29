@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -19,6 +19,8 @@
     <boolean name="useEditorInBankOrderForm" title="Use editor in bank order form"
       default="true"
       help="If checked, the bank order form view will use an editor widget, which will make adding new lines easier but will cause performance issues if the bank order has too many lines."/>
+    <boolean name="enableBankOrderFileEncryption"
+      help="Encrypt bank order file according to properties file settings. Enable this option will not encrypt old bank order files."/>
 
     <track>
       <field name="manageDirectDebitPayment" on="UPDATE"/>

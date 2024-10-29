@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface PrintFromBirtTemplateService {
 
@@ -37,4 +38,6 @@ public interface PrintFromBirtTemplateService {
   <T extends Model> File generateBirtTemplate(
       BirtTemplate birtTemplate, T model, Map<String, Object> context)
       throws AxelorException, IOException;
+
+  Set<BirtTemplate> getBirtTemplates(String modelName) throws AxelorException;
 }

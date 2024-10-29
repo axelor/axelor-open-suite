@@ -63,7 +63,7 @@ public interface InvoiceLineService {
 
   Unit getUnit(Product product, boolean isPurchase);
 
-  void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+  Map<String, Object> compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
 
   Map<String, Object> resetProductInformation(Invoice invoice) throws AxelorException;
 
@@ -116,7 +116,7 @@ public interface InvoiceLineService {
       InvoiceLine invoiceLine, Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   Map<String, String> getProductDescriptionAndNameTranslation(
-      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException;
+      Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
 
   BigDecimal getInTaxPrice(InvoiceLine invoiceLine);
 

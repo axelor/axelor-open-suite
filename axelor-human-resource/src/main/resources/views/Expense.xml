@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
-    orderBy="-sentDateTime">
+    orderBy="-sentDateTime" groupBy="period">
     <hilite color="danger" if="statusSelect == 5"/>
     <hilite color="success" if="statusSelect == 3 || statusSelect == 4"/>
     <hilite color="warning" if="statusSelect == 2"/>
@@ -15,6 +15,7 @@
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="inTaxTotal" aggregate="sum"/>
     <field name="currency" colSpan="2" required="true"/>
     <field name="statusSelect"/>
     <field name="ventilated"/>
@@ -254,6 +255,7 @@
     <action name="action-expense-attrs-hide-button-readonly-field"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
     <action name="action-expense-attrs-kilometric-panel-visibility"/>
+    <action name="action-validate-check-user-employee"/>
   </action-group>
 
   <action-group name="action-expense-group-form-onLoad">
@@ -305,7 +307,7 @@
     <field name="bankDetails"
       expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
     <field name="currency"
-      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany.currency ?: __user__.activeCompany.currency"/>
+      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany?.currency ?: __user__.activeCompany?.currency"/>
     <field name="typeSelect"
       expr="eval: _isExpenseDeclaration ? com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE_DECLARATION : com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE"/>
   </action-record>
@@ -403,6 +405,11 @@
   <action-validate name="action-expense-validate-period">
     <error message="Period is closed"
       if="period?.statusSelect == 2 || period?.statusSelect == 5"/>
+  </action-validate>
+
+  <action-validate name="action-validate-check-user-employee">
+    <error message="Please create an employee for the user ${__user__.name}"
+      if="__user__.employee == null &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0"/>
   </action-validate>
 
   <action-view name="action-expense-refusal-popup-form" title="Ground for refusal"

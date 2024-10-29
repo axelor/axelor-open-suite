@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -41,9 +42,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -211,28 +210,6 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     return Duration.ofSeconds(totalSecDuration);
   }
 
-  @Override
-  public Map<Project, BigDecimal> getProjectTimeSpentMap(List<TimesheetLine> timesheetLineList) {
-    Map<Project, BigDecimal> projectTimeSpentMap = new HashMap<>();
-
-    if (timesheetLineList != null) {
-
-      for (TimesheetLine timesheetLine : timesheetLineList) {
-        Project project = timesheetLine.getProject();
-        BigDecimal hoursDuration = timesheetLine.getHoursDuration();
-
-        if (project != null) {
-          if (projectTimeSpentMap.containsKey(project)) {
-            hoursDuration = hoursDuration.add(projectTimeSpentMap.get(project));
-          }
-          projectTimeSpentMap.put(project, hoursDuration);
-        }
-      }
-    }
-
-    return projectTimeSpentMap;
-  }
-
   public void checkDailyLimit(
       Timesheet timesheet, TimesheetLine currentTimesheetLine, BigDecimal hoursDuration)
       throws AxelorException {
@@ -283,9 +260,14 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   public Product getDefaultProduct(TimesheetLine timesheetLine) {
-    if (timesheetLine.getProduct() == null) {
-      return timesheetLine.getEmployee().getProduct();
+    return userHrService.getTimesheetProduct(timesheetLine.getEmployee(), null);
+  }
+
+  @Override
+  public void resetTimesheetLineTimer(TSTimer tsTimer) {
+    TimesheetLine timesheetLine = tsTimer.getTimesheetLine();
+    if (timesheetLine != null) {
+      timesheetLine.setTimer(null);
     }
-    return timesheetLine.getProduct();
   }
 }

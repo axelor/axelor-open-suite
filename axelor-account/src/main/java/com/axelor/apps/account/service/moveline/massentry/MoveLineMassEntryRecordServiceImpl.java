@@ -280,7 +280,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   @Override
   public MoveLineMassEntry setInputAction(MoveLineMassEntry moveLine, Move move) {
     if (moveLine.getInputAction() == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_MOVE) {
-      moveLine = moveLineMassEntryService.createMoveLineMassEntry();
+      moveLine = moveLineMassEntryService.createMoveLineMassEntry(move.getCompany());
       moveLineToolService.setDecimals(moveLine, move);
       this.setNextTemporaryMoveNumber(moveLine, move);
 

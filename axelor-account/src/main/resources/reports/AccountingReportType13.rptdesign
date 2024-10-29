@@ -287,6 +287,10 @@ left outer join public.base_company as Company on (AccountingReport.company = Co
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
 
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
+left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+left outer join public.base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 
 left outer join public.account_account_config as AccountConfig on (Company.id = AccountConfig.company)
 left outer join public.base_currency as Currency on (Currency.id = Company.currency)
@@ -298,7 +302,9 @@ where
 MoveLine.date_val <= AccountingReport.date_val and 
 Move.company = AccountingReport.company AND
 (Account.id IN (AccountConfig.cash_position_variation_debit_account, AccountConfig.cash_position_variation_credit_account)) AND
-(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner)
+(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
+(ReportAccountTagSet.account_tag_set IS NULL OR AccountTagSet.account_account = Account.id) AND
+(ReportPartnerTagSet.partner_tag_set IS NULL OR PartnerTagSet.base_partner = MoveLine.partner) 
   AND Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 

@@ -20,17 +20,11 @@ package com.axelor.apps.base.service.address;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.City;
-import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
-import com.axelor.apps.base.db.Street;
-import com.axelor.apps.base.db.repo.CityRepository;
-import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -43,7 +37,6 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -57,11 +50,6 @@ import wslite.json.JSONException;
 public class AddressServiceImpl implements AddressService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected AddressHelper ads;
-  protected CityRepository cityRepository;
-  protected StreetRepository streetRepository;
-  protected AppBaseService appBaseService;
-  protected AddressAttrsService addressAttrsService;
-
   protected MapService mapService;
   protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
 
@@ -70,19 +58,9 @@ public class AddressServiceImpl implements AddressService {
   }
 
   @Inject
-  public AddressServiceImpl(
-      AddressHelper ads,
-      MapService mapService,
-      CityRepository cityRepository,
-      StreetRepository streetRepository,
-      AppBaseService appBaseService,
-      AddressAttrsService addressAttrsService) {
+  public AddressServiceImpl(AddressHelper ads, MapService mapService) {
     this.ads = ads;
     this.mapService = mapService;
-    this.cityRepository = cityRepository;
-    this.streetRepository = streetRepository;
-    this.appBaseService = appBaseService;
-    this.addressAttrsService = addressAttrsService;
   }
 
   @Override
@@ -98,26 +76,6 @@ public class AddressServiceImpl implements AddressService {
   @Override
   public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker) {
     return ads.doGetAddress(wsdlUrl, moniker);
-  }
-
-  @Override
-  public Address createAddress(
-      String room,
-      String floor,
-      String streetName,
-      String postBox,
-      String zip,
-      City city,
-      Country country) {
-
-    Address address = new Address();
-    address.setRoom(room);
-    address.setFloor(floor);
-    address.setStreetName(streetName);
-    address.setPostBox(postBox);
-    address.setCountry(country);
-
-    return address;
   }
 
   @Override
@@ -214,37 +172,5 @@ public class AddressServiceImpl implements AddressService {
       return null;
     }
     return address.getFormattedFullName();
-  }
-
-  @Override
-  public void autocompleteAddress(Address address) {
-    String zip = address.getZip();
-    if (zip == null) {
-      return;
-    }
-    Country country = address.getCountry();
-
-    City city = address.getCity();
-    if (city == null) {
-      List<City> cities = cityRepository.findByZipAndCountry(zip, country).fetch();
-      city = cities.size() == 1 ? cities.get(0) : null;
-      address.setCity(city);
-    }
-    address.setAddressL6(city != null ? zip + " " + city.getName() : null);
-
-    if (appBaseService.getAppBase().getStoreStreets()) {
-      List<Street> streets =
-          streetRepository.all().filter("self.city = :city").bind("city", city).fetch();
-      if (streets.size() == 1) {
-        Street street = streets.get(0);
-        address.setStreet(street);
-        String name = street.getName();
-        String num = address.getBuildingNumber();
-        address.setAddressL4(num != null ? num + " " + name : name);
-      } else {
-        address.setStreet(null);
-        address.setAddressL4(null);
-      }
-    }
   }
 }

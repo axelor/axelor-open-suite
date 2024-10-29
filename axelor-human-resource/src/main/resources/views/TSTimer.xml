@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="ts-timer-grid" title="Start&amp;Stop Timer" model="com.axelor.apps.hr.db.TSTimer"
     editable="true" onNew="action-hr-ts-timer-record-default" canNew="false">
@@ -36,7 +36,7 @@
   </grid>
 
   <form name="ts-timer-form" title="Start&amp;Stop Timer" model="com.axelor.apps.hr.db.TSTimer"
-    width="large" onNew="action-hr-ts-timer-record-default" canNew="false">
+    width="large" onNew="action-ts-timer-group-onnew" canNew="false">
     <panel name="statusPanel" colSpan="12">
       <field name="statusSelect" readonly="true" widget="NavSelect" showTitle="false"/>
     </panel>
@@ -45,7 +45,7 @@
         canNew="false" canEdit="false" canView="false" colSpan="6"/>
       <spacer colSpan="6"/>
       <field name="project" form-view="project-form" grid-view="project-grid"
-        domain="self.imputable = true AND self.isShowTimeSpent = true" colSpan="6"
+        domain="self.manageTimeSpent = true" colSpan="6"
         onChange="action-ts-timer-attrs-project-onchange"/>
       <field name="projectTask" onSelect="action-ts-timer-attrs-project-task-onselect"
         widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid" colSpan="6"
@@ -85,7 +85,7 @@
   </form>
 
   <form name="ts-multi-timer-form" title="Start&amp;Stop Timer"
-    model="com.axelor.apps.hr.db.TSTimer" width="large" onNew="action-hr-ts-timer-record-default"
+    model="com.axelor.apps.hr.db.TSTimer" width="large" onNew="action-ts-timer-group-onnew"
     canNew="true">
     <panel-include view="ts-timer-form"/>
   </form>
@@ -153,5 +153,14 @@
       expr="eval: &quot; self.assignedTo.employee = :employee &quot;" if="!project"/>
   </action-attrs>
 
+  <action-group name="action-ts-timer-group-onnew">
+    <action name="action-ts-timer-validate-check-user-employee"/>
+    <action name="action-hr-ts-timer-record-default"/>
+  </action-group>
+
+  <action-validate name="action-ts-timer-validate-check-user-employee">
+    <error message="Please create an employee for the user ${__user__.name}"
+      if="__user__.employee == null"/>
+  </action-validate>
 
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -417,8 +417,10 @@
   </selection>
 
   <selection name="base.printing.template.type.select">
-    <option value="1">File</option>
-    <option value="2">Birt</option>
+    <option value="1"
+      data-print-factory="com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryFile">File</option>
+    <option value="2"
+      data-print-factory="com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryBirt">Birt</option>
   </selection>
 
   <selection name="base.printing.template.status.select">
@@ -793,6 +795,10 @@
   <selection name="base.file.type.select">
     <option value="1">ContractFile</option>
     <option value="2">EmployeeFile</option>
+  </selection>
+
+  <selection name="connector.mapper.select">
+    <option value="other" order="10000">Other</option>
   </selection>
 
 </object-views>

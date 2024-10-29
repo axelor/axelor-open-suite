@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -75,8 +75,7 @@
       title="Apply Fin. Discount (session) ?"/>
     <decimal name="amountPaid" title="Amount paid" readonly="true" scale="3" precision="20"/>
     <boolean name="debtRecoveryBlockingOk" title="Debt recovery blocking"/>
-    <string name="name" namecolumn="true" search="invoice,dueDate,amount,moveLine"
-      title="Name">
+    <string name="name" namecolumn="true" search="invoice,moveLine" title="Name">
             <![CDATA[
             if( invoice != null ){
                if (dueDate != null) {

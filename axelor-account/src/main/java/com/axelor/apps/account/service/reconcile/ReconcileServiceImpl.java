@@ -44,7 +44,11 @@ import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapService;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapToolService;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignMoveToReconcile;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.ReconcileGroupService;
+import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -63,11 +67,14 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +103,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected InvoiceTermToolService invoiceTermToolService;
   protected AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService;
   protected ForeignExchangeGapService foreignExchangeGapService;
-  protected ForeignExchangeGapToolsService foreignExchangeGapToolsService;
+  protected ForeignExchangeGapToolService foreignExchangeGapToolService;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected InvoicePaymentRepository invoicePaymentRepository;
 
@@ -122,7 +129,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       InvoiceTermToolService invoiceTermToolService,
       AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService,
       ForeignExchangeGapService foreignExchangeGapService,
-      ForeignExchangeGapToolsService foreignExchangeGapToolsService,
+      ForeignExchangeGapToolService foreignExchangeGapToolService,
       InvoicePaymentToolService invoicePaymentToolService,
       InvoicePaymentRepository invoicePaymentRepository) {
 
@@ -146,7 +153,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.invoiceTermToolService = invoiceTermToolService;
     this.advancePaymentMoveLineCreateService = advancePaymentMoveLineCreateService;
     this.foreignExchangeGapService = foreignExchangeGapService;
-    this.foreignExchangeGapToolsService = foreignExchangeGapToolsService;
+    this.foreignExchangeGapToolService = foreignExchangeGapToolService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.invoicePaymentRepository = invoicePaymentRepository;
   }
@@ -436,7 +443,9 @@ public class ReconcileServiceImpl implements ReconcileService {
         debitMoveLine, creditMoveLine, canBeZeroBalanceOk, updateInvoicePayments, null);
   }
 
-  /** @param reconcile */
+  /**
+   * @param reconcile
+   */
   protected void updatePaymentMoveLineDistribution(Reconcile reconcile) {
     // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
     // type purchase)
@@ -500,7 +509,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         && debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
       balanceDebit(debitMoveLine);
     } else if (creditMoveLine != null
-        && creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+        && creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) < 0) {
       balanceCredit(creditMoveLine);
     }
 
@@ -542,7 +551,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           log.debug("Threshold respected");
 
           MoveLine debitAdjustmentMoveLine =
-              moveAdjustementService.createAdjustmentMove(creditMoveLine, creditAccount, false);
+              moveAdjustementService.createAdjustmentMove(creditMoveLine, creditAccount);
 
           // Création de la réconciliation
           Reconcile newReconcile =
@@ -592,7 +601,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           log.debug("Threshold respected");
 
           MoveLine creditAdjustMoveLine =
-              moveAdjustementService.createAdjustmentMove(debitMoveLine, debitAccount, true);
+              moveAdjustementService.createAdjustmentMove(debitMoveLine, debitAccount);
 
           // Création de la réconciliation
           Reconcile newReconcile =
@@ -790,20 +799,25 @@ public class ReconcileServiceImpl implements ReconcileService {
     move.addMoveLineListItem(newDebitMoveLine);
     move.addMoveLineListItem(newCreditMoveLine);
 
+    Map<TaxConfiguration, Pair<BigDecimal, BigDecimal>> taxConfigurationAmountMap = new HashMap<>();
     if (reconciledAmount.signum() > 0) {
       advancePaymentMoveLineCreateService.manageAdvancePaymentInvoiceTaxMoveLines(
           move,
           creditMoveLine,
           reconciledAmount.divide(
               creditMoveLine.getCredit(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP),
-          creditMoveLine.getDate());
+          creditMoveLine.getDate(),
+          taxConfigurationAmountMap);
       advancePaymentMoveLineCreateService.manageAdvancePaymentInvoiceTaxMoveLines(
           move,
           debitMoveLine,
           reconciledAmount.divide(
               debitMoveLine.getDebit(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP),
-          debitMoveLine.getDate());
+          debitMoveLine.getDate(),
+          taxConfigurationAmountMap);
     }
+
+    advancePaymentMoveLineCreateService.fillMoveWithTaxMoveLines(move, taxConfigurationAmountMap);
 
     moveValidateService.accounting(move);
 
@@ -835,7 +849,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         InvoicePayment invoicePayment =
             invoicePaymentRepository.findByReconcile(foreignExchangeReconcile).fetchOne();
         if (invoicePayment != null) {
-          int typeSelect = foreignExchangeGapToolsService.getInvoicePaymentType(reconcile);
+          int typeSelect = foreignExchangeGapToolService.getInvoicePaymentType(reconcile);
           invoicePayment.setTypeSelect(typeSelect);
 
           Invoice invoice = invoicePayment.getInvoice();
@@ -843,11 +857,12 @@ public class ReconcileServiceImpl implements ReconcileService {
           invoicePaymentRepository.save(invoicePayment);
 
           reconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
-          if (reconcile.getAmount().compareTo(invoice.getCompanyInTaxTotalRemaining()) != 0
-              && typeSelect == InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN) {
-            reconcile.setAmount(
-                reconcile.getAmount().subtract(foreignExchangeReconcile.getAmount()));
-          }
+          reconcile.setAmount(
+              reconcile
+                  .getCreditMoveLine()
+                  .getAmountRemaining()
+                  .abs()
+                  .min(reconcile.getDebitMoveLine().getAmountRemaining().abs()));
         }
       }
     }

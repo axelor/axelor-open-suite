@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="extra-hours-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours"
     canNew="true" orderBy="-sentDate">
@@ -60,7 +60,8 @@
       <field name="company" canEdit="false" colSpan="3" form-view="company-form"
         grid-view="company-grid"/>
       <field name="employee" colSpan="3" form-view="employee-form" grid-view="employee-grid"
-        canNew="false" canEdit="false" canView="false"/>
+        canNew="false" canEdit="false" canView="false"
+        onChange="action-extra-hours-method-update-line-employee"/>
     </panel>
     <panel-related name="extraHoursLineListPanel" field="extraHoursLineList"
       readonlyIf="statusSelect &gt; 2" grid-view="extra-hours-line-grid"
@@ -172,6 +173,11 @@
 
   <action-method name="action-extra-hours-method-compute">
     <call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="compute"/>
+  </action-method>
+
+  <action-method name="action-extra-hours-method-update-line-employee">
+    <call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController"
+      method="updateLineEmployee"/>
   </action-method>
 
   <action-view name="action-extra-hours-refusal-popup-form" title="Ground for refusal"

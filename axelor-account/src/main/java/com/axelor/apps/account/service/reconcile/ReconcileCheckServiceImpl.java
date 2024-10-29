@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.InvoicePayment;
@@ -14,6 +32,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -30,17 +49,20 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected InvoiceTermToolService invoiceTermToolService;
   protected MoveLineToolService moveLineToolService;
+  protected CurrencyService currencyService;
 
   @Inject
   public ReconcileCheckServiceImpl(
       CurrencyScaleService currencyScaleService,
       InvoiceTermPfpService invoiceTermPfpService,
       InvoiceTermToolService invoiceTermToolService,
-      MoveLineToolService moveLineToolService) {
+      MoveLineToolService moveLineToolService,
+      CurrencyService currencyService) {
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.invoiceTermToolService = invoiceTermToolService;
     this.moveLineToolService = moveLineToolService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -87,24 +109,10 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    BigDecimal foreignExchangeAmount = this.getForeignExchangeAmount(reconcile);
-    if ((currencyScaleService.isGreaterThan(
-            reconcile.getAmount(),
-            creditMoveLine
-                .getCredit()
-                .subtract(creditMoveLine.getAmountPaid())
-                .add(foreignExchangeAmount),
-            creditMoveLine,
-            false)
-        || currencyScaleService.isGreaterThan(
-            reconcile.getAmount(),
-            debitMoveLine
-                .getDebit()
-                .subtract(debitMoveLine.getAmountPaid())
-                .add(foreignExchangeAmount),
-            debitMoveLine,
-            false))) {
-
+    if (this.checkMoveLineAmount(
+            reconcile, creditMoveLine, debitMoveLine, creditMoveLine.getCredit())
+        || this.checkMoveLineAmount(
+            reconcile, debitMoveLine, creditMoveLine, debitMoveLine.getDebit())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.RECONCILE_5)
@@ -184,11 +192,7 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
   }
 
   protected void taxLinePrecondition(Move move) throws AxelorException {
-    if (move.getMoveLineList().stream()
-        .anyMatch(
-            it ->
-                ObjectUtils.isEmpty(it.getTaxLineSet())
-                    && moveLineToolService.isMoveLineTaxAccount(it))) {
+    if (move.getMoveLineList().stream().anyMatch(this::isMissingTax)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           AccountExceptionMessage.RECONCILE_MISSING_TAX,
@@ -196,18 +200,24 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
     }
   }
 
-  protected BigDecimal getForeignExchangeAmount(Reconcile reconcile) {
-    BigDecimal foreignExchangeAmount = BigDecimal.ZERO;
-    if (reconcile.getForeignExchangeMove() != null) {
-      foreignExchangeAmount =
-          reconcile.getForeignExchangeMove().getMoveLineList().stream()
-              .map(MoveLine::getDebit)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
-      if (foreignExchangeAmount.compareTo(reconcile.getAmount()) == 0) {
-        return BigDecimal.ZERO;
-      }
+  protected boolean isMissingTax(MoveLine it) {
+    return ObjectUtils.isEmpty(it.getTaxLineSet())
+        && moveLineToolService.isMoveLineTaxAccount(it)
+        && it.getAccount().getIsTaxAuthorizedOnMoveLine();
+  }
+
+  protected boolean checkMoveLineAmount(
+      Reconcile reconcile, MoveLine moveLine, MoveLine otherMoveLine, BigDecimal moveLineAmount)
+      throws AxelorException {
+    if (currencyScaleService.isGreaterThan(
+        reconcile.getAmount(), moveLineAmount.subtract(moveLine.getAmountPaid()), moveLine, true)) {
+      return currencyService.isSameCurrencyRate(
+          moveLine.getDate(),
+          otherMoveLine.getDate(),
+          moveLine.getCurrency(),
+          reconcile.getCompany().getCurrency());
     }
-    return foreignExchangeAmount;
+
+    return false;
   }
 }

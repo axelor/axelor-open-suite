@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.service;
 
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -19,7 +37,7 @@ import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputation
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderComputeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
@@ -39,7 +57,7 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
     extends PaymentSessionBillOfExchangeValidateServiceImpl {
 
   protected PaymentSessionBankOrderService paymentSessionBankOrderService;
-  protected BankOrderService bankOrderService;
+  protected BankOrderComputeService bankOrderComputeService;
   protected BankOrderValidationService bankOrderValidationService;
   protected BankOrderRepository bankOrderRepo;
 
@@ -59,7 +77,7 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
       InvoiceTermReplaceService invoiceTermReplaceService,
       InvoicePaymentValidateService invoicePaymentValidateService,
       PaymentSessionBankOrderService paymentSessionBankOrderService,
-      BankOrderService bankOrderService,
+      BankOrderComputeService bankOrderComputeService,
       BankOrderValidationService bankOrderValidationService,
       BankOrderRepository bankOrderRepo) {
     super(
@@ -77,7 +95,7 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
         invoiceTermReplaceService,
         invoicePaymentValidateService);
     this.paymentSessionBankOrderService = paymentSessionBankOrderService;
-    this.bankOrderService = bankOrderService;
+    this.bankOrderComputeService = bankOrderComputeService;
     this.bankOrderValidationService = bankOrderValidationService;
     this.bankOrderRepo = bankOrderRepo;
   }
@@ -106,7 +124,7 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
       throws AxelorException {
     if (paymentSession.getBankOrder() != null) {
       BankOrder bankOrder = bankOrderRepo.find(paymentSession.getBankOrder().getId());
-      bankOrderService.updateTotalAmounts(bankOrder);
+      bankOrderComputeService.updateTotalAmounts(bankOrder);
       bankOrderRepo.save(bankOrder);
 
       if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()

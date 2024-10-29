@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
+import com.axelor.apps.contract.service.ContractInvoicingService;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
@@ -33,8 +34,11 @@ public class BatchContractFactoryCurrentActivation extends BatchContractFactory 
 
   @Inject
   public BatchContractFactoryCurrentActivation(
-      ContractRepository repository, ContractService service, AppBaseService baseService) {
-    super(repository, service, baseService);
+      ContractRepository repository,
+      ContractService service,
+      ContractInvoicingService invoicingService,
+      AppBaseService baseService) {
+    super(repository, service, invoicingService, baseService);
   }
 
   @Override

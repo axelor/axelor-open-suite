@@ -25,6 +25,7 @@ import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessSer
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.rest.TimesheetLinePostRequestHelper;
 import com.axelor.apps.hr.rest.dto.TimesheetLineResponse;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
 import com.axelor.inject.Beans;
@@ -33,9 +34,7 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -45,7 +44,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/business/timesheet-line")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -62,7 +60,7 @@ public class TimesheetLineBusinessRestController {
     new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
     RequestValidator.validateBody(requestBody);
 
-    Timesheet timesheet = requestBody.fetchTimesheet();
+    Timesheet timesheet = TimesheetLinePostRequestHelper.fetchOrCreateTimesheet(requestBody);
     TimesheetLine timesheetLine =
         Beans.get(TimesheetLineCreateBusinessService.class)
             .createTimesheetLine(
@@ -70,7 +68,7 @@ public class TimesheetLineBusinessRestController {
                 requestBody.fetchProjectTask(),
                 requestBody.fetchProduct(),
                 requestBody.getDate(),
-                requestBody.fetchTimesheet(),
+                timesheet,
                 requestBody.getDuration(),
                 requestBody.getComments(),
                 requestBody.isToInvoice(),

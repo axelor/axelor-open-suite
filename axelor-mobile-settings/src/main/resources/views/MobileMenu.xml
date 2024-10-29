@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="mobile-menu-grid" title="Mobile Menus"
-    model="com.axelor.apps.mobilesettings.db.MobileMenu">
+    model="com.axelor.apps.mobilesettings.db.MobileMenu" editable="true" orderBy="menuOrder"
+    canMove="true">
     <field name="technicalName"/>
     <field name="name" readonly="true"/>
+    <field name="authorizedRoles" widget="TagSelect"/>
+    <field name="menuOrder"/>
+    <button name="viewMenuTranslationBtn" title="Menu translation"
+      onClick="action-mobile-menu-view-menu-translation" icon="fa-language"/>
   </grid>
 
   <form name="mobile-menu-form" title="Mobile Menu"
     model="com.axelor.apps.mobilesettings.db.MobileMenu" width="large">
     <panel name="mainPanel">
-      <field name="name" colSpan="4"/>
-      <field name="technicalName" colSpan="4"/>
-      <spacer colSpan="2"/>
-      <field name="authorizedRoles" placeholder="None" colSpan="6" canNew="false"
+      <field name="name"/>
+      <field name="technicalName"/>
+      <field name="authorizedRoles" placeholder="All" colSpan="12" canNew="false"
         canEdit="false" widget="TagSelect"/>
+      <field name="menuOrder"/>
+      <field name="menuType" readonly="true"/>
+      <field name="parentApplication" readonly="true"/>
+      <field name="parentMenuName" readonly="true" showIf="menuType == 'submenu'"/>
     </panel>
 
     <panel-mail name="mailPanel">
@@ -24,5 +32,15 @@
       <mail-followers/>
     </panel-mail>
   </form>
+
+  <action-view name="action-mobile-menu-view-menu-translation" title="Menu translation"
+    model="com.axelor.meta.db.MetaTranslation">
+    <view type="grid" name="meta-translations-grid"/>
+    <view type="form" name="meta-translations-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <domain>self.key = 'mobile_app_${name}'</domain>
+  </action-view>
 
 </object-views>

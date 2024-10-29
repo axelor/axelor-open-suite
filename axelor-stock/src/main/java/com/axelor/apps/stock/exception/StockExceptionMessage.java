@@ -246,7 +246,8 @@ public final class StockExceptionMessage {
   public static final String CANCEL_REASON_BAD_TYPE = /*$$(*/
       "The type of cancel reason doesn't match with stock move" /*)*/;
   public static final String STOCK_LOCATION_UNIT_NULL = /*$$(*/
-      "The unit is missing on a stock location line" /*)*/;;
+      "The unit is missing on a stock location line" /*)*/;
+  ;
   /*
    * Declaration of exchanges
    */
@@ -307,4 +308,45 @@ public final class StockExceptionMessage {
       "Expected BigDecimal as result during the computation of field %s, please fix the corresponding formula." /*)*/;
   public static final String STOCK_MOVE_TRACKING_NUMBER_PARENT_MAXIMUM_ITERATION_REACHED = /*$$(*/
       "Maximum iteration for looking tracking numbers parent has been reached. Please check any circular parent dependencies." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_STATUS = /*$$(*/
+      "You can only split line in draft or planned stock move." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_TYPE = /*$$(*/
+      "You can only split line in incoming stock move." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_REAL_QTY = /*$$(*/
+      "Real quantity must not be equal to 0 and should be less than expected quantity." /*)*/;
+
+  public static final String STOCK_MOVE_MASS_MOVED_QTY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "Moved qty is greater than current quantity (%s)" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_PRODUCT_NO_AVAILABLE_IN_STOCKLOCATION_SOURCE = /*$$(*/
+      "The product is not available in the stock location source indicated (%s)" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_MOVED_QUANTITY_IS_ZERO_OR_LESS = /*$$(*/
+      "Moved quantity is equal to 0 or less (%s)" /*)*/;
+  public static final String STOCK_MOVE_MASS_STOCK_MOVE_LINE_CANT_DELETE = /*$$(*/
+      "Can't delete a line linked to a realized stock move line." /*)*/;
+
+  public static final String STOCK_MOVE_MASS_FACTORY_UNKNOWN_OBJECT = /*$$(*/
+      "Unknown object, can not get service" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_PRODUCT_NO_STOCK_LOCATION_SOURCE_AVAILABLE = /*$$(*/
+      "The product %s is missing a stock location (source or dest). Please make sure that the cart stock location and stock location in the product is filled." /*)*/;
+
+  public static final String STOCK_MOVE_MASS_ALREADY_STORED_PRODUCT = /*$$(*/
+      "The product %s have already been stored" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_NO_SEQUENCE = /*$$(*/
+      "There's no configured sequence for mass stock move for the company %s" /*)*/;
+
+  public static final String LOCATIONS_ARE_EMPTY = /*$$(*/
+      "Source and destination locations are empty" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_COULD_NOT_CREATE_PICKED_PRODUCT_FROM_NEED = /*$$(*/
+      "Impossible to create a picked product for product %s, no stock found for company %s" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_NO_FROM_STOCK_LOCATION_SELECTED = /*$$(*/
+      "No stock location has been selected." /*)*/;
 }

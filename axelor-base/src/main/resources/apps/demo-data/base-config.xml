@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.2.xsd">
 
   <!-- IMPORT DU PACKAGE 'AUTH' -->
 
@@ -116,7 +116,8 @@
 
   <input file="base_city.csv" separator=";" type="com.axelor.apps.base.db.City"
     search="self.importId = :importId">
-    <bind to="country" search="self.alpha3Code = 'FRA'" update="true"/>
+    <bind to="country" column="country_alpha3Code"
+      search="self.alpha3Code = :country_alpha3Code" update="true"/>
   </input>
 
   <input file="base_address.csv" separator=";" type="com.axelor.apps.base.db.Address"
@@ -145,7 +146,8 @@
       search="self.partner.importId = :importId">
       <bind to="address" column="email"/>
     </bind>
-    <bind to="partnerAddressList" search="self.address.importId = :address"
+    <bind to="partnerAddressList"
+      search="self.address.importId = :address AND self.partner.importId = :importId"
       if="address != null &amp;&amp; isContact == 'false'">
       <bind to="address" search="self.importId = :address" update="true"/>
       <bind to="isInvoicingAddr" eval="true"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="product-expense-grid" title="Expense types"
     model="com.axelor.apps.base.db.Product" orderBy="name">
@@ -47,8 +47,9 @@
         <field name="expense" hidden="true"/>
       </panel>
       <panel name="categorizationPanel" title="Categorization" colSpan="12">
-        <field name="productFamily" colSpan="12" form-view="product-family-form"
+        <field name="productFamily" colSpan="6" form-view="product-family-form"
           grid-view="product-family-grid"/>
+        <field name="exportCode" colSpan="6"/>
       </panel>
     </panel>
     <panel-tabs name="productSpecificAttrsPanelTab" title="Product specific attributes">

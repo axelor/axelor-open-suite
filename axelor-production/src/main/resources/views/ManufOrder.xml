@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
   <grid name="manuf-order-grid" title="Manufacturing orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     <toolbar>
@@ -360,7 +360,7 @@
           onChange="action-manuf-order-group-on-change-residual-stock-move-line"
           grid-view="stock-move-line-produced-production-grid"/>
         <panel-related name="wasteProdProductListPanel" field="wasteProdProductList"
-          colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
+          colSpan="12" grid-view="prod-product-waste-grid" form-view="prod-product-waste-form"/>
         <panel name="descriptionPanel" title="Waste description" colSpan="12">
           <field name="wasteProdDescription" showTitle="false" colSpan="12"/>
         </panel>

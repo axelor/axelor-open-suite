@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -55,6 +56,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   protected ProductCompanyService productCompanyService;
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected TaxService taxService;
+  protected ProductPriceService productPriceService;
 
   @Inject
   public SupplierCatalogServiceImpl(
@@ -63,13 +65,15 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       CurrencyService currencyService,
       ProductCompanyService productCompanyService,
       PurchaseOrderLineService purchaseOrderLineService,
-      TaxService taxService) {
+      TaxService taxService,
+      ProductPriceService productPriceService) {
     this.appBaseService = appBaseService;
     this.appPurchaseService = appPurchaseService;
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.taxService = taxService;
+    this.productPriceService = productPriceService;
   }
 
   @SuppressWarnings("unchecked")
@@ -202,22 +206,20 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       purchaseCurrency = supplierCatalog.getSupplierPartner().getCurrency();
     } else {
       if (product != null) {
-        purchasePrice = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
-        purchaseCurrency =
-            (Currency) productCompanyService.get(product, "purchaseCurrency", company);
+        return productPriceService.getPurchaseUnitPrice(
+            company, product, taxLineSet, resultInAti, localDate, currency);
       }
     }
 
-    Boolean inAti = (Boolean) productCompanyService.get(product, "inAti", company);
-    BigDecimal price =
-        (inAti == resultInAti)
-            ? purchasePrice
-            : taxService.convertUnitPrice(
-                inAti, taxLineSet, purchasePrice, AppBaseService.COMPUTATION_SCALING);
-
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(purchaseCurrency, currency, price, localDate)
-        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    return productPriceService.getConvertedPrice(
+        company,
+        product,
+        taxLineSet,
+        resultInAti,
+        localDate,
+        purchasePrice,
+        purchaseCurrency,
+        currency);
   }
 
   @Override

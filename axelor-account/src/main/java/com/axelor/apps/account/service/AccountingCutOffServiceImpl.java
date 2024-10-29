@@ -436,7 +436,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             cutOffMoveLine.setCurrencyAmount(currencyAmount.abs());
           } else {
             cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(convertedAmount));
-            currencyAmount = moveToolService.computeCurrencyAmountSign(currencyAmount, false);
+            currencyAmount = moveLineToolService.computeCurrencyAmountSign(currencyAmount, false);
             cutOffMoveLine.setCurrencyAmount(currencyAmount);
           }
 
@@ -472,7 +472,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         cutOffMoveLine.clearAnalyticMoveLineList();
 
         // Copy analytic move lines
-        this.copyAnalyticMoveLines(moveLine, cutOffMoveLine, amountInCurrency);
+        this.copyAnalyticMoveLines(moveLine, cutOffMoveLine, amountInCurrency.abs());
 
         if (CollectionUtils.isEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
           cutOffMoveLine.setAnalyticMoveLineList(analyticMoveLineList);
@@ -577,7 +577,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         amount
             .multiply(BigDecimal.valueOf(100))
             .divide(
-                moveLine.getCurrencyAmount(),
+                moveLine.getCurrencyAmount().abs(),
                 AppAccountService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP);
 
@@ -613,7 +613,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
               null);
       boolean isDebit = productMoveLine.getDebit().signum() > 0;
 
-      currencyTaxAmount = moveToolService.computeCurrencyAmountSign(currencyTaxAmount, isDebit);
+      currencyTaxAmount = moveLineToolService.computeCurrencyAmountSign(currencyTaxAmount, isDebit);
 
       Integer vatSystem =
           taxAccountToolService.calculateVatSystem(

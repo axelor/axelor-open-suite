@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -341,6 +341,9 @@
             onChange="action-record-base-partner-set-business-card"/>
           <field name="functionBusinessCard"/>
         </panel>
+        <field name="tagSet" widget="TagSelect" x-color-field="color"
+          grid-view="tag-simplified-grid" form-view="tag-form"
+          onSelect="action-partner-attrs-set-partner-tag-domain"/>
       </panel>
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
@@ -546,8 +549,9 @@
           if-module="axelor-purchase"
           if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
         <field name="supplierQualityRating" hidden="true"/>
-        <field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false"
-          colSpan="3" onChange="action-record-set-supplier-quality-rating"/>
+        <field name="supplierQualityRatingSelect" widget="Rating"
+          x-rating-color="black,black,black,black,black" colSpan="3"
+          onChange="action-record-set-supplier-quality-rating"/>
         <field name="supplierArrivalProductQty" colSpan="3"/>
         <spacer name="supplierSpacer"/>
         <field name="partnerProductQualityRatingList" colSpan="12"
@@ -598,6 +602,13 @@
           <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
       </panel>
+      <panel name="projectPanel" title="Projects"
+        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+        <panel-dashlet name="projectPanel" title="Projects"
+          action="action-partner-view-related-projects" colSpan="12"/>
+        <panel-dashlet name="invoicingProjectPanel" title="Invoicing projects"
+          action="action-partner-view-related-invoicing-projects" colSpan="12"/>
+      </panel>
     </panel-tabs>
     <panel name="partnerAttrsPanel">
       <field name="partnerAttrs" colSpan="12"/>
@@ -614,7 +625,7 @@
     onSave="save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
     <toolbar>
       <button name="convertToIndividualPartnerBtn" title="Convert into an individual partner"
-        icon="fa-user" onClick="action-convert-into-individual-partner,close"
+        icon="fa-user" onClick="save,action-convert-into-individual-partner,close"
         showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null"/>
     </toolbar>
     <menubar>
@@ -1049,7 +1060,7 @@
     <action name="action-partner-account-attrs-hide-customer-account"/>
     <action name="action-partner-account-attrs-hide-employee-account"/>
     <action name="action-partner-record-set-balance" if="__config__.app.isApp('account')"/>
-    <action name="action-partner-record-set-positive-balance"
+    <action name="action-partner-method-set-positive-balance"
       if="__config__.app.isApp('account')"/>
     <action name="action-partner-attrs-name-balance"/>
     <action name="action-partner-attrs-partner-seq-editable"/>
@@ -1087,7 +1098,6 @@
     <action name="action-partner-method-set-social-network-url"
       if="!__config__.app.isApp('crm')"/>
     <action name="action-partner-record-employee"/>
-    <action name="action-method-partner-siren-nic-onload"/>
   </action-group>
 
   <action-group name="action-partner-group-check-can-change-factor"
@@ -1344,21 +1354,11 @@
   <action-record name="action-partner-record-set-balance"
     model="com.axelor.apps.base.db.Partner">
     <field name="$balance"
-      expr="#{accountingSituationList.stream().map(
-                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? (x -> x.balanceDueDebtRecoveryCustAccount)
-                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? (x -> x.balanceDueCustAccount)
-                    : (x -> x.balanceCustAccount)
-                ).sum()}"/>
-  </action-record>
-
-  <action-record name="action-partner-record-set-positive-balance"
-    model="com.axelor.apps.base.db.Partner">
-    <field name="$positiveBalanceBtn"
-      expr="eval: balance &lt; 0 ?
-		java.text.NumberFormat.getInstance(new Locale(__user__.localization?.code)).format(balance * -1) :
-		java.text.NumberFormat.getInstance(new Locale(__user__.localization?.code)).format(balance)"
-      if="balance != null"/>
-    <field name="$positiveBalanceBtn" expr="eval: 0" if="balance == null"/>
+      expr="eval: accountingSituationList?.collect{
+                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? it.balanceDueDebtRecoveryCustAccount
+                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? it.balanceDueCustAccount
+                    : it.balanceCustAccount
+                }.sum()"/>
   </action-record>
 
   <action-record name="action-partner-record-employee"
@@ -1505,6 +1505,10 @@
 
   <action-method name="action-method-partner-check-registration-code">
     <call class="com.axelor.apps.base.web.PartnerController" method="checkRegistrationCode"/>
+  </action-method>
+
+  <action-method name="action-partner-method-set-positive-balance">
+    <call class="com.axelor.apps.base.web.PartnerController" method="setPositiveBalance"/>
   </action-method>
 
   <action-view name="action-contact-partner-dashlet" title="Partners"
@@ -1738,5 +1742,24 @@
     <attribute name="hidden" for="$company"
       expr="eval: __repo__(Company).all().count() == 1"/>
   </action-attrs>
+
+  <action-attrs name="action-partner-attrs-set-partner-tag-domain">
+    <attribute name="domain" for="tagSet"
+      expr="eval: &quot; ${__repo__(MetaModel).findByName('Partner')?.id} member of self.concernedModelSet AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
+  </action-attrs>
+
+  <action-view name="action-partner-view-related-projects" title="Projects"
+    model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="project-grid"/>
+    <view type="form" name="project-form"/>
+    <domain>self.clientPartner = :id</domain>
+  </action-view>
+
+  <action-view name="action-partner-view-related-invoicing-projects"
+    title="Invoicing projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
+    <view type="grid" name="invoicing-project-grid"/>
+    <view type="form" name="invoicing-project-form"/>
+    <domain>self.project.clientPartner = :id</domain>
+  </action-view>
 
 </object-views>

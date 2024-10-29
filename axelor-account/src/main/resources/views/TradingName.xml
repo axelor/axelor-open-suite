@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form id="account-trading-name-form" model="com.axelor.apps.base.db.TradingName"
     title="Trading name" name="trading-name-form" extension="true">
     <extend target="/">
-      <attribute name="onLoad" value="action-trading-name-method-show-analytic-panel"/>
+      <attribute name="onLoad"
+        value="action-trading-name-attrs-show-related-connectors-panel,action-trading-name-method-show-analytic-panel"/>
     </extend>
 
-    <extend target="//panel-related[@name='companySetPanel']">
+    <extend target="//field[@name='company']">
       <attribute name="onChange" value="action-trading-name-group-company-onchange"/>
     </extend>
 

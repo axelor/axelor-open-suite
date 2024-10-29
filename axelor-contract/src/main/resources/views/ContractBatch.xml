@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="contract-batch-grid" title="Contract batches"
     model="com.axelor.apps.contract.db.ContractBatch">
@@ -19,6 +19,8 @@
       <field name="code"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid"/>
+      <field name="fetchLimit"
+        help="Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used."/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="invoicingPanel" title="Invoicing" showIf="actionSelect == 1">

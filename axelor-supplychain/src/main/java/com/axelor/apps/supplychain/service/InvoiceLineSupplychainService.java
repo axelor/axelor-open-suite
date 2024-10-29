@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
@@ -70,7 +71,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       TaxService taxService,
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      ProductPriceService productPriceService) {
     super(
         currencyService,
         priceListService,
@@ -84,7 +86,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         taxService,
         internationalService,
         invoiceLineAttrsService,
-        currencyScaleService);
+        currencyScaleService,
+        productPriceService);
     this.supplierCatalogService = supplierCatalogService;
   }
 
@@ -232,10 +235,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
   @Override
   public Map<String, String> getProductDescriptionAndNameTranslation(
-      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException {
+      Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine, userLanguage);
+      return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine);
     }
 
     Product product = invoiceLine.getProduct();
@@ -247,7 +250,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       return Collections.emptyMap();
     }
 
-    return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine, userLanguage);
+    return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine);
   }
 
   public void checkMinQty(

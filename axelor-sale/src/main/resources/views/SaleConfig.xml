@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="sale-config-grid" title="Sale configurations"
     model="com.axelor.apps.sale.db.SaleConfig">
@@ -17,7 +17,9 @@
       <field name="saleOrderInAtiSelect"/>
       <field name="defaultValidityDuration" domain="self.applicationTypeSelect = 1"
         form-view="duration-form" grid-view="duration-grid" colSpan="4"/>
-      <field name="defaultProjectHoldBackPercentage"/>
+      <field name="defaultHoldBackPercentage"/>
+      <field name="cartOrderCreationModeSelect"
+        if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"/>
     </panel>
     <panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain"
       if="__config__.app.isApp('supplychain')">

@@ -19,7 +19,6 @@
 package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.rest.dto.TimesheetPostRequest;
@@ -40,9 +39,7 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import com.axelor.web.ITranslation;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -55,9 +52,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/timesheet")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -69,7 +66,13 @@ public class TimesheetRestController {
   @POST
   @HttpExceptionHandler
   public Response createTimesheet(TimesheetPostRequest requestBody) throws AxelorException {
-    new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
+    SecurityCheck securityCheck = new SecurityCheck();
+    List<Long> timersId = requestBody.getTimerIdList();
+    if (CollectionUtils.isNotEmpty(timersId)) {
+      Long[] timerIds = timersId.toArray(new Long[0]);
+      securityCheck = securityCheck.readAccess(TSTimer.class, timerIds);
+    }
+    securityCheck.createAccess(Timesheet.class).check();
     RequestValidator.validateBody(requestBody);
 
     List<TSTimer> tsTimerList = requestBody.fetchTSTimers();
@@ -91,7 +94,13 @@ public class TimesheetRestController {
   public Response addTimersToTimesheet(
       @PathParam("timesheetId") Long timesheetId, TimesheetPutRequest requestBody)
       throws AxelorException {
-    new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
+    SecurityCheck securityCheck = new SecurityCheck();
+    List<Long> timersId = requestBody.getTimerIdList();
+    if (CollectionUtils.isNotEmpty(timersId)) {
+      Long[] timerIds = timersId.toArray(new Long[0]);
+      securityCheck = securityCheck.readAccess(TSTimer.class, timerIds);
+    }
+    securityCheck.writeAccess(Timesheet.class, timesheetId).check();
     RequestValidator.validateBody(requestBody);
 
     Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, requestBody.getVersion());
@@ -112,7 +121,7 @@ public class TimesheetRestController {
   public Response updateTimesheetStatus(
       @PathParam("timesheetId") Long timesheetId, TimesheetPutRequest requestBody)
       throws AxelorException, JSONException, IOException, ClassNotFoundException {
-    new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
+    new SecurityCheck().writeAccess(Timesheet.class, timesheetId).check();
     RequestValidator.validateBody(requestBody);
 
     TimesheetWorkflowService timesheetWorkflowService = Beans.get(TimesheetWorkflowService.class);
@@ -146,8 +155,9 @@ public class TimesheetRestController {
   @Path("/check/{timesheetId}")
   @GET
   @HttpExceptionHandler
-  public Response checkExpense(@PathParam("timesheetId") Long timesheetId) throws AxelorException {
-    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+  public Response checkTimesheet(@PathParam("timesheetId") Long timesheetId)
+      throws AxelorException {
+    new SecurityCheck().readAccess(Timesheet.class, timesheetId).check();
     Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, ObjectFinder.NO_VERSION);
 
     return ResponseConstructor.build(
@@ -164,7 +174,7 @@ public class TimesheetRestController {
   @HttpExceptionHandler
   public Response convertPeriodTotal(@PathParam("timesheetId") Long timesheetId)
       throws AxelorException {
-    new SecurityCheck().readAccess(Expense.class).check();
+    new SecurityCheck().readAccess(Timesheet.class, timesheetId).check();
     Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, ObjectFinder.NO_VERSION);
 
     return ResponseConstructor.build(

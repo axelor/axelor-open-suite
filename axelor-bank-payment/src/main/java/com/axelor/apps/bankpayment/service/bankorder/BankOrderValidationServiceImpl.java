@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.InvoicePayment;
@@ -57,6 +75,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
   protected BankOrderLineOriginService bankOrderLineOriginService;
   protected PaymentSessionValidateService paymentSessionValidateService;
   protected ReconcileService reconcileService;
+  protected BankOrderSequenceService bankOrderSequenceService;
 
   @Inject
   public BankOrderValidationServiceImpl(
@@ -73,7 +92,8 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
       BankOrderMoveService bankOrderMoveService,
       BankOrderLineOriginService bankOrderLineOriginService,
       PaymentSessionValidateService paymentSessionValidateService,
-      ReconcileService reconcileService) {
+      ReconcileService reconcileService,
+      BankOrderSequenceService bankOrderSequenceService) {
     this.accountConfigService = accountConfigService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.invoicePaymentMoveCreateService = invoicePaymentMoveCreateService;
@@ -88,6 +108,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
     this.bankOrderLineOriginService = bankOrderLineOriginService;
     this.paymentSessionValidateService = paymentSessionValidateService;
     this.reconcileService = reconcileService;
+    this.bankOrderSequenceService = bankOrderSequenceService;
   }
 
   @Override
@@ -241,7 +262,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
 
     bankOrderService.setNbOfLines(bankOrder);
 
-    bankOrderService.setSequenceOnBankOrderLines(bankOrder);
+    bankOrderSequenceService.setSequenceOnBankOrderLines(bankOrder);
 
     bankOrderService.generateFile(bankOrder);
 

@@ -209,9 +209,9 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     }
 
     String tradingNameIds =
-        CollectionUtils.isEmpty(move.getCompany().getTradingNameSet())
+        CollectionUtils.isEmpty(move.getCompany().getTradingNameList())
             ? "0"
-            : move.getCompany().getTradingNameSet().stream()
+            : move.getCompany().getTradingNameList().stream()
                 .map(TradingName::getId)
                 .map(Objects::toString)
                 .collect(Collectors.joining(","));
@@ -232,17 +232,18 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
             .all()
             .filter(
                 String.format(
-                    "self.company.id = %s AND self.statusSelect = %s",
+                    "self.company.id = %d AND self.statusSelect = %d",
                     move.getCompany().getId(), JournalRepository.STATUS_ACTIVE))
             .fetch();
-    List<Long> journalIdList =
+    String journalIdList =
         journalList.stream()
             .filter(
                 journal ->
-                    !UserRoleToolService.checkUserRolesPermissionIncludingEmpty(
+                    UserRoleToolService.checkUserRolesPermissionIncludingEmpty(
                         AuthUtils.getUser(), journal.getAuthorizedRoleSet()))
             .map(Journal::getId)
-            .collect(Collectors.toList());
+            .map(Objects::toString)
+            .collect(Collectors.joining(","));
 
     this.addAttr("journal", "domain", String.format("self.id IN (%s)", journalIdList), attrsMap);
   }

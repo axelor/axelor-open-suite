@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.pricing;
 
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.PricingRule;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -29,6 +30,7 @@ import com.google.inject.Inject;
 public class PricingObserverImpl implements PricingObserver {
 
   protected StringBuilder logs;
+  protected Model model;
 
   @Inject
   public PricingObserverImpl() {}
@@ -85,7 +87,8 @@ public class PricingObserverImpl implements PricingObserver {
   }
 
   @Override
-  public void computationStarted() {
+  public void computationStarted(Model model) {
+    this.model = model;
     logs = new StringBuilder();
   }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form id="stock-trading-name-form" model="com.axelor.apps.base.db.TradingName"
     title="Trading name" name="trading-name-form" extension="true">
@@ -63,7 +63,7 @@
       expr="eval: &quot;self.id IS NULL &quot;"/>
 
     <attribute name="domain" for="qualityControlDefaultStockLocation"
-      expr="eval:companySet?.isEmpty() ? &quot;self = null&quot; : &quot; self.typeSelect != 3 AND self.company.id IN (${companySet?.collect{it.id}.join(',')}) &quot;"/>
+      expr="eval: !company ? &quot; self = null &quot; : &quot; self.typeSelect != 3 AND self.company = :company &quot;"/>
   </action-attrs>
 
 

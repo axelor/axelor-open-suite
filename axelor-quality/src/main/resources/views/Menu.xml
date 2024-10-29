@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <menuitem name="menu-quality-root" order="-1700" if="__config__.app.isApp('quality')"
-    title="Quality" icon="fa fa-check" icon-background="#3f6bb9"/>
+    title="Quality" icon="check" icon-background="#3f6bb9"/>
 
   <menuitem name="quality-controls-root" parent="menu-quality-root"
     title="Quality controls" order="100"/>
@@ -170,10 +170,11 @@
   <menuitem name="quality-tags" parent="quality-configurations" title="Tags"
     action="quality.tags" order="300"/>
 
-  <action-view name="quality.tags" title="Tags"
-    model="com.axelor.apps.quality.db.QualityTag">
-    <view type="grid" name="quality-tag-grid"/>
-    <view type="form" name="quality-tag-form"/>
+  <action-view name="quality.tags" title="Tags" model="com.axelor.apps.base.db.Tag">
+    <view type="grid" name="tag-simplified-grid"/>
+    <view type="form" name="tag-form"/>
+    <domain>:_packageName IN self.concernedModelSet.packageName</domain>
+    <context name="_packageName" expr="eval: 'com.axelor.apps.quality.db'"/>
   </action-view>
 
   <menuitem name="quality-control-point-type" parent="quality-configurations"

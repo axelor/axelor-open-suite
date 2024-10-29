@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.service;
 
 import com.axelor.apps.account.db.Invoice;
@@ -16,7 +34,6 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -39,7 +56,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrderService {
 
-  protected BankOrderService bankOrderService;
   protected BankOrderCreateService bankOrderCreateService;
   protected BankOrderLineService bankOrderLineService;
   protected BankOrderLineOriginService bankOrderLineOriginService;
@@ -52,7 +68,6 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
 
   @Inject
   public PaymentSessionBankOrderServiceImpl(
-      BankOrderService bankOrderService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderLineService bankOrderLineService,
       BankOrderLineOriginService bankOrderLineOriginService,
@@ -62,7 +77,6 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
       DateService dateService,
       BankOrderLineRepository bankOrderLineRepo,
       PartnerService partnerService) {
-    this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;
     this.bankOrderLineOriginService = bankOrderLineOriginService;
@@ -81,7 +95,7 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
     BankOrder bankOrder = this.createBankOrder(paymentSession);
 
     paymentSession.setBankOrder(bankOrder);
-    bankOrderService.generateSequence(bankOrder);
+    bankOrderRepo.save(bankOrder);
 
     return bankOrder;
   }

@@ -19,7 +19,6 @@
 package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.rest.dto.StockMoveLinePutRequest;
 import com.axelor.apps.stock.rest.dto.StockMoveLineResponse;
@@ -27,13 +26,13 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
+import com.axelor.utils.api.RequestStructure;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -41,7 +40,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/stock-move-line")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -61,7 +59,7 @@ public class StockMoveLineRestController {
       @PathParam("id") long stockMoveLineId, StockMoveLinePutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockMove.class).check();
+    new SecurityCheck().writeAccess(StockMoveLine.class, stockMoveLineId).check();
 
     StockMoveLine stockmoveLine =
         ObjectFinder.find(StockMoveLine.class, stockMoveLineId, requestBody.getVersion());
@@ -77,5 +75,47 @@ public class StockMoveLineRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK, "Line successfully updated.", new StockMoveLineResponse(stockmoveLine));
+  }
+
+  @Operation(
+      summary = "Split stock move line",
+      tags = {"Stock move line"})
+  @Path("split/{id}")
+  @PUT
+  @HttpExceptionHandler
+  public Response splitStockMoveLine(
+      @PathParam("id") long stockMoveLineId, RequestStructure requestBody) throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck()
+        .writeAccess(StockMoveLine.class, stockMoveLineId)
+        .createAccess(StockMoveLine.class)
+        .check();
+
+    StockMoveLine stockmoveLine =
+        ObjectFinder.find(StockMoveLine.class, stockMoveLineId, requestBody.getVersion());
+
+    Beans.get(StockMoveLineService.class)
+        .splitIntoFulfilledMoveLineAndUnfulfilledOne(stockmoveLine);
+
+    return ResponseConstructor.build(
+        Response.Status.OK, "Line successfully split.", new StockMoveLineResponse(stockmoveLine));
+  }
+
+  @Operation(
+      summary = "Stock move line quantity availability",
+      tags = {"Stock move line"})
+  @Path("check-quantity/{stockMoveLineId}")
+  @GET
+  @HttpExceptionHandler
+  public Response checkStockMoveLineQty(@PathParam("stockMoveLineId") long stockMoveLineId)
+      throws AxelorException {
+    new SecurityCheck().readAccess(StockMoveLine.class, stockMoveLineId).check();
+    StockMoveLine stockMoveLine =
+        ObjectFinder.find(StockMoveLine.class, stockMoveLineId, ObjectFinder.NO_VERSION);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        "Stock move line quantity availability.",
+        Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine));
   }
 }

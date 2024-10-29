@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="app-account-config-form" title="App account"
     model="com.axelor.studio.db.AppAccount" canDelete="false" canNew="false" width="large">
@@ -17,6 +17,7 @@
       <field name="manageCutOffPeriod" widget="boolean-switch"/>
       <field name="allowMultiInvoiceTerms" widget="boolean-switch"/>
       <field name="partnerBalConfigSelect"/>
+      <field name="dsoComputationPeriod"/>
       <panel name="rejectsReasonsAndCodesListPanel" title="Rejects reasons and codes list"
         colSpan="12">
         <field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid"
@@ -35,6 +36,13 @@
       </panel>
       <panel name="accountingExportPanel" title="Accounting exports">
         <field name="dasActiveNorm"/>
+      </panel>
+      <panel name="latePaymentInterestPanel" title="Late payment interest" colSpan="12">
+        <field name="enableLatePaymentInterest" widget="boolean-switch"/>
+        <field name="latePaymentInterestProduct" showIf="enableLatePaymentInterest"/>
+        <field name="flatFeeProduct" showIf="enableLatePaymentInterest"/>
+        <field name="latePaymentInterestFlatFee" showIf="enableLatePaymentInterest"/>
+        <field name="thresholdAmount" showIf="enableLatePaymentInterest"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab">

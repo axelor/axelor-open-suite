@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="global-budget-grid" title="Global Budget"
     model="com.axelor.apps.budget.db.GlobalBudget" orderBy="code">
@@ -116,8 +116,9 @@
         <panel name="projectPanel" title="Project" colSpan="12" sidebar="true"
           showIf="statusSelect == 2" if="__config__.app.getApp('budget')?.getEnableProject()"
           canCollapse="true">
-          <field name="projectSet" widget="TagSelect" colSpan="12" form-view="project-form"
-            grid-view="project-grid" canNew="false" canEdit="false" domain="self.company = :company"/>
+          <field name="projectSet" widget="TagSelect" colSpan="12"
+            form-view="business-project-form" grid-view="project-grid" canNew="false"
+            canEdit="false" domain="self.company = :company"/>
         </panel>
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"

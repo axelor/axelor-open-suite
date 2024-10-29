@@ -19,19 +19,25 @@
 package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.service.operationorder.OperationOrderService;
+import com.axelor.apps.production.service.operationorder.OperationOrderCreateBarcodeService;
 import com.google.inject.Inject;
 
 public class OperationOrderManagementRepository extends OperationOrderRepository {
 
-  @Inject OperationOrderService operationOrderService;
+  protected OperationOrderCreateBarcodeService operationOrderCreateBarcodeService;
+
+  @Inject
+  public OperationOrderManagementRepository(
+      OperationOrderCreateBarcodeService operationOrderCreateBarcodeService) {
+    this.operationOrderCreateBarcodeService = operationOrderCreateBarcodeService;
+  }
 
   @Override
   public OperationOrder save(OperationOrder entity) {
 
     if (entity.getBarCode() == null) {
       entity = super.save(entity);
-      operationOrderService.createBarcode(entity);
+      operationOrderCreateBarcodeService.createBarcode(entity);
     }
 
     return super.save(entity);

@@ -37,6 +37,7 @@ import com.axelor.meta.CallMethod;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -57,7 +58,7 @@ public interface InvoiceService {
    * @param invoice Une facture.
    * @throws AxelorException
    */
-  public Invoice compute(final Invoice invoice) throws AxelorException;
+  public Map<String, Object> compute(final Invoice invoice) throws AxelorException;
 
   /**
    * Validate an invoice.
@@ -223,6 +224,7 @@ public interface InvoiceService {
    * @return
    */
   List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice);
+
   /**
    * Filter a set of advance payment invoice. If the amount of the payment is greater than the total
    * of the invoice, we filter it. If there is no remaining amount in the move lines of the advance
@@ -295,8 +297,6 @@ public interface InvoiceService {
   void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice);
-
-  public void validatePfp(Long invoiceId) throws AxelorException;
 
   void updateUnpaidInvoiceTerms(Invoice invoice);
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -20,7 +20,10 @@
     <many-to-one name="outPaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Out Payment Mode" index="false"/>
     <many-to-one name="paymentCondition"
-      ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" index="false"
+      ref="com.axelor.apps.account.db.PaymentCondition" title="In payment condition" index="false"
+      massUpdate="true"/>
+    <many-to-one name="outPaymentCondition"
+      ref="com.axelor.apps.account.db.PaymentCondition" title="Out payment condition" index="false"
       massUpdate="true"/>
 
     <integer name="rejectCounter" title="Reject counter"/>
@@ -53,6 +56,16 @@
       help="Field allowing to make this partner profit a discount and define its parameters"/>
     <integer name="payNoticeSendingMethodSelect" title="Sending method of payment notices"
       selection="partner.payment.notice.sending.method.select" default="1"/>
+    <integer name="daysSalesOutstanding" title="Days sales outstanding (DSO)" formula="true"
+      readonly="true">
+      <![CDATA[
+          SELECT SUM(inv.company_in_tax_total_remaining)/NULLIF(SUM(inv.company_in_tax_total), 0)
+            * (SELECT a.dso_computation_period FROM studio_app_account a LIMIT 1)
+          FROM ACCOUNT_INVOICE inv JOIN studio_app_account a ON 1=1
+          WHERE inv.partner = id AND inv.status_select = 3
+         AND inv.invoice_date BETWEEN CURRENT_DATE - a.dso_computation_period AND CURRENT_DATE
+      ]]>
+    </integer>
 
     <extra-code>
       <![CDATA[

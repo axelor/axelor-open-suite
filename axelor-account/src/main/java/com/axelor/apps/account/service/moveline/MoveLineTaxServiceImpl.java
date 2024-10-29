@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -50,6 +51,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -145,39 +148,60 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
     Set<TaxLine> taxLineSet = invoiceMoveLine.getTaxLineSet();
     List<TaxPaymentMoveLine> taxPaymentMoveLineList = new ArrayList<>();
+
+    if (paymentAmount.compareTo(BigDecimal.ZERO) == 0
+        || invoiceTotalAmount.compareTo(BigDecimal.ZERO) == 0) {
+      return taxPaymentMoveLineList;
+    }
+
     for (TaxLine taxLine : taxLineSet) {
       BigDecimal vatRate = taxLine.getValue();
 
-      BigDecimal baseAmount = BigDecimal.ZERO;
-      if (BigDecimal.ZERO.compareTo(vatRate) != 0) {
-        baseAmount =
-            (invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit()))
-                .divide(
-                    vatRate.divide(BigDecimal.valueOf(100)),
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                    BigDecimal.ROUND_HALF_UP);
-      } else {
-        baseAmount = invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit());
-      }
-
-      BigDecimal detailPaymentAmount =
-          baseAmount
-              .multiply(paymentAmount)
-              .divide(invoiceTotalAmount, RETURNED_SCALE, RoundingMode.HALF_UP)
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      BigDecimal paymentRatio =
+          paymentAmount.divide(invoiceTotalAmount, RETURNED_SCALE, RoundingMode.HALF_UP);
 
       TaxPaymentMoveLine taxPaymentMoveLine =
-          new TaxPaymentMoveLine(
-              customerPaymentMoveLine,
+          taxPaymentMoveLineService.createTaxPaymentMoveLineWithFixedAmount(
+              invoiceMove.getInvoice(),
+              paymentRatio,
+              vatSystemSelect,
+              invoiceMoveLine,
               taxLine,
-              reconcile,
-              vatRate,
-              detailPaymentAmount,
-              reconcile.getEffectiveDate());
+              customerPaymentMoveLine,
+              reconcile);
 
-      taxPaymentMoveLine.setFiscalPosition(invoiceMove.getFiscalPosition());
+      if (taxPaymentMoveLine == null) {
 
-      taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
+        BigDecimal baseAmount = BigDecimal.ZERO;
+        if (BigDecimal.ZERO.compareTo(vatRate) != 0) {
+          baseAmount =
+              (invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit()))
+                  .divide(
+                      vatRate.divide(BigDecimal.valueOf(100)),
+                      AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                      BigDecimal.ROUND_HALF_UP);
+        } else {
+          baseAmount = invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit());
+        }
+
+        BigDecimal detailPaymentAmount =
+            baseAmount
+                .multiply(paymentRatio)
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+
+        taxPaymentMoveLine =
+            new TaxPaymentMoveLine(
+                customerPaymentMoveLine,
+                taxLine,
+                reconcile,
+                vatRate,
+                detailPaymentAmount,
+                reconcile.getEffectiveDate());
+
+        taxPaymentMoveLine.setFiscalPosition(invoiceMove.getFiscalPosition());
+
+        taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
+      }
 
       taxPaymentMoveLine.setVatSystemSelect(vatSystemSelect);
 
@@ -267,12 +291,29 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
       Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
       Set<TaxLine> sourceTaxLineSet = moveLine.getSourceTaxLineSet();
+      if (ObjectUtils.isEmpty(sourceTaxLineSet)
+          && Objects.equals(
+              AccountTypeRepository.TYPE_TAX,
+              Optional.of(moveLine)
+                  .map(MoveLine::getAccount)
+                  .map(Account::getAccountType)
+                  .map(AccountType::getTechnicalTypeSelect)
+                  .orElse(""))) {
+        sourceTaxLineSet =
+            ObjectUtils.isEmpty(moveLine.getTaxLineBeforeReverseSet())
+                ? moveLine.getTaxLineSet()
+                : moveLine.getTaxLineBeforeReverseSet();
+      }
       if (CollectionUtils.isNotEmpty(sourceTaxLineSet)) {
         moveLine.setCredit(BigDecimal.ZERO);
         moveLine.setDebit(BigDecimal.ZERO);
         for (TaxLine sourceTaxLine : sourceTaxLineSet) {
           String sourceTaxLineKey =
-              String.format("%s%s", moveLine.getAccount().getCode(), sourceTaxLine.getId());
+              String.format(
+                  "%s%s %d",
+                  moveLine.getAccount().getCode(),
+                  sourceTaxLine.getId(),
+                  moveLine.getVatSystemSelect());
           map.put(sourceTaxLineKey, moveLine);
         }
         moveLineItr.remove();
@@ -304,7 +345,9 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
             || accountType.equals(AccountTypeRepository.TYPE_INCOME)
             || accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION);
 
-    return accountTypeCondition && !moveLine.getIsNonDeductibleTax();
+    return accountTypeCondition
+        && !moveLine.getIsNonDeductibleTax()
+        && !ObjectUtils.isEmpty(moveLine.getTaxLineSet());
   }
 
   @Override
