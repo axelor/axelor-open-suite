@@ -331,11 +331,13 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     }
     // End gestion du passage en 580
 
-    reconcileService.confirmReconcile(reconcile, true, true);
-    debitMoveLine.addBatchSetItem(batch);
-    creditMoveLine.addBatchSetItem(batch);
-    moveLineRepository.save(debitMoveLine);
-    moveLineRepository.save(creditMoveLine);
+    if (reconcile != null) {
+      reconcileService.confirmReconcile(reconcile, true, true);
+      debitMoveLine.addBatchSetItem(batch);
+      creditMoveLine.addBatchSetItem(batch);
+      moveLineRepository.save(debitMoveLine);
+      moveLineRepository.save(creditMoveLine);
+    }
 
     LOG.debug("Reconcile : {}", reconcile);
   }
