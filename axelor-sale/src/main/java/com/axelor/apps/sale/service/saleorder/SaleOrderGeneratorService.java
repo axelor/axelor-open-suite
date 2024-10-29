@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface SaleOrderGeneratorService {
 
@@ -33,5 +32,5 @@ public interface SaleOrderGeneratorService {
       Partner contactPartner,
       Currency currency,
       Boolean inAti)
-      throws AxelorException, JsonProcessingException;
+      throws AxelorException;
 }
