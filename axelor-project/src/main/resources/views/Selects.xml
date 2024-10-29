@@ -72,4 +72,10 @@
     <option value="project">Project</option>
     <option value="task">Project task</option>
   </selection>
+
+  <selection name="project.hold.back.type.select">
+    <option value="1">Total W.T.</option>
+    <option value="2">Total A.T.I.</option>
+  </selection>
+
 </object-views>

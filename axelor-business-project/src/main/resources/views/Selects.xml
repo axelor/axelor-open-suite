@@ -110,4 +110,10 @@
     <option value="1">Non-blocking</option>
     <option value="2">AppBusinessProject.Blocking</option>
   </selection>
+
+  <selection id="business.project.invoice.report.type" name="invoice.report.type">
+    <option value="5">Invoice with holdBacks details</option>
+    <option value="6">Invoice with payments and holdBacks details</option>
+  </selection>
+
 </object-views>

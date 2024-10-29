@@ -34,22 +34,40 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.db.ProjectHoldBackATI;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
     implements InvoiceServiceProject {
+
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected final CurrencyScaleService currencyScaleService;
+  protected final CurrencyService currencyService;
 
   @Inject
   public InvoiceServiceProjectImpl(
@@ -72,7 +90,9 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       InvoiceTermPfpToolService invoiceTermPfpToolService,
       InvoiceLineRepository invoiceLineRepo,
       IntercoService intercoService,
-      StockMoveRepository stockMoveRepository) {
+      StockMoveRepository stockMoveRepository,
+      CurrencyScaleService currencyScaleService,
+      CurrencyService currencyService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -94,6 +114,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         invoiceLineRepo,
         intercoService,
         stockMoveRepository);
+    this.currencyScaleService = currencyScaleService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -119,5 +141,69 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       }
     }
     return invoice;
+  }
+
+  @Override
+  public Invoice compute(final Invoice invoice) throws AxelorException {
+
+    log.debug("Invoice computation");
+
+    InvoiceGenerator invoiceGenerator =
+        new InvoiceGenerator() {
+
+          @Override
+          public Invoice generate() throws AxelorException {
+
+            List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+            if (invoice.getInvoiceLineList() != null) {
+              invoiceLines.addAll(invoice.getInvoiceLineList());
+            }
+
+            populate(invoice, invoiceLines);
+
+            return invoice;
+          }
+        };
+
+    Invoice invoice1 = invoiceGenerator.generate();
+    this.computeProjectInvoice(invoice);
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+    }
+
+    invoice1.setInvoiceProductStatement(
+        invoiceProductStatementService.getInvoiceProductStatement(invoice1));
+    return invoice1;
+  }
+
+  @Override
+  public void computeProjectInvoice(Invoice invoice) throws AxelorException {
+    List<ProjectHoldBackATI> projectHoldBackATIList = invoice.getProjectHoldBackATIList();
+    if (CollectionUtils.isEmpty(projectHoldBackATIList)) {
+      return;
+    }
+    invoice.setAmountRemaining(
+        currencyScaleService.getScaledValue(
+            invoice, invoice.getAmountRemaining().add(invoice.getHoldBacksTotal())));
+    invoice.setCompanyInTaxTotalRemaining(
+        currencyScaleService.getScaledValue(
+            invoice, invoice.getCompanyInTaxTotal().add(invoice.getCompanyHoldBacksTotal())));
+
+    if (!ObjectUtils.isEmpty(invoice.getInvoiceLineList())
+        && ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
+      invoiceTermService.computeInvoiceTerms(invoice);
+    }
+  }
+
+  public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, Invoice invoice)
+      throws AxelorException {
+
+    return currencyService
+        .getAmountCurrencyConvertedAtDate(
+            invoice.getCurrency(),
+            invoice.getCompany().getCurrency(),
+            exTaxTotal,
+            invoice.getInvoiceDate())
+        .setScale(currencyScaleService.getCompanyScale(invoice), RoundingMode.HALF_UP);
   }
 }

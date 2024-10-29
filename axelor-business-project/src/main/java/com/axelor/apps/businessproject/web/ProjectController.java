@@ -34,6 +34,7 @@ import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectGenerateInvoiceService;
 import com.axelor.apps.businessproject.service.ProjectHistoryService;
+import com.axelor.apps.businessproject.service.ProjectHoldBackLineService;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.translation.ITranslation;
@@ -58,7 +59,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.apache.shiro.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -302,7 +302,7 @@ public class ProjectController {
     List<Integer> projectHoldBacksIds = new ArrayList<>();
     for (Map<String, Object> line : lines) {
       if ((boolean) line.get("selected")) {
-        projectHoldBacksIds.add((Integer) line.get("id"));
+        projectHoldBacksIds.add((Integer) line.get("holdBackId"));
       }
     }
     if (CollectionUtils.isEmpty(projectHoldBacksIds)) {
@@ -328,14 +328,13 @@ public class ProjectController {
   public void loadProjectRelatedHoldBacks(ActionRequest request, ActionResponse response) {
 
     Project project = request.getContext().asType(Project.class);
+    project = Beans.get(ProjectRepository.class).find(project.getId());
     if (CollectionUtils.isEmpty(project.getProjectHoldBackLineList())) {
       return;
     }
-    List<ProjectHoldBack> projectHoldBacks =
-        project.getProjectHoldBackLineList().stream()
-            .map(ProjectHoldBackLine::getProjectHoldBack)
-            .distinct()
-            .collect(Collectors.toList());
+
+    List<Map<String, Object>> projectHoldBacks =
+        Beans.get(ProjectHoldBackLineService.class).loadProjectRelatedHoldBacks(project);
     response.setValue("$projectHoldBackList", projectHoldBacks);
   }
 }

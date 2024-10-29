@@ -187,5 +187,8 @@ public class WorkflowVentilationProjectServiceImpl
             il ->
                 il.getRelatedProjectHoldBackLineInvoiceLine()
                     .setIsVentilatedReleasedProjectHoldBackLineInvoiceLine(true));
+    invoice.getInvoiceLineList().stream()
+        .filter(il -> il.getRelatedProjectHoldBackATI() != null)
+        .forEach(il -> il.getRelatedProjectHoldBackATI().setIsVentilatedProjectHoldBackATI(true));
   }
 }

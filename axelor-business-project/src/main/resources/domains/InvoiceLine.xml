@@ -20,6 +20,8 @@
       ref="com.axelor.apps.project.db.ProjectHoldBackLine" title="Project holdBack line"/>
     <many-to-one name="relatedProjectHoldBackLineInvoiceLine"
       title="Related project hold back line invoice" ref="com.axelor.apps.account.db.InvoiceLine"/>
+    <many-to-one name="relatedProjectHoldBackATI" title="Related project hold back ATI"
+      ref="com.axelor.apps.businessproject.db.ProjectHoldBackATI"/>
 
   </entity>
 
