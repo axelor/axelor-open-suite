@@ -1,11 +1,13 @@
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentServiceImpl;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -23,19 +25,21 @@ public class InvoiceTermPaymentServiceBusinessProjectImpl extends InvoiceTermPay
       CurrencyScaleService currencyScaleService,
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
       InvoiceTermToolService invoiceTermToolService,
-      InvoiceTermFilterService invoiceTermFilterService) {
+      InvoiceTermFilterService invoiceTermFilterService,
+      InvoicePaymentToolService invoicePaymentToolService) {
     super(
         currencyService,
         appAccountService,
         currencyScaleService,
         invoicePaymentFinancialDiscountService,
         invoiceTermToolService,
-        invoiceTermFilterService);
+        invoiceTermFilterService,
+        invoicePaymentToolService);
   }
 
   @Override
   public BigDecimal computeInvoicePaymentAmount(
-      InvoicePayment invoicePayment, List<InvoiceTermPayment> invoiceTermPayments)
+      InvoicePayment invoicePayment, List<InvoiceTermPayment> invoiceTermPayments, Invoice invoice)
       throws AxelorException {
 
     BigDecimal sum =

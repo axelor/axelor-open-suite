@@ -895,7 +895,7 @@
       </panel>
       <panel name="holdBackPanel" title="HoldBacks" showIf="projectHoldBackATIList">
         <panel-related field="$projectHoldBackList" type="one-to-many"
-          target="com.axelor.apps.project.db.ProjectHoldBack" title="HoldBacks"
+          target="com.axelor.apps.businessproject.db.ProjectHoldBack" title="HoldBacks"
           grid-view="project-hold-back-grid" form-view="project-hold-back-form" readonly="true"
           colSpan="12"/>
       </panel>

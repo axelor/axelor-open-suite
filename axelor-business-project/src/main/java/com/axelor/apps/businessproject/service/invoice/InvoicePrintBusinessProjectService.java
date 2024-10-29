@@ -20,7 +20,7 @@ package com.axelor.apps.businessproject.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.project.db.ProjectHoldBack;
+import com.axelor.apps.businessproject.db.ProjectHoldBack;
 import java.io.File;
 import java.util.List;
 

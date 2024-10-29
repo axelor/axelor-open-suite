@@ -12,6 +12,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentToolService;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -55,7 +57,9 @@ public class InvoicePaymentToolServiceBusinessProjectImpl
       InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
       CurrencyScaleService currencyScaleService,
       InvoiceTermFilterService invoiceTermFilterService,
-      InvoiceTermToolService invoiceTermToolService) {
+      InvoiceTermToolService invoiceTermToolService,
+      InvoiceTermPaymentToolService invoiceTermPaymentToolService,
+      ForeignExchangeGapToolService foreignExchangeGapToolService) {
     super(
         invoiceRepo,
         moveToolService,
@@ -69,7 +73,9 @@ public class InvoicePaymentToolServiceBusinessProjectImpl
         invoicePaymentFinancialDiscountService,
         currencyScaleService,
         invoiceTermFilterService,
-        invoiceTermToolService);
+        invoiceTermToolService,
+        invoiceTermPaymentToolService,
+        foreignExchangeGapToolService);
   }
 
   @Override
@@ -164,13 +170,27 @@ public class InvoicePaymentToolServiceBusinessProjectImpl
       if (!CollectionUtils.isEmpty(invoiceTerms)) {
 
         BigDecimal companyAmount =
-            this.computeCompanyAmount(invoicePayment.getAmount(), invoicePayment);
+            this.computeCompanyAmount(
+                invoicePayment.getAmount(),
+                invoicePayment.getCurrency(),
+                invoicePayment.getCompanyCurrency(),
+                invoicePayment.getPaymentDate());
 
         invoicePayment.clearInvoiceTermPaymentList();
         invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-            invoicePayment, invoiceTerms, companyAmount, companyAmount);
+            invoicePayment, invoiceTerms, companyAmount, invoicePayment.getAmount(), companyAmount);
 
-        if (invoicePayment.getApplyFinancialDiscount() && invoicePayment.getManualChange()) {
+        if (invoiceTermPaymentToolService.isPartialPayment(invoicePayment)) {
+          invoicePayment.clearInvoiceTermPaymentList();
+          invoicePayment.setApplyFinancialDiscount(false);
+          invoicePayment.setTotalAmountWithFinancialDiscount(invoicePayment.getAmount());
+          invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
+              invoicePayment,
+              invoiceTerms,
+              companyAmount,
+              invoicePayment.getAmount(),
+              companyAmount);
+        } else if (invoicePayment.getApplyFinancialDiscount() && invoicePayment.getManualChange()) {
           BigDecimal financialDiscountAmount =
               invoicePayment.getInvoiceTermPaymentList().stream()
                   .map(InvoiceTermPayment::getInvoiceTerm)
@@ -184,16 +204,10 @@ public class InvoicePaymentToolServiceBusinessProjectImpl
               invoicePayment,
               invoiceTerms,
               amountWithFinancialDiscount,
+              amountWithFinancialDiscount,
               amountWithFinancialDiscount);
-        } else if (this.isPartialPayment(invoicePayment)) {
-          invoicePayment.clearInvoiceTermPaymentList();
-          invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-              invoicePayment, invoiceTerms, companyAmount, companyAmount);
         }
 
-        if (this.isPartialPayment(invoicePayment)) {
-          invoicePayment.setApplyFinancialDiscount(false);
-        }
         invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
       }
     }

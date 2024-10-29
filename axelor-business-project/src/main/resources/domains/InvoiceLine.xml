@@ -17,7 +17,7 @@
     <boolean name="isVentilatedReleasedProjectHoldBackLineInvoiceLine"
       title="Ventilated project hold back line invoice" nullable="false" default="false"/>
     <many-to-one name="projectHoldBackLine"
-      ref="com.axelor.apps.project.db.ProjectHoldBackLine" title="Project holdBack line"/>
+      ref="com.axelor.apps.businessproject.db.ProjectHoldBackLine" title="Project holdBack line"/>
     <many-to-one name="relatedProjectHoldBackLineInvoiceLine"
       title="Related project hold back line invoice" ref="com.axelor.apps.account.db.InvoiceLine"/>
     <many-to-one name="relatedProjectHoldBackATI" title="Related project hold back ATI"
