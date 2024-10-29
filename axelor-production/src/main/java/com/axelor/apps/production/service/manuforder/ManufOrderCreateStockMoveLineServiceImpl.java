@@ -270,7 +270,9 @@ public class ManufOrderCreateStockMoveLineServiceImpl
 
   protected void clearTrackingNumberOriginStockMoveLine(StockMove stockMove) {
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-      stockMoveLine.getTrackingNumber().setOriginStockMoveLine(null);
+      if (stockMoveLine.getTrackingNumber() != null) {
+        stockMoveLine.getTrackingNumber().setOriginStockMoveLine(null);
+      }
     }
   }
 
