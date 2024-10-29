@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -64,16 +65,16 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       PartnerService partnerService,
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
-      AppBaseService appBaseService,
       SaleOrderService saleOrderService,
       SaleOrderComputeService saleOrderComputeService,
+      DMSService dmsService,
+      SaleOrderLineRepository saleOrderLineRepository,
+      AddressService addressService,
       AccountConfigService accountConfigService,
       SaleOrderRepository saleOrderRepository,
+      AppBaseService appBaseService,
       SaleOrderSupplychainService saleOrderSupplychainService,
-      DMSService dmsService,
-      AppStockService appStockService,
-      SaleOrderLineRepository saleOrderLineRepository) {
-
+      AppStockService appStockService) {
     super(
         partnerService,
         saleOrderRepo,
@@ -81,8 +82,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         saleOrderService,
         saleOrderComputeService,
         dmsService,
-        saleOrderLineRepository);
-
+        saleOrderLineRepository,
+        addressService);
     this.accountConfigService = accountConfigService;
     this.saleOrderRepository = saleOrderRepository;
     this.appBaseService = appBaseService;

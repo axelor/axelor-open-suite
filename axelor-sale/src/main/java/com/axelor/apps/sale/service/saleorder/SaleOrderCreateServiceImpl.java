@@ -31,6 +31,7 @@ import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -60,6 +61,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   protected SaleOrderComputeService saleOrderComputeService;
   protected DMSService dmsService;
   protected SaleOrderLineRepository saleOrderLineRepository;
+  protected AddressService addressService;
 
   @Inject
   public SaleOrderCreateServiceImpl(
@@ -69,7 +71,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrderService saleOrderService,
       SaleOrderComputeService saleOrderComputeService,
       DMSService dmsService,
-      SaleOrderLineRepository saleOrderLineRepository) {
+      SaleOrderLineRepository saleOrderLineRepository,
+      AddressService addressService) {
 
     this.partnerService = partnerService;
     this.saleOrderRepo = saleOrderRepo;
@@ -78,10 +81,11 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     this.saleOrderComputeService = saleOrderComputeService;
     this.dmsService = dmsService;
     this.saleOrderLineRepository = saleOrderLineRepository;
+    this.addressService = addressService;
   }
 
   @Override
-  public SaleOrder createSaleOrder(Company company) throws AxelorException {
+  public SaleOrder createSaleOrder(Company company, Partner clientPartner) throws AxelorException {
     SaleOrder saleOrder = new SaleOrder();
     saleOrder.setCreationDate(appSaleService.getTodayDate(company));
     if (company != null) {
@@ -92,6 +96,18 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setTeam(saleOrder.getSalespersonUser().getActiveTeam());
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
     saleOrderService.computeEndOfValidityDate(saleOrder);
+
+    if (clientPartner != null) {
+      saleOrder.setClientPartner(clientPartner);
+      saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
+      saleOrder.setMainInvoicingAddressStr(
+          addressService.computeAddressStr(saleOrder.getMainInvoicingAddress()));
+      saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));
+      saleOrder.setDeliveryAddressStr(
+          addressService.computeAddressStr(saleOrder.getDeliveryAddress()));
+      saleOrder.setFiscalPosition(clientPartner.getFiscalPosition());
+    }
+
     return saleOrder;
   }
 
