@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
+import com.axelor.apps.businessproject.db.ProjectHoldBack;
 import com.axelor.apps.businessproject.service.InvoiceServiceProject;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectService;
@@ -39,6 +40,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 @Singleton
@@ -109,5 +111,14 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void loadRelatedHoldBacks(ActionRequest request, ActionResponse response) {
+
+    Invoice invoice =
+        Beans.get(InvoiceRepository.class).find(request.getContext().asType(Invoice.class).getId());
+    List<ProjectHoldBack> projectHoldBacks =
+        Beans.get(InvoicePrintBusinessProjectService.class).loadProjectHoldBacks(invoice);
+    response.setValue("$projectHoldBackList", projectHoldBacks);
   }
 }

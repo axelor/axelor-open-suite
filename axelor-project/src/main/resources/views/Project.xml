@@ -380,7 +380,7 @@
     <field name="projectStatus"/>
     <field name="sequence"/>
     <template>
-		<![CDATA[
+      <![CDATA[
 	    <>
 	    	<strong>{fullName}</strong>
 	    	<Box dangerouslySetInnerHTML={{__html : description}}></Box>
@@ -396,7 +396,7 @@
     <field name="projectStatus"/>
     <field name="sequence"/>
     <template>
-		<![CDATA[
+      <![CDATA[
 	    <>
 	    	<strong>{fullName}</strong>
 	    	<Box dangerouslySetInnerHTML={{__html : description}}></Box>

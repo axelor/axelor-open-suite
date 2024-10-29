@@ -19,8 +19,15 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.AxelorException;
+import java.math.BigDecimal;
 
 public interface InvoiceServiceProject {
 
   public Invoice updateLines(Invoice invoice);
+
+  void computeProjectInvoice(Invoice invoice) throws AxelorException;
+
+  BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, Invoice invoice)
+      throws AxelorException;
 }

@@ -20,7 +20,6 @@ package com.axelor.apps.budget.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateServiceImpl;
-import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationServiceImpl;
 import com.axelor.apps.account.service.reconcile.UnreconcileServiceImpl;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
@@ -131,6 +130,8 @@ import com.axelor.apps.budget.service.saleorderline.SaleOrderLineViewBudgetServi
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
+import com.axelor.apps.businessproject.service.MoveLineCreateServiceBusinessProjectImpl;
+import com.axelor.apps.businessproject.service.MoveValidateServiceBusinessProjectImpl;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineServiceProjectImpl;
@@ -139,7 +140,6 @@ import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImp
 import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
-import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckSupplychainServiceImpl;
@@ -173,7 +173,7 @@ public class BudgetModule extends AxelorModule {
     bind(MoveLineBudgetService.class).to(MoveLineBudgetServiceImpl.class);
     bind(MoveBudgetService.class).to(MoveBudgetServiceImpl.class);
     bind(MoveRemoveServiceBankPaymentImpl.class).to(MoveRemoveBudgetService.class);
-    bind(MoveValidateHRServiceImpl.class).to(MoveValidateBudgetServiceImpl.class);
+    bind(MoveValidateServiceBusinessProjectImpl.class).to(MoveValidateBudgetServiceImpl.class);
     bind(MoveLineGroupBankPaymentServiceImpl.class).to(MoveLineGroupBudgetServiceImpl.class);
 
     bind(PurchaseOrderLineBudgetService.class).to(PurchaseOrderLineBudgetServiceImpl.class);
@@ -209,7 +209,7 @@ public class BudgetModule extends AxelorModule {
     bind(ExpenseMoveReverseServiceImpl.class).to(MoveReverseServiceBudgetImpl.class);
     bind(ReconcileInvoiceTermComputationServiceImpl.class)
         .to(ReconcileInvoiceTermComputationBudgetServiceImpl.class);
-    bind(MoveLineCreateServiceImpl.class).to(MoveLineCreateBudgetServiceImpl.class);
+    bind(MoveLineCreateServiceBusinessProjectImpl.class).to(MoveLineCreateBudgetServiceImpl.class);
     bind(MoveLineConsolidateServiceImpl.class).to(MoveLineConsolidateBudgetServiceImpl.class);
     bind(BudgetGroupService.class).to(BudgetGroupServiceImpl.class);
     bind(GlobalBudgetToolsService.class).to(GlobalBudgetToolsServiceImpl.class);
