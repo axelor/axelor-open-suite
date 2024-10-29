@@ -56,7 +56,9 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,7 +146,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
   }
 
   @Override
-  public Invoice compute(final Invoice invoice) throws AxelorException {
+  public Map<String, Object> compute(final Invoice invoice) throws AxelorException {
 
     log.debug("Invoice computation");
 
@@ -166,14 +168,47 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         };
 
     Invoice invoice1 = invoiceGenerator.generate();
-    this.computeProjectInvoice(invoice);
+    Map<String, Object> invoiceMap = this.getComputeInvoiceMap(invoice1);
+
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+      invoiceMap.put("advancePaymentInvoiceSet", invoice1.getAdvancePaymentInvoiceSet());
     }
 
     invoice1.setInvoiceProductStatement(
         invoiceProductStatementService.getInvoiceProductStatement(invoice1));
-    return invoice1;
+    invoiceMap.put("invoiceProductStatement", invoice1.getInvoiceProductStatement());
+
+    return invoiceMap;
+  }
+
+  protected Map<String, Object> getComputeInvoiceMap(Invoice invoice) {
+    List<ProjectHoldBackATI> projectHoldBackATIList = invoice.getProjectHoldBackATIList();
+    if (CollectionUtils.isEmpty(projectHoldBackATIList)) {
+      return super.getComputeInvoiceMap(invoice);
+    }
+
+    Map<String, Object> invoiceMap = new HashMap<>();
+
+    invoiceMap.put("invoiceLineList", invoice.getInvoiceLineList());
+    invoiceMap.put("invoiceLineTaxList", invoice.getInvoiceLineTaxList());
+    invoiceMap.put("invoiceTermList", invoice.getInvoiceTermList());
+    invoiceMap.put("exTaxTotal", invoice.getExTaxTotal());
+    invoiceMap.put("taxTotal", invoice.getTaxTotal());
+    invoiceMap.put("inTaxTotal", invoice.getInTaxTotal());
+    invoiceMap.put("companyExTaxTotal", invoice.getCompanyExTaxTotal());
+    invoiceMap.put("companyTaxTotal", invoice.getCompanyTaxTotal());
+    invoiceMap.put("companyInTaxTotal", invoice.getCompanyInTaxTotal());
+    invoiceMap.put(
+        "companyInTaxTotalRemaining",
+        invoice.getCompanyInTaxTotal().add(invoice.getCompanyHoldBacksTotal()));
+    invoiceMap.put(
+        "amountRemaining",
+        currencyScaleService.getScaledValue(
+            invoice, invoice.getAmountRemaining().add(invoice.getHoldBacksTotal())));
+    invoiceMap.put("hasPendingPayments", invoice.getHasPendingPayments());
+
+    return invoiceMap;
   }
 
   @Override

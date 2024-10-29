@@ -39,8 +39,6 @@ import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateS
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.translation.ITranslation;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.businessproject.db.ProjectHoldBack;
-import com.axelor.apps.businessproject.db.ProjectHoldBackLine;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
