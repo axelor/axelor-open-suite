@@ -119,9 +119,11 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public SaleOrder generateQuotation(Project project) throws AxelorException {
-    SaleOrder order = Beans.get(SaleOrderCreateService.class).createSaleOrder(project.getCompany());
-
     Partner clientPartner = project.getClientPartner();
+    SaleOrder order =
+        Beans.get(SaleOrderCreateService.class)
+            .createSaleOrder(project.getCompany(), clientPartner);
+
     Partner contactPartner = project.getContactPartner();
     if (contactPartner == null && clientPartner.getContactPartnerSet().size() == 1) {
       contactPartner = clientPartner.getContactPartnerSet().iterator().next();
@@ -132,13 +134,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     order.setProject(projectRepository.find(project.getId()));
     order.setClientPartner(clientPartner);
     order.setContactPartner(contactPartner);
-    order.setCompany(company);
 
-    order.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
-    order.setMainInvoicingAddressStr(
-        addressService.computeAddressStr(order.getMainInvoicingAddress()));
-    order.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));
-    order.setDeliveryAddressStr(addressService.computeAddressStr(order.getDeliveryAddress()));
     order.setIsNeedingConformityCertificate(clientPartner.getIsNeedingConformityCertificate());
     order.setCompanyBankDetails(
         Beans.get(AccountingSituationService.class)

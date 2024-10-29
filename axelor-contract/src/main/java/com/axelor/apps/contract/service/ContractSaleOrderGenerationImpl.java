@@ -60,9 +60,9 @@ public class ContractSaleOrderGenerationImpl implements ContractSaleOrderGenerat
   public SaleOrder generateSaleOrder(Contract contract) throws AxelorException {
     Partner clientPartner = contract.getPartner();
 
-    SaleOrder saleOrder = saleOrderCreateService.createSaleOrder(contract.getCompany());
+    SaleOrder saleOrder =
+        saleOrderCreateService.createSaleOrder(contract.getCompany(), clientPartner);
     saleOrder.setCurrency(contract.getCurrency());
-    saleOrder.setClientPartner(clientPartner);
     saleOrder.setInvoicedPartner(contract.getInvoicedPartner());
     saleOrder.setPaymentMode(contract.getCurrentContractVersion().getPaymentMode());
     saleOrder.setPaymentCondition(contract.getInvoicedPartner().getPaymentCondition());

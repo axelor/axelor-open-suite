@@ -158,7 +158,7 @@ public interface SaleOrderCreateService {
       TradingName tradingName)
       throws AxelorException;
 
-  public SaleOrder createSaleOrder(Company company) throws AxelorException;
+  SaleOrder createSaleOrder(Company company, Partner clientPartner) throws AxelorException;
 
   SaleOrder createTemplate(SaleOrder context);
 
