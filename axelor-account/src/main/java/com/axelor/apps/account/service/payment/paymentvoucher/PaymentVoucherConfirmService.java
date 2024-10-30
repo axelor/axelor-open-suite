@@ -476,11 +476,13 @@ public class PaymentVoucherConfirmService {
         log.debug("PV moveLineToPay debit : {}", moveLineToPay.getDebit());
         log.debug("PV moveLineToPay amountPaid : {}", moveLineToPay.getAmountPaid());
 
-        BigDecimal amountToPay =
-            payVoucherElementToPay
-                .getAmountToPayCurrency()
-                .add(payVoucherElementToPay.getFinancialDiscountAmount())
-                .add(payVoucherElementToPay.getFinancialDiscountTaxAmount());
+        BigDecimal amountToPay = payVoucherElementToPay.getAmountToPayCurrency();
+        if (payVoucherElementToPay.getApplyFinancialDiscount()) {
+          amountToPay =
+              amountToPay
+                  .add(payVoucherElementToPay.getFinancialDiscountAmount())
+                  .add(payVoucherElementToPay.getFinancialDiscountTaxAmount());
+        }
 
         if (amountToPay.compareTo(BigDecimal.ZERO) > 0) {
           paidLineTotal = paidLineTotal.add(amountToPay);
@@ -826,13 +828,17 @@ public class PaymentVoucherConfirmService {
             .getCompanyAmount()
             .divide(
                 invoiceTerm.getAmount(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
-    BigDecimal companyAmountToPay =
+
+    BigDecimal companyAmountToPay = payVoucherElementToPay.getAmountToPayCurrency();
+
+    if (payVoucherElementToPay.getApplyFinancialDiscount()) {
+      companyAmountToPay =
+          companyAmountToPay.add(payVoucherElementToPay.getFinancialDiscountTotalAmount());
+    }
+
+    companyAmountToPay =
         currencyScaleService.getCompanyScaledValue(
-            payVoucherElementToPay.getPaymentVoucher(),
-            (payVoucherElementToPay
-                    .getAmountToPayCurrency()
-                    .add(payVoucherElementToPay.getFinancialDiscountTotalAmount()))
-                .multiply(ratio));
+            payVoucherElementToPay.getPaymentVoucher(), companyAmountToPay.multiply(ratio));
 
     BigDecimal currencyRate = invoiceTerm.getMoveLine().getCurrencyRate();
 
