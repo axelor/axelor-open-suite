@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed issue when updating quantity in manufacturing order."
+module: axelor-production
