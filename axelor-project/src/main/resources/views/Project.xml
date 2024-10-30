@@ -77,12 +77,12 @@
         <item name="perStatusCalendar" title="Per status calendar"
           action="save,action-project-view-per-status-calendar"
           showIf="id &amp;&amp; isShowCalendarPerStatus"/>
-        <item name="perSectionKanban" title="Per section kanban"
-          action="save,action-project-view-per-section-kanban"
-          showIf="id &amp;&amp; isShowKanbanPerSection"/>
-        <item name="perSectionCalendar" title="Per section calendar"
-          action="save,action-project-view-per-section-calendar"
-          showIf="id &amp;&amp; isShowCalendarPerSection"/>
+        <item name="perCategoryKanban" title="Per category kanban"
+          action="save,action-project-view-per-category-kanban"
+          showIf="id &amp;&amp; isShowKanbanPerCategory"/>
+        <item name="perCategoryCalendar" title="Per category calendar"
+          action="save,action-project-view-per-category-calendar"
+          showIf="id &amp;&amp; isShowCalendarPerCategory"/>
         <item name="perUserCalendar" title="Per user calendar"
           action="save,action-project-view-per-user-calendar"
           showIf="id &amp;&amp; isShowCalendarPerUser"/>
@@ -307,18 +307,16 @@
       collapseIf="false">
       <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
-      <field name="isShowSection" colSpan="4" widget="inline-checkbox"
-        onChange="action-project-record-section-reset-values"/>
       <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
       <spacer colSpan="8"/>
       <field name="isShowGantt" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowKanbanPerStatus" colSpan="4" widget="inline-checkbox"
         showIf="taskStatusManagementSelect != 1"/>
-      <field name="isShowKanbanPerSection" colSpan="4" widget="inline-checkbox"
-        showIf="isShowSection"/>
+      <field name="isShowKanbanPerCategory" colSpan="4" widget="inline-checkbox"
+        showIf="isShowTaskCategory"/>
       <field name="isShowCalendarPerStatus" colSpan="4" widget="inline-checkbox"/>
-      <field name="isShowCalendarPerSection" colSpan="4" widget="inline-checkbox"
-        showIf="isShowSection"/>
+      <field name="isShowCalendarPerCategory" colSpan="4" widget="inline-checkbox"
+        showIf="isShowTaskCategory"/>
       <field name="isShowCalendarPerUser" colSpan="4" widget="inline-checkbox"/>
     </panel>
     <panel-include view="incl-custom-fields-to-display-panel-form"/>
@@ -601,14 +599,10 @@
   <action-record name="action-project-record-change-show-task-category"
     model="com.axelor.apps.project.db.Project">
     <field name="projectTaskCategorySet" expr="eval: null" if="!isShowTaskCategory"/>
+    <field name="isShowKanbanPerCategory" expr="eval: false" if="!isShowTaskCategory"/>
+    <field name="isShowCalendarPerCategory" expr="eval: false" if="!isShowTaskCategory"/>
     <field name="taskStatusManagementSelect" expr="2"
       if="!isShowTaskCategory &amp;&amp; taskStatusManagementSelect == 4"/>
-  </action-record>
-
-  <action-record name="action-project-record-section-reset-values"
-    model="com.axelor.apps.project.db.Project">
-    <field name="isShowKanbanPerSection" expr="eval: false" if="!isShowSection"/>
-    <field name="isShowCalendarPerSection" expr="eval: false" if="!isShowSection"/>
   </action-record>
 
   <action-record name="action-project-record-status-finish"
