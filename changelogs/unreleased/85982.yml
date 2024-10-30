@@ -1,0 +1,3 @@
+---
+title: "FEC Import : Fix fec import moves with the good status"
+module: axelor-account
