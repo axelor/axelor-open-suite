@@ -16,6 +16,8 @@
       selection="business.project.invoice.grouping.period.select" default="month"/>
     <one-to-many name="projectHoldBackATIList" mappedBy="invoice"
       ref="com.axelor.apps.businessproject.db.ProjectHoldBackATI" title="HoldBacks ATIs"/>
+    <one-to-many name="projectHoldBackLineList"
+      ref="com.axelor.apps.businessproject.db.ProjectHoldBackLine" title="HoldBacks lines"/>
     <decimal name="holdBacksTotal" title=" HoldBacks ATI"/>
     <decimal name="companyHoldBacksTotal" title=" HoldBacks ATI"/>
     <extra-code>

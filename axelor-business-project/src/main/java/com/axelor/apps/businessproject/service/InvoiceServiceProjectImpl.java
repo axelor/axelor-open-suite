@@ -169,6 +169,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
 
     Invoice invoice1 = invoiceGenerator.generate();
     Map<String, Object> invoiceMap = this.getComputeInvoiceMap(invoice1);
+    this.computeProjectInvoice(invoice1);
 
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));

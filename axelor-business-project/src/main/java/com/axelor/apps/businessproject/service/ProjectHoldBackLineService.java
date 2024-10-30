@@ -21,6 +21,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.businessproject.db.ProjectHoldBack;
 import com.axelor.apps.project.db.Project;
 import java.util.List;
 import java.util.Map;
@@ -36,4 +37,8 @@ public interface ProjectHoldBackLineService {
   void generateHoldBackATIs(Invoice invoice) throws AxelorException;
 
   List<Map<String, Object>> loadProjectRelatedHoldBacks(Project project);
+
+  List<ProjectHoldBack> loadProjectHoldBacks(Invoice invoice);
+
+  void updateHoldBackATI(Invoice invoice) throws AxelorException;
 }

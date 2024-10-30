@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServi
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.businessproject.db.ProjectHoldBack;
 import com.axelor.apps.businessproject.service.InvoiceServiceProject;
+import com.axelor.apps.businessproject.service.ProjectHoldBackLineService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectService;
 import com.axelor.common.StringUtils;
@@ -118,7 +119,21 @@ public class InvoiceController {
     Invoice invoice =
         Beans.get(InvoiceRepository.class).find(request.getContext().asType(Invoice.class).getId());
     List<ProjectHoldBack> projectHoldBacks =
-        Beans.get(InvoicePrintBusinessProjectService.class).loadProjectHoldBacks(invoice);
+        Beans.get(ProjectHoldBackLineService.class).loadProjectHoldBacks(invoice);
     response.setValue("$projectHoldBackList", projectHoldBacks);
+  }
+
+  public void updateHoldBackATI(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Invoice invoice =
+        Beans.get(InvoiceRepository.class).find(request.getContext().asType(Invoice.class).getId());
+    Beans.get(ProjectHoldBackLineService.class).updateHoldBackATI(invoice);
+    List<ProjectHoldBack> projectHoldBacks =
+        Beans.get(ProjectHoldBackLineService.class).loadProjectHoldBacks(invoice);
+    response.setValue("$projectHoldBackList", projectHoldBacks);
+    response.setValue("projectHoldBackATIList", invoice.getProjectHoldBackATIList());
+    response.setValue("holdBacksTotal", invoice.getHoldBacksTotal());
+    response.setValue("companyHoldBacksTotal", invoice.getCompanyHoldBacksTotal());
   }
 }

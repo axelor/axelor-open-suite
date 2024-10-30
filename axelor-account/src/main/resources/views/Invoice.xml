@@ -893,11 +893,14 @@
           showIf="operationTypeSelect == 3 &amp;&amp; operationSubTypeSelect != 9" colSpan="12"
           if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
       </panel>
-      <panel name="holdBackPanel" title="HoldBacks" showIf="projectHoldBackATIList">
-        <panel-related field="$projectHoldBackList" type="one-to-many"
-          target="com.axelor.apps.businessproject.db.ProjectHoldBack" title="HoldBacks"
-          grid-view="project-hold-back-grid" form-view="project-hold-back-form" readonly="true"
-          colSpan="12"/>
+      <panel name="holdBackPanel" title="HoldBacks" showIf="projectHoldBackATIList"
+        if-module="axelor-business-project">
+        <panel-related name="holdBackLineListPanel" title="HoldBacks lines"
+          colSpan="12" field="projectHoldBackLineList" form-view="project-hold-back-line-form"
+          grid-view="project-hold-back-line-grid" editable="true" readonlyIf="!project"
+          onChange="action-invoice-group-on-hold-back-lines-change"/>
+        <field name="holdBacksTotal" hidden="true"/>
+        <field name="companyHoldBacksTotal" hidden="true"/>
       </panel>
       <panel name="pfpAccountConfigPanel"
         if="__config__.app.getApp('account')?.getActivatePassedForPayment()" hidden="true">
@@ -2956,6 +2959,17 @@
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="generateLatePaymentInvoice"/>
   </action-method>
+
+  <action-method name="action-invoice-method-update-hold-back-ati"
+    if-module="axelor-business-project">
+    <call class="com.axelor.apps.businessproject.web.InvoiceController"
+      method="updateHoldBackATI"/>
+  </action-method>
+
+  <action-group name="action-invoice-group-on-hold-back-lines-change">
+    <action name="action-invoice-method-update-hold-back-ati"/>
+    <action name="action-invoice-method-load-related-hold-backs"/>
+  </action-group>
 
   <action-view name="action-invoice-view-late-interest-invoices"
     title="Late interest invoices" model="com.axelor.apps.account.db.Invoice">

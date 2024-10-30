@@ -298,7 +298,7 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
                   String.format(
                       I18n.get("%s %s%% - %s of %s"),
                       projectHoldBackATI.getProjectHoldBack().getName(),
-                      projectHoldBackATI.getProjectHoldBack().getDefaultPercentage(),
+                      projectHoldBackATI.getPercentage(),
                       projectHoldBackATI.getInvoice().getInvoiceId(),
                       projectHoldBackATI.getInvoice().getInvoiceDate()));
               invoiceLine.setRelatedProjectHoldBackATI(projectHoldBackATI);
@@ -429,7 +429,7 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
 
   @Override
   public void generateHoldBackATIs(Invoice invoice) throws AxelorException {
-    invoice.setProjectHoldBackATIList(this.createHoldBackATIs(invoice));
+    invoice.setProjectHoldBackATIList(this.createHoldBackATIsFromProject(invoice));
     calculateHoldBacksTotal(invoice);
   }
 
@@ -458,8 +458,8 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
     invoice.setCompanyHoldBacksTotal(companyHoldBacksTotal);
   }
 
-  protected List<ProjectHoldBackATI> createHoldBackATIs(Invoice invoice) throws AxelorException {
-    List<ProjectHoldBackATI> projectHoldBackATIList = new ArrayList<>();
+  protected List<ProjectHoldBackATI> createHoldBackATIsFromProject(Invoice invoice)
+      throws AxelorException {
     List<ProjectHoldBackLine> projectHoldBackLineList =
         invoice.getProject().getProjectHoldBackLineList().stream()
             .filter(
@@ -467,6 +467,13 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
                     hb.getProjectHoldBack().getHoldBackTypeSelect()
                         == ProjectHoldBackRepository.HOLD_BACK_AS_IN_TAX_TOTAL)
             .collect(Collectors.toList());
+    invoice.setProjectHoldBackLineList(projectHoldBackLineList);
+    return createHoldBackATIs(invoice, projectHoldBackLineList);
+  }
+
+  protected List<ProjectHoldBackATI> createHoldBackATIs(
+      Invoice invoice, List<ProjectHoldBackLine> projectHoldBackLineList) throws AxelorException {
+    List<ProjectHoldBackATI> projectHoldBackATIList = new ArrayList<>();
     if (CollectionUtils.isEmpty(projectHoldBackLineList)) {
       return projectHoldBackATIList;
     }
@@ -598,5 +605,26 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
     projectRelatedHoldBack.put("$linesTotalAmount", totalSum);
     projectRelatedHoldBack.put("holdBackId", projectHoldBack.getId());
     return projectRelatedHoldBack;
+  }
+
+  @Override
+  public List<ProjectHoldBack> loadProjectHoldBacks(Invoice invoice) {
+
+    List<ProjectHoldBackATI> holdBackATIS = invoice.getProjectHoldBackATIList();
+    if (CollectionUtils.isEmpty(holdBackATIS)) {
+      return null;
+    }
+
+    return holdBackATIS.stream()
+        .map(ProjectHoldBackATI::getProjectHoldBack)
+        .distinct()
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public void updateHoldBackATI(Invoice invoice) throws AxelorException {
+    invoice.setProjectHoldBackATIList(
+        createHoldBackATIs(invoice, invoice.getProject().getProjectHoldBackLineList()));
+    calculateHoldBacksTotal(invoice);
   }
 }
