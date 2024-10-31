@@ -1,3 +1,10 @@
 ---
-title: "PurchaseOrder : remove required condition on company department"
+title: "Purchase order: removed required condition on company department."
 module: axelor-budget
+developer: |
+  SaleOrderDummyBudgetServiceImpl class was removed, as well as following actions:
+  
+  - `action-budget-group-purchase-order-on-new-actions`
+  - `action-budget-purchase-order-record-load-budget-key-config`
+  - `action-group-budget-saleorder-onload`
+  - `action-budget-sale-order-record-load-budget-key-config`
