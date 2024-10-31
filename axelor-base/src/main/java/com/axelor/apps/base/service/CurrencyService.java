@@ -37,6 +37,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -257,5 +258,13 @@ public class CurrencyService {
             endCurrency.getCodeISO());
       }
     }
+  }
+
+  public boolean isSameCurrencyRate(
+      LocalDate invoiceDate, LocalDate paymentDate, Currency startCurrency, Currency endCurrency)
+      throws AxelorException {
+    return Objects.equals(
+        this.getCurrencyConversionRate(startCurrency, endCurrency, invoiceDate),
+        this.getCurrencyConversionRate(startCurrency, endCurrency, paymentDate));
   }
 }
