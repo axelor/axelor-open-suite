@@ -142,7 +142,7 @@ public interface StockMoveService {
 
   void sendSupplierCancellationMail(StockMove stockMove, Template template) throws AxelorException;
 
-  public boolean splitStockMoveLines(
+  void splitStockMoveLines(
       StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty)
       throws AxelorException;
 
