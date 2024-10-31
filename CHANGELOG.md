@@ -1,3 +1,72 @@
+## [8.1.10] (2024-10-31)
+
+### Fixes
+#### Base
+
+* Sequence: fixed draft prefix when checking for the draft sequence number.
+* Birt report: fixed number formatting for excel format.
+* Partner: fixed NPE when manually adding an accounting situation.
+
+#### Account
+
+* Move: fixed blocked accounting when missing budget alert is required and account type is not one of the charge, income, immobilisation.
+* Accounting batch: fixed multiple auto lettering.
+* Accounting cut off batch: fixed wrong analytic distribution and axis on generated moves.
+* Partner:  fixed automatic account creation when partner is prospect based on 'Automatic partner account creation mode' in account config.
+* Invoice: fixed an issue where too much memory could be used when displaying customer invoice lines.
+* Invoice/Move: recompute currency rate of movelines after invoice ventilation.
+
+#### Budget
+
+* Purchase order: removed required condition on company department.
+
+#### Contract
+
+* Contract: fixed invoicing contract with revaluation and prorata enabled.
+* Contract: fixed a issue when generating a sale order from a contract
+
+#### CRM
+
+* Opportunity: fixed filter on contact domain.
+* Lead: fixed an issue preventing lead conversion when having only CRM module.
+* Lead: fixed address while converting a lead to a prospect.
+
+#### Human Resource
+
+* Expense: fixed an issue preventing to go to reimbursed status with a payment mode generating a bank order.
+
+#### Production
+
+* Manufacturing order: fixed issue when updating quantity in manufacturing order.
+
+#### Purchase
+
+* Purchase order: fixed value of 'total without tax' in birt report.
+
+#### Sale
+
+* Sale order: fixed an issue preventing from editing a sale order with editable grid and pending order modification enabled
+
+#### Stock
+
+* Stock move: fixed an error occurring when splitting a stock move line.
+
+#### Supply Chain
+
+* Invoice: fixed invoice line price generated from stock move with different unit.
+
+
+### Developer
+
+#### Budget
+
+SaleOrderDummyBudgetServiceImpl class was removed, as well as following actions:
+
+- `action-budget-group-purchase-order-on-new-actions`
+- `action-budget-purchase-order-record-load-budget-key-config`
+- `action-group-budget-saleorder-onload`
+- `action-budget-sale-order-record-load-budget-key-config`
+
 ## [8.1.9] (2024-10-17)
 
 ### Fixes
@@ -725,6 +794,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.10]: https://github.com/axelor/axelor-open-suite/compare/v8.1.9...v8.1.10
 [8.1.9]: https://github.com/axelor/axelor-open-suite/compare/v8.1.8...v8.1.9
 [8.1.8]: https://github.com/axelor/axelor-open-suite/compare/v8.1.7...v8.1.8
 [8.1.7]: https://github.com/axelor/axelor-open-suite/compare/v8.1.6...v8.1.7
