@@ -92,6 +92,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
   protected static final String DATE_FORMAT_YYYYMMDD = "yyyyMMdd";
   protected static final String DATE_FORMAT_YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
+  protected static final int EXPORT_LINES_LIMIT = 10000;
 
   @Inject
   public MoveLineExportServiceImpl(
@@ -423,8 +424,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     List<Long> moveLineIdList;
     List<Move> moveList = new ArrayList<>();
     String exportNumber = null;
+    int limit = Math.min(idList.size(), EXPORT_LINES_LIMIT);
 
-    while (!(moveLineIdList = idList.subList(10000, offset)).isEmpty()) {
+    while (!(moveLineIdList = idList.subList(offset, limit)).isEmpty()) {
       for (Long id : moveLineIdList) {
         MoveLine moveLine = moveLineRepo.find(id);
         offset++;
@@ -439,6 +441,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
 
       moveList.clear();
+      limit = Math.min(idList.size(), (limit + EXPORT_LINES_LIMIT));
     }
 
     accountingReport = accountingReportRepo.find(accountingReport.getId());
