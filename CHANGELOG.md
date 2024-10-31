@@ -1,3 +1,16 @@
+## [6.5.45] (2024-10-31)
+
+### Fixes
+#### Account
+
+* Partner: fixed automatic account creation when partner is prospect based on 'Automatic partner account creation mode' in account config.
+* Invoice: fixed an issue where too much memory could be used when displaying customer invoice lines.
+* Invoice/Move: recompute currency rate of movelines after invoice ventilation.
+
+#### Human Resource
+
+* Expense: fixed an issue preventing to go to reimbursed status with a payment mode generating a bank order.
+
 ## [6.5.44] (2024-10-17)
 
 ### Fixes
@@ -1560,6 +1573,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.45]: https://github.com/axelor/axelor-open-suite/compare/v6.5.44...v6.5.45
 [6.5.44]: https://github.com/axelor/axelor-open-suite/compare/v6.5.43...v6.5.44
 [6.5.43]: https://github.com/axelor/axelor-open-suite/compare/v6.5.42...v6.5.43
 [6.5.42]: https://github.com/axelor/axelor-open-suite/compare/v6.5.41...v6.5.42
