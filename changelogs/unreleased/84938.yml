@@ -1,2 +1,2 @@
-title: "Invoice/Move : recompute currency rate of movelines after ventilate"
+title: "Invoice/Move: recompute currency rate of movelines after invoice ventilation."
 module: axelor-account
