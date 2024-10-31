@@ -1055,11 +1055,7 @@ public class InvoiceController {
             .map(idList -> idList.stream().map(String::valueOf).collect(Collectors.joining(",")))
             .orElseGet(
                 () ->
-                    request
-                        .getCriteria()
-                        .createQuery(Invoice.class)
-                        .select("id")
-                        .fetch(0, 0)
+                    request.getCriteria().createQuery(Invoice.class).select("id").fetch(0, 0)
                         .stream()
                         .map(m -> (Long) m.get("id"))
                         .map(String::valueOf)
