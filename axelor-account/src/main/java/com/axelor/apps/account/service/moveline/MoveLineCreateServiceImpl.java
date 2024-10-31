@@ -680,13 +680,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     int moveLineId = 1;
     BigDecimal totalCompanyAmount = BigDecimal.ZERO;
     List<MoveLine> moveLines = new ArrayList<MoveLine>();
-    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
     MoveLine moveLine = null;
     MoveLine holdBackMoveLine;
     LocalDate latestDueDate = invoiceTermService.getLatestInvoiceTermDueDate(invoice);
-    BigDecimal currencyRate =
-        currencyService.getCurrencyConversionRate(
-            invoice.getCurrency(), companyCurrency, invoice.getInvoiceDate());
     BigDecimal companyAmount;
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
@@ -707,7 +703,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 account,
                 invoiceTerm.getAmount(),
                 companyAmount,
-                currencyRate,
+                null,
                 isDebitCustomer,
                 invoice.getInvoiceDate(),
                 invoiceTerm.getDueDate(),
@@ -726,7 +722,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   account,
                   invoiceTerm.getAmount(),
                   companyAmount,
-                  currencyRate,
+                  null,
                   isDebitCustomer,
                   invoice.getInvoiceDate(),
                   latestDueDate,
