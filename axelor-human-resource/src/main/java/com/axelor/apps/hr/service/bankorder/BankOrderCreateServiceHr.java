@@ -91,7 +91,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             expense.getFullName(),
             BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             BankOrderRepository.FUNCTIONAL_ORIGIN_EXPENSE,
-            PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
+            getAccountingTriggerSelect(paymentMode));
 
     bankOrder.addBankOrderLineListItem(
         bankOrderLineService.createBankOrderLine(
@@ -108,7 +108,14 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
     return bankOrder;
   }
 
-  public BankOrder createBankOrder(Expense expense) throws AxelorException {
-    return createBankOrder(expense, expense.getCompany().getDefaultBankDetails());
+  protected int getAccountingTriggerSelect(PaymentMode paymentMode) {
+    int accountingTriggerSelect = paymentMode.getAccountingTriggerSelect();
+    switch (accountingTriggerSelect) {
+      case PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION:
+      case PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION:
+        return accountingTriggerSelect;
+      default:
+        return PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION;
+    }
   }
 }
