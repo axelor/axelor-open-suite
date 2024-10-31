@@ -1,3 +1,0 @@
----
-title: "Move: fixed blocked accounting when missing budget alert is required and account type is not one of the charge, income, immobilisation."
-module: axelor-account

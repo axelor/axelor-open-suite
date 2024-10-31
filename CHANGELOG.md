@@ -1,3 +1,43 @@
+## [8.0.18] (2024-10-31)
+
+### Fixes
+#### Base
+
+* Sequence: fixed draft prefix when checking for the draft sequence number.
+
+#### Account
+
+* Move: fixed blocked accounting when missing budget alert is required and account type is not one of the charge, income, immobilisation.
+* Payment voucher: fixed disable apply financial on payment voucher.
+* Accounting cut off batch: fixed wrong analytic distribution and axis on generated moves.
+* Partner: fixed automatic account creation when partner is prospect based on 'Automatic partner account creation mode' in account config.
+* Invoice: fixed an issue where too much memory could be used when displaying customer invoice lines.
+* Invoice/Move: recompute currency rate of movelines after invoice ventilation.
+
+#### Contract
+
+* Contract: fixed error when try to renew a contract.
+
+#### CRM
+
+* Opportunity: fixed filter on contact domain.
+
+#### Human Resource
+
+* Expense: fixed an issue preventing to go to reimbursed status with a payment mode generating a bank order.
+
+#### Purchase
+
+* Purchase order: fixed value of 'total without tax' in birt report.
+
+#### Sale
+
+* Sale order: fixed an issue preventing from editing a sale order with editable grid and pending order modification enabled
+
+#### Supply Chain
+
+* Invoice: fixed invoice line price generated from stock move with different unit.
+
 ## [8.0.17] (2024-10-17)
 
 ### Fixes
@@ -1147,6 +1187,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.18]: https://github.com/axelor/axelor-open-suite/compare/v8.0.17...v8.0.18
 [8.0.17]: https://github.com/axelor/axelor-open-suite/compare/v8.0.16...v8.0.17
 [8.0.16]: https://github.com/axelor/axelor-open-suite/compare/v8.0.15...v8.0.16
 [8.0.15]: https://github.com/axelor/axelor-open-suite/compare/v8.0.14...v8.0.15
