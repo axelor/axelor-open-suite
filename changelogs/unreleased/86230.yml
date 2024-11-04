@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed invoice printing that does not work without business project module."
+module: axelor-account
