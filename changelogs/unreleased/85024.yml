@@ -1,0 +1,3 @@
+---
+title: "Contract/Invoice : fix analytic wrong management on contract line"
+module: axelor-contract
