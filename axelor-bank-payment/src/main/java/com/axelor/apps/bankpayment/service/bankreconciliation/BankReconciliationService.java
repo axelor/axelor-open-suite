@@ -1267,15 +1267,14 @@ public class BankReconciliationService {
   public String createDomainForMoveLine(BankReconciliation bankReconciliation)
       throws AxelorException {
     String domain = "";
-    List<MoveLine> authorizedMoveLines =
-        moveLineRepository
-            .all()
-            .filter(getRequestMoveLines())
-            .bind(getBindRequestMoveLine(bankReconciliation))
-            .fetch();
+    String idList =
+        moveLineRepository.all().filter(getRequestMoveLines())
+            .bind(getBindRequestMoveLine(bankReconciliation)).select("id").fetch(0, 0).stream()
+            .map(m -> (Long) m.get("id"))
+            .map(String::valueOf)
+            .collect(Collectors.joining(","));
 
-    String idList = StringTool.getIdListString(authorizedMoveLines);
-    if (idList.equals("")) {
+    if (StringUtils.isEmpty(idList)) {
       domain = "self.id IN (0)";
     } else {
       domain = "self.id IN (" + idList + ")";
