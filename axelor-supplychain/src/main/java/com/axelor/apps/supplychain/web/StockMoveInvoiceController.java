@@ -127,7 +127,7 @@ public class StockMoveInvoiceController {
           }
           invoice =
               stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
-                  stockMove, result.getPurchaseOrder(), null);
+                  stockMove, result.getPurchaseOrder(), qtyToInvoiceMap);
         } else {
           invoice =
               stockMoveInvoiceService.createInvoiceFromOrderlessStockMove(
