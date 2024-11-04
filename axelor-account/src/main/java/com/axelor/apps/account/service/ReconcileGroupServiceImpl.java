@@ -343,7 +343,16 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   @Transactional
   public void createProposal(List<MoveLine> moveLineList) {
-    ReconcileGroup reconcileGroup = moveLineList.stream().map(MoveLine::getReconcileGroup).filter(Objects::nonNull).filter(r -> r.getStatusSelect() == ReconcileGroupRepository.STATUS_PARTIAL || r.getStatusSelect() == ReconcileGroupRepository.STATUS_PROPOSAL).findFirst().orElse(null);
+    ReconcileGroup reconcileGroup =
+        moveLineList.stream()
+            .map(MoveLine::getReconcileGroup)
+            .filter(Objects::nonNull)
+            .filter(
+                r ->
+                    r.getStatusSelect() == ReconcileGroupRepository.STATUS_PARTIAL
+                        || r.getStatusSelect() == ReconcileGroupRepository.STATUS_PROPOSAL)
+            .findFirst()
+            .orElse(null);
     if (reconcileGroup == null) {
       reconcileGroup = createReconcileGroup(moveLineList.get(0).getMove().getCompany());
       reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_PROPOSAL);
