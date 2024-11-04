@@ -39,6 +39,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -342,16 +343,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   @Transactional
   public void createProposal(List<MoveLine> moveLineList) {
-    ReconcileGroup reconcileGroup =
-        moveLineList.stream()
-            .filter(
-                moveLine ->
-                    moveLine.getReconcileGroup() != null
-                        && moveLine.getReconcileGroup().getStatusSelect()
-                            == ReconcileGroupRepository.STATUS_PARTIAL)
-            .map(MoveLine::getReconcileGroup)
-            .findFirst()
-            .orElse(null);
+    ReconcileGroup reconcileGroup = moveLineList.stream().map(MoveLine::getReconcileGroup).filter(Objects::nonNull).filter(r -> r.getStatusSelect() == ReconcileGroupRepository.STATUS_PARTIAL || r.getStatusSelect() == ReconcileGroupRepository.STATUS_PROPOSAL).findFirst().orElse(null);
     if (reconcileGroup == null) {
       reconcileGroup = createReconcileGroup(moveLineList.get(0).getMove().getCompany());
       reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_PROPOSAL);
