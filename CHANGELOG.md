@@ -1,3 +1,75 @@
+## [8.2.1] (2024-10-31)
+
+### Fixes
+#### Base
+
+* Sequence: fixed draft prefix when checking for the draft sequence number.
+* Birt report: fixed number formatting for excel format.
+* Partner: added check on parent partner to avoid same partner as parent.
+* Partner: fixed NPE when manually adding an accounting situation.
+
+#### Account
+
+* Move: fixed blocked accounting when missing budget alert is required and account type is not one of the charge, income, immobilisation.
+* Accounting batch: fixed multiple auto lettering.
+* Accounting cut off batch: fixed wrong analytic distribution and axis on generated moves.
+* Partner:  fixed automatic account creation when partner is prospect based on 'Automatic partner account creation mode' in account config.
+* Invoice: fixed an issue where too much memory could be used when displaying customer invoice lines.
+* Invoice/Move: recompute currency rate of movelines after invoice ventilation.
+
+#### Budget
+
+* Purchase order: removed required condition on company department.
+
+#### Contract
+
+* Contract: fixed invoicing contract with revaluation and prorata enabled.
+* Contract: fixed a issue when generating a sale order from a contract
+
+#### CRM
+
+* Opportunity: fixed filter on contact domain.
+* Lead: fixed an issue preventing lead conversion when having only CRM module.
+* Lead: fixed address while converting a lead to a prospect.
+
+#### Human Resource
+
+* Expense: fixed an issue preventing to go to reimbursed status with a payment mode generating a bank order.
+
+#### Production
+
+* Prod process: added workflow buttons instead of clickable status.
+* Manufacturing order: fixed issue when updating quantity in manufacturing order.
+
+#### Purchase
+
+* Purchase order: fixed value of 'total without tax' in birt report.
+
+#### Sale
+
+* Sale order: fixed an issue preventing from editing a sale order with editable grid and pending order modification enabled
+* Sale order: fixed sale order printing when only sale module is used, without supplychain.
+
+#### Stock
+
+* Stock move: fixed an error occurring when splitting a stock move line.
+
+#### Supply Chain
+
+* Invoice: fixed invoice line price generated from stock move with different unit.
+
+
+### Developer
+
+#### Budget
+
+SaleOrderDummyBudgetServiceImpl class was removed, as well as following actions:
+
+- `action-budget-group-purchase-order-on-new-actions`
+- `action-budget-purchase-order-record-load-budget-key-config`
+- `action-group-budget-saleorder-onload`
+- `action-budget-sale-order-record-load-budget-key-config`
+
 ## [8.2.0] (2024-10-18)
 
 ### Features
@@ -122,4 +194,5 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.1]: https://github.com/axelor/axelor-open-suite/compare/v8.2.0...v8.2.1
 [8.2.0]: https://github.com/axelor/axelor-open-suite/compare/v8.1.9...v8.2.0

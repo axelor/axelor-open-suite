@@ -34,7 +34,6 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
 import com.axelor.i18n.I18n;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -76,7 +75,7 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
       Partner contactPartner,
       Currency currency,
       Boolean inAti)
-      throws AxelorException, JsonProcessingException {
+      throws AxelorException {
     SaleOrder saleOrder = new SaleOrder();
     boolean isTemplate = false;
     saleOrderInitValueService.setIsTemplate(saleOrder, isTemplate);

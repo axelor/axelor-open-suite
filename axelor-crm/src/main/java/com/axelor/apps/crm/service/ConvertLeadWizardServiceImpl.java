@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressCreationService;
 import com.axelor.apps.base.service.address.AddressFetchService;
 import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
@@ -85,6 +86,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
   protected AddressFetchService addressFetchService;
 
+  protected AddressTemplateService addressTemplateService;
+
   @Inject
   public ConvertLeadWizardServiceImpl(
       LeadService leadService,
@@ -99,7 +102,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       AppCrmService appCrmService,
       MultiRelatedRepository multiRelatedRepository,
       ConvertWizardOpportunityService convertWizardOpportunityService,
-      PartnerRepository partnerRepository) {
+      PartnerRepository partnerRepository,
+      AddressTemplateService addressTemplateService) {
     this.leadService = leadService;
     this.convertWizardService = convertWizardService;
     this.addressService = addressService;
@@ -113,6 +117,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     this.multiRelatedRepository = multiRelatedRepository;
     this.convertWizardOpportunityService = convertWizardOpportunityService;
     this.partnerRepository = partnerRepository;
+    this.addressTemplateService = addressTemplateService;
   }
 
   /**
@@ -141,7 +146,9 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
         partner.setCurrency(activeCompany.getCurrency());
       }
     }
-    Beans.get(BaseConvertLeadWizardService.class).setPartnerFields(partner);
+    if (appBaseService.isApp("supplychain")) {
+      Beans.get(BaseConvertLeadWizardService.class).setPartnerFields(partner);
+    }
 
     return partner;
   }
@@ -155,9 +162,10 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     }
   }
 
-  protected void setAddress(Partner partner, Address primaryAddress) {
+  protected void setAddress(Partner partner, Address primaryAddress) throws AxelorException {
 
     if (primaryAddress != null) {
+      addressTemplateService.setFormattedFullName(primaryAddress);
       primaryAddress.setFullName(addressService.computeFullName(primaryAddress));
       if (!partner.getIsContact()) {
         partnerService.addPartnerAddress(partner, primaryAddress, true, true, true);
