@@ -20,9 +20,11 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Tag;
 import com.axelor.common.StringUtils;
+import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.inject.Inject;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +50,7 @@ public class TagServiceImpl implements TagService {
   }
 
   protected void setDefaultColor(Tag tag) {
-    String primaryColor = "#2196f3";
+    String primaryColor = MetaStore.getSelectionItem("color.name.selection", "blue").getColor();
     tag.setColor(primaryColor);
   }
 
