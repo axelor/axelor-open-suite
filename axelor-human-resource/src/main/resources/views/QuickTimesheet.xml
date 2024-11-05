@@ -56,6 +56,8 @@
     <panel name="mainPanel" colSpan="12">
       <field name="user" title="User" type="many-to-one" target="com.axelor.auth.db.User"
         onChange="action-quick-timesheet-group-user-on-change" x-dirty="false"/>
+      <button onClick="action-quick-timesheet-group-actualize-data" name="actualizeDataBtn"
+        title="Actualize data" icon="fa-refresh" colSpan="3"/>
       <field name="user.employee" hidden="true"/>
     </panel>
     <panel name="timesheetPanel" title="Timesheet" readonly="true" showIf="user?.employee">
@@ -149,13 +151,17 @@
 
   <action-group name="action-quick-timesheet-group-user-on-change">
     <action name="action-quick-timesheet-method-compute-timesheet"/>
-    <action name="action-quick-timesheet-method-compute-totals"/>
-    <action name="action-quick-timesheet-attrs-refresh-panel-dashlets"/>
+    <action name="action-quick-timesheet-group-actualize-data"/>
   </action-group>
 
   <action-group name="action-quick-timesheet-group-on-new">
     <action name="action-quick-timesheet-attrs-on-new"/>
     <action name="action-quick-timesheet-group-user-on-change"/>
+  </action-group>
+
+  <action-group name="action-quick-timesheet-group-actualize-data">
+    <action name="action-quick-timesheet-method-compute-totals"/>
+    <action name="action-quick-timesheet-attrs-refresh-panel-dashlets"/>
   </action-group>
 
 </object-views>
