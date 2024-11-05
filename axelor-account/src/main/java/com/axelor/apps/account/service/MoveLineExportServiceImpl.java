@@ -424,9 +424,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     List<Long> moveLineIdList;
     List<Move> moveList = new ArrayList<>();
     String exportNumber = null;
-    int limit = Math.min(idList.size(), EXPORT_LINES_LIMIT);
+    int endSubList = Math.min(idList.size(), EXPORT_LINES_LIMIT);
 
-    while (!(moveLineIdList = idList.subList(offset, limit)).isEmpty()) {
+    while (!(moveLineIdList = idList.subList(offset, endSubList)).isEmpty()) {
       for (Long id : moveLineIdList) {
         MoveLine moveLine = moveLineRepo.find(id);
         offset++;
@@ -441,7 +441,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
 
       moveList.clear();
-      limit = Math.min(idList.size(), (limit + EXPORT_LINES_LIMIT));
+      endSubList = Math.min(idList.size(), (endSubList + EXPORT_LINES_LIMIT));
     }
 
     accountingReport = accountingReportRepo.find(accountingReport.getId());
