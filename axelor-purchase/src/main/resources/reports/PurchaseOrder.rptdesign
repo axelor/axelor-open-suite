@@ -9186,7 +9186,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["ex_tax_total"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0." + "0".repeat(row._outer["number_of_decimals"] || 2))</VALUE-OF>&amp;nbsp;]]></text-property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["ex_tax_total"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0." + "0".repeat(row._outer["number_of_decimals"] || 2))</VALUE-OF>&amp;nbsp;]]></text-property>
                                             </text>
                                             <text id="3532">
                                                 <property name="fontSize">9pt</property>

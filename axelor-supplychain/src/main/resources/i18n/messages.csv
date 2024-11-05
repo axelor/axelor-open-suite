@@ -662,6 +662,7 @@
 "The trading name must be the same for all sale orders.",,,
 "There are no lines to invoice",,,
 "There are no selected timetables to invoice",,,
+"There is a configuration error, partner %s is its own parent.",,,
 "There is at least one draft or planned stock move for this sale order.",,,
 "There is no analytic distribution on %s purchase order line",,,
 "There is no analytic distribution on %s sale order line",,,
