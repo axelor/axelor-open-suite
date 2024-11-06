@@ -25,7 +25,7 @@ import com.axelor.apps.project.db.AllocationLine;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.AllocationLineRepository;
-import com.axelor.apps.project.db.repo.SprintRepository;
+import com.axelor.apps.project.db.repo.SprintProjectRepository;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 
-public class SprintHRRepository extends SprintRepository {
+public class SprintHRRepository extends SprintProjectRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
