@@ -76,7 +76,7 @@ public class TimesheetLineBusinessProductionServiceImpl
 
       Timesheet timesheet =
           timesheetFetchService.getOrCreateOpenTimesheet(
-              employee, operationOrderDuration.getStartingDateTime().toLocalDate());
+              employee, operationOrderDuration.getStartingDateTime().toLocalDate(), null);
       TimesheetLine tsl = createTimesheetLine(timesheet, operationOrderDuration);
 
       timesheet.addTimesheetLineListItem(tsl);
