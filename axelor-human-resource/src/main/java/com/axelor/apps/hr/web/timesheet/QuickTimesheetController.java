@@ -23,8 +23,10 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.timesheet.QuickTimesheetService;
 import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
@@ -161,6 +163,43 @@ public class QuickTimesheetController {
         response.setValue(
             "totalDueTimeEntriesForPeriod",
             totalWorkDurtionForPeriod.subtract(totalTimeEntriesForPeriod));
+      }
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void viewTasks(ActionRequest request, ActionResponse response) {
+
+    Object userContext = request.getContext().get("user");
+    Object fromDateContext = request.getContext().get("fromDate");
+    Object toDateContext = request.getContext().get("toDate");
+
+    if (userContext != null && fromDateContext != null && toDateContext != null) {
+
+      User user =
+          userContext instanceof User
+              ? (User) userContext
+              : Beans.get(UserRepository.class)
+                  .find(
+                      Long.valueOf(
+                          ((LinkedHashMap<String, Object>) userContext).get("id").toString()));
+
+      if (user.getEmployee() != null) {
+        LocalDate fromDate = LocalDate.parse(fromDateContext.toString());
+        LocalDate toDate = LocalDate.parse(toDateContext.toString());
+
+        ActionView.ActionViewBuilder actionViewBuilder =
+            ActionView.define(I18n.get("Tasks"))
+                .model(ProjectTask.class.getName())
+                .add("grid", "project-task-quick-timesheet-grid")
+                .add("form", "project-task-form")
+                .domain("self.id in (:idList)")
+                .context(
+                    "idList",
+                    Beans.get(ProjectPlanningTimeService.class)
+                        .getOpenProjectTaskIdList(user.getEmployee(), fromDate, toDate));
+
+        response.setView(actionViewBuilder.map());
       }
     }
   }

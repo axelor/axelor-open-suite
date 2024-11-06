@@ -21,6 +21,17 @@
 
   </grid>
 
+  <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
+    name="project-task-quick-timesheet-grid">
+
+    <field name="name"/>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="project"/>
+    <button onClick="action-quick-timesheet-view-new-line" name="logBtn" icon="clock-history"/>
+
+  </grid>
+
   <form model="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet line"
     name="quick-timesheet-line-form"
     onNew="action-quick-timesheet-line-attrs-on-new,action-timesheet-line-attrs-set-duration-label"
@@ -56,6 +67,11 @@
       <field name="timeLoggingPreferenceSelect" title="Time unit" type="string"
         selection="hr.time.logging.preference.select" x-dirty="false" colSpan="3"/>
     </panel>
+    <panel name="openProjectTaskPanel" title="Open tasks" showIf="user?.employee"
+      collapseIf="true">
+      <panel-dashlet name="projectTaskPanel"
+        action="action-quick-timesheet-method-view-tasks" readonly="true" colSpan="12" height="200%"/>
+    </panel>
     <panel-dashlet name="quickTimesheetLinesPanel"
       action="action-quick-timesheet-method-view-lines" title="Timesheet lines" x-show-bars="true"
       showIf="user?.employee" height="200%"/>
@@ -81,16 +97,21 @@
     <context name="_employee" expr="eval: __parent__?.user?.employee"/>
     <context name="_fromDate" expr="eval: __parent__?.fromDate"/>
     <context name="_toDate" expr="eval: __parent__?.toDate"/>
+    <context name="_projectTask" expr="eval: __self__" if="__id__"/>
+    <context name="_project" expr="eval: __self__?.project" if="__id__"/>
   </action-view>
 
-  <action-attrs name="action-quick-timesheet-attrs-refresh-lines-panel">
+  <action-attrs name="action-quick-timesheet-attrs-refresh-panel-dashlets">
     <attribute name="refresh" for="quickTimesheetLinesPanel" expr="eval: true"/>
+    <attribute name="refresh" for="projectTaskPanel" expr="eval: true"/>
   </action-attrs>
 
   <action-attrs name="action-quick-timesheet-line-attrs-on-new">
     <attribute name="value" for="timesheet" expr="eval: _timesheet"/>
     <attribute name="value" for="employee" expr="eval: _employee"/>
     <attribute name="value" for="date" expr="eval: __date__"/>
+    <attribute name="value" for="projectTask" expr="eval: _projectTask"/>
+    <attribute name="value" for="project" expr="eval: _project"/>
   </action-attrs>
 
   <action-attrs name="action-quick-timesheet-attrs-on-new">
@@ -116,6 +137,10 @@
     <call class="com.axelor.apps.hr.web.timesheet.QuickTimesheetController" method="newLine"/>
   </action-method>
 
+  <action-method name="action-quick-timesheet-method-view-tasks">
+    <call class="com.axelor.apps.hr.web.timesheet.QuickTimesheetController" method="viewTasks"/>
+  </action-method>
+
   <action-validate name="action-quick-timesheet-line-validate-date">
     <error message="This date is invalid. It must be included in the timesheet's period."
       if="date != null &amp;&amp; ((_toDate != null &amp;&amp; date &gt; LocalDate.parse(_toDate)) || (_fromDate != null &amp;&amp; date &lt; LocalDate.parse(_fromDate)))"
@@ -125,7 +150,7 @@
   <action-group name="action-quick-timesheet-group-user-on-change">
     <action name="action-quick-timesheet-method-compute-timesheet"/>
     <action name="action-quick-timesheet-method-compute-totals"/>
-    <action name="action-quick-timesheet-attrs-refresh-lines-panel"/>
+    <action name="action-quick-timesheet-attrs-refresh-panel-dashlets"/>
   </action-group>
 
   <action-group name="action-quick-timesheet-group-on-new">
