@@ -714,31 +714,14 @@
                EXISTS (
                   SELECT sll.id FROM StockLocationLine sll
                     WHERE sll.trackingNumber.id = self.id
-                    AND sll.detailsStockLocation.id = ${__parent__.fromStockLocation?.id}
+                    AND sll.detailsStockLocation.id = ${fromStockLocation?.id}
                )
                OR NOT EXISTS (
                  SELECT stockLocationLine.id FROM StockLocationLine stockLocationLine
                    WHERE stockLocationLine.trackingNumber.id = self.id
                )
              )
-          &quot;"
-      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMove'"/>
-
-    <attribute name="domain" for="trackingNumber"
-      expr="eval: &quot;
-              self.product = :product AND (
-               EXISTS (
-                  SELECT sll.id FROM StockLocationLine sll
-                    WHERE sll.trackingNumber.id = self.id
-                    AND sll.detailsStockLocation.id = ${stockMove.fromStockLocation?.id}
-               )
-               OR NOT EXISTS (
-                 SELECT stockLocationLine.id FROM StockLocationLine stockLocationLine
-                   WHERE stockLocationLine.trackingNumber.id = self.id
-               )
-             )
-          &quot;"
-      if="__parent__?._model != 'com.axelor.apps.stock.db.StockMove' &amp;&amp; stockMove != null"/>
+          &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-stock-move-line-attrs-scale-and-precision">
