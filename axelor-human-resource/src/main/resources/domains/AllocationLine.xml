@@ -17,6 +17,10 @@
     <decimal name="availableAllocation" title="Available allocation"/>
     <string name="description" title="Description" large="true"/>
 
+    <finder-method name="findBySprintAndPeriodAndUser"
+      using="sprint,allocationPeriod,user"/>
+    <finder-method name="findByPeriodAndUser" using="allocationPeriod,user" all="true"/>
+
   </entity>
 
 </domain-models>
