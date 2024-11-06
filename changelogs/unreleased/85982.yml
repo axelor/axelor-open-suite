@@ -1,0 +1,3 @@
+---
+title: "FEC Import: fixed importing moves with a validation date."
+module: axelor-account
