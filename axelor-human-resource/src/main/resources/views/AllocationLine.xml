@@ -6,11 +6,15 @@
   <grid name="allocation-line-grid" title="Allocation lines"
     model="com.axelor.apps.project.db.AllocationLine" editable="true">
 
-    <field name="sprint" onChange="action-allocation-line-validate" required="true"/>
+    <field name="sprint"
+      onChange="action-allocation-line-validate,action-allocation-line-method-compute-fields"
+      required="true"/>
     <field name="user" onSelect="action-allocation-line-method-set-user-domain"
-      onChange="action-allocation-line-validate" required="true"/>
+      onChange="action-allocation-line-validate,action-allocation-line-method-compute-fields"
+      required="true"/>
     <field name="allocationPeriod" onSelect="action-allocation-line-attrs-set-period-domain"
-      onChange="action-allocation-line-validate" required="true"/>
+      onChange="action-allocation-line-validate,action-allocation-line-method-compute-fields"
+      required="true"/>
     <field name="allocated"/>
     <field name="leaves" readonly="true"/>
     <field name="alreadyAllocated" readonly="true"/>
@@ -24,9 +28,11 @@
     groupBy="allocationPeriod" orderBy="-allocationPeriod.fromDate" editable="true">
 
     <field name="user" onSelect="action-allocation-line-method-set-user-domain"
-      onChange="action-allocation-line-validate" required="true"/>
+      onChange="action-allocation-line-validate,action-allocation-line-method-compute-fields"
+      required="true"/>
     <field name="allocationPeriod" onSelect="action-allocation-line-attrs-set-period-domain"
-      onChange="action-allocation-line-validate" required="true"/>
+      onChange="action-allocation-line-validate,action-allocation-line-method-compute-fields"
+      required="true"/>
     <field name="allocated"/>
     <field name="leaves" readonly="true"/>
     <field name="alreadyAllocated" readonly="true"/>
@@ -39,11 +45,15 @@
     model="com.axelor.apps.project.db.AllocationLine" width="large">
 
     <panel name="mainPanel">
-      <field name="sprint" onChange="action-allocation-line-validate" required="true"/>
-      <field name="user" onChange="action-allocation-line-validate"
+      <field name="sprint"
+        onChange="action-allocation-line-validate,action-allocation-line-method-compute-fields"
+        required="true"/>
+      <field name="user"
+        onChange="action-allocation-line-validate,action-allocation-line-method-compute-fields"
         onSelect="action-allocation-line-method-set-user-domain" required="true"/>
       <field name="allocationPeriod" onSelect="action-allocation-line-attrs-set-period-domain"
-        onChange="action-allocation-line-validate" required="true"/>
+        onChange="action-allocation-line-validate,action-allocation-line-method-compute-fields"
+        required="true"/>
       <spacer name="allocatedSpacer"/>
       <field name="allocated"/>
       <spacer name="leavesSpacer"/>
@@ -57,6 +67,11 @@
 
   <action-method name="action-allocation-line-method-set-user-domain">
     <call class="com.axelor.apps.hr.web.project.AllocationLineController" method="userDomain"/>
+  </action-method>
+
+  <action-method name="action-allocation-line-method-compute-fields">
+    <call class="com.axelor.apps.hr.web.project.AllocationLineController"
+      method="computeFields"/>
   </action-method>
 
   <action-attrs name="action-allocation-line-attrs-on-new">
