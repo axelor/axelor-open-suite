@@ -24,7 +24,6 @@ import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.inject.Inject;
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 

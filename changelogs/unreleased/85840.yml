@@ -1,3 +1,6 @@
 ---
 title: "Tag: added default color tag"
 module: axelor-base
+developer: |
+  Action "action-tag-method-set-concerned-model" have been replaced by "action-tag-method-on-new".
+  And setDefaultConcernedModel method in TagController have been renamed by onNew
