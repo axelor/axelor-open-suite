@@ -125,7 +125,7 @@ public class OperationOrderBusinessProductionCheckServiceImpl
       // If it is null then no problem with matching since a new one will be created
       Timesheet timesheet =
           timesheetFetchService.getDraftTimesheet(
-              employee, operationOrderDuration.getStartingDateTime().toLocalDate());
+              employee, operationOrderDuration.getStartingDateTime().toLocalDate(), null);
 
       if (timesheet == null) {
         return true;

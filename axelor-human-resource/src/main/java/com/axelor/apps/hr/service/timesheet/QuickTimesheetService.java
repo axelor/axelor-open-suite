@@ -20,14 +20,19 @@ package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.Timesheet;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public interface TimesheetFetchService {
-  Timesheet getDraftTimesheet(Employee employee, LocalDate fromDate, LocalDate toDate);
+public interface QuickTimesheetService {
 
-  Timesheet getCurrentOrCreateTimesheet() throws AxelorException;
+  public BigDecimal computeTotalTimeEntriesForPeriod(
+      Employee employee, LocalDate fromDate, LocalDate todate);
 
-  Timesheet getOrCreateOpenTimesheet(Employee employee, LocalDate fromDate, LocalDate toDate)
+  public BigDecimal computeTotalLeavesAndHolidaysForPeriod(
+      Employee employee, LocalDate fromDate, LocalDate toDate, String timeUnit)
+      throws AxelorException;
+
+  public BigDecimal computeTotalWorkDurtionForPeriod(
+      Employee employee, LocalDate fromDate, LocalDate toDate, String timeUnit)
       throws AxelorException;
 }
