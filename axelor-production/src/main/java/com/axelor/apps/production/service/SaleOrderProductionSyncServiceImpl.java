@@ -19,6 +19,7 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
@@ -28,18 +29,25 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
 
   protected final SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService;
   protected final SaleOrderLineBomService saleOrderLineBomService;
+  protected final AppProductionService appProductionService;
 
   @Inject
   public SaleOrderProductionSyncServiceImpl(
       SaleOrderLineBomService saleOrderLineBomService,
-      SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService) {
+      SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
+      AppProductionService appProductionService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.saleOrderLineBomService = saleOrderLineBomService;
+    this.appProductionService = appProductionService;
   }
 
   @Override
   public void syncSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
     Objects.requireNonNull(saleOrder);
+
+    if (!appProductionService.getAppProduction().getAllowPersonalizedBOM()) {
+      return;
+    }
 
     if (saleOrder.getSaleOrderLineList() != null) {
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
@@ -50,7 +58,10 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
 
   protected void syncSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
     Objects.requireNonNull(saleOrderLine);
-
+    // No personalized BOM = no synchronization
+    if (!appProductionService.getAppProduction().getAllowPersonalizedBOM()) {
+      return;
+    }
     if (!saleOrderLine.getIsToProduce()) {
       return;
     }
