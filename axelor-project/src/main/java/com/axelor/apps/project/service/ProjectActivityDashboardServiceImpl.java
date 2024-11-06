@@ -25,6 +25,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
