@@ -408,15 +408,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     String moveLineQueryStr = StringUtils.join(moveLineQueryList, " AND ");
 
     List<Long> idList =
-        moveLineRepo
-            .all()
-            .filter(moveLineQueryStr)
-            .order("move.accountingDate")
-            .order("date")
-            .order("name")
-            .select("id")
-            .fetch(0, 0)
-            .stream()
+        moveLineRepo.all().filter(moveLineQueryStr).order("move.accountingDate").order("date")
+            .order("name").select("id").fetch(0, 0).stream()
             .map(m -> (Long) m.get("id"))
             .collect(Collectors.toList());
 
