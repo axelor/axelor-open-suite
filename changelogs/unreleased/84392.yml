@@ -1,0 +1,3 @@
+---
+title: "Purchase order: reverse charge will be calculated when tax is from 'Tax to replace' or 'Replacement Tax' of tax equiv."
+module: axelor-purchase
