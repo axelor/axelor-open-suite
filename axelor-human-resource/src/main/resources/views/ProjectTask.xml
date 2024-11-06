@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <kanban columnBy="sprint" model="com.axelor.apps.project.db.ProjectTask"
-    sequenceBy="sequence" title="Tasks per sprint" id="hr-project-task-sprint-kanban"
+    sequenceBy="sprint.sequence" title="Tasks per sprint" id="hr-project-task-sprint-kanban"
     name="project-task-sprint-kanban" draggable="true"
     onMove="action-project-task-group-sprint-on-change">
 

@@ -508,7 +508,7 @@
   </kanban>
 
   <kanban columnBy="sprint" model="com.axelor.apps.project.db.ProjectTask"
-    sequenceBy="sequence" title="Tasks per sprint" name="project-task-sprint-kanban"
+    sequenceBy="sprint.sequence" title="Tasks per sprint" name="project-task-sprint-kanban"
     draggable="true">
 
     <field name="name"/>
