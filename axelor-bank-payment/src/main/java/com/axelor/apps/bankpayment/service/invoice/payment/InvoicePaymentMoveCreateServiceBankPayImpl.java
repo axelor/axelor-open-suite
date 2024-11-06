@@ -149,14 +149,9 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
 
   @Override
   public String getOriginFromInvoicePayment(InvoicePayment invoicePayment) {
-    Optional<String> bankOrderSeq =
-        Optional.of(invoicePayment)
-            .map(InvoicePayment::getBankOrder)
-            .map(BankOrder::getBankOrderSeq);
-    if (bankOrderSeq.isPresent()) {
-      return bankOrderSeq.get();
-    }
-
-    return super.getOriginFromInvoicePayment(invoicePayment);
+    return Optional.of(invoicePayment)
+        .map(InvoicePayment::getBankOrder)
+        .map(BankOrder::getBankOrderSeq)
+        .orElseGet(() -> super.getOriginFromInvoicePayment(invoicePayment));
   }
 }
