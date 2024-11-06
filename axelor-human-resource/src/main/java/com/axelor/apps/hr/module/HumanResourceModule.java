@@ -33,6 +33,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationServiceI
 import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.service.batch.MailBatchService;
+import com.axelor.apps.hr.db.repo.AllocationLineHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.EmploymentContractHRRepository;
@@ -209,6 +210,10 @@ import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServ
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.sprint.AllocationLineService;
+import com.axelor.apps.hr.service.sprint.AllocationLineServiceImpl;
+import com.axelor.apps.hr.service.sprint.SprintHRService;
+import com.axelor.apps.hr.service.sprint.SprintHRServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseService;
 import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameService;
@@ -263,11 +268,13 @@ import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerServiceImpl;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.hr.service.user.UserHrServiceImpl;
+import com.axelor.apps.project.db.repo.AllocationLineRepository;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
 import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
 import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
+import com.axelor.apps.project.service.sprint.SprintServiceImpl;
 
 public class HumanResourceModule extends AxelorModule {
 
@@ -407,5 +414,9 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveRequestRefuseService.class).to(LeaveRequestRefuseServiceImpl.class);
     bind(LeaveRequestCancelService.class).to(LeaveRequestCancelServiceImpl.class);
     bind(LeaveRequestCheckService.class).to(LeaveRequestCheckServiceImpl.class);
+    bind(SprintHRService.class).to(SprintHRServiceImpl.class);
+    bind(SprintServiceImpl.class).to(SprintHRServiceImpl.class);
+    bind(AllocationLineService.class).to(AllocationLineServiceImpl.class);
+    bind(AllocationLineRepository.class).to(AllocationLineHRRepository.class);
   }
 }
