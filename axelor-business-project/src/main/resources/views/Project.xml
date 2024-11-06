@@ -649,7 +649,6 @@
 
   <action-attrs name="action-business-project-project-attrs-defaults"
     model="com.axelor.apps.project.db.Project">
-    <attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
     <attribute name="value" for="fromDate" expr="eval: __config__.date"/>
     <attribute name="value" for="assignedTo" expr="eval: __user__"/>
     <attribute name="value" for="numberHoursADay"

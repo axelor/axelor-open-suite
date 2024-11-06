@@ -16,15 +16,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.hr.service.leave.compute;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Localization;
+import com.axelor.apps.hr.db.LeaveRequest;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public interface LocalizationService {
-  void validateLocale(Localization localization) throws AxelorException;
+public interface LeaveRequestComputeDurationService {
+  BigDecimal computeDuration(LeaveRequest leave) throws AxelorException;
 
-  String getNumberFormat(String localizationCode);
+  BigDecimal computeDuration(LeaveRequest leave, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException;
 
-  String getDateFormat(String localizationCode);
+  BigDecimal computeDuration(
+      LeaveRequest leave, LocalDateTime from, LocalDateTime to, int startOn, int endOn)
+      throws AxelorException;
 }

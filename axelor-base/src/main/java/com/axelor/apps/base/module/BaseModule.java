@@ -114,10 +114,6 @@ import com.axelor.apps.base.service.ImportExportTranslationService;
 import com.axelor.apps.base.service.ImportExportTranslationServiceImpl;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.InternationalServiceImpl;
-import com.axelor.apps.base.service.LanguageService;
-import com.axelor.apps.base.service.LanguageServiceImpl;
-import com.axelor.apps.base.service.LocalizationService;
-import com.axelor.apps.base.service.LocalizationServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
@@ -221,6 +217,12 @@ import com.axelor.apps.base.service.imports.ImportConfigurationService;
 import com.axelor.apps.base.service.imports.ImportConfigurationServiceImpl;
 import com.axelor.apps.base.service.imports.ImportDemoDataService;
 import com.axelor.apps.base.service.imports.ImportDemoDataServiceImpl;
+import com.axelor.apps.base.service.language.LanguageCheckerService;
+import com.axelor.apps.base.service.language.LanguageCheckerServiceImpl;
+import com.axelor.apps.base.service.language.LanguageService;
+import com.axelor.apps.base.service.language.LanguageServiceImpl;
+import com.axelor.apps.base.service.localization.LocalizationService;
+import com.axelor.apps.base.service.localization.LocalizationServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
@@ -310,8 +312,8 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.team.db.repo.TeamTaskRepository;
-import com.axelor.utils.service.TranslationBaseService;
-import com.axelor.utils.service.TranslationBaseServiceImpl;
+import com.axelor.utils.service.translation.TranslationBaseService;
+import com.axelor.utils.service.translation.TranslationBaseServiceImpl;
 import com.google.inject.matcher.AbstractMatcher;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -504,5 +506,6 @@ public class BaseModule extends AxelorModule {
     bind(CountryService.class).to(CountryServiceImpl.class);
     bind(DataSharingProductWizardRepository.class)
         .to(DataSharingProductWizardManagementRepository.class);
+    bind(LanguageCheckerService.class).to(LanguageCheckerServiceImpl.class);
   }
 }

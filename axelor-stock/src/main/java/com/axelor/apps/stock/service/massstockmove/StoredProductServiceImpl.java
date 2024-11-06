@@ -16,21 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.rest;
+package com.axelor.apps.stock.service.massstockmove;
 
-import com.axelor.apps.base.db.Language;
-import com.axelor.apps.base.db.repo.LanguageRepository;
-import com.axelor.db.Query;
-import com.axelor.inject.Beans;
-import javax.ws.rs.NotFoundException;
+import com.axelor.apps.stock.db.StoredProduct;
 
-public class LanguageChecker {
-
-  public static void check(String languageCode) throws NotFoundException {
-    Query<Language> query = Beans.get(LanguageRepository.class).all().filter("self.code = :code ");
-    query.bind("code", languageCode);
-    if (query.count() == 0) {
-      throw new NotFoundException("Language with code " + languageCode + " was not found.");
-    }
+public class StoredProductServiceImpl implements StoredProductService {
+  @Override
+  public StoredProduct copy(StoredProduct src, StoredProduct dest) {
+    dest.setToStockLocation(src.getToStockLocation());
+    dest.setStoredProduct(src.getStoredProduct());
+    dest.setStoredQty(src.getStoredQty());
+    dest.setTrackingNumber(src.getTrackingNumber());
+    dest.setUnit(src.getUnit());
+    return dest;
   }
 }

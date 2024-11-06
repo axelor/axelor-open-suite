@@ -680,4 +680,9 @@ public final class BaseExceptionMessage {
 
   public static final String DATA_SHARING_MISSING_ELEMENTS = /*$$(*/
       "Please fill in or modify some elements to be able to register" /*)*/;
+
+  public static final String LOCALIZATION_EMPTY = /*$$(*/ "Localization is empty" /*)*/;
+
+  public static final String LOCALIZATION_LANGUAGE_EMPTY = /*$$(*/
+      "Language is empty for the localization %s" /*)*/;
 }

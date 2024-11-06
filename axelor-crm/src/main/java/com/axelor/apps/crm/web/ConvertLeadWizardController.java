@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
@@ -318,6 +319,7 @@ public class ConvertLeadWizardController {
     Lead lead = this.findLead(request);
     Address primaryAddress = Beans.get(ConvertLeadWizardService.class).createPrimaryAddress(lead);
     if (primaryAddress != null) {
+      Beans.get(AddressTemplateService.class).setFormattedFullName(primaryAddress);
       primaryAddress.setFullName(Beans.get(AddressService.class).computeFullName(primaryAddress));
       Beans.get(PartnerService.class).addPartnerAddress(partner, primaryAddress, true, true, true);
     }

@@ -19,12 +19,13 @@
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
       readonly="true"/>
     <field name="unit" readonly="true"/>
-    <field name="storedQty" x-scale="nbDecimalQty"/>
+    <field name="storedQty" title="Stored qty / Qty to store" x-scale="nbDecimalQty"/>
     <button name="realizeStoringBtn" title="Realize storing"
-      onClick="save,action-stored-product-method-realize-storing" readonlyIf="stockMoveLine != null"
-      icon="fa-play"/>
+      onClick="action-stored-product-method-realize-storing" readonlyIf="stockMoveLine != null"
+      icon="fa-play" hideIf="!id"/>
     <button name="cancelPickingBtn" icon="fa-undo"
-      onClick="action-stored-product-method-cancel-storing" readonlyIf="stockMoveLine == null"/>
+      onClick="action-stored-product-method-cancel-storing" readonlyIf="stockMoveLine == null"
+      hideIf="!id"/>
     <field name="stockMoveLine" hidden="true"/>
     <field name="nbDecimalQty" x-dirty="false" type="decimal" hidden="true"/>
     <field name="state" title="State" hidden="true" type="string"/>
