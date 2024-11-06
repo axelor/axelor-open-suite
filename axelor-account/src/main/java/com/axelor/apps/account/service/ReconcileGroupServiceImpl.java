@@ -370,6 +370,10 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   @Transactional
   public void removeDraftReconciles(ReconcileGroup reconcileGroup) {
+    if (reconcileGroup == null) {
+      return;
+    }
+
     List<Reconcile> reconcilesToRemove =
         reconcileRepository
             .all()
