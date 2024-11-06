@@ -10,9 +10,15 @@
       <insert position="after">
         <field name="allocationLineList" grid-view="allocation-line-sprint-grid"
           form-view="allocation-line-form" showIf="id" colSpan="12"/>
+        <button onClick="save,action-sprint-method-generate-allocations"
+          name="generateAllocations" title="Generate allocations" showIf="id"/>
       </insert>
     </extend>
 
   </form>
+
+  <action-method name="action-sprint-method-generate-allocations">
+    <call class="com.axelor.apps.hr.web.project.SprintController" method="generateAllocations"/>
+  </action-method>
 
 </object-views>
