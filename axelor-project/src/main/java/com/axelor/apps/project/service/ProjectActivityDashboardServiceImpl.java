@@ -25,6 +25,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
@@ -99,8 +100,11 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
       }
       activityMap.put("title", message.getRelatedName());
       activityMap.put("time", createdOn);
-      activityMap.put("userId", message.getAuthor().getId());
-      activityMap.put("user", message.getAuthor().getName());
+      User author = message.getAuthor();
+      if (author != null) {
+        activityMap.put("userId", author.getId());
+        activityMap.put("user", author.getName());
+      }
       activityMap.putAll(getModelWithUtilityClass(message));
       try {
         activityMap.put("activity", getActivity(message));

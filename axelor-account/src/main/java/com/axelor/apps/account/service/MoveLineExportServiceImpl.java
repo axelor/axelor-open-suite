@@ -92,6 +92,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
   protected static final String DATE_FORMAT_YYYYMMDD = "yyyyMMdd";
   protected static final String DATE_FORMAT_YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
+  protected static final int EXPORT_LINES_LIMIT = 10000;
 
   @Inject
   public MoveLineExportServiceImpl(
@@ -406,26 +407,19 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     String moveLineQueryStr = StringUtils.join(moveLineQueryList, " AND ");
 
-    com.axelor.db.Query<MoveLine> moveLineQuery =
-        moveLineRepo
-            .all()
-            .filter(moveLineQueryStr)
-            .order("move.accountingDate")
-            .order("date")
-            .order("name");
+    List<Long> idList =
+        moveLineRepo.all().filter(moveLineQueryStr).order("move.accountingDate").order("date")
+            .order("name").select("id").fetch(0, 0).stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(Collectors.toList());
 
     int offset = 0;
     List<Long> moveLineIdList;
     List<Move> moveList = new ArrayList<>();
     String exportNumber = null;
+    int endSubListIndex = Math.min(idList.size(), EXPORT_LINES_LIMIT);
 
-    while (!(moveLineIdList =
-            moveLineQuery
-                .fetchStream(10000, offset)
-                .map(MoveLine::getId)
-                .collect(Collectors.toList()))
-        .isEmpty()) {
-
+    while (!(moveLineIdList = idList.subList(offset, endSubListIndex)).isEmpty()) {
       for (Long id : moveLineIdList) {
         MoveLine moveLine = moveLineRepo.find(id);
         offset++;
@@ -440,6 +434,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
 
       moveList.clear();
+      endSubListIndex = Math.min(idList.size(), (endSubListIndex + EXPORT_LINES_LIMIT));
     }
 
     accountingReport = accountingReportRepo.find(accountingReport.getId());

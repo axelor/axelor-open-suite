@@ -40,7 +40,7 @@ public class PricingGroupServiceImpl implements PricingGroupService {
     if (product != null) {
       formula =
           String.format(
-              "product.id == %d || product?.parentProduct?.id == %d",
+              "product?.id == %d || product?.parentProduct?.id == %d",
               product.getId(), product.getId());
 
       if (productCategory != null) {
@@ -49,7 +49,7 @@ public class PricingGroupServiceImpl implements PricingGroupService {
                 String.format(" || product?.productCategory?.id == %d", productCategory.getId()));
       }
     } else {
-      formula = String.format("product.productCategory.id == %d", productCategory.getId());
+      formula = String.format("product?.productCategory?.id == %d", productCategory.getId());
     }
     return formula;
   }
