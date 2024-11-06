@@ -154,7 +154,6 @@ public class MoveController {
 
       response.setError(I18n.get(AccountExceptionMessage.NO_MOVES_SELECTED_MASS_REVERSE));
     } catch (Exception e) {
-      response.setInfo(e.getMessage());
       TraceBackService.trace(response, e);
     }
   }

@@ -40,6 +40,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -298,7 +299,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     }
     if (ObjectUtils.notEmpty(errorList)) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, String.join("<br>", errorList));
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          StringHtmlListBuilder.formatMessage(errorList));
     }
     return reverseMoveList;
   }
