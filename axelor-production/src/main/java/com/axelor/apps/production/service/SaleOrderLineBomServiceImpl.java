@@ -87,9 +87,8 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       var saleOrderLine =
           saleOrderLineBomLineMappingService.mapToSaleOrderLine(billOfMaterialLine, saleOrder);
       if (saleOrderLine != null) {
-        BillOfMaterial bom = saleOrderLine.getBillOfMaterial();
 
-        if (bom != null) {
+        if (saleOrderLine.getIsToProduce()) {
           saleOrderLineDetailsBomService
               .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
               .stream()
