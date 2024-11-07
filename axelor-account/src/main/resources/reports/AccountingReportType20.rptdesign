@@ -19,6 +19,14 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[function formatNumber(number) {
+	var exportTypeSelect = params["ExportTypeSelect"];
+	var numberOfDecimals = vars["numberOfDecimals"];
+	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
+	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
+	var formatPattern = basePart + decimalPart;
+	return Formatter.format(number, formatPattern);
+}]]></method>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
@@ -87,6 +95,17 @@
             <simple-property-list name="defaultValue">
                 <value type="constant"></value>
             </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="ExportTypeSelect" id="6288">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -606,6 +625,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     </structure>
                 </list-property>
             </structure>
+            <method name="onFetch"><![CDATA[vars["numberOfDecimals"] = dataSetRow["number_of_decimals"];]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1991,7 +2011,7 @@ this.height=row["logo_height"];]]></method>
                                         <property name="textAlign">right</property>
                                         <structure name="toc"/>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["debit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["debit"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4074">
@@ -2000,7 +2020,7 @@ this.height=row["logo_height"];]]></method>
                                         <property name="textAlign">right</property>
                                         <structure name="toc"/>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["credit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["credit"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -2066,4 +2086,9 @@ this.height=row["logo_height"];]]></method>
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="numberOfDecimals">
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

@@ -1,0 +1,3 @@
+---
+title: "Project : fixed NPE when opening project in project activity dashboard."
+module: axelor-project

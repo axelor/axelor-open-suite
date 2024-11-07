@@ -16,16 +16,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service.leave;
+package com.axelor.apps.hr.service.leave.compute;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface LeaveRequestComputeDurationService {
   BigDecimal computeDuration(LeaveRequest leave) throws AxelorException;
@@ -35,17 +32,5 @@ public interface LeaveRequestComputeDurationService {
 
   BigDecimal computeDuration(
       LeaveRequest leave, LocalDateTime from, LocalDateTime to, int startOn, int endOn)
-      throws AxelorException;
-
-  double computeStartDateWithSelect(LocalDate date, int select, WeeklyPlanning weeklyPlanning);
-
-  double computeEndDateWithSelect(LocalDate date, int select, WeeklyPlanning weeklyPlanning);
-
-  BigDecimal computeLeaveDaysByLeaveRequest(
-      LocalDate fromDate, LocalDate toDate, LeaveRequest leaveRequest, Employee employee)
-      throws AxelorException;
-
-  BigDecimal computeTotalLeaveHours(
-      LocalDate date, BigDecimal dayValueInHours, List<LeaveRequest> leaveList)
       throws AxelorException;
 }

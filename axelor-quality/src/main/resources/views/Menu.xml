@@ -169,11 +169,10 @@
 
   <menuitem name="quality-tags" parent="quality-configurations" title="Tags"
     action="quality.tags" order="300"/>
-
   <action-view name="quality.tags" title="Tags" model="com.axelor.apps.base.db.Tag">
     <view type="grid" name="tag-simplified-grid"/>
     <view type="form" name="tag-form"/>
-    <domain>:_packageName IN self.concernedModelSet.packageName</domain>
+    <domain>:_packageName IN self.concernedModelSet.packageName OR self.concernedModelSet IS EMPTY</domain>
     <context name="_packageName" expr="eval: 'com.axelor.apps.quality.db'"/>
   </action-view>
 

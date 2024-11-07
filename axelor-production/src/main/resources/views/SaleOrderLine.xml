@@ -41,6 +41,13 @@
         </panel>
       </insert>
     </extend>
+    <extend target="//field[@name='selectedComplementaryProductList']">
+      <insert position="after">
+        <panel-related field="saleOrderLineDetailsList"
+          form-view="sale-order-line-details-form" grid-view="sale-order-line-details-grid"
+          colSpan="12"/>
+      </insert>
+    </extend>
   </form>
 
   <form name="sale-order-line-template-form" id="production-sale-order-line-template-form"
@@ -65,6 +72,17 @@
         </panel>
       </insert>
     </extend>
+  </form>
+
+  <form name="sale-order-line-summary-form" title="Sale order line details"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <panel-related name="saleOrderLineDetailsEditablePanel"
+      field="saleOrderLineDetailsList" form-view="sale-order-line-details-form"
+      grid-view="sale-order-line-details-grid" editable="true" showIf="!$readonly()"/>
+
+    <panel-related name="saleOrderLineDetailsReadonlyPanel"
+      field="saleOrderLineDetailsList" form-view="sale-order-line-details-form"
+      grid-view="sale-order-line-details-readonly-grid" showIf="$readonly()"/>
   </form>
 
   <action-method name="action-production-method-customize-bill-of-material">

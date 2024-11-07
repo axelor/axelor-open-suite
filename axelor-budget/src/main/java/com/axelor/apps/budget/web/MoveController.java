@@ -28,6 +28,7 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.move.MoveBudgetService;
 import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -104,11 +105,11 @@ public class MoveController {
   public void validateAccounting(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
     MoveBudgetService moveBudgetService = Beans.get(MoveBudgetService.class);
-    if (move != null && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+    if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       if (moveBudgetService.isBudgetInLines(move)) {
         String budgetExceedAlert = moveBudgetService.getBudgetExceedAlert(move);
         BudgetControllerTool.verifyBudgetExceed(budgetExceedAlert, false, response);
-      } else {
+      } else if (ObjectUtils.notEmpty(moveBudgetService.getRequiredBudgetMoveLines(move))) {
         BudgetControllerTool.verifyMissingBudget(response);
       }
     }

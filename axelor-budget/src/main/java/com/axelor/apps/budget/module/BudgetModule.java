@@ -122,7 +122,6 @@ import com.axelor.apps.budget.service.saleorder.SaleOrderCheckBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineProductBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineProductBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.status.SaleOrderFinalizeBudgetServiceImpl;
-import com.axelor.apps.budget.service.saleorder.views.SaleOrderDummyBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorderline.SaleOrderLineComputeBudgetServiceImpl;
@@ -140,7 +139,6 @@ import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
-import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderFinalizeSupplychainServiceImpl;
@@ -219,7 +217,6 @@ public class BudgetModule extends AxelorModule {
     bind(ReconcileToolBudgetService.class).to(ReconcileToolBudgetServiceImpl.class);
     bind(SaleOrderLineComputeSupplychainServiceImpl.class)
         .to(SaleOrderLineComputeBudgetServiceImpl.class);
-    bind(SaleOrderDummyServiceImpl.class).to(SaleOrderDummyBudgetServiceImpl.class);
     bind(SaleOrderCheckBudgetService.class).to(SaleOrderCheckBudgetServiceImpl.class);
     bind(SaleOrderFinalizeSupplychainServiceImpl.class)
         .to(SaleOrderFinalizeBudgetServiceImpl.class);

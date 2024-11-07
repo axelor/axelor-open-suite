@@ -218,6 +218,18 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     bankOrderLineRepository.save(bankOrderLine);
   }
 
+  protected String getBankOrderOrigin(BankOrderLine bankOrderLine) {
+    Optional<String> bankOrderSeq =
+        Optional.of(bankOrderLine).map(BankOrderLine::getBankOrder).map(BankOrder::getBankOrderSeq);
+    if (bankOrderSeq.isPresent()) {
+      return String.format(
+          "%s %s",
+          bankOrderSeq.get(),
+          bankOrderLine.getReceiverReference() != null ? bankOrderLine.getReceiverReference() : "");
+    }
+    return bankOrderLine.getReceiverReference();
+  }
+
   protected Move generateSenderMove(BankOrderLine bankOrderLine) throws AxelorException {
 
     Partner partner = bankOrderLine.getPartner();
@@ -234,7 +246,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-            bankOrderLine.getReceiverReference(),
+            getBankOrderOrigin(bankOrderLine),
             bankOrderLine.getReceiverLabel(),
             bankOrderLine.getBankOrder().getSenderBankDetails());
 
@@ -271,7 +283,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             !isDebit,
             senderMove.getDate(),
             1,
-            bankOrderLine.getReceiverReference(),
+            getBankOrderOrigin(bankOrderLine),
             bankOrderLine.getReceiverLabel());
     senderMove.addMoveLineListItem(bankMoveLine);
 
@@ -317,7 +329,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-            bankOrderLine.getReceiverReference(),
+            getBankOrderOrigin(bankOrderLine),
             bankOrderLine.getReceiverLabel(),
             bankOrderLine.getBankOrder().getSenderBankDetails());
 
@@ -332,7 +344,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             isDebit,
             receiverMove.getDate(),
             1,
-            bankOrderLine.getReceiverReference(),
+            getBankOrderOrigin(bankOrderLine),
             bankOrderLine.getReceiverLabel());
     receiverMove.addMoveLineListItem(bankMoveLine);
 
