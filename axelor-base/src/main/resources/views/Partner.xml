@@ -357,9 +357,8 @@
         <field name="paymentDelay" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')"/>
         <field name="parentPartner" hideIf="partnerTypeSelect != 1"
-          if="__config__.app.getApp('base')?.getManageSubsidiaryPartner()"
-          domain="self.isContact = false AND self.partnerTypeSelect = 1 AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
-          form-view="partner-form" grid-view="partner-grid"/>
+          if="__config__.app.getApp('base')?.getManageSubsidiaryPartner()" form-view="partner-form"
+          grid-view="partner-grid" onSelect="action-partner-method-set-parent-partner-domain"/>
         <field name="sellerCode" showIf="isFactor"
           if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFactors()"
           if-module="axelor-account"/>
@@ -1247,6 +1246,9 @@
   <action-method name="action-partner-method-set-user-partner">
     <call class="com.axelor.apps.base.web.UserController" method="setUserPartner"/>
   </action-method>
+  <action-method name="action-partner-method-set-parent-partner-domain">
+    <call class="com.axelor.apps.base.web.PartnerController" method="setParentPartnerDomain"/>
+  </action-method>
 
   <action-attrs name="action-partner-attrs-partner-seq-editable">
     <attribute name="readonly" for="partnerSeq"
@@ -1745,7 +1747,7 @@
 
   <action-attrs name="action-partner-attrs-set-partner-tag-domain">
     <attribute name="domain" for="tagSet"
-      expr="eval: &quot; ${__repo__(MetaModel).findByName('Partner')?.id} member of self.concernedModelSet AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} MEMBER OF self.concernedModelSet OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
   </action-attrs>
 
   <action-view name="action-partner-view-related-projects" title="Projects"

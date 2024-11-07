@@ -158,14 +158,14 @@ import com.axelor.apps.hr.service.leave.LeaveRequestCancelService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCancelServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestCheckService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCheckServiceImpl;
-import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
-import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestEventService;
 import com.axelor.apps.hr.service.leave.LeaveRequestEventServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
 import com.axelor.apps.hr.service.leave.LeaveRequestMailServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestManagementService;
 import com.axelor.apps.hr.service.leave.LeaveRequestManagementServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestPlanningService;
+import com.axelor.apps.hr.service.leave.LeaveRequestPlanningServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestRefuseService;
 import com.axelor.apps.hr.service.leave.LeaveRequestRefuseServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestSendService;
@@ -176,6 +176,18 @@ import com.axelor.apps.hr.service.leave.LeaveRequestValidateService;
 import com.axelor.apps.hr.service.leave.LeaveRequestValidateServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveValueProrataService;
 import com.axelor.apps.hr.service.leave.LeaveValueProrataServiceImpl;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationServiceImpl;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDurationServiceImpl;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeHalfDayService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeHalfDayServiceImpl;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeHourDurationService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeHourDurationServiceImpl;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysServiceImpl;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveHoursService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveHoursServiceImpl;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceService;
@@ -380,6 +392,16 @@ public class HumanResourceModule extends AxelorModule {
     bind(ReconcileCheckServiceImpl.class).to(ReconcileCheckServiceHRImpl.class);
     bind(PayrollPreparationExportService.class).to(PayrollPreparationExportServiceImpl.class);
     bind(TimesheetLineRemoveService.class).to(TimesheetLineRemoveServiceImpl.class);
+    bind(LeaveRequestComputeDayDurationService.class)
+        .to(LeaveRequestComputeDayDurationServiceImpl.class);
+    bind(LeaveRequestComputeHalfDayService.class).to(LeaveRequestComputeHalfDayServiceImpl.class);
+    bind(LeaveRequestComputeHourDurationService.class)
+        .to(LeaveRequestComputeHourDurationServiceImpl.class);
+    bind(LeaveRequestComputeLeaveDaysService.class)
+        .to(LeaveRequestComputeLeaveDaysServiceImpl.class);
+    bind(LeaveRequestComputeLeaveHoursService.class)
+        .to(LeaveRequestComputeLeaveHoursServiceImpl.class);
+    bind(LeaveRequestPlanningService.class).to(LeaveRequestPlanningServiceImpl.class);
     bind(LeaveRequestValidateService.class).to(LeaveRequestValidateServiceImpl.class);
     bind(LeaveRequestSendService.class).to(LeaveRequestSendServiceImpl.class);
     bind(LeaveRequestRefuseService.class).to(LeaveRequestRefuseServiceImpl.class);

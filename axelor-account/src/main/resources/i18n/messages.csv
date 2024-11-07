@@ -3262,6 +3262,7 @@
 "The batch to close the annual accounts has already ran. Are you sure you want to continue?",,,
 "The chart of account being already existing or imported for this company, by importing the configuration template, an update of the financial accounts of the chart of accounts will be executed and/or new financial accounts may be possibly created. Do you wish to proceed ?",,,
 "The chart of account has been loaded successfully",,,
+"The chosen date for the reverse entry can't be lower than the entry to be reversed.",,,
 "The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report.",,,
 "The closing of a fiscal year brings irrevocable integration of a move in Moves book",,,
 "The closure of a fiscal year will close definitively the related periods. Thus, the 'New' moves will be deleted, the 'Daybook' moves will be validated and the 'Simulated' moves will no longer be editable",,,
