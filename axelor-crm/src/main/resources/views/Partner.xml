@@ -129,7 +129,8 @@
       <attribute name="canNew" value="true"/>
     </extend>
     <extend target="//field[@name='taxNbr']">
-      <attribute name="showIf" value="isCustomer"/>
+      <attribute name="hideIf"
+        value="partnerTypeSelect== 2 || (!isCustomer &amp;&amp; !isSupplier)"/>
     </extend>
     <extend target="//field[@name='paymentDelay']">
       <attribute name="showIf" value="isCustomer"/>
