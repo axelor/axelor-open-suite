@@ -177,18 +177,13 @@
   </calendar>
 
   <action-group name="action-leave-request-group-send">
-    <action name="action-leave-request-validate-dates-on-save"/>
     <action name="save"/>
     <action name="action-leave-request-method-sent-leave-request"/>
   </action-group>
 
   <action-group name="action-leave-request-group-validate">
-    <action name="action-leave-request-validate-dates-on-save"/>
     <action name="save"/>
     <action name="action-leave-request-method-validate-leave-request"/>
-    <action name="action-leave-request-attrs-buttons"/>
-    <action name="action-leave-request-attrs-valid-refuse"/>
-    <action name="save"/>
   </action-group>
 
   <action-group name="action-leave-request-group-refuse">

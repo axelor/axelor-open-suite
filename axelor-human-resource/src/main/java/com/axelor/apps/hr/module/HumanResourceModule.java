@@ -154,6 +154,10 @@ import com.axelor.apps.hr.service.leave.LeaveExportService;
 import com.axelor.apps.hr.service.leave.LeaveExportServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveLineService;
 import com.axelor.apps.hr.service.leave.LeaveLineServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestCancelService;
+import com.axelor.apps.hr.service.leave.LeaveRequestCancelServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestCheckService;
+import com.axelor.apps.hr.service.leave.LeaveRequestCheckServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestEventService;
 import com.axelor.apps.hr.service.leave.LeaveRequestEventServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
@@ -162,10 +166,14 @@ import com.axelor.apps.hr.service.leave.LeaveRequestManagementService;
 import com.axelor.apps.hr.service.leave.LeaveRequestManagementServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestPlanningService;
 import com.axelor.apps.hr.service.leave.LeaveRequestPlanningServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestRefuseService;
+import com.axelor.apps.hr.service.leave.LeaveRequestRefuseServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestSendService;
+import com.axelor.apps.hr.service.leave.LeaveRequestSendServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.apps.hr.service.leave.LeaveRequestServiceImpl;
-import com.axelor.apps.hr.service.leave.LeaveRequestWorkflowService;
-import com.axelor.apps.hr.service.leave.LeaveRequestWorkflowServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestValidateService;
+import com.axelor.apps.hr.service.leave.LeaveRequestValidateServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveValueProrataService;
 import com.axelor.apps.hr.service.leave.LeaveValueProrataServiceImpl;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationService;
@@ -331,7 +339,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveRequestEventService.class).to(LeaveRequestEventServiceImpl.class);
     bind(LeaveRequestMailService.class).to(LeaveRequestMailServiceImpl.class);
     bind(LeaveRequestManagementService.class).to(LeaveRequestManagementServiceImpl.class);
-    bind(LeaveRequestWorkflowService.class).to(LeaveRequestWorkflowServiceImpl.class);
     bind(ExpenseFetchMoveService.class).to(ExpenseFetchMoveServiceImpl.class);
     bind(ExpenseLineCreateService.class).to(ExpenseLineCreateServiceImpl.class);
     bind(EmployeeComputeStatusService.class).to(EmployeeComputeStatusServiceImpl.class);
@@ -395,5 +402,10 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveRequestComputeLeaveHoursService.class)
         .to(LeaveRequestComputeLeaveHoursServiceImpl.class);
     bind(LeaveRequestPlanningService.class).to(LeaveRequestPlanningServiceImpl.class);
+    bind(LeaveRequestValidateService.class).to(LeaveRequestValidateServiceImpl.class);
+    bind(LeaveRequestSendService.class).to(LeaveRequestSendServiceImpl.class);
+    bind(LeaveRequestRefuseService.class).to(LeaveRequestRefuseServiceImpl.class);
+    bind(LeaveRequestCancelService.class).to(LeaveRequestCancelServiceImpl.class);
+    bind(LeaveRequestCheckService.class).to(LeaveRequestCheckServiceImpl.class);
   }
 }
