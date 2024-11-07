@@ -124,11 +124,13 @@ public class ReconcileGroupController {
         reconcileGroupService.cancelProposal(reconcileGroup);
       }
       if (isReconcileGroupForm) {
+        response.setCanClose(true);
         response.setView(
-            ActionView.define(I18n.get("Reconcile groups"))
+            ActionView.define(I18n.get("Reconcile Group proposals"))
                 .model(ReconcileGroup.class.getName())
                 .add("grid", "reconcile-group-grid")
                 .add("form", "reconcile-group-form")
+                .domain("self.isProposal IS true")
                 .map());
       } else {
         response.setReload(true);
