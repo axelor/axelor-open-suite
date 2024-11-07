@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -171,6 +172,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         newMoveLine.clearAnalyticMoveLineList();
         analyticMoveLineList.forEach(newMoveLine::addAnalyticMoveLineListItem);
       }
+
+      Beans.get(AnalyticLineService.class).setAnalyticAccount(newMoveLine, move.getCompany());
 
       newMove.addMoveLineListItem(newMoveLine);
 
