@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
 public class ConfiguratorCreatorController {
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
   /**
    * Called from the configurator creator form on formula changes
    *
