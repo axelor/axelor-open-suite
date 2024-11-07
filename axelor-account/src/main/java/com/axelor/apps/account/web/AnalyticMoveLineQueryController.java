@@ -74,12 +74,15 @@ public class AnalyticMoveLineQueryController {
     try {
 
       Context context = request.getContext();
-      if (!context.containsKey("_ids") || ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+      AnalyticMoveLineQuery analyticMoveLineQuery =
+          context.getParent().asType(AnalyticMoveLineQuery.class);
+      if (!context.containsKey("_ids")
+          || ObjectUtils.isEmpty(request.getContext().get("_ids"))
+          || ObjectUtils.isEmpty(
+              analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList())) {
         return;
       }
 
-      AnalyticMoveLineQuery analyticMoveLineQuery =
-          context.getParent().asType(AnalyticMoveLineQuery.class);
       List<AnalyticMoveLine> analyticMoveLines =
           Beans.get(AnalyticMoveLineRepository.class)
               .all()
@@ -99,7 +102,11 @@ public class AnalyticMoveLineQueryController {
 
       AnalyticMoveLineQuery analyticMoveLineQuery =
           request.getContext().getParent().asType(AnalyticMoveLineQuery.class);
-
+      if (ObjectUtils.isEmpty(analyticMoveLineQuery.getSearchAnalyticMoveLineQueryParameterList())
+          || ObjectUtils.isEmpty(
+              analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList())) {
+        return;
+      }
       String query =
           Beans.get(AnalyticMoveLineQueryService.class)
               .getAnalyticMoveLineQuery(analyticMoveLineQuery);

@@ -309,13 +309,9 @@
     name="analytic-move-line-to-process-grid" x-selector="checkbox">
     <toolbar>
       <button name="ReverseSelectedAnalyticLinesBtn" title="Reverse selected lines"
-        onClick="action-analytic-move-line-query-method-selected-reverse"
-        readonlyIf="!__analyticMoveLineList.length || !reverseAnalyticMoveLineQueryParameterList.length"
-        css="btn-primary"/>
+        onClick="action-analytic-move-line-query-method-selected-reverse" css="btn-primary"/>
       <button name="ReverseAllSearchedAnalyticLinesBtn" title="Reverse all retrieved lines"
-        onClick="action-analytic-move-line-query-method-all-reverse"
-        readonlyIf="!__analyticMoveLineList.length || !reverseAnalyticMoveLineQueryParameterList.length"
-        css="btn-primary"/>
+        onClick="action-analytic-move-line-query-method-all-reverse" css="btn-primary"/>
     </toolbar>
     <hilite if="typeSelect == 1" color="warning"/>
     <hilite if="typeSelect == 2" color="info"/>
