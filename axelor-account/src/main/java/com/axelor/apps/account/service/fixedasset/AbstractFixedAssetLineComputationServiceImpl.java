@@ -319,6 +319,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       LocalDate acquisitionDate,
       LocalDate depreciationDate,
       LocalDate nextDate) {
+    int DEFAULT_DAYS_PER_MONTH = 30;
     BigDecimal prorataTemporis;
 
     boolean isUSProrataTemporis = fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis();
@@ -328,7 +329,9 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
         fixedAsset.getComputationMethodSelect())) {
       nextDate = null;
       int endDayOfMonth =
-          depreciationDate.getMonth() == Month.FEBRUARY ? depreciationDate.getDayOfMonth() : 30;
+          depreciationDate.getMonth() == Month.FEBRUARY
+              ? depreciationDate.getDayOfMonth()
+              : DEFAULT_DAYS_PER_MONTH;
       nbDaysBetweenAcqAndFirstDepDate =
           nbDaysBetween(
               isUSProrataTemporis,
@@ -340,7 +343,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     }
 
     BigDecimal maxNbDaysOfPeriod =
-        BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
+        BigDecimal.valueOf(
+                getPeriodicityInMonthProrataTemporis(fixedAsset) * DEFAULT_DAYS_PER_MONTH)
             .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal nbDaysOfPeriod;
     if (nextDate != null) {
