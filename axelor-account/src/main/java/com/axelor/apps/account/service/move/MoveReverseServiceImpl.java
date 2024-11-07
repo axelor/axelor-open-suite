@@ -69,6 +69,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected MoveLineToolService moveLineToolService;
   protected UnreconcileService unReconcileService;
   protected MoveInvoiceTermService moveInvoiceTermService;
+  protected AnalyticLineService analyticLineService;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -82,7 +83,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       InvoicePaymentCancelService invoicePaymentCancelService,
       MoveLineToolService moveLineToolService,
       UnreconcileService unReconcileService,
-      MoveInvoiceTermService moveInvoiceTermService) {
+      MoveInvoiceTermService moveInvoiceTermService,
+      AnalyticLineService analyticLineService) {
 
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
@@ -95,6 +97,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     this.moveLineToolService = moveLineToolService;
     this.unReconcileService = unReconcileService;
     this.moveInvoiceTermService = moveInvoiceTermService;
+    this.analyticLineService = analyticLineService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -173,7 +176,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         analyticMoveLineList.forEach(newMoveLine::addAnalyticMoveLineListItem);
       }
 
-      Beans.get(AnalyticLineService.class).setAnalyticAccount(newMoveLine, move.getCompany());
+      analyticLineService.setAnalyticAccount(newMoveLine, move.getCompany());
 
       newMove.addMoveLineListItem(newMoveLine);
 
