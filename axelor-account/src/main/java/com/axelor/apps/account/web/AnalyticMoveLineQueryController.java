@@ -56,14 +56,11 @@ public class AnalyticMoveLineQueryController {
       String query =
           Beans.get(AnalyticMoveLineQueryService.class)
               .getAnalyticMoveLineQuery(analyticMoveLineQuery);
-
-      List<Long> analyticMoveLineList =
-          Beans.get(AnalyticMoveLineRepository.class).all().filter(query).select("id").fetch(0, 0)
-              .stream()
-              .map(m -> (Long) m.get("id"))
-              .collect(Collectors.toList());
-
-      response.setValue("__analyticMoveLineList", analyticMoveLineList);
+      List<AnalyticMoveLine> analyticMoveLineList =
+          Beans.get(AnalyticMoveLineRepository.class).all().filter(query).fetch();
+      response.setValue(
+          "__analyticMoveLineList",
+          analyticMoveLineList.stream().map(l -> l.getId()).collect(Collectors.toList()));
       response.setAttr("filteredAnalyticmoveLinesDashlet", "refresh", true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
