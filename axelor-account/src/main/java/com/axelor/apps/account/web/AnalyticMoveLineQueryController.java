@@ -58,11 +58,7 @@ public class AnalyticMoveLineQueryController {
               .getAnalyticMoveLineQuery(analyticMoveLineQuery);
 
       List<Long> analyticMoveLineList =
-          Beans.get(AnalyticMoveLineRepository.class)
-              .all()
-              .filter(query)
-              .select("id")
-              .fetch(0, 0)
+          Beans.get(AnalyticMoveLineRepository.class).all().filter(query).select("id").fetch(0, 0)
               .stream()
               .map(m -> (Long) m.get("id"))
               .collect(Collectors.toList());
