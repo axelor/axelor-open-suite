@@ -26,9 +26,6 @@ import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.address.AddressCreationService;
-import com.axelor.apps.base.service.address.AddressFetchService;
-import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
@@ -74,7 +71,6 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   protected ConvertWizardOpportunityService convertWizardOpportunityService;
 
   protected PartnerRepository partnerRepository;
-
 
   @Inject
   public ConvertLeadWizardServiceImpl(
