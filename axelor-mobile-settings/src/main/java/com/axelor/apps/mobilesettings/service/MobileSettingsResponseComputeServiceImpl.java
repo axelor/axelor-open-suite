@@ -108,7 +108,8 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsGenericProductShown(),
         appMobileSettings.getIsConfiguratorProductShown(),
         getProductTypesToDisplay(appMobileSettings),
-        getReportingTypesToDisplay(appMobileSettings));
+        getReportingTypesToDisplay(appMobileSettings),
+        appMobileSettings.getCurrentApkFile());
   }
 
   protected List<Long> getAuthorizedDashboardIdList(AppMobileSettings appMobileSettings) {
