@@ -16,7 +16,8 @@
     onNew="action-template-record-new">
     <toolbar>
       <button name="testTemplateBtn" title="Test template"
-        onClick="save,action-template-view-test-template" readonlyIf="metaModel == null"/>
+        onClick="save,action-template-view-test-template"
+        readonlyIf="metaModel == null &amp;&amp; (!isJson || metaJsonModel == null)"/>
     </toolbar>
     <panel name="mainPanel" colSpan="12">
       <field name="name" showTitle="false" colSpan="12">
