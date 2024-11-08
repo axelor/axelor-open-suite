@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed NPE when clicking on print button on grid lines."
+module: axelor-account
