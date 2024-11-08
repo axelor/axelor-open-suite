@@ -89,6 +89,10 @@ import com.axelor.apps.production.service.SaleOrderLineBomLineMappingService;
 import com.axelor.apps.production.service.SaleOrderLineBomLineMappingServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
 import com.axelor.apps.production.service.SaleOrderLineBomServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineDetailsBomService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsBomServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDetailsService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
@@ -339,5 +343,10 @@ public class ProductionModule extends AxelorModule {
     bind(ProdProductService.class).to(ProdProductServiceImpl.class);
     bind(SaleOrderLineDetailsService.class).to(SaleOrderLineDetailsServiceImpl.class);
     bind(SaleOrderLineDetailsRepository.class).to(SaleOrderLineDetailsManagementRepository.class);
+    bind(SaleOrderLineDetailsService.class).to(SaleOrderLineDetailsServiceImpl.class);
+    bind(SaleOrderLineDetailsRepository.class).to(SaleOrderLineDetailsManagementRepository.class);
+    bind(SaleOrderLineDetailsBomService.class).to(SaleOrderLineDetailsBomServiceImpl.class);
+    bind(SaleOrderLineDetailsBomLineMappingService.class)
+        .to(SaleOrderLineDetailsBomLineMappingServiceImpl.class);
   }
 }
