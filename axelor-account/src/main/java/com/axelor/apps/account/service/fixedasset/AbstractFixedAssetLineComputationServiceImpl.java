@@ -410,6 +410,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
     } else { // European way
 
+      if (depreciationMonth == Month.FEBRUARY
+          && isLastDayOfFebruary(depreciationYear, depreciationDay)) {
+        depreciationDay = 30;
+      }
+
       if (acquisitionDay == 31) {
         acquisitionDay = 30;
       }
