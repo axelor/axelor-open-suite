@@ -1209,7 +1209,7 @@ order by Tax.code ASC]]></xml-property>
             <xml-property name="queryText"><![CDATA[select MoveLine.name as moveLineName,
 MoveLine.date_val as moveLineDate,
 MoveLine.origin as moveLineOrigin,
-MoveLine.partner_full_name as partner,
+CONCAT(MoveLine.partner_seq, ' - ', MoveLine.partner_full_name) as partner,
 ABS(MoveLine.amount_remaining) as amounttoReconcile,
 MoveLine.amount_paid as reconciledAmount,
 Account.code as accountCode,
@@ -1447,7 +1447,7 @@ order by MoveLine.date_val ASC]]></xml-property>
             <xml-property name="queryText"><![CDATA[select MoveLine.name as moveLineName,
 MoveLine.date_val as moveLineDate,
 MoveLine.origin as moveLineOrigin,
-MoveLine.partner_full_name as partner,
+CONCAT(MoveLine.partner_seq, ' - ', MoveLine.partner_full_name) as partner,
 MoveLine.amount_remaining as amounttoReconcile,
 MoveLine.amount_paid as reconciledAmount,
 Account.code as accountCode,
@@ -4684,16 +4684,16 @@ formatNumber(row["taxdebit"])</VALUE-OF>]]></text-property>
                 <property name="width">15%</property>
             </column>
             <column id="4820">
-                <property name="width">10%</property>
+                <property name="width">8%</property>
             </column>
             <column id="4821">
-                <property name="width">15%</property>
+                <property name="width">12%</property>
             </column>
             <column id="4822">
                 <property name="width">50%</property>
             </column>
             <column id="4823">
-                <property name="width">15%</property>
+                <property name="width">20%</property>
             </column>
             <column id="4824">
                 <property name="width">15%</property>
@@ -5347,16 +5347,16 @@ formatNumber(row["taxdebit"])</VALUE-OF>]]></text-property>
                 <property name="width">15%</property>
             </column>
             <column id="4872">
-                <property name="width">10%</property>
+                <property name="width">8%</property>
             </column>
             <column id="4873">
-                <property name="width">15%</property>
+                <property name="width">12%</property>
             </column>
             <column id="4874">
                 <property name="width">50%</property>
             </column>
             <column id="4875">
-                <property name="width">15%</property>
+                <property name="width">20%</property>
             </column>
             <column id="4876">
                 <property name="width">15%</property>
