@@ -27,6 +27,8 @@
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
         <field name="isProjectAppEnabled" widget="boolean-switch"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
+        <field name="isDMSAppEnabled" widget="boolean-switch"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
       </panel>
       <panel name="qrCodePanel" colSpan="2">
         <field name="qrCode" colSpan="12" showTitle="false" hidden="true" readonly="true"
@@ -72,6 +74,8 @@
           onClick="action.sale.config.view"/>
         <button name="projectAppBtn" title="Config Project" hidden="true"
           showIf="isProjectAppEnabled" onClick="action.project.config.view"/>
+        <button name="dmsAppBtn" title="Config DMS" hidden="true" showIf="isDMSAppEnabled"
+          onClick="action.dms.config.view"/>
       </panel>
     </panel>
     <panel-tabs name="appConfigPanelTab">
@@ -267,6 +271,16 @@
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord"
       expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-project').fetchOne()?.id"/>
+  </action-view>
+
+  <action-view name="action.dms.config.view" title="DMS config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-dms').fetchOne()?.id"/>
   </action-view>
 
   <action-view name="action.hr.config.mobile.dashboards.view" title="Mobile dashboards"
