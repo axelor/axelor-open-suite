@@ -43,6 +43,7 @@
       <spacer colSpan="6"/>
       <field name="plannedTime" colSpan="3" readonly="true"/>
       <field name="timeUnit" colSpan="3"
+        onChange="action-project-planning-time-method-compute-planned-time"
         onSelect="action-project-task-attrs-set-time-unit-domain"/>
       <panel stacked="true" colSpan="3" itemSpan="12">
         <field name="displayPlannedTime" showIf="!$isSelectionOnDisplayPlannedTime"
