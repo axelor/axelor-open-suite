@@ -478,15 +478,7 @@ public class InvoiceController {
                     .getCode()
                 : null;
 
-        PrintingTemplate invoicePrintTemplate = null;
-        if (context.get("invoicePrintTemplate") != null) {
-          invoicePrintTemplate =
-              Mapper.toBean(
-                  PrintingTemplate.class,
-                  (Map<String, Object>) context.get("invoicePrintTemplate"));
-          invoicePrintTemplate =
-              Beans.get(PrintingTemplateRepository.class).find(invoicePrintTemplate.getId());
-        }
+        PrintingTemplate invoicePrintTemplate = getPrintingTemplate(context, invoice);
 
         fileLink =
             Beans.get(InvoicePrintService.class)
@@ -501,6 +493,17 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  protected PrintingTemplate getPrintingTemplate(Context context, Invoice invoice)
+      throws AxelorException {
+    if (context.get("invoicePrintTemplate") == null) {
+      return Beans.get(AccountConfigService.class).getInvoicePrintTemplate(invoice.getCompany());
+    }
+    PrintingTemplate invoicePrintTemplate =
+        Mapper.toBean(
+            PrintingTemplate.class, (Map<String, Object>) context.get("invoicePrintTemplate"));
+    return Beans.get(PrintingTemplateRepository.class).find(invoicePrintTemplate.getId());
   }
 
   public void regenerateAndShowInvoice(ActionRequest request, ActionResponse response) {
@@ -1353,13 +1356,12 @@ public class InvoiceController {
   protected Map<String, Object> getParamsMap(ActionRequest request) {
     Context context = request.getContext();
     Map<String, Object> params = new HashMap<>();
-    Invoice invoice =
-        Beans.get(InvoiceRepository.class)
-            .find(Long.parseLong(context.get("_invoiceId").toString()));
+    Object invoiceId = Optional.ofNullable(context.get("_invoiceId")).orElse(context.get("id"));
+    Invoice invoice = Beans.get(InvoiceRepository.class).find(Long.parseLong(invoiceId.toString()));
     Integer reportType =
         context.get("reportType") != null
             ? Integer.parseInt(context.get("reportType").toString())
-            : null;
+            : InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE;
     params.put("reportType", reportType);
     params.put("invoice", invoice);
     return params;

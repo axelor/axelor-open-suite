@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -68,6 +69,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected MoveLineToolService moveLineToolService;
   protected UnreconcileService unReconcileService;
   protected MoveInvoiceTermService moveInvoiceTermService;
+  protected AnalyticLineService analyticLineService;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -81,7 +83,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       InvoicePaymentCancelService invoicePaymentCancelService,
       MoveLineToolService moveLineToolService,
       UnreconcileService unReconcileService,
-      MoveInvoiceTermService moveInvoiceTermService) {
+      MoveInvoiceTermService moveInvoiceTermService,
+      AnalyticLineService analyticLineService) {
 
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
@@ -94,6 +97,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     this.moveLineToolService = moveLineToolService;
     this.unReconcileService = unReconcileService;
     this.moveInvoiceTermService = moveInvoiceTermService;
+    this.analyticLineService = analyticLineService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -171,6 +175,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         newMoveLine.clearAnalyticMoveLineList();
         analyticMoveLineList.forEach(newMoveLine::addAnalyticMoveLineListItem);
       }
+
+      analyticLineService.setAnalyticAccount(newMoveLine, move.getCompany());
 
       newMove.addMoveLineListItem(newMoveLine);
 
