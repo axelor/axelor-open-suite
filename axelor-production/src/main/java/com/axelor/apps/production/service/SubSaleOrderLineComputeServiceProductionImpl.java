@@ -4,6 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.google.inject.Inject;
@@ -15,8 +16,8 @@ public class SubSaleOrderLineComputeServiceProductionImpl
     extends SubSaleOrderLineComputeServiceImpl {
   @Inject
   public SubSaleOrderLineComputeServiceProductionImpl(
-      SaleOrderLineComputeService saleOrderLineComputeService) {
-    super(saleOrderLineComputeService);
+      SaleOrderLineComputeService saleOrderLineComputeService, AppSaleService appSaleService) {
+    super(saleOrderLineComputeService, appSaleService);
   }
 
   @Override

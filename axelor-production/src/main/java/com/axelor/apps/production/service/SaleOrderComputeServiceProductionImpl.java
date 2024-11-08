@@ -4,6 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
@@ -23,13 +24,15 @@ public class SaleOrderComputeServiceProductionImpl extends SaleOrderComputeServi
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
       SubSaleOrderLineComputeService subSaleOrderLineComputeService,
-      AdvancePaymentRefundService refundService) {
+      AdvancePaymentRefundService refundService,
+      AppSaleService appSaleService) {
     super(
         saleOrderLineCreateTaxLineService,
         saleOrderLineComputeService,
         saleOrderLinePackService,
         subSaleOrderLineComputeService,
-        refundService);
+        refundService,
+        appSaleService);
   }
 
   @Override
@@ -47,20 +50,22 @@ public class SaleOrderComputeServiceProductionImpl extends SaleOrderComputeServi
           saleOrderLine.getSaleOrderLineDetailsList();
       BigDecimal totalPrice = BigDecimal.ZERO;
       BigDecimal subDetailsTotal;
-      if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
-        subDetailsTotal =
-            saleOrderLineDetailsList.stream()
-                .map(SaleOrderLineDetails::getTotalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        totalPrice = totalPrice.add(subDetailsTotal);
-        saleOrderLine.setPrice(totalPrice);
-      }
-      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
-        totalPrice =
-            totalPrice.add(
-                subSaleOrderLineComputeService.computeSumSubLineList(
-                    subSaleOrderLineList, saleOrder));
-        saleOrderLine.setPrice(totalPrice);
+      if (appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
+        if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
+          subDetailsTotal =
+              saleOrderLineDetailsList.stream()
+                  .map(SaleOrderLineDetails::getTotalPrice)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add);
+          totalPrice = totalPrice.add(subDetailsTotal);
+          saleOrderLine.setPrice(totalPrice);
+        }
+        if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+          totalPrice =
+              totalPrice.add(
+                  subSaleOrderLineComputeService.computeSumSubLineList(
+                      subSaleOrderLineList, saleOrder));
+          saleOrderLine.setPrice(totalPrice);
+        }
       }
 
       saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
