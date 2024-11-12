@@ -77,6 +77,7 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
     this.product = contractLine.getProduct();
 
     this.exTaxTotal = contractLine.getExTaxTotal();
+    this.companyExTaxTotal = contractLine.getExTaxTotal();
   }
 
   @Override
