@@ -63,7 +63,7 @@ public class ContractLineController {
 
     try {
       contractLine = contractLineService.computeTotal(contractLine);
-      contractLineService.computeAnalytic(contract, contractLine);
+      contractLineService.computeAnalytic(getContractFromContext(request), contractLine);
       response.setValues(contractLine);
     } catch (Exception e) {
       response.setValues(contractLineService.reset(contractLine));
