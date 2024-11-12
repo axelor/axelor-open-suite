@@ -508,7 +508,7 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select DISTINCT MoveLine.id as moveLine_id, MoveLine.name as move_line_name, MoveLine.description as move_line_description,
-MoveLine.date_val, MoveLine.partner_full_name as partner,
+MoveLine.date_val, CONCAT(MoveLine.partner_seq, ' - ', MoveLine.partner_full_name) as partner,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as account,
 MoveLine.debit, MoveLine.credit,
 
@@ -2278,7 +2278,7 @@ else {
                             <property name="width">20%</property>
                         </column>
                         <column id="4331">
-                            <property name="width">9%</property>
+                            <property name="width">7%</property>
                         </column>
                         <column id="4249">
                             <property name="width">9%</property>
@@ -2293,7 +2293,7 @@ else {
                                     <expression name="valueExpr" type="javascript">row._outer["global_by_partner"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">9%</property>
+                            <property name="width">8%</property>
                         </column>
                         <column id="5215">
                             <list-property name="visibility">
@@ -2302,7 +2302,7 @@ else {
                                     <expression name="valueExpr" type="javascript">row._outer["global_by_partner"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">9%</property>
+                            <property name="width">7%</property>
                         </column>
                         <column id="4093">
                             <list-property name="visibility">
@@ -2311,7 +2311,7 @@ else {
                                     <expression name="valueExpr" type="javascript">row._outer["global_by_partner"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">15%</property>
+                            <property name="width">22%</property>
                         </column>
                         <column id="4095">
                             <property name="width">9%</property>
