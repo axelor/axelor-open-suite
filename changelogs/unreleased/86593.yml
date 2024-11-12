@@ -1,3 +1,3 @@
 ---
-title: "Template:Adapt message module changes of custom model support on Test template button"
+title: "Template: fixed an issue where 'Test template' button was always readonly with custom model."
 module: axelor-base
