@@ -1,0 +1,3 @@
+---
+title: "Expense API: expense line creation with a manual distance is no longer overriden by computed distance."
+module: axelor-human-resource

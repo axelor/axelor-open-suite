@@ -1,0 +1,3 @@
+---
+title: "Unit conversion: fixed NPE when getting the coefficient for a unit conversion of type coeff with value zero."
+module: axelor-base
