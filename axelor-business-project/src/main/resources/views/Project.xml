@@ -298,7 +298,7 @@
         <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
           canCollapse="true" collapseIf="false">
           <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
-          <field name="projectTimeUnit"/>
+          <field name="projectTimeUnit" onSelect="action-project-attrs-set-time-unit-domain"/>
           <field name="numberHoursADay"/>
           <field name="spentTimeCostComputationMethod"/>
           <field name="allowToGetPricesFromFrameworkContract"/>
@@ -600,8 +600,6 @@
     <action name="action-project-group-on-new-project"/>
     <action name="action-attrs-project-set-project-type"
       if="__config__.app.isApp('business-project')"/>
-    <action name="action-business-project-project-attrs-defaults"/>
-    <action name="action-project-attrs-set-time-unit-domain"/>
     <action name="action-business-project-method-get-analytic-distribution-template"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
   </action-group>
@@ -612,7 +610,6 @@
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-method-count-to-invoice"
       if="__config__.app.isApp('business-project')"/>
-    <action name="action-project-attrs-set-time-unit-domain"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
   </action-group>
 
@@ -645,16 +642,6 @@
     <attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
     <attribute name="value" for="assignedTo" expr="eval: __user__"/>
     <attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
-  </action-attrs>
-
-  <action-attrs name="action-business-project-project-attrs-defaults"
-    model="com.axelor.apps.project.db.Project">
-    <attribute name="value" for="fromDate" expr="eval: __config__.date"/>
-    <attribute name="value" for="assignedTo" expr="eval: __user__"/>
-    <attribute name="value" for="numberHoursADay"
-      expr="eval: __config__.app.getApp('business-project')?.defaultHoursADay"/>
-    <attribute name="value" for="projectTimeUnit"
-      expr="eval: __config__.app.getApp('business-project')?.daysUnit"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-invoicing-sequence">
@@ -1282,11 +1269,6 @@
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="showInvoicingProjects"/>
   </action-method>
-
-  <action-attrs name="action-project-attrs-set-time-unit-domain">
-    <attribute name="domain" for="projectTimeUnit"
-      expr="eval: &quot; self.id = ${__config__.app.getApp('business-project')?.daysUnit?.id} OR self.id = ${__config__.app.getApp('business-project')?.hoursUnit?.id}&quot;"/>
-  </action-attrs>
 
   <action-method name="action-project-method-compute-project-totals">
     <call class="com.axelor.apps.businessproject.web.ProjectController"

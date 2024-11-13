@@ -60,6 +60,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.studio.db.AppProject;
 import com.axelor.studio.db.AppSupplychain;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
@@ -265,9 +266,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.setIsInvoicingTimesheet(true);
     }
 
-    project.setNumberHoursADay(
-        appBusinessProjectService.getAppBusinessProject().getDefaultHoursADay());
-    project.setProjectTimeUnit(appBusinessProjectService.getAppBusinessProject().getDaysUnit());
+    AppProject appProject = appProjectService.getAppProject();
+    project.setNumberHoursADay(appProject.getDefaultHoursADay());
+    project.setProjectTimeUnit(appProject.getDaysUnit());
     return project;
   }
 

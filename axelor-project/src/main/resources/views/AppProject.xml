@@ -25,6 +25,13 @@
       </panel>
     </panel>
 
+    <panel name="timeManagementPanel" title="Time management" colSpan="12" itemSpan="4">
+      <field name="daysUnit" domain="self.unitTypeSelect = 3"/>
+      <field name="hoursUnit" domain="self.unitTypeSelect = 3"/>
+      <field name="defaultHoursADay"
+        help="The days to hours conversion can be set for each project. This will determine the default value."/>
+    </panel>
+
     <panel name="projectStatusMgtPanel" title="Project status management">
       <field name="completedProjectStatus" grid-view="project-status-grid"
         form-view="project-status-form" domain="self.isCompleted = true"/>

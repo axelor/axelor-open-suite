@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.businessproject.db.BusinessProjectConfig;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectConfigRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
@@ -36,6 +37,7 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBusinessProject;
+import com.axelor.studio.db.AppProject;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
@@ -53,6 +55,7 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
   protected AppBusinessProjectRepository appBusinessProjectRepo;
   protected BusinessProjectConfigRepository businessProjectConfigRepository;
   protected CompanyRepository companyRepository;
+  protected AppProjectService appProjectService;
 
   @Inject
   public AppBusinessProjectServiceImpl(
@@ -65,7 +68,8 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
       MetaFileRepository metaFileRepo,
       AppBusinessProjectRepository appBusinessProjectRepo,
       BusinessProjectConfigRepository businessProjectConfigRepository,
-      CompanyRepository companyRepository) {
+      CompanyRepository companyRepository,
+      AppProjectService appProjectService) {
     super(
         appRepo,
         metaFiles,
@@ -77,6 +81,7 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
     this.appBusinessProjectRepo = appBusinessProjectRepo;
     this.businessProjectConfigRepository = businessProjectConfigRepository;
     this.companyRepository = companyRepository;
+    this.appProjectService = appProjectService;
   }
 
   @Override
@@ -85,11 +90,17 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
   }
 
   @Override
+  public AppProject getAppProject() {
+    return appProjectService.getAppProject();
+  }
+
+  @Override
   public Unit getDaysUnit() throws AxelorException {
-    Unit daysUnit = getAppBusinessProject().getDaysUnit();
+    AppProject appProject = getAppProject();
+    Unit daysUnit = appProject.getDaysUnit();
     if (Objects.isNull(daysUnit)) {
       throw new AxelorException(
-          getAppBusinessProject(),
+          appProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DAYS_UNIT_MISSING));
     }
@@ -98,10 +109,11 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
 
   @Override
   public Unit getHoursUnit() throws AxelorException {
-    Unit hoursUnit = getAppBusinessProject().getHoursUnit();
+    AppProject appProject = getAppProject();
+    Unit hoursUnit = appProject.getHoursUnit();
     if (Objects.isNull(hoursUnit)) {
       throw new AxelorException(
-          getAppBusinessProject(),
+          appProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_HOURS_UNIT_MISSING));
     }
@@ -110,10 +122,11 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
 
   @Override
   public BigDecimal getDefaultHoursADay() throws AxelorException {
-    BigDecimal hoursUnit = getAppBusinessProject().getDefaultHoursADay();
+    AppProject appProject = getAppProject();
+    BigDecimal hoursUnit = appProject.getDefaultHoursADay();
     if (Objects.isNull(hoursUnit) || hoursUnit.signum() <= 0) {
       throw new AxelorException(
-          getAppBusinessProject(),
+          appProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
     }

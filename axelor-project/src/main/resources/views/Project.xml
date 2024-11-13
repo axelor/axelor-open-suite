@@ -266,7 +266,8 @@
         name="productSet" widget="TagSelect" canEdit="false"
         domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-activity-form"
         grid-view="product-activity-grid"/>
-      <field name="projectTimeUnit" domain="self.unitTypeSelect = 3"/>
+      <field name="projectTimeUnit" onSelect="action-project-attrs-set-time-unit-domain"/>
+      <field name="numberHoursADay"/>
       <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
         if-module="axelor-human-resource"/>
       <field name="manageTimeSpent" widget="inline-checkbox"
@@ -539,6 +540,10 @@
     <attribute name="value" for="siteSet"
       expr="eval: __config__.app.getApp('base')?.defaultSitesSet"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+    <attribute name="value" for="numberHoursADay"
+      expr="eval: __config__.app.getApp('project')?.defaultHoursADay"/>
+    <attribute name="value" for="projectTimeUnit"
+      expr="eval: __config__.app.getApp('project')?.daysUnit"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-completed-task-status-domain">
@@ -562,6 +567,12 @@
 
   <action-attrs name="action-attrs-project-show-log-time-panel">
     <attribute for="logTimesPanel" name="hidden" expr="eval: !manageTimeSpent"/>
+  </action-attrs>
+
+
+  <action-attrs name="action-project-attrs-set-time-unit-domain">
+    <attribute name="domain" for="projectTimeUnit"
+      expr="eval: &quot; self.id = ${__config__.app.getApp('project')?.daysUnit?.id} OR self.id = ${__config__.app.getApp('project')?.hoursUnit?.id}&quot;"/>
   </action-attrs>
 
   <!-- ACTION RECORD -->

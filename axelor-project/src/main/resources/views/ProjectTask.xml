@@ -165,6 +165,7 @@
         grid-view="project-grid"/>
       <field name="parentTask" readonlyIf="project == null" colSpan="6"
         form-view="project-task-form" grid-view="project-task-grid"
+        onChange="action-project-task-record-get-parent-timeunit"
         onSelect="action-project-task-attrs-project-parent-task-configurations"/>
       <field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false"
         canView="false" canEdit="false"
@@ -298,6 +299,8 @@
     <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
       if-module="axelor-human-resource" showIf="project.isShowPlanning">
       <field name="budgetedTime" colSpan="4"/>
+      <field name="timeUnit" colSpan="4" readonlyIf="parentTask"
+        onSelect="action-project-task-attrs-set-time-unit-domain"/>
       <spacer name="budgetedTimeSpacer" colSpan="4"/>
       <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
         x-show-bars="false" action="action-project-task-dashlet-project-planning-time" colSpan="12"
@@ -503,6 +506,7 @@
 
   <action-group name="action-project-task-group-onnew">
     <action name="action-project-task-defaults"/>
+    <action name="action-project-task-attrs-set-time-unit-default"/>
     <action name="action-project-task-record-set-default"/>
     <action name="action-project-task-record-project-configurations" if="project != null"/>
     <action name="action-project-task-method-set-status-selection-in"/>
@@ -692,6 +696,25 @@
       expr="eval:taskDate.plus((taskDuration/86400).longValue(), java.time.temporal.ChronoUnit.DAYS)"
       if="taskDate != null"/>
   </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-set-time-unit-domain">
+    <attribute for="timeUnit" name="domain"
+      expr="eval: &quot; self.id = ${__config__.app.getApp('project')?.daysUnit?.id} OR self.id = ${__config__.app.getApp('project')?.hoursUnit?.id}&quot;"/>
+  </action-attrs>
+
+  <!-- get timeUnit value from configuration -->
+  <action-attrs name="action-project-task-attrs-set-time-unit-default">
+    <attribute for="timeUnit" name="value"
+      expr="eval: __config__.app.getApp('project')?.daysUnit" if="!parentTask?.timeUnit"/>
+    <attribute for="timeUnit" name="value" expr="eval: parentTask?.timeUnit"
+      if="parentTask?.timeUnit"/>
+  </action-attrs>
+
+  <!-- fill timeUnit from parentTask -->
+  <action-record name="action-project-task-record-get-parent-timeunit"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="timeUnit" expr="eval: parentTask?.timeUnit" if="parentTask"/>
+  </action-record>
 
   <action-view name="action-project-task-book-resource" title="Book resource"
     model="com.axelor.apps.project.db.ResourceBooking">

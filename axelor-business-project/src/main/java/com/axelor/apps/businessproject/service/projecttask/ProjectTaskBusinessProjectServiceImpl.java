@@ -67,6 +67,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
+import com.axelor.studio.db.AppProject;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -593,11 +594,11 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     BigDecimal duration = timesheetLine.getDuration();
     BigDecimal convertedDuration = BigDecimal.ZERO;
 
-    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    AppProject appProject = appProjectService.getAppProject();
 
-    Unit daysUnit = appBusinessProject.getDaysUnit();
-    Unit hoursUnit = appBusinessProject.getHoursUnit();
-    BigDecimal defaultHoursADay = appBusinessProject.getDefaultHoursADay();
+    Unit daysUnit = appProject.getDaysUnit();
+    Unit hoursUnit = appProject.getHoursUnit();
+    BigDecimal defaultHoursADay = appProject.getDefaultHoursADay();
     if (defaultHoursADay.compareTo(BigDecimal.ZERO) == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -727,9 +728,9 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
   @Override
   public boolean isTimeUnitValid(Unit unit) {
-    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-    return Objects.equals(unit, appBusinessProject.getDaysUnit())
-        || Objects.equals(unit, appBusinessProject.getHoursUnit());
+    AppProject appProject = appProjectService.getAppProject();
+    return Objects.equals(unit, appProject.getDaysUnit())
+        || Objects.equals(unit, appProject.getHoursUnit());
   }
 
   @Override
