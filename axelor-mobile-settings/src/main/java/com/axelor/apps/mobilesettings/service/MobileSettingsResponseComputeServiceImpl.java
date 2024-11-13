@@ -109,7 +109,14 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsConfiguratorProductShown(),
         getProductTypesToDisplay(appMobileSettings),
         getReportingTypesToDisplay(appMobileSettings),
-        appMobileSettings.getCurrentApkFile());
+        appMobileSettings.getCurrentApkFile(),
+        appMobileSettings.getDefaultDmsRoot(),
+        appMobileSettings.getIsFavoritesManagementEnabled(),
+        appMobileSettings.getIsDownloadAllowed(),
+        appMobileSettings.getIsRenamingAllowed(),
+        appMobileSettings.getIsFolderCreationAllowed(),
+        appMobileSettings.getIsFileCreationAllowed(),
+        appMobileSettings.getIsFileDeletionAllowed());
   }
 
   protected List<Long> getAuthorizedDashboardIdList(AppMobileSettings appMobileSettings) {

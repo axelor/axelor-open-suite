@@ -123,6 +123,22 @@
     <string name="reportingTypesToDisplaySelect" title="Reporting to display"
       selection="mobilesettings.reporting.type.display.select"/>
 
+    <many-to-one name="defaultDmsRoot"
+      title="Default DMS root on the mobile application" ref="com.axelor.dms.db.DMSFile"
+      help="Set the default DMS root for all users on the mobile application. If no value is entered, the global root will be used. If the user has a specific value, this field will be ignored."/>
+    <boolean name="isFavoritesManagementEnabled" title="Activate favorites management"
+      help="Enables favorites management on the mobile application. Users will have access to a favorites menu with their saved files and a new menu for each favorite folder for quick access."/>
+    <boolean name="isDownloadAllowed" title="Allow download"
+      help="Allow files to be downloaded from the mobile application."/>
+    <boolean name="isRenamingAllowed" title="Allow renaming"
+      help="Allows renaming of files or folders from the mobile application."/>
+    <boolean name="isFolderCreationAllowed" title="Allow creation"
+      help="Allows folders to be created from the mobile application."/>
+    <boolean name="isFileCreationAllowed" title="Allow new files to be uploaded"
+      help="Allows new files to be created from the mobile application if the user has the necessary permissions."/>
+    <boolean name="isFileDeletionAllowed" title="Allow deletion"
+      help="Allows files to be deleted from the mobile application if the user has the necessary permissions."/>
+
     <extra-code>
       <![CDATA[
 		// EMPLOYEE TIMESHEET IMPUTATION SELECT
@@ -177,6 +193,13 @@
       <field name="isConfiguratorProductShown" on="UPDATE"/>
       <field name="productTypesToDisplaySelect" on="UPDATE"/>
       <field name="reportingTypesToDisplaySelect" on="UPDATE"/>
+      <field name="defaultDmsRoot" on="UPDATE"/>
+      <field name="isFavoritesManagementEnabled" on="UPDATE"/>
+      <field name="isDownloadAllowed" on="UPDATE"/>
+      <field name="isRenamingAllowed" on="UPDATE"/>
+      <field name="isFolderCreationAllowed" on="UPDATE"/>
+      <field name="isFileCreationAllowed" on="UPDATE"/>
+      <field name="isFileDeletionAllowed" on="UPDATE"/>
     </track>
   </entity>
 </domain-models>
