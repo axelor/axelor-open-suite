@@ -20,6 +20,8 @@ package com.axelor.apps.crm.rest;
 
 import com.axelor.apps.crm.db.TourLine;
 import com.axelor.apps.crm.service.TourLineService;
+import com.axelor.apps.crm.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -50,6 +52,7 @@ public class TourLineRestController {
     TourLine tourLine = ObjectFinder.find(TourLine.class, tourLineId, ObjectFinder.NO_VERSION);
     Beans.get(TourLineService.class).setValidatedAndLastVisitDate(tourLine);
 
-    return ResponseConstructor.build(Response.Status.OK, "Tour line successfully validated.");
+    return ResponseConstructor.build(
+        Response.Status.OK, I18n.get(ITranslation.TOUR_LINE_VALIDATED));
   }
 }

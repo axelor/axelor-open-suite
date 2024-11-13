@@ -16,18 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.mobilesettings.translation;
+package com.axelor.apps.intervention.translation;
 
-public final class MobileSettingsTranslation {
+public interface ITranslation {
 
-  private MobileSettingsTranslation() {}
-
-  public static final String MOBILE_MENU_SCREEN_CREATION_SUCCESS = /*$$(*/
-      "Mobile menus and screens have been created." /*)*/;
-  public static final String QUERY_RESPONSE_SETTINGS = /*$$(*/
-      "Response of the query for settings" /*)*/;
-  public static final String QUERY_RESPONSE_CHART = /*$$(*/
-      "Response of the query of the chart" /*)*/;
-  public static final String NO_ACCESS_TO_RECORD = /*$$(*/
-      "You do not have access to this record" /*)*/;
+  public static final String PICTURE_ADDED = /*$$(*/ "Picture successfully added." /*)*/;
+  public static final String PICTURE_REMOVED = /*$$(*/ "Picture successfully removed." /*)*/;
+  public static final String INTERVENTION_STATUS_UPDATED = /*$$(*/
+      "Intervention status successfully updated." /*)*/;
+  public static final String EQUIPMENT_ADDED = /*$$(*/ "Equipment successfully added." /*)*/;
+  public static final String EQUIPMENT_REMOVED = /*$$(*/ "Equipment successfully removed." /*)*/;
 }
