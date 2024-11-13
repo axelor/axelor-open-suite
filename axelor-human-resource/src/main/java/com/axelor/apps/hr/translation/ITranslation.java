@@ -84,4 +84,6 @@ public interface ITranslation {
   String DISTANCE_BETWEEN_CITIES = /*$$(*/ "The distance between %s and %s." /*)*/;
   public static final String INCREMENT_LEAVE_REASON_BATCH_EXECUTION_RESULT = /*$$(*/
       "%d leave reason(s) treated and %d anomaly(ies) reported !"; /*)*/
+
+  String API_LEAVE_REQUEST_UPDATED = /*$$(*/ "Leave request successfully updated." /*)*/;
 }
