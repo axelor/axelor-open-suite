@@ -252,9 +252,9 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
       BankStatementLine finalBankStatementLine)
       throws AxelorException {
     BigDecimal initialBankStatementLineSum =
-        initialBankStatementLine.getDebit().max(initialBankStatementLine.getCredit());
+        initialBankStatementLine.getDebit().subtract(initialBankStatementLine.getCredit());
     BigDecimal finalBankStatementLineSum =
-        finalBankStatementLine.getDebit().max(finalBankStatementLine.getCredit());
+        finalBankStatementLine.getDebit().subtract(finalBankStatementLine.getCredit());
 
     BigDecimal movementLineSum =
         orderBankStatementLineQuery(
@@ -264,7 +264,7 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
             .fetch().stream()
             .map(
                 bankStatementLine ->
-                    bankStatementLine.getCredit().subtract(bankStatementLine.getDebit()))
+                    bankStatementLine.getDebit().subtract(bankStatementLine.getCredit()))
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
     if (initialBankStatementLineSum.add(movementLineSum).compareTo(finalBankStatementLineSum)
