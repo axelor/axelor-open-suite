@@ -1,0 +1,3 @@
+---
+title: "Leave request: sending a leave request will now check future available day quantity based on to date"
+module: axelor-human-resource
