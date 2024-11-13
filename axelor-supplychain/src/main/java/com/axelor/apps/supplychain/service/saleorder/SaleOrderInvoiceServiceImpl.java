@@ -899,8 +899,15 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       throws AxelorException {
     BigDecimal sumInvoices = orderInvoiceService.amountToBeInvoiced(saleOrder);
 
-    computeAmountToInvoice(
-        amountToInvoice, operationSelect, saleOrder, qtyToInvoiceMap, priceMap, qtyMap, isPercent);
+    amountToInvoice =
+        computeAmountToInvoice(
+            amountToInvoice,
+            operationSelect,
+            saleOrder,
+            qtyToInvoiceMap,
+            priceMap,
+            qtyMap,
+            isPercent);
 
     sumInvoices = sumInvoices.add(amountToInvoice);
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
