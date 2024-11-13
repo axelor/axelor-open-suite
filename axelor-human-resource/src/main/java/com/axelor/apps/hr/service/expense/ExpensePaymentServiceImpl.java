@@ -250,8 +250,9 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancelPayment(Expense expense) throws AxelorException {
-    BankOrder bankOrder = expense.getBankOrder();
+    resetExpensePaymentAfterCancellation(expense);
 
+    BankOrder bankOrder = expense.getBankOrder();
     if (bankOrder != null) {
       if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT
           || bankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED) {
@@ -270,7 +271,6 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
       }
       moveCancelService.cancel(paymentMove);
     }
-    resetExpensePaymentAfterCancellation(expense);
   }
 
   @Override
