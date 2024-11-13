@@ -41,6 +41,9 @@
     <string name="minimalRequiredMobileAppVersion"
       title="Minimal required version of the mobile application."
       help="Indicates the minimal required version of the mobile application. If the user's version is different than the one indicated, the mobile app will require the user to update to have access to the app."/>
+    <many-to-one name="currentApkFile" title="Current Android build"
+      ref="com.axelor.meta.db.MetaFile"
+      help="Saves the current build of the mobile application linked to this instance. If the user is behind the minimum required version, he'll be prompted to download the version saved here."/>
 
     <boolean name="isTrackerMessageEnabled" title="Enable tracker messages." default="false"
       help="Enabling this setting, allows you to see on the mobile application the comments and changes that are tracked on the web application."/>

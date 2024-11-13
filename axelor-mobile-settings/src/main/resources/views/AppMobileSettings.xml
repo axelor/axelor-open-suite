@@ -41,6 +41,7 @@
     </panel>
     <panel name="versionPanel" sidebar="true">
       <field name="minimalRequiredMobileAppVersion"/>
+      <field name="currentApkFile" widget="binary-link" x-accept=".apk"/>
     </panel>
     <panel name="configPanel" sidebar="true">
       <panel name="configBasePanel" title="General">

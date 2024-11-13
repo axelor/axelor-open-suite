@@ -19,6 +19,7 @@
 package com.axelor.apps.mobilesettings.rest.dto;
 
 import com.axelor.dms.db.DMSFile;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.api.ResponseStructure;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -55,6 +56,7 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isConfiguratorProductShown;
   protected final List<String> productTypesToDisplay;
   protected final List<String> reportingTypesToDisplay;
+  protected final MetaFile currentApkFile;
   protected final DMSFile defaultDmsRoot;
   protected final Boolean isFavoritesManagementEnabled;
   protected final Boolean isDownloadAllowed;
@@ -95,6 +97,7 @@ public class MobileSettingsResponse extends ResponseStructure {
       Boolean isConfiguratorProductShown,
       List<String> productTypesToDisplay,
       List<String> reportingTypesToDisplay,
+      MetaFile currentApkFile,
       DMSFile defaultDmsRoot,
       Boolean isFavoritesManagementEnabled,
       Boolean isDownloadAllowed,
@@ -133,6 +136,7 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.isConfiguratorProductShown = isConfiguratorProductShown;
     this.productTypesToDisplay = productTypesToDisplay;
     this.reportingTypesToDisplay = reportingTypesToDisplay;
+    this.currentApkFile = currentApkFile;
     this.defaultDmsRoot = defaultDmsRoot;
     this.isFavoritesManagementEnabled = isFavoritesManagementEnabled;
     this.isDownloadAllowed = isDownloadAllowed;
@@ -287,6 +291,11 @@ public class MobileSettingsResponse extends ResponseStructure {
   @JsonProperty(value = "reportingTypesToDisplay")
   public List<String> getReportingTypesToDisplay() {
     return reportingTypesToDisplay;
+  }
+
+  @JsonProperty(value = "currentApkFile")
+  public MetaFile getCurrentApkFile() {
+    return currentApkFile;
   }
 
   @JsonProperty(value = "defaultDmsRoot")

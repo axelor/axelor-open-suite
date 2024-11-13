@@ -109,6 +109,7 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsConfiguratorProductShown(),
         getProductTypesToDisplay(appMobileSettings),
         getReportingTypesToDisplay(appMobileSettings),
+        appMobileSettings.getCurrentApkFile(),
         appMobileSettings.getDefaultDmsRoot(),
         appMobileSettings.getIsFavoritesManagementEnabled(),
         appMobileSettings.getIsDownloadAllowed(),
