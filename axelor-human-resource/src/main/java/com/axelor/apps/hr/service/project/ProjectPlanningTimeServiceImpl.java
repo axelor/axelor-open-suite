@@ -655,4 +655,38 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         && projectTask.getAssignedTo() != null
         && projectTask.getAssignedTo().getEmployee() != null;
   }
+
+  @Override
+  public BigDecimal getTotalPlannedTimeInDaysForPeriod(
+      List<ProjectTask> projectTaskList, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException {
+
+    BigDecimal totalPlannedTime = BigDecimal.ZERO;
+
+    List<ProjectPlanningTime> projectPlanningTimeList =
+        planningTimeRepo.findByProjectTasksAndPeriod(projectTaskList, fromDate, toDate).fetch();
+
+    if (CollectionUtils.isNotEmpty(projectPlanningTimeList)) {
+      Unit dayUnit = appBaseService.getAppBase().getUnitDays();
+
+      for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeList) {
+        totalPlannedTime =
+            totalPlannedTime.add(
+                getPlannedTimeInTargetUnit(
+                    projectPlanningTime.getTimeUnit(),
+                    dayUnit,
+                    projectPlanningTime.getPlannedTime(),
+                    projectPlanningTime.getProject()));
+      }
+    }
+
+    return totalPlannedTime;
+  }
+
+  protected BigDecimal getPlannedTimeInTargetUnit(
+      Unit startUnit, Unit endUnit, BigDecimal value, Project project) throws AxelorException {
+
+    return unitConversionForProjectService.convert(
+        startUnit, endUnit, value, value.scale(), project);
+  }
 }

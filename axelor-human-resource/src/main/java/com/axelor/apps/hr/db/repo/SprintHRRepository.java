@@ -20,6 +20,7 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.sprint.AllocationLineService;
 import com.axelor.apps.project.db.AllocationLine;
 import com.axelor.apps.project.db.ProjectTask;
@@ -29,6 +30,7 @@ import com.axelor.apps.project.db.repo.SprintProjectRepository;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
@@ -41,6 +43,7 @@ public class SprintHRRepository extends SprintProjectRepository {
     Sprint sprint = find((Long) json.get("id"));
 
     BigDecimal totalAllocatedTime = BigDecimal.ZERO;
+    BigDecimal totalPlannedTime = BigDecimal.ZERO;
     BigDecimal totalEstimatedTime = BigDecimal.ZERO;
     BigDecimal totalRemainingTime = BigDecimal.ZERO;
 
@@ -83,9 +86,22 @@ public class SprintHRRepository extends SprintProjectRepository {
       for (ProjectTask projectTask : projectTaskList) {
         totalEstimatedTime = totalEstimatedTime.add(projectTask.getBudgetedTime());
       }
+
+      LocalDate fromDate = sprint.getFromDate();
+      LocalDate toDate = sprint.getToDate();
+
+      try {
+        totalPlannedTime =
+            totalPlannedTime.add(
+                Beans.get(ProjectPlanningTimeService.class)
+                    .getTotalPlannedTimeInDaysForPeriod(projectTaskList, fromDate, toDate));
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
+      }
     }
 
     json.put("$totalAllocatedTime", totalAllocatedTime.setScale(2, RoundingMode.HALF_UP));
+    json.put("$totalPlannedTime", totalPlannedTime.setScale(2, RoundingMode.HALF_UP));
     json.put("$totalEstimatedTime", totalEstimatedTime.setScale(2, RoundingMode.HALF_UP));
     json.put("$totalRemainingTime", totalRemainingTime.setScale(2, RoundingMode.HALF_UP));
 

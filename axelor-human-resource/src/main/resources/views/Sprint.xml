@@ -4,10 +4,11 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="sprint-summary-grid" title="Sprints summary"
-    model="com.axelor.apps.project.db.Sprint">
+    model="com.axelor.apps.project.db.Sprint" widget="expandable" summary-view="sprint-summary-form">
 
     <field name="name"/>
     <field name="$totalAllocatedTime" title="Total allocated time" type="decimal"/>
+    <field name="$totalPlannedTime" title="Total planned time" type="decimal"/>
     <field name="$totalEstimatedTime" title="Total estimated time" type="decimal"/>
     <field name="$totalRemainingTime" title="Total remaining time" type="decimal"/>
 
@@ -27,11 +28,13 @@
       <insert position="after">
         <panel name="totalsPanel" showIf="id" colSpan="12">
           <field name="$totalAllocatedTime" title="Total allocated time" type="decimal"
-            readonly="true" colSpan="4"/>
+            readonly="true" colSpan="3"/>
+          <field name="$totalPlannedTime" title="Total planned time" type="decimal"
+            readonly="true" colSpan="3"/>
           <field name="$totalEstimatedTime" title="Total estimated time" type="decimal"
-            readonly="true" colSpan="4"/>
+            readonly="true" colSpan="3"/>
           <field name="$totalRemainingTime" title="Total remaining time" type="decimal"
-            readonly="true" colSpan="4"/>
+            readonly="true" colSpan="3"/>
         </panel>
       </insert>
     </extend>
@@ -42,11 +45,26 @@
 
   </form>
 
+  <form model="com.axelor.apps.project.db.Sprint" title="Sprints summary"
+    name="sprint-summary-form" canEdit="false">
+
+    <panel-dashlet action="action-sprint-summary-view-project-planning-time"/>
+
+  </form>
+
   <action-view name="action-sprint-view-allocation-lines" title="Allocation lines"
     model="com.axelor.apps.project.db.AllocationLine">
     <view type="grid" name="allocation-line-project-grid"/>
     <view type="form" name="allocation-line-form"/>
     <domain>self.project = :project and self.allocationPeriod in :allocationPeriodSet</domain>
+  </action-view>
+
+  <action-view name="action-sprint-summary-view-project-planning-time"
+    title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime">
+    <view type="grid" name="project-planning-time-grid"/>
+    <domain>self.projectTask in :projectTaskList and ((self.startDateTime between :fromDate and
+      :toDate) or (self.endDateTime between :fromDate and :toDate) or (self.startDateTime &lt;
+      :fromDate and self.endDateTime &gt; :toDate))</domain>
   </action-view>
 
 </object-views>

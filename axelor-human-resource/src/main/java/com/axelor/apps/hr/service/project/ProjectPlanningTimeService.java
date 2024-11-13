@@ -27,6 +27,7 @@ import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -76,4 +77,8 @@ public interface ProjectPlanningTimeService {
   public void updateProjectPlannings(Sprint sprint, List<ProjectTask> projectTaskList);
 
   public BigDecimal calculatePlannedTime(ProjectTask projectTask);
+
+  public BigDecimal getTotalPlannedTimeInDaysForPeriod(
+      List<ProjectTask> projectTaskList, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException;
 }
