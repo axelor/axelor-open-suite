@@ -1,3 +1,0 @@
----
-title: "Move/Payment session: added bank order origin in the generated move if needed."
-module: axelor-bank-payment
