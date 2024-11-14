@@ -1,3 +1,75 @@
+## [8.1.11] (2024-11-14)
+
+### Fixes
+#### Base
+
+* Updated Axelor Open Platform to 7.1.10.
+* Updated studio module to version 3.1.6.
+* Updated message module to version 3.1.3.
+* Updated utils module to version 3.1.3.
+* Partner: tax number will be displayed for suppliers too along with customers.
+* Pricing: fixed the product category filter in pricing formula.
+
+#### Account
+
+* Payment voucher: fixed disable apply financial on payment voucher.
+* Analytic move line query: fixed always readonly button in 'Analytic move lines to reverse' dashlet.
+* Accounting export: fixed skipped lines on accounting export when we have more than 10 000 lines.
+* Accounting report: replaced move line partner full name with partner sequence and partner full name in reports.
+* Invoice: fixed NPE when clicking on print button on grid lines.
+* Move/Analytic: record analytic account on moveline on the reverse move
+* Partner: fixed an issue where the partner balance was wrong after an unreconcile.
+* FEC Import: fixed importing moves with a validation date.
+* Bank reconciliation line: fixed an issue where too much memory could be used when filtering move lines.
+* Analytic move line query: optimized filter to handle high data volumes efficiently.
+
+#### Bank Payment
+
+* Bank statement: fixed error when importing bank statement with negative final balance.
+* Move/Payment session: added bank order origin in the generated move if needed.
+
+#### Contract
+
+* Contract/Invoice: fixed analytic wrong management on contract line.
+
+#### Human Resource
+
+* Expense API: expense line creation with a manual distance is no longer overriden by computed distance.
+* Expense: fixed an error occurring when cancelling an expense payment linked to a bank order.
+
+#### Project
+
+* Project: fixed NPE when opening project in project activity dashboard.
+
+#### Purchase
+
+* Purchase order lines: fixed an issue where the warning about default supplier was not displayed.
+
+#### Quality
+
+* Quality: fixed translation of 'Check conformity'.
+
+#### Sale
+
+* Sale order: fixed display of 'Send email' button when record is not saved.
+
+#### Stock
+
+* Stock move line: fixed tracking number domain filter.
+
+#### Supply Chain
+
+* Stock move: fixed issue where partial invoicing was not working.
+* Sale order: fixed an issue where the invoicing of sale order lines was blocked.
+
+
+### Developer
+
+#### Supply Chain
+
+- Added new arguments to SaleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable()
+- Updated SaleOrderInvoiceService.computeAmountToInvoice visibility to protected and removed it from interface
+
 ## [8.1.10] (2024-10-31)
 
 ### Fixes
@@ -794,6 +866,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.11]: https://github.com/axelor/axelor-open-suite/compare/v8.1.10...v8.1.11
 [8.1.10]: https://github.com/axelor/axelor-open-suite/compare/v8.1.9...v8.1.10
 [8.1.9]: https://github.com/axelor/axelor-open-suite/compare/v8.1.8...v8.1.9
 [8.1.8]: https://github.com/axelor/axelor-open-suite/compare/v8.1.7...v8.1.8
