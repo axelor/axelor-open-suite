@@ -1,3 +1,24 @@
+## [6.5.46] (2024-11-14)
+
+### Fixes
+#### Base
+
+* Updated Axelor Open Platform to 5.4.23.
+
+#### Account
+
+* Accounting export: fixed skipped lines on accounting export when we have more than 10 000 lines.
+* FEC Import: fixed importing moves with a validation date.
+* Bank reconciliation line: fixed an issue where too much memory could be used when filtering move lines.
+
+#### Project
+
+* Project: fixed NPE when opening project in project activity dashboard.
+
+#### Sale
+
+* Sale order: fixed display of 'Send email' button when record is not saved.
+
 ## [6.5.45] (2024-10-31)
 
 ### Fixes
@@ -1573,6 +1594,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.46]: https://github.com/axelor/axelor-open-suite/compare/v6.5.45...v6.5.46
 [6.5.45]: https://github.com/axelor/axelor-open-suite/compare/v6.5.44...v6.5.45
 [6.5.44]: https://github.com/axelor/axelor-open-suite/compare/v6.5.43...v6.5.44
 [6.5.43]: https://github.com/axelor/axelor-open-suite/compare/v6.5.42...v6.5.43
