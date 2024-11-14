@@ -229,8 +229,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     return commonInvoiceService.computeAmountToInvoicePercent(saleOrder, amount, isPercent, total);
   }
 
-  @Override
-  public BigDecimal computeAmountToInvoice(
+  protected BigDecimal computeAmountToInvoice(
       BigDecimal amountToInvoice,
       int operationSelect,
       SaleOrder saleOrder,
@@ -255,6 +254,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
               amountToInvoice.add(qtyToInvoice.multiply(priceMap.get(saleOrderLineId)));
         }
       }
+    } else if (operationSelect == SaleOrderRepository.INVOICE_ADVANCE_PAYMENT && isPercent) {
+      amountToInvoice =
+          saleOrder
+              .getExTaxTotal()
+              .multiply(amountToInvoice)
+              .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
     }
     return amountToInvoice;
   }
@@ -872,7 +877,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   @Override
   public void displayErrorMessageIfSaleOrderIsInvoiceable(
-      SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
+      SaleOrder saleOrder,
+      BigDecimal amountToInvoice,
+      int operationSelect,
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      Map<Long, BigDecimal> priceMap,
+      Map<Long, BigDecimal> qtyMap,
+      boolean isPercent)
+      throws AxelorException {
     List<Invoice> invoices =
         Query.of(Invoice.class)
             .filter(
@@ -886,15 +898,18 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             .fetch();
 
     BigDecimal sumInvoices = commonInvoiceService.computeSumInvoices(invoices);
-    BigDecimal computedAmountToInvoice = amountToInvoice;
-    if (isPercent) {
-      computedAmountToInvoice =
-          saleOrder
-              .getExTaxTotal()
-              .multiply(amountToInvoice)
-              .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-    }
-    sumInvoices = sumInvoices.add(computedAmountToInvoice);
+
+    amountToInvoice =
+        computeAmountToInvoice(
+            amountToInvoice,
+            operationSelect,
+            saleOrder,
+            qtyToInvoiceMap,
+            priceMap,
+            qtyMap,
+            isPercent);
+
+    sumInvoices = sumInvoices.add(amountToInvoice);
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
