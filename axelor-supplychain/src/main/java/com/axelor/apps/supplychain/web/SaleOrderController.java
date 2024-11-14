@@ -244,19 +244,14 @@ public class SaleOrderController {
         }
       }
 
-      // Re-compute amount to invoice if invoicing partially
-      amountToInvoice =
-          saleOrderInvoiceService.computeAmountToInvoice(
-              amountToInvoice,
-              operationSelect,
-              saleOrder,
-              qtyToInvoiceMap,
-              priceMap,
-              qtyMap,
-              isPercent);
-
       saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
-          saleOrder, amountToInvoice, isPercent);
+          saleOrder,
+          amountToInvoice,
+          operationSelect,
+          qtyToInvoiceMap,
+          priceMap,
+          qtyMap,
+          isPercent);
 
       // Information to send to the service to handle an invoicing on timetables
       List<Long> timetableIdList = new ArrayList<>();

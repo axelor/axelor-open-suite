@@ -226,16 +226,6 @@ public interface SaleOrderInvoiceService {
   BigDecimal computeAmountToInvoicePercent(
       SaleOrder saleOrder, BigDecimal amount, boolean isPercent) throws AxelorException;
 
-  BigDecimal computeAmountToInvoice(
-      BigDecimal amountToInvoice,
-      int operationSelect,
-      SaleOrder saleOrder,
-      Map<Long, BigDecimal> qtyToInvoiceMap,
-      Map<Long, BigDecimal> priceMap,
-      Map<Long, BigDecimal> qtyMap,
-      boolean isPercent)
-      throws AxelorException;
-
   /**
    * Set the updated sale order amount invoiced without checking.
    *
@@ -292,7 +282,14 @@ public interface SaleOrderInvoiceService {
    * @throws AxelorException
    */
   void displayErrorMessageIfSaleOrderIsInvoiceable(
-      SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException;
+      SaleOrder saleOrder,
+      BigDecimal amountToInvoice,
+      int operationSelect,
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      Map<Long, BigDecimal> priceMap,
+      Map<Long, BigDecimal> qtyMap,
+      boolean isPercent)
+      throws AxelorException;
 
   /**
    * Display error message if all invoices have been generated for the sale order
