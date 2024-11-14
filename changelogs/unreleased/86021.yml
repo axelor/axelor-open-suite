@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed issue where partial invoicing was not working."
-module: axelor-supplychain

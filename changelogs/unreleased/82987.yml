@@ -1,3 +1,0 @@
----
-title: "Bank statement: fixed error when importing bank statement with negative final balance."
-module: axelor-bank-payment
