@@ -1,3 +1,0 @@
----
-title: "Accounting export: fixed skipped lines on accounting export when we have more than 10 000 lines."
-module: axelor-account

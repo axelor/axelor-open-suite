@@ -1,6 +1,0 @@
----
-title: "Sale order: fixed an issue where the invoicing of sale order lines was blocked."
-module: axelor-supplychain
-developer: |
-  Added new arguments to SaleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable()
-  Updated SaleOrderInvoiceService.computeAmountToInvoice visibility to protected and removed it from interface

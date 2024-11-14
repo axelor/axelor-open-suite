@@ -1,3 +1,68 @@
+## [8.0.19] (2024-11-14)
+
+### Fixes
+#### Base
+
+* Updated Axelor Open Platform to 7.0.10.
+* Updated studio module to version 2.0.8.
+* Updated message module to version 2.0.1.
+* Updated utils module to version 2.0.1.
+* Partner: tax number will be displayed for suppliers too along with customers.
+* Pricing: fixed the product category filter in pricing formula.
+
+#### Account
+
+* Analytic move line query: fixed always readonly button in 'Analytic move lines to reverse' dashlet.
+* Accounting export: fixed skipped lines on accounting export when we have more than 10 000 lines.
+* Accounting report: replaced move line partner full name with partner sequence and partner full name in reports.
+* Move/Analytic: record analytic account on moveline on the reverse move
+* Partner: fixed an issue where the partner balance was wrong after an unreconcile.
+* FEC Import: fixed importing moves with a validation date.
+* Accounting batch: fixed multiple auto lettering.
+* Bank reconciliation line: fixed an issue where too much memory could be used when filtering move lines.
+* Analytic move line query: optimized filter to handle high data volumes efficiently.
+
+#### Contract
+
+* Contract/Invoice: fixed analytic wrong management on contract line.
+
+#### Human Resource
+
+* Expense API: expense line creation with a manual distance is no longer overriden by computed distance.
+* Expense: fixed an error occurring when cancelling an expense payment linked to a bank order.
+
+#### Project
+
+* Project: fixed NPE when opening project in project activity dashboard.
+
+#### Purchase
+
+* Purchase order lines: fixed an issue where the warning about default supplier was not displayed.
+
+#### Quality
+
+* Quality: fixed translation of 'Check conformity'.
+
+#### Sale
+
+* Sale order: fixed display of 'Send email' button when record is not saved.
+
+#### Stock
+
+* Stock move line: fixed tracking number domain filter.
+
+#### Supply Chain
+
+* Sale order: fixed an issue where the invoicing of sale order lines was blocked.
+
+
+### Developer
+
+#### Supply Chain
+
+- Added new arguments to SaleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable()
+- Updated SaleOrderInvoiceService.computeAmountToInvoice visibility to protected and removed it from interface
+
 ## [8.0.18] (2024-10-31)
 
 ### Fixes
@@ -1187,6 +1252,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.19]: https://github.com/axelor/axelor-open-suite/compare/v8.0.18...v8.0.19
 [8.0.18]: https://github.com/axelor/axelor-open-suite/compare/v8.0.17...v8.0.18
 [8.0.17]: https://github.com/axelor/axelor-open-suite/compare/v8.0.16...v8.0.17
 [8.0.16]: https://github.com/axelor/axelor-open-suite/compare/v8.0.15...v8.0.16
