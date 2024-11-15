@@ -27,6 +27,7 @@ import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
@@ -197,5 +198,27 @@ public class ProjectPlanningTimeController {
     response.setValue(
         "displayPlannedTimeRestricted",
         projectPlanningTimeService.getDefaultPlanningRestrictedTime(projectPlanningTime));
+  }
+
+  public void updateFromSprint(ActionRequest request, ActionResponse response) {
+
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    ProjectTask projectTask = projectPlanningTime.getProjectTask();
+
+    if (projectTask != null && projectTask.getSprint() != null) {
+      Sprint sprint = projectTask.getSprint();
+
+      BigDecimal plannedTime =
+          Beans.get(ProjectPlanningTimeService.class).calculatePlannedTime(projectTask);
+      response.setValue("plannedTime", plannedTime);
+      response.setValue("displayPlannedTime", plannedTime);
+
+      if (sprint.getFromDate() != null && sprint.getToDate() != null) {
+        response.setValue("startDateTime", sprint.getFromDate());
+        response.setValue("endDateTime", sprint.getToDate());
+      }
+    }
   }
 }

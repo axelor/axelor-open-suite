@@ -21,7 +21,9 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.service.ProjectMenuService;
 import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.auth.AuthUtils;
@@ -33,6 +35,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ProjectMenuController {
 
@@ -99,5 +102,29 @@ public class ProjectMenuController {
     }
     project = Beans.get(ProjectRepository.class).find(project.getId());
     response.setView(Beans.get(ProjectMenuService.class).getAllProjectRelatedTasks(project));
+  }
+
+  public void viewTasksPerSprint(ActionRequest request, ActionResponse response) {
+
+    Project project = request.getContext().asType(Project.class);
+
+    ActionView.ActionViewBuilder actionViewBuilder =
+        ActionView.define(I18n.get("Tasks per sprint"));
+
+    actionViewBuilder.model(ProjectTask.class.getName());
+    actionViewBuilder.add("kanban", "project-task-sprint-kanban");
+    actionViewBuilder.add("form", "project-task-form");
+    actionViewBuilder.param(
+        "kanban-hide-columns",
+        Beans.get(SprintRepository.class)
+            .all()
+            .filter("self.project.id != ?1", project.getId())
+            .fetchStream()
+            .map(sprint -> String.valueOf(sprint.getId()))
+            .collect(Collectors.joining(",")));
+    actionViewBuilder.domain("self.project.id = :_projectId");
+    actionViewBuilder.context("_projectId", project.getId());
+
+    response.setView(actionViewBuilder.map());
   }
 }
