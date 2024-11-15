@@ -296,6 +296,7 @@
       <panel-include view="incl-checklist-task-panel-form"/>
 
       <panel-include view="incl-links-panel-form"/>
+      <panel-include view="sprint-project-task-form"/>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
