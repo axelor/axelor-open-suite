@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -40,6 +41,7 @@ import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -73,7 +75,8 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       UnitConversionRepository unitConversionRepository,
       AppBusinessProjectService appBusinessProjectService,
       ICalendarService iCalendarService,
-      ICalendarEventRepository iCalendarEventRepository) {
+      ICalendarEventRepository iCalendarEventRepository,
+      AppBaseService appBaseService) {
     super(
         planningTimeRepo,
         projectRepo,
@@ -89,7 +92,8 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
         iCalendarService,
         iCalendarEventRepository,
         unitConversionForProjectService,
-        unitConversionRepository);
+        unitConversionRepository,
+        appBaseService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 
@@ -149,5 +153,48 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
     }
 
     return planningTime;
+  }
+
+  @Override
+  protected ProjectPlanningTime createPlanningTime(Sprint sprint, ProjectTask projectTask) {
+
+    return setPlanningTimeUnits(projectTask, super.createPlanningTime(sprint, projectTask));
+  }
+
+  @Override
+  public BigDecimal calculatePlannedTime(ProjectTask projectTask) {
+
+    BigDecimal progress = projectTask.getProgress();
+
+    if (progress.compareTo(BigDecimal.ZERO) == 0) {
+      return projectTask
+          .getBudgetedTime()
+          .subtract(projectTask.getSpentTime())
+          .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    return super.calculatePlannedTime(projectTask);
+  }
+
+  protected ProjectPlanningTime setPlanningTimeUnits(
+      ProjectTask projectTask, ProjectPlanningTime planningTime) {
+
+    Unit timeUnit =
+        projectTask.getTimeUnit() != null
+            ? projectTask.getTimeUnit()
+            : projectTask.getProject().getProjectTimeUnit();
+
+    planningTime.setTimeUnit(timeUnit);
+    planningTime.setDisplayTimeUnit(timeUnit);
+
+    return planningTime;
+  }
+
+  @Override
+  protected boolean isValidProjectTask(ProjectTask projectTask) {
+
+    return super.isValidProjectTask(projectTask)
+        && (projectTask.getTimeUnit() != null
+            || projectTask.getProject().getProjectTimeUnit() != null);
   }
 }
