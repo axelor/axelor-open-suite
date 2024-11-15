@@ -41,6 +41,13 @@
 	  	]]>
     </string>
 
+    <finder-method name="findByProjectTasksAndPeriod"
+      using="java.util.List&lt;com.axelor.apps.project.db.ProjectTask&gt;:projectTaskList,LocalDate:fromDate,LocalDate:toDate"
+      filter="self.projectTask in :projectTaskList and ((self.startDateTime between :fromDate and
+      :toDate) or (self.endDateTime between :fromDate and :toDate) or (self.startDateTime &lt;
+      :fromDate and self.endDateTime &gt; :toDate))"
+      all="true"/>
+
     <extra-imports>
       <![CDATA[
 	      import com.axelor.inject.Beans;
