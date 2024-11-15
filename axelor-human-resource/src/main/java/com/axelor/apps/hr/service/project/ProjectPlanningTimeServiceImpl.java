@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -41,6 +42,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectConfig;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -49,6 +51,7 @@ import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.db.mapper.Adapter;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.rpc.Context;
@@ -57,6 +60,7 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -64,6 +68,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +86,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   protected TimesheetLineRepository timesheetLineRepository;
   protected UnitConversionForProjectService unitConversionForProjectService;
   protected UnitConversionRepository unitConversionRepository;
-
+  protected AppBaseService appBaseService;
   protected AppProjectService appProjectService;
   protected ProjectConfigService projectConfigService;
   protected PlannedTimeValueService plannedTimeValueService;
@@ -104,7 +109,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       ICalendarService iCalendarService,
       ICalendarEventRepository iCalendarEventRepository,
       UnitConversionForProjectService unitConversionForProjectService,
-      UnitConversionRepository unitConversionRepository) {
+      UnitConversionRepository unitConversionRepository,
+      AppBaseService appBaseService) {
     super();
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
@@ -121,6 +127,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     this.iCalendarEventRepository = iCalendarEventRepository;
     this.unitConversionForProjectService = unitConversionForProjectService;
     this.unitConversionRepository = unitConversionRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -554,5 +561,98 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       return projectConfigService.getProjectConfig(optCompany.get());
     }
     return null;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void updateProjectPlannings(Sprint sprint, List<ProjectTask> projectTaskList) {
+
+    if (!isValidSprint(sprint) || CollectionUtils.isEmpty(projectTaskList)) {
+      return;
+    }
+
+    for (ProjectTask projectTask : projectTaskList) {
+
+      if (!isValidProjectTask(projectTask)) {
+        return;
+      }
+
+      LocalDate todayDate = appBaseService.getTodayDate(projectTask.getProject().getCompany());
+
+      List<ProjectPlanningTime> futurePlanningTimeList = fetchPlanningList(projectTask, todayDate);
+
+      if (CollectionUtils.isNotEmpty(futurePlanningTimeList)) {
+        removeProjectPlanningLines(
+            futurePlanningTimeList.stream()
+                .map(ProjectPlanningTime::getId)
+                .map(Long::intValue)
+                .collect(Collectors.toList()));
+      }
+
+      if (sprint.getFromDate().isAfter(todayDate)) {
+        planningTimeRepo.save(createPlanningTime(sprint, projectTask));
+      }
+    }
+  }
+
+  protected List<ProjectPlanningTime> fetchPlanningList(ProjectTask projectTask, LocalDate date) {
+
+    return Query.of(ProjectPlanningTime.class)
+        .filter("self.projectTask = :projectTask and DATE(self.startDateTime) > :todayDate")
+        .bind("projectTask", projectTask)
+        .bind("todayDate", date)
+        .fetch();
+  }
+
+  protected ProjectPlanningTime createPlanningTime(Sprint sprint, ProjectTask projectTask) {
+
+    ProjectPlanningTime planningTime = new ProjectPlanningTime();
+
+    Employee employee = projectTask.getAssignedTo().getEmployee();
+
+    planningTime.setProjectTask(projectTaskRepo.find(projectTask.getId()));
+    planningTime.setProject(projectTask.getProject());
+    planningTime.setEmployee(employee);
+    planningTime.setStartDateTime(sprint.getFromDate().atStartOfDay());
+    planningTime.setEndDateTime(sprint.getToDate().atStartOfDay());
+    planningTime.setProduct(employee.getProduct());
+    planningTime.setPlannedTime(calculatePlannedTime(projectTask));
+
+    return planningTime;
+  }
+
+  @Override
+  public BigDecimal calculatePlannedTime(ProjectTask projectTask) {
+
+    BigDecimal progress = projectTask.getProgress();
+
+    if (progress.compareTo(BigDecimal.ZERO) == 0) {
+      return projectTask.getBudgetedTime().setScale(2, RoundingMode.HALF_UP);
+    }
+
+    BigDecimal hundred = new BigDecimal("100");
+    BigDecimal estimatedTime = projectTask.getBudgetedTime();
+    BigDecimal remainingPercentage = hundred.subtract(progress);
+
+    return remainingPercentage
+        .multiply(estimatedTime)
+        .divide(hundred, 2, RoundingMode.HALF_UP)
+        .setScale(2, RoundingMode.HALF_UP);
+  }
+
+  protected boolean isValidSprint(Sprint sprint) {
+
+    return sprint != null
+        && !sprint.getIsBacklog()
+        && sprint.getFromDate() != null
+        && sprint.getToDate() != null;
+  }
+
+  protected boolean isValidProjectTask(ProjectTask projectTask) {
+
+    return projectTask != null
+        && projectTask.getProject() != null
+        && projectTask.getAssignedTo() != null
+        && projectTask.getAssignedTo().getEmployee() != null;
   }
 }
