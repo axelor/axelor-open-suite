@@ -25,6 +25,7 @@ import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Sprint;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -71,4 +72,8 @@ public interface ProjectPlanningTimeService {
 
   PlannedTimeValue getDefaultPlanningRestrictedTime(ProjectPlanningTime projectPlanningTime)
       throws AxelorException;
+
+  public void updateProjectPlannings(Sprint sprint, List<ProjectTask> projectTaskList);
+
+  public BigDecimal calculatePlannedTime(ProjectTask projectTask);
 }
