@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="AllocationLine">
+
+    <many-to-one name="sprint" ref="com.axelor.apps.project.db.Sprint" title="Sprint"/>
+    <many-to-one name="allocationPeriod"
+      ref="com.axelor.apps.project.db.AllocationPeriod" title="Allocation period"/>
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
+    <decimal name="allocated" title="Allocated"/>
+    <decimal name="leaves" title="Leaves"/>
+    <decimal name="alreadyAllocated" title="Already allocated"/>
+    <decimal name="availableAllocation" title="Available allocation"/>
+    <string name="description" title="Description" large="true"/>
+
+  </entity>
+
+</domain-models>

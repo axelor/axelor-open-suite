@@ -231,4 +231,28 @@
     <view type="form" name="project-check-list-template-form"/>
   </action-view>
 
+  <!-- Sprint menus -->
+
+  <menuitem name="sprint-root" title="Sprint" parent="menu-project-root" order="699"/>
+
+  <menuitem name="sprint-root-sprint" title="Sprints" parent="sprint-root"
+    action="sprint.root.sprints"/>
+
+  <action-view name="sprint.root.sprints" title="Sprints"
+    model="com.axelor.apps.project.db.Sprint">
+    <view type="grid" name="sprint-grid"/>
+    <view type="form" name="sprint-form"/>
+  </action-view>
+
+  <menuitem name="sprint-root-allocation-periods" title="Allocation periods"
+    parent="sprint-root" action="sprint.root.allocation.periods"/>
+
+  <action-view name="sprint.root.allocation.periods" title="Allocation periods"
+    model="com.axelor.apps.project.db.AllocationPeriod">
+    <view type="grid" name="allocation-period-grid"/>
+    <view type="form" name="allocation-period-form"/>
+  </action-view>
+
+  <!-- Sprint menus -->
+
 </object-views>
