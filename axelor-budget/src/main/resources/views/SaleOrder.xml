@@ -84,7 +84,8 @@
     <action name="action-sale-order-validate-quotation"/>
     <action name="action-sale-order-method-budget-auto-compute-budget-distribution"
       if="__config__.app.isApp('budget')"/>
-    <action name="action-sale-order-method-budget-validate-finalize"/>
+    <action name="action-sale-order-method-budget-validate-finalize"
+      if="__config__.app.isApp('budget')"/>
     <action name="action-sale-order-method-finalize-quotation"/>
   </action-group>
 
