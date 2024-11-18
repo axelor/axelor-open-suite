@@ -30,7 +30,6 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -109,7 +108,7 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
           || fixedAsset
               .getDepreciationPlanSelect()
               .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
-        fixedAsset.setAccountingValue(BigDecimal.ZERO);
+        fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
       } else {
         fixedAsset.setAccountingValue(
             fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));

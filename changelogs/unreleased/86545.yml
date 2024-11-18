@@ -1,0 +1,3 @@
+---
+title: "Fixed Asset: fixed accounting value when we validate fixed asset without depreciation plan."
+module: axelor-account
