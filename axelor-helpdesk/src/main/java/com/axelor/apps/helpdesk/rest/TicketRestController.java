@@ -23,6 +23,8 @@ import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.rest.dto.TicketPutRequest;
 import com.axelor.apps.helpdesk.rest.dto.TicketResponse;
 import com.axelor.apps.helpdesk.rest.service.TicketUpdateRestService;
+import com.axelor.apps.helpdesk.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -62,6 +64,6 @@ public class TicketRestController {
             .updateTicketStatus(ticket, requestBody.getTargetStatus(), requestBody.getDateTime());
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Ticket updated.", new TicketResponse(ticket));
+        Response.Status.OK, I18n.get(ITranslation.TICKET_UPDATED), new TicketResponse(ticket));
   }
 }

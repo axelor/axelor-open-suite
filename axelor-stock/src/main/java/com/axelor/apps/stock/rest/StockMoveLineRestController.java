@@ -23,6 +23,8 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.rest.dto.StockMoveLinePutRequest;
 import com.axelor.apps.stock.rest.dto.StockMoveLineResponse;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -74,7 +76,9 @@ public class StockMoveLineRestController {
             requestBody.fetchToStockLocation());
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Line successfully updated.", new StockMoveLineResponse(stockmoveLine));
+        Response.Status.OK,
+        I18n.get(ITranslation.STOCK_MOVE_LINE_UPDATED),
+        new StockMoveLineResponse(stockmoveLine));
   }
 
   @Operation(
@@ -98,7 +102,9 @@ public class StockMoveLineRestController {
         .splitIntoFulfilledMoveLineAndUnfulfilledOne(stockmoveLine);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Line successfully split.", new StockMoveLineResponse(stockmoveLine));
+        Response.Status.OK,
+        I18n.get(ITranslation.STOCK_MOVE_LINE_SPLIT),
+        new StockMoveLineResponse(stockmoveLine));
   }
 
   @Operation(
@@ -115,7 +121,7 @@ public class StockMoveLineRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Stock move line quantity availability.",
+        I18n.get(ITranslation.STOCK_MOVE_LINE_QUANTITY_AVAILABILITY),
         Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine));
   }
 }
