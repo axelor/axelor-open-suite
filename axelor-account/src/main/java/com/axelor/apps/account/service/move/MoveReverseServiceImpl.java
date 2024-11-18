@@ -40,7 +40,9 @@ import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
@@ -313,6 +315,11 @@ public class MoveReverseServiceImpl implements MoveReverseService {
                 dateOfReversion));
       } catch (Exception e) {
         errorList.add(String.format("%s: %s", move.getReference(), e.getMessage()));
+      } finally {
+        i++;
+        if (i % AbstractBatch.FETCH_LIMIT == 0) {
+          JPA.clear();
+        }
       }
     }
     if (ObjectUtils.notEmpty(errorList)) {
