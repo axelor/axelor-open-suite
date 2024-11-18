@@ -424,7 +424,7 @@ public class ImportCityServiceImpl implements ImportCityService {
               cityLine[8], // canton code
               cityLine[9], // latitude
               cityLine[10], // longitude
-              cityLine[11])); // accuracy
+              cityLine.length > 11 ? cityLine[11] : null)); // accuracy
     }
 
     return this.createCityFileZipImport(cityList, cityTextFile);
