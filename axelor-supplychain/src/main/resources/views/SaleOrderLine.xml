@@ -202,7 +202,7 @@
     <action name="action-group-sale-saleorderline-onload"/>
     <action name="action-sale-order-line-attrs-hidden-fields-for-client"/>
     <action name="action-sale-order-line-group-manage-attrs"/>
-    <action name="action-sale-order-line-group-manage-analytic"/>
+    <action name="action-sale-order-line-group-analytic-management"/>
   </action-group>
 
   <action-group name="supplychain-action-sale-order-line-group-product-onchange">
@@ -211,8 +211,12 @@
   </action-group>
 
   <action-group name="action-sale-order-line-group-manage-analytic">
-    <action name="action-sale-order-line-method-hide-axis-analytic-account"/>
+    <action name="action-sale-order-line-group-analytic-management"/>
     <action name="action-sale-order-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group name="action-sale-order-line-group-analytic-management">
+    <action name="action-sale-order-line-method-hide-axis-analytic-account"/>
     <action name="action-sale-order-line-method-set-analytic-distribution-panel-hidden"/>
   </action-group>
 
