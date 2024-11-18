@@ -1,0 +1,3 @@
+---
+title: "PrintingTemplate: Fixed issue of NPE when the record is not found"
+module: axelor-base
