@@ -20,6 +20,8 @@
     <many-to-one name="workCenter" title="Work center"
       ref="com.axelor.apps.production.db.WorkCenter"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <many-to-one name="billOfMaterialLine"
+      ref="com.axelor.apps.production.db.BillOfMaterialLine" title="BoM line"/>
 
     <extra-code>
             <![CDATA[

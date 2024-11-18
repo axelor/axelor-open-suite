@@ -58,6 +58,8 @@ import com.axelor.apps.production.service.BillOfMaterialMrpLineService;
 import com.axelor.apps.production.service.BillOfMaterialMrpLineServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
+import com.axelor.apps.production.service.BomLineCreationService;
+import com.axelor.apps.production.service.BomLineCreationServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
 import com.axelor.apps.production.service.MpsChargeServiceImpl;
 import com.axelor.apps.production.service.MpsWeeklyScheduleService;
@@ -104,6 +106,12 @@ import com.axelor.apps.production.service.SaleOrderLineViewProductionService;
 import com.axelor.apps.production.service.SaleOrderLineViewProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderProductionSyncService;
 import com.axelor.apps.production.service.SaleOrderProductionSyncServiceImpl;
+import com.axelor.apps.production.service.SolBomCustomizationService;
+import com.axelor.apps.production.service.SolBomCustomizationServiceImpl;
+import com.axelor.apps.production.service.SolBomUpdateService;
+import com.axelor.apps.production.service.SolBomUpdateServiceImpl;
+import com.axelor.apps.production.service.SolDetailsBomUpdateService;
+import com.axelor.apps.production.service.SolDetailsBomUpdateServiceImpl;
 import com.axelor.apps.production.service.SopService;
 import com.axelor.apps.production.service.SopServiceImpl;
 import com.axelor.apps.production.service.StockMoveLineProductionServiceImpl;
@@ -358,5 +366,9 @@ public class ProductionModule extends AxelorModule {
         .to(SaleOrderComputeServiceProductionImpl.class);
     bind(SubSaleOrderLineComputeServiceImpl.class)
         .to(SubSaleOrderLineComputeServiceProductionImpl.class);
+    bind(BomLineCreationService.class).to(BomLineCreationServiceImpl.class);
+    bind(SolBomCustomizationService.class).to(SolBomCustomizationServiceImpl.class);
+    bind(SolBomUpdateService.class).to(SolBomUpdateServiceImpl.class);
+    bind(SolDetailsBomUpdateService.class).to(SolDetailsBomUpdateServiceImpl.class);
   }
 }
