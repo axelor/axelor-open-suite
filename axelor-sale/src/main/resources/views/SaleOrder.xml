@@ -1518,7 +1518,7 @@
       if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     <action name="action-sale-order-method-address-str"/>
     <action name="action-sale-order-method-fill-price-list"
-      if="!template &amp;&amp; saleOrderLineList?.isEmpty()"/>
+      if="!template &amp;&amp; (saleOrderLineList == null || saleOrderLineList.isEmpty())"/>
     <action name="action-sale-order-record-hide-discount"/>
     <action name="action-sale-order-attrs-interco" if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-record-interco" if="__config__.app.isApp('supplychain')"/>
