@@ -1,0 +1,3 @@
+---
+title: "Sale API: fixed issue related to complementary products price computation."
+module: axelor-sale
