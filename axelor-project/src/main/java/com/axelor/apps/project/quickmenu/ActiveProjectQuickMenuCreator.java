@@ -85,6 +85,7 @@ public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
     for (Project project : projectSet) {
       if (!Boolean.TRUE.equals(project.getArchived())
           && (project.getCompany() == null
+              || user.getActiveCompany() == null
               || (Objects.equals(project.getCompany(), user.getActiveCompany())))) {
         QuickMenuItem item =
             new QuickMenuItem(
