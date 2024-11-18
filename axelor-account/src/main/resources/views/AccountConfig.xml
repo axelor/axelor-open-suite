@@ -314,8 +314,6 @@
         </panel>
 
         <panel name="productsPanel" title="Products" colSpan="12">
-          <field name="invoicingProduct" domain="self.dtype = 'Product'"
-            form-view="product-form" grid-view="product-grid"/>
           <field name="advancePaymentProduct" domain="self.dtype = 'Product'"
             form-view="product-form" grid-view="product-grid"/>
         </panel>
