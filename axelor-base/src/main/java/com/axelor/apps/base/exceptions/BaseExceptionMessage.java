@@ -75,6 +75,9 @@ public final class BaseExceptionMessage {
 
   public static final String UNIT_CONVERSION_4 = /*$$(*/ "End unit cannot be void." /*)*/;
 
+  public static final String COEFFICIENT_SHOULD_NOT_BE_ZERO = /*$$(*/
+      "The coefficient for unit conversion from %s to %s should not be 0." /*)*/;
+
   public static final String CURRENCY_CONVERSION_1 = /*$$(*/
       "WARNING : Please close the current conversion period before creating new one" /*)*/;
   public static final String CURRENCY_CONVERSION_2 = /*$$(*/

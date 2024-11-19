@@ -19,7 +19,9 @@
 package com.axelor.apps.businessproject.rest;
 
 import com.axelor.apps.businessproject.service.ProjectRestService;
+import com.axelor.apps.businessproject.translation.ITranslation;
 import com.axelor.apps.project.db.Project;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -50,7 +52,7 @@ public class ProjectRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        String.format("Reporting values for project with id %s.", projectId),
+        String.format(I18n.get(ITranslation.REPORTING_VALUES_FOR_PROJECT), projectId),
         Beans.get(ProjectRestService.class).getProjectReportingValues(project));
   }
 }

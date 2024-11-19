@@ -87,12 +87,12 @@
         <item name="perStatusCalendar" title="Per status calendar"
           action="save,action-project-view-per-status-calendar"
           showIf="id &amp;&amp; isShowCalendarPerStatus"/>
-        <item name="perSectionKanban" title="Per section kanban"
-          action="save,action-project-view-per-section-kanban"
-          showIf="id &amp;&amp; isShowKanbanPerSection"/>
-        <item name="perSectionCalendar" title="Per section calendar"
-          action="save,action-project-view-per-section-calendar"
-          showIf="id &amp;&amp; isShowCalendarPerSection"/>
+        <item name="perCategoryKanban" title="Per category kanban"
+          action="save,action-project-view-per-category-kanban"
+          showIf="id &amp;&amp; isShowKanbanPerCategory"/>
+        <item name="perCategoryCalendar" title="Per category calendar"
+          action="save,action-project-view-per-category-calendar"
+          showIf="id &amp;&amp; isShowCalendarPerCategory"/>
         <item name="perUserCalendar" title="Per user calendar"
           action="save,action-project-view-per-user-calendar"
           showIf="id &amp;&amp; isShowCalendarPerUser"/>
@@ -649,7 +649,6 @@
 
   <action-attrs name="action-business-project-project-attrs-defaults"
     model="com.axelor.apps.project.db.Project">
-    <attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
     <attribute name="value" for="fromDate" expr="eval: __config__.date"/>
     <attribute name="value" for="assignedTo" expr="eval: __user__"/>
     <attribute name="value" for="numberHoursADay"

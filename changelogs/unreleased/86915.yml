@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed sale order with a title line tagged as partially invoiced while it has been totally invoiced."
+module: axelor-supplychain

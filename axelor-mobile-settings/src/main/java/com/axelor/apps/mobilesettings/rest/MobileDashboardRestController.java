@@ -22,6 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.mobilesettings.db.MobileDashboard;
 import com.axelor.apps.mobilesettings.rest.dto.MobileDashboardResponse;
 import com.axelor.apps.mobilesettings.service.MobileDashboardResponseComputeService;
+import com.axelor.apps.mobilesettings.translation.MobileSettingsTranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -60,10 +62,10 @@ public class MobileDashboardRestController {
 
     if (response.isEmpty()) {
       return ResponseConstructor.build(
-          Response.Status.FORBIDDEN, "You do not have access to this record");
+          Response.Status.FORBIDDEN, I18n.get(MobileSettingsTranslation.NO_ACCESS_TO_RECORD));
     }
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Response of the query of the chart", response);
+        Response.Status.OK, I18n.get(MobileSettingsTranslation.QUERY_RESPONSE_CHART), response);
   }
 }

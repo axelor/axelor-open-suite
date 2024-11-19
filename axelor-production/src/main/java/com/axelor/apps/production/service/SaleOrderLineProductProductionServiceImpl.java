@@ -52,6 +52,7 @@ public class SaleOrderLineProductProductionServiceImpl
 
   protected AppProductionService appProductionService;
   protected final SaleOrderLineBomService saleOrderLineBomService;
+  protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
 
   @Inject
   public SaleOrderLineProductProductionServiceImpl(
@@ -70,7 +71,8 @@ public class SaleOrderLineProductProductionServiceImpl
       AppSupplychainService appSupplychainService,
       SaleOrderLineAnalyticService saleOrderLineAnalyticService,
       AppProductionService appProductionService,
-      SaleOrderLineBomService saleOrderLineBomService) {
+      SaleOrderLineBomService saleOrderLineBomService,
+      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService) {
     super(
         appSaleService,
         appBaseService,
@@ -88,6 +90,7 @@ public class SaleOrderLineProductProductionServiceImpl
         saleOrderLineAnalyticService);
     this.appProductionService = appProductionService;
     this.saleOrderLineBomService = saleOrderLineBomService;
+    this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
   }
 
   @Override
@@ -134,18 +137,30 @@ public class SaleOrderLineProductProductionServiceImpl
         } else if (product.getParentProduct() != null) {
           saleOrderLine.setBillOfMaterial(product.getParentProduct().getDefaultBillOfMaterial());
         }
-        if (saleOrderLine.getIsToProduce() && !saleOrderLineBomService.isUpdated(saleOrderLine)) {
-          saleOrderLineBomService
-              .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
-              .stream()
-              .filter(Objects::nonNull)
-              .forEach(saleOrderLine::addSubSaleOrderLineListItem);
-        }
+        generateLines(saleOrderLine, saleOrder);
 
         saleOrderLineMap.put("billOfMaterial", saleOrderLine.getBillOfMaterial());
       }
       saleOrderLineMap.put("subSaleOrderLineList", saleOrderLine.getSubSaleOrderLineList());
+      saleOrderLineMap.put("saleOrderLineDetailsList", saleOrderLine.getSaleOrderLineDetailsList());
     }
     return saleOrderLineMap;
+  }
+
+  protected void generateLines(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    if (saleOrderLine.getIsToProduce() && !saleOrderLineBomService.isUpdated(saleOrderLine)) {
+      saleOrderLineBomService
+          .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+          .stream()
+          .filter(Objects::nonNull)
+          .forEach(saleOrderLine::addSubSaleOrderLineListItem);
+
+      saleOrderLineDetailsBomService
+          .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+          .stream()
+          .filter(Objects::nonNull)
+          .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+    }
   }
 }

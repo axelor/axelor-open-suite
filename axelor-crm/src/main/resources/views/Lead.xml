@@ -200,31 +200,9 @@
           <field name="isDoNotCall" colSpan="3" hideIf="$readonly()"/>
           <field name="isDoNotSendEmail" colSpan="3" hideIf="$readonly()"/>
         </panel>
-
-        <panel name="addressPanel" title="Primary address" showIf="$readonly()" colSpan="12">
-          <field name="$address" showTitle="false">
-            <viewer
-              depends="primaryAddress,primaryPostalCode,primaryCity,primaryState,primaryCountry">
-							<![CDATA[
-								<>
-									{primaryAddress} <Box/>
-									{primaryPostalCode} {primaryCity.name} <Box/>
-									{primaryState.name} {primaryState?.name && primaryCountry?.name && <span>-</span>} {primaryCountry.name}
-								</>
-							]]>
-            </viewer>
-          </field>
-        </panel>
-
-        <panel name="primaryAddress" title="Primary address" colSpan="12" hideIf="$readonly()">
-          <field name="primaryAddress" colSpan="12"/>
-          <field name="primaryCity" colSpan="6" form-view="city-form" grid-view="city-grid"
-            onChange="action-attrs-lead-set-primary-state-country-postal-code" canNew="true"/>
-          <field name="primaryPostalCode" colSpan="6"/>
-          <field name="primaryState" colSpan="6" form-view="region-form"
-            grid-view="region-grid" canNew="true"/>
-          <field name="primaryCountry" colSpan="6" form-view="country-form"
-            grid-view="country-grid"/>
+        <panel name="addressPanel" title="Primary address" colSpan="12">
+          <field name="address" canNew="true" canEdit="true" colSpan="12"
+            form-view="address-form" grid-view="address-grid"/>
         </panel>
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" colSpan="12" showTitle="false" widget="html" height="200"/>
@@ -460,20 +438,6 @@
     <field name="$leadSet" expr="eval: _leadList"/>
   </action-record>
 
-  <action-attrs name="action-attrs-lead-set-primary-state-country-postal-code">
-    <attribute if="eval: primaryCity?.department?.region" name="value"
-      expr="eval: primaryCity.department.region" for="primaryState"/>
-    <attribute if="eval: primaryCity?.country" name="value"
-      expr="eval: primaryCity.country" for="primaryCountry"/>
-    <attribute name="value" for="primaryPostalCode" expr="eval: primaryCity?.zip"/>
-    <attribute name="readonly" expr="eval: primaryCity?.department?.region ? true: false"
-      for="primaryState"/>
-    <attribute name="readonly" expr="eval: primaryCity?.country ? true: false"
-      for="primaryCountry"/>
-    <attribute name="readonly" expr="eval: primaryCity?.zip ? true: false"
-      for="primaryPostalCode"/>
-  </action-attrs>
-
   <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead"
     title="Lose">
     <view type="form" name="lead-lose-wizard-form"/>
@@ -493,7 +457,6 @@
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
     <context name="_lead" expr="eval: __self__"/>
-    <context name="_primaryAddress" expr="eval: primaryAddress"/>
   </action-view>
 
   <action-view name="action-lead-view-show-partner" title="Partner"
@@ -653,6 +616,6 @@
 
   <action-attrs name="action-lead-attrs-set-lead-tag-domain">
     <attribute name="domain" for="tagSet"
-      expr="eval: &quot; ${__repo__(MetaModel).findByName('Lead')?.id} member of self.concernedModelSet AND (:company IS NULL OR :company member of self.companySet OR self.companySet IS EMPTY) &quot;"/>
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Lead')?.id} MEMBER OF self.concernedModelSet OR self.concernedModelSet IS EMPTY) AND (:company IS NULL OR :company MEMBER OF self.companySet OR self.companySet IS EMPTY) &quot;"/>
   </action-attrs>
 </object-views>

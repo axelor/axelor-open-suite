@@ -37,7 +37,7 @@ public class PurchaseOrderLinePurchaseRepository extends PurchaseOrderLineReposi
 
     if (context.get("_model") != null
         && context.get("_model").toString().contains("PurchaseOrder")
-        && context.get("id") != null) {
+        && context.get("_parent") != null) {
       Long id = (Long) json.get("id");
       if (id != null) {
         PurchaseOrderLine purchaseOrderLine = find(id);
