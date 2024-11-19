@@ -25,8 +25,8 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Optional;
 import java.util.Set;
-import net.fortuna.ical4j.util.Optional;
 
 @Singleton
 public class FiscalPositionServiceImpl implements FiscalPositionService {
