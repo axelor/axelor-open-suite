@@ -27,6 +27,8 @@ import com.axelor.apps.hr.rest.dto.TimesheetLineResponse;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
+import com.axelor.apps.hr.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -105,7 +107,7 @@ public class TimesheetLineRestController {
         .setComputedPeriodTotal(timesheetLine.getTimesheet());
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Timesheet line successfully updated.",
+        I18n.get(ITranslation.TIMESHEET_LINE_UPDATED),
         new TimesheetLineResponse(timesheetLine));
   }
 }

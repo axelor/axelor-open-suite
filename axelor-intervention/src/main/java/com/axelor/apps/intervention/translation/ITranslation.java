@@ -16,17 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service.leave;
+package com.axelor.apps.intervention.translation;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.hr.db.LeaveRequest;
+public interface ITranslation {
 
-public interface LeaveRequestWorkflowService {
-  void confirm(LeaveRequest leaveRequest) throws AxelorException;
-
-  void validate(LeaveRequest leaveRequest) throws AxelorException;
-
-  void refuse(LeaveRequest leaveRequest) throws AxelorException;
-
-  void cancel(LeaveRequest leaveRequest) throws AxelorException;
+  public static final String PICTURE_ADDED = /*$$(*/ "Picture successfully added." /*)*/;
+  public static final String PICTURE_REMOVED = /*$$(*/ "Picture successfully removed." /*)*/;
+  public static final String INTERVENTION_STATUS_UPDATED = /*$$(*/
+      "Intervention status successfully updated." /*)*/;
+  public static final String EQUIPMENT_ADDED = /*$$(*/ "Equipment successfully added." /*)*/;
+  public static final String EQUIPMENT_REMOVED = /*$$(*/ "Equipment successfully removed." /*)*/;
 }

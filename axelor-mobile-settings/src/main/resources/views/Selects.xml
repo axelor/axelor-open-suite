@@ -15,6 +15,7 @@
     <option value="app-intervention">Intervention</option>
     <option value="app-sale">Sale</option>
     <option value="app-project">Project</option>
+    <option value="app-dms">DMS</option>
   </selection>
 
   <selection name='trace.back.origin.select' id="trace.back.origin.select.mobilesettings">

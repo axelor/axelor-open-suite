@@ -634,7 +634,7 @@ vars["ccNumberOfDecimals"] = dataSetRow["cc_number_of_decimals"];]]></method>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select DISTINCT MoveLine.id as moveLine_id, MoveLine.name as move_line_name, MoveLine.description as move_line_description,
-MoveLine.date_val, MoveLine.partner_full_name as partner,
+MoveLine.date_val, CONCAT(MoveLine.partner_seq, ' - ', MoveLine.partner_full_name) as partner,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as account,
 MoveLine.debit, MoveLine.credit, ReconcileGroup.code as reconcile_group_code, MoveLine.due_date, Journal.code as journal_code,
 Account.code as account_code , Account.name as account_name , Move.reference as move_sequence, 
@@ -2450,10 +2450,10 @@ else {
                             <property name="width">9%</property>
                         </column>
                         <column id="5231">
-                            <property name="width">11%</property>
+                            <property name="width">8%</property>
                         </column>
                         <column id="4093">
-                            <property name="width">20%</property>
+                            <property name="width">24%</property>
                         </column>
                         <column id="4095">
                             <property name="width">9%</property>
