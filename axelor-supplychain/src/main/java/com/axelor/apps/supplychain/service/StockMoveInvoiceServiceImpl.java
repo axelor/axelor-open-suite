@@ -48,10 +48,10 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -222,14 +222,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
 
       invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
-      if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())) {
-        invoice.setNote(saleOrder.getInvoiceComments());
-      }
-
-      if (ObjectUtils.isEmpty(invoice.getProformaComments())
-          && !Strings.isNullOrEmpty(saleOrder.getProformaComments())) {
-        invoice.setProformaComments(saleOrder.getProformaComments());
-      }
+      invoice.setNote(fillInvoiceNoteFromOutStockMove(saleOrderSet));
+      invoice.setProformaComments(fillInvoiceProformaCommentsFromOutStockMove(saleOrderSet));
 
       Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
       if (stockMoveSet == null) {
@@ -741,5 +735,21 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             purchaseOrder ->
                 stockMove.getStockMoveSeq() + ":" + purchaseOrder.getPurchaseOrderSeq())
         .collect(Collectors.joining("|"));
+  }
+
+  @Override
+  public String fillInvoiceNoteFromOutStockMove(Set<SaleOrder> saleOrderSet) {
+    return saleOrderSet.stream()
+        .map(SaleOrder::getInvoiceComments)
+        .filter(StringUtils::notEmpty)
+        .collect(Collectors.joining("<br>"));
+  }
+
+  @Override
+  public String fillInvoiceProformaCommentsFromOutStockMove(Set<SaleOrder> saleOrderSet) {
+    return saleOrderSet.stream()
+        .map(SaleOrder::getProformaComments)
+        .filter(StringUtils::notEmpty)
+        .collect(Collectors.joining("<br>"));
   }
 }
