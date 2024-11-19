@@ -86,4 +86,7 @@ public interface ITranslation {
       "%d leave reason(s) treated and %d anomaly(ies) reported !"; /*)*/
 
   String API_LEAVE_REQUEST_UPDATED = /*$$(*/ "Leave request successfully updated." /*)*/;
+
+  String API_LEAVE_REQUEST_UPDATED_NO_MAIL = /*$$(*/
+      "Leave request successfully updated. An error occurred while sending the mail." /*)*/;
 }

@@ -2,7 +2,9 @@ package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.rest.dto.LeaveRequestRefusalPutRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestResponse;
+import com.axelor.apps.hr.service.leave.LeaveRequestCancelService;
 import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
 import com.axelor.apps.hr.service.leave.LeaveRequestRefuseService;
 import com.axelor.apps.hr.service.leave.LeaveRequestSendService;
@@ -45,7 +47,15 @@ public class LeaveRequestRestController {
     LeaveRequest leaveRequest =
         ObjectFinder.find(LeaveRequest.class, leaveRequestId, requestBody.getVersion());
     Beans.get(LeaveRequestSendService.class).send(leaveRequest);
-    Beans.get(LeaveRequestMailService.class).sendConfirmationEmail(leaveRequest);
+
+    try {
+      Beans.get(LeaveRequestMailService.class).sendConfirmationEmail(leaveRequest);
+    } catch (AxelorException e) {
+      return ResponseConstructor.build(
+          Response.Status.OK,
+          I18n.get(ITranslation.API_LEAVE_REQUEST_UPDATED_NO_MAIL),
+          new LeaveRequestResponse(leaveRequest));
+    }
 
     return ResponseConstructor.build(
         Response.Status.OK,
@@ -68,7 +78,15 @@ public class LeaveRequestRestController {
     LeaveRequest leaveRequest =
         ObjectFinder.find(LeaveRequest.class, leaveRequestId, requestBody.getVersion());
     Beans.get(LeaveRequestValidateService.class).validate(leaveRequest);
-    Beans.get(LeaveRequestMailService.class).sendValidationEmail(leaveRequest);
+
+    try {
+      Beans.get(LeaveRequestMailService.class).sendValidationEmail(leaveRequest);
+    } catch (AxelorException e) {
+      return ResponseConstructor.build(
+          Response.Status.OK,
+          I18n.get(ITranslation.API_LEAVE_REQUEST_UPDATED_NO_MAIL),
+          new LeaveRequestResponse(leaveRequest));
+    }
 
     return ResponseConstructor.build(
         Response.Status.OK,
@@ -83,6 +101,38 @@ public class LeaveRequestRestController {
   @PUT
   @HttpExceptionHandler
   public Response rejectLeaveRequest(
+      @PathParam("leaveRequestId") Long leaveRequestId, LeaveRequestRefusalPutRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(LeaveRequest.class, leaveRequestId).check();
+
+    LeaveRequest leaveRequest =
+        ObjectFinder.find(LeaveRequest.class, leaveRequestId, requestBody.getVersion());
+    Beans.get(LeaveRequestRefuseService.class)
+        .refuse(leaveRequest, requestBody.getGroundForRefusal());
+
+    try {
+      Beans.get(LeaveRequestMailService.class).sendRefusalEmail(leaveRequest);
+    } catch (AxelorException e) {
+      return ResponseConstructor.build(
+          Response.Status.OK,
+          I18n.get(ITranslation.API_LEAVE_REQUEST_UPDATED_NO_MAIL),
+          new LeaveRequestResponse(leaveRequest));
+    }
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.API_LEAVE_REQUEST_UPDATED),
+        new LeaveRequestResponse(leaveRequest));
+  }
+
+  @Operation(
+      summary = "Cancel leave request",
+      tags = {"Leave request"})
+  @Path("/cancel/{leaveRequestId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response cancelLeaveRequest(
       @PathParam("leaveRequestId") Long leaveRequestId, RequestStructure requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
@@ -90,8 +140,16 @@ public class LeaveRequestRestController {
 
     LeaveRequest leaveRequest =
         ObjectFinder.find(LeaveRequest.class, leaveRequestId, requestBody.getVersion());
-    Beans.get(LeaveRequestRefuseService.class).refuse(leaveRequest);
-    Beans.get(LeaveRequestMailService.class).sendRefusalEmail(leaveRequest);
+    Beans.get(LeaveRequestCancelService.class).cancel(leaveRequest);
+
+    try {
+      Beans.get(LeaveRequestMailService.class).sendCancellationEmail(leaveRequest);
+    } catch (AxelorException e) {
+      return ResponseConstructor.build(
+          Response.Status.OK,
+          I18n.get(ITranslation.API_LEAVE_REQUEST_UPDATED_NO_MAIL),
+          new LeaveRequestResponse(leaveRequest));
+    }
 
     return ResponseConstructor.build(
         Response.Status.OK,

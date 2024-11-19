@@ -7,6 +7,7 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -37,7 +38,7 @@ public class LeaveRequestRefuseServiceImpl implements LeaveRequestRefuseService 
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public void refuse(LeaveRequest leaveRequest) throws AxelorException {
+  public void refuse(LeaveRequest leaveRequest, String groundForRefusal) throws AxelorException {
     LeaveReason leaveReason = leaveRequest.getLeaveReason();
 
     leaveRequestCheckService.checkCompany(leaveRequest);
@@ -49,6 +50,10 @@ public class LeaveRequestRefuseServiceImpl implements LeaveRequestRefuseService 
     leaveRequest.setRefusedBy(AuthUtils.getUser());
     leaveRequest.setRefusalDateTime(
         appBaseService.getTodayDateTime(leaveRequest.getCompany()).toLocalDateTime());
+
+    if (StringUtils.notEmpty(groundForRefusal)) {
+      leaveRequest.setGroundForRefusal(groundForRefusal);
+    }
 
     leaveRequestRepository.save(leaveRequest);
     if (!leaveReasonService.isExceptionalDaysReason(leaveReason)) {
