@@ -1,0 +1,3 @@
+---
+title: "Employee: checked unicity constraints when creating user at the end of employee creation process."
+module: axelor-human-resource
