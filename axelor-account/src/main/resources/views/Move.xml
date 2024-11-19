@@ -329,11 +329,11 @@
           <field name="invoice" hideIf="functionalOriginSelect == 5 || !invoice"
             readonlyIf="$validatePeriod" form-view="invoice-form" grid-view="invoice-grid"/>
           <field name="paymentVoucher" readonlyIf="$validatePeriod"
-            hideIf="!functionOriginSelect || functionalOriginSelect != 5 || !paymentVoucher"
+            hideIf="!functionalOriginSelect || functionalOriginSelect != 5 || !paymentVoucher"
             canNew="false" domain="self.company = :company" form-view="payment-voucher-form"
             grid-view="payment-voucher-grid"/>
           <field name="paymentSession" readonly="true"
-            hideIf="!functionOriginSelect || functionalOriginSelect !=  5 || !paymentSession"
+            hideIf="!functionalOriginSelect || functionalOriginSelect !=  5 || !paymentSession"
             form-view="payment-session-form" grid-view="payment-session-grid"/>
           <field if-module="axelor-supplychain" name="stockMove"
             hideIf="functionalOriginSelect == 5 || !stockMove" canNew="false" canEdit="false"
