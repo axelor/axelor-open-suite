@@ -60,7 +60,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.studio.db.AppProject;
 import com.axelor.studio.db.AppSupplychain;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
@@ -225,7 +224,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
    * @return The project generated.
    */
   @Override
-  public Project generateProject(SaleOrder saleOrder) {
+  public Project generateProject(SaleOrder saleOrder) throws AxelorException {
     Project project = projectRepository.findByName(saleOrder.getFullName() + "_project");
     project =
         project == null
@@ -247,7 +246,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       String fullName,
       User assignedTo,
       Company company,
-      Partner clientPartner) {
+      Partner clientPartner)
+      throws AxelorException {
     Project project =
         super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
 
@@ -266,14 +266,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.setIsInvoicingTimesheet(true);
     }
 
-    AppProject appProject = appProjectService.getAppProject();
-    project.setNumberHoursADay(appProject.getDefaultHoursADay());
-    project.setProjectTimeUnit(appProject.getDaysUnit());
+    project.setNumberHoursADay(appBaseService.getDailyWorkHours());
+    project.setProjectTimeUnit(appBaseService.getUnitDays());
     return project;
   }
 
   @Override
-  public Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent) {
+  public Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent)
+      throws AxelorException {
     return generateProject(
         parent,
         saleOrderLine.getFullName(),

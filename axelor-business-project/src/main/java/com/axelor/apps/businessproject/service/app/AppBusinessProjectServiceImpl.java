@@ -21,14 +21,12 @@ package com.axelor.apps.businessproject.service.app;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingTemplate;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.businessproject.db.BusinessProjectConfig;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectConfigRepository;
-import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
@@ -37,16 +35,13 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBusinessProject;
-import com.axelor.studio.db.AppProject;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 @Singleton
 public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
@@ -87,50 +82,6 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
   @Override
   public AppBusinessProject getAppBusinessProject() {
     return appBusinessProjectRepo.all().fetchOne();
-  }
-
-  @Override
-  public AppProject getAppProject() {
-    return appProjectService.getAppProject();
-  }
-
-  @Override
-  public Unit getDaysUnit() throws AxelorException {
-    AppProject appProject = getAppProject();
-    Unit daysUnit = appProject.getDaysUnit();
-    if (Objects.isNull(daysUnit)) {
-      throw new AxelorException(
-          appProject,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DAYS_UNIT_MISSING));
-    }
-    return daysUnit;
-  }
-
-  @Override
-  public Unit getHoursUnit() throws AxelorException {
-    AppProject appProject = getAppProject();
-    Unit hoursUnit = appProject.getHoursUnit();
-    if (Objects.isNull(hoursUnit)) {
-      throw new AxelorException(
-          appProject,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_HOURS_UNIT_MISSING));
-    }
-    return hoursUnit;
-  }
-
-  @Override
-  public BigDecimal getDefaultHoursADay() throws AxelorException {
-    AppProject appProject = getAppProject();
-    BigDecimal hoursUnit = appProject.getDefaultHoursADay();
-    if (Objects.isNull(hoursUnit) || hoursUnit.signum() <= 0) {
-      throw new AxelorException(
-          appProject,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
-    }
-    return hoursUnit;
   }
 
   @Override

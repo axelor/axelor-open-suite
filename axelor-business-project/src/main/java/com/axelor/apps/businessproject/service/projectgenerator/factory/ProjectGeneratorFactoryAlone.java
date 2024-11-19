@@ -57,7 +57,7 @@ public class ProjectGeneratorFactoryAlone implements ProjectGeneratorFactory {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public Project create(SaleOrder saleOrder) {
+  public Project create(SaleOrder saleOrder) throws AxelorException {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsBusinessProject(true);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {

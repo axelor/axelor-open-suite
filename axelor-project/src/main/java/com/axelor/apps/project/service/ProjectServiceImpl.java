@@ -89,7 +89,8 @@ public class ProjectServiceImpl implements ProjectService {
       String fullName,
       User assignedTo,
       Company company,
-      Partner clientPartner) {
+      Partner clientPartner)
+      throws AxelorException {
     Project project;
     project = projectRepository.findByName(fullName);
     if (project != null) {
@@ -125,7 +126,7 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   @Transactional
-  public Project generateProject(Partner partner) {
+  public Project generateProject(Partner partner) throws AxelorException {
     Preconditions.checkNotNull(partner);
     User user = AuthUtils.getUser();
     Project project =

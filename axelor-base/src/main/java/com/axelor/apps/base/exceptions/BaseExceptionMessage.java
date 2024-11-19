@@ -685,4 +685,13 @@ public final class BaseExceptionMessage {
 
   public static final String LOCALIZATION_LANGUAGE_EMPTY = /*$$(*/
       "Language is empty for the localization %s" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_DAYS = /*$$(*/
+      "There is no configured unit days in the app base config" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_HOURS = /*$$(*/
+      "There is no configured unit hours in the app base config" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_DAILY_WORK_HOURS = /*$$(*/
+      "There is no configured daily work hours in the app base config" /*)*/;
 }

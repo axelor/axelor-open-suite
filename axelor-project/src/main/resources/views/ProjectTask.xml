@@ -699,13 +699,13 @@
 
   <action-attrs name="action-project-task-attrs-set-time-unit-domain">
     <attribute for="timeUnit" name="domain"
-      expr="eval: &quot; self.id = ${__config__.app.getApp('project')?.daysUnit?.id} OR self.id = ${__config__.app.getApp('project')?.hoursUnit?.id}&quot;"/>
+      expr="eval: &quot; self.id = ${__config__.app.getApp('base')?.unitDays?.id} OR self.id = ${__config__.app.getApp('base')?.unitHours?.id}&quot;"/>
   </action-attrs>
 
   <!-- get timeUnit value from configuration -->
   <action-attrs name="action-project-task-attrs-set-time-unit-default">
     <attribute for="timeUnit" name="value"
-      expr="eval: __config__.app.getApp('project')?.daysUnit" if="!parentTask?.timeUnit"/>
+      expr="eval: __config__.app.getApp('base')?.unitDays" if="!parentTask?.timeUnit"/>
     <attribute for="timeUnit" name="value" expr="eval: parentTask?.timeUnit"
       if="parentTask?.timeUnit"/>
   </action-attrs>

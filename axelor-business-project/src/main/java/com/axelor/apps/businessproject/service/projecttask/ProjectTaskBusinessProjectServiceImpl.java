@@ -40,7 +40,6 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -67,7 +66,6 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
-import com.axelor.studio.db.AppProject;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -93,7 +91,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   private PartnerPriceListService partnerPriceListService;
   private ProductCompanyService productCompanyService;
   private TimesheetLineRepository timesheetLineRepository;
-  private AppBusinessProjectService appBusinessProjectService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -109,8 +106,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
-      TimesheetLineRepository timesheetLineRepository,
-      AppBusinessProjectService appBusinessProjectService) {
+      TimesheetLineRepository timesheetLineRepository) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -125,7 +121,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.partnerPriceListService = partnerPriceListService;
     this.productCompanyService = productCompanyService;
     this.timesheetLineRepository = timesheetLineRepository;
-    this.appBusinessProjectService = appBusinessProjectService;
   }
 
   @Override
@@ -594,11 +589,9 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     BigDecimal duration = timesheetLine.getDuration();
     BigDecimal convertedDuration = BigDecimal.ZERO;
 
-    AppProject appProject = appProjectService.getAppProject();
-
-    Unit daysUnit = appProject.getDaysUnit();
-    Unit hoursUnit = appProject.getHoursUnit();
-    BigDecimal defaultHoursADay = appProject.getDefaultHoursADay();
+    Unit daysUnit = appBaseService.getUnitDays();
+    Unit hoursUnit = appBaseService.getUnitHours();
+    BigDecimal defaultHoursADay = appBaseService.getDailyWorkHours();
     if (defaultHoursADay.compareTo(BigDecimal.ZERO) == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -727,10 +720,9 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   }
 
   @Override
-  public boolean isTimeUnitValid(Unit unit) {
-    AppProject appProject = appProjectService.getAppProject();
-    return Objects.equals(unit, appProject.getDaysUnit())
-        || Objects.equals(unit, appProject.getHoursUnit());
+  public boolean isTimeUnitValid(Unit unit) throws AxelorException {
+    return Objects.equals(unit, appBaseService.getUnitDays())
+        || Objects.equals(unit, appBaseService.getUnitHours());
   }
 
   @Override
