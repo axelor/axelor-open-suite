@@ -74,11 +74,6 @@
     <string name="manualId"/>
     <string name="parentId"/>
 
-    <one-to-many name="complementarySaleOrderLineList"
-      ref="com.axelor.apps.sale.db.SaleOrderLine" title="Complementary lines"
-      mappedBy="mainSaleOrderLine"/>
-    <many-to-one name="mainSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
-
     <!-- Margins -->
     <decimal name="subTotalCostPrice" title="SubTotal cost price" precision="20" scale="3"/>
     <decimal name="subTotalGrossMargin" title="Sub Total gross profit" precision="20"

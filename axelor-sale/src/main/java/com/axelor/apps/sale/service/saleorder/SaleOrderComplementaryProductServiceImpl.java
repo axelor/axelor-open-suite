@@ -211,7 +211,8 @@ public class SaleOrderComplementaryProductServiceImpl
   }
 
   @Transactional
-  protected void setNewManualId(SaleOrderLine saleOrderLine) {
+  @Override
+  public void setNewManualId(SaleOrderLine saleOrderLine) {
     if (saleOrderLine.getManualId() == null || saleOrderLine.getManualId().equals("")) {
       saleOrderLine.setManualId(JpaSequence.nextValue("sale.order.line.idSeq"));
     }
