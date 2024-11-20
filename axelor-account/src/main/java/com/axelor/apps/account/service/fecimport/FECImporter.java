@@ -18,13 +18,16 @@
  */
 package com.axelor.apps.account.service.fecimport;
 
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.FECImport;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FECImportRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ImportHistory;
@@ -52,6 +55,7 @@ public class FECImporter extends Importer {
   protected MoveRepository moveRepository;
   protected FECImportRepository fecImportRepository;
   protected CompanyRepository companyRepository;
+  protected MoveLineTaxService moveLineTaxService;
   private final List<Move> moveList = new ArrayList<>();
   private FECImport fecImport;
   private Company company;
@@ -62,12 +66,14 @@ public class FECImporter extends Importer {
       AppAccountService appAccountService,
       MoveRepository moveRepository,
       FECImportRepository fecImportRepository,
-      CompanyRepository companyRepository) {
+      CompanyRepository companyRepository,
+      MoveLineTaxService moveLineTaxService) {
     this.moveValidateService = moveValidateService;
     this.appAccountService = appAccountService;
     this.moveRepository = moveRepository;
     this.fecImportRepository = fecImportRepository;
     this.companyRepository = companyRepository;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   @Override
@@ -170,6 +176,7 @@ public class FECImporter extends Importer {
         // We do this in two parts because reference for move must be unique, and in case there is
         // an error the rollback must not undo description and fecImport.
         move = setDescriptionAndFecImport(fecImport, listener, move);
+        move = setVatSystemSelect(listener, move);
         move = setReferenceAndValidate(fecImport, listener, move);
         if (i % 10 == 0) {
           JPA.clear();
@@ -180,6 +187,28 @@ public class FECImporter extends Importer {
         this.company = companyRepository.find(companyId);
       }
     }
+  }
+
+  protected Move setVatSystemSelect(ImporterListener listener, Move move) {
+    try {
+      if (move != null) {
+        for (MoveLine moveLine : move.getMoveLineList()) {
+          AccountType accountType = moveLine.getAccount().getAccountType();
+          boolean accountTypeCondition =
+              accountType.equals(AccountTypeRepository.TYPE_CHARGE)
+                  || accountType.equals(AccountTypeRepository.TYPE_INCOME)
+                  || accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION);
+          if (accountTypeCondition) {
+            moveLineTaxService.getVatSystem(move, moveLine);
+          }
+        }
+        return moveRepository.save(move);
+      }
+
+    } catch (Exception e) {
+      listener.handle(move, e);
+    }
+    return null;
   }
 
   @Transactional
