@@ -91,6 +91,8 @@
       ref="com.axelor.apps.project.db.ProjectCheckListItem" title="Check list"
       mappedBy="projectTask"/>
 
+    <many-to-one ref="com.axelor.apps.project.db.Sprint" name="sprint" title="Sprint"/>
+
     <extra-code>
 
       // TYPE SELECT
