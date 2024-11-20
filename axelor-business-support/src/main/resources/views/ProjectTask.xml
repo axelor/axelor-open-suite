@@ -87,6 +87,11 @@
         </panel>
       </insert>
     </extend>
+
+    <extend target="//panel[@name='contentPanel']">
+      <attribute name="hideIf"
+        value="typeSelect == 'ticket' &amp;&amp; invoicingType != 2"/>
+    </extend>
   </form>
 
   <form name="incl-overview-business-project-task-panel-form" title="Overview"
