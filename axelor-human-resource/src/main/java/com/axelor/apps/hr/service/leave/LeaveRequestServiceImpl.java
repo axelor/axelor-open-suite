@@ -83,11 +83,11 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
   public boolean willHaveEnoughDays(LeaveRequest leaveRequest) {
 
     LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
-    LocalDateTime beginDate = leaveRequest.getFromDateT();
+    LocalDateTime endDate = leaveRequest.getToDateT();
 
     int interval =
-        (beginDate.getYear() - todayDate.getYear()) * 12
-            + beginDate.getMonthValue()
+        (endDate.getYear() - todayDate.getYear()) * 12
+            + endDate.getMonthValue()
             - todayDate.getMonthValue();
     LeaveLine leaveLine =
         leaveLineRepository

@@ -57,7 +57,7 @@ public class MobileSettingsRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Response of the query for settings",
+        I18n.get(MobileSettingsTranslation.QUERY_RESPONSE_SETTINGS),
         Beans.get(MobileSettingsResponseComputeService.class).computeMobileSettingsResponse());
   }
 
