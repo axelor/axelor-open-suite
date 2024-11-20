@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="allocation-line-grid" title="Allocation lines"
+    model="com.axelor.apps.project.db.AllocationLine" editable="true">
+
+    <field name="sprint" onChange="action-allocation-line-validate" required="true"/>
+    <field name="user" onSelect="action-allocation-line-method-set-user-domain"
+      onChange="action-allocation-line-validate" required="true"/>
+    <field name="allocationPeriod" onSelect="action-allocation-line-attrs-set-period-domain"
+      onChange="action-allocation-line-validate" required="true"/>
+    <field name="allocated"/>
+    <field name="leaves" readonly="true"/>
+    <field name="alreadyAllocated" readonly="true"/>
+    <field name="availableAllocation" readonly="true"/>
+    <field name="description"/>
+
+  </grid>
+
+  <grid name="allocation-line-sprint-grid" title="Allocation lines"
+    model="com.axelor.apps.project.db.AllocationLine" onNew="action-allocation-line-attrs-on-new"
+    groupBy="allocationPeriod" orderBy="-allocationPeriod.fromDate" editable="true">
+
+    <field name="user" onSelect="action-allocation-line-method-set-user-domain"
+      onChange="action-allocation-line-validate" required="true"/>
+    <field name="allocationPeriod" onSelect="action-allocation-line-attrs-set-period-domain"
+      onChange="action-allocation-line-validate" required="true"/>
+    <field name="allocated"/>
+    <field name="leaves" readonly="true"/>
+    <field name="alreadyAllocated" readonly="true"/>
+    <field name="availableAllocation" readonly="true"/>
+    <field name="description"/>
+
+  </grid>
+
+  <form name="allocation-line-form" title="Allocation line"
+    model="com.axelor.apps.project.db.AllocationLine" width="large">
+
+    <panel name="mainPanel">
+      <field name="sprint" onChange="action-allocation-line-validate" required="true"/>
+      <field name="user" onChange="action-allocation-line-validate"
+        onSelect="action-allocation-line-method-set-user-domain" required="true"/>
+      <field name="allocationPeriod" onSelect="action-allocation-line-attrs-set-period-domain"
+        onChange="action-allocation-line-validate" required="true"/>
+      <spacer name="allocatedSpacer"/>
+      <field name="allocated"/>
+      <spacer name="leavesSpacer"/>
+      <field name="leaves" colSpan="4" readonly="true"/>
+      <field name="alreadyAllocated" colSpan="4" readonly="true"/>
+      <field name="availableAllocation" colSpan="4" readonly="true"/>
+      <field name="description" colSpan="12"/>
+    </panel>
+
+  </form>
+
+  <action-method name="action-allocation-line-method-set-user-domain">
+    <call class="com.axelor.apps.hr.web.project.AllocationLineController" method="userDomain"/>
+  </action-method>
+
+  <action-attrs name="action-allocation-line-attrs-on-new">
+    <attribute name="value" for="sprint" expr="eval: __parent__"
+      if="__parent__?._model == 'com.axelor.apps.project.db.Sprint'"/>
+  </action-attrs>
+
+  <action-attrs name="action-allocation-line-attrs-reset">
+    <attribute name="value" for="sprint" expr="eval: null"/>
+    <attribute name="value" for="user" expr="eval: null"/>
+    <attribute name="value" for="allocationPeriod" expr="eval: null"/>
+  </action-attrs>
+
+  <action-attrs name="action-allocation-line-attrs-set-period-domain">
+    <attribute name="domain" for="allocationPeriod"
+      expr="eval: &quot;self.id in (${(sprint?.allocationPeriodSet?.collect{it.id}).join(',')})&quot;"
+      if="sprint?.allocationPeriodSet"/>
+    <attribute name="domain" for="allocationPeriod"
+      expr="eval: &quot;self.id in (0)&quot;" if="!sprint?.allocationPeriodSet"/>
+  </action-attrs>
+
+  <action-validate name="action-allocation-line-validate">
+    <error message="Allocation line already exist with selected Sprint, User, and Period!"
+      if="sprint &amp;&amp; user &amp;&amp; allocationPeriod &amp;&amp; __repo__(AllocationLine).all().filter('self.sprint=?1 and self.user=?2 and self.allocationPeriod =?3',sprint,user,allocationPeriod).fetch().size &gt; 0"
+      action="action-allocation-line-attrs-reset"/>
+  </action-validate>
+
+</object-views>

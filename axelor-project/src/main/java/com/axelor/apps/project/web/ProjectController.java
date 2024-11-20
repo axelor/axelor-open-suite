@@ -22,15 +22,19 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectCheckListTemplate;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectCheckListTemplateRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectCheckListTemplateService;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectTaskToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.sprint.SprintService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -41,10 +45,12 @@ import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ProjectController {
@@ -184,5 +190,31 @@ public class ProjectController {
     Beans.get(ProjectCheckListTemplateService.class)
         .generateCheckListItemsFromTemplate(project, template);
     response.setValue("projectCheckListItemList", project.getProjectCheckListItemList());
+  }
+
+  public void attachTasksToSprint(ActionRequest request, ActionResponse response) {
+
+    List<LinkedHashMap<String, Object>> projectTaskMaps =
+        (List<LinkedHashMap<String, Object>>) request.getContext().get("projectTasks");
+
+    Long sprintId =
+        Long.valueOf(
+            ((LinkedHashMap<String, Object>) request.getContext().get("sprint"))
+                .get("id")
+                .toString());
+
+    Sprint sprint = Beans.get(SprintRepository.class).find(sprintId);
+
+    ProjectTaskRepository projectTaskRepo = Beans.get(ProjectTaskRepository.class);
+
+    List<ProjectTask> projectTasks =
+        projectTaskMaps.stream()
+            .map(task -> Long.valueOf(task.get("id").toString()))
+            .map(projectTaskRepo::find)
+            .collect(Collectors.toList());
+
+    Beans.get(SprintService.class).attachTasksToSprint(sprint, projectTasks);
+
+    response.setCanClose(true);
   }
 }
