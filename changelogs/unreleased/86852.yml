@@ -1,0 +1,3 @@
+---
+title: "Leave request: fixed future quantity day computation when sending a leave request"
+module: axelor-human-resource

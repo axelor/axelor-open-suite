@@ -21,8 +21,10 @@ package com.axelor.apps.hr.service.leave;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
+import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.auth.db.User;
@@ -85,10 +87,10 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
     LocalDateTime beginDate = leaveRequest.getFromDateT();
 
-    int interval =
-        (beginDate.getYear() - todayDate.getYear()) * 12
-            + beginDate.getMonthValue()
-            - todayDate.getMonthValue();
+    LeaveReason leaveReason = leaveRequest.getLeaveReason();
+    int leaveReasonTypeSelect = leaveReason.getLeaveReasonTypeSelect();
+
+    int interval = getInterval(leaveReasonTypeSelect, beginDate, todayDate);
     LeaveLine leaveLine =
         leaveLineRepository
             .all()
@@ -113,6 +115,23 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
                     .multiply(BigDecimal.valueOf(interval)));
 
     return leaveRequest.getDuration().compareTo(num) <= 0;
+  }
+
+  protected int getInterval(
+      int leaveReasonTypeSelect, LocalDateTime beginDate, LocalDateTime todayDate) {
+    int interval = 0;
+
+    if (leaveReasonTypeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_MONTH) {
+      interval =
+          (beginDate.getYear() - todayDate.getYear()) * 12
+              + beginDate.getMonthValue()
+              - todayDate.getMonthValue();
+    }
+
+    if (leaveReasonTypeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_YEAR) {
+      interval = beginDate.getYear() - todayDate.getYear();
+    }
+    return interval;
   }
 
   @Override
