@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,9 +45,12 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
     logger.debug("Updating {}", saleOrderLine);
 
     var bom = saleOrderLine.getBillOfMaterial();
-    if (saleOrderLine.getSaleOrderLineDetailsList() != null) {
-      for (SaleOrderLineDetails saleOrderLineDetails :
-          saleOrderLine.getSaleOrderLineDetailsList()) {
+    List<SaleOrderLineDetails> saleOrderLineDetailsList =
+        saleOrderLine.getSaleOrderLineDetailsList().stream()
+            .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
+            .collect(Collectors.toList());
+    if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
+      for (SaleOrderLineDetails saleOrderLineDetails : saleOrderLineDetailsList) {
         if (!this.isSolDetailsSyncWithBomLine(saleOrderLineDetails)) {
           var bomLine = saleOrderLineDetails.getBillOfMaterialLine();
           // Updating the existing one
@@ -126,7 +130,12 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
             .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
             .count();
     return nbBomLinesAccountable == nbSaleOrderLineDetails
-        && Optional.ofNullable(saleOrderLine.getSaleOrderLineDetailsList())
+        && Optional.of(
+                saleOrderLine.getSaleOrderLineDetailsList().stream()
+                    .filter(
+                        line ->
+                            line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
+                    .collect(Collectors.toList()))
             .orElse(List.of())
             .stream()
             .allMatch(this::isSolDetailsSyncWithBomLine);
