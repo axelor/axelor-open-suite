@@ -20,17 +20,40 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
+import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import java.util.Optional;
 
 public class SaleOrderDomainServiceImpl implements SaleOrderDomainService {
+
+  protected final BlockingService blockingService;
+
+  @Inject
+  public SaleOrderDomainServiceImpl(BlockingService blockingService) {
+    this.blockingService = blockingService;
+  }
+
   @Override
   public String getPartnerBaseDomain(Company company) {
     Long companyPartnerId =
         Optional.ofNullable(company).map(Company::getPartner).map(Partner::getId).orElse(0L);
-    return String.format(
-        "self.id != %d AND self.isContact = false "
-            + "AND (self.isCustomer = true or self.isProspect = true) "
-            + "AND :company member of self.companySet",
-        companyPartnerId);
+
+    String domain =
+        String.format(
+            "self.id != %d AND self.isContact = false "
+                + "AND (self.isCustomer = true or self.isProspect = true) "
+                + "AND :company member of self.companySet",
+            companyPartnerId);
+
+    String blockedPartnerQuery =
+        blockingService.listOfBlockedPartner(company, BlockingRepository.SALE_BLOCKING);
+
+    if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+      domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+    }
+
+    return domain;
   }
 }

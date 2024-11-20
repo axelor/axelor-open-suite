@@ -7319,7 +7319,7 @@ if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VA
                                         <expression name="value" type="javascript">dataSetRow["ex_tax_total"] - dataSetRow["totalDiscountAmount"]</expression>
                                     </structure>
                                 </list-property>
-                                <expression name="filterExpr" type="javascript">row["typeselect"] == 0 &amp;&amp; row["ex_tax_total"] > 0</expression>
+                                <expression name="filterExpr" type="javascript">row["typeselect"] == 0</expression>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
