@@ -1,18 +1,21 @@
 package com.axelor.apps.base.job;
 
+
 import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_COMPANY;
 import static com.axelor.apps.base.db.repo.SequenceRepository.PARTNER;
 import static java.lang.String.format;
 import static java.nio.file.Files.createTempDirectory;
 import static java.nio.file.Files.createTempFile;
 
+
 import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.db.repo.*;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import java.io.*;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -260,7 +263,7 @@ public class BusinessRegistryImportJob implements Job {
       log.debug("{} changed address [{}] -> [{}]", name, address.getAddressL4(), street);
       address.setAddressL4(street);
       address.setAddressL6(city + " " + index);
-      address.setAddressL7Country(DEFAULT_COUNTRY);
+      address.setCountry(DEFAULT_COUNTRY);
       address.setFullName(addressService.computeFullName(address));
       hasChanges = true;
     }
@@ -284,14 +287,14 @@ public class BusinessRegistryImportJob implements Job {
     partner.setIsCustomer(false);
     partner.setIsProspect(false);
     partner.setCurrency(DEFAULT_CURRENCY);
-    partner.setLanguage(DEFAULT_LANGUAGE);
+    // partner.setLocalization(DEFAULT_LANGUAGE);
     partner.setPartnerTypeSelect(PARTNER_TYPE_COMPANY);
     partner.setPartnerSeq(format(SEQUENCE_FORMAT, sequence++));
 
     Address address = new Address();
     address.setAddressL4(street);
     address.setAddressL6(city + " " + index);
-    address.setAddressL7Country(DEFAULT_COUNTRY);
+    address.setCountry(DEFAULT_COUNTRY);
     address.setFullName(addressService.computeFullName(address));
 
     PartnerAddress partnerAddress = new PartnerAddress();

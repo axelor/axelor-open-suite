@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.helpdesk.service;
 
-import com.axelor.web.StaticResourceProvider;
 import java.util.List;
 
 public interface TicketAssignmentService {
