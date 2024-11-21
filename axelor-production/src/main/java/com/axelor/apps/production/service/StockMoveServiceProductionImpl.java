@@ -48,7 +48,8 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainImpl {
+public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainImpl
+    implements StockMoveProductionService {
   @Inject
   public StockMoveServiceProductionImpl(
       StockMoveLineService stockMoveLineService,
@@ -121,6 +122,16 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(ProductionExceptionMessage.CAN_NOT_CANCEL_STOCK_MOVE_LINKED_TO_MANUF_ORDER));
     }
+    cancelStockMoveInProduction(stockMove);
+  }
+
+  @Override
+  public void cancelFromManufOrder(StockMove stockMove) throws AxelorException {
+    cancelStockMoveInProduction(stockMove);
+  }
+
+  // future code specific to stock move cancellation in production module goes here
+  protected void cancelStockMoveInProduction(StockMove stockMove) throws AxelorException {
     super.cancel(stockMove);
   }
 }
