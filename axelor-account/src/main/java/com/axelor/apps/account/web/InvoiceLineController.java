@@ -608,4 +608,16 @@ public class InvoiceLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void recomputeTax(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Invoice invoice = getInvoice(context);
+
+      response.setValues(Beans.get(InvoiceLineService.class).recomputeTax(invoice, invoiceLine));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

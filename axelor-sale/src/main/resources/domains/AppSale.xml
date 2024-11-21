@@ -44,6 +44,9 @@
       help="Allow the user to put products aside to generate an order at a later date."/>
     <integer name="listDisplayTypeSelect" title="Line list display type"
       selection="sale.app.sale.line.display.type.select" default="0"/>
+    <boolean name="isSOLPriceTotalOfSubLines"
+      help="When enabled, sale order lines price will be computed based on theirs sub lines"
+      default="true"/>
 
     <extra-code>
       <![CDATA[

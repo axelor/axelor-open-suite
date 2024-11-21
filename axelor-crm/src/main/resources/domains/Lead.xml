@@ -27,13 +27,7 @@
     <string name="department" title="Dep./Div."/>
     <string name="webSite" title="Website"/>
 
-    <!-- Primary address group -->
-    <string name="primaryAddress" title="Address"/>
-    <many-to-one name="primaryCity" title="City" ref="com.axelor.apps.base.db.City"/>
-    <many-to-one name="primaryState" title="Region" ref="com.axelor.apps.base.db.Region"/>
-    <string name="primaryPostalCode" title="Postal code"/>
-    <many-to-one name="primaryCountry" ref="com.axelor.apps.base.db.Country"
-      title="Country"/>
+    <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
 
     <one-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
       title="Email" unique="true"/>

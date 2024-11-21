@@ -20,7 +20,6 @@ package com.axelor.apps.hr.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
@@ -37,8 +36,7 @@ import com.axelor.apps.hr.db.repo.ExtraHoursLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -51,21 +49,17 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class PayrollPreparationService {
 
-  protected LeaveRequestComputeDurationService leaveRequestComputeDurationService;
+  protected LeaveRequestComputeLeaveDaysService leaveRequestComputeLeaveDaysService;
   protected LeaveRequestRepository leaveRequestRepo;
   protected WeeklyPlanningService weeklyPlanningService;
 
-  @Inject protected AppBaseService appBaseService;
-
-  @Inject HRConfigService hrConfigService;
-
   @Inject
   public PayrollPreparationService(
-      LeaveRequestComputeDurationService leaveRequestComputeDurationService,
+      LeaveRequestComputeLeaveDaysService leaveRequestComputeLeaveDaysService,
       LeaveRequestRepository leaveRequestRepo,
       WeeklyPlanningService weeklyPlanningService) {
 
-    this.leaveRequestComputeDurationService = leaveRequestComputeDurationService;
+    this.leaveRequestComputeLeaveDaysService = leaveRequestComputeLeaveDaysService;
     this.leaveRequestRepo = leaveRequestRepo;
     this.weeklyPlanningService = weeklyPlanningService;
   }
@@ -147,7 +141,7 @@ public class PayrollPreparationService {
       }
 
       payrollLeave.setDuration(
-          leaveRequestComputeDurationService.computeLeaveDaysByLeaveRequest(
+          leaveRequestComputeLeaveDaysService.computeLeaveDaysByLeaveRequest(
               fromDate, toDate, leaveRequest, employee));
       payrollLeave.setLeaveReason(leaveRequest.getLeaveReason());
       payrollLeave.setLeaveRequest(leaveRequest);
