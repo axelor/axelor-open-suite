@@ -1,0 +1,3 @@
+---
+title: "AccountingBatch : Result move computation query takes into account daybook entries."
+module: axelor-account
