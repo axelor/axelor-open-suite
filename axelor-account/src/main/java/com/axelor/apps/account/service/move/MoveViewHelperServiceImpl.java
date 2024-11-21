@@ -34,10 +34,10 @@ public class MoveViewHelperServiceImpl implements MoveViewHelperService {
       domain += " AND " + company.getId() + " member of self.companySet";
       if (journal != null && !Strings.isNullOrEmpty(journal.getCompatiblePartnerTypeSelect())) {
         domain += " AND (";
-        String[] partnerSet = journal.getCompatiblePartnerTypeSelect().split(", ");
+        String[] partnerSet = journal.getCompatiblePartnerTypeSelect().split(",");
         String lastPartner = partnerSet[partnerSet.length - 1];
         for (String partner : partnerSet) {
-          domain += "self." + partner + " = true";
+          domain += "self." + partner.trim() + " = true";
           if (!partner.equals(lastPartner)) {
             domain += " OR ";
           }

@@ -27,8 +27,8 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -49,6 +49,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
+import java.util.Optional;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 public class InvoicePaymentMoveCreateServiceBankPayImpl
@@ -144,5 +145,13 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
     if (invoicePayment.getPaymentMode().getAutoConfirmBankOrder()) {
       bankOrderValidationService.confirm(bankOrder);
     }
+  }
+
+  @Override
+  public String getOriginFromInvoicePayment(InvoicePayment invoicePayment) {
+    return Optional.of(invoicePayment)
+        .map(InvoicePayment::getBankOrder)
+        .map(BankOrder::getBankOrderSeq)
+        .orElseGet(() -> super.getOriginFromInvoicePayment(invoicePayment));
   }
 }

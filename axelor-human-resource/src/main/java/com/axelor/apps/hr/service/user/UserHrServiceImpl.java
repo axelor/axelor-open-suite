@@ -27,6 +27,7 @@ import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
@@ -35,6 +36,7 @@ import com.axelor.studio.db.AppLeave;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 public class UserHrServiceImpl implements UserHrService {
 
@@ -98,23 +100,24 @@ public class UserHrServiceImpl implements UserHrService {
   }
 
   @Override
-  public Product getTimesheetProduct(Employee employee) {
-
-    User user = employee.getUser();
-    if (user == null || user.getActiveCompany() == null) {
+  public Product getTimesheetProduct(Employee employee, ProjectTask projectTask) {
+    if (employee == null) {
       return null;
     }
+    Product product =
+        Optional.ofNullable(employee.getUser())
+            .map(User::getActiveCompany)
+            .map(Company::getHrConfig)
+            .filter(HRConfig::getUseUniqueProductForTimesheet)
+            .map(HRConfig::getUniqueTimesheetProduct)
+            .orElse(null);
 
-    Product product = null;
-    HRConfig hrConfig = user.getActiveCompany().getHrConfig();
-    if (hrConfig != null && hrConfig.getUseUniqueProductForTimesheet()) {
-      product = hrConfig.getUniqueTimesheetProduct();
+    if (product == null) {
+      product =
+          Optional.ofNullable(projectTask)
+              .map(ProjectTask::getProduct)
+              .orElse(employee.getProduct());
     }
-
-    if (product == null && employee != null) {
-      product = employee.getProduct();
-    }
-
     return product;
   }
 

@@ -43,6 +43,7 @@ import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -233,7 +234,11 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   protected BigDecimal calculateTotalHoursDuration(
       Timesheet timesheet, TimesheetLine currentTimesheetLine) {
-    return timesheet.getTimesheetLineList().stream()
+    List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+    if (CollectionUtils.isEmpty(timesheetLineList)) {
+      return BigDecimal.ZERO;
+    }
+    return timesheetLineList.stream()
         .filter(
             l ->
                 !l.equals(currentTimesheetLine)
@@ -260,10 +265,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   public Product getDefaultProduct(TimesheetLine timesheetLine) {
-    if (timesheetLine.getProduct() == null) {
-      return timesheetLine.getEmployee().getProduct();
-    }
-    return timesheetLine.getProduct();
+    return userHrService.getTimesheetProduct(timesheetLine.getEmployee(), null);
   }
 
   @Override

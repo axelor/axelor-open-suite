@@ -30,6 +30,7 @@ import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.util.Optional;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -49,7 +50,7 @@ public class ContractRepository extends AbstractContractRepository {
     this.contractLineService = contractLineService;
     this.contractVersionService = contractVersionService;
     this.sequenceService = sequenceService;
-    this.contractLineService = contractLineService;
+    this.contractVersionRepository = contractVersionRepository;
   }
 
   @Override
@@ -114,5 +115,14 @@ public class ContractRepository extends AbstractContractRepository {
     contract.setContractId(null);
     contract.setVersionHistory(null);
     return contract;
+  }
+
+  @Override
+  public void remove(Contract entity) {
+    super.remove(entity);
+    Optional.ofNullable(entity.getCurrentContractVersion())
+        .ifPresent(contractVersion -> contractVersionRepository.remove(contractVersion));
+    Optional.ofNullable(entity.getNextVersion())
+        .ifPresent(contractVersion -> contractVersionRepository.remove(contractVersion));
   }
 }

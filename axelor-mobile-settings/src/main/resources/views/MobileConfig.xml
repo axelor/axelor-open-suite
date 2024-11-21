@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="mobile-config-grid" title="Mobile config"
     model="com.axelor.apps.mobilesettings.db.MobileConfig">
@@ -23,7 +23,7 @@
     <panel-tabs hidden="true" hideIf="!isCustomizeMenuEnabled">
       <panel name="menusConfig" title="Menus config" hidden="true"
         hideIf="!isCustomizeMenuEnabled">
-        <field name="menus" onSelect="action-mobile-config-attrs-menus-domain"
+        <field name="menuList" onSelect="action-mobile-config-attrs-menus-domain"
           canSelect="true" canNew="false" colSpan="12"/>
       </panel>
     </panel-tabs>
@@ -35,7 +35,7 @@
   </form>
 
   <action-attrs name="action-mobile-config-attrs-menus-domain">
-    <attribute for="menus" name="domain"
+    <attribute for="menuList" name="domain"
       expr="eval: &quot; self.parentApplication = '${sequence}' &quot;"/>
   </action-attrs>
 

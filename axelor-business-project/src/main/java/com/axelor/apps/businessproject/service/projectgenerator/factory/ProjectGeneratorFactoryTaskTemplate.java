@@ -30,13 +30,14 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
-import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -56,15 +57,15 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFactory {
 
-  private final ProjectTaskRepository projectTaskRepository;
-  private final ProjectRepository projectRepository;
-  private final ProjectBusinessService projectBusinessService;
-  private final ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
-  private final ProductTaskTemplateService productTaskTemplateService;
-  private final ProductCompanyService productCompanyService;
-
-  private final AppBusinessProjectService appBusinessProjectService;
-  protected final SequenceService sequenceService;
+  protected ProjectTaskRepository projectTaskRepository;
+  protected ProjectRepository projectRepository;
+  protected ProjectBusinessService projectBusinessService;
+  protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
+  protected ProductTaskTemplateService productTaskTemplateService;
+  protected ProductCompanyService productCompanyService;
+  protected AppBusinessProjectService appBusinessProjectService;
+  protected SequenceService sequenceService;
+  protected AppProjectService appProjectService;
 
   @Inject
   public ProjectGeneratorFactoryTaskTemplate(
@@ -75,7 +76,8 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       ProductTaskTemplateService productTaskTemplateService,
       ProductCompanyService productCompanyService,
       AppBusinessProjectService appBusinessProjectService,
-      SequenceService sequenceService) {
+      SequenceService sequenceService,
+      AppProjectService appProjectService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
@@ -84,6 +86,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     this.productCompanyService = productCompanyService;
     this.appBusinessProjectService = appBusinessProjectService;
     this.sequenceService = sequenceService;
+    this.appProjectService = appProjectService;
   }
 
   @Override
@@ -91,13 +94,14 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsBusinessProject(true);
-    project = projectRepository.save(project);
     try {
-      project.setCode(sequenceService.getDraftSequenceNumber(project));
+      if (!appProjectService.getAppProject().getGenerateProjectSequence()) {
+        project.setCode(sequenceService.getDraftSequenceNumber(project));
+      }
     } catch (AxelorException e) {
       TraceBackService.trace(e);
     }
-    return project;
+    return projectRepository.save(project);
   }
 
   @Override
@@ -185,8 +189,8 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
 
     return ActionView.define(I18n.get("Tasks"))
         .model(ProjectTask.class.getName())
-        .add("grid", "project-task-grid")
-        .add("form", "project-task-form")
+        .add("grid", "business-project-task-grid")
+        .add("form", "business-project-task-form")
         .param("search-filters", "project-task-filters")
         .domain(
             "self.parentTask IN ("

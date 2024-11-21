@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="sale-order-form" id="budget-sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" extension="true">
 
     <extend target="/">
       <attribute name="onSave" value="action-budget-sale-order-group-on-save"/>
-      <attribute name="onLoad" value="action-group-budget-saleorder-onload"/>
-    </extend>
-
-    <extend target="//button[@name='confirmOrderBtn']">
-      <attribute name="onClick" value="action-group-budget-sale-order-confirm-onclick"/>
     </extend>
 
     <extend target="//button[@name='cancelBtn']">
@@ -28,31 +23,18 @@
     </extend>
 
     <extend target="//button[@name='completeManuallySaleOrderBtn']">
-      <attribute name="onClick"
-        value="save,action-method-budget-sale-order-validate-budget-balance,action-sale-order-method-complete-sale-order"/>
+      <attribute name="onClick" value="save,action-sale-order-method-complete-sale-order"/>
     </extend>
 
     <extend target="panel[@name='internalNotePanel']">
       <insert position="after">
         <panel name="otherInfosPanel" hidden="true">
-          <field name="$enableBudgetKey" type="boolean"/>
           <field name="company.accountConfig"/>
           <field name="company.accountConfig.enableBudgetKey"/>
         </panel>
       </insert>
     </extend>
   </form>
-
-  <action-group name="action-group-budget-sale-order-confirm-onclick">
-    <action name="save"/>
-    <action name="action-method-budget-sale-order-no-compute-budget-distribution"
-      if="__config__.app.isApp('budget')"/>
-    <action name="action-method-budget-sale-order-confirm"
-      if="__config__.app.isApp('budget')"/>
-    <action name="action-method-budget-sale-order-validate-budget-balance"
-      if="__config__.app.isApp('budget')"/>
-    <action name="action-sale-group-confirmed"/>
-  </action-group>
 
   <action-group name="action-budget-sale-order-group-on-save">
     <action name="action-supplychain-saleorder-onsave"/>
@@ -83,22 +65,6 @@
     <action name="action-sale-order-method-finalize-quotation"/>
   </action-group>
 
-  <action-group name="action-group-budget-saleorder-onload">
-    <action name="action-group-supplychain-saleorder-onload"/>
-    <action name="action-budget-sale-order-record-load-budget-key-config"
-      if="__config__.app.isApp('budget')"/>
-  </action-group>
-
-  <action-record name="action-budget-sale-order-record-load-budget-key-config"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="$enableBudgetKey"
-      expr="eval:__user__.activeCompany.accountConfig.enableBudgetKey"
-      if="__user__.activeCompany != null"/>
-    <field name="$enableBudgetKey"
-      expr="eval:__repo__(Company).all().fetchOne().accountConfig.enableBudgetKey"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-  </action-record>
-
   <action-method
     name="action-sale-order-method-budget-auto-compute-budget-distribution">
     <call class="com.axelor.apps.budget.web.SaleOrderController"
@@ -124,20 +90,8 @@
     <call class="com.axelor.apps.budget.web.SaleOrderController" method="fillBudgetStrOnLine"/>
   </action-method>
 
-  <action-method name="action-method-budget-sale-order-no-compute-budget-distribution">
-    <call class="com.axelor.apps.budget.web.SaleOrderController" method="checkNoComputeBudget"/>
-  </action-method>
-
   <action-method name="action-budget-sale-order-method-update-budget-lines">
     <call class="com.axelor.apps.budget.web.SaleOrderController" method="updateBudgetLines"/>
-  </action-method>
-
-  <action-method name="action-method-budget-sale-order-validate-budget-balance">
-    <call class="com.axelor.apps.budget.web.SaleOrderController" method="validateBudgetBalance"/>
-  </action-method>
-
-  <action-method name="action-method-budget-sale-order-confirm">
-    <call class="com.axelor.apps.budget.web.SaleOrderController" method="confirm"/>
   </action-method>
 
 </object-views>

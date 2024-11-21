@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="stock-move-line-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
@@ -13,14 +13,15 @@
     <field name="toStockLocation"
       onSelect="action-stock-move-line-method-compute-to-stock-location-domain"
       onChange="action-stock-move-line-group-stock-location-onchange"/>
-    <field name="product" canEdit="false"
+    <field name="product" canEdit="false" x-image-field="picture"
       onChange="action-group-stock-stockmoveline-product-onchange"
       onSelect="action-stock-move-line-method-product-domain" form-view="product-form"
       grid-view="stock-move-line-product-grid" width="250px"
       readonlyIf="lineTypeSelect == 1 || (($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3) || (fromStockLocation == null &amp;&amp; stockMove.typeSelect == 3) || (toStockLocation == null &amp;&amp; stockMove.typeSelect == 2)"/>
     <field name="stockMove.typeSelect" hidden="true"/>
     <field name="productModel" domain="self.isModel = true " form-view="product-form"
-      grid-view="product-grid" if="__config__.app.getApp('base')?.getManageProductVariants()"
+      x-image-field="picture" grid-view="product-grid"
+      if="__config__.app.getApp('base')?.getManageProductVariants()"
       readonlyIf="lineTypeSelect == 1 || product"/>
     <field name="productName" required="true" width="200px"
       readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
@@ -159,7 +160,7 @@
       <field name="toStockLocation"
         onSelect="action-stock-move-line-method-compute-to-stock-location-domain"
         onChange="action-stock-move-line-group-stock-location-onchange" hidden="true"/>
-      <field name="product" canEdit="false"
+      <field name="product" canEdit="false" x-image-field="picture"
         domain="self.expense = false AND self.dtype = 'Product'"
         onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange"
         onSelect="action-stock-move-line-method-product-domain" form-view="product-form"
@@ -252,8 +253,9 @@
 
   <grid name="stock-move-line-split-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true" canNew="false" canDelete="false">
-    <field name="product" readonly="true" form-view="product-form" grid-view="product-grid"
-      readonlyIf="$get('stockMove.statusSelect') > 1" domain="self.dtype = 'Product'"/>
+    <field name="product" x-image-field="picture" readonly="true" form-view="product-form"
+      grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"
+      domain="self.dtype = 'Product'"/>
     <field name="productModel" readonly="true" form-view="product-form"
       grid-view="product-grid" if="__config__.app.getApp('base')?.getManageProductVariants()"
       readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
@@ -286,7 +288,8 @@
       grid-view="stock-move-grid"/>
     <field name="product" onChange="action-group-stock-stockmoveline-product-onchange"
       onSelect="action-stock-move-line-method-product-domain" form-view="product-form"
-      grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+      grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"
+      x-image-field="picture"/>
     <field name="productModel" domain="self.isModel = true" form-view="product-form"
       grid-view="product-grid" if="__config__.app.getApp('base')?.getManageProductVariants()"
       readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
@@ -328,7 +331,8 @@
     <field name="stockMove.fromStockLocation"/>
     <field name="stockMove.toStockLocation"/>
     <field name="product" form-view="product-form" grid-view="product-grid"
-      readonlyIf="$get('stockMove.statusSelect') > 1" domain="self.dtype = 'Product'"/>
+      x-image-field="picture" readonlyIf="$get('stockMove.statusSelect') > 1"
+      domain="self.dtype = 'Product'"/>
     <field name="productName"/>
     <field name="stockMove.partner"/>
     <field name="realQty" aggregate="sum"
@@ -363,7 +367,7 @@
     <field name="stockMove.fromStockLocation"/>
     <field name="stockMove.toStockLocation"/>
     <field name="product" form-view="product-form" grid-view="product-grid"
-      domain="self.dtype = 'Product'"/>
+      domain="self.dtype = 'Product'" x-image-field="picture"/>
     <field name="productName"/>
     <field name="stockMove.partner"/>
     <field name="realQty" aggregate="sum"
@@ -416,7 +420,7 @@
       </panel>
     </panel>
     <panel name="moveDetailsPanel" title="Move details">
-      <field name="product" canEdit="false"
+      <field name="product" canEdit="false" x-image-field="picture"
         domain="self.expense = false AND self.dtype = 'Product'"
         onChange="action-group-stock-stockmoveline-product-onchange"
         onSelect="action-stock-move-line-method-product-domain" form-view="product-form"
@@ -550,6 +554,25 @@
       <field name="$nbDecimalDigitForQty" hidden="true"/>
     </panel>
   </form>
+
+  <grid name="stock-move-line-for-mass-stock-move-grid" title="Stock move lines"
+    model="com.axelor.apps.stock.db.StockMoveLine" canEdit="false" canNew="false" canDelete="false"
+    x-selector="checkbox">
+    <toolbar>
+      <button onClick="action-mass-stock-move-method-fill-product-need,close"
+        name="selectedStockMoveLinesToAdd" title="Selected move lines to add"/>
+    </toolbar>
+    <hilite strong="true" color="default" if="lineTypeSelect != 0"/>
+    <field name="name" width="120"/>
+    <field name="product" width="200" x-image-field="picture"/>
+    <field name="stockMove.partner"/>
+    <field name="stockMove.fromStockLocation"/>
+    <field name="stockMove.toStockLocation"/>
+    <field name="realQty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unit"/>
+    <field name="stockMove.statusSelect"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+  </grid>
 
   <action-method
     name="action-stock-move-line-method-display-available-tracking-number">
@@ -748,31 +771,14 @@
                EXISTS (
                   SELECT sll.id FROM StockLocationLine sll
                     WHERE sll.trackingNumber.id = self.id
-                    AND sll.detailsStockLocation.id = ${__parent__.fromStockLocation?.id}
+                    AND sll.detailsStockLocation.id = ${fromStockLocation?.id}
                )
                OR NOT EXISTS (
                  SELECT stockLocationLine.id FROM StockLocationLine stockLocationLine
                    WHERE stockLocationLine.trackingNumber.id = self.id
                )
              )
-          &quot;"
-      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMove'"/>
-
-    <attribute name="domain" for="trackingNumber"
-      expr="eval: &quot;
-              self.product = :product AND (
-               EXISTS (
-                  SELECT sll.id FROM StockLocationLine sll
-                    WHERE sll.trackingNumber.id = self.id
-                    AND sll.detailsStockLocation.id = ${stockMove.fromStockLocation?.id}
-               )
-               OR NOT EXISTS (
-                 SELECT stockLocationLine.id FROM StockLocationLine stockLocationLine
-                   WHERE stockLocationLine.trackingNumber.id = self.id
-               )
-             )
-          &quot;"
-      if="__parent__?._model != 'com.axelor.apps.stock.db.StockMove' &amp;&amp; stockMove != null"/>
+          &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-stock-move-line-attrs-scale-and-precision">

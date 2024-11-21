@@ -1,10 +1,27 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Tag;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaModel;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -24,7 +41,7 @@ public class TagController {
         "concernedModelSet", "domain", "self.packageName like '%" + packageName + "%'");
   }
 
-  public void setDefaultConcernedModel(ActionRequest request, ActionResponse response) {
+  public void onNew(ActionRequest request, ActionResponse response) {
 
     Tag tag = request.getContext().asType(Tag.class);
     Context parentContext = request.getContext().getParent();
@@ -33,16 +50,16 @@ public class TagController {
       return;
     }
 
+    TagService tagService = Beans.get(TagService.class);
+    String fullNameModel = null;
+    String fieldModel = null;
     if (parentContext != null && parentContext.get("_model") != null) {
-      String fullNameModel = parentContext.get("_model").toString();
-      MetaModel metaModel =
-          Beans.get(MetaModelRepository.class)
-              .all()
-              .filter("self.fullName = ?", fullNameModel)
-              .fetchOne();
-
-      tag.addConcernedModelSetItem(metaModel);
-      response.setValue("concernedModelSet", tag.getConcernedModelSet());
+      fullNameModel = parentContext.get("_model").toString();
     }
+    if (request.getContext().get("_fieldModel") != null) {
+      fieldModel = request.getContext().get("_fieldModel").toString();
+    }
+
+    response.setValues(tagService.getOnNewValuesMap(tag, fullNameModel, fieldModel));
   }
 }

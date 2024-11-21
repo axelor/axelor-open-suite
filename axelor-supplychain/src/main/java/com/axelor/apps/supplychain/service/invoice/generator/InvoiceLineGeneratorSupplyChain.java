@@ -234,9 +234,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
             accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
         invoiceLine.setFixedAssetCategory(fixedAssetCategory);
       }
-    }
-
-    if (stockMoveLine != null) {
+    } else if (stockMoveLine != null) {
       this.price = stockMoveLine.getUnitPriceUntaxed();
       this.inTaxPrice = stockMoveLine.getUnitPriceTaxed();
 
@@ -258,9 +256,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setPrice(price);
       invoiceLine.setInTaxPrice(inTaxPrice);
 
-      analyticMoveLineList =
-          invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-      analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
+      invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
     }
 
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();

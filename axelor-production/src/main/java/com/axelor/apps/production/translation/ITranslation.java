@@ -35,4 +35,13 @@ public interface ITranslation {
 
   public static final String OPERATION_ORDER_DURATION_PAUSED_403 = /*$$(*/
       "Your time on this operation is paused. This operation cannot be stopped because other operators are still working on it. You can go to the web instance to force stop the operation." /*)*/;
+
+  public static final String REQUEST_COMPLETED = /*$$(*/ "Request successfully completed" /*)*/;
+  public static final String QUANTITY_UPDATED = /*$$(*/ "Quantity successfully updated." /*)*/;
+  public static final String MANUFACTURING_ORDER_UPDATED = /*$$(*/
+      "Manufacturing order successfully updated." /*)*/;
+  public static final String WASTED_PRODUCT_QUANTITY_UPDATED = /*$$(*/
+      "Wasted product quantity successfully updated." /*)*/;
+  public static final String MANUFACTURING_OPERATION_STATUS_UPDATED = /*$$(*/
+      "Manufacturing operation status successfully updated." /*)*/;
 }

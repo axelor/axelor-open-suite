@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.ResearchRequest;
 import com.axelor.apps.base.db.ResearchResultLine;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.meta.MetaViewService;
 import com.axelor.apps.base.service.research.ResearchRequestService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -139,8 +140,15 @@ public class ResearchRequestController {
 
   public void openResultObjectForm(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    ResearchResultLine researchResultLine = request.getContext().asType(ResearchResultLine.class);
-    response.setView(
-        Beans.get(ResearchRequestService.class).getResultObjectView(researchResultLine));
+    try {
+      ResearchResultLine researchResultLine = request.getContext().asType(ResearchResultLine.class);
+      response.setView(
+          Beans.get(MetaViewService.class)
+              .getActionView(
+                  Class.forName(researchResultLine.getOriginTypeSelect()),
+                  researchResultLine.getOriginId()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -383,4 +383,13 @@ public final class SupplychainExceptionMessage {
 
   public static final String STOCK_MOVE_INVOICING_ERROR = /*$$(*/
       "This stock move needs to be invoiced manually, manual intervention is needed : %s" /*)*/;
+
+  public static final String SALE_ORDER_CONFIRM_INCOTERM_REQUIRED = /*$$(*/
+      "Incoterm must be filled" /*)*/;
+
+  public static final String STOCK_LOCATION_PRODUCTS_ADDED_TO_CART = /*$$(*/
+      "Products of %s have been added to your cart." /*)*/;
+
+  public static final String PARENT_PARTNER_CONFIGURATION_ERROR = /*$$(*/
+      "There is a configuration error, partner %s is its own parent." /*)*/;
 }

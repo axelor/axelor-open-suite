@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <menuitem name="crm-root" title="CRM" order="-2100" if="__config__.app.isApp('crm')"
-    icon="fa-user" icon-background="#2fa042"/>
+    icon="person-bounding-box" icon-background="#2fa042"/>
 
   <menuitem name="crm-root-lead" parent="crm-root" title="Leads" order="100"/>
 
@@ -614,7 +614,7 @@
   <menuitem name="crm-search" parent="crm-root" title="Search" order="700" icon="fa-search"
     if="__config__.app.getApp('crm')?.isSearchFunctionalityEnabled"/>
 
-  <menuitem name="crm-search-request" parent="crm-search" title="Request"
+  <menuitem name="crm-search-request" parent="crm-search" title="ResearchRequest.title"
     action="crm.root.crm.search.request" order="1"/>
   <action-view name="crm.root.crm.search.request" title="Requests"
     model="com.axelor.apps.base.db.ResearchRequest">
@@ -669,7 +669,8 @@
     model="com.axelor.apps.base.db.Tag">
     <view type="grid" name="tag-simplified-grid"/>
     <view type="form" name="tag-form"/>
-    <context name="_packageName" expr="eval: 'com.axelor.apps.crm'"/>
+    <domain>:_packageName IN self.concernedModelSet.packageName OR self.concernedModelSet IS EMPTY</domain>
+    <context name="_packageName" expr="eval: 'com.axelor.apps.crm.db'"/>
   </action-view>
 
 </object-views>

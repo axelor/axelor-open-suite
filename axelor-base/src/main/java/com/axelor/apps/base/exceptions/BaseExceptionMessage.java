@@ -75,6 +75,9 @@ public final class BaseExceptionMessage {
 
   public static final String UNIT_CONVERSION_4 = /*$$(*/ "End unit cannot be void." /*)*/;
 
+  public static final String COEFFICIENT_SHOULD_NOT_BE_ZERO = /*$$(*/
+      "The coefficient for unit conversion from %s to %s should not be 0." /*)*/;
+
   public static final String CURRENCY_CONVERSION_1 = /*$$(*/
       "WARNING : Please close the current conversion period before creating new one" /*)*/;
   public static final String CURRENCY_CONVERSION_2 = /*$$(*/
@@ -616,8 +619,7 @@ public final class BaseExceptionMessage {
   public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
       "Error while accessing certificate information." /*)*/;
 
-  public static final String RESEARCH_RESULT_NO_VIEW_CONFIGURED = /*$$(*/
-      "No view configured for model %s." /*)*/;
+  public static final String VIEW_NOT_FOUND = /*$$(*/ "No view configured for model %s." /*)*/;
 
   public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
       "The file could not be generated." /*)*/;
@@ -660,4 +662,30 @@ public final class BaseExceptionMessage {
 
   public static final String PRINTING_TEMPLATE_SCRIPT_ERROR = /*$$(*/
       "Error when computing the printing filename, using template %s: %s" /*)*/;
+
+  public static final String NO_QUANTITY_PROVIDED = /*$$(*/
+      "This product comes in multiple quantities, so please specify a quantity that is a multiple of at least one from the list %s." /*)*/;
+
+  public static final String QUANTITY_NOT_MULTIPLE = /*$$(*/
+      "The product %s comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
+
+  public static final String NO_DEFAULT_ADDRESS_TEMPLATE = /*$$(*/
+      "Please fill the default address template." /*)*/;
+
+  public static final String NO_COUNTRY_FOUND = /*$$(*/ "No country found for: %s." /*)*/;
+  public static final String CITY_AND_ZIP_BOTH_EMPTY = /*$$(*/
+      "The city and postcode cannot be empty at the same time." /*)*/;
+  public static final String NO_CITY_FOUND = /*$$(*/ "No city found" /*)*/;
+  public static final String NO_ZIP_FOUND = /*$$(*/
+      "No zip found in request body or in the found city" /*)*/;
+  public static final String NO_ADDRESS_FOUND_WITH_INFO = /*$$(*/
+      "No address found with this country, zip and street name. City name is required to create a new city." /*)*/;
+
+  public static final String DATA_SHARING_MISSING_ELEMENTS = /*$$(*/
+      "Please fill in or modify some elements to be able to register" /*)*/;
+
+  public static final String LOCALIZATION_EMPTY = /*$$(*/ "Localization is empty" /*)*/;
+
+  public static final String LOCALIZATION_LANGUAGE_EMPTY = /*$$(*/
+      "Language is empty for the localization %s" /*)*/;
 }

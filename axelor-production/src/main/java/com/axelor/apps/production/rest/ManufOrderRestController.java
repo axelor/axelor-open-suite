@@ -32,8 +32,10 @@ import com.axelor.apps.production.rest.dto.ManufOrderStockMoveLineResponse;
 import com.axelor.apps.production.rest.dto.WastedProductPostRequest;
 import com.axelor.apps.production.rest.dto.WastedProductPutRequest;
 import com.axelor.apps.production.rest.dto.WastedProductResponse;
+import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -67,7 +69,8 @@ public class ManufOrderRestController {
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck()
-        .readAccess(Arrays.asList(ManufOrder.class, StockMove.class, ProdProduct.class))
+        .readAccess(ManufOrder.class, requestBody.getManufOrderId())
+        .readAccess(ProdProduct.class)
         .check();
 
     List<ManufOrderProductResponse> consumedProductList =
@@ -76,7 +79,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Request successfully completed",
+        I18n.get(ITranslation.REQUEST_COMPLETED),
         new ManufOrderProductListResponse(consumedProductList, requestBody.fetchManufOrder()));
   }
 
@@ -90,7 +93,8 @@ public class ManufOrderRestController {
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck()
-        .readAccess(Arrays.asList(ManufOrder.class, StockMove.class, ProdProduct.class))
+        .readAccess(ManufOrder.class, requestBody.getManufOrderId())
+        .readAccess(Arrays.asList(StockMove.class, ProdProduct.class))
         .check();
 
     List<ManufOrderProductResponse> producedProductList =
@@ -99,7 +103,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Request successfully completed",
+        I18n.get(ITranslation.REQUEST_COMPLETED),
         new ManufOrderProductListResponse(producedProductList, requestBody.fetchManufOrder()));
   }
 
@@ -112,7 +116,7 @@ public class ManufOrderRestController {
   public Response updateProductQuantity(ManufOrderProductPutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Arrays.asList(ManufOrder.class, StockMoveLine.class)).check();
+    new SecurityCheck().writeAccess(StockMoveLine.class, requestBody.getStockMoveLineId()).check();
 
     StockMoveLine stockMoveLine =
         Beans.get(ManufOrderProductRestService.class)
@@ -121,7 +125,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Quantity successfully updated.",
+        I18n.get(ITranslation.QUANTITY_UPDATED),
         new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 
@@ -135,7 +139,7 @@ public class ManufOrderRestController {
       @PathParam("manufOrderId") long manufOrderId, ManufOrderPutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(ManufOrder.class).check();
+    new SecurityCheck().writeAccess(ManufOrder.class, manufOrderId).check();
 
     ManufOrder manufOrder =
         ObjectFinder.find(ManufOrder.class, manufOrderId, requestBody.getVersion());
@@ -145,7 +149,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Manufacturing order successfully updated.",
+        I18n.get(ITranslation.MANUFACTURING_ORDER_UPDATED),
         new ManufOrderResponse(manufOrder));
   }
 
@@ -160,7 +164,10 @@ public class ManufOrderRestController {
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
 
-    new SecurityCheck().writeAccess(ManufOrder.class).createAccess(ProdProduct.class).check();
+    new SecurityCheck()
+        .writeAccess(ManufOrder.class, manufOrderId)
+        .createAccess(ProdProduct.class)
+        .check();
     ManufOrder manufOrder =
         ObjectFinder.find(ManufOrder.class, manufOrderId, requestBody.getVersion());
 
@@ -183,7 +190,7 @@ public class ManufOrderRestController {
   public Response updateWastedProductQuantity(
       @PathParam("prodProductId") long prodProductId, WastedProductPutRequest requestBody) {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Arrays.asList(ManufOrder.class, ProdProduct.class)).check();
+    new SecurityCheck().writeAccess(ProdProduct.class, prodProductId).check();
 
     ProdProduct prodProduct =
         ObjectFinder.find(ProdProduct.class, prodProductId, requestBody.getVersion());
@@ -193,7 +200,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Wasted product quantity successfully updated.",
+        I18n.get(ITranslation.WASTED_PRODUCT_QUANTITY_UPDATED),
         new WastedProductResponse(prodProduct));
   }
 
@@ -207,7 +214,10 @@ public class ManufOrderRestController {
       @PathParam("manufOrderId") long manufOrderId, ManufOrderProductPostRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(ManufOrder.class).createAccess(StockMoveLine.class).check();
+    new SecurityCheck()
+        .writeAccess(ManufOrder.class, manufOrderId)
+        .createAccess(StockMoveLine.class)
+        .check();
 
     ManufOrder manufOrder =
         ObjectFinder.find(ManufOrder.class, manufOrderId, requestBody.getVersion());

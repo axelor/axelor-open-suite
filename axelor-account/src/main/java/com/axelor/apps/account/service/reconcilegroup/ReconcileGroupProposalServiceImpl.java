@@ -57,7 +57,10 @@ public class ReconcileGroupProposalServiceImpl implements ReconcileGroupProposal
         moveLineList.stream()
             .map(MoveLine::getReconcileGroup)
             .filter(Objects::nonNull)
-            .filter(r -> r.getStatusSelect() == ReconcileGroupRepository.STATUS_PARTIAL)
+            .filter(
+                r ->
+                    r.getStatusSelect() == ReconcileGroupRepository.STATUS_PARTIAL
+                        || r.getStatusSelect() == ReconcileGroupRepository.STATUS_PROPOSAL)
             .findFirst()
             .orElseGet(
                 () -> createProposalReconcileGroup(moveLineList.get(0).getMove().getCompany()));
@@ -140,6 +143,15 @@ public class ReconcileGroupProposalServiceImpl implements ReconcileGroupProposal
       reconcile.getDebitMoveLine().setReconcileGroup(null);
       reconcile.getCreditMoveLine().setReconcileGroup(null);
       reconcileRepository.remove(reconcile);
+    }
+    List<MoveLine> moveLineList =
+        moveLineRepository
+            .all()
+            .filter("self.reconcileGroup.id = :reconcileGroupId")
+            .bind("reconcileGroupId", reconcileGroup.getId())
+            .fetch();
+    for (MoveLine moveLine : moveLineList) {
+      moveLine.setReconcileGroup(null);
     }
     reconcileGroupRepository.remove(reconcileGroup);
   }

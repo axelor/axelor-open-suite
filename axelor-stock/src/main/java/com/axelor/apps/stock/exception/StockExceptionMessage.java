@@ -309,6 +309,15 @@ public final class StockExceptionMessage {
   public static final String STOCK_MOVE_TRACKING_NUMBER_PARENT_MAXIMUM_ITERATION_REACHED = /*$$(*/
       "Maximum iteration for looking tracking numbers parent has been reached. Please check any circular parent dependencies." /*)*/;
 
+  public static final String SPLIT_MOVE_LINE_WRONG_STATUS = /*$$(*/
+      "You can only split line in draft or planned stock move." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_TYPE = /*$$(*/
+      "You can only split line in incoming stock move." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_REAL_QTY = /*$$(*/
+      "Real quantity must not be equal to 0 and should be less than expected quantity." /*)*/;
+
   public static final String STOCK_MOVE_MASS_MOVED_QTY_GREATER_THAN_CURRENT_QTY = /*$$(*/
       "Moved qty is greater than current quantity (%s)" /*)*/;
 
@@ -325,4 +334,19 @@ public final class StockExceptionMessage {
 
   public static final String STOCK_MOVE_MASS_PRODUCT_NO_STOCK_LOCATION_SOURCE_AVAILABLE = /*$$(*/
       "The product %s is missing a stock location (source or dest). Please make sure that the cart stock location and stock location in the product is filled." /*)*/;
+
+  public static final String STOCK_MOVE_MASS_ALREADY_STORED_PRODUCT = /*$$(*/
+      "The product %s have already been stored" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_NO_SEQUENCE = /*$$(*/
+      "There's no configured sequence for mass stock move for the company %s" /*)*/;
+
+  public static final String LOCATIONS_ARE_EMPTY = /*$$(*/
+      "Source and destination locations are empty" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_COULD_NOT_CREATE_PICKED_PRODUCT_FROM_NEED = /*$$(*/
+      "Impossible to create a picked product for product %s, no stock found for company %s" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_NO_FROM_STOCK_LOCATION_SELECTED = /*$$(*/
+      "No stock location has been selected." /*)*/;
 }

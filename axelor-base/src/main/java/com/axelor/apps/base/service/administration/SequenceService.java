@@ -439,7 +439,7 @@ public class SequenceService {
    */
   public boolean isEmptyOrDraftSequenceNumber(String sequenceNumber) {
     return Strings.isNullOrEmpty(sequenceNumber)
-        || sequenceNumber.matches(String.format("[\\%s\\*]\\d+", DRAFT_PREFIX));
+        || sequenceNumber.matches(String.format("[\\%s\\*]\\d+", getDraftPrefix()));
   }
 
   /**

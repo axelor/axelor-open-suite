@@ -125,7 +125,8 @@ public class InventoryController {
 
       Path filePath = Beans.get(InventoryService.class).importFile(inventory);
       response.setInfo(
-          String.format(I18n.get(StockExceptionMessage.INVENTORY_8), filePath.toString()));
+          String.format(
+              I18n.get(StockExceptionMessage.INVENTORY_8), filePath.getFileName().toString()));
 
       response.setReload(true);
     } catch (Exception e) {

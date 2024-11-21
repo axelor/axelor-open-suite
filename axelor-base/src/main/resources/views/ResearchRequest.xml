@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="research-request-grid" title="Requests" canNew="true"
     model="com.axelor.apps.base.db.ResearchRequest">
@@ -10,11 +10,11 @@
     <field name="models" title="Models to search"/>
   </grid>
 
-  <form name="research-request-form" title="Request" canNew="true"
+  <form name="research-request-form" title="ResearchRequest.title" canNew="true"
     onNew="action-research-request-attrs-result-column-display"
     onLoad="action-research-request-attrs-result-column-display"
     model="com.axelor.apps.base.db.ResearchRequest">
-    <panel name="requestPanel" title="Request" colSpan="12">
+    <panel name="requestPanel" title="ResearchRequest.title" colSpan="12">
       <field name="name" colSpan="3" required="true"/>
       <field name="models" required="true" widget="MultiSelect" colSpan="3"/>
       <panel title="Search" icon="fa-search" name="searchPanel" colSpan="12" hideIf="!models">

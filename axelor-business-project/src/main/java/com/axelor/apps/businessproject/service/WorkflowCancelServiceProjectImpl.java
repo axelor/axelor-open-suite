@@ -27,7 +27,7 @@ import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
