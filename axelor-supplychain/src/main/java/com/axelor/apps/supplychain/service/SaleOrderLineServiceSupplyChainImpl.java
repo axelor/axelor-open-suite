@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,17 +26,16 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
-import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -52,7 +51,6 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -61,7 +59,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -103,7 +101,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       SaleOrderMarginService saleOrderMarginService,
       InvoiceLineRepository invoiceLineRepository,
       SaleInvoicingStateService saleInvoicingStateService,
-      AnalyticLineModelService analyticLineModelService) {
+      AnalyticLineModelService analyticLineModelService,
+      CurrencyScaleService currencyScaleService) {
     super(
         currencyService,
         priceListService,
@@ -115,7 +114,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         saleOrderService,
         pricingService,
         taxService,
-        saleOrderMarginService);
+        saleOrderMarginService,
+        currencyScaleService);
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
@@ -230,7 +230,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     String status =
         appSupplychainService.getAppSupplychain().getsOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
-      statusList = StringTool.getIntegerList(status);
+      statusList = StringHelper.getIntegerList(status);
     }
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
@@ -254,7 +254,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.saleOrder.stockLocation.id IN ("
-                  + StringTool.getIdListString(stockLocationList)
+                  + StringHelper.getIdListString(stockLocationList)
                   + ") ";
         }
       }
@@ -339,44 +339,6 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       saleOrderLine.setRequestedReservedQty(BigDecimal.ZERO.max(qty));
     }
     return saleOrderLine;
-  }
-
-  @Override
-  public SaleOrderLine createSaleOrderLine(
-      PackLine packLine,
-      SaleOrder saleOrder,
-      BigDecimal packQty,
-      BigDecimal conversionRate,
-      Integer sequence)
-      throws AxelorException {
-
-    SaleOrderLine soLine =
-        super.createSaleOrderLine(packLine, saleOrder, packQty, conversionRate, sequence);
-
-    if (soLine != null && soLine.getProduct() != null) {
-      soLine.setSaleSupplySelect(soLine.getProduct().getSaleSupplySelect());
-
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(soLine, null);
-      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
-
-      if (ObjectUtils.notEmpty(soLine.getAnalyticMoveLineList())) {
-        soLine
-            .getAnalyticMoveLineList()
-            .forEach(analyticMoveLine -> analyticMoveLine.setSaleOrderLine(soLine));
-      }
-
-      try {
-        SupplyChainConfig supplyChainConfig =
-            Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(saleOrder.getCompany());
-
-        if (supplyChainConfig.getAutoRequestReservedQty()) {
-          Beans.get(ReservedQtyService.class).requestQty(soLine);
-        }
-      } catch (AxelorException e) {
-        TraceBackService.trace(e);
-      }
-    }
-    return soLine;
   }
 
   protected BigDecimal getInvoicedQty(SaleOrderLine saleOrderLine) {

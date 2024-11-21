@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="budget" package="com.axelor.apps.budget.db"/>
 
-  <entity name="BudgetDistribution" cacheable="true">
+  <entity name="BudgetDistribution" cacheable="true"
+    implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"
       required="true"/>
@@ -13,10 +14,10 @@
     <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
       title="Global Budget"/>
 
-    <decimal name="amount" title="Amount" precision="20" scale="2"/>
-    <date name="dateCreated" title="Date"/>
-    <decimal name="assignedAmount" title="Assigned amount"/>
-    <decimal name="budgetAmountAvailable"/>
+    <decimal name="amount" title="Amount" precision="20" scale="3"/>
+    <date name="imputationDate" title="Date"/>
+    <decimal name="assignedAmount" title="Assigned amount" precision="20" scale="3"/>
+    <decimal name="budgetAmountAvailable" precision="20" scale="3"/>
 
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="MoveLine"/>
@@ -24,6 +25,19 @@
       ref="com.axelor.apps.purchase.db.PurchaseOrderLine"/>
     <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
     <many-to-one name="invoiceLine" ref="com.axelor.apps.account.db.InvoiceLine"/>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return companyCurrency;
+	    ]]>
+    </many-to-one>
+
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return budget != null ? budget.getCompanyCurrency() : null;
+	    ]]>
+    </many-to-one>
   </entity>
 
 </domain-models>

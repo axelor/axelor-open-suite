@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,10 +31,9 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.utils.service.ListToolService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,25 +44,24 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AccountConfigService accountConfigService;
   protected AnalyticAccountRepository analyticAccountRepository;
-  protected ListToolService listToolService;
   protected AnalyticToolService analyticToolService;
   protected AppAccountService appAccountService;
-  private final int RETURN_SCALE = 2;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public MoveLineComputeAnalyticServiceImpl(
       AnalyticMoveLineService analyticMoveLineService,
       AccountConfigService accountConfigService,
       AnalyticAccountRepository analyticAccountRepository,
-      ListToolService listToolService,
       AnalyticToolService analyticToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      CurrencyScaleService currencyScaleService) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountConfigService = accountConfigService;
     this.analyticAccountRepository = analyticAccountRepository;
-    this.listToolService = listToolService;
     this.analyticToolService = analyticToolService;
     this.appAccountService = appAccountService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -75,7 +73,9 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       createAnalyticDistributionWithTemplate(moveLine);
     } else {
       LocalDate date = moveLine.getDate();
-      BigDecimal amount = moveLine.getDebit().add(moveLine.getCredit());
+      BigDecimal amount =
+          currencyScaleService.getCompanyScaledValue(
+              moveLine, moveLine.getDebit().add(moveLine.getCredit()));
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(analyticMoveLine, amount, date);
       }
@@ -114,7 +114,8 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             moveLine.getAnalyticDistributionTemplate(),
-            moveLine.getDebit().add(moveLine.getCredit()),
+            currencyScaleService.getCompanyScaledValue(
+                moveLine, moveLine.getDebit().add(moveLine.getCredit())),
             AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
             moveLine.getDate());
 
@@ -127,7 +128,8 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             moveLine.getAnalyticDistributionTemplate(),
-            moveLine.getDebit().add(moveLine.getCredit()),
+            currencyScaleService.getCompanyScaledValue(
+                moveLine, moveLine.getDebit().add(moveLine.getCredit())),
             AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
             moveLine.getDate());
 
@@ -270,21 +272,5 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
           .forEach(analyticMoveLine -> analyticMoveLine.setMoveLine(null));
       moveLine.getAnalyticMoveLineList().clear();
     }
-  }
-
-  @Override
-  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
-    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getCredit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    } else if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getDebit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
   }
 }

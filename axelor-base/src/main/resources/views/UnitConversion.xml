@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
   <grid name="unit-conversion-grid" title="Unit conversions"
     model="com.axelor.apps.base.db.UnitConversion">
     <toolbar>
@@ -15,23 +15,28 @@
     <field name="typeSelect"/>
   </grid>
   <form name="unit-conversion-form" title="Unit conversion"
-    model="com.axelor.apps.base.db.UnitConversion" width="large">
+    model="com.axelor.apps.base.db.UnitConversion" width="large"
+    onNew="action-unit-conversion-attrs-on-new">
     <panel name="mainPanel" colSpan="10">
       <field name="typeSelect" required="true" colSpan="12" width="50%"/>
 
       <panel name="coeffPanel" colSpan="12" showIf="typeSelect == 1">
-        <field name="startUnit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="startUnit" colSpan="3" form-view="unit-form" grid-view="unit-grid"
+          onSelect="action-unit-conversion-attrs-unit-domain"/>
         <label name="equalTo1Label" title="=" colSpan="1"/>
         <field name="coef" colSpan="3"/>
         <label name="X1Label" title="X" colSpan="1"/>
-        <field name="endUnit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="endUnit" colSpan="3" form-view="unit-form" grid-view="unit-grid"
+          onSelect="action-unit-conversion-attrs-unit-domain"/>
       </panel>
       <panel name="formulaPanel" colSpan="12" showIf="typeSelect == 2">
-        <help>
+        <field name="entitySelect" colSpan="12" hidden="true"/>
+        <help showIf="entitySelect == 0">
 					<![CDATA[
 					<br/>Example:<br/>Start unit : m3<br/>End unit : kg<br/><strong>$Product.netMass$ / $Product.articleVolume$</strong><br/>
   					]]>
         </help>
+        <spacer colSpan="6" name="formulaHelperSpacer" showIf="entitySelect == 0"/>
         <field name="startUnit" colSpan="2" form-view="unit-form" grid-view="unit-grid"/>
         <label name="equalTo2Label" title="=" colSpan="1"/>
         <field name="formula" colSpan="6" widget="CodeEditor" x-code-syntax="groovy"/>
@@ -41,4 +46,16 @@
     </panel>
 
   </form>
+
+  <action-attrs name="action-unit-conversion-attrs-on-new">
+    <attribute name="value" for="entitySelect" expr="eval: _entitySelect"/>
+  </action-attrs>
+
+  <action-attrs name="action-unit-conversion-attrs-unit-domain">
+    <attribute name="domain" for="startUnit"
+      expr="eval: &quot;self.unitTypeSelect = 3&quot;" if="eval: _forceTimeUnit"/>
+    <attribute name="domain" for="endUnit"
+      expr="eval: &quot;self.unitTypeSelect = 3&quot;" if="eval: _forceTimeUnit"/>
+  </action-attrs>
+
 </object-views>

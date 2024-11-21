@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <form name="account-form" title="Accounting.Account"
@@ -30,8 +30,8 @@
 
   <action-view name="action-account-view-related-budget-line" title=""
     model="com.axelor.apps.budget.db.Budget">
-    <view type="grid" name="budget-lines-grid"/>
-    <view type="form" name="budget-included-form"/>
+    <view type="grid" name="budget-grid"/>
+    <view type="form" name="budget-form"/>
     <domain>:id MEMBER OF self.accountSet</domain>
   </action-view>
 

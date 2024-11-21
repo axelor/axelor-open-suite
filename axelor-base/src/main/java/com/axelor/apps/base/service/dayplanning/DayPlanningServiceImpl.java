@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,7 @@ package com.axelor.apps.base.service.dayplanning;
 
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -138,7 +138,7 @@ public class DayPlanningServiceImpl implements DayPlanningService {
     }
 
     LocalDateTime previousDay = dateT.minusDays(1).with(LocalTime.MAX);
-    return getAllowedStartDateTPeriodAt(
+    return getAllowedEndDateTPeriodAt(
         weeklyPlanningService.findDayPlanning(
             dayPlanning.getWeeklyPlanning(), previousDay.toLocalDate()),
         previousDay,
@@ -175,6 +175,9 @@ public class DayPlanningServiceImpl implements DayPlanningService {
   protected long computeVoidDurationBetween(
       DayPlanning dayPlanning, LocalTime startT, LocalTime endT) {
 
+    if (dayPlanning == null) {
+      return 0;
+    }
     LocalTime morningFromTime = dayPlanning.getMorningFrom();
     LocalTime morningToTime = dayPlanning.getMorningTo();
     LocalTime afternoonFromTime = dayPlanning.getAfternoonFrom();
@@ -222,7 +225,7 @@ public class DayPlanningServiceImpl implements DayPlanningService {
       cursorTime = endT;
       LocalTime maxTime = max(morningToTime, startT);
 
-      duration += DurationTool.getSecondsDuration(Duration.between(maxTime, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(maxTime, cursorTime));
 
       cursorTime = maxTime;
 
@@ -233,7 +236,7 @@ public class DayPlanningServiceImpl implements DayPlanningService {
 
     cursorTime = morningFromTime;
     if (cursorTime.isAfter(startT)) {
-      duration += DurationTool.getSecondsDuration(Duration.between(startT, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(startT, cursorTime));
     }
 
     return duration;
@@ -251,7 +254,7 @@ public class DayPlanningServiceImpl implements DayPlanningService {
 
     if (cursorTime.isAfter(afternoonToTime)) {
       LocalTime maxTime = max(afternoonToTime, startT);
-      duration += DurationTool.getSecondsDuration(Duration.between(maxTime, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(maxTime, cursorTime));
 
       cursorTime = maxTime;
     }
@@ -263,10 +266,10 @@ public class DayPlanningServiceImpl implements DayPlanningService {
     cursorTime = afternoonFromTime;
 
     if (cursorTime.isAfter(startT) && morningToTime == null) {
-      duration += DurationTool.getSecondsDuration(Duration.between(startT, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(startT, cursorTime));
     } else if (cursorTime.isAfter(startT) && endT.isAfter(morningToTime)) {
       LocalTime maxTime = max(morningToTime, startT);
-      duration += DurationTool.getSecondsDuration(Duration.between(maxTime, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(maxTime, cursorTime));
     }
 
     return duration;
@@ -296,7 +299,9 @@ public class DayPlanningServiceImpl implements DayPlanningService {
 
     long duration = 0;
 
-    if (dayPlanning.getWeeklyPlanning() == null || startDateT.compareTo(endDateT) >= 0) {
+    if (dayPlanning == null
+        || dayPlanning.getWeeklyPlanning() == null
+        || startDateT.compareTo(endDateT) >= 0) {
       return 0;
     }
 

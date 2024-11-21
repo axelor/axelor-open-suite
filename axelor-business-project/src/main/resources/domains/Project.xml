@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -64,10 +64,6 @@
 
     <!-- planification fields -->
     <decimal name="numberHoursADay" title="Number of hours in a day" min="0"/>
-    <many-to-one name="projectTimeUnit" ref="com.axelor.apps.base.db.Unit"
-      title="Project time unit"
-      help="This will determine the unit used for project-wide reporting. If there are tasks using another unit, conversions will be made using &apos;Number of hours in a day&apos; value."/>
-
     <integer name="spentTimeCostComputationMethod" default="1"
       title="Spent time actual cost computation method"
       selection="business.project.spent.time.computation.method.select"
@@ -105,6 +101,22 @@
 
     <one-to-many name="projectHistoryLineList"
       ref="com.axelor.apps.project.db.ProjectHistoryLine" title="Project history" mappedBy="project"/>
+    <boolean name="allowToGetPricesFromFrameworkContract"
+      title="Allows to retrieve prices from a framework contract"
+      help="This will allow you to select a framework contract from which to retrieve the prices of products on tasks."/>
+    <many-to-many name="frameworkCustomerContractSet"
+      title="Framework customer contract" ref="com.axelor.apps.contract.db.Contract"/>
+    <many-to-one name="defaultFrameworkCustomerContract"
+      title="Default framework customer contract" ref="com.axelor.apps.contract.db.Contract"/>
+    <many-to-many name="frameworkSupplierContractSet"
+      title="Framework supplier contract" ref="com.axelor.apps.contract.db.Contract"/>
+    <many-to-one name="defaultFrameworkSupplierContract"
+      title="Default framework supplier contract" ref="com.axelor.apps.contract.db.Contract"/>
+
+    <!-- Analytic fields -->
+    <many-to-one name="analyticDistributionTemplate"
+      title="Analytic distribution template"
+      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
     <extra-code><![CDATA[
 

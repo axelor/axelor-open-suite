@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="mrp-family-grid" title="MRP families"
     model="com.axelor.apps.supplychain.db.MrpFamily">
     <field name="code"/>
     <field name="name"/>
     <field name="dayNb"/>
-    <field name="dayNbBetweenPurchaseAndProposal"/>
   </grid>
 
   <form name="mrp-family-form" title="MRP family"
@@ -17,7 +16,6 @@
       <field name="code"/>
       <field name="name" required="true"/>
       <field name="dayNb"/>
-      <field name="dayNbBetweenPurchaseAndProposal"/>
     </panel>
   </form>
 

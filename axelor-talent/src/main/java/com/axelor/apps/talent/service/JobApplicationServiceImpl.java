@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -144,23 +144,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     Beans.get(PartnerService.class).setPartnerFullName(contact);
 
     return contact;
-  }
-
-  @Override
-  public String computeFullName(JobApplication jobApplication) {
-
-    String fullName = null;
-
-    if (jobApplication.getFirstName() != null) {
-      fullName = jobApplication.getFirstName();
-    }
-    if (fullName == null) {
-      fullName = jobApplication.getLastName();
-    } else {
-      fullName += " " + jobApplication.getLastName();
-    }
-
-    return fullName;
   }
 
   @Override

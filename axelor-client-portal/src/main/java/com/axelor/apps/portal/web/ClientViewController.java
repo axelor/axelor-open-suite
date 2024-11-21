@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -392,7 +392,7 @@ public class ClientViewController {
         Filter filter = clientViewService.getRefundOfUser(clientUser).get(0);
         if (filter != null) {
           response.setView(
-              ActionView.define(I18n.get("My refund"))
+              ActionView.define(I18n.get("My credit notes"))
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-refund-grid")
                   .add("form", "invoice-form")

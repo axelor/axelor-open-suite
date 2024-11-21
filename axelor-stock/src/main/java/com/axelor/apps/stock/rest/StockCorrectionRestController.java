@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.stock.db.StockCorrection;
-import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.rest.dto.StockCorrectionPostRequest;
 import com.axelor.apps.stock.rest.dto.StockCorrectionPutRequest;
@@ -31,10 +30,7 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
-import java.util.Arrays;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -44,7 +40,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/stock-correction")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -58,7 +53,7 @@ public class StockCorrectionRestController {
   @HttpExceptionHandler
   public Response createStockCorrection(StockCorrectionPostRequest requestBody) throws Exception {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().createAccess(Arrays.asList(StockCorrection.class, StockMove.class)).check();
+    new SecurityCheck().createAccess(StockCorrection.class).check();
 
     StockCorrection stockCorrection =
         Beans.get(StockCorrectionService.class)
@@ -88,7 +83,7 @@ public class StockCorrectionRestController {
       @PathParam("id") long stockCorrectionId, StockCorrectionPutRequest requestBody)
       throws Exception {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockCorrection.class).createAccess(StockMove.class).check();
+    new SecurityCheck().writeAccess(StockCorrection.class, stockCorrectionId).check();
 
     StockCorrection stockCorrection =
         ObjectFinder.find(StockCorrection.class, stockCorrectionId, requestBody.getVersion());

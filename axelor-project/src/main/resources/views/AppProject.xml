@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-project-config-form" title="App project"
     model="com.axelor.studio.db.AppProject" canDelete="false" canNew="false" width="large">
@@ -13,9 +13,10 @@
         showIf="resourceManagement"/>
       <field name="isEnableSignature" widget="boolean-switch"/>
       <field name="isEnablePerProjectTaskSequence" widget="boolean-switch"/>
-      <field name="defaultTaskStatusSet" widget="TagSelect"/>
+      <field name="defaultTaskStatusSet" widget="TagSelect"
+        onChange="action-app-project-record-reset-completed-task-status"/>
       <field name="defaultPrioritySet" widget="TagSelect"/>
-
+      <field name="fullNameGroovyFormula"/>
       <panel title="Custom fields" name="customFieldConfigPanel" colSpan="12">
         <panel-related field="taskCustomFieldsList" colSpan="6"
           form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
@@ -24,11 +25,58 @@
       </panel>
     </panel>
 
+    <panel name="projectStatusMgtPanel" title="Project status management">
+      <field name="completedProjectStatus" grid-view="project-status-grid"
+        form-view="project-status-form" domain="self.isCompleted = true"/>
+      <field name="canceledProjectStatus" grid-view="project-status-grid"
+        form-view="project-status-form" domain="self.isCompleted = true"/>
+    </panel>
+
+    <panel name="taskStatusMgtPanel" title="Task status management">
+      <field name="completedTaskStatus" grid-view="task-status-grid"
+        form-view="task-status-form"
+        onSelect="action-app-project-attrs-set-completed-task-status-domain"/>
+    </panel>
+
+    <panel name="actionsPanel">
+      <button name="generateProjectConfigurationsBtn" colSpan="4"
+        title="Generate project configurations"
+        onClick="action-project-group-generate-project-config"/>
+      <panel-dashlet name="projectConfigPanel" action="admin.root.conf.project.config"
+        colSpan="12"/>
+    </panel>
+
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>
   </form>
 
+  <action-attrs name="action-app-project-attrs-set-completed-task-status-domain">
+    <attribute name="domain" for="completedTaskStatus"
+      expr="eval: 'self.isCompleted = true AND self.id IN (' + defaultTaskStatusSet?.collect{ it.id }?.join(',') + ')'"/>
+  </action-attrs>
+
+  <action-record name="action-app-project-record-reset-completed-task-status"
+    model="com.axelor.studio.db.AppProject">
+    <field name="completedTaskStatus" expr="eval: null"
+      if="!defaultTaskStatusSet || !defaultTaskStatusSet.contains(completedTaskStatus)"/>
+  </action-record>
+
+  <action-view name="admin.root.conf.project.config" title="Project configurations"
+    model="com.axelor.apps.project.db.ProjectConfig">
+    <view type="grid" name="project-config-grid"/>
+    <view type="form" name="project-config-form"/>
+  </action-view>
+
+  <action-group name="action-project-group-generate-project-config">
+    <action name="save"/>
+    <action name="action-project-method-generate-project-config"/>
+  </action-group>
+
+  <action-method name="action-project-method-generate-project-config">
+    <call class="com.axelor.apps.project.web.AppProjectController"
+      method="generateProjectConfigurations"/>
+  </action-method>
 
 </object-views>

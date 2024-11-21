@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,6 +19,14 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[function formatNumber(number, isCompanyCurrency) {
+	var exportTypeSelect = params["ExportTypeSelect"];
+	var numberOfDecimals = isCompanyCurrency ? vars["ccNumberOfDecimals"] : vars["numberOfDecimals"];
+	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
+	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
+	var formatPattern = basePart + decimalPart;
+	return Formatter.format(number, formatPattern);
+}]]></method>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
@@ -78,21 +86,6 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="4050">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3818">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -102,6 +95,17 @@
             <simple-property-list name="defaultValue">
                 <value type="constant"></value>
             </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="ExportTypeSelect" id="5351">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -256,6 +260,18 @@
                     <text-property name="displayName">showProvisionTitle</text-property>
                     <text-property name="heading">showProvisionTitle</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">cc_number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">cc_number_of_decimals</text-property>
+                    <text-property name="heading">cc_number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -354,8 +370,33 @@
                     </structure>
                     <structure>
                         <property name="position">17</property>
+                        <property name="name">origin_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">origin</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
                         <property name="name">currency_code</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">showProvisionTitle</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">cc_number_of_decimals</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -363,7 +404,9 @@
             <method name="onFetch"><![CDATA[if(dataSetRow["showProvisionTitle"])
 {
 	vars["showProvisionTitle"] = dataSetRow["showProvisionTitle"];
-}]]></method>
+}
+vars["numberOfDecimals"] = dataSetRow["number_of_decimals"];
+vars["ccNumberOfDecimals"] = dataSetRow["cc_number_of_decimals"];]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -506,18 +549,41 @@
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">21</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">22</property>
+                    <property name="name">cc_number_of_decimals</property>
+                    <property name="nativeName">cc_number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select DISTINCT MoveLine.id as moveLine_id, MoveLine.name as move_line_name, MoveLine.description as move_line_description,
-MoveLine.date_val, MoveLine.partner_full_name as partner,
+MoveLine.date_val, CONCAT(MoveLine.partner_seq, ' - ', MoveLine.partner_full_name) as partner,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as account,
-MoveLine.debit, MoveLine.credit, ReconcileGroup.code as reconcile_group_code, MoveLine.due_date, Journal.code as journal_code,
+MoveLine.debit, MoveLine.credit,
+
+CASE WHEN CAST(ReconcileGroup.lettering_date_time AS DATE) > AccountingReport.date_val
+THEN ''
+ELSE ReconcileGroup.code
+END as reconcile_group_code,
+
+MoveLine.due_date, Journal.code as journal_code,
 Account.code as account_code , Account.name as account_name , Move.reference as move_sequence,
 ABS(MoveLine.amount_remaining) as amount_remaining,
 MoveLine.currency_amount,
 MoveLine.origin_date,
 MoveLine.origin,
 Move.currency_code,
-CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle"
+CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle",
+Currency.number_of_decimals,
+CompanyCurrency.number_of_decimals as cc_number_of_decimals
 
 from public.account_accounting_report as AccountingReport
 left outer join public.account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
@@ -538,6 +604,8 @@ left outer join public.account_accounting_report_partner_set as PartnerSet on (P
 
 left outer join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join public.account_account_config as AccountConfig on (AccountConfig.company = Company.id)
+left outer join public.base_currency as Currency on (Currency.id = Move.currency)
+left outer join public.base_currency as CompanyCurrency on (CompanyCurrency.id = Company.currency)
 left outer join public.base_period as Period on (Move.period = Period.id) 
 left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
 where 
@@ -563,8 +631,8 @@ AND (AccountingReport.display_opening_accounting_moves is true
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND (ABS(MoveLine.amount_remaining) > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
 GROUP BY MoveLine.id, MoveLine.name, MoveLine.description, MoveLine.date_val, MoveLine.partner_full_name,
-account, MoveLine.debit, MoveLine.credit, ReconcileGroup.code, Journal.code, Account.code, Account.name,  Move.reference,
-MoveLine.amount_remaining, MoveLine.currency_amount, Move.currency_code
+account, MoveLine.debit, MoveLine.credit, ReconcileGroup.code, ReconcileGroup.lettering_date_time, Journal.code, Account.code, Account.name,  Move.reference,
+MoveLine.amount_remaining, MoveLine.currency_amount, Move.currency_code, Currency.number_of_decimals, CompanyCurrency.number_of_decimals, AccountingReport.date_val
 order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -1003,7 +1071,7 @@ where AccountingReport.id = ? ]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">-1</property>
@@ -1045,7 +1113,7 @@ where AccountingReport.id = ? ]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -2243,6 +2311,18 @@ else {
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">number_of_decimals</property>
+                                <text-property name="displayName">number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">cc_number_of_decimals</property>
+                                <text-property name="displayName">cc_number_of_decimals</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["cc_number_of_decimals"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
                         </list-property>
                         <structure name="toc"/>
                         <property name="pageBreakInterval">0</property>
@@ -2268,16 +2348,16 @@ else {
                                     <expression name="valueExpr" type="javascript">!row._outer["display_name_account"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">15%</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="4331">
-                            <property name="width">8%</property>
+                            <property name="width">7%</property>
                         </column>
                         <column id="4249">
-                            <property name="width">10%</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="4092">
-                            <property name="width">27%</property>
+                            <property name="width">25%</property>
                         </column>
                         <column id="5197">
                             <list-property name="visibility">
@@ -2286,7 +2366,7 @@ else {
                                     <expression name="valueExpr" type="javascript">row._outer["global_by_partner"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">10%</property>
+                            <property name="width">8%</property>
                         </column>
                         <column id="5215">
                             <list-property name="visibility">
@@ -2295,7 +2375,7 @@ else {
                                     <expression name="valueExpr" type="javascript">row._outer["global_by_partner"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">11%</property>
+                            <property name="width">7%</property>
                         </column>
                         <column id="4093">
                             <list-property name="visibility">
@@ -2304,28 +2384,28 @@ else {
                                     <expression name="valueExpr" type="javascript">row._outer["global_by_partner"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">20%</property>
+                            <property name="width">22%</property>
                         </column>
                         <column id="4095">
-                            <property name="width">10%</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="4096">
-                            <property name="width">10%</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="4153">
-                            <property name="width">10%</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="4225">
-                            <property name="width">10%</property>
+                            <property name="width">7%</property>
                         </column>
                         <column id="4343">
-                            <property name="width">10%</property>
+                            <property name="width">8%</property>
                         </column>
                         <column id="4351">
-                            <property name="width">10%</property>
+                            <property name="width">8%</property>
                         </column>
                         <column id="4359">
-                            <property name="width">10%</property>
+                            <property name="width">7%</property>
                         </column>
                         <header>
                             <row id="5148">
@@ -3083,7 +3163,7 @@ else {
                                         <property name="colSpan">7</property>
                                         <property name="rowSpan">1</property>
                                         <text-data id="4141">
-                                            <property name="fontSize">7pt</property>
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
                                             <expression name="valueExpr">"Total" + " "+ row["account"]</expression>
                                             <property name="contentType">html</property>
@@ -3093,37 +3173,29 @@ else {
                                     <cell id="5213"/>
                                     <cell id="4110"/>
                                     <cell id="4112">
-                                        <data id="4139">
-                                            <property name="fontSize">7pt</property>
+                                        <text id="5340">
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">sum_debit</property>
-                                        </data>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sum_debit"], true)</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="4113">
-                                        <data id="4138">
-                                            <property name="fontSize">7pt</property>
+                                        <text id="5341">
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">sum_credit</property>
-                                        </data>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sum_credit"], true)</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="4151">
-                                        <data id="4156">
-                                            <property name="fontSize">7pt</property>
+                                        <text id="5349">
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
                                                 <structure>
@@ -3131,8 +3203,10 @@ else {
                                                     <expression name="valueExpr" type="javascript">row["sum_balance"]==0</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">sum_balance</property>
-                                        </data>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sum_balance"], true)</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="4223"/>
                                     <cell id="4341">
@@ -3197,7 +3271,7 @@ else {
                                         <property name="colSpan">6</property>
                                         <property name="rowSpan">1</property>
                                         <text-data id="4288">
-                                            <property name="fontSize">7pt</property>
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
                                             <expression name="valueExpr">"Total" + " "+ row["partner"]</expression>
                                             <property name="contentType">html</property>
@@ -3207,40 +3281,38 @@ else {
                                     <cell id="5212"/>
                                     <cell id="4272"/>
                                     <cell id="4273">
-                                        <data id="4289">
-                                            <property name="fontSize">7pt</property>
+                                        <text id="5333">
+                                            <property name="fontSize">6pt</property>
                                             <property name="fontWeight">bold</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Currency</property>
-                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">sum_debit_partner</property>
-                                        </data>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sum_debit_partner"], true)</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="4274">
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
-                                        <data id="4290">
-                                            <property name="fontSize">7pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Currency</property>
-                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
-                                            </structure>
-                                            <property name="resultSetColumn">sum_credit_partner</property>
-                                        </data>
+                                        <text id="5334">
+                                            <property name="fontSize">6pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="textAlign">right</property>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sum_credit_partner"], true)</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="4275">
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
-                                        <data id="4291">
-                                            <property name="fontSize">7pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Currency</property>
-                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
-                                            </structure>
-                                            <property name="resultSetColumn">sum_balance_partner</property>
-                                        </data>
+                                        <text id="5348">
+                                            <property name="fontSize">6pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="textAlign">right</property>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sum_balance_partner"], true)</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="4276"/>
                                     <cell id="4340">
@@ -3266,7 +3338,7 @@ else {
                                         <property name="backgroundPositionY">0%</property>
                                         <property name="backgroundRepeat">repeat</property>
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="fontWeight">normal</property>
                                         <property name="fontStyle">normal</property>
                                         <property name="fontVariant">normal</property>
@@ -3317,7 +3389,7 @@ else {
                                         <property name="resultSetColumn">move_sequence</property>
                                     </data>
                                     <data id="4069">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
@@ -3334,7 +3406,7 @@ else {
                                         <property name="backgroundPositionY">0%</property>
                                         <property name="backgroundRepeat">repeat</property>
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="fontWeight">normal</property>
                                         <property name="fontStyle">normal</property>
                                         <property name="fontVariant">normal</property>
@@ -3387,7 +3459,7 @@ else {
                                         <property name="backgroundPositionY">0%</property>
                                         <property name="backgroundRepeat">repeat</property>
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="fontWeight">normal</property>
                                         <property name="fontStyle">normal</property>
                                         <property name="fontVariant">normal</property>
@@ -3435,7 +3507,7 @@ else {
                                 </cell>
                                 <cell id="4327">
                                     <data id="4073">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <structure name="dateTimeFormat">
                                             <property name="category">Short Date</property>
                                             <property name="pattern">Short Date</property>
@@ -3446,26 +3518,26 @@ else {
                                 </cell>
                                 <cell id="4246">
                                     <data id="4251">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">left</property>
                                         <property name="resultSetColumn">journal_code1</property>
                                     </data>
                                 </cell>
                                 <cell id="4072">
                                     <data id="4071">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="resultSetColumn">move_line_description</property>
                                     </data>
                                 </cell>
                                 <cell id="5193">
                                     <data id="5218">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="resultSetColumn">origin</property>
                                     </data>
                                 </cell>
                                 <cell id="5211">
                                     <data id="5188">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <structure name="dateTimeFormat">
                                             <property name="category">Short Date</property>
                                             <property name="pattern">Short Date</property>
@@ -3476,39 +3548,31 @@ else {
                                 </cell>
                                 <cell id="4074">
                                     <data id="4075">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="resultSetColumn">partner</property>
                                     </data>
                                 </cell>
                                 <cell id="4078">
-                                    <data id="4079">
-                                        <property name="fontSize">7pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
+                                    <text id="5331">
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">debit</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["debit"], true)</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4080">
-                                    <data id="4081">
-                                        <property name="fontSize">7pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
+                                    <text id="5332">
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">credit</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["credit"], true)</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4150">
-                                    <data id="4155">
-                                        <property name="fontSize">7pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
+                                    <text id="5347">
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">right</property>
                                         <list-property name="visibility">
                                             <structure>
@@ -3516,8 +3580,10 @@ else {
                                                 <expression name="valueExpr" type="javascript">row["balance"]==0</expression>
                                             </structure>
                                         </list-property>
-                                        <property name="resultSetColumn">balance</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["balance"], true)</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4222">
                                     <data id="4242">
@@ -3529,32 +3595,28 @@ else {
                                 </cell>
                                 <cell id="4339">
                                     <property name="backgroundColor">silver</property>
-                                    <data id="5168">
-                                        <property name="fontSize">7pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
+                                    <text id="5344">
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">currencyDebit</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["currencyDebit"], false)</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4347">
                                     <property name="backgroundColor">silver</property>
-                                    <data id="5169">
-                                        <property name="fontSize">7pt</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
+                                    <text id="5345">
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">currencyCredit</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["currencyCredit"], false)</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4355">
                                     <property name="backgroundColor">silver</property>
                                     <data id="5170">
-                                        <property name="fontSize">7pt</property>
+                                        <property name="fontSize">6pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">currencyCode</property>
                                     </data>
@@ -3576,37 +3638,29 @@ else {
                                 <cell id="5214"/>
                                 <cell id="4086"/>
                                 <cell id="4088">
-                                    <data id="5240">
-                                        <property name="fontSize">7pt</property>
+                                    <text id="5342">
+                                        <property name="fontSize">6pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">total_debit</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["total_debit"], true)</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4089">
-                                    <data id="5241">
-                                        <property name="fontSize">7pt</property>
+                                    <text id="5343">
+                                        <property name="fontSize">6pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">total_credit</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["total_credit"], true)</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4152">
-                                    <data id="5242">
-                                        <property name="fontSize">7pt</property>
+                                    <text id="5350">
+                                        <property name="fontSize">6pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <structure name="numberFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">###,##0.00</property>
-                                        </structure>
                                         <property name="textAlign">right</property>
                                         <list-property name="visibility">
                                             <structure>
@@ -3614,8 +3668,10 @@ else {
                                                 <expression name="valueExpr" type="javascript">row["total_debit"] == row["total_credit"]</expression>
                                             </structure>
                                         </list-property>
-                                        <property name="resultSetColumn">total_balance</property>
-                                    </data>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["total_balance"], true)</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4224"/>
                                 <cell id="4342">
@@ -3633,6 +3689,50 @@ else {
                 </cell>
             </row>
         </grid>
+        <grid id="4360">
+            <property name="dataSet">MoveLineDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">row.__rownum != -1</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">moveline_id</property>
+                    <text-property name="displayName">moveline_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["moveline_id"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <column id="4361"/>
+            <row id="4362">
+                <cell id="4363">
+                    <text id="4364">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReport.noEntry'
+</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+        </grid>
     </body>
     <property name="pageVariables">
         <variable-element name="PreviousBalance">
@@ -3640,6 +3740,12 @@ else {
         </variable-element>
         <variable-element name="showProvisionTitle">
             <expression name="value" type="javascript">false</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="numberOfDecimals">
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="ccNumberOfDecimals">
             <property name="type">report</property>
         </variable-element>
     </property>

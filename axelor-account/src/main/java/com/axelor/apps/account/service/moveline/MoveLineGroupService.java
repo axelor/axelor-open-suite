@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,8 @@ public interface MoveLineGroupService {
 
   Map<String, Map<String, Object>> getOnNewAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException;
+
+  Map<String, Object> getOnLoadValuesMap(MoveLine moveLine, Move move) throws AxelorException;
 
   Map<String, Map<String, Object>> getOnLoadAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException;
@@ -97,5 +99,10 @@ public interface MoveLineGroupService {
       throws AxelorException;
 
   Map<String, Map<String, Object>> getAnalyticMoveLineOnChangeAttrsMap(MoveLine moveLine, Move move)
+      throws AxelorException;
+
+  void computeDateOnChangeValues(MoveLine moveLine, Move move) throws AxelorException;
+
+  Map<String, Object> getTaxLineOnChangesValuesMap(MoveLine moveLine, Move move)
       throws AxelorException;
 }

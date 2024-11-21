@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoiceLine" implements="com.axelor.apps.account.db.repo.AnalyticLine">
+  <entity name="InvoiceLine"
+    implements="com.axelor.apps.account.db.repo.AnalyticLine,com.axelor.apps.base.interfaces.Currenciable">
 
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
 
@@ -21,9 +22,10 @@
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="qty" title="Qty" precision="20" scale="10"/>
     <decimal name="oldQty" hidden="true" precision="20" scale="10"/>
-    <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2" readonly="true"/>
-    <decimal name="inTaxTotal" title="Total A.T.I."/>
-    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+    <decimal name="exTaxTotal" title="Total W.T." scale="3" precision="20" readonly="true"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." scale="3" precision="20"/>
+    <many-to-many name="taxLineSet" ref="com.axelor.apps.account.db.TaxLine"
+      title="Taxes"/>
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
     <date name="cutOffStartDate" title="From date"/>
@@ -37,8 +39,10 @@
     <boolean name="fixedAssets" title="Fixed Assets"/>
 
     <!-- Champ technique non affiché, utilisé pour les reportings -->
-    <decimal name="companyExTaxTotal" title="Total W.T. in Acc. currency" hidden="true"/>
-    <decimal name="companyInTaxTotal" title="Total A.T.I. in company currency" hidden="true"/>
+    <decimal name="companyExTaxTotal" title="Total W.T. in Acc. currency" scale="3"
+      precision="20" hidden="true"/>
+    <decimal name="companyInTaxTotal" title="Total A.T.I. in company currency" scale="3"
+      precision="20" hidden="true"/>
 
 
     <one-to-many name="analyticMoveLineList"
@@ -86,7 +90,7 @@
 	    ]]>
     </string>
 
-    <decimal name="lineAmount" transient="true">
+    <decimal name="lineAmount" transient="true" scale="3" precision="20">
     	<![CDATA[
 			if (this.companyExTaxTotal != null && this.companyExTaxTotal.signum() > 0) {
 				return this.companyExTaxTotal;
@@ -94,6 +98,21 @@
 			return BigDecimal.ZERO;
 	    ]]>
     </decimal>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return invoice != null ? invoice.getCurrency() : null;
+	    ]]>
+    </many-to-one>
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return invoice != null ? invoice.getCompanyCurrency() : null;
+	    ]]>
+    </many-to-one>
+
+    <decimal name="coefficient" title="Coefficient" scale="12" precision="20" default="1"
+      min="0" max="1" nullable="true"/>
 
     <extra-code>
 		<![CDATA[
@@ -109,7 +128,6 @@
       <field name="unit"/>
       <field name="qty"/>
       <field name="price"/>
-      <field name="taxLine"/>
       <field name="account"/>
       <field name="analyticDistributionTemplate"/>
     </track>

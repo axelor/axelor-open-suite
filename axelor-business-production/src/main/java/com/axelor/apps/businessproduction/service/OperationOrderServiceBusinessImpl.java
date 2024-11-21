@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,9 +29,14 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
+import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
@@ -45,13 +50,21 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
       AppProductionService appProductionService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ProdProcessLineService prodProcessLineService,
-      OperationOrderRepository operationOrderRepository) {
+      OperationOrderRepository operationOrderRepository,
+      OperationOrderOutsourceService operationOrderOutsourceService,
+      ManufOrderCheckStockMoveLineService manufOrderCheckStockMoveLineService,
+      ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
+      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService) {
     super(
         barcodeGeneratorService,
         appProductionService,
         manufOrderStockMoveService,
         prodProcessLineService,
-        operationOrderRepository);
+        operationOrderRepository,
+        operationOrderOutsourceService,
+        manufOrderCheckStockMoveLineService,
+        manufOrderPlanStockMoveService,
+        manufOrderUpdateStockMoveService);
   }
 
   @Override
@@ -66,7 +79,8 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
             appProductionService.getAppProduction().getManageBusinessProduction())) {
       operationOrder.setIsToInvoice(manufOrder.getIsToInvoice());
     }
-
+    operationOrder.setEmployeeSet(
+        Sets.newHashSet(prodProcessLine.getWorkCenter().getHrEmployeeSet()));
     return operationOrder;
   }
 

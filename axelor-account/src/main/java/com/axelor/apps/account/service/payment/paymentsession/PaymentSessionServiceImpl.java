@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -159,6 +159,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     return paymentMode.getAccountManagementList().stream()
         .filter(it -> Objects.equals(company, it.getCompany()))
         .map(AccountManagement::getBankDetails)
+        .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 
@@ -362,6 +363,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       if (this.isBlocking(invoice.getPartner(), paymentSession)) {
         return true;
       }
+
+      if (this.isLcrBlocking(invoice, invoiceTerm.getDueDate())
+          && paymentSession.getPaymentMode().getTypeSelect()
+              != PaymentModeRepository.TYPE_EXCHANGES) {
+        return true;
+      }
     }
 
     if (invoiceTerm.getMoveLine() != null) {
@@ -387,6 +394,13 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     }
 
     return false;
+  }
+
+  protected boolean isLcrBlocking(Invoice invoice, LocalDate dueDate) {
+    return invoice.getBillOfExchangeBlockingOk()
+        && invoice.getBillOfExchangeBlockingToDate() != null
+        && !invoice.getBillOfExchangeBlockingToDate().isBefore(dueDate)
+        && invoice.getLcrAccounted();
   }
 
   protected void fillEligibleTerm(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {

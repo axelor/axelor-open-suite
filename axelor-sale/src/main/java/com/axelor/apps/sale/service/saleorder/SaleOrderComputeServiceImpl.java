@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -145,10 +145,10 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     saleOrder.setInTaxTotal(saleOrder.getExTaxTotal().add(saleOrder.getTaxTotal()));
     saleOrder.setAdvanceTotal(computeTotalAdvancePayment(saleOrder));
     logger.debug(
-        "Invoice's total: W.T.T. = {},  W.T. = {}, Tax = {}, A.T.I. = {}",
-        new Object[] {
-          saleOrder.getExTaxTotal(), saleOrder.getTaxTotal(), saleOrder.getInTaxTotal()
-        });
+        "Sale order amounts: W.T. = {}, Tax = {}, A.T.I. = {}",
+        saleOrder.getExTaxTotal(),
+        saleOrder.getTaxTotal(),
+        saleOrder.getInTaxTotal());
   }
 
   protected BigDecimal computeTotalAdvancePayment(SaleOrder saleOrder) {

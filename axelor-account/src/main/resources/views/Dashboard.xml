@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <!-- Account Invoice Dashboard -->
 
@@ -332,8 +332,8 @@
   </action-view>
 
   <action-view name="dashlet.invoice.sale.refund.situation"
-    title="Invoice and Refunds Sale situation (tax incl.)">
-    <view type="chart" name="chart.invoice.sale.refund.situation"/>
+    title="Invoice and Credit notes Sale situation (tax incl.)">
+    <view type="chart" name="chart.invoice.sale.credit.note.situation"/>
     <context name="todayDate" expr="eval:__config__.date"/>
     <context name="_language" expr="eval: __user__.getLanguage()"/>
   </action-view>

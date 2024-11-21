@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,13 +19,10 @@
 package com.axelor.apps.marketing.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.marketing.service.CampaignService;
 import com.axelor.apps.marketing.service.CampaignServiceImpl;
 import com.axelor.apps.marketing.service.TargetListService;
 import com.axelor.apps.marketing.service.TargetListServiceImpl;
-import com.axelor.apps.marketing.service.TemplateMessageMarketingService;
-import com.axelor.apps.marketing.service.TemplateMessageServiceMarketingImpl;
 
 public class MarketingModule extends AxelorModule {
 
@@ -33,7 +30,5 @@ public class MarketingModule extends AxelorModule {
   protected void configure() {
     bind(CampaignService.class).to(CampaignServiceImpl.class);
     bind(TargetListService.class).to(TargetListServiceImpl.class);
-    bind(TemplateMessageServiceBaseImpl.class).to(TemplateMessageServiceMarketingImpl.class);
-    bind(TemplateMessageMarketingService.class).to(TemplateMessageServiceMarketingImpl.class);
   }
 }

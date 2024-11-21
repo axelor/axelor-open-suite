@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -62,6 +62,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
@@ -73,7 +74,7 @@ public class MrpLineServiceImpl implements MrpLineService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppBaseService appBaseService;
-  protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+  protected PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService;
   protected PurchaseOrderService purchaseOrderService;
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected PurchaseOrderRepository purchaseOrderRepo;
@@ -86,7 +87,7 @@ public class MrpLineServiceImpl implements MrpLineService {
   @Inject
   public MrpLineServiceImpl(
       AppBaseService appBaseService,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService,
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderRepository purchaseOrderRepo,
@@ -97,7 +98,7 @@ public class MrpLineServiceImpl implements MrpLineService {
       MrpLineRepository mrpLineRepo) {
 
     this.appBaseService = appBaseService;
-    this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
+    this.purchaseOrderCreateSupplychainService = purchaseOrderCreateSupplychainService;
     this.purchaseOrderService = purchaseOrderService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.purchaseOrderRepo = purchaseOrderRepo;
@@ -177,7 +178,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     if (purchaseOrder == null) {
       purchaseOrder =
           purchaseOrderRepo.save(
-              purchaseOrderSupplychainService.createPurchaseOrder(
+              purchaseOrderCreateSupplychainService.createPurchaseOrder(
                   AuthUtils.getUser(),
                   company,
                   null,
@@ -439,5 +440,15 @@ public class MrpLineServiceImpl implements MrpLineService {
       mrpLine.setProposalToProcess(proposalToProcess);
       mrpLineRepo.save(mrpLine);
     }
+  }
+
+  @Override
+  public List<MrpLine> getMrpLineListCopy(List<MrpLine> mrpLineList) {
+    List<MrpLine> copyMrpLineList = new ArrayList<>();
+    for (MrpLine mrpLine : mrpLineList) {
+      copyMrpLineList.add(mrpLineRepo.copy(mrpLine, true));
+    }
+
+    return copyMrpLineList;
   }
 }

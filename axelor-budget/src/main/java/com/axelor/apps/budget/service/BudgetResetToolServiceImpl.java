@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service;
 
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
@@ -28,14 +29,18 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetResetToolServiceImpl implements BudgetResetToolService {
 
-  private final BudgetLineResetToolService budgetLineResetToolService;
-  private final BudgetRepository budgetRepository;
+  protected BudgetLineResetToolService budgetLineResetToolService;
+  protected BudgetRepository budgetRepository;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BudgetResetToolServiceImpl(
-      BudgetLineResetToolService budgetLineResetToolService, BudgetRepository budgetRepository) {
+      BudgetLineResetToolService budgetLineResetToolService,
+      BudgetRepository budgetRepository,
+      CurrencyScaleService currencyScaleService) {
     this.budgetLineResetToolService = budgetLineResetToolService;
     this.budgetRepository = budgetRepository;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -45,7 +50,8 @@ public class BudgetResetToolServiceImpl implements BudgetResetToolService {
     entity.setStatusSelect(BudgetRepository.STATUS_DRAFT);
     entity.setArchived(false);
 
-    entity.setTotalAmountExpected(entity.getTotalAmountExpected());
+    entity.setTotalAmountExpected(
+        currencyScaleService.getCompanyScaledValue(entity, entity.getTotalAmountExpected()));
     entity.setTotalAmountCommitted(BigDecimal.ZERO);
     entity.setRealizedWithNoPo(BigDecimal.ZERO);
     entity.setRealizedWithPo(BigDecimal.ZERO);

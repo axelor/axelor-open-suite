@@ -1,0 +1,16 @@
+"importId";"partner.importId";"code";"name";"typeSelect";"inService";"commissioningDate";"customerWarrantyOnPartEndDate";"parentEquipment.importId";"equipmentFamily.importId";"indicatorSelect"
+1;20;"SIEGE";"Siège";"place";"";"";"";"";"";
+2;20;"SIEGE - 1ER ETAGE";"Siège - 1er étage";"place";"";"";"";1;"";
+3;20;"SIEGE - 2EME ETAGE";"Siège - 2ème étage";"place";"";"";"";1;"";
+4;20;"MONITEURS";"Moniteurs";"equipment";"true";"TODAY[-3M]";"TODAY[+9M]";2;"1";3
+5;20;"STOCKAGE";"Stockage";"equipment";"true";"TODAY[-3M]";"TODAY[+9M]";2;"2";3
+6;20;"IMPRESSION";"Impression";"equipment";"true";"TODAY[-3M]";"TODAY[+9M]";2;"3";3
+7;20;"MONITEURS";"Moniteurs";"equipment";"true";"TODAY[-3M]";"TODAY[+9M]";3;"1";3
+8;20;"STOCKAGE";"Stockage";"equipment";"true";"TODAY[-3M]";"TODAY[+9M]";3;"2";3
+9;20;"IMPRESSION";"Impression";"equipment";"true";"TODAY[-3M]";"TODAY[+9M]";3;"3";3
+10;132;"INSTPARC";"Installation parc informatique";"place";"";"";"";"";"";
+11;132;"MONITEURS";"Moniteurs";"equipment";"true";"TODAY[-1M]";"TODAY[+2M]";10;"1";3
+12;132;"STOCKAGE";"Stockage supérieur";"equipment";"true";"TODAY[-1M]";"TODAY[+2M]";10;"2";3
+13;132;"STOCKAGE";"Stockage inférieur";"equipment";"true";"TODAY[-1M]";"TODAY[+2M]";10;"2";3
+14;132;"IMPRESSION";"Impression 1";"equipment";"true";"TODAY[-1M]";"TODAY[+2M]";10;"3";3
+15;132;"IMPRESSION";"Impression 2";"equipment";"true";"TODAY[-1M]";"TODAY[+2M]";10;"3";3

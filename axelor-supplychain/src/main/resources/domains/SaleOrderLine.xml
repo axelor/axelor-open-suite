@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -10,7 +10,8 @@
     <integer name="saleSupplySelect" title="Supply method"
       selection="product.sale.supply.select"/>
 
-    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
+    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"
+      precision="20" scale="3"/>
 
 
     <!-- Bon de livraison -->
@@ -52,6 +53,9 @@
 
 
     <integer name="standardDelay" title="Standard delay (days)" default="0"/>
+
+
+
     <extra-code>
   		<![CDATA[
             // SALE SUPPLY SELECT
@@ -59,6 +63,7 @@
 	  		public static final int SALE_SUPPLY_FROM_STOCK = 1;
 	  		public static final int SALE_SUPPLY_PURCHASE = 2;
 	  		public static final int SALE_SUPPLY_PRODUCE = 3;
+	  		public static final int SALE_SUPPLY_FROM_STOCK_AND_PRODUCE = 4;
 
 	        // DELIVERY STATE SELECT
             public static final int DELIVERY_STATE_NOT_DELIVERED = 1;

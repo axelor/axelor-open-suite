@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -26,7 +26,8 @@
     <field name="fiscalPosition.code" title="Fiscal position"/>
     <field name="registrationCode"/>
     <field name="mainAddress"/>
-    <field name="companyStr" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
@@ -58,7 +59,8 @@
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
     <field name="user"/>
-    <field name="companyStr" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
@@ -92,7 +94,8 @@
     <field name="fiscalPosition.code" title="Fiscal position"/>
     <field name="registrationCode"/>
     <field name="mainAddress"/>
-    <field name="companyStr" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="companySet" widget="TagSelect"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="das2Activity" hidden="true" if="__config__.app.isApp('account')"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
@@ -166,8 +169,6 @@
     </toolbar>
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
-          readonlyIf="!id"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="!id"
           showIf="isCustomer" if-module="axelor-account"/>
@@ -179,13 +180,13 @@
         <field name="picture" showTitle="false" widget="Image" colSpan="12">
           <viewer>
             <![CDATA[
-					    <div>
-			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
-          					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect != 2" src="img/company-default.jpg" />
-          					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 1" src="img/partner-m-default.png" />
-          					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 2" src="img/partner-w-default.png" />
-        					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect == 2 && (record.titleSelect > 2 || !record.titleSelect)" src="img/partner-default.png" />
-     					</div>
+            		<>
+     					{id && <Image src={$image('id', 'content')} style={{ width: "80%" }}></Image>}
+     					{!id && _parent.partnerTypeSelect != 2 && <Image src="img/company-default.jpg" style={{ width: "80%" }}></Image>}
+     					{!id && _parent.partnerTypeSelect == 2 && _parent.titleSelect == 1 && <Image src="img/partner-m-default.png" style={{ width: "80%" }}></Image>}
+     					{!id && _parent.partnerTypeSelect == 2 && _parent.titleSelect == 2 && <Image src="img/partner-w-default.png" style={{ width: "80%" }}></Image>}
+     					{!id && _parent.partnerTypeSelect == 2 && (_parent.titleSelect > 2 || !_parent.titleSelect) && <Image src="img/partner-default.png" style={{ width: "80%" }}></Image>}
+					</>
 					]]>
           </viewer>
         </field>
@@ -212,7 +213,7 @@
           <field name="simpleFullName" colSpan="7" showTitle="false"
             css="label-bold bold large">
             <hilite strong="true" if="true" color="primary"/>
-            <editor x-show-titles="false">
+            <editor x-show-titles="false" x-viewer="true">
               <field name="partnerTypeSelect" showTitle="false"
                 onChange="action-partner-group-type-select-onchange" colSpan="12"
                 placeholder="Partner Type"/>
@@ -234,11 +235,12 @@
           </field>
           <field name="partnerSeq" showTitle="false" colSpan="2" css="label-bold bold large"/>
           <button if="__config__.app.isApp('account')" name="$positiveBalanceBtn"
-            title="Balance" colSpan="3" icon="fa-balance-scale"
-            onClick="action-partner-view-show-move-lines" widget="info-button" showIf="id"/>
+            title="Balance" colSpan="3" icon="balance" onClick="action-partner-view-show-move-lines"
+            widget="info-button" showIf="id"/>
           <field name="$balance" hidden="true"/>
           <static name="duplicatePartnerText" hidden="true" colSpan="12">
-            <![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+              <![CDATA[<><Badge bg="warning">There is already a partner with this name.</Badge></>]]>
+          </static>
           <field name="fullName" hidden="true"/>
         </panel>
         <field name="$viewerPartnerType" showTitle="false" hideIf="isContact || !$readonly()"
@@ -246,37 +248,44 @@
           <viewer
             depends="isProspect,isEmployee,isCustomer,isSupplier,isSubcontractor,isFactor,isCarrier">
             <![CDATA[
-							<h4 style="text-align: right;">
-								<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
-								<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
-								<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
-								<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
-								<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor" x-translate>Subcontractor</span>
-								<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
-								<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
-							</h4>
+						<>
+							<Box d="flex" justifyContent="flex-end" gap="4">
+								{isProspect && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Prospect')}</Badge>}
+								{isEmployee && <Badge style={{ backgroundColor: "#5680FC" }}>{_t('Employee')}</Badge>}
+								{isCustomer && <Badge style={{ backgroundColor: "#EF9D3F" }}>{_t('Customer')}</Badge>}
+								{isSupplier && <Badge style={{ backgroundColor: "#7D54FC" }}>{_t('Supplier')}</Badge>}
+								{isSubcontractor && <Badge style={{ backgroundColor: "#000080" }}>{_t('Subcontractor')}</Badge>}
+								{isFactor && <Badge style={{ backgroundColor: "#54FC62" }}>{_t('Factor')}</Badge>}
+								{isCarrier && <Badge style={{ backgroundColor: "#FF0000" }}>{_t('Carrier')}</Badge>}
+							</Box>
+						</>
                         ]]>
           </viewer>
         </field>
         <field name="isContact" hidden="true" colSpan="12"/>
-        <panel name="blockingPanel" hideIf="!$readonly()" colOffset="9" colSpan="3">
+        <panel name="blockingPanel" hideIf="!$readonly()" colSpan="12">
           <field name="$activeBlockings" showTitle="false" colSpan="12">
             <viewer><![CDATA[
-                            <h4 style="text-align: right;">
-                                <span ng-repeat="item in record.blockingList" class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="$moment(item.blockingToDate) > $moment(today)">
-                                	<i class="fa fa-ban"/>
-                                	<span x-translate>{{ {'1':'Remin._block','2':'Inv._block','3':'Reimb._block','4':'Debit_block','5':'Sale_block','6':'Purch._block'}[item.blockingSelect] }}</span>
-                                	<!-- hidden spans only there for translation purposes -->
-                                	<span x-translate style="display:none">Remin._block</span>
-                                	<span x-translate style="display:none">Inv._block</span>
-                                	<span x-translate style="display:none">Reimb._block</span>
-                                	<span x-translate style="display:none">Debit_block</span>
-                                	<span x-translate style="display:none">Sale_block</span>
-                                	<span x-translate style="display:none">Purch._block</span>
-                                	<i class="fa fa-caret-right" style="margin: 0 4px;"/>
-                                	{{ item.blockingToDate | date : 'L' }}
-                                </span>
-                            </h4>
+                            <>
+	                            <Box d="flex" flexDirection="column" justifyContent="flex-end" alignItems="end">
+		                            {blockingList.map((b,index) => {
+		                            	const selectMap = {
+		                            	'1': _t('Remin._block'),
+		                            	'2': _t('Inv._block'),
+		                            	'3': _t('Reimb._block'),
+		                            	'4': _t('Debit_block'),
+		                            	'5': _t('Sale_block'),
+		                            	'6': _t('Purch._block'),
+		                            };
+		                            return (
+		                            ($moment(b.blockingToDate) > $moment(today)) &&
+		                            	<Badge key={index} bg="danger" mt={2}>
+		                            		<Icon icon="ban" fontSize="12px"/>{selectMap[b.blockingSelect]} <Icon icon="caret-right-fill" fontSize="12px"/> {$moment(b.blockingToDate).format('L')}
+		                            	</Badge>
+		                            );
+		                           })}
+		                    	</Box>
+		                    </>
                         ]]></viewer>
           </field>
         </panel>
@@ -323,6 +332,7 @@
           form-view="partner-category-form" grid-view="partner-category-grid"/>
         <field name="industrySector" colSpan="6" widget="SuggestBox"
           hideIf="partnerTypeSelect== 2"/>
+
         <field name="source" canEdit="false" colSpan="6" widget="SuggestBox"
           form-view="source-form" grid-view="source-grid"/>
         <field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
@@ -334,13 +344,13 @@
       </panel>
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
-          onChange="action-method-partner-registration-code-onChange"/>
-        <field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
-        <field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
+          onChange="action-group-partner-registration-code-onChange"/>
+        <field name="siren" colSpan="4" readonly="true" hidden="true"/>
+        <field name="nic" colSpan="4" readonly="true" hidden="true"/>
         <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
         <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
           form-view="main-activity-form"/>
-        <field name="taxNbr" hideIf="partnerTypeSelect== 2"/>
+        <field name="taxNbr" hidden="true"/>
         <field name="paymentDelay" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')"/>
         <field name="parentPartner" hideIf="partnerTypeSelect != 1"
@@ -370,40 +380,29 @@
       <panel name="informationPanel" title="Information">
         <panel name="employeeAddressPanel" title="Contact address" colSpan="12"
           showIf="isEmployee">
-          <field name="mainAddress" form-view="address-form" grid-view="address-grid">
-            <editor x-show-titles="false">
-              <field name="addressL2" x-bind="{{addressL2|uppercase}}"
-                placeholder="e.g. Financial department, CEO"/>
-              <field name="addressL3" x-bind="{{addressL3|uppercase}}"
-                placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
-              <field name="addressL4" x-bind="{{addressL4|uppercase}}"/>
-              <field name="addressL5" x-bind="{{addressL5|uppercase}}"
-                placeholder="e.g. POB 254"/>
-              <field name="city" canNew="true" onChange="action-address-change-city"
-                form-view="city-form" grid-view="city-grid"/>
-              <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true"/>
-              <field name="addressL7Country" required="true" form-view="country-form"
-                grid-view="country-grid"/>
-            </editor>
-          </field>
+          <field name="mainAddress" form-view="address-form" grid-view="address-grid"
+            canNew="true" colSpan="12"/>
         </panel>
         <panel name="postalAddressesPanel" title="Postal addresses" colSpan="12"
           hideIf="isEmployee">
           <static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12">
-            <![CDATA[<span class='label label-warning'>Please add an invoice address and a delivery address by default.</span>]]></static>
+		  	  <![CDATA[<><Badge bg="warning">Please add an invoice address and a delivery address by default.</Badge></>]]>
+          </static>
           <field name="partnerAddressList" colSpan="12" form-view="partner-address-form"
             grid-view="partner-address-grid">
-            <editor x-show-titles="false" onNew="action-partner-address-attrs-set-canselect">
+            <editor x-show-titles="false" x-viewer="true">
               <panel colSpan="12" css="field-append">
-                <field name="$canSelect" hidden="true" colSpan="12"/>
                 <label colSpan="12"
                   title="The following address is invalid. Please use '+' button to create a new one :"
                   showIf="address == null || address.addressL4 == null" hidden="true"
                   css="label-bold" name="addressHelperLabel"/>
                 <panel colSpan="12" stacked="true" css="field-append">
-                  <field name="address" canEdit="!$canSelect" canNew="true"
-                    form-view="address-form" grid-view="address-grid" canSelect="$canSelect"
-                    required="true"/>
+                  <field name="address" canNew="true" form-view="address-form"
+                    grid-view="address-grid" required="true"
+                    if="__config__.app.getApp('base')?.getIsSharedAddress()"/>
+                  <field name="address" canNew="true" canEdit="true" form-view="address-form"
+                    grid-view="address-grid" canSelect="false" required="true"
+                    if="!__config__.app.getApp('base')?.getIsSharedAddress()"/>
                   <field name="isInvoicingAddr" widget="toggle" hideIf="$readonly()"
                     x-icon="fa-list-alt"/>
                   <field name="isDeliveryAddr" widget="toggle" hideIf="$readonly()"
@@ -416,7 +415,7 @@
             </editor>
           </field>
           <spacer/>
-          <field name="headOfficeAddress"
+          <field name="headOfficeAddress" if-module="axelor-account"
             if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"
             colSpan="12"/>
         </panel>
@@ -426,7 +425,7 @@
           <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" widget="phone"/>
           <field name="emailAddress" canSelect="false" colSpan="6"
             form-view="email-address-simple-form" x-show-icons="false">
-            <editor x-show-titles="false">
+            <editor x-show-titles="false" x-viewer="true">
               <field name="address" colSpan="12" placeholder="whatever@example.com"
                 pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
             </editor>
@@ -441,7 +440,8 @@
         </panel>
 
         <panel name="settingsPanel" title="Settings" colSpan="12">
-          <field name="language" colSpan="6" canEdit="false"/>
+          <field name="localization" colSpan="6" canEdit="false" grid-view="localization-grid"
+            form-view="localization-form"/>
           <field name="groupProductsOnPrintings" showIf="(isCustomer || isSupplier)"
             if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"
             widget="boolean-switch" colSpan="12"/>
@@ -460,34 +460,8 @@
           <field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
         </panel>
       </panel>
-      <panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact"
-        if-module="axelor-account" colSpan="12" if="__config__.app.isApp('invoice')">
-        <panel-include view="incl-invoice-payment-partner-form"/>
-        <panel-include if-module="axelor-account"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
-          view="incl-sepa-direct-debit-partner-form"/>
-        <panel name="invoiceCommentsPanel" title="Comment to display on invoice" colSpan="12">
-          <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
-        </panel>
-        <panel name="descriptionToDisplayOnProformaPanel"
-          title="Comment to display on proforma" colSpan="12">
-          <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
-        </panel>
-      </panel>
-      <panel name="accountingSituationPanel" if-module="axelor-account"
-        if="__config__.app.isApp('account')" title="Accounting situation" hideIf="isContact"
-        onSelect="action-account-accounting-situation-method-update-customer-account">
-        <field name="isCompensation" colSpan="12" widget="boolean-switch"
-          showIf="isCustomer &amp;&amp; isSupplier"/>
-        <panel-related name="accountingSituationListPanel"
-          field="accountingSituationList" title="Accounting situation" hideIf="isContact"
-          colSpan="12" grid-view="accounting-situation-partner-grid"
-          form-view="accounting-situation-partner-form"/>
-      </panel>
-      <panel-include if-module="axelor-account" view="incl-blocking-partner-form"
-        if="__config__.app.isApp('account')"/>
-      <panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm"
-        hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="eventPanel" title="Events" showIf="id != null &amp;&amp; !isEmployee"
+        if-module="axelor-crm" hidden="true" if="__config__.app.isApp('crm')">
         <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
           onClick="save,action-partner-view-meeting-event" colSpan="3"/>
         <button name="callBtn" title="Create a call" link="" icon="fa-phone"
@@ -500,14 +474,15 @@
           icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null"/>
         <panel-include view="incl-activities-partner-form"/>
       </panel>
-      <panel name="opportunitiesPanel" title="Opportunities" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="opportunitiesPanel" title="Opportunities"
+        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        if="__config__.app.isApp('crm')">
         <button name="createOpportunityBtn" title="Create opportunity"
           onClick="save,action-partner-view-create-opportunity" link="" colSpan="3"/>
         <panel-include view="incl-opportunities-partner-form"/>
       </panel>
-      <panel name="emailPanel" title="Emails" showIf="id != null" if-module="axelor-crm"
-        hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="emailPanel" title="Emails" showIf="id != null &amp;&amp; !isEmployee"
+        if-module="axelor-crm" if="__config__.app.isApp('crm')">
         <button name="emailBtn" title="Create an email" icon="fa-envelope-o" link=""
           onClick="save,action-send-by-email-with-template" colSpan="3"/>
         <panel-dashlet name="sentEmailsPanel" title="Sent emails"
@@ -515,8 +490,9 @@
         <panel-dashlet name="receivedEmailsPanel" title="Received emails"
           action="action-partner-method-view-received-emails" colSpan="12" height="550"/>
       </panel>
-      <panel name="marketingCampaignPanel" title="Marketing campaigns" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('marketing')">
+      <panel name="marketingCampaignPanel" title="Marketing campaigns"
+        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        if="__config__.app.isApp('marketing')">
         <panel-dashlet name="marketingCampaignsPanel"
           action="action-partner-view-marketing-campaigns" colSpan="12" height="800"/>
       </panel>
@@ -526,7 +502,7 @@
         <field name="payerQuality" if-module="axelor-account"
           if="__config__.app.isApp('account')" hideIf="isEmployee"/>
         <field name="salePartnerPriceList" canEdit="false" domain="self.typeSelect = 1"
-          form-view="sale-partner-price-list-form" grid-view="partner-price-list-grid"/>
+          form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"
           if="__config__.app.isApp('business-project')"/>
         <field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3"
@@ -564,7 +540,7 @@
         showIf="isSupplier || isSubcontractor" if="__config__.app.isApp('purchase')">
         <field name="purchaseOrderInformation"/>
         <field name="purchasePartnerPriceList" canEdit="false" domain="self.typeSelect = 2"
-          form-view="purchase-partner-price-list-form" grid-view="partner-price-list-grid"/>
+          form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="supplierCatalogList" colSpan="12" x-can-copy="true"
           form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"
           if-module="axelor-purchase"
@@ -638,13 +614,11 @@
     onSave="save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
     <toolbar>
       <button name="convertToIndividualPartnerBtn" title="Convert into an individual partner"
-        icon="fa-user" onClick="action-convert-into-individual-partner,close"
+        icon="fa-user" onClick="save,action-convert-into-individual-partner,close"
         showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null"/>
     </toolbar>
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
-          readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>
@@ -656,12 +630,12 @@
         <field name="picture" widget="Image" showTitle="false" colSpan="12">
           <viewer>
             <![CDATA[
-					    <div>
-			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
-          					<img width="80%" ng-show="!record.picture && record.titleSelect == 1" src="img/partner-m-default.png" />
-          					<img width="80%" ng-show="!record.picture && record.titleSelect == 2" src="img/partner-w-default.png" />
-        					<img width="80%" ng-show="!record.picture && (record.titleSelect > 2 || !record.titleSelect)" src="img/partner-default.png" />
-     					</div>
+     					<>
+	     					{id && <Image src={$image('id', 'content')} style={{ width: "80%" }}></Image>}
+	     					{!id && _parent.titleSelect == 1 && <Image src="img/partner-m-default.png" style={{ width: "80%" }}></Image>}
+	     					{!id && _parent.titleSelect == 2 && <Image src="img/partner-w-default.png" style={{ width: "80%" }}></Image>}
+	     					{!id && (_parent.titleSelect > 2 || !_parent.titleSelect) && <Image src="img/partner-default.png" style={{ width: "80%" }}></Image>}
+						</>
 					]]>
           </viewer>
         </field>
@@ -685,7 +659,7 @@
       </panel>
       <panel name="namePanel" colSpan="9">
         <field name="simpleFullName" css="bold" showTitle="false" colSpan="12">
-          <editor x-show-titles="false">
+          <editor x-show-titles="false" x-viewer="true">
             <field name="titleSelect" placeholder="Civility" colSpan="2"/>
             <field name="name" css="highlight" placeholder="Name"
               onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
@@ -694,13 +668,12 @@
           </editor>
         </field>
         <static name="duplicatePartnerText" hidden="true" colSpan="12">
-          <![CDATA[<span class='label label-warning'>There is already a contact with this name.</span>]]></static>
+          <![CDATA[<><Badge bg="warning">There is already a contact with this name.</Badge></>]]>
+        </static>
         <field name="$duplicatePartnerInArchiveText" hidden="true" type="string"
           showTitle="false" readonly="true">
           <viewer depends="$duplicatePartnerInArchiveText">
-            <![CDATA[
-						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>There is an archived partner with this name.</span> ({{record.$duplicatePartnerInArchiveText}})</span>
-					]]>
+            <![CDATA[<><Badge bg="warning">{_t('There is an archived partner with this name.')} ({$duplicatePartnerInArchiveText})</Badge></>]]>
           </viewer>
         </field>
         <panel name="companyPanel" title="Company" colSpan="12">
@@ -723,7 +696,7 @@
         <field name="mobilePhone" widget="phone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
-          <editor x-show-titles="false">
+          <editor x-show-titles="false" x-viewer="true">
             <field name="address" placeholder="whatever@example.com"
               pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"
               colSpan="12"/>
@@ -747,8 +720,9 @@
         <panel-include view="incl-activities-contact-form"/>
       </panel>
       <panel-dashlet name="contactOpportunitiesPanel" title="Opportunity" colSpan="12"
-        action="action-contact-view-opportunities" height="550" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')"/>
+        action="action-contact-view-opportunities" height="550"
+        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        if="__config__.app.isApp('crm')"/>
       <panel name="saleOrderContactPanel" title="Sales orders" showIf="id != null"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
         <panel-include view="incl-sales-contact-form"/>
@@ -773,7 +747,8 @@
 
     <panel name="settingsPanel" sidebar="true" title="Settings">
       <field name="partnerSeq"/>
-      <field name="language" canEdit="false"/>
+      <field name="localization" canEdit="false" grid-view="localization-grid"
+        form-view="localization-form"/>
       <panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
         <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
           canNew="false" canEdit="false" canView="false"/>
@@ -825,36 +800,35 @@
     <field name="isFactor" if-module="axelor-account" if="__config__.app.isApp('account')"/>
     <field name="isCarrier"/>
     <template><![CDATA[
-			<div>
-				<div class="span12"><strong>{{fullName}}</strong></div>
-		 	</div>
-			<div>
-			  <div class="span4 card-image" style="width: 128px; height: 64px;">
-                <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;"/>
-                <img ng-show="!picture && partnerTypeSelect != 2" src="img/company-default.jpg" />
-                <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 1" src="img/partner-m-default.png" />
-                <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 2" src="img/partner-w-default.png" />
-                <img ng-show="!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
-			  </div>
-			  <div class="span8">
-			  	<address>
-			  	{{mainAddress.fullName}}
-			  	</address>
-			    <span>
-			    {{fixedPhone}}<br/>
-			    {{emailAddress.address}}<br/>
-			    {{partnerCategory.name}}<br/>
-			    <h4 style="text-align: right;">
-					<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
-					<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
-					<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
-					<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
-					<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor && record.$isSubcontractor" x-translate>Subcontractor</span>
-					<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
-					<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
-				</h4>
-			  </div>
-			</div>
+		<>
+			<Box>
+				<strong>{fullName}</strong>
+				<Box d="grid" gridTemplateColumns="33% 67%" mt={2}>
+					<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
+						{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
+		     			{!picture && partnerTypeSelect != 2 && <Image src="img/company-default.jpg"></Image>}
+		     			{!picture && partnerTypeSelect == 2 && titleSelect == 1 && <Image src="img/partner-m-default.png"></Image>}
+		     			{!picture && partnerTypeSelect == 2 && titleSelect == 2 && <Image src="img/partner-w-default.png"></Image>}
+		     			{!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png"></Image>}
+					</Box>
+					<Box>
+						{mainAddress.fullName} <Box/>
+						{fixedPhone} <Box/>
+						{emailAddress.address} <Box/>
+						{partnerCategory.name}
+					</Box>
+				</Box>
+				<Box d="flex" justifyContent="flex-end" gap="4" mt={3}>
+					{isProspect && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Prospect')}</Badge>}
+					{isEmployee && <Badge style={{ backgroundColor: "#5680FC" }}>{_t('Employee')}</Badge>}
+					{isCustomer && <Badge style={{ backgroundColor: "#EF9D3F" }}>{_t('Customer')}</Badge>}
+					{isSupplier && <Badge style={{ backgroundColor: "#7D54FC" }}>{_t('Supplier')}</Badge>}
+					{isSubcontractor && <Badge style={{ backgroundColor: "#000080" }}>{_t('Subcontractor')}</Badge>}
+					{isFactor && <Badge style={{ backgroundColor: "#54FC62" }}>{_t('Factor')}</Badge>}
+					{isCarrier && <Badge style={{ backgroundColor: "#FF0000" }}>{_t('Carrier')}</Badge>}
+				</Box>
+			</Box>
+		</>
 		]]>
     </template>
   </cards>
@@ -879,188 +853,50 @@
     <field name="partnerSeq"/>
     <field name="simpleFullName"/>
     <template><![CDATA[
-		<style>
-		    #contact-card{{id}} {
-		      margin: -16px;
-		      height: 180px;
-		      display: flex;
-		    }
-		    #contact-card{{id}} > .span4 {
-		      display: flex;
-		      flex-direction: column;
-		      justify-content: center;
-		      align-items: center;
-		    }
-		    #contact-card{{id}} > .span4 strong {
-		      padding: 0 0.5rem;
-		    }
-		    #contact-card{{id}} > .span8 {
-		      padding-left: 40px;
-		      display: flex;
-		      flex-direction: column;
-		      justify-content: center;
-		      position: relative;
-		    }
-		    #contact-card{{id}} .card-image .img {
-		      width: 128px;
-		      height: 64px;
-		      object-fit: contain;
-		    }
-		    #contact-card{{id}} .list {
-		      position: absolute;
-		      height: calc(100% + 20px);
-		      display: flex;
-		      align-items: center;
-		      left: 0;
-		      transform: skew(-20deg, 0deg);
-		      border-left: 2px solid #ddd;
-		      width: 100%;
-		    }
-		    #contact-card{{id}} .list .bar {
-		      width: 30px;
-		      height: 60%;
-		      background: #20bcb5;
-		      display: flex;
-		      flex-direction: column;
-		      justify-content: center;
-		      align-items: center;
-		      box-shadow: rgb(0 0 0 / 25%) 3px 3px 8px;
-		    }
-		    #contact-card{{id}} .list .data {
-		      width: 100%;
-		      color: #fff;
-		      position: absolute;
-		      left: 8px;
-		    }
-		    #contact-card{{id}} .icon {
-		      width: 20px;
-		      display: inline-block;
-		    }
-		    #contact-card{{id}} .icon i {
-		      transform: skew(20deg, 0deg);
-		    }
-		    #contact-card{{id}} .icon i.fa-envelope {
-		      font-size: 0.8rem;
-		    }
-		    #contact-card{{id}} .icon i.fa-mobile {
-		      font-size: 1.25rem;
-		    }
-		    #contact-card{{id}} .icon i.fa-building {
-		      font-size: 0.75rem;
-		    }
-		    #contact-card{{id}} .icon i.fa-home,
-		    #contact-card{{id}} .icon i.fa-phone {
-		      font-size: 1rem;
-		    }
-		    #contact-card{{id}} .item {
-		      position: relative;
-		      line-height: 20px;
-		    }
-		    #contact-card{{id}} .item .details {
-		      transform: skew(20deg, 0deg);
-		      position: absolute;
-		      color: #000;
-		      margin: 0;
-		      margin-left: 18px;
-		    }
-		    #contact-card{{id}} .item:nth-child(1) .details {
-		      width: calc(100% - 3.75rem);
-		    }
-		    #contact-card{{id}} .item:nth-child(2) .details {
-		      width: calc(100% - 3.25rem);
-		    }
-		    #contact-card{{id}} .item:nth-child(3) .details {
-		      width: calc(100% - 2.75rem);
-		    }
-		    #contact-card{{id}} .item:nth-child(4) .details {
-		      width: calc(100% - 2.25rem);
-		    }
-		    #contact-card{{id}} .item:nth-child(5) .details {
-		      width: calc(100% - 1.75rem);
-		    }
-		    #contact-card{{id}} .item:not(.address) .details {
-		      white-space: nowrap;
-		      text-overflow: ellipsis;
-		      overflow: hidden;
-		    }
-		    #contact-card{{id}} .item.address .details {
-		      word-wrap: break-word;
-		      overflow: hidden;
-		    }
-		  </style>
-
-		   <div id="contact-card{{id}}">
-		    <div class="span4 card-image">
-		      <img
-		        class="img"
-		        ng-if="picture"
-		        ng-src="{{$image('picture', 'content')}}"
-		      />
-		      <img
-		        ng-if="!picture && titleSelect == 1"
-		        src="img/partner-m-default.png"
-		      />
-		      <img
-		        ng-if="!picture && titleSelect == 2"
-		        src="img/partner-w-default.png"
-		      />
-		      <img
-		        ng-if="!picture && (titleSelect > 2 || !titleSelect)"
-		        src="img/partner-default.png"
-		      />
-		      <strong>{{partnerSeq}} <br/> {{simpleFullName}}</strong>
-		    </div>
-
-		    <div class="span8">
-		      <div class="list">
-		          <div class="bar" />
-		          <div class="data">
-		              <div class="item" ng-if="fixedPhone">
-		                  <span class="icon">
-		                      <i class="fa fa-phone fa-flip-horizontal" />
-		                  </span>
-		                  <span class="details">
-		                      {{fixedPhone}}
-		                  </span>
-		              </div>
-		              <div class="item" ng-if="mobilePhone">
-		                  <span class="icon">
-		                      <i class="fa fa-mobile" />
-		                  </span>
-		                  <span class="details">
-		                      {{mobilePhone}}
-		                  </span>
-		              </div>
-		              <div class="item" ng-if="emailAddress.address">
-		                  <span class="icon">
-		                      <i class="fa fa-envelope" />
-		                  </span>
-		                  <span class="details">
-		                      {{emailAddress.address}}
-		                  </span>
-		              </div>
-		              <div class="item" ng-if="mainPartner.simpleFullName">
-		                  <span class="icon">
-		                      <i class="fa fa-building" />
-		                  </span>
-		                  <span class="details">
-		                      {{mainPartner.simpleFullName}}
-		                  </span>
-		              </div>
-		              <div class="item address" ng-if="mainAddress.fullName">
-		                  <span class="icon">
-		                      <i class="fa fa-home fa-flip-horizontal" />
-		                  </span>
-		                  <span class="details">
-		                      {{mainAddress.fullName}}
-		                  </span>
-		              </div>
-		          </div>
-		      </div>
-		    </div>
-		  </div>
-
-		  </div>
+		<>
+			<Box style={{ height: 180 }}>
+			    <Box d="grid" gridTemplateColumns="35% 65%" style={{ height: 150 }}>
+			        <Box d="flex" flexDirection="column" alignItems="center" justifyContent="center">
+						<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
+							{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
+		     				{!picture && titleSelect == 1 && <Image src="img/partner-m-default.png"></Image>}
+		     				{!picture && titleSelect == 2 && <Image src="img/partner-w-default.png"></Image>}
+		     				{!picture && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png"></Image>}
+						</Box>
+						<Box as="strong" textAlign="center">{partnerSeq}</Box>
+						<Box as="strong" textAlign="center">{simpleFullName}</Box>
+			        </Box>
+			        <Box position="absolute" ps={4} style={{ width: "60%", height: "100%", left: "35%", top: 0 }}>
+			            <Box d="flex" alignItems="center" borderStart borderWidth={2} w={100} h={100} style={{ transform: "skew(-20deg, 0deg)" }}>
+			                <Box style={{ height: "70%", width: "2rem", boxShadow: "rgb(0 0 0 / 25%) 3px 3px 8px", backgroundColor: "#20BCB5" }} />
+			                <Box d="flex" alignItems="center" w={100} style={{ position: "absolute", top: "15%", left: "0.5rem", minHeight: "70%" }}>
+			                    <Box as="ul" m={0} p={0} w={100} style={{ listStyle: "none" }}>
+			                        {(() => {
+			                            const renderItem = (icon, value) => {
+			                                return value && String(value).trim() && (
+			                                    <Box as="li" d="flex" gap={24} style={{ transform: "skew(20deg, 0deg)" }}>
+			                                        <Icon icon={icon} color="white" fontSize="15px"/>
+			                                        <Box as="span" style={{ fontSize: 15 }}> {value} </Box>
+			                                    </Box>
+			                                );
+			                            };
+			                            return (
+			                                <>
+			                                    {renderItem("telephone", fixedPhone)}
+			                                    {renderItem("phone", mobilePhone)}
+			                                    {renderItem("envelope-fill", emailAddress.address)}
+			                                    {renderItem("building", mainPartner.simpleFullName)}
+			                                    {renderItem("house-fill", mainAddress.fullName)}
+			                                </>
+			                            );
+			                        })()}
+			                    </Box>
+			                </Box>
+			            </Box>
+			        </Box>
+			    </Box>
+			</Box>
+		</>
 		]]>
     </template>
   </cards>
@@ -1081,8 +917,6 @@
     onSave="save,action-partner-method-set-user-partner">
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
-          readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>
@@ -1117,7 +951,8 @@
         <field name="firstName" showTitle="false" css="highlight" placeholder="First name"
           onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
         <static name="duplicatePartnerText" hidden="true" colSpan="12">
-          <![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+          <![CDATA[<><Badge bg="warning">There is already a partner with this name.</Badge></>]]>
+        </static>
         <panel name="companyPanel" title="Company" colSpan="12">
           <field name="mainPartner"
             domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet AND p.partnerTypeSelect = 1)"
@@ -1135,7 +970,7 @@
         <field name="mobilePhone" widget="phone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
-          <editor x-show-titles="false">
+          <editor x-show-titles="false" x-viewer="true">
             <field name="address" placeholder="whatever@example.com"
               pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
           </editor>
@@ -1163,7 +998,8 @@
     </panel-tabs>
     <panel name="settingsPanel" sidebar="true" title="Settings">
       <field name="partnerSeq"/>
-      <field name="language" canEdit="false"/>
+      <field name="localization" grid-view="localization-grid" form-view="localization-form"
+        canEdit="false"/>
       <panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
         <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
           canNew="false" canEdit="false" canView="false"/>
@@ -1213,13 +1049,13 @@
     <action name="action-partner-account-attrs-hide-customer-account"/>
     <action name="action-partner-account-attrs-hide-employee-account"/>
     <action name="action-partner-record-set-balance" if="__config__.app.isApp('account')"/>
-    <action name="action-partner-record-set-positive-balance"
+    <action name="action-partner-method-set-positive-balance"
       if="__config__.app.isApp('account')"/>
     <action name="action-partner-attrs-name-balance"/>
     <action name="action-partner-attrs-partner-seq-editable"/>
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
-    <action name="action-partner-attrs-set-canselect"/>
+    <action name="action-method-partner-siren-nic-onload"/>
   </action-group>
 
   <action-group name="action-group-base-partner-onnew">
@@ -1230,7 +1066,6 @@
     <action name="action-partner-record-set-payment-modes"/>
     <action name="action-partner-record-payment-condition"/>
     <action name="action-partner-attrs-partner-seq-editable"/>
-    <action name="action-partner-attrs-set-canselect"/>
   </action-group>
 
   <action-group name="action-group-base-partner-contact-name-onchange">
@@ -1288,17 +1123,14 @@
 
   <action-group name="action-partner-group-onsave">
     <action name="action-partner-iban-check-on-save"/>
-    <action name="action-partner-validate-registration-code"
-      if="__config__.app.getApp('base')?.getCheckRegistrationCode()"/>
-    <action name="action-method-partner-check-registration-code"
-      if="__config__.app.getApp('base')?.getCheckRegistrationCode()"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
+    <action name="action-method-partner-check-registration-code"/>
   </action-group>
 
   <action-validate name="action-partner-validate-registration-code">
     <error message="Registration code is required."
-      if="partnerAddressList?.findAll{it.address?.addressL7Country?.alpha2Code == 'FR'}?.size() &gt; 0 &amp;&amp; partnerTypeSelect == 1 &amp;&amp; !registrationCode"/>
+      if="partnerAddressList?.findAll{it.address?.country?.alpha2Code == 'FR'}?.size() &gt; 0 &amp;&amp; partnerTypeSelect == 1 &amp;&amp; !registrationCode"/>
   </action-validate>
 
   <action-record name="action-partner-record-factor-supplier-customer-no-error"
@@ -1338,6 +1170,11 @@
     <field name="isSupplier" expr="eval:true"/>
     <field name="supplierCantBeRemoved" expr="eval:false"/>
   </action-record>
+
+  <action-method name="action-method-partner-siren-nic-onload">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="getHideFieldOnPartnerTypeSelect"/>
+  </action-method>
 
   <action-method name="action-partner-method-check-company-account-config">
     <call class="com.axelor.apps.account.web.PartnerController"
@@ -1419,11 +1256,6 @@
       expr="eval: partnerAddressList?.findAll{it.isInvoicingAddr}?.size() &gt; 0 &amp;&amp; partnerAddressList?.findAll{it.isDeliveryAddr}?.size() &gt; 0"/>
   </action-attrs>
 
-  <action-attrs name="action-partner-attrs-set-canselect">
-    <attribute name="value" for="partnerAddressList.$canSelect"
-      expr="eval:__config__.app.getApp('base')?.getIsSharedAddress()"/>
-  </action-attrs>
-
   <action-group name="action-partner-partner-type-select-change">
     <action name="action-partner-attrs-change-name"/>
     <action name="action-partner-empty-first-name"
@@ -1450,6 +1282,10 @@
     <action name="action-partner-method-check-any-receivable-move-line-attached"
       if="__config__.app.isApp('account')"/>
     <action name="action-partner-attrs-set-customer"/>
+  </action-group>
+
+  <action-group name="action-group-partner-registration-code-onChange">
+    <action name="action-method-partner-registration-code-onChange"/>
   </action-group>
 
   <action-record name="action-partner-empty-first-name"
@@ -1507,21 +1343,11 @@
   <action-record name="action-partner-record-set-balance"
     model="com.axelor.apps.base.db.Partner">
     <field name="$balance"
-      expr="#{accountingSituationList.stream().map(
-                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? (x -> x.balanceDueDebtRecoveryCustAccount)
-                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? (x -> x.balanceDueCustAccount)
-                    : (x -> x.balanceCustAccount)
-                ).sum()}"/>
-  </action-record>
-
-  <action-record name="action-partner-record-set-positive-balance"
-    model="com.axelor.apps.base.db.Partner">
-    <field name="$positiveBalanceBtn"
-      expr="eval: balance &lt; 0 ?
-		java.text.NumberFormat.getInstance(new Locale(__user__.language)).format(balance * -1) :
-		java.text.NumberFormat.getInstance(new Locale(__user__.language)).format(balance)"
-      if="balance != null"/>
-    <field name="$positiveBalanceBtn" expr="eval: 0" if="balance == null"/>
+      expr="eval: accountingSituationList?.collect{
+                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? it.balanceDueDebtRecoveryCustAccount
+                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? it.balanceDueCustAccount
+                    : it.balanceCustAccount
+                }.sum()"/>
   </action-record>
 
   <action-record name="action-partner-record-employee"
@@ -1555,8 +1381,8 @@
     <field name="invoiceSendingFormatSelect" expr="#{'emailpaper'}" if="#{!isContact}"/>
     <field name="user" expr="#{__user__}"/>
     <field name="team" expr="#{__user__.activeTeam}"/>
-    <field name="language"
-      expr="eval: __config__.app.getApp('base')?.getDefaultPartnerLanguage()"/>
+    <field name="localization"
+      expr="eval: __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="isCustomer" expr="true"
       if="_isCustomer || (__user__?.activeCompany?.defaultPartnerCategorySelect == 1 &amp;&amp; !_isSupplier &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
     <field name="isSupplier" expr="true"
@@ -1572,8 +1398,8 @@
     <field name="partnerTypeSelect" expr="#{2}"/>
     <field name="isContact" expr="#{true}"/>
     <field name="companySet" expr="#{__parent__.companySet}"/>
-    <field name="language"
-      expr="eval: __parent__ != null ? __parent__.language : __config__.app.getApp('base')?.getDefaultPartnerLanguage()"/>
+    <field name="localization"
+      expr="eval: __parent__ != null ? __parent__.localization : __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="user" expr="#{__parent__.user}"
       if="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="team" expr="#{__parent__.team}"
@@ -1594,8 +1420,8 @@
     <field name="isContact" expr="#{false}"/>
     <field name="isEmployee" expr="#{true}"/>
     <field name="companySet" expr="#{__parent__.companySet}"/>
-    <field name="language"
-      expr="eval: __parent__ != null ? __parent__.language : __config__.app.getApp('base')?.getDefaultPartnerLanguage()"/>
+    <field name="localization"
+      expr="eval: __parent__ != null ? __parent__.localization : __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="user" expr="#{__parent__.user}"
       if="#{__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="team" expr="#{__parent__.team}"
@@ -1670,6 +1496,10 @@
     <call class="com.axelor.apps.base.web.PartnerController" method="checkRegistrationCode"/>
   </action-method>
 
+  <action-method name="action-partner-method-set-positive-balance">
+    <call class="com.axelor.apps.base.web.PartnerController" method="setPositiveBalance"/>
+  </action-method>
+
   <action-view name="action-contact-partner-dashlet" title="Partners"
     model="com.axelor.apps.base.db.Partner">
     <view type="grid" name="partner-grid"/>
@@ -1710,7 +1540,7 @@
     <field name="isCustomer" expr="eval: false"/>
     <field name="isSupplier" expr="eval: false"/>
     <field name="isCarrier" expr="eval: false"/>
-    <field name="isSubrogation" expr="eval: false" if="__config__.app.isApp('account')"/>
+    <field name="isThirdPartyPayer" expr="eval: false" if="__config__.app.isApp('account')"/>
   </action-record>
 
   <action-validate name="action-partner-validate-partner-stock-settings-list">
@@ -1740,7 +1570,7 @@
 
   <search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner"
     title="Partner filters">
-    <field name="companyStr" hidden="true"
+    <field name="companySet" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="isFactor" hidden="true"
       if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors)"/>
@@ -1793,29 +1623,29 @@
     <field name="simpleFullName" hidden="true"/>
     <field name="isCarrier" title="Is a carrier" hidden="true"
       if="!__config__.app.isApp('stock')"/>
-    <filter title="All Enterprises">
+    <filter name="partner-filters-all-enterprises" title="All Enterprises">
       <domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>
     </filter>
-    <filter title="All Individuals">
+    <filter name="partner-filters-all-individuals" title="All Individuals">
       <domain>self.partnerTypeSelect = 2 AND self.isContact = false</domain>
     </filter>
-    <filter title="All Prospects">
+    <filter name="partner-filters-all-prospects" title="All Prospects">
       <domain>self.isProspect = true AND self.isContact = false</domain>
     </filter>
-    <filter title="All Clients">
+    <filter name="partner-filters-all-clients" title="All Clients">
       <domain>self.isCustomer = true AND self.isContact = false</domain>
     </filter>
-    <filter title="All Suppliers">
+    <filter name="partner-filters-all-suppliers" title="All Suppliers">
       <domain>self.isSupplier = true AND self.isContact = false</domain>
     </filter>
-    <filter title="All Employees">
+    <filter name="partner-filters-all-employees" title="All Employees">
       <domain>self.isEmployee = true AND self.isContact = false</domain>
     </filter>
   </search-filters>
 
   <search-filters name="contact-filters" model="com.axelor.apps.base.db.Partner"
     title="Contact filters">
-    <field name="companyStr" hidden="true"
+    <field name="companySet" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="isFactor" hidden="true"
       if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors)"/>
@@ -1868,16 +1698,16 @@
     <field name="simpleFullName" hidden="true"/>
     <field name="isCarrier" title="Is a carrier" hidden="true"
       if="!__config__.app.isApp('stock')"/>
-    <filter name="contact-filters-prospects-clients" title="All prospects and clients">
+    <filter name="contact-filters-all-prospects-clients" title="All prospects and clients">
       <domain>self.mainPartner.isProspect = true OR self.mainPartner.isCustomer = true</domain>
     </filter>
-    <filter name="contact-filters-prospects" title="All prospects">
+    <filter name="contact-filters-all-prospects" title="All prospects">
       <domain>self.mainPartner.isProspect = true</domain>
     </filter>
-    <filter name="contact-filters-clients" title="All clients">
+    <filter name="contact-filters-all-clients" title="All clients">
       <domain>self.mainPartner.isCustomer = true</domain>
     </filter>
-    <filter name="contact-filters-supplier" title="All suppliers">
+    <filter name="contact-filters-all-supplier" title="All suppliers">
       <domain>self.isSupplier = true</domain>
     </filter>
   </search-filters>

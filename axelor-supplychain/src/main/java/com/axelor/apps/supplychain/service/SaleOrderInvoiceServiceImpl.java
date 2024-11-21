@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
@@ -39,6 +40,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -48,6 +50,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -59,6 +62,7 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -81,6 +85,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected AppBaseService appBaseService;
 
+  protected AppStockService appStockService;
+
   protected AppSupplychainService appSupplychainService;
 
   protected SaleOrderRepository saleOrderRepo;
@@ -99,10 +105,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected CommonInvoiceService commonInvoiceService;
   protected InvoiceLineOrderService invoiceLineOrderService;
   protected SaleInvoicingStateService saleInvoicingStateService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
       AppBaseService appBaseService,
+      AppStockService appStockService,
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
@@ -113,9 +121,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrderWorkflowService saleOrderWorkflowService,
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
-      SaleInvoicingStateService saleInvoicingStateService) {
+      SaleInvoicingStateService saleInvoicingStateService,
+      CurrencyScaleService currencyScaleService) {
 
     this.appBaseService = appBaseService;
+    this.appStockService = appStockService;
     this.appSupplychainService = appSupplychainService;
     this.saleOrderRepo = saleOrderRepo;
     this.invoiceRepo = invoiceRepo;
@@ -127,6 +137,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.commonInvoiceService = commonInvoiceService;
     this.invoiceLineOrderService = invoiceLineOrderService;
     this.saleInvoicingStateService = saleInvoicingStateService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -197,7 +208,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
 
     // fill default advance payment invoice
-    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    if (InvoiceToolService.isRefund(invoice)
+        || invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT) {
       invoice.setAdvancePaymentInvoiceSet(invoiceService.getDefaultAdvancePaymentInvoice(invoice));
     }
 
@@ -206,7 +218,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
 
     invoiceTermService.computeInvoiceTerms(invoice);
-    invoice.setIncoterm(saleOrder.getIncoterm());
+
+    if (appStockService.getAppStock().getIsIncotermEnabled()) {
+      invoice.setIncoterm(saleOrder.getIncoterm());
+    }
     invoice = invoiceRepo.save(invoice);
 
     return invoice;
@@ -229,8 +244,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     return commonInvoiceService.computeAmountToInvoicePercent(saleOrder, amount, isPercent, total);
   }
 
-  @Override
-  public BigDecimal computeAmountToInvoice(
+  protected BigDecimal computeAmountToInvoice(
       BigDecimal amountToInvoice,
       int operationSelect,
       SaleOrder saleOrder,
@@ -255,6 +269,15 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
               amountToInvoice.add(qtyToInvoice.multiply(priceMap.get(saleOrderLineId)));
         }
       }
+    } else if (operationSelect == SaleOrderRepository.INVOICE_ADVANCE_PAYMENT && isPercent) {
+      amountToInvoice =
+          saleOrder
+              .getExTaxTotal()
+              .multiply(amountToInvoice)
+              .divide(
+                  new BigDecimal("100"),
+                  currencyScaleService.getScale(saleOrder),
+                  RoundingMode.HALF_UP);
     }
     return amountToInvoice;
   }
@@ -325,6 +348,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoiceGenerator.populate(invoice, invoiceLinesList);
 
     invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
+    invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
 
     invoice.setOperationSubTypeSelect(operationSubTypeSelect);
 
@@ -680,17 +704,20 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
 
     if (saleAmount != null) {
-      invoicedAmount = invoicedAmount.add(saleAmount);
+      invoicedAmount =
+          currencyScaleService.getScaledValue(saleOrder, invoicedAmount.add(saleAmount));
     }
     if (refundAmount != null) {
-      invoicedAmount = invoicedAmount.subtract(refundAmount);
+      invoicedAmount =
+          currencyScaleService.getScaledValue(saleOrder, invoicedAmount.subtract(refundAmount));
     }
 
     if (!saleOrder.getCurrency().equals(saleOrder.getCompany().getCurrency())
         && saleOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
       BigDecimal rate =
           invoicedAmount.divide(saleOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
-      invoicedAmount = saleOrder.getExTaxTotal().multiply(rate);
+      invoicedAmount =
+          currencyScaleService.getScaledValue(saleOrder, saleOrder.getExTaxTotal().multiply(rate));
     }
 
     log.debug(
@@ -846,10 +873,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             .filter(
                 " self.saleOrder.id = :saleOrderId "
                     + "AND self.statusSelect != :invoiceStatus "
-                    + "AND self.operationSubTypeSelect != :advancePaymentSubType")
+                    + "AND self.operationSubTypeSelect != :advancePaymentSubType "
+                    + "AND self.operationTypeSelect = :operationTypeSelect")
             .bind("saleOrderId", saleOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
             .bind("advancePaymentSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             .fetchOne();
     List<Integer> operationSelectList = new ArrayList<>();
     if (exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
@@ -871,7 +900,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   @Override
   public void displayErrorMessageIfSaleOrderIsInvoiceable(
-      SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
+      SaleOrder saleOrder,
+      BigDecimal amountToInvoice,
+      int operationSelect,
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      Map<Long, BigDecimal> priceMap,
+      Map<Long, BigDecimal> qtyMap,
+      boolean isPercent)
+      throws AxelorException {
     List<Invoice> invoices =
         Query.of(Invoice.class)
             .filter(
@@ -885,6 +921,17 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             .fetch();
 
     BigDecimal sumInvoices = commonInvoiceService.computeSumInvoices(invoices);
+
+    amountToInvoice =
+        computeAmountToInvoice(
+            amountToInvoice,
+            operationSelect,
+            saleOrder,
+            qtyToInvoiceMap,
+            priceMap,
+            qtyMap,
+            isPercent);
+
     sumInvoices = sumInvoices.add(amountToInvoice);
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
@@ -934,5 +981,53 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       }
     }
     return sumInvoices;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public List<Invoice> generateInvoicesFromSaleOrderLines(
+      Map<SaleOrder, Map<Long, BigDecimal>> priceMaps,
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyToInvoiceMaps,
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyMaps,
+      Map<SaleOrder, BigDecimal> amountToInvoiceMap,
+      boolean isPercent,
+      int operationSelect)
+      throws AxelorException {
+
+    List<Invoice> invoiceList = new ArrayList<>();
+    for (Map.Entry<SaleOrder, BigDecimal> entry : amountToInvoiceMap.entrySet()) {
+      SaleOrder saleOrder = entry.getKey();
+
+      displayErrorMessageIfSaleOrderIsInvoiceable(
+          saleOrder,
+          entry.getValue(),
+          operationSelect,
+          qtyToInvoiceMaps.get(saleOrder),
+          priceMaps.get(saleOrder),
+          qtyMaps.get(saleOrder),
+          isPercent);
+
+      Invoice invoice =
+          generateInvoice(
+              saleOrder,
+              operationSelect,
+              entry.getValue(),
+              isPercent,
+              qtyToInvoiceMaps.get(saleOrder),
+              new ArrayList<>());
+
+      invoiceList.add(invoice);
+    }
+    return invoiceList;
+  }
+
+  @Override
+  public List<Map<String, Object>> getSaleOrderLineList(SaleOrder saleOrder) {
+    List<Map<String, Object>> saleOrderLineList = new ArrayList<>();
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
+      saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
+      saleOrderLineList.add(saleOrderLineMap);
+    }
+    return saleOrderLineList;
   }
 }

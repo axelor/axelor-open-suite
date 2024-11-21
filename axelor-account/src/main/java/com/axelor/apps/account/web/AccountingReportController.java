@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -45,6 +46,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -194,6 +196,7 @@ public class AccountingReportController {
       accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
       AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
+      accountingReportService.checkReportType(accountingReport);
       int typeSelect = accountingReport.getReportType().getTypeSelect();
 
       if (accountingReport.getExportTypeSelect() == null
@@ -204,7 +207,7 @@ public class AccountingReportController {
         return;
       }
 
-      if (accountingReportService.isThereTooManyLines(accountingReport)) {
+      if (accountingReportService.areThereTooManyLines(accountingReport)) {
         response.setAlert(
             I18n.get(
                 "A large number of recording has been fetched in this period. Edition can take a while. Do you want to proceed ?"));
@@ -306,5 +309,25 @@ public class AccountingReportController {
     actionViewBuilder.context("_accountingReportId", accountingReport.getId());
 
     response.setView(actionViewBuilder.map());
+  }
+
+  public void setAccountingReportTypeDomain(ActionRequest request, ActionResponse response) {
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    boolean isCustom =
+        Optional.ofNullable((Boolean) request.getContext().get("_isCustom")).orElse(false);
+    String accountingReportTypeIds = "0";
+
+    if (!isCustom || CollectionUtils.isNotEmpty(accountingReport.getCompanySet())) {
+      accountingReportTypeIds =
+          Beans.get(AccountingReportToolService.class)
+              .getAccountingReportTypeIds(accountingReport, isCustom);
+    }
+
+    response.setAttr(
+        "reportType",
+        "domain",
+        String.format(
+            "self.id IN (%s)",
+            StringUtils.notEmpty(accountingReportTypeIds) ? accountingReportTypeIds : "0"));
   }
 }

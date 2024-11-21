@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,27 +18,33 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.common.StringUtils;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.studio.db.AppBase;
+import com.google.inject.Inject;
 import java.util.List;
-import java.util.Locale;
-import org.apache.commons.lang3.LocaleUtils;
 
 public class CompanyServiceImpl implements CompanyService {
+
+  protected AppBaseService appBaseService;
+  protected CompanyRepository companyRepository;
+  protected UserService userService;
+
+  @Inject
+  public CompanyServiceImpl(
+      AppBaseService appBaseService, CompanyRepository companyRepository, UserService userService) {
+    this.appBaseService = appBaseService;
+    this.companyRepository = companyRepository;
+    this.userService = userService;
+  }
 
   /** {@inheritDoc} */
   @Override
   public void checkMultiBanks(Company company) {
     if (countActiveBankDetails(company) > 1) {
-      AppBaseService appBaseService = Beans.get(AppBaseService.class);
       AppBase appBase = appBaseService.getAppBase();
       if (!appBase.getManageMultiBanks()) {
         appBaseService.setManageMultiBanks(true);
@@ -68,20 +74,23 @@ public class CompanyServiceImpl implements CompanyService {
   }
 
   @Override
-  public void validateLocale(Company company) throws AxelorException {
-    String localeStr = company.getLocale();
-    if (StringUtils.isEmpty(localeStr)) {
-      return;
-    }
-    String languageTag = localeStr.replace("_", "-");
+  public Company getDefaultCompany(Long companyId) {
+    Company company = null;
 
-    if (LocaleUtils.availableLocaleList().stream()
-        .map(Locale::toLanguageTag)
-        .noneMatch(languageTag::equals)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.COMPANY_INVALID_LOCALE),
-          localeStr);
+    if (companyId != null) {
+      company = companyRepository.find(companyId);
+      if (company != null) {
+        return company;
+      }
     }
+
+    company = userService.getUserActiveCompany();
+    if (company != null) {
+      return company;
+    } else if (companyRepository.all().count() == 1) {
+      return companyRepository.all().fetchOne();
+    }
+
+    return null;
   }
 }

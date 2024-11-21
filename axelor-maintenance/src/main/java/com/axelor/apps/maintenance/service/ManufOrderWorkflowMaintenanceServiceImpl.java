@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -29,95 +30,58 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderTrackingNumberService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
-import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
+import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
-import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
-import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflowServiceImpl {
 
   @Inject
   public ManufOrderWorkflowMaintenanceServiceImpl(
       OperationOrderWorkflowService operationOrderWorkflowService,
-      OperationOrderRepository operationOrderRepo,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ManufOrderRepository manufOrderRepo,
       ProductCompanyService productCompanyService,
       ProductionConfigRepository productionConfigRepo,
-      PurchaseOrderService purchaseOrderService,
       AppBaseService appBaseService,
       OperationOrderService operationOrderService,
       AppProductionService appProductionService,
       ProductionConfigService productionConfigService,
-      OperationOrderPlanningService operationOrderPlanningService) {
+      ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
+      ManufOrderService manufOrderService,
+      SequenceService sequenceService,
+      ManufOrderOutsourceService manufOrderOutsourceService,
+      OperationOrderOutsourceService operationOrderOutsourceService,
+      ProductService productService,
+      ManufOrderTrackingNumberService manufOrderTrackingNumberService) {
     super(
         operationOrderWorkflowService,
-        operationOrderRepo,
         manufOrderStockMoveService,
         manufOrderRepo,
         productCompanyService,
         productionConfigRepo,
-        purchaseOrderService,
         appBaseService,
         operationOrderService,
         appProductionService,
         productionConfigService,
-        operationOrderPlanningService);
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
-    if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
-      return super.plan(manufOrder);
-    }
-
-    ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
-
-    if (Beans.get(SequenceService.class)
-        .isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
-      manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq(manufOrder));
-    }
-
-    if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
-      manufOrderService.preFillOperations(manufOrder);
-    }
-    if (!manufOrder.getIsConsProOnOperation()
-        && CollectionUtils.isEmpty(manufOrder.getToConsumeProdProductList())) {
-      manufOrderService.createToConsumeProdProductList(manufOrder);
-    }
-
-    if (CollectionUtils.isEmpty(manufOrder.getToProduceProdProductList())) {
-      manufOrderService.createToProduceProdProductList(manufOrder);
-    }
-
-    if (manufOrder.getPlannedStartDateT() == null) {
-      manufOrder.setPlannedStartDateT(
-          Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
-    }
-
-    operationOrderPlanningService.plan(manufOrder.getOperationOrderList());
-
-    manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
-
-    if (manufOrder.getBillOfMaterial() != null) {
-      manufOrder.setUnit(manufOrder.getBillOfMaterial().getUnit());
-    }
-
-    manufOrder.setStatusSelect(ManufOrderRepository.STATUS_PLANNED);
-    manufOrder.setCancelReason(null);
-    manufOrder.setCancelReasonStr(null);
-
-    return manufOrderRepo.save(manufOrder);
+        manufOrderOutgoingStockMoveService,
+        manufOrderService,
+        sequenceService,
+        manufOrderOutsourceService,
+        operationOrderOutsourceService,
+        productService,
+        manufOrderTrackingNumberService);
   }
 
   @Override

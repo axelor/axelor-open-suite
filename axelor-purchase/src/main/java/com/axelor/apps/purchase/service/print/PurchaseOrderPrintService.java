@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,9 @@
 package com.axelor.apps.purchase.service.print;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -34,7 +36,13 @@ public interface PurchaseOrderPrintService {
    */
   String printPurchaseOrders(List<Long> ids) throws IOException, AxelorException;
 
-  String printPurchaseOrder(PurchaseOrder purchaseOrder, String formatPdf) throws AxelorException;
+  String printPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  File print(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  File print(
+      PurchaseOrder purchaseOrder, PrintingTemplate purchaseOrderPrintTemplate, boolean toAttach)
+      throws AxelorException;
 
   String getFileName(PurchaseOrder purchaseOrder);
 }

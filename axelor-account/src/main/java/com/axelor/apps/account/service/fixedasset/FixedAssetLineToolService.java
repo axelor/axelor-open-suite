@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,9 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.interfaces.ArithmeticOperation;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,4 +41,31 @@ public interface FixedAssetLineToolService {
    */
   LinkedHashMap<LocalDate, List<FixedAssetLine>> groupAndSortByDateFixedAssetLine(
       FixedAsset fixedAsset);
+
+  BigDecimal getCompanyScaledValue(
+      BigDecimal amount1,
+      BigDecimal amount2,
+      FixedAsset fixedAsset,
+      ArithmeticOperation arithmeticOperation);
+
+  BigDecimal getCompanyScaledValue(BigDecimal amount1, FixedAsset fixedAsset);
+
+  BigDecimal getCompanyScaledValue(
+      BigDecimal amount1,
+      BigDecimal amount2,
+      FixedAssetLine fixedAssetLine,
+      ArithmeticOperation arithmeticOperation)
+      throws AxelorException;
+
+  BigDecimal getCompanyScaledValue(BigDecimal amount1, FixedAssetLine fixedAssetLine)
+      throws AxelorException;
+
+  BigDecimal getCompanyDivideScaledValue(
+      BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset);
+
+  boolean isGreaterThan(BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset);
+
+  boolean equals(BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset);
+
+  int getCompanyScale(FixedAssetLine fixedAssetLine) throws AxelorException;
 }

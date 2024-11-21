@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.service.batch.HrBatchService;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -57,5 +58,12 @@ public class HrBatchController {
     } finally {
       response.setReload(true);
     }
+  }
+
+  public void getIncrementLeaveReasonTypeSelects(ActionRequest request, ActionResponse response) {
+    response.setAttr(
+        "leaveReasonTypeSelect",
+        "selection-in",
+        Beans.get(LeaveReasonService.class).getIncrementLeaveReasonTypeSelects());
   }
 }

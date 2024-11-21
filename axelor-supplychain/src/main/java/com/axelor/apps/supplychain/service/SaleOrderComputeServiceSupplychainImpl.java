@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -39,13 +40,17 @@ import org.slf4j.LoggerFactory;
 
 public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServiceImpl {
 
+  protected AdvancePaymentRefundService refundService;
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public SaleOrderComputeServiceSupplychainImpl(
-      SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService) {
+      SaleOrderLineService saleOrderLineService,
+      SaleOrderLineTaxService saleOrderLineTaxService,
+      AdvancePaymentRefundService refundService) {
 
     super(saleOrderLineService, saleOrderLineTaxService);
+    this.refundService = refundService;
   }
 
   @Override
@@ -91,15 +96,19 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
         Beans.get(InvoiceRepository.class)
             .all()
             .filter(
-                "self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect")
+                "self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect AND self.operationTypeSelect = :operationTypeSelect")
             .bind("saleOrderId", saleOrder.getId())
             .bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             .fetch();
     if (advancePaymentInvoiceList == null || advancePaymentInvoiceList.isEmpty()) {
       return total;
     }
     for (Invoice advance : advancePaymentInvoiceList) {
-      total = total.add(advance.getAmountPaid());
+      BigDecimal advancePaymentAmount = advance.getAmountPaid();
+      advancePaymentAmount =
+          advancePaymentAmount.subtract(refundService.getRefundPaidAmount(advance));
+      total = total.add(advancePaymentAmount);
     }
     return total;
   }

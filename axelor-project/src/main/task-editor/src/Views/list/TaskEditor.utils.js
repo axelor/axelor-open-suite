@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import moment from 'moment';
-import { getFormatedDate, getCompletedStatus } from '../../utils';
+import { getFormatedDate } from '../../utils';
 import { COLORS } from '../../constants';
 
 const avatarColor = {};
@@ -40,7 +40,7 @@ export const getAvatarColor = id => {
 
 function menuFilterTasks(tasks, type, { project }) {
   let filteredTasks = [...(tasks || [])];
-  let completedStatusId = getCompletedStatus(project).id;
+  let completedStatusId = project?.completedTaskStatus?.id;
   switch (type) {
     case 'allTasks':
       return filteredTasks;

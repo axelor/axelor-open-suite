@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,6 +32,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.KilometricAllowanceRule;
 import com.axelor.apps.hr.db.KilometricLog;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.KilometricLogRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
@@ -44,7 +45,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.BufferedReader;
@@ -85,7 +86,8 @@ public class KilometricService {
     return employee.getKilometricLogList().stream()
         .filter(
             log ->
-                DateTool.isBetween(log.getYear().getFromDate(), log.getYear().getToDate(), refDate))
+                LocalDateHelper.isBetween(
+                    log.getYear().getFromDate(), log.getYear().getToDate(), refDate))
         .findFirst()
         .orElse(null);
   }
@@ -210,7 +212,6 @@ public class KilometricService {
         price = price.add(max.subtract(min).multiply(rule.getRate()));
       }
     }
-
     return price.setScale(2, RoundingMode.HALF_UP);
   }
 
@@ -226,6 +227,10 @@ public class KilometricService {
   }
 
   public BigDecimal computeDistance(ExpenseLine expenseLine) throws AxelorException {
+    if (expenseLine.getKilometricTypeSelect() == ExpenseLineRepository.KILOMETRIC_TYPE_ROUND_TRIP) {
+      return computeDistance(expenseLine.getFromCity(), expenseLine.getToCity())
+          .multiply(BigDecimal.valueOf(2));
+    }
     return computeDistance(expenseLine.getFromCity(), expenseLine.getToCity());
   }
 

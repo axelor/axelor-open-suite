@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,18 +42,21 @@ import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -62,7 +65,8 @@ public class SaleOrderLineController {
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
       AnalyticLineModelService analyticLineModelService = Beans.get(AnalyticLineModelService.class);
 
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
@@ -83,7 +87,8 @@ public class SaleOrderLineController {
       ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
 
@@ -395,7 +400,8 @@ public class SaleOrderLineController {
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null) {
         return;
@@ -412,7 +418,8 @@ public class SaleOrderLineController {
 
   public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null) {
         return;
@@ -432,7 +439,8 @@ public class SaleOrderLineController {
 
   public void manageAxis(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null || saleOrder.getCompany() == null) {
         return;
@@ -450,7 +458,8 @@ public class SaleOrderLineController {
 
   public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null || saleOrder.getCompany() == null) {
         return;
@@ -469,7 +478,8 @@ public class SaleOrderLineController {
 
   public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null || saleOrder.getCompany() == null) {
         return;
@@ -484,6 +494,33 @@ public class SaleOrderLineController {
       response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setSaleOrderLineListToInvoice(ActionRequest request, ActionResponse response) {
+    try {
+      List<Long> selectedLinesIDs =
+          (Optional.ofNullable((List<Integer>) request.getContext().get("_ids")))
+              .stream()
+                  .flatMap(List::stream)
+                  .mapToLong(Integer::longValue)
+                  .boxed()
+                  .collect(Collectors.toList());
+      List<SaleOrderLine> selectedSaleOrderLineList =
+          Beans.get(SaleOrderLineRepository.class).findByIds(selectedLinesIDs);
+      List<Map<String, Object>> selectedSaleOrderLineMapList =
+          selectedSaleOrderLineList.stream().map(Mapper::toMap).collect(Collectors.toList());
+      response.setView(
+          ActionView.define(I18n.get("SOL to invoice"))
+              .model(SaleOrderLine.class.getName())
+              .add("form", "sale-order-line-multi-invoicing-form")
+              .param("popup", "true")
+              .param("popup-save", "false")
+              .context("_saleOrderLineListToInvoice", selectedSaleOrderLineMapList)
+              .map());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

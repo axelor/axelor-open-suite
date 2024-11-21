@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.helpdesk.db.Ticket;
-import com.axelor.apps.helpdesk.service.TicketService;
+import com.axelor.apps.helpdesk.service.TicketSequenceService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -32,7 +32,7 @@ public class ImportTicket {
     Ticket ticket = (Ticket) bean;
 
     try {
-      Beans.get(TicketService.class).computeSeq(ticket);
+      Beans.get(TicketSequenceService.class).computeSeq(ticket);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

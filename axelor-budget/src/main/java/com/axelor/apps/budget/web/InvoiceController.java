@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,14 +21,15 @@ package com.axelor.apps.budget.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
+import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -46,7 +47,7 @@ public class InvoiceController {
       invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
       BudgetInvoiceService budgetInvoiceService = Beans.get(BudgetInvoiceService.class);
       if (invoice != null
-          && Beans.get(BudgetService.class).checkBudgetKeyInConfig(invoice.getCompany())) {
+          && Beans.get(BudgetToolsService.class).checkBudgetKeyInConfig(invoice.getCompany())) {
         if (invoice.getCompany() != null
             && !Beans.get(BudgetToolsService.class)
                 .checkBudgetKeyAndRole(invoice.getCompany(), AuthUtils.getUser())
@@ -69,16 +70,17 @@ public class InvoiceController {
     }
   }
 
-  public void computeInvoiceBudgetDistributionSumAmount(
+  public void computeInvoiceBudgetRemainingAmountToAllocate(
       ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
       invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
       if (invoice != null && !CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
-        BudgetInvoiceLineService budgetInvoiceLineService =
-            Beans.get(BudgetInvoiceLineService.class);
+        BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
         for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-          budgetInvoiceLineService.computeBudgetDistributionSumAmount(invoiceLine, invoice);
+          invoiceLine.setBudgetRemainingAmountToAllocate(
+              budgetToolsService.getBudgetRemainingAmountToAllocate(
+                  invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
         }
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       }
@@ -112,6 +114,32 @@ public class InvoiceController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  @ErrorException
+  public void autoComputeBudgetDistribution(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    BudgetInvoiceService budgetInvoiceService = Beans.get(BudgetInvoiceService.class);
+    if (invoice != null
+        && !CollectionUtils.isEmpty(invoice.getInvoiceLineList())
+        && !budgetInvoiceService.isBudgetInLines(invoice)) {
+      budgetInvoiceService.autoComputeBudgetDistribution(invoice);
+      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+    }
+  }
+
+  public void validateVentilation(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    BudgetInvoiceService budgetInvoiceService = Beans.get(BudgetInvoiceService.class);
+    if (invoice != null && !CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+      if (budgetInvoiceService.isBudgetInLines(invoice)) {
+        String budgetExceedAlert = budgetInvoiceService.getBudgetExceedAlert(invoice);
+        BudgetControllerTool.verifyBudgetExceed(budgetExceedAlert, false, response);
+      } else {
+        BudgetControllerTool.verifyMissingBudget(response);
+      }
     }
   }
 }

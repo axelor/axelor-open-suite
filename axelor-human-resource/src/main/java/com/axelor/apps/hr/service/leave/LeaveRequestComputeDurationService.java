@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface LeaveRequestComputeDurationService {
   BigDecimal computeDuration(LeaveRequest leave) throws AxelorException;
@@ -42,5 +43,9 @@ public interface LeaveRequestComputeDurationService {
 
   BigDecimal computeLeaveDaysByLeaveRequest(
       LocalDate fromDate, LocalDate toDate, LeaveRequest leaveRequest, Employee employee)
+      throws AxelorException;
+
+  BigDecimal computeTotalLeaveHours(
+      LocalDate date, BigDecimal dayValueInHours, List<LeaveRequest> leaveList)
       throws AxelorException;
 }

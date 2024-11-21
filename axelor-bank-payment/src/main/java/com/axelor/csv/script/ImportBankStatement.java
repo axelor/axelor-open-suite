@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,32 +19,60 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
+import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
+import com.axelor.common.StringUtils;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportBankStatement {
 
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected BankStatementImportService bankStatementImportService;
+  protected MetaFiles metaFiles;
+  protected BankStatementRepository bankStatementRepository;
   protected BankStatementCreateService bankStatementCreateService;
-  protected BankStatementService bankStatementService;
 
   @Inject
   public ImportBankStatement(
-      BankStatementCreateService bankStatementCreateService,
-      BankStatementService bankStatementService) {
+      BankStatementImportService bankStatementImportService,
+      MetaFiles metaFiles,
+      BankStatementRepository bankStatementRepository,
+      BankStatementCreateService bankStatementCreateService) {
+    this.bankStatementImportService = bankStatementImportService;
+    this.metaFiles = metaFiles;
+    this.bankStatementRepository = bankStatementRepository;
     this.bankStatementCreateService = bankStatementCreateService;
-    this.bankStatementService = bankStatementService;
   }
 
   public Object importBankStatement(Object bean, Map<String, Object> values) {
     assert bean instanceof BankStatement;
     BankStatement bankStatement = (BankStatement) bean;
 
-    if (bankStatement.getName() == null) {
-      bankStatement.setName(bankStatementCreateService.computeName(bankStatement));
+    String fileName = (String) values.get("bank_statement_demo");
+
+    if (!StringUtils.isEmpty(fileName)) {
+      try {
+        InputStream stream =
+            this.getClass().getResourceAsStream("/apps/demo-data/demo-bank-statement/" + fileName);
+        if (stream != null) {
+          final MetaFile metaFile = metaFiles.upload(stream, fileName);
+          bankStatement.setBankStatementFile(metaFile);
+          bankStatementRepository.save(bankStatement);
+          bankStatementImportService.runImport(bankStatement, true);
+        }
+      } catch (Exception e) {
+        LOG.error("Error when importing demo bank statement : {0}", e);
+      }
     }
-    bankStatementService.updateStatus(bankStatement);
-    return bankStatement;
+    return bankStatementRepository.find(bankStatement.getId());
   }
 }

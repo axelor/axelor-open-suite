@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -84,6 +84,11 @@
       title="Purchase order without incoming stock move"/>
     <boolean name="manageAdvancePaymentsFromPaymentConditions"
       title="Manage advance payments from payment conditions" default="false"/>
+
+    <boolean name="autoFillDeliveryRealQty" title="Auto fill delivery real quantity"
+      default="true"/>
+    <boolean name="autoFillReceiptRealQty" title="Auto fill receipt real quantity"
+      default="true"/>
 
     <track>
       <field name="custStockMoveMgtOnSO" on="UPDATE"/>

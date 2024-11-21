@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,16 +19,23 @@
 package com.axelor.apps.base.service.message;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.EmailAddressRepository;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.db.repo.TemplateRepository;
+import com.axelor.message.service.MailAccountService;
+import com.axelor.message.service.MailMessageActionService;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateContextService;
 import com.axelor.message.service.TemplateMessageServiceImpl;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.text.GroovyTemplates;
 import com.axelor.text.Templates;
 import com.google.inject.Inject;
 import java.io.File;
@@ -41,21 +48,36 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  protected BirtTemplateService birtTemplateService;
+  protected PrintingTemplatePrintService printTemplatePrintService;
 
   @Inject
   public TemplateMessageServiceBaseImpl(
+      EmailAddressRepository emailAddressRepository,
+      GroovyTemplates groovyTemplates,
+      MessageRepository messageRepository,
+      TemplateRepository templateRepository,
+      MailAccountService mailAccountService,
       MessageService messageService,
       TemplateContextService templateContextService,
-      BirtTemplateService birtTemplateService) {
-    super(messageService, templateContextService);
-    this.birtTemplateService = birtTemplateService;
+      MailMessageActionService mailMessageActionService,
+      PrintingTemplatePrintService printTemplatePrintService) {
+    super(
+        emailAddressRepository,
+        groovyTemplates,
+        messageRepository,
+        templateRepository,
+        mailAccountService,
+        messageService,
+        templateContextService,
+        mailMessageActionService);
+    this.printTemplatePrintService = printTemplatePrintService;
   }
 
   @Override
@@ -63,14 +85,14 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
       Template template, Templates templates, Map<String, Object> templatesContext) {
 
     Set<MetaFile> metaFiles = super.getMetaFiles(template, templates, templatesContext);
-    Set<BirtTemplate> birtTemplates = template.getBirtTemplateSet();
-    if (CollectionUtils.isEmpty(birtTemplates)) {
+    Set<PrintingTemplate> printingTemplates = template.getPrintTemplateSet();
+    if (CollectionUtils.isEmpty(printingTemplates)) {
       return metaFiles;
     }
 
-    for (BirtTemplate birtTemplate : birtTemplates) {
+    for (PrintingTemplate printingTemplate : printingTemplates) {
       try {
-        metaFiles.add(createMetaFileUsingBirtTemplate(birtTemplate, templatesContext));
+        metaFiles.add(createMetaFileUsingBirtTemplate(printingTemplate, templatesContext));
       } catch (Exception e) {
         TraceBackService.traceExceptionFromSaveMethod(e);
         throw new IllegalStateException(e.getMessage(), e);
@@ -83,22 +105,23 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
   }
 
   public MetaFile createMetaFileUsingBirtTemplate(
-      BirtTemplate birtTemplate, Map<String, Object> templatesContext)
+      PrintingTemplate printingTemplate, Map<String, Object> templatesContext)
       throws AxelorException, IOException {
 
-    logger.debug("Generate birt metafile: {}", birtTemplate.getName());
+    logger.debug("Generate birt metafile: {}", printingTemplate.getName());
 
     String fileName =
-        birtTemplate.getName()
+        printingTemplate.getName()
             + "-"
             + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
     File file =
-        birtTemplateService.generateBirtTemplateFile(
-            birtTemplate, templatesContext, fileName, false, birtTemplate.getFormat());
+        printTemplatePrintService.getPrintFile(
+            printingTemplate, new PrintingGenFactoryContext(templatesContext));
 
     try (InputStream is = new FileInputStream(file)) {
-      return Beans.get(MetaFiles.class).upload(is, fileName + "." + birtTemplate.getFormat());
+      return Beans.get(MetaFiles.class)
+          .upload(is, fileName + "." + FilenameUtils.getExtension(file.getName()));
     }
   }
 }

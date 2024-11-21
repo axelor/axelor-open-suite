@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -28,19 +28,22 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHistoryLine;
+import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
+import com.axelor.apps.project.service.ProjectCreateTaskService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -53,7 +56,7 @@ import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
-import com.axelor.utils.date.LocalDateUtils;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -64,6 +67,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -79,9 +83,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected InvoiceRepository invoiceRepository;
 
   public static final int BIG_DECIMAL_SCALE = 2;
-  public static final String FA_LEVEL_UP = "fa-level-up";
-  public static final String FA_LEVEL_DOWN = "fa-level-down";
-  public static final String ICON_EQUAL = "icon-equal";
+  public static final String FA_LEVEL_UP = "arrow-90deg-up";
+  public static final String FA_LEVEL_DOWN = "arrow-90deg-down";
+  public static final String ICON_EQUAL = "equal";
 
   @Inject
   public ProjectBusinessServiceImpl(
@@ -95,8 +99,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService,
       AppBaseService appBaseService,
-      InvoiceRepository invoiceRepository) {
-    super(projectRepository, projectStatusRepository, appProjectService, projTemplateRepo);
+      InvoiceRepository invoiceRepository,
+      ProjectCreateTaskService projectCreateTaskService) {
+    super(
+        projectRepository,
+        projectStatusRepository,
+        appProjectService,
+        projTemplateRepo,
+        projectCreateTaskService);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;
@@ -109,9 +119,11 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public SaleOrder generateQuotation(Project project) throws AxelorException {
-    SaleOrder order = Beans.get(SaleOrderCreateService.class).createSaleOrder(project.getCompany());
-
     Partner clientPartner = project.getClientPartner();
+    SaleOrder order =
+        Beans.get(SaleOrderCreateService.class)
+            .createSaleOrder(project.getCompany(), clientPartner);
+
     Partner contactPartner = project.getContactPartner();
     if (contactPartner == null && clientPartner.getContactPartnerSet().size() == 1) {
       contactPartner = clientPartner.getContactPartnerSet().iterator().next();
@@ -122,13 +134,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     order.setProject(projectRepository.find(project.getId()));
     order.setClientPartner(clientPartner);
     order.setContactPartner(contactPartner);
-    order.setCompany(company);
 
-    order.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
-    order.setMainInvoicingAddressStr(
-        addressService.computeAddressStr(order.getMainInvoicingAddress()));
-    order.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));
-    order.setDeliveryAddressStr(addressService.computeAddressStr(order.getDeliveryAddress()));
     order.setIsNeedingConformityCertificate(clientPartner.getIsNeedingConformityCertificate());
     order.setCompanyBankDetails(
         Beans.get(AccountingSituationService.class)
@@ -365,24 +371,32 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     project.setPlannedTime(totalPlannedTime);
     project.setSpentTime(totalSpentTime);
 
+    BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
+
     if (totalUpdatedTime.signum() > 0) {
       project.setPercentageOfProgress(
-          totalSpentTime
-              .multiply(new BigDecimal("100"))
-              .divide(totalUpdatedTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+          projectTaskBusinessProjectService.verifiedLimitFollowUp(
+              totalSpentTime
+                  .multiply(new BigDecimal("100"))
+                  .divide(totalUpdatedTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP),
+              percentageLimit));
     }
 
     if (totalSoldTime.signum() > 0) {
       project.setPercentageOfConsumption(
-          totalSpentTime
-              .multiply(new BigDecimal("100"))
-              .divide(totalSoldTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+          projectTaskBusinessProjectService.verifiedLimitFollowUp(
+              totalSpentTime
+                  .multiply(new BigDecimal("100"))
+                  .divide(totalSoldTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP),
+              percentageLimit));
     }
 
     project.setRemainingAmountToDo(
-        totalUpdatedTime
-            .subtract(totalSpentTime)
-            .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+        projectTaskBusinessProjectService.verifiedLimitFollowUp(
+            totalUpdatedTime
+                .subtract(totalSpentTime)
+                .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP),
+            BigDecimal.valueOf(9999.99)));
   }
 
   protected void computeFinancialFollowUp(Project project, List<ProjectTask> projectTaskList) {
@@ -501,7 +515,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   }
 
   protected BigDecimal processInvoicedThisMonth(Invoice ventilatedInvoice) {
-    if (LocalDateUtils.isInTheSameMonth(
+    if (LocalDateHelper.isInTheSameMonth(
         ventilatedInvoice.getInvoiceDate(),
         appBaseService.getTodayDateTime(ventilatedInvoice.getCompany()).toLocalDate())) {
       return processTotalInvoiced(ventilatedInvoice);
@@ -753,5 +767,46 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       default:
         return "";
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void transitionBetweenPaidStatus(Project project) throws AxelorException {
+    ProjectStatus completedStatus = appProjectService.getCompletedProjectStatus();
+    ProjectStatus completedPaidStatus =
+        appProjectService.getAppProject().getCompletedPaidProjectStatus();
+    if (completedPaidStatus == null) {
+      throw new AxelorException(
+          appProjectService.getAppProject(),
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProjectExceptionMessage.PROJECT_CONFIG_COMPLETED_PAID_PROJECT_STATUS_MISSING));
+    }
+
+    List<Invoice> invoiceList =
+        invoiceRepository.all().filter("self.project = :project").bind("project", project).fetch();
+
+    if (Objects.equals(project.getProjectStatus(), completedStatus)) {
+      if (invoiceList.stream().noneMatch(invoice -> invoice.getAmountRemaining().signum() != 0)) {
+        project.setProjectStatus(completedPaidStatus);
+      }
+    } else if (Objects.equals(project.getProjectStatus(), completedPaidStatus)) {
+      if (invoiceList.stream().anyMatch(invoice -> invoice.getAmountRemaining().signum() != 0)) {
+        project.setProjectStatus(completedStatus);
+      }
+    }
+  }
+
+  @Override
+  public List<String> checkPercentagesOver1000OnTasks(Project project) {
+    BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
+    return project.getProjectTaskList().stream()
+        .filter(
+            projectTask ->
+                projectTask.getPercentageOfProgress().compareTo(percentageLimit) == 0
+                    || projectTask.getPercentageOfConsumption().compareTo(percentageLimit) == 0
+                    || projectTask.getRemainingAmountToDo().compareTo(BigDecimal.valueOf(9999.99))
+                        == 0)
+        .map(ProjectTask::getName)
+        .collect(Collectors.toList());
   }
 }

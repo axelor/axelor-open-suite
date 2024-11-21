@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,7 @@
  */
 package com.axelor.csv;
 
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.base.CaseFormat;
 import java.io.File;
 import java.io.IOException;
@@ -98,7 +98,7 @@ class PrepareCsv {
 
                 count++;
               }
-              CsvTool.csvWriter(
+              CsvHelper.csvWriter(
                   csvDir, csvFileName, ';', StringUtils.join(fieldList, ",").split(","), blankData);
               LOG.info("CSV file prepared: " + csvFileName);
             }

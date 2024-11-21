@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <selection name="contract.status.select">
     <option value="1">Draft</option>
@@ -31,6 +31,13 @@
   <selection name="contract.target.type.select">
     <option value="1">Customer</option>
     <option value="2">Supplier</option>
+    <option value="3">Customer year end bonus</option>
+    <option value="4">Supplier year end bonus</option>
+  </selection>
+
+  <selection name="contract.contract.type.select">
+    <option value="1">Billing contract</option>
+    <option value="2">Framework contract</option>
   </selection>
 
   <selection name="sequence.generic.code.select"
@@ -66,6 +73,10 @@
 
   <selection name="batch.batch.type.select" id="contract.batch.batch.type.select">
     <option value="500">Contract batch</option>
+  </selection>
+
+  <selection name="base.pricing.type.select" id="contract.base.pricing.type.select">
+    <option value="YEB/YER">YEB/YER</option>
   </selection>
 
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -52,6 +52,7 @@ public class ExpenseInvoiceLineServiceProjectImpl extends ExpenseInvoiceLineServ
       invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine, priority * 100 + count));
       count++;
       invoiceLineList.get(invoiceLineList.size() - 1).setProject(expenseLine.getProject());
+      invoiceLineList.get(invoiceLineList.size() - 1).setExpenseLine(expenseLine);
     }
 
     return invoiceLineList;

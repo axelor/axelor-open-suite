@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -29,9 +29,8 @@
     <boolean name="isEmployee" title="Employee"/>
     <boolean name="isContact" title="Contact" default="false"/>
 
-
-    <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language"
-      massUpdate="true"/>
+    <many-to-one name="localization" ref="com.axelor.apps.base.db.Localization"
+      title="Localization" massUpdate="true"/>
 
     <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner"
       title="Mother company" massUpdate="true" index="false"/>
@@ -92,7 +91,7 @@
     <many-to-one name="industrySector" title="Industry sector"
       ref="com.axelor.apps.base.db.IndustrySector" index="false" massUpdate="true"/>
     <integer name="saleTurnover" title="Turnover"/>
-    <string name="registrationCode" title="Registration code"/>
+    <string name="registrationCode" title="Registration number"/>
     <many-to-one name="mainActivity" title="Main Activity"
       ref="com.axelor.apps.base.db.MainActivity"/>
     <string name="taxNbr" title="Tax N°"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -164,7 +164,9 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
     if (currencyFrom != null && currencyTo != null) {
       Pair<LocalDate, Float> pair =
           this.validateAndGetRateWithDate(1, currencyFrom, currencyTo, todayDate);
-      rate = BigDecimal.valueOf(pair.getRight()).setScale(8, RoundingMode.HALF_UP);
+      rate =
+          BigDecimal.valueOf(pair.getRight())
+              .setScale(AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE, RoundingMode.HALF_UP);
       LOG.trace("Currerncy conversion rate: {}", new Object[] {rate});
       return Pair.of(pair.getLeft(), rate);
     } else LOG.trace("Currency from and to must be filled to get rate");

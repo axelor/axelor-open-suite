@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,7 +38,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,11 +56,14 @@ public class AnalyticMoveLineQueryController {
       String query =
           Beans.get(AnalyticMoveLineQueryService.class)
               .getAnalyticMoveLineQuery(analyticMoveLineQuery);
-      List<AnalyticMoveLine> analyticMoveLineList =
-          Beans.get(AnalyticMoveLineRepository.class).all().filter(query).fetch();
-      response.setValue(
-          "__analyticMoveLineList",
-          analyticMoveLineList.stream().map(l -> l.getId()).collect(Collectors.toList()));
+
+      List<Long> analyticMoveLineList =
+          Beans.get(AnalyticMoveLineRepository.class).all().filter(query).select("id").fetch(0, 0)
+              .stream()
+              .map(m -> (Long) m.get("id"))
+              .collect(Collectors.toList());
+
+      response.setValue("__analyticMoveLineList", analyticMoveLineList);
       response.setAttr("filteredAnalyticmoveLinesDashlet", "refresh", true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -71,12 +74,15 @@ public class AnalyticMoveLineQueryController {
     try {
 
       Context context = request.getContext();
-      if (!context.containsKey("_ids") || ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+      AnalyticMoveLineQuery analyticMoveLineQuery =
+          context.getParent().asType(AnalyticMoveLineQuery.class);
+      if (!context.containsKey("_ids")
+          || ObjectUtils.isEmpty(request.getContext().get("_ids"))
+          || ObjectUtils.isEmpty(
+              analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList())) {
         return;
       }
 
-      AnalyticMoveLineQuery analyticMoveLineQuery =
-          context.getParent().asType(AnalyticMoveLineQuery.class);
       List<AnalyticMoveLine> analyticMoveLines =
           Beans.get(AnalyticMoveLineRepository.class)
               .all()
@@ -96,7 +102,11 @@ public class AnalyticMoveLineQueryController {
 
       AnalyticMoveLineQuery analyticMoveLineQuery =
           request.getContext().getParent().asType(AnalyticMoveLineQuery.class);
-
+      if (ObjectUtils.isEmpty(analyticMoveLineQuery.getSearchAnalyticMoveLineQueryParameterList())
+          || ObjectUtils.isEmpty(
+              analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList())) {
+        return;
+      }
       String query =
           Beans.get(AnalyticMoveLineQueryService.class)
               .getAnalyticMoveLineQuery(analyticMoveLineQuery);
@@ -154,7 +164,7 @@ public class AnalyticMoveLineQueryController {
       ActionRequest request, ActionResponse response, boolean isReverseQuery) {
     try {
       AnalyticMoveLineQuery analyticMoveLineQuery =
-          ContextTool.getContextParent(request.getContext(), AnalyticMoveLineQuery.class, 1);
+          ContextHelper.getContextParent(request.getContext(), AnalyticMoveLineQuery.class, 1);
 
       if (analyticMoveLineQuery != null) {
         List<AnalyticAxis> analyticAxisList =
@@ -180,8 +190,8 @@ public class AnalyticMoveLineQueryController {
     try {
       AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
       InvoiceLine invoiceLine =
-          ContextTool.getContextParent(request.getContext(), InvoiceLine.class, 1);
-      MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+          ContextHelper.getContextParent(request.getContext(), InvoiceLine.class, 1);
+      MoveLine moveLine = ContextHelper.getContextParent(request.getContext(), MoveLine.class, 1);
 
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
       List<Long> analyticAccountList = new ArrayList<>();
@@ -223,9 +233,9 @@ public class AnalyticMoveLineQueryController {
           && analyticMoveLine.getAnalyticJournal().getCompany() != null) {
         company = analyticMoveLine.getAnalyticJournal().getCompany();
       } else {
-        company = ContextTool.getFieldFromContextParent(context, "company", Company.class);
+        company = ContextHelper.getFieldFromContextParent(context, "company", Company.class);
         if (company == null) {
-          Move move = ContextTool.getFieldFromContextParent(context, "move", Move.class);
+          Move move = ContextHelper.getFieldFromContextParent(context, "move", Move.class);
           if (move != null) {
             company = move.getCompany();
           }

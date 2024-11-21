@@ -58,7 +58,7 @@
     "webpack-manifest-plugin": "1.1.0",
     "whatwg-fetch": "2.0.3",
     "postcss-flexbugs-fixes": "3.0.0",
-    "react-error-overlay": "^1.0.7",
+    "react-error-overlay": "^1.0.7axelor",
     "sw-precache-webpack-plugin": "0.9.1"
   },
   "proxy": "http://localhost:8080/",

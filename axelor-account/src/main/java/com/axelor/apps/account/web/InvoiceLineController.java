@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -45,11 +45,11 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -65,6 +65,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -125,9 +126,9 @@ public class InvoiceLineController {
     }
 
     try {
-      Beans.get(InvoiceLineService.class).compute(invoice, invoiceLine);
-
-      response.setValues(invoiceLine);
+      Map<String, Object> invoiceLineMap =
+          Beans.get(InvoiceLineService.class).compute(invoice, invoiceLine);
+      response.setValues(invoiceLineMap);
       response.setAttr(
           "priceDiscounted",
           "hidden",
@@ -191,13 +192,13 @@ public class InvoiceLineController {
                           .getInTaxUnitPrice(
                               invoice,
                               invoiceLine,
-                              invoiceLine.getTaxLine(),
+                              invoiceLine.getTaxLineSet(),
                               InvoiceToolService.isPurchase(invoice))
                       : Beans.get(InvoiceLineService.class)
                           .getExTaxUnitPrice(
                               invoice,
                               invoiceLine,
-                              invoiceLine.getTaxLine(),
+                              invoiceLine.getTaxLineSet(),
                               InvoiceToolService.isPurchase(invoice)));
       discounts.remove("price");
       for (Entry<String, Object> entry : discounts.entrySet()) {
@@ -222,14 +223,14 @@ public class InvoiceLineController {
 
     try {
       BigDecimal inTaxPrice = invoiceLine.getInTaxPrice();
-      TaxLine taxLine = invoiceLine.getTaxLine();
+      Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
 
       response.setValue(
           "price",
           Beans.get(TaxService.class)
               .convertUnitPrice(
                   true,
-                  taxLine,
+                  taxLineSet,
                   inTaxPrice,
                   Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
@@ -247,19 +248,21 @@ public class InvoiceLineController {
     Context context = request.getContext();
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+    Invoice invoice = this.getInvoice(request.getContext());
+    invoiceLine.setInvoice(invoice);
 
     try {
       BigDecimal exTaxPrice = invoiceLine.getPrice();
-      TaxLine taxLine = invoiceLine.getTaxLine();
+      Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
 
       response.setValue(
           "inTaxPrice",
           Beans.get(TaxService.class)
               .convertUnitPrice(
                   false,
-                  taxLine,
+                  taxLineSet,
                   exTaxPrice,
-                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
+                  Beans.get(CurrencyScaleService.class).getScale(invoiceLine)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -268,6 +271,9 @@ public class InvoiceLineController {
   @ErrorException
   public void convertUnitPrice(ActionRequest request, ActionResponse response) {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+
+    Invoice invoice = this.getInvoice(request.getContext());
+    invoiceLine.setInvoice(invoice);
 
     response.setValue("inTaxPrice", Beans.get(InvoiceLineService.class).getInTaxPrice(invoiceLine));
   }
@@ -511,11 +517,9 @@ public class InvoiceLineController {
       InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
       Invoice parent = this.getInvoice(context);
-      String userLanguage = AuthUtils.getUser().getLanguage();
 
       Map<String, String> translation =
-          invoiceLineService.getProductDescriptionAndNameTranslation(
-              parent, invoiceLine, userLanguage);
+          invoiceLineService.getProductDescriptionAndNameTranslation(parent, invoiceLine);
 
       String description = translation.get("description");
       String productName = translation.get("productName");
@@ -591,6 +595,17 @@ public class InvoiceLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setScale(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      Invoice invoice = this.getInvoice(request.getContext());
+
+      response.setAttrs(Beans.get(InvoiceLineService.class).setScale(invoiceLine, invoice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

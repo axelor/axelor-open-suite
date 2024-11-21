@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="auth" package="com.axelor.auth.db"/>
 
@@ -70,6 +70,9 @@
 
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 
+    <many-to-one name="localization" ref="com.axelor.apps.base.db.Localization"
+      title="Localization" massUpdate="true"/>
+
     <finder-method name="findByCode" using="code"
       filter="LOWER(self.code) = LOWER(:code)"/>
 
@@ -89,6 +92,7 @@
       <field name="electronicSignature" on="UPDATE"/>
       <field name="group" on="UPDATE"/>
       <field name="language" on="UPDATE"/>
+      <field name="localization" on="UPDATE"/>
       <field name="singleTab" on="UPDATE"/>
       <field name="noHelp" on="UPDATE"/>
       <field name="blocked" on="UPDATE"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -141,9 +141,11 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @param projectTask
    * @return
    */
-  protected BigDecimal getTaskSpentTime(ProjectTask projectTask) {
+  protected BigDecimal getTaskSpentTime(ProjectTask projectTask) throws AxelorException {
     List<TimesheetLine> timesheetLines = getValidatedTimesheetLinesForProjectTask(projectTask);
-    Unit timeUnit = projectTask.getTimeUnit();
+    Unit timeUnit =
+        getTimeUnitForTimesheetLineConversion(
+            projectTask.getTimeUnit(), projectTask.getProject().getProjectTimeUnit());
     BigDecimal spentTime = BigDecimal.ZERO;
 
     for (TimesheetLine timeSheetLine : timesheetLines) {
@@ -151,6 +153,18 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     }
 
     return spentTime;
+  }
+
+  protected Unit getTimeUnitForTimesheetLineConversion(Unit taskUnit, Unit projectUnit)
+      throws AxelorException {
+    if (taskUnit != null) {
+      return taskUnit;
+    } else if (projectUnit != null) {
+      return projectUnit;
+    }
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_INCONSISTENCY,
+        BusinessProjectExceptionMessage.PROJECT_NO_UNIT_FOUND);
   }
 
   /**

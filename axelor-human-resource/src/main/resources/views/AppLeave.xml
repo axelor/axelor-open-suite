@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-leave-config-form" title="App Leave" model="com.axelor.studio.db.AppLeave"
     canDelete="false" canNew="false" width="large">
     <panel name="mainPanel">
+      <field name="firstLeaveDayPeriod" colSpan="6"/>
+      <field name="firstLeaveMonthPeriod" colSpan="6"/>
       <field name="allowNegativeLeaveEmployees" widget="boolean-switch"/>
+      <field name="isPayrollPreparationExportEnabled" widget="boolean-switch"
+        if="__config__.app.getApp('employee')?.getPayrollPreparation()"/>
+      <field name="useWeeklyPlanningCoefficientSelect"/>
+
+    </panel>
+
+    <panel name="schedulePanel" title="Schedules">
+      <button name="schedulerCreationBtn" title="Create or update a scheduler"
+        onClick="action-app-leave-method-open-scheduler-creation-wizard"/>
+      <spacer/>
+      <field name="monthlySchedule" showIf="monthlySchedule" readonly="true"/>
+      <field name="annualSchedule" showIf="annualSchedule" readonly="true"/>
     </panel>
 
     <panel-mail name="mailPanel">
@@ -16,5 +30,9 @@
 
   </form>
 
+  <action-method name="action-app-leave-method-open-scheduler-creation-wizard">
+    <call class="com.axelor.apps.hr.web.AppLeaveController"
+      method="openSchedulerCreationWizard"/>
+  </action-method>
 
 </object-views>

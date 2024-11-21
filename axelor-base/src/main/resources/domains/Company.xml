@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -46,8 +46,8 @@
       massUpdate="true"/>
     <many-to-one name="publicHolidayEventsPlanning"
       ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Planning" massUpdate="true"/>
-    <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language"
-      massUpdate="true"/>
+    <many-to-one name="localization" ref="com.axelor.apps.base.db.Localization"
+      title="Localization" massUpdate="true"/>
 
     <integer name="width" title="Width" min="0"/>
     <integer name="height" title="Height" help="Maximum height should be 60 px." min="0"
@@ -59,7 +59,6 @@
     <string name="timezone" title="Time Zone" selection="company.timezone.select"/>
     <one-to-many name="emailAccountList" ref="com.axelor.message.db.EmailAccount"
       title="Email accounts" mappedBy="company"/>
-    <string name="locale" title="Locale"/>
     <extra-code><![CDATA[
 
 	   	// CATEGORY SELECT
@@ -85,7 +84,7 @@
       <field name="defaultPartnerCategorySelect" on="UPDATE"/>
       <field name="weeklyPlanning" on="UPDATE"/>
       <field name="publicHolidayEventsPlanning" on="UPDATE"/>
-      <field name="language" on="UPDATE"/>
+      <field name="localization" on="UPDATE"/>
       <field name="width" on="UPDATE"/>
       <field name="height" on="UPDATE"/>
       <field name="timezone" on="UPDATE"/>

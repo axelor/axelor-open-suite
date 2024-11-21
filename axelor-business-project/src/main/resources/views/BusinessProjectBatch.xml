@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="business-project-batch-grid" title="Business project batches"
     model="com.axelor.apps.businessproject.db.BusinessProjectBatch">
@@ -26,6 +26,7 @@
       <field name="consolidatePhaseSelect" showIf="actionSelect == 2"
         validIf="actionSelect != 2 || consolidatePhaseSelect"/>
       <field name="deadlineDate" showIf="actionSelect == 2"/>
+      <field name="fromDate" showIf="actionSelect == 5"/>
     </panel>
     <panel name="informationPanel" title="Information">
       <field name="createdOn" title="Created on"/>
@@ -43,6 +44,9 @@
         onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 3"/>
       <button name="backupToProjectHistoryBtn" title="Backup project data to project history"
         onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 4"/>
+      <button name="transitionBetweenPaidStatus"
+        title="Transition the project between paid status"
+        onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 5"/>
     </panel>
   </form>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -10,9 +10,15 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="computeDistanceWithWebService"/>
+    <boolean name="isOrphanExpenseLineManaged" title="Manage orphan expense lines"
+      help="This configuration allows to fill expense line before creating any expense. This process is similar to the mobile application one."/>
+    <boolean name="enableExpenseDeclaration" title="Enable expense declaration"
+      help="Allows external employees to declare expenses. Unlike expense, these declarations do not generate an account move but can be validated before being re-invoiced on a project. External employee costs are reimbursed as part of the payment of a supplier invoice."/>
 
     <track>
       <field name="computeDistanceWithWebService" on="UPDATE"/>
+      <field name="isOrphanExpenseLineManaged" on="UPDATE"/>
+      <field name="enableExpenseDeclaration" on="UPDATE"/>
     </track>
 
   </entity>

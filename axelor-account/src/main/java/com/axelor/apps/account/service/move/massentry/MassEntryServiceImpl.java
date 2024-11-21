@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
@@ -72,7 +73,7 @@ public class MassEntryServiceImpl implements MassEntryService {
 
   @Override
   public MoveLineMassEntry getFirstMoveLineMassEntryInformations(
-      List<MoveLineMassEntry> moveLineList, MoveLineMassEntry inputLine) {
+      List<MoveLineMassEntry> moveLineList, MoveLineMassEntry inputLine, Company company) {
     if (ObjectUtils.notEmpty(moveLineList)) {
       inputLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
       if (inputLine.getTemporaryMoveNumber() <= 0) {
@@ -110,7 +111,7 @@ public class MassEntryServiceImpl implements MassEntryService {
         }
       }
     } else {
-      inputLine = moveLineMassEntryService.createMoveLineMassEntry();
+      inputLine = moveLineMassEntryService.createMoveLineMassEntry(company);
     }
     return inputLine;
   }

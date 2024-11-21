@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.costsheet;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
@@ -51,8 +52,8 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.StringTool;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.StringHelper;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -133,25 +134,22 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     Collections.sort(
         unitCostCalcLineList,
-        new Comparator<UnitCostCalcLine>() {
-          @Override
-          public int compare(
-              UnitCostCalcLine unitCostCalcLine1, UnitCostCalcLine unitCostCalcLine2) {
-            return unitCostCalcLine1
-                .getProduct()
-                .getCode()
-                .compareTo(unitCostCalcLine2.getProduct().getCode());
-          }
-        });
+        (line1, line2) -> line1.getProduct().getCode().compareTo(line2.getProduct().getCode()));
 
     for (UnitCostCalcLine unitCostCalcLine : unitCostCalcLineList) {
-      String[] item = new String[4];
-      item[0] =
-          unitCostCalcLine.getProduct() == null ? "" : unitCostCalcLine.getProduct().getCode();
-      item[1] =
-          unitCostCalcLine.getProduct() == null ? "" : unitCostCalcLine.getProduct().getName();
-      item[2] = unitCostCalcLine.getComputedCost().toString();
-      item[3] = unitCostCalcLine.getCostToApply().toString();
+      String[] item = new String[6];
+      Optional<Product> productOpt = Optional.ofNullable(unitCostCalcLine.getProduct());
+
+      item[0] = productOpt.map(Product::getCode).orElse("");
+      item[1] = productOpt.map(Product::getName).orElse("");
+      item[2] =
+          Optional.ofNullable(unitCostCalcLine.getCompany())
+              .map(Company::getCurrency)
+              .map(Currency::getName)
+              .orElse("");
+      item[3] = unitCostCalcLine.getPreviousCost().toString();
+      item[4] = unitCostCalcLine.getComputedCost().toString();
+      item[5] = unitCostCalcLine.getCostToApply().toString();
 
       list.add(item);
     }
@@ -163,11 +161,13 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     String[] headers = {
       I18n.get("Product_code"),
       I18n.get("Product_name"),
+      I18n.get("Company_currency"),
+      I18n.get("Previous_cost"),
       I18n.get("Computed_cost"),
       I18n.get("Cost_to_apply")
     };
 
-    CsvTool.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
+    CsvHelper.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
       DMSFile dmsFile = Beans.get(MetaFiles.class).attach(is, file.getName(), unitCostCalculation);
@@ -318,7 +318,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     }
 
     List<Integer> productSubTypeSelects =
-        StringTool.getIntegerList(unitCostCalculation.getProductSubTypeSelect());
+        StringHelper.getIntegerList(unitCostCalculation.getProductSubTypeSelect());
 
     if (!productCategorySet.isEmpty()) {
 
@@ -600,7 +600,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
           && !unitCostCalculation.getProductCategorySet().isEmpty()) {
         domain +=
             " AND self.productCategory IN ("
-                + StringTool.getIdListString(unitCostCalculation.getProductCategorySet())
+                + StringHelper.getIdListString(unitCostCalculation.getProductCategorySet())
                 + ")";
       }
 
@@ -608,7 +608,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
           && !unitCostCalculation.getProductFamilySet().isEmpty()) {
         domain +=
             " AND self.productFamily IN ("
-                + StringTool.getIdListString(unitCostCalculation.getProductFamilySet())
+                + StringHelper.getIdListString(unitCostCalculation.getProductFamilySet())
                 + ")";
       }
 
@@ -621,7 +621,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
           " self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
               + unitCostCalculation.getProductSubTypeSelect()
               + ") AND (self.defaultBillOfMaterial.company IN ("
-              + StringTool.getIdListString(unitCostCalculation.getCompanySet())
+              + StringHelper.getIdListString(unitCostCalculation.getCompanySet())
               + ") OR self.id in ("
               + bomsProductsList
               + ")"

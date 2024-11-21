@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid model="com.axelor.apps.intervention.db.RangeType" title="Range type"
+    name="range-type-grid">
+    <field name="name"/>
+    <field name="rangeTypeSelect"/>
+  </grid>
+
+  <form model="com.axelor.apps.intervention.db.RangeType" title="Range type"
+    name="range-type-form">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="rangeTypeSelect"
+        onChange="action-range-type-record-range-type-select-change"/>
+      <panel name="equipmentFamilyPanel" hidden="true"
+        showIf="rangeTypeSelect === 'equipment'" colSpan="12">
+        <field name="equipmentFamily" grid-view="equipment-family-grid"
+          form-view="equipment-family-form" requiredIf="rangeTypeSelect === 'equipment'"/>
+      </panel>
+      <panel name="familyTypePanel" hidden="true" showIf="rangeTypeSelect === 'family'"
+        colSpan="12">
+        <field name="equipmentFamilySet" grid-view="equipment-family-grid"
+          form-view="equipment-family-form" widget="TagSelect" canNew="false"
+          requiredIf="rangeTypeSelect === 'family'" colSpan="12"/>
+      </panel>
+    </panel>
+  </form>
+
+  <action-record name="action-range-type-record-range-type-select-change"
+    model="com.axelor.apps.intervention.db.RangeType">
+    <field name="equipmentFamily" expr="eval:null"/>
+    <field name="equipmentFamilySet" expr="eval:null"/>
+  </action-record>
+
+</object-views>

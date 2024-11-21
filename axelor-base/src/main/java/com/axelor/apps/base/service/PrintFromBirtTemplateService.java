@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,15 +24,20 @@ import com.axelor.db.Model;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface PrintFromBirtTemplateService {
 
   String print(BirtTemplate template, Model model) throws AxelorException;
 
-  public <T extends Model> String getPrintFileLink(
+  <T extends Model> String getPrintFileLink(
       List<Integer> idList, Class<T> contextClass, BirtTemplate birtTemplate)
       throws IOException, AxelorException;
 
-  <T extends Model> File generateBirtTemplate(BirtTemplate birtTemplate, T model)
+  <T extends Model> File generateBirtTemplate(
+      BirtTemplate birtTemplate, T model, Map<String, Object> context)
       throws AxelorException, IOException;
+
+  Set<BirtTemplate> getBirtTemplates(String modelName) throws AxelorException;
 }

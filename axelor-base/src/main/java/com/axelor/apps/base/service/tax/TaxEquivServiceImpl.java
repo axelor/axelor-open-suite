@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,9 +22,13 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TaxEquivServiceImpl implements TaxEquivService {
   @Override
@@ -33,32 +37,46 @@ public class TaxEquivServiceImpl implements TaxEquivService {
       return null;
     }
 
-    BigDecimal taxRate;
+    Set<BigDecimal> taxRateSet;
 
     if (isFromTax) {
-      taxRate =
-          this.getTaxValue(taxEquiv.getToTax())
-              .orElse(this.getTaxValue(taxEquiv.getReverseChargeTax()).orElse(null));
+      taxRateSet =
+          this.getTaxValues(taxEquiv.getToTaxSet())
+              .orElse(this.getTaxValues(taxEquiv.getReverseChargeTaxSet()).orElse(null));
     } else if (isToTax) {
-      taxRate =
-          this.getTaxValue(taxEquiv.getFromTax())
-              .orElse(this.getTaxValue(taxEquiv.getReverseChargeTax()).orElse(null));
+      taxRateSet =
+          this.getTaxValues(taxEquiv.getFromTaxSet())
+              .orElse(this.getTaxValues(taxEquiv.getReverseChargeTaxSet()).orElse(null));
     } else {
-      taxRate =
-          this.getTaxValue(taxEquiv.getFromTax())
-              .orElse(this.getTaxValue(taxEquiv.getToTax()).orElse(null));
+      taxRateSet =
+          this.getTaxValues(taxEquiv.getFromTaxSet())
+              .orElse(this.getTaxValues(taxEquiv.getToTaxSet()).orElse(null));
     }
 
-    if (taxRate == null) {
+    if (ObjectUtils.isEmpty(taxRateSet)) {
       return null;
     } else {
       return String.format(
-          "self.activeTaxLine.value = %s",
-          taxRate.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+          "self.activeTaxLine.value IN %s",
+          taxRateSet.stream()
+              .map(
+                  value ->
+                      value
+                          .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
+                          .toString())
+              .collect(Collectors.joining(",", "(", ")")));
     }
   }
 
-  protected Optional<BigDecimal> getTaxValue(Tax tax) {
-    return Optional.ofNullable(tax).map(Tax::getActiveTaxLine).map(TaxLine::getValue);
+  protected Optional<Set<BigDecimal>> getTaxValues(Set<Tax> taxSet) {
+    if (ObjectUtils.isEmpty(taxSet)) {
+      return Optional.empty();
+    }
+    return Optional.of(
+        taxSet.stream()
+            .map(Tax::getActiveTaxLine)
+            .filter(Objects::nonNull)
+            .map(TaxLine::getValue)
+            .collect(Collectors.toSet()));
   }
 }

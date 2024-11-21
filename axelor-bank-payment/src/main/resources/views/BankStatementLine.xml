@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="bank-statement-line-grid" title="Bank Statement lines"
     model="com.axelor.apps.bankpayment.db.BankStatementLine" orderBy="-operationDate,-sequence">
@@ -12,8 +12,8 @@
     <field name="sequence"/>
     <field name="operationDate"/>
     <field name="valueDate"/>
-    <field name="debit"/>
-    <field name="credit"/>
+    <field name="debit" x-scale="$currencyNumberOfDecimals"/>
+    <field name="credit" x-scale="$currencyNumberOfDecimals"/>
     <field name="currency" grid-view="currency-grid" form-view="currency-form"/>
     <field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form"/>
     <field name="bankDetails.code"/>
@@ -25,25 +25,32 @@
     <field name="reference"/>
     <field name="description" colSpan="12"/>
     <field name="bankStatement"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="bank-statement-line-bank-statement-grid" title="Bank Statement lines"
     model="com.axelor.apps.bankpayment.db.BankStatementLine" orderBy="-operationDate,-sequence">
+    <hilite color="info" if="lineTypeSelect == 1"/>
+    <hilite color="primary" if="lineTypeSelect == 3"/>
+    <hilite color="danger"
+      if="amountRemainToReconcile > 0 &amp;&amp; $number(amountRemainToReconcile) &gt;= $number(debit) &amp;&amp; $number(amountRemainToReconcile) &gt;= $number(credit)"/>
+    <hilite color="warning"
+      if="amountRemainToReconcile > 0 &amp;&amp; $number(amountRemainToReconcile) &lt; $number(debit) &amp;&amp; $number(amountRemainToReconcile) &lt; $number(credit)"/>
+    <hilite color="success" if="amountRemainToReconcile == 0"/>
     <field name="sequence"/>
+    <field name="lineTypeSelect" width="90"/>
     <field name="operationDate"/>
     <field name="valueDate"/>
-    <field name="debit"/>
-    <field name="credit"/>
+    <field name="debit" x-scale="$currencyNumberOfDecimals"/>
+    <field name="credit" x-scale="$currencyNumberOfDecimals"/>
     <field name="currency" grid-view="currency-grid" form-view="currency-form"/>
     <field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form"/>
     <field name="bankDetails.code"/>
-    <field name="operationInterbankCodeLine" grid-view="interbank-code-line-grid"
-      form-view="interbank-code-line-form"/>
-    <field name="rejectInterbankCodeLine" grid-view="interbank-code-line-grid"
-      form-view="interbank-code-line-form"/>
     <field name="origin" width="120"/>
     <field name="reference"/>
     <field name="description" colSpan="12"/>
+    <field name="amountRemainToReconcile" width="90" x-scale="$currencyNumberOfDecimals"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="bank-statement-line-form" title="Bank Statement line"
@@ -52,8 +59,8 @@
       <field name="sequence"/>
       <field name="operationDate"/>
       <field name="valueDate"/>
-      <field name="debit"/>
-      <field name="credit"/>
+      <field name="debit" x-scale="$currencyNumberOfDecimals"/>
+      <field name="credit" x-scale="$currencyNumberOfDecimals"/>
       <field name="currency" grid-view="currency-grid" form-view="currency-form"/>
       <field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form"/>
       <field name="operationInterbankCodeLine" grid-view="interbank-code-line-grid"
@@ -64,6 +71,7 @@
       <field name="reference"/>
       <field name="description" colSpan="12"/>
       <field name="bankStatement"/>
+      <field name="$currencyNumberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
@@ -76,8 +84,10 @@
       <field name="$bankDetails" title="Bank details" type="many-to-one"
         x-target="com.axelor.apps.base.db.BankDetails" x-target-name="fullName" required="true"
         domain="self.company IS NOT null"/>
-      <field name="$exportTypeSelect" title="Export type select" type="string"
-        selection="iadministration.export.type.select" selection-in="['pdf','xlsx','ods']"/>
+      <field name="$bankStatementLinesPrintTemplate" title="Bank statement lines template"
+        type="many-to-one" target="com.axelor.apps.base.db.PrintingTemplate"
+        domain="self.metaModel.name = 'BankStatementLine'" grid-view="printing-template-grid"
+        form-view="printing-template-form"/>
       <button name="printLinesBtn" title="Print"
         onClick="action-bank-payment-bank-statement-line-method-print-lines,close"
         readonlyIf="$bankDetails==null || $fromDate==null || $toDate==null"/>
@@ -98,7 +108,8 @@
     <attribute for="$bankDetails" name="value"
       expr="eval: __user__.activeCompany.defaultBankDetails"/>
     <attribute for="$toDate" name="value" expr="eval: __date__"/>
-    <attribute for="$exportTypeSelect" name="value" expr="eval: 'pdf'"/>
+    <attribute for="$bankStatementLinesPrintTemplate" name="value"
+      expr="eval: __repo__(PrintingTemplate).all().filter(&quot; self.metaModel.name = 'BankStatementLine' &quot;).fetchOne()"/>
   </action-attrs>
 
   <action-method name="action-bank-payment-bank-statement-line-method-print-lines">

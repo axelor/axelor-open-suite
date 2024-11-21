@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,7 @@ package com.axelor.apps.base.service.print;
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Language;
+import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.repo.PrintTemplateLineRepository;
 import com.axelor.auth.AuthUtils;
@@ -65,8 +65,8 @@ public class PrintTemplateLineServiceImpl implements PrintTemplateLineService {
     String resultOfContent = null;
 
     Locale locale =
-        Optional.ofNullable(printTemplateLine.getPrintTemplate().getLanguage())
-            .map(Language::getCode)
+        Optional.ofNullable(printTemplateLine.getPrintTemplate().getLocalization())
+            .map(Localization::getCode)
             .map(Locale::new)
             .orElseGet(AppFilter::getLocale);
     TemplateMaker maker = initMaker(objectId, model, simpleModel, locale);

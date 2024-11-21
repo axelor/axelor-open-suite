@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="global-budget-grid" title="Global Budget"
     model="com.axelor.apps.budget.db.GlobalBudget" orderBy="code">
@@ -9,27 +9,32 @@
     <field name="name"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="totalAmountExpected"/>
-    <field name="totalAmountAvailable"/>
-    <field name="totalAmountCommitted"/>
-    <field name="realizedWithNoPo"/>
-    <field name="realizedWithPo"/>
-    <field name="totalFirmGap"/>
+    <field name="totalAmountExpected" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalAmountAvailable" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalAmountCommitted" x-scale="company.currency.numberOfDecimals"/>
+    <field name="realizedWithNoPo" x-scale="company.currency.numberOfDecimals"/>
+    <field name="realizedWithPo" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalFirmGap" x-scale="company.currency.numberOfDecimals"/>
     <field name="statusSelect"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <form model="com.axelor.apps.budget.db.GlobalBudget" title="Global budget"
-    name="global-budget-form" width="large" onNew="action-global-budget-record-set-defaults"
+    name="global-budget-form" width="large" onNew="action-global-budget-group-onnew"
     onSave="action-global-budget-group-onsave">
 
     <menubar>
       <menu title="See detail" name="seeDetailBtn">
-        <item action="action-global-budget-view-group-lines" title="Groups" showIf="id"/>
-        <item action="action-budget-global-budget-level-view-section-lines" title="Sections"
+        <item action="save,action-global-budget-view-see-budget-levels" title="Sections"
           showIf="id"/>
-        <item action="action-global-budget-view-budget-lines" title="Lines" showIf="id"/>
-        <item action="action-budget-global-view-show-version" title="Versions"
+        <item action="save,action-global-budget-method-view-budget-lines" title="Lines"
+          showIf="id"/>
+        <item action="save,action-budget-global-view-show-version" title="Versions"
           showIf="statusSelect != 0"/>
+      </menu>
+      <menu title="Export global budget" name="exportBtn">
+        <item title="Export global budget" action="save,action-view-global-budget-export"
+          showIf="id"/>
       </menu>
     </menubar>
     <panel name="overViewPanel">
@@ -46,22 +51,23 @@
             readonlyIf="statusSelect != 0 || budgetLevelList.length &gt; 0" required="true"/>
           <field name="company.currency" colSpan="3" readonly="true" hideIf="!company"/>
           <field name="fromDate" colSpan="4" requiredIf="statusSelect == 0"
-            onChange="action-global-budget-validate-from-to-dates"/>
+            onChange="action-global-budget-group-from-to-dates"/>
           <field name="toDate" colSpan="4" requiredIf="statusSelect == 0"
-            onChange="action-global-budget-validate-from-to-dates"/>
+            onChange="action-global-budget-group-from-to-dates"/>
           <button name="updateDatesBtn" colSpan="2" title="Update dates"
-            onClick="save,action-global-budget-method-set-dates"
-            readonlyIf="fromDate == null || toDate == null"/>
+            onClick="save,action-global-budget-method-set-dates" hidden="true"
+            readonlyIf="fromDate == null || toDate == null" css="btn-danger"/>
           <field name="budgetTypeSelect" colSpan="4" readonly="true"/>
           <field name="companyDepartment" colSpan="4" showIf="company"
             domain="self.company = :company OR self.company IS NULL"/>
           <field name="budgetManager" colSpan="4" showIf="company"
             domain="(self.activeCompany IS NULL AND (:company member of self.companySet OR self.companySet IS EMPTY)) OR self.activeCompany = :company"/>
-          <field name="checkAvailableSelect" readonlyIf="statusSelect == 'valid'"
+          <field name="checkAvailableSelect" readonlyIf="statusSelect == 2"
             hideIf="budgetTypeSelect == 2"
             if="__config__.app.getApp('budget').getCheckAvailableBudget()" colSpan="2"/>
           <field name="sourceSelect" colSpan="4" hidden="true"/>
           <field name="fullName" colSpan="4" hidden="true"/>
+          <field name="company.currency.numberOfDecimals" hidden="true"/>
         </panel>
 
         <panel name="versionPanel" colSpan="12" hideIf="statusSelect == 0">
@@ -75,63 +81,77 @@
         </panel>
 
         <field name="comments" widget="html"/>
+        <field name="automaticBudgetComputation" widget="boolean-switch"/>
       </panel>
       <panel name="globalBudgetLevelButtonPanel" colSpan="3" stacked="true">
         <button name="draftBtn" title="draftBtn"
           showIf="(statusSelect == 1 || statusSelect == 2) &amp;&amp; totalAmountCommitted == 0 &amp;&amp; realizedWithNoPo == 0 &amp;&amp; realizedWithPo == 0"
-          colSpan="12" onClick="save, action-global-budget-group-draft-children"/>
+          colSpan="12" onClick="action-global-budget-group-draft-children"/>
         <button name="validateStructureBtn" title="Validate structure"
           showIf="statusSelect == 0 &amp;&amp; totalAmountCommitted == 0 &amp;&amp; realizedWithNoPo == 0 &amp;&amp; realizedWithPo == 0"
           colSpan="12" onClick="action-global-budget-group-validate-structure"/>
         <button name="validBtn" title="validateBtn" showIf="statusSelect == 1" colSpan="12"
-          onClick="action-global-budget-method-validate-children, save"/>
+          onClick="action-global-budget-group-validate"/>
         <button name="archivedBtn" title="archiveBtn" showIf="statusSelect == 2" colSpan="12"
           onClick="action-global-budget-method-archived-btn-onClick, save"/>
 
         <panel name="showBudgetDistributionPanel">
-          <button name="showGlobalOrderLineBtn" hidden="true"
+          <button name="showGlobalOrderLineBtn"
             onClick="action-global-budget-group-view-global-order-line" colSpan="12"
             title="Global budget committed lines"
             showIf="statusSelect == 2 &amp;&amp; (totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"/>
-          <button name="seeBudgetDistributionLines" hidden="true" colSpan="12"
-            onClick="action-budget-distribution-view-show-budget-global-budget-distibution-lines"
-            title="Display distribution lines"
-            showIf="statusSelect == 2 &amp;&amp; (totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"/>
           <button name="seeRealizedWithNoPo"
-            onClick="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-without-po"
+            onClick="action-budget-line-distribution-method-view-show-global-budget-distribution-lines-realized-without-po"
             title="Display realized with no po" colSpan="12"
             showIf="statusSelect == 2 &amp;&amp; realizedWithNoPo != 0"/>
-          <button name="seeRealizedWithPo" hidden="true"
-            onClick="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-with-po"
+          <button name="seeRealizedWithPo"
+            onClick="action-budget-line-distribution-method-view-show-global-budget-distribution-lines-realized-with-po"
             title="Display realized with po" colSpan="12"
             showIf="statusSelect == 2 &amp;&amp; realizedWithPo != 0"/>
-          <button name="seeSimulatedMoves" hidden="true"
-            onClick="action-global-budget-line-distribution-view-show-simulated-moves-lines"
+          <button name="seeSimulatedMoves"
+            onClick="action-global-budget-line-distribution-method-view-show-simulated-moves-lines"
             title="Display simulated moves" colSpan="12"
             showIf="statusSelect == 2 &amp;&amp; simulatedAmount != 0"/>
         </panel>
+        <panel name="projectPanel" title="Project" colSpan="12" sidebar="true"
+          showIf="statusSelect == 2" if="__config__.app.getApp('budget')?.getEnableProject()"
+          canCollapse="true">
+          <field name="projectSet" widget="TagSelect" colSpan="12" form-view="project-form"
+            grid-view="project-grid" canNew="false" canEdit="false" domain="self.company = :company"/>
+        </panel>
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
-        title="Total amounts">
-        <field name="totalAmountExpected"/>
-        <field name="totalAmountAvailable"/>
-        <field name="availableAmountWithSimulated"/>
-        <field name="simulatedAmount"/>
-        <field name="totalAmountCommitted"/>
-        <field name="realizedWithNoPo"/>
-        <field name="realizedWithPo"/>
-        <field name="totalAmountPaid"/>
-        <field name="totalFirmGap"/>
-        <field name="totalAmountRealized" hidden="true"/>
+        title="Total amounts" showIf="id">
+        <field name="totalAmountExpected" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalAmountAvailable" x-scale="company.currency.numberOfDecimals"/>
+        <field name="availableAmountWithSimulated" x-scale="company.currency.numberOfDecimals"/>
+        <field name="simulatedAmount" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalAmountCommitted" x-scale="company.currency.numberOfDecimals"/>
+        <field name="realizedWithNoPo" x-scale="company.currency.numberOfDecimals"/>
+        <field name="realizedWithPo" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalAmountPaid" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalFirmGap" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalAmountRealized" hidden="true"
+          x-scale="company.currency.numberOfDecimals"/>
       </panel>
     </panel>
 
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red"
       showIf="code &amp;&amp; name &amp;&amp; fromDate &amp;&amp; toDate &amp;&amp; budgetTypeSelect">
-      <field name="budgetLevelList" widget="MasterDetail" summary-view="true" title="Groups"
-        colSpan="12" form-view="budget-level-intermediate-form"
-        grid-view="budget-level-included-grid" canEdit="statusSelect == 0"
+      <field name="budgetLevelList" title="Sections" colSpan="12"
+        onChange="action-global-budget-method-clear-budget-list"
+        showIf="(budgetLevelList &amp;&amp; budgetLevelList.length &gt; 0) || !budgetList || budgetList.length == 0"
+        form-view="budget-level-form" grid-view="budget-level-grid" canEdit="statusSelect == 0"
         canNew="statusSelect == 0" canRemove="statusSelect == 0"/>
+      <spacer colSpan="12"/>
+      <label name="orLabel" title="Or" colSpan="12"
+        showIf="((budgetLevelList &amp;&amp; budgetLevelList.length &gt; 0) || !budgetList || budgetList.length == 0) &amp;&amp; (!budgetLevelList || budgetLevelList.length == 0)"/>
+      <spacer colSpan="12"/>
+      <field name="budgetList" title="Budgets" colSpan="12"
+        showIf="!budgetLevelList || budgetLevelList.length == 0" form-view="budget-form"
+        grid-view="budget-grid" canEdit="statusSelect == 0" canNew="statusSelect == 0"
+        canRemove="statusSelect == 0"/>
+
     </panel>
   </form>
 
@@ -156,6 +176,10 @@
     </panel>
   </form>
 
+  <action-group name="action-global-budget-group-onnew">
+    <action name="action-global-budget-record-set-defaults"/>
+    <action name="action-global-budget-method-hide-amounts"/>
+  </action-group>
 
   <action-view name="action-view-global-budget-budget-version-new"
     title="Create New version" model="com.axelor.utils.db.Wizard">
@@ -197,92 +221,20 @@
       method="setBudgetVersionDomain"/>
   </action-method>
 
-  <action-view
-    name="action-global-budget-line-distribution-view-show-simulated-moves-lines"
-    title="Simulated Moves" model="com.axelor.apps.budget.db.BudgetDistribution">
-    <view type="grid" name="budget-distribution-simulated-moves"/>
-    <view type="form" name="budget-distribution-line-form"/>
-    <view-param name="show-toolbar" value="true"/>
-    <view-param name="show-confirm" value="true"/>
-    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId and
-      self.moveLine.move.statusSelect = 5]]></domain>
-    <context name="_globalBudgetId" expr="eval: id"/>
-  </action-view>
-
-  <action-view
-    name="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-with-po"
-    title="Display realized with po" model="com.axelor.apps.budget.db.BudgetDistribution">
-    <view type="grid" name="budget-distribution-realized-with-po-line-grid"/>
-    <view type="form" name="budget-distribution-line-form"/>
-    <view-param name="show-toolbar" value="true"/>
-    <view-param name="show-confirm" value="true"/>
-    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId AND
-      (self.invoiceLine.invoice.purchaseOrder is not null OR self.invoiceLine.invoice.saleOrder is
-      not null) AND self.invoiceLine.invoice.statusSelect =
-      3]]>
-    </domain>
-    <context name="_globalBudgetId" expr="eval: id"/>
-  </action-view>
-
-  <action-view
-    name="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-without-po"
-    title="Display realized with no po" model="com.axelor.apps.budget.db.BudgetDistribution">
-    <view type="grid" name="budget-distribution-realized-without-po-line-grid"/>
-    <view type="form" name="budget-distribution-line-form"/>
-    <view-param name="show-toolbar" value="true"/>
-    <view-param name="show-confirm" value="true"/>
-    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId AND
-      (self.invoiceLine.invoice.purchaseOrder is null AND self.invoiceLine.invoice.saleOrder is null
-      AND self.invoiceLine.invoice.statusSelect = 3)
-      OR (self.moveLine IS NOT NULL AND
-      self.moveLine.move.statusSelect in (2,3) AND
-      self.moveLine.move.invoice IS NULL)]]>
-    </domain>
-    <context name="_globalBudgetId" expr="eval: id"/>
-  </action-view>
-
-  <action-view
-    name="action-budget-distribution-view-show-budget-global-budget-distibution-lines"
-    title="Distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
-    <view type="grid" name="budget-distribution-line-grid"/>
-    <view type="form" name="budget-distribution-line-form"/>
-    <view-param name="show-toolbar" value="true"/>
-    <view-param name="show-confirm" value="true"/>
-    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId]]></domain>
-    <context name="_globalBudgetId" expr="eval: id"/>
-  </action-view>
-
-  <action-group name="action-global-budget-group-view-global-order-line">
-    <action name="action-global-budget-view-global-purchase-order-line"
-      if="__this__?.budgetTypeSelect != 2"/>
-    <action name="action-global-budget-view-global-sale-order-line"
-      if="__this__?.budgetTypeSelect == 2"/>
-  </action-group>
-
-  <action-view name="action-global-budget-view-global-purchase-order-line"
-    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
-    <view type="grid" name="budget-budget-distribution-purchase-order-line-global-dashlet-grid"/>
-    <view type="form" name="budget-budget-distribution-purchase-order-line-dashlet-form"/>
-    <domain><![CDATA[self.purchaseOrderLine != null and
-      self.purchaseOrderLine.purchaseOrder.statusSelect in
-      (2,3,4) and
-      self.budget.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId]]></domain>
-    <context name="_globalId" expr="eval:__this__.id"/>
-  </action-view>
-
-  <action-view name="action-global-budget-view-global-sale-order-line"
-    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
-    <view type="grid" name="budget-budget-distribution-sale-order-line-global-dashlet-grid"/>
-    <view type="form" name="sale-order-budget-distribution-form"/>
-    <domain><![CDATA[self.saleOrderLine != null and
-      self.saleOrderLine.saleOrder.statusSelect in (3,4) and
-      self.budget.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId]]></domain>
-    <context name="_globalId" expr="eval:__this__.id"/>
-  </action-view>
+  <action-method name="action-global-budget-method-show-update-dates-btn">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="showUpdateDatesBtn"/>
+  </action-method>
 
   <action-group name="action-global-budget-group-onsave">
     <action name="action-global-budget-validate-from-to-dates"/>
     <action name="action-global-budget-method-check-budget-dates"/>
+    <action name="action-global-budget-method-show-amounts" if="!id"/>
+  </action-group>
+
+  <action-group name="action-global-budget-group-validate">
+    <action name="action-global-budget-validate-validate"/>
+    <action name="action-global-budget-method-validate-children"/>
+    <action name="save"/>
   </action-group>
 
   <action-group name="action-global-budget-group-validate-structure">
@@ -291,6 +243,11 @@
     <action name="action-global-budget-method-validate-structure"/>
     <action name="save"/>
     <action name="action-method-budget-default-version-new"/>
+  </action-group>
+
+  <action-group name="action-global-budget-group-from-to-dates">
+    <action name="action-global-budget-validate-from-to-dates"/>
+    <action name="action-global-budget-method-show-update-dates-btn"/>
   </action-group>
 
   <action-method name="action-global-budget-method-set-dates">
@@ -313,8 +270,19 @@
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="archiveChildren"/>
   </action-method>
 
+  <action-method name="action-global-budget-method-hide-amounts">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="hideAmounts"/>
+  </action-method>
+
+  <action-method name="action-global-budget-method-show-amounts">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="showAmounts"/>
+  </action-method>
+
+
   <action-group name="action-global-budget-group-draft-children">
+    <action name="action-global-budget-validate-draft"/>
     <action name="action-global-budget-validate-alert-draft-children"/>
+    <action name="save"/>
     <action name="action-global-budget-method-draft-children"/>
   </action-group>
 
@@ -322,6 +290,17 @@
     <alert
       message="Warning, you will delete all versions linked to this budget, do you want to continue ?"/>
   </action-validate>
+
+  <action-validate name="action-global-budget-validate-validate">
+    <alert
+      message="By validating this budget, you will validate children sections and budgets linked too. Do you want to continue ?"/>
+  </action-validate>
+
+  <action-validate name="action-global-budget-validate-draft">
+    <alert
+      message="By drafting this budget, you will set children sections and budgets linked in draft too. Do you want to continue ?"/>
+  </action-validate>
+
 
   <action-method name="action-global-budget-method-draft-children">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="draftChildren"/>
@@ -342,16 +321,6 @@
     <field name="budgetTypeSelect" expr="eval: _budgetTypeSelect"/>
   </action-record>
 
-  <action-view name="action-budget-global-budget-level-view-section-lines"
-    title="Sections" model="com.axelor.apps.budget.db.BudgetLevel">
-    <view type="grid" name="budget-level-node-grid"/>
-    <view type="form" name="budget-section-budget-level-form"/>
-    <view-param name="showArchived" value="true"/>
-    <domain><![CDATA[self.parentBudgetLevel.globalBudget.id = :_globalId]]></domain>
-    <context name="_globalId" expr="eval: id"/>
-    <context name="_isParent" expr="false"/>
-  </action-view>
-
   <action-view name="action-budget-global-view-show-version" title="Budget versions"
     model="com.axelor.apps.budget.db.BudgetVersion">
     <view type="grid" name="budget-version-grid"/>
@@ -361,29 +330,67 @@
     <context name="_globalId" expr="eval: id"/>
   </action-view>
 
-  <action-view name="action-global-budget-view-budget-lines" title="Lines"
-    model="com.axelor.apps.budget.db.Budget">
-    <view type="grid" name="budget-lines-grid"/>
-    <view type="form" name="budget-included-form"/>
-    <view-param name="details-view" value="true"/>
+  <action-group name="action-global-budget-group-view-global-order-line">
+    <action name="action-global-budget-method-view-global-purchase-order-line"
+      if="__this__?.budgetTypeSelect != 2"/>
+    <action name="action-global-budget-method-view-global-sale-order-line"
+      if="__this__?.budgetTypeSelect == 2"/>
+  </action-group>
+
+  <action-method name="action-global-budget-method-view-global-purchase-order-line">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetViewController"
+      method="viewGlobalPurchaseOrderLine"/>
+  </action-method>
+
+  <action-method name="action-global-budget-method-view-global-sale-order-line">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetViewController"
+      method="viewGlobalSaleOrderLine"/>
+  </action-method>
+
+  <action-method name="action-global-budget-method-view-budget-lines">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetViewController"
+      method="viewBudgetLines"/>
+  </action-method>
+
+  <action-method
+    name="action-global-budget-line-distribution-method-view-show-simulated-moves-lines">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetViewController"
+      method="viewSimulatedMove"/>
+  </action-method>
+
+  <action-method
+    name="action-budget-line-distribution-method-view-show-global-budget-distribution-lines-realized-with-po">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetViewController"
+      method="viewRealizedWithPo"/>
+  </action-method>
+
+  <action-method
+    name="action-budget-line-distribution-method-view-show-global-budget-distribution-lines-realized-without-po">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetViewController"
+      method="viewRealizedWithoutPo"/>
+  </action-method>
+
+  <action-method name="action-global-budget-method-clear-budget-list">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="clearBudgetList"/>
+  </action-method>
+
+  <action-view name="action-global-budget-view-see-budget-levels" title="Sections"
+    model="com.axelor.apps.budget.db.BudgetLevel">
+    <view type="tree" name="budget-tree"/>
     <view-param name="showArchived" value="true"/>
-    <domain><![CDATA[self.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId]]></domain>
+    <domain>self.globalBudget.id = :_globalId</domain>
     <context name="_globalId" expr="eval: id"/>
-    <context name="_globalCode" expr="eval:__this__.code"/>
-    <context
-      if="__this__.statusSelect != __repo__(GlobalBudget).GLOBAL_BUDGET_STATUS_SELECT_DRAFT"
-      name="_isReadOnly" expr="true"/>
-    <context name="_typeSelect" expr="eval: 'budget'"/>
   </action-view>
 
-  <action-view name="action-global-budget-view-group-lines" title="Groups"
-    model="com.axelor.apps.budget.db.BudgetLevel">
-    <view type="grid" name="budget-level-included-grid"/>
-    <view type="form" name="budget-group-budget-level-form"/>
-    <view-param name="showArchived" value="true"/>
-    <domain><![CDATA[self.globalBudget.id = :_globalId]]></domain>
-    <context name="_globalId" expr="eval: id"/>
-    <context name="_isParent" expr="false"/>
+  <action-view name="action-view-global-budget-export" title="Global budget export"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="budget-global-budget-export-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_globalBudget" expr="eval: __this__"/>
   </action-view>
+
 
 </object-views>

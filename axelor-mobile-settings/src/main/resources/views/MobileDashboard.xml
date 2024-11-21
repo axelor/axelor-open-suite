@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="mobile-dashboard-grid" title="Mobile dashboard"
+    model="com.axelor.apps.mobilesettings.db.MobileDashboard">
+    <toolbar>
+      <button name="showChartsBtn" title="Show charts" onClick="action.mobile.chart.view"/>
+    </toolbar>
+    <field name="name"/>
+    <field name="appName"/>
+  </grid>
+
+  <form name="mobile-dashboard-form" title="Mobile dashboard"
+    model="com.axelor.apps.mobilesettings.db.MobileDashboard" width="large">
+    <panel name="mainPanel" colSpan="12">
+      <field name="name"/>
+      <field name="appName" colSpan="5"/>
+      <field name="isCustom" colSpan="1" widget="boolean-switch"
+        onChange="action-mobile-dashboard-attrs-empty-fields-on-non-custom-app"/>
+      <field name="menuTitle" hidden="true" showIf="isCustom" colSpan="4"/>
+      <field name="iconName" hidden="true" showIf="isCustom" colSpan="4"/>
+      <field name="menuOrder" hidden="true" showIf="isCustom" colSpan="4"/>
+      <field name="authorizedRoleSet" grid-view="role-grid" form-view="role-form" colSpan="12"
+        canNew="false" canEdit="false" widget="tag-select" placeholder="All"/>
+      <field name="mobileDashboardLineList" grid-view="mobile-dashboard-line-grid"
+        form-view="mobile-dashboard-line-form" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-mobile-dashboard-attrs-empty-fields-on-non-custom-app">
+    <attribute for="menuTitle" name="value" expr="eval: null" if="!isCustom"/>
+    <attribute for="iconName" name="value" expr="eval: null" if="!isCustom"/>
+    <attribute for="menuOrder" name="value" expr="eval: null" if="!isCustom"/>
+  </action-attrs>
+
+</object-views>

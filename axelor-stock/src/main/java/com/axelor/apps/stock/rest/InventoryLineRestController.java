@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,10 +31,7 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
-import java.util.Arrays;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -44,7 +41,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/inventory-line")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -60,7 +56,7 @@ public class InventoryLineRestController {
       @PathParam("id") Long inventoryLineId, InventoryLinePutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Arrays.asList(Inventory.class, InventoryLine.class)).check();
+    new SecurityCheck().writeAccess(InventoryLine.class, inventoryLineId).check();
 
     InventoryLine inventoryLine =
         ObjectFinder.find(InventoryLine.class, inventoryLineId, requestBody.getVersion());
@@ -82,7 +78,10 @@ public class InventoryLineRestController {
   @HttpExceptionHandler
   public Response addLineToInventory(InventoryLinePostRequest requestBody) throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Inventory.class).createAccess(InventoryLine.class).check();
+    new SecurityCheck()
+        .writeAccess(Inventory.class, requestBody.getInventoryId())
+        .createAccess(InventoryLine.class)
+        .check();
 
     InventoryLine inventoryLine =
         Beans.get(InventoryLineService.class)
