@@ -24,7 +24,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ContextHelper;
-
 import java.util.Optional;
 
 public class SaleOrderLineContextHelper {
@@ -33,22 +32,21 @@ public class SaleOrderLineContextHelper {
 
   public static SaleOrder getSaleOrder(Context context, SaleOrderLine saleOrderLine) {
     SaleOrder saleOrder = ContextHelper.getOriginParent(context, SaleOrder.class);
-    if(saleOrder != null) {
+    if (saleOrder != null) {
       return saleOrder;
     }
 
     SaleOrderLineRepository saleOrderLineRepository = Beans.get(SaleOrderLineRepository.class);
 
-    //Line is persisted and is not a subline
+    // Line is persisted and is not a subline
     if (saleOrderLine.getId() != null) {
-      saleOrder =
-              saleOrderLineRepository.find(saleOrderLine.getId()).getSaleOrder();
+      saleOrder = saleOrderLineRepository.find(saleOrderLine.getId()).getSaleOrder();
       if (saleOrder != null) {
         return saleOrder;
       }
     }
 
-    //Line is not persisted
+    // Line is not persisted
     SaleOrderLine saleOrderLine1 = getParentSol(context);
     saleOrderLine1 = saleOrderLineRepository.find(saleOrderLine1.getId());
     saleOrder = saleOrderLine1.getSaleOrder();
@@ -74,7 +72,9 @@ public class SaleOrderLineContextHelper {
       return saleOrderLine.getSaleOrder();
     }
 
-    return Optional.ofNullable(getPersistedParentSol(saleOrderLine)).map(SaleOrderLine::getSaleOrder).orElse(null);
+    return Optional.ofNullable(getPersistedParentSol(saleOrderLine))
+        .map(SaleOrderLine::getSaleOrder)
+        .orElse(null);
   }
 
   protected static SaleOrderLine getPersistedParentSol(SaleOrderLine saleOrderLine) {

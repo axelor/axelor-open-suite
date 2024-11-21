@@ -60,46 +60,46 @@
   </grid>
 
   <grid name="sale-order-line-editable-grid-menu" title="SO lines"
-        model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true"
-        widget="tree-grid" x-tree-field="subSaleOrderLineList"
-        x-tree-field-title="Add a new sale order line" canNew="false">
+    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true"
+    widget="tree-grid" x-tree-field="subSaleOrderLineList"
+    x-tree-field-title="Add a new sale order line" canNew="false">
 
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
-           width="51"/>
+      width="51"/>
     <button name="addToCartBtn" title="Add to cart"
-            onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
-            if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
-            readonlyIf="!product || typeSelect != 0"/>
+      onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
+      if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
+      readonlyIf="!product || typeSelect != 0"/>
     <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"/>
     <field name="product" canEdit="false"
-           onChange="action-sale-order-line-method-get-product-information"
-           onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
-           grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
+      onChange="action-sale-order-line-method-get-product-information"
+      onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
+      grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
     <field name="product" canEdit="false"
-           onChange="action-sale-order-line-method-get-product-information"
-           onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
-           grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
+      onChange="action-sale-order-line-method-get-product-information"
+      onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
+      grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange"
-           validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
+      validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
     <field name="price" colSpan="3"
-           readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable"
-           onChange="action-sale-order-line-method-onchange-price" hidden="true"
-           x-scale="$nbDecimalDigitForUnitPrice"/>
+      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable"
+      onChange="action-sale-order-line-method-onchange-price" hidden="true"
+      x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
-           onChange="action-sale-order-line-method-discount-type-onchange"/>
+      onChange="action-sale-order-line-method-discount-type-onchange"/>
     <field name="discountAmount" colSpan="3"
-           readonlyIf="$nonNegotiable || discountTypeSelect == 0"
-           validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
-           onChange="action-sale-order-line-method-discount-amount-onchange"
-           x-scale="$nbDecimalDigitForUnitPrice"/>
+      readonlyIf="$nonNegotiable || discountTypeSelect == 0"
+      validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
+      onChange="action-sale-order-line-method-discount-amount-onchange"
+      x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="taxLineSet" canEdit="false" colSpan="6"
-           readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
-           onChange="action-sale-order-line-method-tax-line-onchange"
-           domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
-           form-view="tax-line-form" widget="TagSelect"/>
+      readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
+      onChange="action-sale-order-line-method-tax-line-onchange"
+      domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
+      form-view="tax-line-form" widget="TagSelect"/>
     <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
@@ -804,7 +804,7 @@
       expr="eval: _config__.app.getApp('sale')?.getIsSOLPriceTotalOfSubLines()"/>
   </action-attrs>
   <action-view name="sc.root.sale.order.lines" title="Sale order lines"
-               model="com.axelor.apps.sale.db.SaleOrderLine">
+    model="com.axelor.apps.sale.db.SaleOrderLine">
     <view type="grid" name="sale-order-line-editable-grid-menu"/>
     <view type="form" name="sale-order-line-form"/>
     <domain>self.saleOrder.id = :_id</domain>
