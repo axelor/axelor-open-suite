@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,23 +18,28 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.studio.app.service.AppService;
+import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.google.inject.Inject;
 
 public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementRepository {
 
-  @Inject private AppService appService;
+  @Inject
+  public PurchaseOrderSupplychainRepository(
+      AppBaseService appBaseService, PurchaseOrderSequenceService purchaseOrderSequenceService) {
+    super(appBaseService, purchaseOrderSequenceService);
+  }
 
   @Override
   public PurchaseOrder copy(PurchaseOrder entity, boolean deep) {
 
     PurchaseOrder copy = super.copy(entity, deep);
 
-    if (!appService.isApp("supplychain")) {
+    if (!appBaseService.isApp("supplychain")) {
       return copy;
     }
 

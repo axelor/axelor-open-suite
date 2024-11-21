@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,16 +23,20 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.umr.UmrService;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.BlockingRepository;
@@ -43,13 +47,15 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +64,20 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected BatchBankPaymentService batchBankPaymentService;
+  protected PaymentScheduleLineRepository paymentScheduleLineRepo;
+  protected UmrService umrService;
+
+  @Inject
+  public BatchDirectDebitPaymentSchedule(
+      BatchBankPaymentService batchBankPaymentService,
+      PaymentScheduleLineRepository paymentScheduleLineRepo,
+      UmrService umrService) {
+    this.batchBankPaymentService = batchBankPaymentService;
+    this.paymentScheduleLineRepo = paymentScheduleLineRepo;
+    this.umrService = umrService;
+  }
 
   @Override
   protected void process() {
@@ -206,8 +226,13 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                 == PaymentModeRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT) {
               Partner partner = paymentSchedule.getPartner();
               Preconditions.checkNotNull(partner, I18n.get("Partner is missing."));
-              Preconditions.checkNotNull(
-                  partner.getActiveUmr(), I18n.get("Partner active UMR is missing."));
+              Company company =
+                  Optional.of(batch)
+                      .map(Batch::getAccountingBatch)
+                      .map(AccountingBatch::getCompany)
+                      .orElse(null);
+              Umr activeUmr = umrService.getActiveUmr(company, partner);
+              Preconditions.checkNotNull(activeUmr, I18n.get("Partner active UMR is missing."));
             }
           }
 

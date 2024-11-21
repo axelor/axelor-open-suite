@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="bank-statement-grid" title="Bank Statements"
     model="com.axelor.apps.bankpayment.db.BankStatement" orderBy="-toDate,name" canDelete="false">
@@ -10,12 +10,9 @@
         onClick="account-bank-statement-view-bank-statement-lines"/>
       <button name="deleteStatementBtn" title="Delete" icon="fa-trash"
         onClick="action-bank-statement-method-delete-multiple-statement"/>
+      <button name="printBtn" hidden="true" onClick=""/>
     </toolbar>
     <field name="id" hidden="false" width="120"/>
-    <field name="ebicsPartner.ebicsBank" width="250"
-      if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
-    <field name="ebicsPartner" width="150"
-      if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
     <field name="bankStatementFileFormat"/>
     <field name="fromDate" width="120"/>
     <field name="toDate" width="120"/>
@@ -27,7 +24,7 @@
     model="com.axelor.apps.bankpayment.db.BankStatement" width="large" canDelete="false">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print" readonlyIf="statusSelect &lt; 2"
-        onClick="action-bank-statement-validate-file-format,action-method-print-birt"/>
+        onClick="action-bank-statement-validate-file-format,action-method-print-template"/>
       <button name="generateBankReconciliationBtn" title="Run bank reconciliation"
         readonlyIf="statusSelect &lt; 2"
         onClick="action-bank-statement-method-run-bank-reconciliation"/>
@@ -42,10 +39,6 @@
           <field name="bankStatementFile" widget="binary-link" canNew="true"/>
           <field name="fromDate"/>
           <field name="toDate"/>
-          <field name="ebicsPartner"
-            if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
-          <field name="ebicsPartner.ebicsBank"
-            if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
           <field name="bankStatementFileFormat"/>
           <field name="bankStatementFileFormat.statementFileFormatSelect" hidden="true"/>
         </panel>
@@ -144,15 +137,5 @@
     <error message="Unknown format for file import process"
       if="['camt.xxx.cfonb120.stm','camt.xxx.cfonb120.rep'].indexOf(bankStatementFileFormat.statementFileFormatSelect) == -1"/>
   </action-validate>
-
-  <!-- SEARCH FILTERS -->
-
-  <search-filters name="bank-statement-filters"
-    model="com.axelor.apps.bankpayment.db.BankStatement" title="Bank Statement filters">
-    <field name="ebicsPartner.ebicsBank" hidden="true"
-      if="eval: !__config__.app.getApp('bank-payment').enableEbicsModule"/>
-    <field name="ebicsPartner" hidden="true"
-      if="eval: !__config__.app.getApp('bank-payment').enableEbicsModule"/>
-  </search-filters>
 
 </object-views>

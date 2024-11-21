@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="payment-schedule-line-grid" title="Schedule lines"
     model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate,scheduleLineSeq,id">
@@ -127,9 +127,9 @@
       <field name="fromReject" if-module="axelor-bank-payment"
         if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" readonly="true"
         showTitle="false">
-        <viewer><![CDATA[
-                <span class="label label-warning" x-translate ng-show="record.fromReject">From rejection</span>
-              ]]></viewer>
+        <viewer>
+          <![CDATA[<>{fromReject && <Badge bg="warning">{_t('From rejection')}</Badge>}</>]]>
+        </viewer>
       </field>
       <field name="statusSelect" readonly="true"/>
     </panel>
@@ -154,10 +154,12 @@
       if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
     <field name="advanceMoveLine" hidden="true"
       if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
-    <filter title="Rejected schedule lines">
+    <filter name="payment-schedule-line-filters-rejected-schedule-lines"
+      title="Rejected schedule lines">
       <domain>self.rejectDate IS NOT NULL</domain>
     </filter>
-    <filter title="Schedule lines created from reject">
+    <filter name="payment-schedule-line-filters-schedule-lines-created-from-reject"
+      title="Schedule lines created from reject">
       <domain>self.fromReject = true</domain>
     </filter>
   </search-filters>

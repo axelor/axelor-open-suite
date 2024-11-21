@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
@@ -113,10 +114,33 @@ public class DuplicateObjectsService {
         }
       }
     }
+    mergeDuplicates(originalObjct, duplicateObjects);
     JPA.em().flush();
     JPA.em().clear();
     for (Object obj : getDuplicateObject(selectedIds, modelName)) {
       JPA.em().remove(obj);
+    }
+  }
+
+  protected void mergeDuplicates(Object originalObjct, List<Object> duplicateObjects) {
+    Mapper mapper = Mapper.of(originalObjct.getClass());
+
+    for (Property property : mapper.getProperties()) {
+      final String fieldName = property.getName();
+      final Object value = mapper.get(originalObjct, fieldName);
+
+      if (ObjectUtils.notEmpty(value) || property.isPrimary() || property.isVersion()) {
+        continue;
+      }
+
+      for (Object duplicateObject : duplicateObjects) {
+        Object duplicateObjFieldValue = mapper.get(duplicateObject, fieldName);
+        if (ObjectUtils.notEmpty(duplicateObjFieldValue)) {
+          mapper.set(originalObjct, fieldName, duplicateObjFieldValue);
+          mapper.set(duplicateObject, fieldName, null);
+          break;
+        }
+      }
     }
   }
 

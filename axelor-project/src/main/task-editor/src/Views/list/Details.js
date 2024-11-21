@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,7 +35,7 @@ import {
 } from '../../Services/api';
 import { useTaskEditor } from './Context';
 import useOpenClose from './useOpenClose';
-import { getCompletedStatus, filesToItems, getAttachmentBlob, getHeaders, getStatus, translate } from '../../utils';
+import { filesToItems, getAttachmentBlob, getHeaders, translate, getStatus } from '../../utils';
 import { makeStyles } from '@material-ui/core/styles';
 import { mobileDrawerWidth, drawerWidth, TOOLBAR_HEIGHT } from '../../constants';
 import ConvertToTaskProject from './menu/ConvertToTaskProject';
@@ -136,7 +136,7 @@ function Details({
       if (isCompleted) {
         status = taskInView.statusBeforeComplete;
       } else {
-        status = getCompletedStatus(project);
+        status = project?.completedTaskStatus;
       }
       let res = await updateTask({
         ...taskInView,

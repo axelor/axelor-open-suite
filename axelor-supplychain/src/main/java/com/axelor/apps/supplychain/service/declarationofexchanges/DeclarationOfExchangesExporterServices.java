@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,11 +19,12 @@
 package com.axelor.apps.supplychain.service.declarationofexchanges;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.stock.db.Regime;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -36,7 +37,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.io.MoreFiles;
 import com.google.inject.Inject;
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
         NAME_SERVICES,
         new ArrayList<>(Arrays.asList(LINE_NUM, FISC_VAL, TAKER)));
     this.supplyChainConfigService = Beans.get(SupplyChainConfigService.class);
-    this.birtTemplateService = Beans.get(BirtTemplateService.class);
+    this.printingTemplatePrintService = Beans.get(PrintingTemplatePrintService.class);
   }
 
   // TODO: factorize code to parent.
@@ -128,7 +129,7 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
 
     try {
       MoreFiles.createParentDirectories(path);
-      CsvTool.csvWriter(
+      CsvHelper.csvWriter(
           path.getParent().toString(),
           path.getFileName().toString(),
           ';',
@@ -147,19 +148,17 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
     SupplyChainConfig supplyChainConfig =
         supplyChainConfigService.getSupplyChainConfig(declarationOfExchanges.getCompany());
 
-    BirtTemplate declarationOfExchServicesBirtTemplate =
-        supplyChainConfig.getDeclarationOfExchServicesBirtTemplate();
-    if (ObjectUtils.isEmpty(declarationOfExchServicesBirtTemplate)) {
+    PrintingTemplate declarationOfExchServicesPrintTemplate =
+        supplyChainConfig.getDeclarationOfExchServicesPrintTemplate();
+    if (ObjectUtils.isEmpty(declarationOfExchServicesPrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
-    return birtTemplateService.generateBirtTemplateLink(
-        declarationOfExchServicesBirtTemplate,
-        declarationOfExchanges,
-        null,
+    return printingTemplatePrintService.getPrintLink(
+        declarationOfExchServicesPrintTemplate,
+        new PrintingGenFactoryContext(declarationOfExchanges),
         getTitle(),
-        true,
-        declarationOfExchanges.getFormatSelect());
+        true);
   }
 }

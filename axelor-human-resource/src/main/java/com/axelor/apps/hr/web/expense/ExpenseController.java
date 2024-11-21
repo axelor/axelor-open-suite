@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -86,8 +86,8 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.StringTool;
 import com.axelor.utils.db.Wizard;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.io.IOException;
@@ -563,17 +563,20 @@ public class ExpenseController {
       return;
     }
 
-    Long empId;
+    Long empId = expenseLine.getEmployee().getId();
     if (expenseLine.getExpense() != null) {
       setExpense(request, expenseLine);
     }
     Expense expense = expenseLine.getExpense();
 
-    if (expense != null && expenseLine.getEmployee() != null) {
-      empId = expense.getEmployee().getId();
-    } else {
-      empId = request.getContext().getParent().asType(Expense.class).getEmployee().getId();
+    if (empId == null) {
+      if (expense != null && expenseLine.getEmployee() != null) {
+        empId = expense.getEmployee().getId();
+      } else {
+        empId = request.getContext().getParent().asType(Expense.class).getEmployee().getId();
+      }
     }
+
     Employee employee = Beans.get(EmployeeRepository.class).find(empId);
 
     BigDecimal amount = BigDecimal.ZERO;
@@ -605,7 +608,7 @@ public class ExpenseController {
         response.setAttr(
             "kilometricAllowParam",
             "domain",
-            "self.id IN (" + StringTool.getIdListString(kilometricAllowParamList) + ")");
+            "self.id IN (" + StringHelper.getIdListString(kilometricAllowParamList) + ")");
       }
 
       KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
@@ -659,7 +662,7 @@ public class ExpenseController {
       response.setAttr(
           "kilometricAllowParam",
           "domain",
-          "self.id IN (" + StringTool.getIdListString(kilometricAllowParamList) + ")");
+          "self.id IN (" + StringHelper.getIdListString(kilometricAllowParamList) + ")");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -679,32 +682,31 @@ public class ExpenseController {
 
       Context context = request.getContext();
       ExpenseLine expenseLine = context.asType(ExpenseLine.class);
+      BigDecimal distance = BigDecimal.ZERO;
+      BigDecimal amount = BigDecimal.ZERO;
 
       if (Strings.isNullOrEmpty(expenseLine.getFromCity())
-          || Strings.isNullOrEmpty(expenseLine.getToCity())) {
+          || Strings.isNullOrEmpty(expenseLine.getToCity())
+          || expenseLine.getKilometricTypeSelect() == null
+          || expenseLine.getKilometricTypeSelect() == 0) {
+        response.setValue("distance", distance);
+        response.setValue("totalAmount", amount);
+        response.setValue("untaxedAmount", amount);
         return;
       }
 
       KilometricService kilometricService = Beans.get(KilometricService.class);
-      BigDecimal distance = kilometricService.computeDistance(expenseLine);
+      distance = kilometricService.computeDistance(expenseLine);
       expenseLine.setDistance(distance);
       response.setValue("distance", distance);
 
       // Compute kilometric expense.
 
-      if (expenseLine.getKilometricAllowParam() == null
-          || expenseLine.getExpenseDate() == null
-          || expenseLine.getKilometricTypeSelect() == 0) {
+      if (expenseLine.getKilometricAllowParam() == null || expenseLine.getExpenseDate() == null) {
         return;
       }
 
-      Expense expense = expenseLine.getExpense();
-
-      if (expense == null) {
-        expense = context.getParent().asType(Expense.class);
-      }
-
-      Employee employee = expense.getEmployee();
+      Employee employee = expenseLine.getEmployee();
 
       if (employee == null) {
         throw new AxelorException(
@@ -713,7 +715,7 @@ public class ExpenseController {
             AuthUtils.getUser().getName());
       }
 
-      BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);
+      amount = kilometricService.computeKilometricExpense(expenseLine, employee);
       response.setValue("totalAmount", amount);
       response.setValue("untaxedAmount", amount);
 

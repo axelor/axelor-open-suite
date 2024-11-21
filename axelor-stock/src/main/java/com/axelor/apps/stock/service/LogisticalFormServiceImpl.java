@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,10 +20,13 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
@@ -45,8 +48,8 @@ import com.axelor.rpc.Context;
 import com.axelor.rpc.ContextEntity;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
-import com.axelor.utils.QueryBuilder;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.QueryBuilder;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -70,11 +73,20 @@ import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
 
-  @Inject ProductRepository productRepository;
+  protected ProductRepository productRepository;
+  protected UnitConversionService unitConversionService;
+
+  @Inject
+  public LogisticalFormServiceImpl(
+      ProductRepository productRepository, UnitConversionService unitConversionService) {
+    this.productRepository = productRepository;
+    this.unitConversionService = unitConversionService;
+  }
 
   @Override
   public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove)
@@ -525,7 +537,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     List<StockMove> fullySpreadStockMoveList = getFullySpreadStockMoveList(logisticalForm);
 
     if (!fullySpreadStockMoveList.isEmpty()) {
-      String idListString = StringTool.getIdListString(fullySpreadStockMoveList);
+      String idListString = StringHelper.getIdListString(fullySpreadStockMoveList);
       domainList.add(String.format("self.id NOT IN (%s)", idListString));
     }
 
@@ -671,24 +683,34 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     return logisticalFormLine;
   }
 
-  public void updateProductNetMass(LogisticalForm logisticalForm) {
-    BigDecimal totalNetMass = BigDecimal.ZERO;
-    if (logisticalForm.getLogisticalFormLineList() != null) {
-      for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
-        if (logisticalFormLine.getStockMoveLine() != null
-            && logisticalFormLine.getStockMoveLine().getProduct() != null
-            && logisticalFormLine
-                .getTypeSelect()
-                .equals(LogisticalFormLineRepository.TYPE_DETAIL)) {
-          Product product =
-              productRepository.find(logisticalFormLine.getStockMoveLine().getProduct().getId());
-          logisticalFormLine.setUnitNetMass(product.getNetMass());
-          totalNetMass =
-              totalNetMass.add(logisticalFormLine.getQty().multiply(product.getNetMass()));
-        }
-      }
-      logisticalForm.setTotalNetMass(totalNetMass);
+  public void updateProductNetMass(LogisticalForm logisticalForm) throws AxelorException {
+    List<LogisticalFormLine> logisticalFormLineList = logisticalForm.getLogisticalFormLineList();
+    if (CollectionUtils.isEmpty(logisticalFormLineList)) {
+      return;
     }
+    BigDecimal totalNetMass = BigDecimal.ZERO;
+    Unit endUnit =
+        Optional.ofNullable(logisticalForm.getCompany())
+            .map(Company::getStockConfig)
+            .map(StockConfig::getCustomsMassUnit)
+            .orElse(null);
+
+    for (LogisticalFormLine logisticalFormLine : logisticalFormLineList) {
+      if (logisticalFormLine.getStockMoveLine() != null
+          && logisticalFormLine.getStockMoveLine().getProduct() != null
+          && logisticalFormLine.getTypeSelect().equals(LogisticalFormLineRepository.TYPE_DETAIL)) {
+        Product product =
+            productRepository.find(logisticalFormLine.getStockMoveLine().getProduct().getId());
+        BigDecimal netMass = product.getNetMass();
+        Unit startUnit = product.getMassUnit();
+        if (endUnit != null) {
+          netMass = unitConversionService.convert(startUnit, endUnit, netMass, 10, product);
+        }
+        logisticalFormLine.setUnitNetMass(netMass);
+        totalNetMass = totalNetMass.add(logisticalFormLine.getQty().multiply(netMass));
+      }
+    }
+    logisticalForm.setTotalNetMass(totalNetMass);
   }
 
   @Transactional(rollbackOn = {Exception.class})

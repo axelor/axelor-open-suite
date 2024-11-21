@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -51,7 +51,7 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
-import com.axelor.utils.MetaTool;
+import com.axelor.utils.helpers.MetaHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
@@ -105,12 +105,19 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       JsonContext jsonIndicators,
       Long saleOrderId)
       throws AxelorException {
-    if (configurator.getConfiguratorCreator() == null) {
+    ConfiguratorCreator configuratorCreator = configurator.getConfiguratorCreator();
+    if (configuratorCreator == null) {
       return;
     }
-    List<MetaJsonField> indicators = configurator.getConfiguratorCreator().getIndicators();
+    List<MetaJsonField> indicators = configuratorCreator.getIndicators();
     addSpecialAttributeParentSaleOrderId(jsonAttributes, saleOrderId);
     indicators = filterIndicators(configurator, indicators);
+
+    List<MetaJsonField> attributes = configuratorCreator.getAttributes();
+    for (MetaJsonField metaJsonField : attributes) {
+      jsonAttributes.putIfAbsent(metaJsonField.getName(), metaJsonField.getDefaultValue());
+    }
+
     for (MetaJsonField indicator : indicators) {
       try {
         String indicatorName = indicator.getName();
@@ -158,7 +165,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
 
     String wantedClassName;
-    String wantedType = MetaTool.jsonTypeToType(indicator.getType());
+    String wantedType = MetaHelper.jsonTypeToType(indicator.getType());
 
     // do not check one-to-many or many-to-many
     if (wantedType.equals("ManyToMany")
@@ -169,7 +176,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
     String calculatedValueClassName =
         configuratorFormulaService.getCalculatedClassName(calculatedValue);
-    wantedClassName = MetaTool.getWantedClassName(indicator, wantedType);
+    wantedClassName = MetaHelper.getWantedClassName(indicator, wantedType);
     if (calculatedValueClassName.equals("ZonedDateTime")
         && wantedClassName.equals("LocalDateTime")) {
       return;
@@ -487,7 +494,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.CONFIGURATOR_ONE_TO_MANY_WITHOUT_MAPPED_BY_UNSUPPORTED));
     }
-    return Mapper.of(Class.forName(MetaTool.computeFullClassName(metaField))).getSetter(mappedBy);
+    return Mapper.of(Class.forName(MetaHelper.computeFullClassName(metaField))).getSetter(mappedBy);
   }
 
   /**
@@ -535,7 +542,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     if (value != null) {
       Mapper mapper = Mapper.of(parentModel.getClass());
       try {
-        String className = MetaTool.computeFullClassName(metaField);
+        String className = MetaHelper.computeFullClassName(metaField);
         Model manyToOneDbValue = JPA.find((Class<Model>) Class.forName(className), value.getId());
         mapper.set(parentModel, metaField.getName(), manyToOneDbValue);
       } catch (Exception e) {
@@ -550,7 +557,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     if (values != null) {
       Mapper mapper = Mapper.of(parentModel.getClass());
       try {
-        String className = MetaTool.computeFullClassName(metaField);
+        String className = MetaHelper.computeFullClassName(metaField);
         Set<Model> dbValues = new HashSet<>();
         for (Model value : values) {
           Model dbValue = JPA.find((Class<Model>) Class.forName(className), value.getId());

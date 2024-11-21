@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,16 +19,17 @@
 package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineService;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
 import com.google.inject.Inject;
 
 public class BankStatementManagementRepository extends BankStatementRepository {
 
-  protected BankStatementLineService bankStatementLineService;
+  protected BankStatementLineDeleteService bankStatementLineDeleteService;
 
   @Inject
-  public BankStatementManagementRepository(BankStatementLineService bankStatementLineService) {
-    this.bankStatementLineService = bankStatementLineService;
+  public BankStatementManagementRepository(
+      BankStatementLineDeleteService bankStatementLineDeleteService) {
+    this.bankStatementLineDeleteService = bankStatementLineDeleteService;
   }
 
   @Override
@@ -40,7 +41,7 @@ public class BankStatementManagementRepository extends BankStatementRepository {
 
   @Override
   public void remove(BankStatement entity) {
-    bankStatementLineService.removeBankReconciliationLines(entity);
+    bankStatementLineDeleteService.deleteBankStatementLines(entity);
     super.remove(entity);
   }
 }

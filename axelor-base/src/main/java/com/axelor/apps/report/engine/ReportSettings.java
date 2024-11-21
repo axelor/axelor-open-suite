@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,7 @@ import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.studio.app.service.AppService;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.collect.Maps;
 import java.io.File;
 import java.io.FileInputStream;
@@ -143,7 +143,7 @@ public class ReportSettings {
             .replace("${date}", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
             .replace("${time}", LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss")));
 
-    this.outputName = StringTool.getFilename(this.outputName);
+    this.outputName = StringHelper.getFilename(this.outputName);
   }
 
   protected void computeFileName() {
@@ -250,9 +250,9 @@ public class ReportSettings {
   public static String getPrintingLocale(Partner partner) {
 
     if (partner != null) {
-      return Beans.get(PartnerServiceImpl.class).getPartnerLanguageCode(partner);
+      return Beans.get(PartnerServiceImpl.class).getPartnerLocale(partner);
     } else {
-      return Beans.get(UserService.class).getLanguage();
+      return Beans.get(UserService.class).getLocalizationCode();
     }
   }
 

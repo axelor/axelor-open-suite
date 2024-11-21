@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceF
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -52,7 +53,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,11 +78,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected DateService dateService;
 
   protected FixedAssetLineService fixedAssetLineService;
+  protected CurrencyScaleService currencyScaleService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected static final int CALCULATION_SCALE = 20;
-  protected static final int RETURNED_SCALE = 2;
 
   @Inject
   public FixedAssetServiceImpl(
@@ -93,7 +96,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetGenerationService fixedAssetGenerationService,
       FixedAssetLineGenerationService fixedAssetLineGenerationService,
       FixedAssetDateService fixedAssetDateService,
-      DateService dateService) {
+      DateService dateService,
+      CurrencyScaleService currencyScaleService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
@@ -105,6 +109,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDateService = fixedAssetDateService;
     this.dateService = dateService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -115,7 +120,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       int disposalQtySelect,
       BigDecimal disposalQty,
       Boolean generateSaleMove,
-      TaxLine saleTaxLine,
+      Set<TaxLine> saleTaxLineSet,
       Integer disposalTypeSelect,
       BigDecimal disposalAmount,
       AssetDisposalReason assetDisposalReason,
@@ -123,7 +128,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       throws AxelorException {
 
     this.checkFixedAssetBeforeDisposal(
-        fixedAsset, disposalDate, disposalQtySelect, disposalQty, generateSaleMove, saleTaxLine);
+        fixedAsset, disposalDate, disposalQtySelect, disposalQty, generateSaleMove, saleTaxLineSet);
 
     int transferredReason =
         this.computeTransferredReason(
@@ -138,14 +143,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             transferredReason,
             assetDisposalReason,
             comments);
-    if (generateSaleMove && saleTaxLine != null) {
+    if (generateSaleMove && CollectionUtils.isNotEmpty(saleTaxLineSet)) {
       if (createdFixedAsset != null) {
 
         fixedAssetLineMoveService.generateSaleMove(
-            createdFixedAsset, saleTaxLine, disposalAmount, disposalDate);
+            createdFixedAsset, saleTaxLineSet, disposalAmount, disposalDate);
       } else {
         fixedAssetLineMoveService.generateSaleMove(
-            fixedAsset, saleTaxLine, disposalAmount, disposalDate);
+            fixedAsset, saleTaxLineSet, disposalAmount, disposalDate);
       }
     }
     return createdFixedAsset;
@@ -361,27 +366,23 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     if (fixedAsset.getGrossValue() != null) {
       fixedAsset.setGrossValue(
-          prorata
-              .multiply(fixedAsset.getGrossValue())
-              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+          currencyScaleService.getCompanyScaledValue(
+              fixedAsset, prorata.multiply(fixedAsset.getGrossValue())));
     }
     if (fixedAsset.getResidualValue() != null) {
       fixedAsset.setResidualValue(
-          prorata
-              .multiply(fixedAsset.getResidualValue())
-              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+          currencyScaleService.getCompanyScaledValue(
+              fixedAsset, prorata.multiply(fixedAsset.getResidualValue())));
     }
     if (fixedAsset.getAccountingValue() != null) {
       fixedAsset.setAccountingValue(
-          prorata
-              .multiply(fixedAsset.getAccountingValue())
-              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+          currencyScaleService.getCompanyScaledValue(
+              fixedAsset, prorata.multiply(fixedAsset.getAccountingValue())));
     }
     if (fixedAsset.getCorrectedAccountingValue() != null) {
       fixedAsset.setCorrectedAccountingValue(
-          prorata
-              .multiply(fixedAsset.getCorrectedAccountingValue())
-              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+          currencyScaleService.getCompanyScaledValue(
+              fixedAsset, prorata.multiply(fixedAsset.getCorrectedAccountingValue())));
     }
   }
 
@@ -579,7 +580,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       int disposalQtySelect,
       BigDecimal disposalQty,
       Boolean generateSaleMove,
-      TaxLine saleTaxLine)
+      Set<TaxLine> saleTaxLineSet)
       throws AxelorException {
     if (disposalDate != null
             && Stream.of(
@@ -614,7 +615,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAsset.getQty().toString());
     }
     if (generateSaleMove
-        && saleTaxLine != null
+        && CollectionUtils.isNotEmpty(saleTaxLineSet)
         && fixedAsset.getCompany().getAccountConfig().getCustomerSalesJournal() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,

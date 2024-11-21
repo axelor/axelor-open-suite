@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service;
 
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
@@ -33,13 +34,16 @@ public class BudgetVersionServiceImpl implements BudgetVersionService {
 
   protected BudgetVersionRepository budgetVersionRepository;
   protected VersionExpectedAmountsLineRepository versionExpectedAmountsLineRepository;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BudgetVersionServiceImpl(
       BudgetVersionRepository budgetVersionRepository,
-      VersionExpectedAmountsLineRepository versionExpectedAmountsLineRepository) {
+      VersionExpectedAmountsLineRepository versionExpectedAmountsLineRepository,
+      CurrencyScaleService currencyScaleService) {
     this.budgetVersionRepository = budgetVersionRepository;
     this.versionExpectedAmountsLineRepository = versionExpectedAmountsLineRepository;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -57,8 +61,11 @@ public class BudgetVersionServiceImpl implements BudgetVersionService {
     for (Budget budget : budgets) {
       VersionExpectedAmountsLine versionExpectedAmountsLine = new VersionExpectedAmountsLine();
       versionExpectedAmountsLine.setBudget(budget);
-      versionExpectedAmountsLine.setExpectedAmount(budget.getTotalAmountExpected());
-      globalExpectedAmount = globalExpectedAmount.add(budget.getTotalAmountExpected());
+      versionExpectedAmountsLine.setExpectedAmount(
+          currencyScaleService.getCompanyScaledValue(budget, budget.getTotalAmountExpected()));
+      globalExpectedAmount =
+          currencyScaleService.getCompanyScaledValue(
+              budget, globalExpectedAmount.add(budget.getTotalAmountExpected()));
       budgetVersion.addVersionExpectedAmountsLineListItem(versionExpectedAmountsLine);
     }
 

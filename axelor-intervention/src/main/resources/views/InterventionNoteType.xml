@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+
+  <grid name="intervention-note-type-grid" title="Intervention note types"
+    model="com.axelor.apps.intervention.db.InterventionNoteType">
+    <field name="name"/>
+    <field name="attachedFile"/>
+  </grid>
+
+  <form name="intervention-note-type-form" title="Intervention note type"
+    model="com.axelor.apps.intervention.db.InterventionNoteType" width="large">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="attachedFile"/>
+    </panel>
+  </form>
+
+</object-views>

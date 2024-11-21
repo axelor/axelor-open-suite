@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <!-- MyRH -->
 
@@ -44,6 +44,37 @@
     <context name="user_id" expr="eval:__user__.id"/>
     <context name="_payCompany"
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+    <context name="_isExpenseDeclaration" expr="eval: false"/>
+  </action-view>
+
+  <menuitem name="my-hr-root-expense-declaration" parent="my-hr-root"
+    title="Expenses declaration" action="my.hr.root.expense.declaration" order="310"
+    if="__config__.app.isApp('expense') &amp;&amp; __config__.app.getApp('expense')?.enableExpenseDeclaration"
+    icon="fa-credit-card" icon-background="#84429f"/>
+
+  <action-view name="my.hr.root.expense.declaration"
+    model="com.axelor.apps.hr.db.Expense" title="Expenses declaration">
+    <view name="expense-grid" type="grid"/>
+    <view name="expense-form" type="form"/>
+    <view-param name="search-filters" value="expense-filters"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.employee.user.id = :user_id</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
+    <context name="_payCompany"
+      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+    <context name="_isExpenseDeclaration" expr="eval: true"/>
+  </action-view>
+
+  <menuitem name="line-expense" parent="my-hr-root" title="OrphanExpenseLine.title"
+    action="expense.line" order="350"
+    if="__config__.app.isApp('expense') &amp;&amp; __config__.app.getApp('expense')?.getIsOrphanExpenseLineManaged()"
+    icon="fa-receipt" icon-background="#84429f"/>
+
+  <action-view name="expense.line" title="Expense line"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <view type="grid" name="expense-line-orphan-grid"/>
+    <view type="form" name="expense-line-orphan-form"/>
+    <domain>self.expense IS NULL</domain>
   </action-view>
 
   <menuitem name="all-my-timesheet" parent="my-hr-root" title="Timesheets"
@@ -58,6 +89,28 @@
     <domain>self.employee.user.id = :user_id</domain>
     <context name="user_id" expr="eval:__user__.id"/>
   </action-view>
+
+  <menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="my-hr-root"
+    action="time.sheet.timer" order="450"
+    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer() &amp;&amp; !__config__.app.getApp('timesheet')?.getIsMultipleTimerEnabled()"
+    icon="fa-play" icon-background="#84429f"/>
+
+  <action-method name="time.sheet.timer">
+    <call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController"
+      method="editTimesheetTimer"/>
+  </action-method>
+
+  <menuitem title="Multiple Start&amp;Stop Timer" name="time-sheet-multiple-timer"
+    parent="my-hr-root" action="action.timesheet.view.multiple.timer"
+    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer() &amp;&amp; __config__.app.getApp('timesheet')?.getIsMultipleTimerEnabled()"
+    order="460" icon="fa-play" icon-background="#84429f"/>
+
+  <action-view name="action.timesheet.view.multiple.timer"
+    model="com.axelor.apps.hr.db.TSTimer" title="Multiple timer">
+    <view name="ts-multiple-timer-grid" type="grid"/>
+    <view name="ts-multi-timer-form" type="form"/>
+  </action-view>
+
 
   <menuitem name="all-extra-hours" parent="my-hr-root" title="Extra hours"
     action="extra.hours.all" order="500" if="__config__.app.isApp('exthrs')" icon="fa-hourglass-end"
@@ -251,6 +304,17 @@
     model="com.axelor.apps.base.db.FileType">
     <view type="grid" name="file-type-grid"/>
     <view type="form" name="file-type-form"/>
+  </action-view>
+
+  <menuitem name="hr-root-files" title="Files" parent="hr-root-emp-mgt-conf"
+    action="action.file.view.hr" order="1050"/>
+
+  <action-view name="action.file.view.hr" title="Files"
+    model="com.axelor.apps.base.db.File">
+    <view type="grid" name="file-grid"/>
+    <view type="form" name="file-form"/>
+    <domain>self.fileTypeSelect = 2</domain>
+    <context name="_fileTypeSelect" expr="eval: 2"/>
   </action-view>
 
   <menuitem name="hr-root-configuration-employments" parent="hr-root-emp-mgt-conf"
@@ -503,16 +567,6 @@
       method="validateTimesheet"/>
   </action-method>
 
-  <menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="timesheet-root"
-    action="time.sheet.timer"
-    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer()"
-    order="400"/>
-
-  <action-method name="time.sheet.timer">
-    <call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController"
-      method="editTimesheetTimer"/>
-  </action-method>
-
   <menuitem title="Timesheet report" name="time-sheet-report" parent="timesheet-root"
     action="action.timesheet.view.timesheet.report" if="__config__.app.isApp('timesheet')"
     order="500"/>
@@ -627,7 +681,21 @@
     <domain>self.project.id IN :_projectIds</domain>
     <context name="_showLogTime" expr="eval: true"/>
     <context name="_projectIds"
-      expr="call:com.axelor.apps.hr.service.timesheet.TimesheetService:getContextProjectIds()"/>
+      expr="call:com.axelor.apps.hr.service.timesheet.TimesheetContextProjectService:getContextProjectIds()"/>
+  </action-view>
+
+  <menuitem name="project-unit-conversion" parent="project-configurations"
+    title="Unit conversions" action="project.unit.conversion" order="1300"
+    if-module="axelor-human-resource"/>
+
+  <action-view name="project.unit.conversion" title="Unit conversions"
+    model="com.axelor.apps.base.db.UnitConversion">
+    <view type="grid" name="unit-conversion-grid"/>
+    <view type="form" name="unit-conversion-form"/>
+    <domain>self.entitySelect = 1</domain>
+    <context name="_duplicateFinderFields" expr="startUnit;endUnit"/>
+    <context name="_entitySelect" expr="eval: 1"/>
+    <context name="_forceTimeUnit" expr="eval: true"/>
   </action-view>
 
   <!-- Top Menus -->

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,65 +19,69 @@
 package com.axelor.apps.production.service.productionorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.service.config.ProductionConfigService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginType;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.i18n.I18n;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProductionOrderServiceImpl implements ProductionOrderService {
 
-  protected ManufOrderService manufOrderService;
   protected SequenceService sequenceService;
   protected ProductionOrderRepository productionOrderRepo;
-  protected ProductionConfigService productionConfigService;
+  protected ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService;
+  protected ProductionOrderUpdateService productionOrderUpdateService;
 
   @Inject
   public ProductionOrderServiceImpl(
-      ManufOrderService manufOrderService,
       SequenceService sequenceService,
       ProductionOrderRepository productionOrderRepo,
-      ProductionConfigService productionConfigService) {
-    this.manufOrderService = manufOrderService;
+      ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService,
+      ProductionOrderUpdateService productionOrderUpdateService) {
     this.sequenceService = sequenceService;
     this.productionOrderRepo = productionOrderRepo;
-    this.productionConfigService = productionConfigService;
+    this.productionOrderSaleOrderMOGenerationService = productionOrderSaleOrderMOGenerationService;
+    this.productionOrderUpdateService = productionOrderUpdateService;
   }
 
-  public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
+  public ProductionOrder createProductionOrder(SaleOrder saleOrder, BillOfMaterial billOfMaterial)
+      throws AxelorException {
 
-    ProductionOrder productionOrder = new ProductionOrder(this.getProductionOrderSeq());
+    ProductionOrder productionOrder = new ProductionOrder();
     if (saleOrder != null) {
       productionOrder.setClientPartner(saleOrder.getClientPartner());
       productionOrder.setSaleOrder(saleOrder);
     }
+    Company company =
+        Optional.ofNullable(billOfMaterial).map(BillOfMaterial::getCompany).orElse(null);
+    productionOrder.setProductionOrderSeq(this.getProductionOrderSeq(productionOrder, company));
     return productionOrder;
   }
 
-  public String getProductionOrderSeq() throws AxelorException {
+  public String getProductionOrderSeq(ProductionOrder productionOrder, Company company)
+      throws AxelorException {
 
     String seq =
         sequenceService.getSequenceNumber(
-            SequenceRepository.PRODUCTION_ORDER, ProductionOrder.class, "productionOrderSeq");
+            SequenceRepository.PRODUCTION_ORDER,
+            company,
+            ProductionOrder.class,
+            "productionOrderSeq",
+            productionOrder);
 
     if (seq == null) {
       throw new AxelorException(
@@ -95,7 +99,6 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
    *     material product (Product variant)
    * @param billOfMaterial
    * @param qtyRequested
-   * @param businessProject
    * @return
    * @throws AxelorException
    */
@@ -107,9 +110,9 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       LocalDateTime startDate)
       throws AxelorException {
 
-    ProductionOrder productionOrder = this.createProductionOrder(null);
+    ProductionOrder productionOrder = this.createProductionOrder(null, billOfMaterial);
 
-    this.addManufOrder(
+    productionOrderSaleOrderMOGenerationService.addManufOrder(
         productionOrder,
         product,
         billOfMaterial,
@@ -124,90 +127,6 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public ProductionOrder addManufOrder(
-      ProductionOrder productionOrder,
-      Product product,
-      BillOfMaterial billOfMaterial,
-      BigDecimal qtyRequested,
-      LocalDateTime startDate,
-      LocalDateTime endDate,
-      SaleOrder saleOrder,
-      SaleOrderLine saleOrderLine,
-      ManufOrderOriginType manufOrderOriginType)
-      throws AxelorException {
-
-    ManufOrder manufOrder =
-        generateManufOrder(
-            product,
-            billOfMaterial,
-            qtyRequested,
-            startDate,
-            endDate,
-            saleOrder,
-            saleOrderLine,
-            manufOrderOriginType,
-            null);
-
-    return addManufOrder(productionOrder, manufOrder);
-  }
-
-  @Override
-  public ProductionOrder addManufOrder(ProductionOrder productionOrder, ManufOrder manufOrder) {
-    if (manufOrder != null) {
-      productionOrder.addManufOrderSetItem(manufOrder);
-      manufOrder.addProductionOrderSetItem(productionOrder);
-    }
-
-    productionOrder = updateProductionOrderStatus(productionOrder);
-    return productionOrderRepo.save(productionOrder);
-  }
-
-  @Override
-  public ManufOrder generateManufOrder(
-      Product product,
-      BillOfMaterial billOfMaterial,
-      BigDecimal qtyRequested,
-      LocalDateTime startDate,
-      LocalDateTime endDate,
-      SaleOrder saleOrder,
-      SaleOrderLine saleOrderLine,
-      ManufOrderOriginType manufOrderOriginType,
-      ManufOrder manufOrderParent)
-      throws AxelorException {
-    ManufOrder manufOrder =
-        manufOrderService.generateManufOrder(
-            product,
-            qtyRequested,
-            ManufOrderService.DEFAULT_PRIORITY,
-            ManufOrderService.IS_TO_INVOICE,
-            billOfMaterial,
-            startDate,
-            endDate,
-            manufOrderOriginType);
-
-    if (manufOrder != null) {
-      if (saleOrder != null) {
-        manufOrder.addSaleOrderSetItem(saleOrder);
-        manufOrder.setClientPartner(saleOrder.getClientPartner());
-        manufOrder.setMoCommentFromSaleOrder("");
-        manufOrder.setMoCommentFromSaleOrderLine("");
-
-        if (!Strings.isNullOrEmpty(saleOrder.getProductionNote())) {
-          manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
-        }
-        if (saleOrderLine != null
-            && !Strings.isNullOrEmpty(saleOrderLine.getLineProductionComment())) {
-          manufOrder.setMoCommentFromSaleOrderLine(saleOrderLine.getLineProductionComment());
-        }
-      }
-
-      manufOrder.setParentMO(manufOrderParent);
-    }
-    return manufOrder;
-  }
-
-  @Override
   public Set<ProductionOrder> updateStatus(Set<ProductionOrder> productionOrderSet) {
 
     if (CollectionUtils.isEmpty(productionOrderSet)) {
@@ -215,72 +134,9 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     }
 
     for (ProductionOrder productionOrder : productionOrderSet) {
-      updateProductionOrderStatus(productionOrder);
+      productionOrderUpdateService.updateProductionOrderStatus(productionOrder);
     }
 
     return productionOrderSet;
-  }
-
-  protected ProductionOrder updateProductionOrderStatus(ProductionOrder productionOrder) {
-
-    if (productionOrder.getStatusSelect() == null) {
-      return productionOrder;
-    }
-
-    int statusSelect = productionOrder.getStatusSelect();
-
-    if (productionOrder.getManufOrderSet().stream()
-        .allMatch(
-            manufOrder -> manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_DRAFT)) {
-      statusSelect = ProductionOrderRepository.STATUS_DRAFT;
-      productionOrder.setStatusSelect(statusSelect);
-      return productionOrderRepo.save(productionOrder);
-    }
-
-    boolean oneStarted = false;
-    boolean onePlanned = false;
-    boolean allCancel = true;
-    boolean allCompleted = true;
-
-    for (ManufOrder manufOrder : productionOrder.getManufOrderSet()) {
-
-      switch (manufOrder.getStatusSelect()) {
-        case (ManufOrderRepository.STATUS_PLANNED):
-          onePlanned = true;
-          allCancel = false;
-          allCompleted = false;
-          break;
-        case (ManufOrderRepository.STATUS_IN_PROGRESS):
-        case (ManufOrderRepository.STATUS_STANDBY):
-          oneStarted = true;
-          allCancel = false;
-          allCompleted = false;
-          break;
-        case (ManufOrderRepository.STATUS_FINISHED):
-          allCancel = false;
-          break;
-        case (ManufOrderRepository.STATUS_CANCELED):
-          break;
-        default:
-          allCompleted = false;
-          break;
-      }
-    }
-
-    if (allCancel) {
-      statusSelect = ProductionOrderRepository.STATUS_CANCELED;
-    } else if (allCompleted) {
-      statusSelect = ProductionOrderRepository.STATUS_COMPLETED;
-    } else if (oneStarted) {
-      statusSelect = ProductionOrderRepository.STATUS_STARTED;
-    } else if (onePlanned
-        && (productionOrder.getStatusSelect() == ProductionOrderRepository.STATUS_DRAFT
-            || productionOrder.getStatusSelect() == ProductionOrderRepository.STATUS_CANCELED
-            || productionOrder.getStatusSelect() == ProductionOrderRepository.STATUS_COMPLETED)) {
-      statusSelect = ProductionOrderRepository.STATUS_PLANNED;
-    }
-
-    productionOrder.setStatusSelect(statusSelect);
-    return productionOrderRepo.save(productionOrder);
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="stock-move-line-consumed-production-grid" title="Stock move lines"
     orderBy="stockMove.statusSelect,product.code,trackingNumber.trackingNumberSeq"
@@ -33,15 +33,14 @@
     <field name="trackingNumber" form-view="tracking-number-form"
       grid-view="tracking-number-grid" canNew="false"
       readonlyIf="$get('stockMove.statusSelect') > 2"
-      domain="action-stock-move-line-attrs-tracking-number-domain"
-      requiredIf="realQty &gt; 0 &amp;&amp; ($get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged'))"/>
-    <field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
-    <field name="product.trackingNumberConfiguration.isProductionTrackingManaged"
-      hidden="true"/>
-    <field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
+      onSelect="action-stock-move-line-attrs-tracking-number-domain"
+      requiredIf="realQty &gt; 0 &amp;&amp; ($get('$trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('$trackingNumberConfiguration.isProductionTrackingManaged'))"/>
+    <field name="$trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
+    <field name="$trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
+    <field name="$trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect"/>
     <button name="trackNumberWizardBtn" title="Split by tracking numbers"
-      readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))"
+      readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged'))"
       icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
     <field name="realQty" hidden="true" x-scale="2"/>
   </grid>
@@ -60,15 +59,14 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" form-view="tracking-number-form"
       grid-view="tracking-number-grid" canNew="true" readonlyIf="$get('stockMove.statusSelect') > 2"
-      domain="action-stock-move-line-attrs-tracking-number-domain"
-      requiredIf="realQty &gt; 0 &amp;&amp; ($get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged'))"/>
-    <field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
-    <field name="product.trackingNumberConfiguration.isProductionTrackingManaged"
-      hidden="true"/>
-    <field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
+      onSelect="action-stock-move-line-attrs-tracking-number-domain"
+      requiredIf="realQty &gt; 0 &amp;&amp; ($get('$trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('$trackingNumberConfiguration.isProductionTrackingManaged'))"/>
+    <field name="$trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
+    <field name="$trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
+    <field name="$trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect"/>
     <button name="trackNumberWizardBtn" title="Split by tracking numbers"
-      readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))"
+      readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged'))"
       icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
     <field name="realQty" hidden="true" x-scale="2"/>
   </grid>
@@ -76,7 +74,8 @@
   <form name="stock-move-line-production-form" title="Stock move line"
     model="com.axelor.apps.stock.db.StockMoveLine" canNew="false" canDelete="false"
     onNew="action-group-stock-stockmoveline-production-onnew"
-    onLoad="action-stock-move-line-attrs-scale-and-precision" width="large">
+    onLoad="action-stock-move-line-attrs-scale-and-precision,action-stock-move-line-attrs-load-qty-title"
+    width="large">
     <panel name="mainPanel" readonlyIf="stockMove.statusSelect == 3">
       <field name="product" canEdit="false"
         domain="self.expense = false AND self.dtype = 'Product'"
@@ -95,10 +94,10 @@
       <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
       <field name="trackingNumber" onChange="action-stock-move-line-record-product"
         form-view="tracking-number-form" grid-view="tracking-number-grid"
-        canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('product.trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isSaleTrackingManaged'))"
+        canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('$trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isSaleTrackingManaged'))"
         onSelect="action-stock-move-line-attrs-tracking-number-domain"
         readonlyIf="$get('stockMove.statusSelect') > 2"
-        requiredIf="realQty &gt; 0 &amp;&amp; ($get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged'))"/>
+        requiredIf="realQty &gt; 0 &amp;&amp; ($get('$trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('$trackingNumberConfiguration.isProductionTrackingManaged'))"/>
       <field name="reservedQty" readonly="true" if-module="axelor-supplychain"
         if="__config__.app.getApp('supplychain')?.getManageStockReservation()" colSpan="3"/>
       <field name="requestedReservedQty" hidden="true" readonly="true"
@@ -119,11 +118,9 @@
         <button name="cancelReservation" title="Cancel reservation" showIf="isQtyRequested"
           onClick="save,action-method-stock-move-line-cancel-reservation"/>
       </panel>
-      <field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged"
-        hidden="true"/>
-      <field name="product.trackingNumberConfiguration.isProductionTrackingManaged"
-        hidden="true"/>
-      <field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
+      <field name="$trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
+      <field name="$trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
+      <field name="$trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
       <field name="stockMove.typeSelect" hidden="true"/>
       <field name="stockMove" hidden="true"/>
       <field name="stockMove.statusSelect" hidden="true"/>
@@ -139,6 +136,16 @@
     id="action-production-stock-move-line-compute-price">
     <call class="com.axelor.apps.production.web.StockMoveLineController" method="compute"/>
   </action-method>
+
+  <action-attrs name="action-stock-move-line-attrs-load-qty-title"
+    model="com.axelor.apps.stock.db.StockMoveLine">
+    <attribute for="qty" name="title"
+      expr="eval: com.axelor.i18n.I18n.get('Consumed quantity')"
+      if="stockMove?.toStockLocation?.typeSelect == 3"/>
+    <attribute for="qty" name="title"
+      expr="eval: com.axelor.i18n.I18n.get('Produced quantity')"
+      if="stockMove?.toStockLocation?.typeSelect != 3"/>
+  </action-attrs>
 
   <action-method name="action-stock-move-line-set-product-info"
     id="action-production-stock-move-line-set-product-info">

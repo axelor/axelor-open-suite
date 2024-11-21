@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,14 +27,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineComputationServiceFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.interfaces.ArithmeticOperation;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Objects;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -60,16 +65,102 @@ class TestFixedAssetGenerationService {
     SequenceService sequenceService = mock(SequenceService.class);
     AppBaseService appBaseService = mock(AppBaseService.class);
     FixedAssetLineService fixedAssetLineService = mock(FixedAssetLineService.class);
+    FixedAssetLineToolService fixedAssetLineToolService = mock(FixedAssetLineToolService.class);
+
+    when(fixedAssetLineToolService.isGreaterThan(any(), any(), any(FixedAsset.class)))
+        .then(
+            (Answer<Boolean>)
+                invocation ->
+                    invocation.getArguments()[0] != null
+                        && (((BigDecimal) invocation.getArguments()[0])
+                                .compareTo(((BigDecimal) invocation.getArguments()[1]))
+                            > 0));
+    when(fixedAssetLineToolService.equals(any(), any(), any(FixedAsset.class)))
+        .then(
+            (Answer<Boolean>)
+                invocation ->
+                    Objects.equals(invocation.getArguments()[0], invocation.getArguments()[1]));
+    CurrencyScaleService currencyScaleService = mock(CurrencyScaleService.class);
+
+    when(currencyScaleService.getCompanyScaledValue(any(FixedAsset.class), any()))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    ((BigDecimal) invocation.getArguments()[1])
+                        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+    when(currencyScaleService.getScaledValue(any()))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    ((BigDecimal) invocation.getArguments()[0])
+                        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+    when(fixedAssetLineToolService.getCompanyScaledValue(any(), any(FixedAssetLine.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    ((BigDecimal) invocation.getArguments()[1])
+                        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+    when(currencyScaleService.getCompanyScale(any(FixedAsset.class)))
+        .thenReturn(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS);
+
     FixedAssetLineComputationServiceFactory fixedAssetLineComputationServiceFactory =
         mock(FixedAssetLineComputationServiceFactory.class);
     FixedAssetFailOverControlService fixedAssetFailOverControlService =
         mock(FixedAssetFailOverControlService.class);
     FixedAssetValidateService fixedAssetValidateService = mock(FixedAssetValidateService.class);
     FixedAssetImportService fixedAssetImportService = mock(FixedAssetImportService.class);
+    when(fixedAssetLineToolService.getCompanyScaledValue(
+            any(), any(), any(FixedAsset.class), any(ArithmeticOperation.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleService.getCompanyScaledValue(
+                        ((FixedAsset) invocation.getArguments()[2]),
+                        ((ArithmeticOperation) invocation.getArguments()[3])
+                            .operate(
+                                ((BigDecimal) invocation.getArguments()[0]),
+                                ((BigDecimal) invocation.getArguments()[1]))));
+    when(fixedAssetLineToolService.getCompanyScaledValue(any(), any(FixedAsset.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleService.getCompanyScaledValue(
+                        ((FixedAsset) invocation.getArguments()[1]),
+                        ((BigDecimal) invocation.getArguments()[0])));
+    when(fixedAssetLineToolService.getCompanyDivideScaledValue(any(), any(), any(FixedAsset.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    ((BigDecimal) invocation.getArguments()[0])
+                        .divide(
+                            ((BigDecimal) invocation.getArguments()[1]),
+                            currencyScaleService.getCompanyScale(
+                                ((FixedAsset) invocation.getArguments()[2])),
+                            RoundingMode.HALF_UP));
+    when(fixedAssetLineToolService.getCompanyScaledValue(
+            any(), any(), any(FixedAssetLine.class), any(ArithmeticOperation.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    fixedAssetLineToolService.getCompanyScaledValue(
+                        ((ArithmeticOperation) invocation.getArguments()[3])
+                            .operate(
+                                ((BigDecimal) invocation.getArguments()[0]),
+                                ((BigDecimal) invocation.getArguments()[1])),
+                        ((FixedAssetLine) invocation.getArguments()[2])));
+    when(fixedAssetLineToolService.getCompanyScaledValue(any(), any(FixedAssetLine.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleService.getScaledValue(
+                        ((BigDecimal) invocation.getArguments()[0])));
 
     FixedAssetLineComputationService fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
-            fixedAssetDateService, fixedAssetFailOverControlService, appBaseService);
+            fixedAssetDateService,
+            fixedAssetFailOverControlService,
+            appBaseService,
+            fixedAssetLineToolService);
     when(fixedAssetLineComputationServiceFactory.getFixedAssetComputationService(
             any(FixedAsset.class), any(Integer.TYPE)))
         .thenReturn(fixedAssetLineComputationService);
@@ -88,7 +179,8 @@ class TestFixedAssetGenerationService {
             sequenceService,
             accountConfigService,
             appBaseService,
-            fixedAssetValidateService);
+            fixedAssetValidateService,
+            currencyScaleService);
 
     prepareFixedAssetRepo();
   }

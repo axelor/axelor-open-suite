@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@ import com.axelor.apps.cash.management.db.ForecastRecapLine;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapLineRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
 import com.axelor.auth.db.User;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -97,7 +97,7 @@ public class CashManagementChartServiceImpl implements CashManagementChartServic
       LocalDate fromDate,
       LocalDate toDate) {
     return recapLineList.stream()
-        .filter(line -> DateTool.isBetween(fromDate, toDate, line.getEstimatedDate()))
+        .filter(line -> LocalDateHelper.isBetween(fromDate, toDate, line.getEstimatedDate()))
         .map(ForecastRecapLine::getAmount)
         .reduce(recap.getStartingBalance(), BigDecimal::add);
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -180,14 +180,6 @@ public class BillOfMaterialController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(e);
-    }
-  }
-
-  public void computeName(ActionRequest request, ActionResponse response) {
-    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-
-    if (billOfMaterial.getName() == null) {
-      response.setValue("name", Beans.get(BillOfMaterialService.class).computeName(billOfMaterial));
     }
   }
 

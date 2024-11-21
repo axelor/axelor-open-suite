@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="InterventionType">
+    <string name="code" title="Code" required="true" unique="true"/>
+    <string name="name" title="Name" required="true"/>
+    <many-to-one name="interventionCategory" title="Intervention category"
+      ref="com.axelor.apps.intervention.db.InterventionCategory" required="true"/>
+    <many-to-many name="companySet" title="Companies"
+      ref="com.axelor.apps.base.db.Company"/>
+    <many-to-many name="tradingNameSet" title="Trading names"
+      ref="com.axelor.apps.base.db.TradingName"/>
+    <many-to-one name="defaultPrevisionalDuration" title="Default previsional duration"
+      ref="com.axelor.apps.base.db.Duration"/>
+    <many-to-many name="exclusiveInterventionSet" title="Exclusive intervention"
+      ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-one name="advancedStartupMonitoringRange"
+      title="Advanced startup monitoring range" ref="com.axelor.apps.intervention.db.Range"/>
+    <one-to-many name="headerRangeList" title="Header ranges"
+      ref="com.axelor.apps.intervention.db.OrderedRange" mappedBy="interventionTypeHeader"/>
+    <one-to-many name="equipmentRangeList" title="Equipment ranges"
+      ref="com.axelor.apps.intervention.db.OrderedRange" mappedBy="interventionTypeEquipment"/>
+    <one-to-many name="footerRangeList" title="Footer ranges"
+      ref="com.axelor.apps.intervention.db.OrderedRange" mappedBy="interventionTypeFooter"/>
+    <boolean name="autoGenerateCustomerRequest" title="Auto generate customer request"/>
+    <track>
+      <field name="code"/>
+      <field name="name"/>
+      <field name="interventionCategory"/>
+      <field name="companySet"/>
+      <field name="tradingNameSet"/>
+      <field name="defaultPrevisionalDuration"/>
+      <field name="exclusiveInterventionSet"/>
+      <field name="advancedStartupMonitoringRange"/>
+      <field name="headerRangeList"/>
+      <field name="equipmentRangeList"/>
+      <field name="footerRangeList"/>
+    </track>
+  </entity>
+</domain-models>

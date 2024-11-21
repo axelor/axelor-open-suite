@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -46,23 +46,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="Locale" id="3740">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -258,12 +241,6 @@
                     <text-property name="displayName">bank</text-property>
                     <text-property name="heading">bank</text-property>
                 </structure>
-                <structure>
-                    <property name="columnName">signatoryebicsuser</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">signatoryebicsuser</text-property>
-                    <text-property name="heading">signatoryebicsuser</text-property>
-                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -353,11 +330,6 @@
                     <structure>
                         <property name="position">15</property>
                         <property name="name">bank</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">16</property>
-                        <property name="name">signatoryebicsuser</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -469,13 +441,6 @@
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
-                <structure>
-                    <property name="position">16</property>
-                    <property name="name">signatoryebicsuser</property>
-                    <property name="nativeName">signatoryebicsuser</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
 bankOrder.status_select,
@@ -508,8 +473,7 @@ bankOrder.bank_order_total_amount as "amount",
 bankOrder.sender_reference,
 bankOrder.sender_label,
 meta_file.file_name as "generated_meta_file_name",
-Bank.bank_name as bank,
-associatedUser.name as signatoryEbicsUser
+Bank.bank_name as bank
 
 FROM bankpayment_bank_order bankOrder
 LEFT JOIN account_payment_mode paymentMode ON paymentMode.id =  bankOrder.payment_mode
@@ -518,8 +482,6 @@ LEFT JOIN base_currency currency ON currency.id = bankOrder.bank_order_currency
 LEFT JOIN base_bank_details bankDetails ON bankDetails.id = bankOrder.sender_bank_details
 LEFT JOIN base_bank Bank ON bankDetails.bank = Bank.id
 LEFT JOIN meta_file ON meta_file.id = bankOrder.generated_meta_file
-LEFT JOIN bankpayment_ebics_user EbicsUser ON EbicsUser.id = bankOrder.signatory_ebics_user
-LEFT JOIN auth_user associatedUser ON associatedUser.id = EbicsUser.associated_user
 WHERE bankOrder.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -665,7 +627,7 @@ WHERE bankOrder.id = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -707,7 +669,7 @@ WHERE bankOrder.id = ?]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1102,6 +1064,254 @@ ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::bigi
   </design:ResultSets>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.SPSelectDataSet" name="EbicsProc" id="4488">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints"/>
+            <list-property name="parameters"/>
+            <structure name="cachedMetaData"/>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet"/>
+            <xml-property name="queryText"><![CDATA[DROP FUNCTION IF EXISTS bankpayment_ebics(bigint);
+CREATE OR REPLACE FUNCTION bankpayment_ebics(bank_order_id bigint)
+RETURNS table(signatoryEbicsUser varchar) as
+$func$
+BEGIN
+IF (SELECT COUNT(to_regclass('ebicsts_ebics_user')) != 0) THEN
+
+return query
+SELECT
+associatedUser.name as signatoryEbicsUser
+FROM bankpayment_bank_order bankOrder
+LEFT JOIN ebicsts_ebics_user EbicsUser ON EbicsUser.id = bankOrder.signatory_ebics_user
+LEFT JOIN auth_user associatedUser ON associatedUser.id = EbicsUser.associated_user
+WHERE bankOrder.id = bank_order_id;
+
+end if;
+END;
+$func$ LANGUAGE plpgsql;
+]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="EbicsDS" id="182">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">signatoryebicsuser</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">signatoryebicsuser</text-property>
+                    <text-property name="heading">signatoryebicsuser</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">BankOrderId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">signatoryebicsuser</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">signatoryebicsuser</property>
+                    <property name="nativeName">signatoryebicsuser</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select * from bankpayment_ebics(cast(? as bigint)); ]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>name</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>name</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>description</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>description</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>description</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>type</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>type</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>type</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>company_name</design:name>
+              <design:position>4</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>company_name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>company_name</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>full_name</design:name>
+              <design:position>5</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>full_name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>full_name</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>start_date</design:name>
+              <design:position>6</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>13</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>start_date</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>start_date</design:label>
+            <design:formattingHints>
+              <design:displaySize>13</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>end_date</design:name>
+              <design:position>7</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>13</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>end_date</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>end_date</design:label>
+            <design:formattingHints>
+              <design:displaySize>13</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>stock_location_name</design:name>
+              <design:position>8</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>stock_location_name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>stock_location_name</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
     </data-sets>
     <styles>
         <style name="report" id="4">
@@ -1188,6 +1398,18 @@ ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::bigi
         </simple-master-page>
     </page-setup>
     <body>
+        <text id="4493">
+            <property name="dataSet">EbicsProc</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">true</expression>
+                </structure>
+            </list-property>
+            <property name="contentType">auto</property>
+            <text-property name="content"><![CDATA[EbicsProc : Used for load the EbicsProc function
+]]></text-property>
+        </text>
         <grid id="3342">
             <property name="marginLeft">2pt</property>
             <property name="height">2.0729166666666665in</property>
@@ -1286,12 +1508,6 @@ ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::bigi
                     <expression name="expression" type="javascript">dataSetRow["sending_date_time"]</expression>
                     <property name="dataType">date-time</property>
                     <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">signatoryebicsuser</property>
-                    <text-property name="displayName">signatoryebicsuser</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["signatoryebicsuser"]</expression>
-                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <column id="3343">
@@ -1631,6 +1847,12 @@ ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::bigi
                         <property name="marginLeft">2pt</property>
                         <property name="textAlign">right</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row.__rownum == -1</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
@@ -1660,40 +1882,56 @@ ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::bigi
                 <cell id="4271">
                     <property name="borderBottomStyle">solid</property>
                     <property name="borderBottomWidth">medium</property>
-                    <text id="4275">
-                        <property name="marginTop">1pt</property>
-                        <property name="marginLeft">2pt</property>
-                        <property name="textAlign">left</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'value:'+row["signatoryebicsuser"]</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
+                    <grid id="4489">
+                        <property name="dataSet">EbicsDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
-                                <property name="name">message_key</property>
-                                <text-property name="displayName">message_key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="name">signatoryebicsuser</property>
+                                <text-property name="displayName">signatoryebicsuser</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["signatoryebicsuser"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                         </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+                        <column id="4490"/>
+                        <row id="4491">
+                            <cell id="4492">
+                                <text id="4275">
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'value:'+row["signatoryebicsuser"]</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
 	row["translation"]
 } else {
 	row._outer["signatoryebicsuser"]
 }</VALUE-OF>]]></text-property>
-                    </text>
+                                </text>
+                            </cell>
+                        </row>
+                    </grid>
                 </cell>
                 <cell id="4272">
                     <property name="borderBottomStyle">solid</property>

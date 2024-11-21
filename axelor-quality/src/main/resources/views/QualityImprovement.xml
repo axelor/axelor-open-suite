@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="quality-improvement-grid" title="Quality improvements"
     model="com.axelor.apps.quality.db.QualityImprovement" orderBy="sequence">
@@ -19,7 +19,7 @@
     onNew="action-quality-improvement-method-set-default-values-on-new">
     <panel name="mainPanel">
       <field name="qiStatus" colSpan="12" showTitle="false" readonlyIf="!id"
-        widget="NavSelect"/>
+        widget="NavSelect" x-order="sequence"/>
       <field name="sequence" colSpan="4"/>
       <field name="company" colSpan="4" form-view="company-form" grid-view="company-grid"/>
       <field name="type" colSpan="4"/>
@@ -34,8 +34,8 @@
     <panel-tabs name="mainPanelTab" showIf="id">
       <panel name="identificationPanel" title="Identification">
         <field name="qiIdentification" showTitle="false" colSpan="12" canSelect="false"
-          canView="false" canRemove="false">
-          <editor>
+          canRemove="false">
+          <editor x-viewer="true">
             <panel title="Partner" name="nonIntPanel" colSpan="12">
               <field name="customerPartner"
                 onChange="action-quality-improvement-group-customer-partner-on-change"
@@ -134,8 +134,8 @@
       </panel>
       <panel name="resolutionPanel" title="Resolution">
         <field name="qiResolution" showTitle="false" colSpan="12" canSelect="false"
-          canView="false" canRemove="false">
-          <editor>
+          canRemove="false">
+          <editor x-viewer="true">
             <field name="qi.qiIdentification.nonConformingQuantity" readonly="true"
               hideIf="$get('qi.type') == 2"/>
             <panel name="defaultPanel" title="Observed defaults" colSpan="12">
@@ -153,6 +153,13 @@
               <field name="decisionsWrittenOn"/>
               <field name="qiResolutionDecisionsList" showTitle="false" colSpan="12"
                 form-view="qi-resolution-decision-form" grid-view="qi-resolution-decision-grid"/>
+              <button name="generateDistributionBtn" title="Generate distributions"
+                onClick="save,action-quality-improvement-validate-lines-selected-for-generation,action-quality-improvement-method-generate-qi-decision-distributions"/>
+              <field name="qiDecisionDistributionList" showTitle="false" colSpan="12"
+                form-view="qi-decision-distribution-form" grid-view="qi-decision-distribution-grid"
+                canNew="false" canRemove="false"/>
+              <button name="sendDistributionBtn" title="Send the distributions"
+                onClick="save,action-quality-improvement-validate-lines-selected-for-send,action-quality-improvement-view-open-qi-decision-distribution-send-form"/>
             </panel>
             <panel name="hiddenPanel" hidden="true">
               <field name="qi"/>
@@ -164,8 +171,8 @@
       </panel>
       <panel name="analysisPanel" title="Analysis">
         <field name="qiAnalysis" showTitle="false" colSpan="12" canSelect="false"
-          canView="false" canRemove="false">
-          <editor>
+          canRemove="false">
+          <editor x-viewer="true">
             <panel name="planPanel" title="Plan" colSpan="12">
               <field name="planOwner" colSpan="3" form-view="user-form" grid-view="user-grid"/>
               <field name="advancement" colSpan="3" widget="progress"/>
@@ -193,6 +200,22 @@
               <field name="qiTasksList" showTitle="false" colSpan="12"
                 onChange="action-quality-improvement-method-set-advancement"
                 form-view="qi-task-form" grid-view="qi-task-grid"/>
+              <panel name="qiTaskListBtnsPannel" colSpan="12" itemSpan="6">
+                <button
+                  onClick="save,action-quality-improvement-validate-task-lines-selected-for-generation-of-qi-action-distributions,action-quality-improvement-method-generate-qi-action-distribution"
+                  name="generateDistributionForResponsibles"
+                  title="Generate distributions for responsibles"/>
+                <button
+                  onClick="save,action-quality-improvement-validate-task-lines-selected-for-generation-of-qi-action-distributions,action-quality-improvement-view-open-qi-action-distribution-select-partner-form"
+                  name="generateDistributionForOther" title="Generate distributions for other"/>
+              </panel>
+            </panel>
+            <panel name="distributionPanel" title="Distribution" colSpan="12">
+              <field name="qiActionDistributionList" showTitle="false" colSpan="12"
+                form-view="qi-action-distribution-form" grid-view="qi-action-distribution-grid"
+                canNew="false" canRemove="false" canEdit="false"/>
+              <button name="sendDistributionBtn" title="Send the distributions"
+                onClick="save,action-quality-improvement-validate-distribution-lines-selected-for-send,action-quality-improvement-view-open-qi-action-distribution-send-form"/>
             </panel>
           </editor>
         </field>
@@ -210,13 +233,33 @@
     </panel-mail>
   </form>
 
+  <form name="qi-decision-distribution-send-form" title="Send QI Decision distributions"
+    model="com.axelor.utils.db.Wizard"
+    onNew="action-quality-improvement-attrs-set-qi-decision-distribution-list-on-new">
+    <panel name="mainPanel" colSpan="12">
+      <panel-related field="$qiDecisionDistributionList" title="Distributions"
+        target="com.axelor.apps.quality.db.QIDecisionDistribution" type="one-to-many"
+        grid-view="qi-decision-distribution-grid" form-view="qi-decision-distribution-form"
+        colSpan="12" canNew="false"/>
+      <field name="$qiDecisionDistributionMessageTemplate" title="Template"
+        target="com.axelor.message.db.Template" type="many-to-one" required="true"
+        domain="self.metaModel.name = 'QIDecisionDistribution'" grid-view="template-grid"
+        form-view="template-form"/>
+      <button name="sendDistributionBtn" title="Send the distributions"
+        onClick="action-quality-improvement-method-send-qi-decision-distributions"
+        showIf="$qiDecisionDistributionMessageTemplate"/>
+    </panel>
+  </form>
+
   <kanban name="quality-improvement-kanban" title="Quality improvement"
     model="com.axelor.apps.quality.db.QualityImprovement" columnBy="qiStatus"
     sequenceBy="technicalSeq" draggable="true" limit="10">
     <field name="type"/>
     <field name="qiDetection.origin"/>
     <field name="sequence"/>
-    <field name="qiIdentification.partner.fullName"/>
+    <field name="qiIdentification.supplierPartner.fullName"/>
+    <field name="qiIdentification.detectedByInternal.fullName"/>
+    <field name="qiIdentification.customerPartner.fullName"/>
     <field name="qiIdentification.product.fullName"/>
     <field name="qiIdentification.quantity"/>
     <field name="qiIdentification.nonConformingQuantity"/>
@@ -225,24 +268,55 @@
     <hilite color="warning" if="$get('qiDetection.origin') == 3"/>
     <template>
     	<![CDATA[
-    		<h4>{{sequence}}</h4>
-		    <div class="card-body">
-			    <dl>
-				    <dt ng-if="qiIdentification.partner.fullName" x-translate>Customer</dt>
-				    <dd ng-if="qiIdentification.partner.fullName">{{qiIdentification.partner.fullName}}</dd>
-				    <dt ng-if="qiIdentification.product.fullName" x-translate>Product</dt>
-				    <dd ng-if="qiIdentification.product.fullName" >{{qiIdentification.product.fullName}}</dd>
-				    <dt ng-if="qiIdentification.quantity != 0" x-translate>Quantity</dt>
-				    <dd ng-if="qiIdentification.quantity != 0" >{{qiIdentification.quantity}}</dd>
-				    <dt ng-if="qiIdentification.nonConformingQuantity != 0" x-translate>Non-Conforming quantity</dt>
-				    <dd ng-if="qiIdentification.nonConformingQuantity != 0" >{{qiIdentification.nonConformingQuantity}}</dd>
-			    </dl>
-		    </div>
-    		<h6 class="label label-default bg-primary" style="margin: 5px 0 !important; width:30% !important; display: inline-table; line-height: initial;" ng-show="type == 1" x-translate>Product</h6>
-    		<h6 class="label label-default bg-info" style="margin: 5px 0 !important; width:30% !important; display: inline-table; line-height: initial;" ng-show="type == 2" x-translate>System</h6>
-    		<h6 class="label label-default bg-danger" style="margin: 5px 0 !important; width:30% !important;display: inline-table; line-height: initial;" ng-show="qiDetection.origin == 1" x-translate>Customer</h6>
-    		<h6 class="label label-default bg-info" style="margin: 5px 0 !important; width:30% !important; display: inline-table; line-height: initial;" ng-show="qiDetection.origin == 2" x-translate>Internal</h6>
-    		<h6 class="label label-default bg-warning" style="margin: 5px 0 !important; width:30% !important; display: inline-table; line-height: initial;" ng-show="qiDetection.origin == 3" x-translate>Supplier</h6>
+  			<>
+	    		<strong>{sequence}</strong>
+  				<Box as="dl" mt={4}>
+  					{qiDetection.origin == 1 && qiIdentification.supplierPartner.fullName &&
+  						<Box>
+  							<dt>{_t('Supplier')}</dt>
+  							<Box as="dd" ms={2}>{qiIdentification.supplierPartner.fullName}</Box>
+  						</Box>
+  					}
+  					{qiDetection.origin == 2 && qiIdentification.detectedByInternal.fullName &&
+  						<Box>
+  							<dt>{_t('Internal')}</dt>
+  							<Box as="dd" ms={2}>{qiIdentification.detectedByInternal.fullName}</Box>
+  						</Box>
+  					}
+  					{qiDetection.origin == 3 && qiIdentification.customerPartner.fullName &&
+  						<Box>
+  							<dt>{_t('Customer')}</dt>
+  							<Box as="dd" ms={2}>{qiIdentification.customerPartner.fullName}</Box>
+  						</Box>
+  					}
+  					{qiIdentification.product.fullName &&
+  						<Box>
+  							<dt>{_t('Product')}</dt>
+  							<Box as="dd" ms={2}>{qiIdentification.product.fullName}</Box>
+  						</Box>
+  					}
+  					{qiIdentification.quantity != 0 &&
+  						<Box>
+  							<dt>{_t('Quantity')}</dt>
+  							<Box as="dd" ms={2}>{qiIdentification.quantity}</Box>
+  						</Box>
+  					}
+  					{qiIdentification.nonConformingQuantity != 0 &&
+  						<Box>
+  							<dt>{_t('Non-Conforming quantity')}</dt>
+  							<Box as="dd" ms={2}>{qiIdentification.nonConformingQuantity}</Box>
+  						</Box>
+  					}
+  				</Box>
+  				<Box d="flex" gap="4" mt={4}>
+  					{type == 1 && <Badge bg="primary">{_t('Product')}</Badge>}
+  					{type == 2 && <Badge bg="info">{_t('System')}</Badge>}
+
+  					{qiDetection.origin == 1 && <Badge bg="danger">{_t('Supplier')}</Badge>}
+  					{qiDetection.origin == 2 && <Badge bg="info">{_t('Internal')}</Badge>}
+  					{qiDetection.origin == 3 && <Badge bg="warning">{_t('Customer')}</Badge>}
+  				</Box>
+  			</>
   		]]>
     </template>
   </kanban>
@@ -319,10 +393,10 @@
 
   <action-attrs name="action-quality-improvement-attrs-set-stock-move-domain">
     <attribute name="domain" for="stockMove"
-      expr="eval: &quot; self.saleOrder = :customerSaleOrder &quot;"
+      expr="eval: &quot; :customerSaleOrder MEMBER OF self.saleOrderSet  &quot;"
       if="qi?.qiDetection?.origin == 3"/>
     <attribute name="domain" for="stockMove"
-      expr="eval: &quot; self.purchaseOrder = :supplierPurchaseOrder &quot;"
+      expr="eval: &quot; :supplierPurchaseOrder MEMBER OF self.purchaseOrderSet &quot;"
       if="qi?.qiDetection?.origin == 1"/>
   </action-attrs>
 
@@ -555,7 +629,7 @@
 
   <action-validate name="action-quality-improvement-validate-manuf-order-on-change">
     <alert
-      message="The following fields will be reset: operation order line, manuf Order product to consume, consummed manuf order product , continue ?"
+      message="The following fields will be reset: manufacturing operation line, manuf Order product to consume, consummed manuf order product , continue ?"
       if="operationOrder != null || toConsumeProdProduct != null || consummedProdProduct != null"
       action="action-quality-improvement-attrs-on-validate-set-field-values"/>
   </action-validate>
@@ -681,6 +755,139 @@
   <action-attrs name="action-quality-improvement-refresh-analysis-costs-dashlets">
     <attribute name="refresh" for="costsListPanel" expr="eval: true"/>
     <attribute name="refresh" for="costsDistributionPanel" expr="eval: true"/>
+  </action-attrs>
+
+  <action-validate
+    name="action-quality-improvement-validate-task-lines-selected-for-generation-of-qi-action-distributions">
+    <error message="Please select at least a line to generate a distribution."
+      if="qiTasksList?.findAll{ it.selected }.size() == 0"/>
+  </action-validate>
+
+  <action-validate
+    name="action-quality-improvement-validate-distribution-lines-selected-for-send">
+    <error message="Please select at least a line to send a distribution."
+      if="qiActionDistributionList?.findAll{ it.selected }.size() == 0"/>
+  </action-validate>
+
+  <action-method name="action-quality-improvement-method-send-mail">
+    <call class="com.axelor.apps.quality.web.QIAnalysisController"
+      method="sendQIActionDistributions"/>
+  </action-method>
+
+  <action-method
+    name="action-quality-improvement-method-generate-qi-action-distribution">
+    <call class="com.axelor.apps.quality.web.QIAnalysisController"
+      method="generateQIActionDistribution"/>
+  </action-method>
+
+  <action-method
+    name="action-quality-improvement-method-generate-qi-action-distribution-for-others">
+    <call class="com.axelor.apps.quality.web.QIAnalysisController"
+      method="generateQIActionDistributionForOthers"/>
+  </action-method>
+
+  <action-view
+    name="action-quality-improvement-view-open-qi-action-distribution-select-partner-form"
+    title="Select recepient partner for QI Action distribution"
+    model="com.axelor.apps.quality.db.QIActionDistribution">
+    <view type="form" name="qi-action-distribution-select-recepient-partner-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <context name="_qiAnalysis" expr="eval:__this__"/>
+  </action-view>
+
+  <form name="qi-action-distribution-select-recepient-partner-form"
+    title="Select recepient partner for QI Action distribution"
+    model="com.axelor.apps.quality.db.QIActionDistribution">
+    <panel name="mainPanel">
+      <field name="$recipient" title="Recipient" type="integer" min="1" max="100"
+        selection="quality.qi.resolution.decision.responsible.select"/>
+      <field name="$recipientPartner" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner" title="Recipient name" grid-view="partner-grid"
+        form-view="partner-form"/>
+      <button
+        onClick="action-quality-improvement-method-generate-qi-action-distribution-for-others,close"
+        name="generateDistributions" title="Generate distributions for other"/>
+    </panel>
+  </form>
+
+  <action-attrs
+    name="action-quality-improvement-attrs-set-qi-actions-distribution-list-on-new">
+    <attribute name="value" for="$qiActionDistributionList"
+      expr="eval: _qiActionDistributionList"/>
+  </action-attrs>
+
+  <action-view
+    name="action-quality-improvement-view-open-qi-action-distribution-send-form"
+    title="Send QI Action distributions" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="qi-action-distribution-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <context name="_qiActionDistributionList"
+      expr="eval: qiActionDistributionList?.findAll{ it.selected }"/>
+  </action-view>
+
+  <form name="qi-action-distribution-wizard-form" title="Send QI Action distributions"
+    model="com.axelor.utils.db.Wizard"
+    onNew="action-quality-improvement-attrs-set-qi-actions-distribution-list-on-new">
+    <panel name="mainPanel" colSpan="12">
+      <panel-related field="$qiActionDistributionList"
+        grid-view="qi-action-distribution-grid" form-view="qi-action-distribution-form"
+        title="Distributions" target="com.axelor.apps.quality.db.QIActionDistribution"
+        type="one-to-many" colSpan="12" canNew="false" canEdit="false" canRemove="false"/>
+      <field name="$qiActionDistributionMessageTemplate" title="Template"
+        target="com.axelor.message.db.Template" target-name="name" type="many-to-one"
+        required="true" canSelect="true" domain="self.metaModel.name = 'QIActionDistribution'"/>
+      <button onClick="action-quality-improvement-method-send-mail"
+        name="sendTheDistributions" title="Send the distributions"
+        showIf="$qiActionDistributionMessageTemplate != null"/>
+    </panel>
+  </form>
+
+  <action-validate
+    name="action-quality-improvement-validate-lines-selected-for-generation">
+    <error message="Please select at least a line to generate a distribution."
+      if="qiResolutionDecisionsList?.findAll{ it.selected }.size() == 0"/>
+  </action-validate>
+
+  <action-method
+    name="action-quality-improvement-method-generate-qi-decision-distributions">
+    <call class="com.axelor.apps.quality.web.QIResolutionController"
+      method="generateQIDecisionDistributions"/>
+  </action-method>
+
+  <action-validate
+    name="action-quality-improvement-validate-lines-selected-for-send">
+    <error message="Please select at least a line to send a distribution."
+      if="qiDecisionDistributionList?.findAll{ it.selected }.size() == 0"/>
+  </action-validate>
+
+  <action-method
+    name="action-quality-improvement-method-send-qi-decision-distributions">
+    <call class="com.axelor.apps.quality.web.QIResolutionController"
+      method="sendQIDecisionDistributions"/>
+  </action-method>
+
+  <action-view
+    name="action-quality-improvement-view-open-qi-decision-distribution-send-form"
+    title="Send QI Decision distributions" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="qi-decision-distribution-send-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <context name="_qiDecisionDistributionList"
+      expr="eval: qiDecisionDistributionList?.findAll{ it.selected }"/>
+  </action-view>
+
+  <action-attrs
+    name="action-quality-improvement-attrs-set-qi-decision-distribution-list-on-new">
+    <attribute name="value" for="$qiDecisionDistributionList"
+      expr="eval: _qiDecisionDistributionList"/>
   </action-attrs>
 
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,10 +19,13 @@
 package com.axelor.apps.contract.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import java.math.BigDecimal;
 import java.util.Map;
 
 public interface ContractLineService {
@@ -38,10 +41,12 @@ public interface ContractLineService {
    * Fill ContractLine with Product information.
    *
    * @param contractLine to fill.
+   * @param contract to give additional information like Company.
    * @param product to get information.
    * @return ContractLine filled with Product information.
    */
-  ContractLine fill(ContractLine contractLine, Product product) throws AxelorException;
+  ContractLine fill(ContractLine contractLine, Contract contract, Product product)
+      throws AxelorException;
 
   ContractLine fillDefault(ContractLine contractLine, ContractVersion contractVersion);
 
@@ -77,10 +82,19 @@ public interface ContractLineService {
    * @param contractLine to compute ex/in tax total.
    * @return ContractLine with ex/in tax total computed.
    */
-  ContractLine computeTotal(ContractLine contractLine) throws AxelorException;
+  ContractLine computeTotal(ContractLine contractLine, Contract contract) throws AxelorException;
 
   ContractLine computePricesPerYear(ContractLine contractLine, ContractVersion contractVersion)
       throws AxelorException;
 
   void computeAnalytic(Contract contract, ContractLine contractLine) throws AxelorException;
+
+  ContractLine resetProductInformation(ContractLine contractLine);
+
+  Map<String, Object> getDiscountsFromPriceLists(
+      Contract contract, ContractLine contractLine, BigDecimal price);
+
+  PriceListLine getPriceListLine(ContractLine contractLine, PriceList priceList, BigDecimal price);
+
+  String computeProductDomain(Contract contract);
 }

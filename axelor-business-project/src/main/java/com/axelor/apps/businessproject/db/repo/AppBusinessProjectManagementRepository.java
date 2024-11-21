@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,9 +20,9 @@ package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.common.base.Strings;
@@ -34,10 +34,7 @@ public class AppBusinessProjectManagementRepository extends AppBusinessProjectRe
   public AppBusinessProject save(AppBusinessProject entity) {
     try {
       if (!Strings.isNullOrEmpty(entity.getExcludeTaskInvoicing())) {
-        Beans.get(ProjectTaskRepository.class)
-            .all()
-            .filter(entity.getExcludeTaskInvoicing())
-            .count();
+        JPA.all(ProjectTask.class).filter(entity.getExcludeTaskInvoicing()).count();
       }
       return super.save(entity);
     } catch (Exception e) {

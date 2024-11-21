@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -50,8 +50,8 @@ import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateMessageService;
-import com.axelor.utils.QueryBuilder;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.QueryBuilder;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -352,7 +352,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
     Map<String, Object> map = new HashMap<String, Object>();
     map.put("userName", employee.getUser().getFullName());
-    map.put("date", DateTool.toDate(date));
+    map.put("date", LocalDateHelper.toDate(date));
     map.put("workedHour", workedHour);
     map.put("workingHour", worksHour);
     return map;
@@ -436,7 +436,11 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     if (isPublicHoliday) {
       totalHours = totalHours.add(dailyWorkingHours);
     } else {
-      totalHours = totalHours.add(getLeaveHours(employee, date, dailyWorkingHours));
+      List<LeaveRequest> leavesList = leaveRequestService.getLeaves(employee, date);
+      totalHours =
+          totalHours.add(
+              leaveRequestComputeDurationService.computeTotalLeaveHours(
+                  date, dailyWorkingHours, leavesList));
     }
 
     return totalHours.setScale(2, RoundingMode.HALF_UP);
@@ -495,7 +499,11 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
           publicHolidayService.checkPublicHolidayDay(
               fromDate, employee.getPublicHolidayEventsPlanning());
       if (!isPublicHoliday) {
-        leaveHours = leaveHours.add(getLeaveHours(employee, fromDate, dailyWorkingHours));
+        List<LeaveRequest> leavesList = leaveRequestService.getLeaves(employee, fromDate);
+        leaveHours =
+            leaveHours.add(
+                leaveRequestComputeDurationService.computeTotalLeaveHours(
+                    fromDate, dailyWorkingHours, leavesList));
       }
       fromDate = fromDate.plusDays(1);
     } while (fromDate.until(toDate).getDays() > -1);

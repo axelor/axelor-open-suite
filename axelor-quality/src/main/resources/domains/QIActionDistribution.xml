@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="QIActionDistribution">
+
+    <many-to-many name="qiTaskSet" title="Tasks"
+      ref="com.axelor.apps.quality.db.QITask"/>
+    <string name="sequence" title="Sequence"/>
+    <many-to-one name="qiDecision" title="Decision"
+      ref="com.axelor.apps.quality.db.QIDecision"/>
+    <integer name="recipient" title="Recipient" required="true"
+      selection="quality.qi.resolution.decision.responsible.select" default="1"/>
+    <many-to-one name="recipientPartner" title="Recipient name"
+      ref="com.axelor.apps.base.db.Partner" required="true"/>
+    <string name="description" title="Description" large="true" multiline="true"/>
+    <string name="documentReference" title="Document reference"/>
+    <many-to-one name="generatedFile" title="Generated file"
+      ref="com.axelor.dms.db.DMSFile"/>
+    <boolean name="distributionSent" title="Sent"/>
+    <many-to-one name="qiAnalysis" ref="com.axelor.apps.quality.db.QIAnalysis"
+      title="Analysis"/>
+
+    <track>
+      <field name="sequence"/>
+      <field name="qiDecision"/>
+      <field name="recipient"/>
+      <field name="recipientPartner"/>
+      <field name="description"/>
+      <field name="documentReference"/>
+      <field name="generatedFile"/>
+      <field name="distributionSent"/>
+      <field name="qiAnalysis"/>
+    </track>
+
+  </entity>
+
+</domain-models>

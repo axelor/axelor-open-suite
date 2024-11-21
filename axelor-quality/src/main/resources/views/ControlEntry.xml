@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="control-entry-grid" title="Control entries"
+    model="com.axelor.apps.quality.db.ControlEntry">
+    <field name="statusSelect"/>
+    <field name="name"/>
+    <field name="entryDateTime"/>
+    <field name="inspector"/>
+    <field name="sampleCount"/>
+    <field name="controlPlan"/>
+  </grid>
+
+  <form name="control-entry-form" title="Control entry"
+    model="com.axelor.apps.quality.db.ControlEntry" onNew="action-record-control-quality-on-new">
+    <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect > 2">
+      <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"
+        readonly="true"/>
+      <field name="name" colSpan="6"/>
+      <field name="entryDateTime" colSpan="6"/>
+      <field name="inspector" colSpan="6"/>
+      <field name="sampleCount" colSpan="6"/>
+      <field name="controlPlan" colSpan="6" domain="self.statusSelect = 3"/>
+    </panel>
+    <panel-related name="controlEntrySamplesPanel" field="controlEntrySamplesList"
+      colSpan="12" grid-view="control-entry-sample-grid" form-view="control-entry-sample-form"
+      showIf="controlEntrySamplesList != null &amp;&amp; controlEntrySamplesList.length > 0"
+      readonlyIf="statusSelect > 2" onChange="save"/>
+    <panel name="actionPanel" showTitle="false" sidebar="true">
+      <button name="createSamplesBtn"
+        onClick="save,action-method-quality-control-entry-create-samples"
+        title="Create control entry samples" showIf="statusSelect == 1"
+        readonlyIf="sampleCount &lt;= 0"/>
+      <button name="finishBtn" onClick="action-record-quality-control-finish,save"
+        title="Finish" showIf="statusSelect == 2"/>
+      <button name="cancelBtn" onClick="action-record-quality-control-cancel,save"
+        title="Cancel" showIf="statusSelect == 2"/>
+    </panel>
+  </form>
+
+  <action-record name="action-record-control-quality-on-new"
+    model="com.axelor.apps.quality.db.ControlEntry">
+    <field name="inspector" expr="eval: __user__"/>
+    <field name="entryDateTime" expr="eval: __time__"/>
+  </action-record>
+
+  <action-record name="action-record-quality-control-finish"
+    model="com.axelor.apps.quality.db.ControlEntry">
+    <field name="statusSelect" expr="eval: 3"/>
+  </action-record>
+
+  <action-record name="action-record-quality-control-cancel"
+    model="com.axelor.apps.quality.db.ControlEntry">
+    <field name="statusSelect" expr="eval: 4"/>
+  </action-record>
+
+  <action-method name="action-method-quality-control-entry-create-samples">
+    <call class="com.axelor.apps.quality.web.ControlEntryController" method="createSamples"/>
+  </action-method>
+</object-views>

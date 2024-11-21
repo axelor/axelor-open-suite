@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,25 +18,43 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
+import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class ExpenseLineServiceImpl implements ExpenseLineService {
 
   protected ExpenseLineRepository expenseLineRepository;
+  protected HRConfigService hrConfigService;
+  protected ProjectRepository projectRepository;
 
   @Inject
-  public ExpenseLineServiceImpl(ExpenseLineRepository expenseLineRepository) {
+  public ExpenseLineServiceImpl(
+      ExpenseLineRepository expenseLineRepository,
+      HRConfigService hrConfigService,
+      ProjectRepository projectRepository) {
     this.expenseLineRepository = expenseLineRepository;
+    this.hrConfigService = hrConfigService;
+    this.projectRepository = projectRepository;
   }
 
   @Override
@@ -119,5 +137,43 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
     }
     String fileType = metaFile.getFileType();
     return "application/pdf".equals(fileType);
+  }
+
+  @Override
+  public Product getExpenseProduct(ExpenseLine expenseLine) throws AxelorException {
+    boolean isKilometricLine = expenseLine.getIsKilometricLine();
+    if (!isKilometricLine) {
+      return null;
+    }
+
+    User user = AuthUtils.getUser();
+    if (user != null) {
+      Company activeCompany = user.getActiveCompany();
+      if (activeCompany != null) {
+        return hrConfigService.getHRConfig(activeCompany).getKilometricExpenseProduct();
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public String computeProjectTaskDomain(ExpenseLine expenseLine) {
+    Project project = expenseLine.getProject();
+    if (project != null) {
+      return "self.id IN (" + StringHelper.getIdListString(project.getProjectTaskList()) + ")";
+    }
+    List<Project> projectList =
+        projectRepository
+            .all()
+            .filter(":userId IN self.membersUserSet.id")
+            .bind("userId", expenseLine.getEmployee().getUser().getId())
+            .fetch();
+    return "self.id IN ("
+        + StringHelper.getIdListString(
+            projectList.stream()
+                .map(Project::getProjectTaskList)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList()))
+        + ")";
   }
 }

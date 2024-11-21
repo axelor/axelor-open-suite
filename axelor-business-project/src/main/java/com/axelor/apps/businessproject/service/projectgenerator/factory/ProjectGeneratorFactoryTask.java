@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
@@ -32,13 +34,14 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
@@ -47,12 +50,14 @@ import java.util.List;
 
 public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
-  private ProjectBusinessService projectBusinessService;
-  private ProjectRepository projectRepository;
-  private ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
-  private ProjectTaskRepository projectTaskRepo;
-  private ProductCompanyService productCompanyService;
-  private AppBusinessProjectService appBusinessProjectService;
+  protected ProjectBusinessService projectBusinessService;
+  protected ProjectRepository projectRepository;
+  protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
+  protected ProjectTaskRepository projectTaskRepo;
+  protected ProductCompanyService productCompanyService;
+  protected AppBusinessProjectService appBusinessProjectService;
+  protected SequenceService sequenceService;
+  protected AppProjectService appProjectService;
 
   @Inject
   public ProjectGeneratorFactoryTask(
@@ -61,20 +66,32 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       ProjectTaskRepository projectTaskRepo,
       ProductCompanyService productCompanyService,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      SequenceService sequenceService,
+      AppProjectService appProjectService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
     this.projectTaskRepo = projectTaskRepo;
     this.productCompanyService = productCompanyService;
     this.appBusinessProjectService = appBusinessProjectService;
+    this.sequenceService = sequenceService;
+    this.appProjectService = appProjectService;
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsBusinessProject(true);
-    return project;
+    try {
+      if (!appProjectService.getAppProject().getGenerateProjectSequence()) {
+        project.setCode(sequenceService.getDraftSequenceNumber(project));
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+    }
+    return projectRepository.save(project);
   }
 
   @Override
@@ -107,7 +124,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         .add("grid", "project-task-grid")
         .add("form", "project-task-form")
         .param("search-filters", "project-task-filters")
-        .domain(String.format("self.id in (%s)", StringTool.getIdListString(tasks)));
+        .domain(String.format("self.id in (%s)", StringHelper.getIdListString(tasks)));
   }
 
   protected void processSaleOrderLine(
@@ -134,7 +151,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
                 tasks.add(task);
               });
     } else {
-      tasks.add(createProjectTask(project, saleOrder, startDate, saleOrderLine));
+      tasks.add(createProjectTask(project, startDate, saleOrderLine));
     }
   }
 
@@ -142,7 +159,6 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
    * create task from saleOrderLine
    *
    * @param project
-   * @param saleOrder
    * @param startDate
    * @param saleOrderLine
    * @return
@@ -150,24 +166,41 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
    */
   @Transactional
   protected ProjectTask createProjectTask(
-      Project project, SaleOrder saleOrder, LocalDateTime startDate, SaleOrderLine saleOrderLine)
+      Project project, LocalDateTime startDate, SaleOrderLine saleOrderLine)
       throws AxelorException {
 
     ProjectTask task =
         projectTaskBusinessProjectService.create(saleOrderLine, project, project.getAssignedTo());
 
-    if (saleOrder.getToInvoiceViaTask()) {
-      task.setToInvoice(true);
-      task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
-    } else {
-      task.setToInvoice(project.getIsInvoicingTimesheet());
-    }
+    setTaskInvoicingType(saleOrderLine, task);
 
     task.setTaskDate(startDate.toLocalDate());
     task.setUnitPrice(saleOrderLine.getPrice());
     task.setExTaxTotal(saleOrderLine.getExTaxTotal());
     projectTaskRepo.save(task);
     return task;
+  }
+
+  protected void setTaskInvoicingType(SaleOrderLine saleOrderLine, ProjectTask task) {
+    switch (saleOrderLine.getInvoicingModeSelect()) {
+      case SaleOrderLineRepository.INVOICING_MODE_STANDARD:
+        task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_NO_INVOICING);
+        break;
+      case SaleOrderLineRepository.INVOICING_MODE_PROGRESS_BILLING:
+        task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS);
+        break;
+      case SaleOrderLineRepository.INVOICING_MODE_SPENT_TIME:
+        task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT);
+        break;
+      case SaleOrderLineRepository.INVOICING_MODE_PACKAGE:
+        task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
+        break;
+      default:
+        break;
+    }
+
+    task.setToInvoice(
+        !ProjectTaskRepository.INVOICING_TYPE_NO_INVOICING.equals(task.getInvoicingType()));
   }
 
   protected void updateSoldTime(ProjectTask task, SaleOrderLine saleOrderLine) {

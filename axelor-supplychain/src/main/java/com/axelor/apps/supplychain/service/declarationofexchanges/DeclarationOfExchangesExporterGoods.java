@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,13 +22,14 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ProductCompanyService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.stock.db.CustomsCodeNomenclature;
 import com.axelor.apps.stock.db.ModeOfTransport;
 import com.axelor.apps.stock.db.NatureOfTransaction;
@@ -45,7 +46,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.io.MoreFiles;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -106,7 +107,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
                 INVOICE)));
     this.stockMoveToolService = Beans.get(StockMoveToolService.class);
     this.supplyChainConfigService = Beans.get(SupplyChainConfigService.class);
-    this.birtTemplateService = Beans.get(BirtTemplateService.class);
+    this.printingTemplatePrintService = Beans.get(PrintingTemplatePrintService.class);
   }
 
   @Override
@@ -139,7 +140,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
 
     try {
       MoreFiles.createParentDirectories(path);
-      CsvTool.csvWriter(
+      CsvHelper.csvWriter(
           path.getParent().toString(),
           path.getFileName().toString(),
           ';',
@@ -229,7 +230,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     String dept;
     try {
       Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMove, stockMoveLine);
-      srcDstCountry = partnerAddress.getAddressL7Country().getAlpha2Code();
+      srcDstCountry = partnerAddress.getCountry().getAlpha2Code();
     } catch (AxelorException e) {
       srcDstCountry = e.getMessage();
     }
@@ -250,7 +251,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
           && ObjectUtils.notEmpty(stockMoveLine.getFromStockLocation().getAddress())) {
         countryOrigCode =
-            stockMoveLine.getFromStockLocation().getAddress().getAddressL7Country().getAlpha2Code();
+            stockMoveLine.getFromStockLocation().getAddress().getCountry().getAlpha2Code();
       } else {
         countryOrigCode = "";
       }
@@ -326,19 +327,17 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
   protected String exportToPDF() throws AxelorException {
     SupplyChainConfig supplyChainConfig =
         supplyChainConfigService.getSupplyChainConfig(declarationOfExchanges.getCompany());
-    BirtTemplate declarationOfExchGoodsBirtTemplate =
-        supplyChainConfig.getDeclarationOfExchGoodsBirtTemplate();
-    if (ObjectUtils.isEmpty(declarationOfExchGoodsBirtTemplate)) {
+    PrintingTemplate declarationOfExchGoodsPrintTemplate =
+        supplyChainConfig.getDeclarationOfExchGoodsPrintTemplate();
+    if (ObjectUtils.isEmpty(declarationOfExchGoodsPrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
-    return birtTemplateService.generateBirtTemplateLink(
-        declarationOfExchGoodsBirtTemplate,
-        declarationOfExchanges,
-        null,
+    return printingTemplatePrintService.getPrintLink(
+        declarationOfExchGoodsPrintTemplate,
+        new PrintingGenFactoryContext(declarationOfExchanges),
         getTitle(),
-        true,
-        declarationOfExchanges.getFormatSelect());
+        true);
   }
 }

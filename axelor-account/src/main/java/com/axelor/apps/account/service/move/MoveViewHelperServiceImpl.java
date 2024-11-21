@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,10 +34,10 @@ public class MoveViewHelperServiceImpl implements MoveViewHelperService {
       domain += " AND " + company.getId() + " member of self.companySet";
       if (journal != null && !Strings.isNullOrEmpty(journal.getCompatiblePartnerTypeSelect())) {
         domain += " AND (";
-        String[] partnerSet = journal.getCompatiblePartnerTypeSelect().split(", ");
+        String[] partnerSet = journal.getCompatiblePartnerTypeSelect().split(",");
         String lastPartner = partnerSet[partnerSet.length - 1];
         for (String partner : partnerSet) {
-          domain += "self." + partner + " = true";
+          domain += "self." + partner.trim() + " = true";
           if (!partner.equals(lastPartner)) {
             domain += " OR ";
           }

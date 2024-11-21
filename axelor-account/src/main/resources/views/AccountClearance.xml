@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="account-clearance-grid" title="Account clearance operations"
     model="com.axelor.apps.account.db.AccountClearance">
@@ -45,11 +45,18 @@
         onClick="save,action-method-account-clearance-validate,save" hideIf="statusSelect == 2"
         colSpan="12"/>
       <button name="showAccountClearanceMoveLinesBtn" title="Move lines generated"
-        onClick="action-method-account-clearance-show-move-lines" showIf="statusSelect == 2"
-        colSpan="12"/>
+        onClick="action-account-clearance-view-move-lines" showIf="statusSelect == 2" colSpan="12"/>
     </panel>
 
   </form>
+
+  <action-view name="action-account-clearance-view-move-lines"
+    title="Move lines generated" model="com.axelor.apps.account.db.MoveLine">
+    <view type="grid" name="move-line-accounting-situation-grid"/>
+    <view type="form" name="move-line-form"/>
+    <domain>self.accountClearance.id = :id</domain>
+    <context name="id" expr="eval: id"/>
+  </action-view>
 
   <action-method name="action-method-account-clearance-get-excesspayment">
     <call class="com.axelor.apps.account.web.AccountClearanceController"
@@ -59,11 +66,6 @@
   <action-method name="action-method-account-clearance-validate">
     <call class="com.axelor.apps.account.web.AccountClearanceController"
       method="validateAccountClearance"/>
-  </action-method>
-
-  <action-method name="action-method-account-clearance-show-move-lines">
-    <call class="com.axelor.apps.account.web.AccountClearanceController"
-      method="showAccountClearanceMoveLines"/>
   </action-method>
 
   <action-record name="action-account-clearance-record-default"

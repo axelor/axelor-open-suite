@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -197,7 +197,12 @@ public class FECImporter extends Importer {
         }
 
         if (fecImport.getValidGeneratedMove()) {
-          moveValidateService.accounting(move);
+          if (move.getAccountingDate() != null) {
+            move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
+            moveRepository.save(move);
+          } else {
+            moveValidateService.accounting(move);
+          }
         } else {
           return moveRepository.save(move);
         }

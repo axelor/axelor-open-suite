@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -56,8 +56,6 @@ public class SaleInvoicingStateServiceImpl implements SaleInvoicingStateService 
       if (atLeastOneInvoiceVentilated(saleOrderLine)
           && saleOrderLine.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
         invoicingState = SALE_ORDER_INVOICE_INVOICED;
-      } else if (atLeastOneInvoiceVentilated(saleOrderLine)) {
-        invoicingState = SALE_ORDER_INVOICE_PARTIALLY_INVOICED;
       } else {
         invoicingState = SALE_ORDER_INVOICE_NOT_INVOICED;
       }

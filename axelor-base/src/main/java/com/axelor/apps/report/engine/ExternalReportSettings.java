@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,8 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ReportingTool;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
-import com.axelor.utils.net.URLService;
+import com.axelor.utils.helpers.net.UrlHelper;
+import com.google.common.base.Strings;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
@@ -45,8 +46,11 @@ public class ExternalReportSettings extends ReportSettings {
 
     super(rptdesign, outputName);
 
-    this.addAxelorReportPath(rptdesign)
-        .addParam("__locale", ReportingTool.getCompanyLocale().toString());
+    String localeCode = (String) this.params.get("__locale");
+    if (Strings.isNullOrEmpty(localeCode)) {
+      localeCode = ReportingTool.getCompanyLocale().toString();
+      this.addAxelorReportPath(rptdesign).addParam("__locale", localeCode);
+    }
   }
 
   @Override
@@ -57,7 +61,7 @@ public class ExternalReportSettings extends ReportSettings {
     try {
       this.getUrl();
 
-      String urlNotExist = URLService.notExist(url.toString());
+      String urlNotExist = UrlHelper.notExist(url.toString());
       if (urlNotExist != null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -69,7 +73,7 @@ public class ExternalReportSettings extends ReportSettings {
 
       this.output = tmpFile.toFile();
 
-      URLService.fileDownload(this.output, url, "", outputName);
+      UrlHelper.fileDownload(this.output, url, "", outputName);
 
       this.attach();
 

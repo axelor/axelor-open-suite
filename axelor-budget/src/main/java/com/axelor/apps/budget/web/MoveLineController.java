@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,13 @@
  */
 package com.axelor.apps.budget.web;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -35,5 +39,29 @@ public class MoveLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
     }
+  }
+
+  @ErrorException
+  public void setBudgetDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    Move move = moveLine.getMove();
+    if (move == null && request.getContext().getParent() != null) {
+      move = request.getContext().getParent().asType(Move.class);
+    }
+    response.setAttr(
+        "budget", "domain", Beans.get(MoveLineBudgetService.class).getBudgetDomain(move, moveLine));
+  }
+
+  public void computeBudgetRemainingAmountToAllocate(
+      ActionRequest request, ActionResponse response) {
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+    response.setValue(
+        "budgetRemainingAmountToAllocate",
+        Beans.get(BudgetToolsService.class)
+            .getBudgetRemainingAmountToAllocate(
+                moveLine.getBudgetDistributionList(),
+                moveLine.getDebit().max(moveLine.getCredit())));
   }
 }

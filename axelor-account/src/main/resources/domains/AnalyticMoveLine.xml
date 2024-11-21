@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AnalyticMoveLine">
+  <entity name="AnalyticMoveLine" implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <many-to-one name="analyticDistributionTemplate"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"
@@ -20,8 +20,9 @@
     <many-to-one name="analyticAccount" required="true"
       ref="com.axelor.apps.account.db.AnalyticAccount" title="Analytic Acc."/>
     <decimal name="percentage" title="%"/>
-    <decimal name="originalPieceAmount" title="Original piece amount" hidden="true"/>
-    <decimal name="amount" title="Amount"/>
+    <decimal name="originalPieceAmount" title="Original piece amount" hidden="true"
+      scale="3" precision="20"/>
+    <decimal name="amount" title="Amount" scale="3" precision="20"/>
     <date name="date" required="true" title="Date" column="date_val"/>
     <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal"
       title="Analytic Journal" required="true"/>
@@ -39,6 +40,13 @@
       selection="account.analytic.move.line.sub.type.select" required="true" default="1"/>
     <many-to-one name="originAnalyticMoveLine"
       ref="com.axelor.apps.account.db.AnalyticMoveLine"/>
+
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return currency;
+	    ]]>
+    </many-to-one>
 
     <finder-method name="findByAnalyticAxis" using="analyticAxis" all="true"/>
 

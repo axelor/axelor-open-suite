@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="QualityConfig" cacheable="true">
+
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true" unique="true"/>
+    <many-to-one name="qiActionDistributionPrintTemplate"
+      title="Action distribution template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="qiActionDistributionSequence"
+      title="Action distribution sequence" ref="com.axelor.apps.base.db.Sequence"/>
+    <many-to-one ref="com.axelor.apps.base.db.PrintingTemplate"
+      name="qiDecisionDistributionPrintTemplate" title="Decision distribution template"/>
+    <many-to-one ref="com.axelor.apps.base.db.Sequence"
+      name="qiDecisionDistributionSequence" title="Decision distribution sequence"/>
+
+    <track>
+      <field name="company" on="UPDATE"/>
+      <field name="qiActionDistributionPrintTemplate" on="UPDATE"/>
+      <field name="qiActionDistributionSequence" on="UPDATE"/>
+      <field name="qiDecisionDistributionPrintTemplate" on="UPDATE"/>
+      <field name="qiDecisionDistributionSequence" on="UPDATE"/>
+    </track>
+
+  </entity>
+
+</domain-models>

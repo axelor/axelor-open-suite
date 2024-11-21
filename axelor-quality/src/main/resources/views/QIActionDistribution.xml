@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="qi-action-distribution-grid" title="Distributions"
+    model="com.axelor.apps.quality.db.QIActionDistribution" orderBy="sequence" canNew="false"
+    canDelete="false">
+    <hilite color="green" if="distributionSent"/>
+    <field name="sequence"/>
+    <field name="qiDecision"/>
+    <field name="recipient"/>
+    <field name="recipientPartner"/>
+    <field name="documentReference"/>
+    <field name="generatedFile"/>
+    <field name="distributionSent"/>
+  </grid>
+
+  <form name="qi-action-distribution-form" title="Distribution"
+    model="com.axelor.apps.quality.db.QIActionDistribution" canDelete="!distributionSent"
+    canEdit="false">
+    <panel name="mainPanel">
+      <field name="sequence" readonly="true"/>
+      <field name="qiDecision" grid-view="qi-decision-grid" form-view="qi-decision-form"
+        readonly="true"/>
+      <field name="recipient"/>
+      <field name="recipientPartner" grid-view="partner-grid" form-view="partner-form"
+        onSelect="action-qi-action-distribution-attrs-set-recipient-partner-domain"/>
+      <field name="description" widget="html" colSpan="12"/>
+      <field name="documentReference"/>
+      <panel-related field="qiTaskSet" grid-view="qi-task-grid"
+        form-view="qi-task-form" colSpan="12"/>
+      <field name="generatedFile" grid-view="dms-file-grid" form-view="dms-file-form"
+        readonly="true"/>
+      <field name="distributionSent" readonly="true"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-attrs name="action-qi-action-distribution-attrs-set-recipient-partner-domain">
+    <attribute name="domain" for="recipientPartner"
+      expr="eval: &quot; self.isEmployee = true &quot;" if="recipient == 1"/>
+    <attribute name="domain" for="recipientPartner"
+      expr="eval: &quot; self.isCustomer = true &quot;" if="recipient == 2"/>
+    <attribute name="domain" for="recipientPartner"
+      expr="eval: &quot; self.isSupplier = true &quot;" if="recipient == 3"/>
+    <attribute name="domain" for="recipientPartner"
+      expr="eval: &quot; self.isContact = true AND EXISTS (SELECT p FROM Partner p WHERE p.isCustomer = true AND self.id IN (SELECT id FROM p.contactPartnerSet)) &quot;"
+      if="recipient == 4"/>
+    <attribute name="domain" for="recipientPartner"
+      expr="eval: &quot; self.isContact = true AND EXISTS (SELECT p FROM Partner p WHERE p.isSupplier = true AND self.id IN (SELECT id FROM p.contactPartnerSet)) &quot;"
+      if="recipient == 5"/>
+  </action-attrs>
+
+</object-views>

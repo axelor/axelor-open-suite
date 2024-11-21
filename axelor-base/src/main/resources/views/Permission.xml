@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid id="base-permission-grid" name="permission-grid" title="Permissions"
+    model="com.axelor.auth.db.Permission" extension="true">
+    <extend target="/">
+      <insert position="before">
+        <toolbar>
+          <button name="checkPermissionsBtn" title="Check permissions' objects"
+            onClick="action-permission-method-check-permissions-object"/>
+        </toolbar>
+      </insert>
+    </extend>
+  </grid>
 
   <form name="permission-form" id="base-permission-form" title="Permission"
     model="com.axelor.auth.db.Permission">
@@ -44,4 +56,7 @@
     <context name="permission" expr="eval: id"/>
   </action-view>
 
+  <action-method name="action-permission-method-check-permissions-object">
+    <call class="com.axelor.auth.web.PermissionController" method="checkPermissionsObject"/>
+  </action-method>
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
     <field name="name"/>
@@ -43,13 +43,15 @@
         <field name="group" placeholder="user group"/>
         <field name="email" widget="Email"
           showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
-        <field name="language"/>
+
+        <field name="localization" title="Localization"
+          onChange="action-base-user-record-change-language" form-view="localization-form"
+          grid-view="localization-grid"/>
+
+
         <field name="theme" widget="theme-select"/>
-        <panel name="actionsPanel" stacked="true">
-          <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
-          <field name="__actionSelect" title="Action" widget="SuggestBox" canNew="false"
-            target="com.axelor.meta.db.MetaAction" target-name="name" domain="self.home = true"/>
-        </panel>
+        <field name="homeAction" widget="ref-text" x-target="com.axelor.meta.db.MetaAction"
+          x-target-name="name" domain="self.type = 'action-view' and self.home = true"/>
         <field name="singleTab" widget="inline-checkbox" colSpan="3"/>
         <field name="noHelp" widget="inline-checkbox" colSpan="3"/>
         <field name="change" title="Change password?" showIf="id &amp;&amp; !$readonly()"
@@ -74,6 +76,7 @@
             <field name="sendEmailUponPasswordChange"/>
           </panel>
         </panel>
+        <field name="language" hidden="true"/>
       </panel>
       <panel name="stepContactPanel" showIf="stepStatusSelect == 2" colSpan="12">
         <panel name="contactInformationPanel" title="Contact Information"
@@ -163,15 +166,15 @@
         <field name="group" placeholder="user group"/>
         <field name="email" widget="Email"
           showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
-        <field name="language"/>
+        <field name="localization" title="Localization"
+          onChange="action-base-user-record-change-language" form-view="localization-form"
+          grid-view="localization-grid"/>
         <field name="theme" widget="theme-select"/>
-        <panel name="actionsPanel" stacked="true">
-          <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
-          <field name="__actionSelect" title="Action" widget="SuggestBox" canNew="false"
-            target="com.axelor.meta.db.MetaAction" target-name="name" domain="self.home = true"/>
-        </panel>
+        <field name="homeAction" widget="ref-text" x-target="com.axelor.meta.db.MetaAction"
+          x-target-name="name" domain="self.type = 'action-view' and self.home = true"/>
         <field name="singleTab" widget="inline-checkbox" colSpan="3"/>
         <field name="noHelp" widget="inline-checkbox" colSpan="3"/>
+        <field name="language" hidden="true"/>
       </panel>
       <panel name="authorizationPanel" title="Authorization" colSpan="12">
         <field name="activateOn"
@@ -310,7 +313,8 @@
     onNew="action-user-attrs" onLoad="action-user-attrs">
     <panel name="userPreferencesPanel" title="User preferences" itemSpan="12">
       <field name="image" showTitle="false"/>
-      <field name="language"/>
+      <field name="localization" title="Localization" grid-view="localization-grid"
+        form-view="localization-form" onChange="action-base-user-record-change-language"/>
       <field name="activeCompany" onSelect="action-user-attrs-domain-active-company"
         widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>
       <field name="tradingName"
@@ -348,6 +352,7 @@
       <panel-related name="emailAccountListPanel" field="emailAccountList"
         if="__config__.app.getApp('base')?.getEmailAccountByUser()" colSpan="12"
         form-view="mail-account-form" grid-view="mail-account-grid"/>
+      <field name="language" hidden="true"/>
     </panel>
 
     <panel hidden="true" colSpan="12" name="transientPasswordPanel">
@@ -566,6 +571,12 @@
       if="partner == null &amp;&amp; employee?.contactPartner != null"/>
   </action-attrs>
 
+  <action-record name="action-base-user-record-change-language"
+    model="com.axelor.auth.db.User">
+    <field name="language"
+      expr="eval:__this__.localization?.code.replace('_','-').toLowerCase()"/>
+  </action-record>
+
   <search-filters name="user-filters" model="com.axelor.auth.db.User"
     title="User filters">
     <field name="workshopStockLocation" hidden="true"
@@ -591,7 +602,7 @@
       if="!(__config__.app.isApp('sale') || __config__.app.isApp('purchase'))"/>
     <field name="useSignatureForStock" hidden="true" if="!__config__.app.isApp('stock')"/>
     <field name="projectSet" hidden="true" if="!__config__.app.isApp('project')"/>
-    <filter title="Active users">
+    <filter name="user-filters-active-users" title="Active users">
       <domain>self.blocked = false AND (self.activateOn IS NULL OR self.activateOn &lt;= :_today)
         AND (self.expiresOn IS NULL OR self.expiresOn &gt;= :_today)</domain>
     </filter>

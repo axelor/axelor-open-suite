@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,9 +27,11 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.PrintingTemplateRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
@@ -37,7 +39,6 @@ import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.exception.HandleExceptionResponse;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -45,7 +46,9 @@ import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
+import com.axelor.apps.sale.service.SaleOrderGroupService;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
@@ -72,6 +75,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
@@ -119,32 +123,42 @@ public class SaleOrderController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void showSaleOrder(ActionRequest request, ActionResponse response) {
-    this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_PDF);
+  public void showSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException {
+    PrintingTemplate saleOrderPrintTemplate = null;
+    if (request.getContext().get("id") != null) {
+      SaleOrder saleOrder =
+          Beans.get(SaleOrderRepository.class)
+              .find(Long.parseLong(request.getContext().get("id").toString()));
+      saleOrderPrintTemplate =
+          Beans.get(SaleConfigService.class).getSaleOrderPrintTemplate(saleOrder.getCompany());
+    }
+    this.exportSaleOrder(request, response, false, saleOrderPrintTemplate);
   }
 
-  /**
-   * Print a proforma invoice as a PDF.
-   *
-   * @param request
-   * @param response
-   */
-  public void printProformaInvoice(ActionRequest request, ActionResponse response) {
-    this.exportSaleOrder(request, response, true, ReportSettings.FORMAT_PDF);
-  }
+  @SuppressWarnings("unchecked")
+  public void printSaleOrder(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    boolean proforma = (Integer) context.get("reportType") == 2;
 
-  public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) {
-    this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLSX);
-  }
-
-  public void exportSaleOrderWord(ActionRequest request, ActionResponse response) {
-    this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_DOC);
+    PrintingTemplate saleOrderPrintTemplate = null;
+    if (context.get("saleOrderPrintTemplate") != null) {
+      saleOrderPrintTemplate =
+          Mapper.toBean(
+              PrintingTemplate.class, (Map<String, Object>) context.get("saleOrderPrintTemplate"));
+      saleOrderPrintTemplate =
+          Beans.get(PrintingTemplateRepository.class).find(saleOrderPrintTemplate.getId());
+    }
+    this.exportSaleOrder(request, response, proforma, saleOrderPrintTemplate);
   }
 
   @SuppressWarnings("unchecked")
   public void exportSaleOrder(
-      ActionRequest request, ActionResponse response, boolean proforma, String format) {
+      ActionRequest request,
+      ActionResponse response,
+      boolean proforma,
+      PrintingTemplate saleOrderPrintTemplate) {
 
     Context context = request.getContext();
     String fileLink;
@@ -171,7 +185,19 @@ public class SaleOrderController {
         SaleOrder saleOrder =
             Beans.get(SaleOrderRepository.class).find(Long.parseLong(context.get("id").toString()));
         title = Beans.get(SaleOrderService.class).getFileName(saleOrder);
-        fileLink = saleOrderPrintService.printSaleOrder(saleOrder, proforma, format);
+        fileLink =
+            saleOrderPrintService.printSaleOrder(saleOrder, proforma, saleOrderPrintTemplate);
+        response.setCanClose(true);
+
+        logger.debug("Printing " + title);
+      } else if (context.get("_saleOrderId") != null) {
+
+        SaleOrder saleOrder =
+            Beans.get(SaleOrderRepository.class)
+                .find(Long.parseLong(context.get("_saleOrderId").toString()));
+        title = Beans.get(SaleOrderService.class).getFileName(saleOrder);
+        fileLink =
+            saleOrderPrintService.printSaleOrder(saleOrder, proforma, saleOrderPrintTemplate);
         response.setCanClose(true);
 
         logger.debug("Printing " + title);
@@ -656,12 +682,20 @@ public class SaleOrderController {
         "incoterm", "required", Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder));
   }
 
-  public void onLineChange(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void onLineChange(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
-    response.setValues(saleOrder);
-    response.setAttr(
-        "incoterm", "required", Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder));
+    try {
+      if (saleOrder == null) {
+        return;
+      }
+
+      Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
+
+      response.setValues(Mapper.toMap(saleOrder));
+      response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void createNewVersion(ActionRequest request, ActionResponse response)

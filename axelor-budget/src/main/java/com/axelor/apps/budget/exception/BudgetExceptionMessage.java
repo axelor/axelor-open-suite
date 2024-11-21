@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -85,9 +85,21 @@ public final class BudgetExceptionMessage {
       "Budget distribution has not been configured. It is required for the rest of the process." /*)*/;
 
   public static final String BUGDET_EXCEED_ERROR = /*$$(*/
-      "Warning : There is a budget overrun for %s. The available balance is %.2f %s. If you click OK you will be in excess, do you want to continue ?"; /*)*/
+      "There is a budget overrun for %s. The available balance is %.2f %s."; /*)*/
+
+  public static final String BUDGET_EXCEED_ERROR_ALERT = /*$$(*/
+      "If you click OK you will be in excess, do you want to continue ?"; /*)*/
 
   public static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
 
   public static final String BUDGET_VARIABLE = /*$$(*/ "Budget Scenario Variable %s" /*)*/;
+
+  public static final String BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_INVOICE = /*$$(*/
+      "The sum of the budget distribution amounts exceeds the amount of the invoice line %s, please correct it" /*)*/;
+
+  public static final String BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_PO = /*$$(*/
+      "The sum of the budget distribution amount for budget exceeds the amount of the order line %s, please correct it" /*)*/;
+
+  public static final String BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_MOVE = /*$$(*/
+      "The sum of the budget distribution amount for budget exceeds the amount of the move line %s, please correct it" /*)*/;
 }

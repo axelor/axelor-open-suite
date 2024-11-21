@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,11 +19,14 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import java.util.Optional;
 
 public class SaleOrderDomainServiceImpl implements SaleOrderDomainService {
   @Override
   public String getPartnerBaseDomain(Company company) {
-    Long companyPartnerId = company.getPartner() == null ? 0 : company.getPartner().getId();
+    Long companyPartnerId =
+        Optional.ofNullable(company).map(Company::getPartner).map(Partner::getId).orElse(0L);
     return String.format(
         "self.id != %d AND self.isContact = false "
             + "AND (self.isCustomer = true or self.isProspect = true) "

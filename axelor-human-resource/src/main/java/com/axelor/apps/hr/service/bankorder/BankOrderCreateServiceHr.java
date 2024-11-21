@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,6 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -33,7 +32,6 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -44,14 +42,16 @@ import org.slf4j.LoggerFactory;
 public class BankOrderCreateServiceHr extends BankOrderCreateService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected AppBaseService appBaseService;
 
   @Inject
   public BankOrderCreateServiceHr(
-      BankOrderRepository bankOrderRepo,
-      BankOrderService bankOrderService,
+      BankOrderRepository bankOrderRepository,
       BankOrderLineService bankOrderLineService,
-      InvoiceService invoiceService) {
-    super(bankOrderRepo, bankOrderService, bankOrderLineService, invoiceService);
+      InvoiceService invoiceService,
+      AppBaseService appBaseService) {
+    super(bankOrderRepository, bankOrderLineService, invoiceService);
+    this.appBaseService = appBaseService;
   }
 
   /**
@@ -75,9 +75,8 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
     LocalDate paymentDate =
         expense.getPaymentDate() != null
             ? expense.getPaymentDate()
-            : Beans.get(AppBaseService.class)
-                .getTodayDate(
-                    company); // Take into consideration today's date if paymentDate is null
+            : appBaseService.getTodayDate(
+                company); // Take into consideration today's date if paymentDate is null
 
     BankOrder bankOrder =
         super.createBankOrder(
@@ -91,7 +90,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             expense.getFullName(),
             BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             BankOrderRepository.FUNCTIONAL_ORIGIN_EXPENSE,
-            PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
+            getAccountingTriggerSelect(paymentMode));
 
     bankOrder.addBankOrderLineListItem(
         bankOrderLineService.createBankOrderLine(
@@ -103,12 +102,19 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             expense.getExpenseSeq(),
             expense.getFullName(),
             expense));
-    bankOrder = bankOrderRepo.save(bankOrder);
+    bankOrder = bankOrderRepository.save(bankOrder);
 
     return bankOrder;
   }
 
-  public BankOrder createBankOrder(Expense expense) throws AxelorException {
-    return createBankOrder(expense, expense.getCompany().getDefaultBankDetails());
+  protected int getAccountingTriggerSelect(PaymentMode paymentMode) {
+    int accountingTriggerSelect = paymentMode.getAccountingTriggerSelect();
+    switch (accountingTriggerSelect) {
+      case PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION:
+      case PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION:
+        return accountingTriggerSelect;
+      default:
+        return PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION;
+    }
   }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -34,23 +34,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="Locale" id="3740">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -178,7 +161,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -220,7 +203,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -755,14 +738,14 @@ WHERE BOM.id = ?]]></xml-property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT BOM.priority, Product.full_name as product_name, BOM.define_sub_bill_of_material as sub_bom, BOM.has_no_manage_stock as manage_stock,
-BOM.qty, Unit.label_to_printing as unit_name, ProdProcess.name as prod_process
-FROM production_bill_of_material AS BOM
-LEFT JOIN base_product as Product ON (Product.id = BOM.product)
-LEFT JOIN base_unit AS Unit ON (Unit.id = BOM.unit)
+            <xml-property name="queryText"><![CDATA[SELECT BOMLine.priority, Product.full_name as product_name, BOM.define_sub_bill_of_material as sub_bom, BOMLine.has_no_manage_stock as manage_stock,
+BOMLine.qty, Unit.label_to_printing as unit_name, ProdProcess.name as prod_process
+FROM production_bill_of_material_line AS BOMLine
+LEFT JOIN production_bill_of_material AS BOM ON BOM.id = BOMLine.bill_of_material_parent
+LEFT JOIN base_product as Product ON (Product.id = BOMLine.product)
+LEFT JOIN base_unit AS Unit ON (Unit.id = BOMLine.unit)
 LEFT JOIN production_prod_process AS ProdProcess ON (ProdProcess.id = BOM.prod_process)
-LEFT JOIN production_bill_of_material_bill_of_material_set AS BOMSET ON (BOMSET.bill_of_material_set = BOM.id)
-WHERE BOMSET.production_bill_of_material = ? order by Product.name]]></xml-property>
+WHERE BOMLine.bill_of_material_parent = ? order by Product.name]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -1201,7 +1184,7 @@ this.height=row["logo_height"];]]></method>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] ? row["translation"] : row._outer["unit_name"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -1775,7 +1758,7 @@ this.height=row["logo_height"];]]></method>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] ? row["translation"] : row._outer["unit_name"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4372">
@@ -1811,11 +1794,11 @@ this.height=row["logo_height"];]]></method>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>if(row._outer["sub_bom"] == 0 &amp;&amp; params["Locale"].value == 'en'){ 
+                                            <text-property name="content"><![CDATA[<VALUE-OF>if(row._outer["sub_bom"] == 0 &amp;&amp; params["__locale"].value.substring(0, 2) == 'en'){
 	'No'
-}else if(row._outer["sub_bom"] == 0 &amp;&amp; params["Locale"].value == 'fr'){ 
+}else if(row._outer["sub_bom"] == 0 &amp;&amp; params["__locale"].value.substring(0, 2) == 'fr'){
 	'Non' 
-}else if(row._outer["sub_bom"] != 0 &amp;&amp; params["Locale"].value == 'en'){
+}else if(row._outer["sub_bom"] != 0 &amp;&amp; params["__locale"].value.substring(0, 2) == 'en'){
 	'Yes'
 }else {
 	'Oui'
@@ -1855,11 +1838,11 @@ this.height=row["logo_height"];]]></method>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>if(row._outer["manage_stock"] == 0 &amp;&amp; params["Locale"].value == 'en'){ 
+                                            <text-property name="content"><![CDATA[<VALUE-OF>if(row._outer["manage_stock"] == 0 &amp;&amp; params["__locale"].value.substring(0, 2) == 'en'){
 	'No'
-}else if(row._outer["manage_stock"] == 0 &amp;&amp; params["Locale"].value == 'fr'){ 
+}else if(row._outer["manage_stock"] == 0 &amp;&amp; params["__locale"].value.substring(0, 2) == 'fr'){
 	'Non' 
-}else if(row._outer["manage_stock"] != 0 &amp;&amp; params["Locale"].value == 'en'){
+}else if(row._outer["manage_stock"] != 0 &amp;&amp; params["__locale"].value.substring(0, 2) == 'en'){
 	'Yes'
 }else {
 	'Oui'

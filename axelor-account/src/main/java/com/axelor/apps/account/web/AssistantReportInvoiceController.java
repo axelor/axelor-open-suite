@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,11 +22,12 @@ import com.axelor.apps.account.db.AssistantReportInvoice;
 import com.axelor.apps.account.db.repo.AssistantReportInvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.DateService;
-import com.axelor.apps.base.service.PrintFromBirtTemplateService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -55,21 +56,48 @@ public class AssistantReportInvoiceController {
 
     AssistantReportInvoice assistant = request.getContext().asType(AssistantReportInvoice.class);
     assistant = Beans.get(AssistantReportInvoiceRepository.class).find(assistant.getId());
-    BirtTemplate purchaseInvoicesDetailsBirtTemplate =
+    PrintingTemplate purchaseInvoicesDetailsPrintTemplate =
         Beans.get(AccountConfigService.class)
             .getAccountConfig(assistant.getCompany())
-            .getPurchaseInvoicesDetailsBirtTemplate();
-    if (ObjectUtils.isEmpty(purchaseInvoicesDetailsBirtTemplate)) {
+            .getPurchaseInvoicesDetailsPrintTemplate();
+    if (ObjectUtils.isEmpty(purchaseInvoicesDetailsPrintTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String name = I18n.get("PurchaseInvoicesDetails-") + getDateString(assistant);
 
     String fileLink =
-        Beans.get(PrintFromBirtTemplateService.class)
-            .print(purchaseInvoicesDetailsBirtTemplate, assistant);
+        Beans.get(PrintingTemplatePrintService.class)
+            .getPrintLink(
+                purchaseInvoicesDetailsPrintTemplate, new PrintingGenFactoryContext(assistant));
+
+    logger.debug("Printing " + name);
+
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
+
+  public void printSales(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    AssistantReportInvoice assistant = request.getContext().asType(AssistantReportInvoice.class);
+    assistant = Beans.get(AssistantReportInvoiceRepository.class).find(assistant.getId());
+    PrintingTemplate saleInvoicesDetailsPrintTemplate =
+        Beans.get(AccountConfigService.class)
+            .getAccountConfig(assistant.getCompany())
+            .getSaleInvoicesDetailsPrintTemplate();
+    if (ObjectUtils.isEmpty(saleInvoicesDetailsPrintTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
+
+    String name = I18n.get("SaleInvoicesDetails-") + getDateString(assistant);
+
+    String fileLink =
+        Beans.get(PrintingTemplatePrintService.class)
+            .getPrintLink(
+                saleInvoicesDetailsPrintTemplate, new PrintingGenFactoryContext(assistant));
 
     logger.debug("Printing " + name);
 

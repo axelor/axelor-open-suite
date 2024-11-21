@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,7 +46,8 @@ public interface FixedAssetDerogatoryLineService {
    * that are realized. (Because it depends of the previous line) It might be necessary to
    * recalculate derogatoryBalanceAmount.
    */
-  List<FixedAssetDerogatoryLine> computePlannedFixedAssetDerogatoryLineList(FixedAsset fixedAsset);
+  List<FixedAssetDerogatoryLine> computePlannedFixedAssetDerogatoryLineList(FixedAsset fixedAsset)
+      throws AxelorException;
 
   void multiplyLinesBy(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLine, BigDecimal prorata);
 
@@ -74,7 +75,9 @@ public interface FixedAssetDerogatoryLineService {
       FixedAssetLine economicFixedAssetLine,
       FixedAssetLine fiscalFixedAssetLine,
       FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine,
-      LocalDate date);
+      LocalDate date,
+      FixedAsset fixedAsset)
+      throws AxelorException;
 
   /**
    * This method will remove every fixedAssetDerogatoryLine from database, then use {@link

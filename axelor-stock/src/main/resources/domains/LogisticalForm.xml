@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -58,7 +58,7 @@
       <field name="deliverToCustomerPartner"/>
       <field name="carrierPartner"/>
       <field name="forwarderPartner"/>
-      <field name="incoterm"/>
+      <field name="incoterm" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
       <field name="tracking"/>
       <message if="statusSelect == 1" tag="important">Provision</message>
       <message if="statusSelect == 2" tag="info">Carrier validated</message>

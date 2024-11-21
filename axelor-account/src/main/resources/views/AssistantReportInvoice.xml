@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details"
     name="print-sale-invoices-details-grid">
@@ -92,7 +92,7 @@
   <action-group name="action-print-invoices-details-group-print-sales">
     <action name="action-print-invoices-details-record-set-publication-date-time"/>
     <action name="save"/>
-    <action name="action-method-print-birt"/>
+    <action name="action-print-invoices-details-method-print-sales"/>
   </action-group>
 
   <action-group name="action-print-invoices-details-group-print-purchases">
@@ -100,6 +100,11 @@
     <action name="save"/>
     <action name="action-print-invoices-details-method-print-purchases"/>
   </action-group>
+
+  <action-method name="action-print-invoices-details-method-print-sales">
+    <call class="com.axelor.apps.account.web.AssistantReportInvoiceController"
+      method="printSales"/>
+  </action-method>
 
   <action-method name="action-print-invoices-details-method-print-purchases">
     <call class="com.axelor.apps.account.web.AssistantReportInvoiceController"

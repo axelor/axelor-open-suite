@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,7 +32,6 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public interface OperationOrderService {
 
@@ -65,12 +64,6 @@ public interface OperationOrderService {
    * @throws AxelorException
    */
   OperationOrder updateDiffProdProductList(OperationOrder operationOrder) throws AxelorException;
-
-  List<Map<String, Object>> chargeByMachineHours(
-      LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException;
-
-  List<Map<String, Object>> chargeByMachineDays(
-      LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException;
 
   /**
    * Compute the difference between the two lists for the given operation order.

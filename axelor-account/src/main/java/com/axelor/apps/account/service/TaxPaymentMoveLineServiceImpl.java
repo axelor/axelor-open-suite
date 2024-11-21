@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,8 +20,10 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService {
 
@@ -30,8 +32,25 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
       throws AxelorException {
     BigDecimal taxRate = taxPaymentMoveLine.getTaxRate().divide(new BigDecimal(100));
     BigDecimal base = taxPaymentMoveLine.getDetailPaymentAmount();
-    taxPaymentMoveLine.setTaxAmount(base.multiply(taxRate).setScale(2, RoundingMode.HALF_UP));
+    taxPaymentMoveLine.setTaxAmount(
+        base.multiply(taxRate)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+
+    if (isReverseTax(taxPaymentMoveLine)) {
+      taxPaymentMoveLine.setTaxAmount(taxPaymentMoveLine.getTaxAmount().negate());
+    }
     return taxPaymentMoveLine;
+  }
+
+  protected boolean isReverseTax(TaxPaymentMoveLine taxPaymentMoveLine) {
+    return taxPaymentMoveLine.getFiscalPosition() != null
+        && taxPaymentMoveLine.getFiscalPosition().getTaxEquivList().stream()
+            .anyMatch(
+                taxEquiv ->
+                    CollectionUtils.isNotEmpty(taxEquiv.getReverseChargeTaxSet())
+                        && taxEquiv
+                            .getReverseChargeTaxSet()
+                            .contains(taxPaymentMoveLine.getOriginTaxLine().getTax()));
   }
 
   @Override

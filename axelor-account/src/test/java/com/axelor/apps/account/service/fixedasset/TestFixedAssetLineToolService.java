@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,13 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
+import static org.mockito.Mockito.mock;
+
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.account.service.FindFixedAssetService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.time.LocalDate;
@@ -38,7 +42,10 @@ class TestFixedAssetLineToolService {
 
   @BeforeAll
   static void prepare() {
-    fixedAssetLineToolService = new FixedAssetLineToolServiceImpl();
+    CurrencyScaleService currencyScaleService = mock(CurrencyScaleService.class);
+    FindFixedAssetService findFixedAssetService = mock(FindFixedAssetService.class);
+    fixedAssetLineToolService =
+        new FixedAssetLineToolServiceImpl(currencyScaleService, findFixedAssetService);
   }
 
   @Test

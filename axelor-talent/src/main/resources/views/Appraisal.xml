@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="appraisal-grid" title="Appraisals" model="com.axelor.apps.talent.db.Appraisal">
     <field name="employee"/>
@@ -132,27 +132,29 @@
   </action-record>
 
 
-  <search-filters name="appraisal-fitlers"
+  <search-filters name="appraisal-filters"
     model="com.axelor.apps.talent.db.Appraisal" title="Appraisal filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <filter title="New appraisal">
+    <filter name="appraisal-filters-new-appraisal" title="New appraisal">
       <domain>self.isTemplate = false and self.statusSelect = 0</domain>
     </filter>
-    <filter title="Upcoming appraisal">
+    <filter name="appraisal-filters-upcoming-appraisal" title="Upcoming appraisal">
       <domain>self.isTemplate = false and self.statusSelect = 1</domain>
     </filter>
-    <filter title="My upcoming appraisal">
+    <filter name="appraisal-filters-my-upcoming-appraisal" title="My upcoming appraisal">
       <domain>self.employee.user.id = :_userId and self.isTemplate = false and self.statusSelect = 1</domain>
     </filter>
-    <filter title="My completed appraisals">
+    <filter name="appraisal-filters-my-completed-appraisals" title="My completed appraisals">
       <domain>self.employee.user.id = :_userId and self.isTemplate = false and self.statusSelect = 2</domain>
     </filter>
-    <filter title="Upcoming appraisals of all employees of a team">
+    <filter name="appraisal-filters-upcoming-appraisals-of-all-employees-of-a-team"
+      title="Upcoming appraisals of all employees of a team">
       <domain>self.employee.user.id in :_teamUserIds and self.isTemplate = false and
         self.statusSelect = 1</domain>
     </filter>
-    <filter title="Completed trainings of all employees of a team">
+    <filter name="appraisal-filters-completed-trainings-of-all-employees-of-a-team"
+      title="Completed trainings of all employees of a team">
       <domain>self.employee.user.id in :_teamUserIds and self.isTemplate = false and
         self.statusSelect = 2</domain>
     </filter>

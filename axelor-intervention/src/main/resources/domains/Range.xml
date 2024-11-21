@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/domain-models"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="Range">
+    <string name="description" title="Description" large="true" multiline="true"/>
+    <string name="title" title="Title" required="true" namecolumn="true"/>
+    <many-to-one name="rangeType" title="Range type"
+      ref="com.axelor.apps.intervention.db.RangeType" required="true"/>
+    <boolean name="isPrivate" title="Is private ?"/>
+    <many-to-one name="tradingName" title="Trading name"
+      ref="com.axelor.apps.base.db.TradingName"/>
+
+    <track>
+      <field name="description"/>
+      <field name="title"/>
+      <field name="rangeType"/>
+      <field name="isPrivate"/>
+      <field name="tradingName"/>
+    </track>
+  </entity>
+
+</domain-models>

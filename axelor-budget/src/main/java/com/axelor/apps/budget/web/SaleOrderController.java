@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,15 +18,16 @@
  */
 package com.axelor.apps.budget.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
-import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetServiceImpl;
+import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -47,11 +48,11 @@ public class SaleOrderController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
+      BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
       if (saleOrder != null
           && saleOrder.getCompany() != null
-          && Beans.get(BudgetService.class).checkBudgetKeyInConfig(saleOrder.getCompany())) {
-        if (!Beans.get(BudgetToolsService.class)
-                .checkBudgetKeyAndRole(saleOrder.getCompany(), AuthUtils.getUser())
+          && budgetToolsService.checkBudgetKeyInConfig(saleOrder.getCompany())) {
+        if (!budgetToolsService.checkBudgetKeyAndRole(saleOrder.getCompany(), AuthUtils.getUser())
             && saleOrderBudgetService.isBudgetInLines(saleOrder)) {
           response.setInfo(
               I18n.get(
@@ -71,17 +72,17 @@ public class SaleOrderController {
     }
   }
 
-  public void computeSaleOrderBudgetDistributionSumAmount(
+  public void computeSaleOrderBudgetRemainingAmountToAllocate(
       ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
-        SaleOrderLineBudgetServiceImpl saleOrderLineBudgetServiceImpl =
-            Beans.get(SaleOrderLineBudgetServiceImpl.class);
+        BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          saleOrderLineBudgetServiceImpl.computeBudgetDistributionSumAmount(
-              saleOrderLine, saleOrder);
+          saleOrderLine.setBudgetRemainingAmountToAllocate(
+              budgetToolsService.getBudgetRemainingAmountToAllocate(
+                  saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));
         }
         response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
       }
@@ -102,7 +103,6 @@ public class SaleOrderController {
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
           saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, multiBudget);
         }
-        response.setReload(true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -158,6 +158,46 @@ public class SaleOrderController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+    }
+  }
+
+  public void confirm(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
+        SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
+        saleOrderBudgetService.generateBudgetDistribution(saleOrder);
+        saleOrderBudgetService.updateBudgetLinesFromSaleOrder(saleOrder);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @ErrorException
+  public void autoComputeBudgetDistribution(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
+    if (saleOrder != null
+        && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())
+        && !saleOrderBudgetService.isBudgetInLines(saleOrder)) {
+      saleOrderBudgetService.autoComputeBudgetDistribution(saleOrder);
+      response.setReload(true);
+    }
+  }
+
+  public void validateFinalize(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
+    if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
+      if (saleOrderBudgetService.isBudgetInLines(saleOrder)) {
+        String budgetExceedAlert = saleOrderBudgetService.getBudgetExceedAlert(saleOrder);
+        BudgetControllerTool.verifyBudgetExceed(budgetExceedAlert, true, response);
+      } else {
+        BudgetControllerTool.verifyMissingBudget(response);
+      }
     }
   }
 }

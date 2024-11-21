@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="inventory-line-grid" title="Inventory lines"
-    model="com.axelor.apps.stock.db.InventoryLine" editable="true" orderBy="product.code">
+    model="com.axelor.apps.stock.db.InventoryLine" editable="true" orderBy="product.code"
+    onNew="action-inventory-line-attrs-scale-and-precision">
+    <hilite if="!isPresentInStockLocation" color="lightgreen"/>
     <field name="product" canEdit="false"
-      onChange="action-inventory-line-group-update-inventory-line"
+      onChange="action-inventory-line-group-on-change-product-stock-location"
       domain="self.stockManaged = true AND self.dtype = 'Product'" grid-view="product-grid"
       form-view="product-form"/>
     <field name="stockLocation"
       onSelect="action-inventory-line-method-set-stock-location-domain"
-      onChange="action-inventory-line-group-update-inventory-line"/>
+      onChange="action-inventory-line-group-on-change-product-stock-location"/>
     <field name="currentQty" readonly="true" aggregate="sum" width="120" x-scale="2"/>
     <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum"
-      width="120" x-scale="2"/>
+      width="120" x-scale="2" min="0"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
     <field name="description"/>
     <field name="rack" width="150"/>
@@ -23,28 +25,41 @@
     <field name="gap"/>
     <field name="gapValue"/>
     <field name="realValue"/>
+    <field name="price" readonlyIf="isPresentInStockLocation"
+      x-scale="nbDecimalDigitForUnitPrice"/>
+    <field name="isPresentInStockLocation" type="boolean" x-dirty="false" hidden="true"/>
+    <button name="showDetailStockProduct" icon="fa-cubes"
+      onClick="action-inventory-line-view-for-a-product-from-product-view" readonlyIf="!product"
+      if="__config__.app.isApp('supplychain')"/>
+    <field name="nbDecimalDigitForUnitPrice" x-dirty="false" hidden="true" type="integer"/>
   </grid>
 
   <form name="inventory-line-form" title="Inventory line"
     model="com.axelor.apps.stock.db.InventoryLine"
     onNew="action-inventory-line-attrs-scale-and-precision"
-    onLoad="action-inventory-line-attrs-scale-and-precision">
+    onLoad="action-inventory-line-attrs-scale-and-precision,action-inventory-line-method-check-presence-in-stock-location">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
-        onChange="action-inventory-line-group-update-inventory-line"
+        onChange="action-inventory-line-group-on-change-product-stock-location"
         domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and self.dtype = 'Product'"
         form-view="product-form" grid-view="product-grid"/>
       <field name="stockLocation"
         onSelect="action-inventory-line-method-set-stock-location-domain"
-        onChange="action-inventory-line-group-update-inventory-line"/>
+        onChange="action-inventory-line-group-on-change-product-stock-location"/>
       <field name="currentQty" readonly="true"
         help="Does not include quantities from sub stock locations"/>
-      <field name="realQty" onChange="action-inventory-line-method-compute"/>
+      <field name="realQty" onChange="action-inventory-line-method-compute" min="0"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
       <field name="description"/>
       <field name="rack"/>
       <field name="trackingNumber" canNew="true" domain="self.product = :product"
         onChange="action-inventory-line-group-update-inventory-line"/>
+      <field name="price" hideIf="isPresentInStockLocation"/>
+      <field name="isPresentInStockLocation" type="boolean" x-dirty="false" hidden="true"/>
+      <field name="inventory" readonly="true"/>
+      <button name="showDetailStockProduct" title="See stock details" colSpan="3"
+        onClick="action-inventory-line-view-for-a-product-from-product-view"
+        if="__config__.app.isApp('supplychain')" widget="info-button" icon="fa-cubes"/>
     </panel>
   </form>
 
@@ -53,7 +68,14 @@
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
     <attribute name="scale" for="realQty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="price"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
+
+  <action-attrs name="action-inventory-line-attrs-reset-price">
+    <attribute for="price" name="value" expr="0"/>
+  </action-attrs>
+
   <action-method name="action-inventory-line-method-on-change-tracking-number">
     <call class="com.axelor.apps.stock.web.InventoryLineController"
       method="updateInventoryLine"/>
@@ -62,6 +84,12 @@
   <action-group name="action-inventory-line-group-update-inventory-line">
     <action name="action-inventory-line-method-update-inventory-line"/>
     <action name="action-inventory-line-method-compute"/>
+  </action-group>
+
+  <action-group name="action-inventory-line-group-on-change-product-stock-location">
+    <action name="action-inventory-line-attrs-reset-price"/>
+    <action name="action-inventory-line-method-check-presence-in-stock-location"/>
+    <action name="action-inventory-line-group-update-inventory-line"/>
   </action-group>
 
   <action-method name="action-inventory-line-method-update-inventory-line">
@@ -73,6 +101,11 @@
     <call class="com.axelor.apps.stock.web.InventoryLineController" method="compute"/>
   </action-method>
 
+  <action-method name="action-inventory-line-method-check-presence-in-stock-location">
+    <call class="com.axelor.apps.stock.web.InventoryLineController"
+      method="checkPresenceInStockLocation"/>
+  </action-method>
+
   <action-method name="action-inventory-line-method-set-stock-location-domain">
     <call class="com.axelor.apps.stock.web.InventoryLineController"
       method="setStockLocationDomain"/>
@@ -81,4 +114,14 @@
   <action-method name="action-inventory-line-method-update-current-qty">
     <call class="com.axelor.apps.stock.web.InventoryLineController" method="updateCurrentQty"/>
   </action-method>
+
+  <action-view name="action-inventory-line-view-for-a-product-from-product-view"
+    title="Stock location lines by product" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="supplychain-stock-details-by-product-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup.maximized" value="true"/>
+    <context name="_product" expr="eval:__this__?.product"/>
+    <context name="_company" expr="eval:__parent__?.company"/>
+  </action-view>
 </object-views>

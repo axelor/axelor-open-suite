@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,23 +20,33 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.SaleOrderMergingResult;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingServiceImpl;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
-import com.axelor.utils.MapTools;
+import com.axelor.utils.helpers.MapHelper;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
-public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServiceImpl {
+public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServiceImpl
+    implements SaleOrderMergingServiceSupplyChain {
 
   protected static class CommonFieldsSupplyChainImpl extends CommonFieldsImpl {
     private StockLocation commonStockLocation = null;
@@ -129,15 +139,30 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
 
   protected AppSaleService appSaleService;
   protected AppBaseService appBaseService;
+  protected AppStockService appStockService;
+  protected SaleOrderCreateSupplychainService saleOrderCreateSupplychainService;
 
   @Inject
   public SaleOrderMergingServiceSupplyChainImpl(
-      SaleOrderCreateService saleOrdreCreateService,
+      SaleOrderCreateService saleOrderCreateService,
+      SaleOrderRepository saleOrderRepository,
+      SaleOrderComputeService saleOrderComputeService,
+      SaleOrderLineRepository saleOrderLineRepository,
+      DMSService dmsService,
       AppSaleService appSaleService,
-      AppBaseService appBaseService) {
-    super(saleOrdreCreateService);
+      AppBaseService appBaseService,
+      AppStockService appStockService,
+      SaleOrderCreateSupplychainService saleOrderCreateSupplychainService) {
+    super(
+        saleOrderCreateService,
+        saleOrderRepository,
+        saleOrderComputeService,
+        saleOrderLineRepository,
+        dmsService);
     this.appSaleService = appSaleService;
     this.appBaseService = appBaseService;
+    this.appStockService = appStockService;
+    this.saleOrderCreateSupplychainService = saleOrderCreateSupplychainService;
   }
 
   @Override
@@ -192,7 +217,7 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
           || (commonFields.getCommonIncoterm() != saleOrder.getIncoterm()
               && !commonFields.getCommonIncoterm().equals(saleOrder.getIncoterm()))) {
         commonFields.setCommonIncoterm(null);
-        checks.setExistIncotermDiff(true);
+        checks.setExistIncotermDiff(appStockService.getAppStock().getIsIncotermEnabled());
       }
       if (appBaseService.getAppBase().getActivatePartnerRelations()) {
         if ((commonFields.getCommonInvoicedPartner() == null
@@ -237,27 +262,42 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
   }
 
   @Override
-  protected SaleOrder mergeSaleOrders(
+  protected SaleOrder generateSaleOrder(
       List<SaleOrder> saleOrdersToMerge, SaleOrderMergingResult result) throws AxelorException {
     if (!appSaleService.isApp("supplychain")) {
-      return super.mergeSaleOrders(saleOrdersToMerge, result);
+      return super.generateSaleOrder(saleOrdersToMerge, result);
     }
-    CommonFieldsSupplyChainImpl commonFields = getCommonFields(result);
-    return Beans.get(SaleOrderCreateServiceSupplychainImpl.class)
-        .mergeSaleOrders(
-            saleOrdersToMerge,
-            commonFields.getCommonCurrency(),
-            commonFields.getCommonClientPartner(),
-            commonFields.getCommonCompany(),
-            commonFields.getCommonStockLocation(),
-            commonFields.getCommonContactPartner(),
-            commonFields.getCommonPriceList(),
-            commonFields.getCommonTeam(),
-            commonFields.getCommonTaxNumber(),
-            commonFields.getCommonFiscalPosition(),
-            commonFields.getCommonIncoterm(),
-            commonFields.getCommonInvoicedPartner(),
-            commonFields.getCommonDeliveredPartner());
+    String internalNote =
+        computeConcatenatedString(saleOrdersToMerge, SaleOrder::getInternalNote, "<br>");
+    String numSeq = computeConcatenatedString(saleOrdersToMerge, SaleOrder::getSaleOrderSeq, "-");
+    String externalRef =
+        computeConcatenatedString(saleOrdersToMerge, SaleOrder::getExternalReference, "|");
+
+    SaleOrder saleOrderMerged =
+        saleOrderCreateSupplychainService.createSaleOrder(
+            AuthUtils.getUser(),
+            getCommonFields(result).getCommonCompany(),
+            getCommonFields(result).getCommonContactPartner(),
+            getCommonFields(result).getCommonCurrency(),
+            null,
+            numSeq,
+            externalRef,
+            getCommonFields(result).getCommonStockLocation(),
+            getCommonFields(result).getCommonPriceList(),
+            getCommonFields(result).getCommonClientPartner(),
+            getCommonFields(result).getCommonTeam(),
+            getCommonFields(result).getCommonTaxNumber(),
+            internalNote,
+            getCommonFields(result).getCommonFiscalPosition(),
+            null,
+            getCommonFields(result).getCommonIncoterm(),
+            getCommonFields(result).getCommonInvoicedPartner(),
+            getCommonFields(result).getCommonDeliveredPartner());
+
+    this.attachToNewSaleOrder(saleOrdersToMerge, saleOrderMerged);
+
+    saleOrderComputeService.computeSaleOrder(saleOrderMerged);
+    return saleOrderMerged;
   }
 
   @Override
@@ -266,9 +306,22 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
     if (appSaleService.isApp("supplychain")) {
       if (context.get("stockLocation") != null) {
         getCommonFields(result)
-            .setCommonStockLocation(
-                MapTools.findObject(StockLocation.class, context.get("stockLocation")));
+            .setCommonStockLocation(MapHelper.get(context, StockLocation.class, "stockLocation"));
       }
     }
+  }
+
+  @Override
+  public SaleOrder getDummyMergedSaleOrder(StockMove stockMove) throws AxelorException {
+    SaleOrderMergingResult result =
+        simulateMergeSaleOrders(new ArrayList<>(stockMove.getSaleOrderSet()));
+
+    if (result.isConfirmationNeeded()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICING_ERROR),
+          stockMove.getStockMoveSeq());
+    }
+    return result.getSaleOrder();
   }
 }

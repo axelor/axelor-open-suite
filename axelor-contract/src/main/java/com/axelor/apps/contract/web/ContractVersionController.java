@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -144,7 +144,11 @@ public class ContractVersionController {
               ? request.getContext().getParent().getParent().asType(Contract.class)
               : contractVersion.getNextContract();
       Product product = contractLine.getProduct();
-
+      if (product == null) {
+        contractLine = contractLineService.resetProductInformation(contractLine);
+        response.setValues(contractLine);
+        return;
+      }
       contractLine = contractLineService.fillAndCompute(contractLine, contract, product);
       response.setValues(contractLine);
     } catch (Exception e) {
@@ -155,9 +159,11 @@ public class ContractVersionController {
 
   public void updateContractLines(ActionRequest request, ActionResponse response) {
     ContractLineService contractLineService = Beans.get(ContractLineService.class);
-    ContractVersion contractVersion = request.getContext().asType(ContractVersion.class);
+    Contract contract = request.getContext().getParent().asType(Contract.class);
     try {
-      contractVersion = Beans.get(ContractVersionRepository.class).find(contractVersion.getId());
+      ContractVersion contractVersion =
+          Beans.get(ContractVersionRepository.class)
+              .find(contract.getCurrentContractVersion().getId());
       if (contractVersion.getSupposedActivationDate() != null) {
         contractLineService.updateContractLinesFromContractVersion(contractVersion);
       }

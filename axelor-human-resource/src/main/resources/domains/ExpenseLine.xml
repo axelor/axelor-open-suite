@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -9,6 +9,8 @@
     <!-- Original part of expenseLine -->
     <many-to-one name="employee" ref="Employee" title="Employee"/>
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask"
+      title="Project task"/>
     <many-to-one name="expenseProduct" ref="com.axelor.apps.base.db.Product"
       title="Expense Type" required="true"/>
     <date name="expenseDate" title="Expense date" required="true"/>
@@ -40,11 +42,13 @@
     <!-- integration of KilometricAllowance -->
     <many-to-one name="kilometricAllowParam"
       ref="com.axelor.apps.hr.db.KilometricAllowParam" title="K.A.P."/>
-    <integer name="kilometricTypeSelect" title="Type"
+    <integer name="kilometricTypeSelect" title="Type" nullable="true"
       selection="hr.kilometric.allowance.type.select"/>
     <decimal name="distance" title="Distance travelled" min="0"/>
     <string name="fromCity" title="Starting city"/>
     <string name="toCity" title="Arriving city"/>
+
+    <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
 
     <string name="fullName" namecolumn="true">
 			<![CDATA[
@@ -67,8 +71,8 @@
 	  	]]>
     </string>
 
-    <!-- Currency is only used for mobile application -->
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+    <boolean name="isKilometricLine" title="Kilometric line"/>
 
     <extra-code>
 		<![CDATA[

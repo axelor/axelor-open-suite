@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
@@ -30,18 +29,16 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.app.AppCrmService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.db.EntityHelper;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -50,7 +47,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.persistence.Query;
 
 public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
@@ -62,9 +58,9 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   protected AppCrmService appCrmService;
   protected UserService userService;
   protected SaleOrderLineService saleOrderLineService;
-  protected BirtTemplateService birtTemplateService;
   protected SaleOrderService saleOrderService;
   protected SaleConfigService saleConfigService;
+  protected SaleOrderPrintService saleOrderPrintService;
 
   @Inject
   public SaleOrderWorkflowServiceImpl(
@@ -75,9 +71,9 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       AppCrmService appCrmService,
       UserService userService,
       SaleOrderLineService saleOrderLineService,
-      BirtTemplateService birtTemplateService,
       SaleOrderService saleOrderService,
-      SaleConfigService saleConfigService) {
+      SaleConfigService saleConfigService,
+      SaleOrderPrintService saleOrderPrintService) {
 
     this.sequenceService = sequenceService;
     this.partnerRepo = partnerRepo;
@@ -86,9 +82,9 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     this.appCrmService = appCrmService;
     this.userService = userService;
     this.saleOrderLineService = saleOrderLineService;
-    this.birtTemplateService = birtTemplateService;
     this.saleOrderService = saleOrderService;
     this.saleConfigService = saleConfigService;
+    this.saleOrderPrintService = saleOrderPrintService;
   }
 
   @Override
@@ -103,11 +99,11 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   }
 
   @Override
-  public String getSequence(Company company) throws AxelorException {
+  public String getSequence(Company company, SaleOrder saleOrder) throws AxelorException {
 
     String seq =
         sequenceService.getSequenceNumber(
-            SequenceRepository.SALES_ORDER, company, SaleOrder.class, "saleOrderSeq");
+            SequenceRepository.SALES_ORDER, company, SaleOrder.class, "saleOrderSeq", saleOrder);
     if (seq == null) {
       throw new AxelorException(
           company,
@@ -187,9 +183,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       }
     }
 
-    if (saleOrder.getVersionNumber() == 1
-        && sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
-      saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
+    if (sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
+      saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany(), saleOrder));
     }
 
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
@@ -253,18 +248,11 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
   @Override
   public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException {
-
-    saleOrderService.checkPrintingSettings(saleOrder);
-    BirtTemplate saleOrderBirtTemplate =
-        saleConfigService.getSaleOrderBirtTemplate(saleOrder.getCompany());
-
-    birtTemplateService.generateBirtTemplateLink(
-        saleOrderBirtTemplate,
-        EntityHelper.getEntity(saleOrder),
-        Map.of("ProformaInvoice", false),
-        saleOrderService.getFileName(saleOrder) + " - ${date}",
-        true,
-        ReportSettings.FORMAT_PDF);
+    saleOrderPrintService.print(
+        saleOrder,
+        false,
+        saleConfigService.getSaleOrderPrintTemplate(saleOrder.getCompany()),
+        true);
   }
 
   /**

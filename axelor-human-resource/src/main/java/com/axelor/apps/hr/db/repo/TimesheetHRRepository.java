@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,8 +20,9 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
-import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.inject.Beans;
@@ -33,7 +34,7 @@ import java.util.Map;
 
 public class TimesheetHRRepository extends TimesheetRepository {
 
-  @Inject private TimesheetService timesheetService;
+  @Inject private TimesheetCreateService timesheetCreateService;
   @Inject private TimesheetLineService timesheetLineService;
   @Inject private ProjectRepository projectRepository;
 
@@ -43,6 +44,9 @@ public class TimesheetHRRepository extends TimesheetRepository {
       for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList())
         Beans.get(TimesheetLineHRRepository.class).computeFullName(timesheetLine);
     }
+
+    timesheet.setPeriodTotal(
+        Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet));
     return super.save(timesheet);
   }
 
@@ -55,7 +59,7 @@ public class TimesheetHRRepository extends TimesheetRepository {
       Timesheet timesheet = create(json);
       if (timesheet.getTimesheetLineList() == null || timesheet.getTimesheetLineList().isEmpty()) {
         timesheet.setTimesheetLineList(new ArrayList<TimesheetLine>());
-        obj.put("timesheetLineList", timesheetService.createDefaultLines(timesheet));
+        obj.put("timesheetLineList", timesheetCreateService.createDefaultLines(timesheet));
       }
     }
 

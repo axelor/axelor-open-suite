@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,6 +37,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class LeaveRequestComputeDurationServiceImpl implements LeaveRequestComputeDurationService {
 
@@ -397,5 +398,20 @@ public class LeaveRequestComputeDurationServiceImpl implements LeaveRequestCompu
       }
     }
     return value;
+  }
+
+  @Override
+  public BigDecimal computeTotalLeaveHours(
+      LocalDate date, BigDecimal dayValueInHours, List<LeaveRequest> leaveList)
+      throws AxelorException {
+    BigDecimal totalLeaveHours = BigDecimal.ZERO;
+    for (LeaveRequest leave : leaveList) {
+      BigDecimal leaveHours = computeDuration(leave, date, date);
+      if (leave.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+        leaveHours = leaveHours.multiply(dayValueInHours);
+      }
+      totalLeaveHours = totalLeaveHours.add(leaveHours);
+    }
+    return totalLeaveHours;
   }
 }

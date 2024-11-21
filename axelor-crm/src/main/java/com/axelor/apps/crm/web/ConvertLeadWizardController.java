@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,9 @@ import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
@@ -39,6 +40,7 @@ import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -48,7 +50,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppCrm;
-import com.axelor.utils.service.ConvertBinaryToMetafileService;
+import com.axelor.utils.service.BinaryConversionService;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -226,7 +228,7 @@ public class ConvertLeadWizardController {
       partnerMap.put("isProspect", true);
     }
 
-    if (!isCompany) {
+    if (!isCompany || StringUtils.isEmpty(lead.getEnterpriseName())) {
       partnerMap.put("firstName", lead.getFirstName());
       partnerMap.put("name", lead.getName());
       partnerMap.put("titleSelect", lead.getTitleSelect());
@@ -236,7 +238,7 @@ public class ConvertLeadWizardController {
       partnerMap.put("partnerTypeSelect", 1);
       partnerMap.put("name", lead.getEnterpriseName());
     }
-    partnerMap.put("language", appBase.getDefaultPartnerLanguage());
+    partnerMap.put("localization", appBase.getDefaultPartnerLocalization());
     return partnerMap;
   }
 
@@ -245,9 +247,7 @@ public class ConvertLeadWizardController {
     Map<String, Object> contactMap = new HashMap<String, Object>();
     Lead lead = findLead(request);
     if (lead.getPicture() != null) {
-      MetaFile picture =
-          Beans.get(ConvertBinaryToMetafileService.class)
-              .convertByteTabPictureInMetafile(lead.getPicture());
+      MetaFile picture = Beans.get(BinaryConversionService.class).toMetaFile(lead.getPicture());
       contactMap.put("picture", picture);
     }
     contactMap.put("firstName", lead.getFirstName());
@@ -319,6 +319,7 @@ public class ConvertLeadWizardController {
     Lead lead = this.findLead(request);
     Address primaryAddress = Beans.get(ConvertLeadWizardService.class).createPrimaryAddress(lead);
     if (primaryAddress != null) {
+      Beans.get(AddressTemplateService.class).setFormattedFullName(primaryAddress);
       primaryAddress.setFullName(Beans.get(AddressService.class).computeFullName(primaryAddress));
       Beans.get(PartnerService.class).addPartnerAddress(partner, primaryAddress, true, true, true);
     }

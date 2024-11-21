@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="message" package="com.axelor.message.db"/>
 
   <entity name="Template">
 
-    <many-to-many name="birtTemplateSet" ref="com.axelor.apps.base.db.BirtTemplate"
-      title="Birt Template"/>
-    <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language"/>
+    <many-to-many name="printTemplateSet"
+      ref="com.axelor.apps.base.db.PrintingTemplate" title="Print Template"/>
+    <many-to-many name="localizationSet" ref="com.axelor.apps.base.db.Localization"
+      title="Localization"/>
 
   </entity>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <menuitem name="maintenance-root" title="Maintenance" order="-500"
     if="__config__.app.isApp('maintenance')" icon="fa-recycle" icon-background="olive"/>
@@ -79,7 +79,7 @@
   </action-view>
 
   <menuitem name="maintenance-root-config" parent="maintenance-root" title="Configuration"
-    order="700"/>
+    order="700" icon="fa-cog"/>
 
   <menuitem name="maintenance-root-config-maintenance-category"
     parent="maintenance-root-config" title="Maintenance Category"
@@ -133,12 +133,21 @@
       1</domain>
   </action-view>
 
-  <action-view id="addons.maintenance.manufacturing.root.prod.process"
-    name="manufacturing.root.prod.process" title="Production processes"
+  <action-view id="addons.maintenance.manufacturing.root.general.prod.process"
+    name="manufacturing.root.general.prod.process" title="General production processes"
     model="com.axelor.apps.production.db.ProdProcess">
     <view type="grid" name="prod-process-grid"/>
     <view type="form" name="prod-process-form"/>
-    <domain>self.typeSelect = 1</domain>
+    <domain>self.isPersonalized = false AND self.typeSelect = 1</domain>
+  </action-view>
+
+  <action-view id="addons.maintenance.manufacturing.root.personalized.prod.process"
+    name="manufacturing.root.personalized.prod.process" title="Personalized production processes"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <view type="grid" name="personalized-prod-process-grid"/>
+    <view type="form" name="prod-process-form"/>
+    <view-param name="search-filters" value="prod-process-filters"/>
+    <domain>self.isPersonalized = true AND self.typeSelect = 1</domain>
   </action-view>
 
   <action-view id="maintenance.manufacturing.root.general.bill.of.material"

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <form id="intervention-company-form" name="company-form" title="Company"
+    model="com.axelor.apps.base.db.Company" extension="true">
+    <extend target="//panel[@name='modulesConfigPanel']">
+      <insert position="inside">
+        <button name="InterventionConfigBtn" title="Intervention config" colSpan="6"
+          width="100%" onClick="action-company-view-intervention-config"
+          if="__config__.app.isApp('intervention')"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-view name="action-company-view-intervention-config"
+    title="Intervention config (${ name })"
+    model="com.axelor.apps.intervention.db.InterventionConfig">
+    <view type="form" name="intervention-config-form"/>
+    <context name="_showRecord" expr="eval: __self__.interventionConfig?.id"/>
+    <context name="_company" expr="eval: __this__"/>
+  </action-view>
+
+</object-views>

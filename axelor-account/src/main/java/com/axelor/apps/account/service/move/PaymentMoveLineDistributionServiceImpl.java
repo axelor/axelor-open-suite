@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,26 +23,38 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentMoveLineDistributionRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDistributionService {
 
   protected PaymentMoveLineDistributionRepository paymentMvlDistributionRepository;
+  protected CurrencyService currencyService;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public PaymentMoveLineDistributionServiceImpl(
-      PaymentMoveLineDistributionRepository paymentMvlDistributionRepository) {
+      PaymentMoveLineDistributionRepository paymentMvlDistributionRepository,
+      CurrencyService currencyService,
+      MoveLineToolService moveLineToolService) {
 
     this.paymentMvlDistributionRepository = paymentMvlDistributionRepository;
+    this.currencyService = currencyService;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -69,31 +81,31 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
 
     for (MoveLine moveLine : move.getMoveLineList()) {
       // ignore move lines related to taxes
-      if (moveLine
-          .getAccount()
-          .getAccountType()
-          .getTechnicalTypeSelect()
-          .equals(AccountTypeRepository.TYPE_TAX)) {
+      if (moveLineToolService.isMoveLineTaxAccount(moveLine)) {
         continue;
       }
-      PaymentMoveLineDistribution paymentMvlD =
-          new PaymentMoveLineDistribution(
-              move.getPartner(), reconcile, moveLine, move, moveLine.getTaxLine());
+      Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
+      if (ObjectUtils.notEmpty(taxLineSet)) {
+        for (TaxLine taxLine : taxLineSet) {
+          PaymentMoveLineDistribution paymentMvlD =
+              new PaymentMoveLineDistribution(
+                  move.getPartner(), reconcile, moveLine, move, taxLine);
 
-      if (moveLine.getAccount().getServiceType() == null
-          || moveLine.getAccount().getServiceType().getN4dsCode() == null) {
-        paymentMvlD.setExcludeFromDas2Report(true);
+          paymentMvlD.setOperationDate(
+              Optional.ofNullable(reconcile.getReconciliationDateTime())
+                  .map(LocalDateTime::toLocalDate)
+                  .orElse(null));
+          if (!moveLine.getAccount().getReconcileOk()) {
+            this.computeProratedAmounts(
+                paymentMvlD,
+                invoiceTotalAmount,
+                paymentAmount,
+                moveLine.getCredit().add(moveLine.getDebit()),
+                taxLine);
+          }
+          reconcile.addPaymentMoveLineDistributionListItem(paymentMvlD);
+        }
       }
-      paymentMvlD.setOperationDate(reconcile.getEffectiveDate());
-      if (!moveLine.getAccount().getReconcileOk()) {
-        this.computeProratedAmounts(
-            paymentMvlD,
-            invoiceTotalAmount,
-            paymentAmount,
-            moveLine.getCredit().add(moveLine.getDebit()),
-            moveLine.getTaxLine());
-      }
-      reconcile.addPaymentMoveLineDistributionListItem(paymentMvlD);
     }
 
     Beans.get(ReconcileRepository.class).save(reconcile);
@@ -139,10 +151,9 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
       TaxLine taxLine) {
 
     BigDecimal exTaxProratedAmount =
-        moveLineAmount
-            .multiply(paymentAmount)
-            .divide(invoiceTotalAmount, 6, RoundingMode.HALF_UP)
-            .setScale(2, RoundingMode.HALF_UP);
+        currencyService
+            .computeScaledExchangeRate(moveLineAmount.multiply(paymentAmount), invoiceTotalAmount)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     BigDecimal taxProratedAmount = BigDecimal.ZERO;
     if (taxLine != null) {
@@ -151,7 +162,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
               ? BigDecimal.ZERO
               : exTaxProratedAmount
                   .multiply(taxLine.getValue().divide(new BigDecimal(100)))
-                  .setScale(2, RoundingMode.HALF_UP);
+                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     }
 
     paymentMvlD.setExTaxProratedAmount(exTaxProratedAmount);

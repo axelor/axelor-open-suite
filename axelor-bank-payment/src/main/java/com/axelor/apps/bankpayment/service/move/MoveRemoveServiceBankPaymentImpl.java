@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,9 +22,9 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
@@ -32,7 +32,7 @@ import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.service.ArchivingToolService;
+import com.axelor.utils.service.ArchivingService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -46,16 +46,16 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
   public MoveRemoveServiceBankPaymentImpl(
       MoveRepository moveRepo,
       MoveLineRepository moveLineRepo,
-      ArchivingToolService archivingToolService,
-      ReconcileService reconcileService,
+      ArchivingService archivingService,
+      UnreconcileService unReconcileService,
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository) {
     super(
         moveRepo,
         moveLineRepo,
-        archivingToolService,
-        reconcileService,
+        archivingService,
+        unReconcileService,
         accountingSituationService,
         accountCustomerService);
     this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;

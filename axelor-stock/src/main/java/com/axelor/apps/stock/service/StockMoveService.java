@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.message.db.Template;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -139,7 +140,9 @@ public interface StockMoveService {
 
   void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 
-  public boolean splitStockMoveLines(
+  void sendSupplierCancellationMail(StockMove stockMove, Template template) throws AxelorException;
+
+  void splitStockMoveLines(
       StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty)
       throws AxelorException;
 
@@ -185,7 +188,7 @@ public interface StockMoveService {
    */
   void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
 
-  void setAvailableStatus(StockMove stockMove);
+  void setAvailableStatus(StockMove stockMove) throws AxelorException;
 
   /**
    * Update editDate of one Outgoing Stock Move
@@ -234,4 +237,12 @@ public interface StockMoveService {
   void changeLinesToStockLocation(StockMove stockMove, StockLocation stockLocation);
 
   void checkPrintingSettings(StockMove stockMove) throws AxelorException;
+
+  public Optional<StockMove> generateNewStockMove(StockMove stockMove) throws AxelorException;
+
+  void setMergedStatus(StockMove stockMove);
+
+  StockLocation getToStockLocationOutsource(StockMove stockMove) throws AxelorException;
+
+  void planWithNoSplit(StockMove stockMove) throws AxelorException;
 }

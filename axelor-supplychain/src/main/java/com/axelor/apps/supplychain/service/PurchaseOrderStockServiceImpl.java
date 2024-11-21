@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -56,7 +57,8 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -68,7 +70,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +90,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
   protected ProductCompanyService productCompanyService;
+  protected TaxService taxService;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -98,7 +103,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       StockMoveService stockMoveService,
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      TaxService taxService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -110,6 +116,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
     this.productCompanyService = productCompanyService;
+    this.taxService = taxService;
   }
 
   /**
@@ -239,12 +246,12 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             null,
             StockMoveRepository.TYPE_INCOMING);
 
-    stockMove.setPurchaseOrder(purchaseOrder);
+    stockMove.setPurchaseOrderSet(Sets.newHashSet(purchaseOrder));
     stockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     stockMove.setTradingName(purchaseOrder.getTradingName());
     stockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
 
-    qualityStockMove.setPurchaseOrder(purchaseOrder);
+    qualityStockMove.setPurchaseOrderSet(Sets.newHashSet(purchaseOrder));
     qualityStockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     qualityStockMove.setTradingName(purchaseOrder.getTradingName());
     qualityStockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
@@ -447,9 +454,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     companyUnitPriceUntaxed = companyUnitPriceUntaxed.multiply(shippingCoef);
 
     BigDecimal taxRate = BigDecimal.ZERO;
-    TaxLine taxLine = purchaseOrderLine.getTaxLine();
-    if (taxLine != null) {
-      taxRate = taxLine.getValue();
+    Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      taxRate = taxService.getTotalTaxRateInPercentage(taxLineSet);
     }
     if (purchaseOrderLine.getReceiptState() == 0) {
       purchaseOrderLine.setReceiptState(PurchaseOrderLineRepository.RECEIPT_STATE_NOT_RECEIVED);
@@ -503,7 +510,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     List<StockMove> stockMoveList =
         Beans.get(StockMoveRepository.class)
             .all()
-            .filter("self.purchaseOrder.id = ? AND self.statusSelect = 2", purchaseOrder.getId())
+            .filter(
+                "? MEMBER OF self.purchaseOrderSet AND self.statusSelect = 2",
+                purchaseOrder.getId())
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {
@@ -555,7 +564,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         Beans.get(StockMoveRepository.class)
             .all()
             .filter(
-                "self.purchaseOrder.id = ? AND self.statusSelect <> ?",
+                "? MEMBER OF self.purchaseOrderSet AND self.statusSelect <> ?",
                 purchaseOrderId,
                 StockMoveRepository.STATUS_CANCELED)
             .count();
@@ -613,7 +622,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             .getAppSupplychain()
             .getpOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
-      statusList = StringTool.getIntegerList(status);
+      statusList = StringHelper.getIntegerList(status);
     }
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
@@ -636,7 +645,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.purchaseOrder.stockLocation.id IN ("
-                  + StringTool.getIdListString(stockLocationList)
+                  + StringHelper.getIdListString(stockLocationList)
                   + ") ";
         }
       }

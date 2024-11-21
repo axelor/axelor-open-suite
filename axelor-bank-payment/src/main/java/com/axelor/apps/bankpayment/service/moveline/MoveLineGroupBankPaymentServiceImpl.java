@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,11 +30,14 @@ import com.axelor.apps.account.service.moveline.MoveLineAttrsService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,8 +62,11 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
       MoveAttrsService moveAttrsService,
       AnalyticAttrsService analyticAttrsService,
       MoveCutOffService moveCutOffService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       MoveLineCheckBankPaymentService moveLineCheckBankPaymentService,
-      MoveLineRecordBankPaymentService moveLineRecordBankPaymentService) {
+      MoveLineRecordBankPaymentService moveLineRecordBankPaymentService,
+      FiscalPositionService fiscalPositionService,
+      TaxService taxService) {
     super(
         moveLineService,
         moveLineDefaultService,
@@ -74,7 +80,10 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
         analyticLineService,
         moveAttrsService,
         analyticAttrsService,
-        moveCutOffService);
+        moveCutOffService,
+        moveLineFinancialDiscountService,
+        fiscalPositionService,
+        taxService);
     this.moveLineCheckBankPaymentService = moveLineCheckBankPaymentService;
     this.moveLineRecordBankPaymentService = moveLineRecordBankPaymentService;
   }

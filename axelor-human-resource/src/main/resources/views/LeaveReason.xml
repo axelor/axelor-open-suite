@@ -1,31 +1,101 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="leave-reason-grid" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
     <field name="name"/>
-    <field name="manageAccumulation"/>
     <field name="allowNegativeValue"/>
     <field name="allowInjection"/>
+    <field name="isAutoIncrement"/>
   </grid>
 
-  <form name="leave-reason-form" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
+  <form name="leave-reason-form" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason"
+    onNew="action-leave-reason-group-onnew">
+
     <panel name="mainPanel">
-      <field name="name"/>
-      <field name="manageAccumulation" hideIf="$popup()"/>
-      <field name="allowNegativeValue" showIf="manageAccumulation &amp;&amp; !$popup()"/>
-      <field name="allowInjection" showIf="manageAccumulation &amp;&amp; !$popup()"/>
+      <panel name="viewerPanel" showIf="$readonly() &amp;&amp; leaveReasonTypeSelect != 2">
+        <field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()"
+          colSpan="9" depends="isAutoIncrement">
+          <viewer>
+            <![CDATA[
+            <>
+                  {!isAutoIncrement && <Badge as="span" bg="danger">{_t('Auto incrementation disabled')}</Badge>}
+                  {isAutoIncrement && <Badge as="span" bg="success">{_t('Auto incrementation enabled')}</Badge>}
+            </>
+          ]]>
+          </viewer>
+        </field>
+      </panel>
+
+      <panel name="helpPanel" colSpan="12" itemSpan="12">
+        <help showIf="leaveReasonTypeSelect == 1"><![CDATA[A leave line will be created automatically every month for concerned employee if automatic incrementation is enabled.]]></help>
+        <help showIf="leaveReasonTypeSelect == 2"><![CDATA[An employee can directly make a request of this leave reason.]]></help>
+        <help showIf="leaveReasonTypeSelect == 3"><![CDATA[A leave line will be created automatically every year for concerned employee if automatic incrementation is enabled.]]></help>
+      </panel>
+
+      <panel name="configPanel" itemSpan="4" colSpan="12">
+        <field name="selectedByMgtOnly" widget="boolean-switch"/>
+        <field name="allowInjection" widget="boolean-switch"
+          showIf="leaveReasonTypeSelect != 2"/>
+        <field name="allowNegativeValue" widget="boolean-switch"
+          showIf="leaveReasonTypeSelect != 2"/>
+
+        <field name="isDaysAddedProrated" widget="boolean-switch"
+          showIf="leaveReasonTypeSelect != 2"/>
+        <field name="isToBeResetYearly" widget="boolean-switch"
+          readonlyIf="recoveryLeaveReason" showIf="leaveReasonTypeSelect != 2"/>
+        <field name="recoveryLeaveReason"
+          showIf="isToBeResetYearly &amp;&amp; leaveReasonTypeSelect != 2"
+          onSelect="action-leave-reason-attrs-recovery-leave-reason-onselect"/>
+
+        <field name="useWeeklyPlanningCoef" widget="boolean-switch"
+          hideIf="leaveReasonTypeSelect == 2"
+          if="__config__.app.getApp('leave')?.getUseWeeklyPlanningCoefficientSelect() == 2"/>
+      </panel>
       <field name="instruction" colSpan="12" widget="html"/>
-      <field name="defaultDayNumberGain"/>
-      <field name="selectedByMgtOnly"/>
-      <field name="unitSelect"/>
     </panel>
-    <panel name="exportsPanel">
+
+    <panel name="exportsPanel"
+      if="__config__.app.getApp('leave')?.getIsPayrollPreparationExportEnabled()" colSpan="12">
       <field name="payrollPreprationExport"/>
       <field name="exportCode" requiredIf="payrollPreprationExport"
         hideIf="!payrollPreprationExport"/>
     </panel>
+
+    <panel name="selectPanel" sidebar="true">
+      <field name="name"/>
+      <field name="leaveReasonTypeSelect" onChange="action-leave-reason-attrs-auto-increment"/>
+      <field name="isAutoIncrement" widget="boolean-switch" colSpan="12"
+        showIf="!$readonly() &amp;&amp; leaveReasonTypeSelect != 2"/>
+      <field name="unitSelect"/>
+      <field name="planningSet" canNew="false" widget="TagSelect" placeholder="All"/>
+      <field name="defaultDayNumberGain" showIf="leaveReasonTypeSelect != 2"/>
+    </panel>
   </form>
+
+  <action-group name="action-leave-reason-group-onnew">
+    <action name="action-leave-reason-record-set-unit"/>
+  </action-group>
+
+  <action-record name="action-leave-reason-record-set-unit"
+    model="com.axelor.apps.hr.db.LeaveReason">
+    <field name="unitSelect" expr="eval: 1"/>
+  </action-record>
+
+  <action-attrs name="action-leave-reason-attrs-recovery-leave-reason-onselect">
+    <attribute for="recoveryLeaveReason" name="domain"
+      expr="eval: &quot; self.leaveReasonTypeSelect != 2 &quot;" if="!__id__"/>
+    <attribute for="recoveryLeaveReason" name="domain"
+      expr="eval: &quot; self.leaveReasonTypeSelect != 2 AND self.id != ${__this__.id} AND (self.recoveryLeaveReason.id != ${__this__.id} OR self.recoveryLeaveReason IS null)&quot;"
+      if="__id__"/>
+  </action-attrs>
+
+  <action-attrs name="action-leave-reason-attrs-auto-increment">
+    <attribute for="isAutoIncrement" name="value" expr="eval: false"
+      if="leaveReasonTypeSelect == 2"/>
+    <attribute for="isAutoIncrement" name="value" expr="eval: true"
+      if="leaveReasonTypeSelect != 2"/>
+  </action-attrs>
 
 </object-views>

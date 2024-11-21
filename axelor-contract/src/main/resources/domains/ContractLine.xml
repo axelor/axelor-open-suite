@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="contract" package="com.axelor.apps.contract.db"/>
 
-  <entity name="ContractLine">
+  <entity name="ContractLine" implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <integer name="sequence"/>
 
@@ -20,18 +20,20 @@
 	  	]]>
     </string>
 
-    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
-      required="true"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <decimal name="qty" title="Qty" default="1" precision="20" scale="10"/>
 
     <string name="productName" title="Displayed Product name" required="true"/>
     <decimal name="price" title="Unit price" precision="20" scale="10"/>
 
-    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
-    <decimal name="exTaxTotal" title="Total W.T."/>
-    <decimal name="inTaxTotal" title="Total A.T.I."/>
+    <many-to-many name="taxLineSet" ref="com.axelor.apps.account.db.TaxLine"
+      title="Taxes"/>
+    <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="3"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." precision="20" scale="3"/>
     <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition"
       title="Fiscal position"/>
+
+    <integer name="typeSelect" selection="line.type.select" title="Type"/>
 
     <string name="description" title="Description" large="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
@@ -63,19 +65,66 @@
     <date name="fromDate"/>
 
 
-    <decimal name="discountAmount" title="Discount amount"/>
+    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
     <integer name="discountTypeSelect" title="Discount type"
       selection="base.price.list.line.amount.type.select" default="0"/>
-    <decimal name="priceDiscounted" title="Unit price discounted"/>
+    <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
 
-    <decimal name="initialUnitPrice" title="Initial unit price" nullable="true"/>
+    <decimal name="initialUnitPrice" title="Initial unit price" nullable="true"
+      precision="20" scale="10"/>
     <boolean name="isToRevaluate" title="To revaluate"/>
-    <decimal name="initialPricePerYear" title="Initial price per year"/>
-    <decimal name="yearlyPriceRevalued" title="Price revalued yearly"/>
+    <decimal name="initialPricePerYear" title="Initial price per year" precision="20"
+      scale="3"/>
+    <decimal name="yearlyPriceRevalued" title="Price revalued yearly" precision="20"
+      scale="3"/>
+    <many-to-one name="pricing" ref="com.axelor.apps.base.db.Pricing" title="Pricing"/>
+
+    <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+		Currency currency = null;
+		if (contractVersion != null) {
+		    Contract contract = Optional.of(contractVersion).map(ContractVersion::getContract).orElse(contractVersion.getNextContract());
+		    if (contract != null) {
+		        currency = contract.getCompanyCurrency();
+		    }
+		}
+		return currency;
+	    ]]>
+    </many-to-one>
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+		Currency companyCurrency = null;
+		if (contractVersion != null) {
+		    Contract contract = Optional.of(contractVersion).map(ContractVersion::getContract).orElse(contractVersion.getNextContract());
+		    if (contract != null) {
+		        companyCurrency = contract.getCompanyCurrency();
+		    }
+		}
+		return companyCurrency;
+	    ]]>
+    </many-to-one>
+
+    <decimal name="consumptionMaxQuantity" title="Consumption max quantity" min="0"
+      nullable="true"
+      help="Display an alert if the consumption quantities exceed the defined max quantity"/>
 
     <finder-method name="findOneBy"
       using="contractVersion, product, productName,
 					   isConsumptionLine"/>
+
+    <extra-imports>
+      import java.util.Optional;
+    </extra-imports>
+
+    <extra-code>
+      <![CDATA[
+			// TYPE SELECT
+			public static final int TYPE_NORMAL = 0;
+			public static final int TYPE_TITLE = 1;
+	  	]]>
+    </extra-code>
+
   </entity>
 
 </domain-models>

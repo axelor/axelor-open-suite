@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.repo.BirtTemplateRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.BirtTemplateConfigLineService;
 import com.axelor.apps.base.service.PrintFromBirtTemplateService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -57,14 +56,15 @@ public class PrintingModelController {
 
   public void print(ActionRequest request, ActionResponse response) {
 
-    BirtTemplateConfigLineService birtTemplateConfigLineService =
-        Beans.get(BirtTemplateConfigLineService.class);
+    PrintFromBirtTemplateService printFromBirtTemplateService =
+        Beans.get(PrintFromBirtTemplateService.class);
+
     try {
       Map<String, Object> map = getModelAndId(request);
       String modelName = map.get(CONTEXT_MODEL_CLASS).toString();
       Long recordId = (Long) map.get(CONTEXT_MODEL_ID);
 
-      Set<BirtTemplate> birtTemplates = birtTemplateConfigLineService.getBirtTemplates(modelName);
+      Set<BirtTemplate> birtTemplates = printFromBirtTemplateService.getBirtTemplates(modelName);
       if (birtTemplates.size() > 1) {
         List<Long> templateIdList =
             birtTemplates.stream().map(BirtTemplate::getId).collect(Collectors.toList());
@@ -158,7 +158,7 @@ public class PrintingModelController {
       Class<?> contextClass = request.getContext().getContextClass();
 
       Set<BirtTemplate> birtTemplates =
-          Beans.get(BirtTemplateConfigLineService.class).getBirtTemplates(modelName);
+          Beans.get(PrintFromBirtTemplateService.class).getBirtTemplates(modelName);
       if (birtTemplates.size() > 1) {
         List<Long> templateIdList =
             birtTemplates.stream().map(BirtTemplate::getId).collect(Collectors.toList());

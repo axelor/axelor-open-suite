@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,8 @@ package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.repo.AdvancedImportBaseRepository;
+import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.inject.Beans;
 
 public class AdvancedImportBudgetRepository extends AdvancedImportBaseRepository {
 
@@ -30,9 +32,12 @@ public class AdvancedImportBudgetRepository extends AdvancedImportBaseRepository
 
   @Override
   public void remove(AdvancedImport entity) {
-    if (entity.getImportId() != null
-        && (entity.getImportId().equals(IMPORT_ID_1) || entity.getImportId().equals(IMPORT_ID_2))) {
-      return;
+    if (Beans.get(AppBudgetService.class).isApp("budget")) {
+      if (entity.getImportId() != null
+          && (entity.getImportId().equals(IMPORT_ID_1)
+              || entity.getImportId().equals(IMPORT_ID_2))) {
+        return;
+      }
     }
     super.remove(entity);
   }

@@ -1,4 +1,4 @@
-"name";"metaModel.name";"language.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect";"addSignature";"signature"
+"name";"metaModel.name";"localizationSet.importId";"target";"printTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect";"addSignature";"signature"
 "Facture Client";"Invoice";2;;;;"true";;"Votre facture N° $Invoice.invoiceId$";"<p>Bonjour,</p>
 
 <p>Vous trouverez ci-joint la facture N° $Invoice.invoiceId$.</p>
@@ -51,7 +51,7 @@ L'équipe Axelor</p>
 
 <p>Best regards<br/>
 Axelor Team</p>";"$NoteBills.emailAddress.address$";;;2;;
-"Email relance clients particuliers";"DebtRecoveryHistory";2;;30;;"true";;"$DebtRecoveryHistory.debtRecovery.company.name$ : Relance de paiement sur facture(s) de $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$";"Cher/Chère $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$,<br/><br/>
+"Email relance clients particuliers";"DebtRecoveryHistory";2;;"30";;"true";;"$DebtRecoveryHistory.debtRecovery.company.name$ : Relance de paiement sur facture(s) de $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$";"Cher/Chère $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$,<br/><br/>
 Nous sommes heureux de vous compter parmi nos meilleur(e)s client(e)s. Cependant, après une analyse détaillée de votre compte, il ressort que la/les facture(s) suivante(s) demeure(nt) non soldée(s) :<br/>
 <table style=""border-collapse: collapse"" border=""1"">
 <tr>
@@ -75,7 +75,7 @@ $DebtRecoveryHistory.debtRecovery.invoiceDebtRecoverySet:{list |
 Dans le cas où un paiement aurait déjà été réalisé pendant le temps de transit de ce message, veuillez ne pas en tenir compte. Si jamais vous aviez des questions relatives au paiement de cette(ces) facture(s), veuillez nous contacter en répondant à cet email.<br/><br/>
 Cordialement<br/>
 Pour le département comptable de $DebtRecoveryHistory.debtRecovery.company.name$";"$DebtRecoveryHistory.debtRecovery.accountingSituation.partner.emailAddress.address$";;;2;"true";"$__user__.emailSignature$"
-"Email relance clients professionnels";"DebtRecoveryHistory";2;;30;;"true";;"$DebtRecoveryHistory.debtRecovery.company.name$ : Relance de paiement sur facture(s) de $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$";"Cher/Chère responsable de la société $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$,<br/><br/>
+"Email relance clients professionnels";"DebtRecoveryHistory";2;;"30";;"true";;"$DebtRecoveryHistory.debtRecovery.company.name$ : Relance de paiement sur facture(s) de $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$";"Cher/Chère responsable de la société $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$,<br/><br/>
 Nous sommes heureux de vous compter parmi nos meilleur(e)s client(e)s. Cependant, après une analyse détaillée de votre compte, il ressort que la/les facture(s) suivante(s) demeure(nt) non soldée(s) :<br/>
 <table style=""border-collapse: collapse"" border=""1"">
 <tr>
