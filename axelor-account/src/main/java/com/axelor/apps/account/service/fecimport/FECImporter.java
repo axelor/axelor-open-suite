@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.account.service.fecimport;
 
-import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.FECImport;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -193,13 +192,13 @@ public class FECImporter extends Importer {
     try {
       if (move != null) {
         for (MoveLine moveLine : move.getMoveLineList()) {
-          AccountType accountType = moveLine.getAccount().getAccountType();
+          String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
           boolean accountTypeCondition =
               accountType.equals(AccountTypeRepository.TYPE_CHARGE)
                   || accountType.equals(AccountTypeRepository.TYPE_INCOME)
                   || accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION);
           if (accountTypeCondition) {
-            moveLineTaxService.getVatSystem(move, moveLine);
+            moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
           }
         }
         return moveRepository.save(move);
