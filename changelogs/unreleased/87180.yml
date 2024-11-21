@@ -1,0 +1,3 @@
+---
+title: "Group view: fixed inexistant field 'canViewCollaboration' to display only with the Enterprise Edition."
+module: axelor-base
