@@ -877,6 +877,7 @@
 "This bill of materials already has the following versions : <br/>%s And these versions may also have ones. Do you still wish to create a new one ?","Cette nomenclature possède déjà les versions suivantes : <br/>%s Et ces versions peuvent également en avoir elles-même. Voulez vous vraiment en créer une autre ?",,
 "This config allows to automatically fill the deliveries from the finished products of the manufacturing orders.","Cette configuration permet de remplir automatiquement les bons de livraisons depuis les produits finis des OF.",,
 "This production process already has the following versions : <br/> %s And these versions may also have ones. Do you still wish to create a new one ?","Cette gamme a déjà les versions suivantes : <br/> %s Et ces nouvelles versions en ont peut-être déjà quelques unes. Voulez-vous toujours en créer une nouvelle ?",,
+"This stock move is linked to a manufacturing order and can't be canceled.","Ce mouvement de stock est lié à un ordre de fabrication et ne peut être annulé.",,
 "This workflow is not supported for manufacturing operation status.","Le statut cible n'est pas valide en raison du statut actuel de l'opération.",,
 "Thursday hours","Heures Jeudi",,
 "Time before next operation","Temps avant prochaine opération",,
