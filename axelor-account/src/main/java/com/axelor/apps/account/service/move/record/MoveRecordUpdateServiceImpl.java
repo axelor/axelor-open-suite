@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -162,14 +162,14 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   }
 
   @Override
-  public void updateSubrogationPartner(Move move) {
+  public void updateThirdPartyPayerPartner(Move move) {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       move.getMoveLineList().stream()
           .map(MoveLine::getInvoiceTermList)
           .filter(CollectionUtils::isNotEmpty)
           .flatMap(Collection::stream)
           .filter(it -> it.getAmount().compareTo(it.getAmountRemaining()) == 0)
-          .forEach(it -> it.setSubrogationPartner(move.getSubrogationPartner()));
+          .forEach(it -> it.setThirdPartyPayerPartner(move.getThirdPartyPayerPartner()));
     }
   }
 }

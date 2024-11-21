@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -71,7 +71,7 @@ public class MoveLineQueryController {
           MoveLine moveLine = moveLineQueryLine.getMoveLine();
 
           if (moveLine.getCredit().signum() > 0) {
-            selectedCreditTotal = selectedCreditTotal.add(moveLine.getAmountRemaining());
+            selectedCreditTotal = selectedCreditTotal.add(moveLine.getAmountRemaining().abs());
           }
 
           if (moveLine.getDebit().signum() > 0) {
@@ -103,7 +103,6 @@ public class MoveLineQueryController {
   public void massReconcile(ActionRequest request, ActionResponse response) {
     try {
       MoveLineQuery moveLineQuery = request.getContext().asType(MoveLineQuery.class);
-      moveLineQuery = Beans.get(MoveLineQueryRepository.class).find(moveLineQuery.getId());
       List<MoveLine> moveLineList = new ArrayList<>();
       if (!ObjectUtils.isEmpty(moveLineQuery.getMoveLineQueryLineList())) {
         List<MoveLine> moveLineSelectedList =

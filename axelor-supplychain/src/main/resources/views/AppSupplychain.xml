@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-supplychain-config-form" title="App Supplychain"
     model="com.axelor.studio.db.AppSupplychain" canDelete="false" canNew="false" width="large">
@@ -31,6 +31,7 @@
         colSpan="4"/>
       <field name="blockDeallocationOnAvailabilityRequest" widget="boolean-switch" colSpan="4"
         showIf="manageStockReservation"/>
+
     </panel>
     <panel name="purchaseOrderPanel" title="Purchase order">
       <field name="supplStockMoveMgtOnPO"
@@ -51,15 +52,17 @@
         selection="sale.order.status.select"/>
       <field name="pOFilterOnStockDetailStatusSelect" widget="MultiSelect" colSpan="4"
         selection="purchase.purchase.order.status.select"/>
+
     </panel>
     <panel name="stackPanel" title="Stock">
       <field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
       <field name="manageStockReservation" widget="boolean-switch" colSpan="4"
         onChange="action-app-supplychain-validate-config-error"/>
       <field name="isVerifyProductStock" widget="boolean-switch" colSpan="4"/>
-
       <field name="validStepForInvOutSM" showIf="generateInvoiceFromStockMove"
         widget="boolean-switch" colSpan="4"/>
+      <field name="autoFillDeliveryRealQty" widget="boolean-switch" colSpan="4"/>
+      <field name="autoFillReceiptRealQty" widget="boolean-switch" colSpan="4"/>
 
     </panel>
     <panel name="intercoPanel" title="Interco">

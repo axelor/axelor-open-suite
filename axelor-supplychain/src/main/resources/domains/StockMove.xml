@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -31,13 +31,14 @@
     <many-to-one name="invoicedPartner" title="Invoiced partner"
       ref="com.axelor.apps.base.db.Partner"/>
 
-    <many-to-one name="saleOrder" title="Sale order"
+    <many-to-many name="saleOrderSet" title="Sale order"
       ref="com.axelor.apps.sale.db.SaleOrder" copy="false"/>
-    <many-to-one name="purchaseOrder" title="Purchase order"
+    <many-to-many name="purchaseOrderSet" title="Purchase order"
       ref="com.axelor.apps.purchase.db.PurchaseOrder" copy="false"/>
 
-    <finder-method name="findAllBySaleOrderAndStatus" using="saleOrder,statusSelect"
-      all="true"/>
+    <finder-method name="findAllBySaleOrderAndStatus"
+      using="saleOrderSet,statusSelect" all="true"
+      filter="(:saleOrderSet) MEMBER OF self.saleOrderSet AND self.statusSelect = :statusSelect"/>
 
     <extra-code>
     <![CDATA[

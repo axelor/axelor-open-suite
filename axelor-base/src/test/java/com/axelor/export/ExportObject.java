@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,7 @@
  */
 package com.axelor.export;
 
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -170,7 +170,7 @@ public class ExportObject {
       updateObjectList(menuList);
       updateFieldList();
       String[] headers = fieldAttrs.toArray(new String[fieldAttrs.size()]);
-      CsvTool.csvWriter(csvPath, "ExportObj.csv", ';', headers, fieldDataList);
+      CsvHelper.csvWriter(csvPath, "ExportObj.csv", ';', headers, fieldDataList);
     } catch (IOException e) {
       e.printStackTrace();
     }

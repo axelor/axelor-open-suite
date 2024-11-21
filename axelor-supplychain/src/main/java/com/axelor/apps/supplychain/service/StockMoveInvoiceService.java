@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface StockMoveInvoiceService {
 
@@ -37,6 +38,9 @@ public interface StockMoveInvoiceService {
       Integer operationSelect,
       List<Map<String, Object>> stockMoveLineListContext)
       throws AxelorException;
+
+  Map<Long, BigDecimal> getQtyToInvoiceMap(
+      Integer operationSelect, List<Map<String, Object>> stockMoveLineListContext);
 
   Invoice createInvoiceFromStockMove(StockMove stockMove, Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException;
@@ -110,4 +114,14 @@ public interface StockMoveInvoiceService {
    */
   void checkSplitSalePartiallyInvoicedStockMoveLines(
       StockMove stockMove, List<StockMoveLine> stockMoveLineList) throws AxelorException;
+
+  String fillExternalReferenceInvoiceFromOutStockMove(Set<SaleOrder> saleOrderSet);
+
+  String fillInternalReferenceInvoiceFromOutStockMove(
+      StockMove stockMove, Set<SaleOrder> saleOrderSet);
+
+  String fillExternalReferenceInvoiceFromInStockMove(Set<PurchaseOrder> purchaseOrderSet);
+
+  String fillInternalReferenceInvoiceFromInStockMove(
+      StockMove stockMove, Set<PurchaseOrder> purchaseOrderSet);
 }

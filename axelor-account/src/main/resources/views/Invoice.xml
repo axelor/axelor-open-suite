@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <!-- VUE GENERALE -->
 
   <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice"
     orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -21,7 +21,7 @@
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-mergecustinvoices"/>
+          action="action-invoice-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
       </menu>
@@ -41,10 +41,12 @@
     <field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
-    <field name="exTaxTotal" aggregate="sum" width="120"/>
-    <field name="inTaxTotal" aggregate="sum" width="120"/>
-    <field name="amountRemaining" aggregate="sum" width="120"/>
+    <field name="exTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" width="120"
+      x-scale="currency.numberOfDecimals"/>
     <field name="currency" width="60"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" width="100"/>
     <field name="debtRecoveryBlockingOk"/>
     <field name="paymentProgress" widget="Progress"/>
@@ -57,11 +59,11 @@
 
   <grid name="invoice-bill-of-exchange-batch-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -103,11 +105,11 @@
 
   <grid name="invoice-with-payment-delay-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -155,11 +157,11 @@
 
   <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice"
     orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -193,10 +195,12 @@
       width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
-    <field name="exTaxTotal" aggregate="sum" width="120"/>
-    <field name="inTaxTotal" aggregate="sum" width="120"/>
-    <field name="amountRemaining" aggregate="sum" width="120"/>
+    <field name="exTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" width="120"
+      x-scale="currency.numberOfDecimals"/>
     <field name="currency" width="60"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" width="100"/>
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
@@ -207,11 +211,11 @@
 
   <grid name="invoice-supplier-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -244,10 +248,11 @@
     <field name="originDate"/>
     <field name="invoiceDate"/>
     <field name="dueDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <field name="paymentProgress" widget="Progress"/>
     <field name="pfpValidateStatusSelect" title="PFP"
@@ -267,11 +272,11 @@
 
   <grid name="invoice-supplier-refund-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -304,10 +309,11 @@
     <field name="originDate"/>
     <field name="invoiceDate"/>
     <field name="dueDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
       name="pfpValidateStatusSelect" title="PFP"/>
@@ -322,11 +328,11 @@
 
   <grid name="invoice-light-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice"
     orderBy="-invoiceDate">
+    <toolbar>
+      <button name="printBtn" title="Print invoices"
+        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+    </toolbar>
     <menubar>
-      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printInvoicesItem" title="Print invoices"
-          action="action-invoice-method-show-invoice"/>
-      </menu>
       <menu title="Tools" icon="fa-wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
@@ -352,9 +358,10 @@
     <field name="invoiceDate"/>
     <field name="operationTypeSelect"/>
     <field name="operationSubTypeSelect"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
@@ -373,9 +380,11 @@
     <field name="invoiceId" width="120"/>
     <field name="invoiceDate"/>
     <field name="operationTypeSelect"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="statusSelect"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
   </grid>
@@ -385,7 +394,7 @@
     onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
 
     <toolbar>
-      <button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
+      <button name="printBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
         readonlyIf="!id" onClick="action-invoice-group-report-button"/>
     </toolbar>
 
@@ -409,23 +418,26 @@
           colSpan="9" depends="partner.factorizedCustomer">
           <viewer>
 	                    <![CDATA[
-	                        <h4 class="text-right">
-	                            <span class="label label-default" style="background-color: #B6473F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 1" x-translate>Supplier purchase</span>
-	                            <span class="label label-default" style="background-color: #B6473F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 2" x-translate>Supplier refund</span>
-	                            <span class="label label-default" style="background-color: #E0A83C; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 3" x-translate>Customer sale</span>
-	                            <span class="label label-default" style="background-color: #E0A83C; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 4" x-translate>Customer refund</span>
+	                        <>
+	                        	<Box d="flex" justifyContent="flex-end" gap="4" flexWrap="wrap">
+	                        		{operationTypeSelect == 1 && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Supplier purchase')}</Badge>}
+	                        		{operationTypeSelect == 2 && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Supplier credit note')}</Badge>}
+	                        		{operationTypeSelect == 3 && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Customer sale')}</Badge>}
+	                        		{operationTypeSelect == 4 && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Customer credit note')}</Badge>}
 
-	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 1 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Standard invoice</span>
-	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 2 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Advance payment invoice</span>
-	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 3 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Balance invoice</span>
-	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 4 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Contract invoice</span>
-	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 5 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Contract closing invoice</span>
-	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 6 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Subscription</span>
-	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 7 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Periodic contract</span>
+	                        		{operationSubTypeSelect == 1 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Standard invoice')}</Badge>}
+	                        		{operationSubTypeSelect == 2 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Advance payment invoice')}</Badge>}
+	                        		{operationSubTypeSelect == 3 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Balance invoice')}</Badge>}
+	                        		{operationSubTypeSelect == 4 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Contract invoice')}</Badge>}
+	                        		{operationSubTypeSelect == 5 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Contract closing invoice')}</Badge>}
+	                        		{operationSubTypeSelect == 6 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Subscription')}</Badge>}
+	                        		{operationSubTypeSelect == 7 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Periodic contract')}</Badge>}
+	                        		{operationSubTypeSelect == 1 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Standard credit note')}</Badge>}
+	                        		{operationSubTypeSelect == 2 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Advance payment credit note')}</Badge>}
 
-	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="(record.operationTypeSelect == 3 || record.operationTypeSelect == 4) && record.partner.factorizedCustomer">Factorized customer</span>
-
-	                        </h4>
+	                        		{(operationTypeSelect == 3 || operationTypeSelect == 4) && partner.factorizedCustomer && <Badge bg="info">{_t('Factorized customer')}</Badge>}
+	                        	</Box>
+	                        </>
 	                    ]]>
           </viewer>
         </field>
@@ -433,11 +445,13 @@
           colSpan="3" if="__config__.app.getApp('account')?.getActivatePassedForPayment()">
           <viewer>
 	                    <![CDATA[
-	                        <h4 class="text-right">
-                                    <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="(record.statusSelect == 2 || record.statusSelect == 3) && record.pfpValidateStatusSelect == 1">Awaiting PFP</span>
-                                    <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="(record.statusSelect == 2 || record.statusSelect == 3)  && record.pfpValidateStatusSelect == 2">PFP validated</span>
-                                    <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="(record.statusSelect == 2 || record.statusSelect == 3) && record.pfpValidateStatusSelect == 3">Litigation</span>
-	                        </h4>
+	                        <>
+	                        	<Box d="flex" justifyContent="flex-end">
+	                        		{(statusSelect == 2 || statusSelect == 3) && pfpValidateStatusSelect == 1 && <Badge bg="warning">{_t('Awaiting PFP')}</Badge>}
+	                        		{(statusSelect == 2 || statusSelect == 3) && pfpValidateStatusSelect == 2 && <Badge bg="success">{_t('PFP validated')}</Badge>}
+	                        		{(statusSelect == 2 || statusSelect == 3) && pfpValidateStatusSelect == 3 && <Badge bg="danger">{_t('Litigation')}</Badge>}
+	                        	</Box>
+	                        </>
 	                    ]]>
           </viewer>
         </field>
@@ -446,9 +460,11 @@
         showIf="id">
         <viewer>
                     <![CDATA[
-						<span ng-show="(record.operationSubTypeSelect != 2 && record.statusSelect &lt; 3) || (record.operationSubTypeSelect == 2 && record.statusSelect == 1)" x-translate>Proforma </span>
-                        <span ng-show="record.statusSelect == 4" x-translate>Cancel invoice n°</span>
-                        <span>{{record.invoiceId}}</span>
+                        <>
+                        	{((operationSubTypeSelect != 2 && statusSelect < 3) || (operationSubTypeSelect == 2 && statusSelect == 1)) && <span>{_t('Proforma')} </span>}
+                        	{statusSelect == 4 && <span>{_t('Cancel invoice n°')}</span>}
+                        	<span>{invoiceId}</span>
+                        </>
                         ]]>
         </viewer>
       </field>
@@ -460,7 +476,7 @@
           hideIf="statusSelect > 1 || partner != null || $readonly()" colSpan="4"
           onChange="action-group-account-invoice-operationtype-onchange"/>
         <field name="operationSubTypeSelect" colSpan="4"
-          hideIf="statusSelect &gt; 1 || $readonly() || operationTypeSelect == 2 || operationTypeSelect == 4"/>
+          hideIf="statusSelect &gt; 1 || $readonly()"/>
       </panel>
       <panel name="invoiceMainSecondPanel" colSpan="12">
         <field name="currency"
@@ -513,7 +529,7 @@
         domain="self.isContact = true AND :company member of self.companySet"
         readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-      <field name="subrogationPartner" colSpan="4" domain="self.isSubrogation IS TRUE"
+      <field name="thirdPartyPayerPartner" colSpan="4" domain="self.isThirdPartyPayer IS TRUE"
         showIf="[1,3].includes(operationTypeSelect)" form-view="partner-form"
         grid-view="partner-grid" onChange="action-invoice-method-update-subrogation-partner"
         if="__config__.app.getApp('base')?.activatePartnerRelations"/>
@@ -532,7 +548,9 @@
       <field name="$partnerBankDetailsListWarning" showTitle="false" hidden="true"
         readonly="true" colSpan="12">
         <viewer><![CDATA[
-               		<span x-translate style="color:red">Watch out, this partner has no active bank details</span>
+                    <>
+                    	<Box as="span" color="danger">{_t('Watch out, this partner has no active bank details')}</Box>
+               		</>
            		]]></viewer>
       </field>
       <field name="bankDetails" canEdit="false" widget="SuggestBox" colSpan="12"
@@ -547,7 +565,7 @@
           onChange="action-method-invoice-address-str" canEdit="false" canNew="true"
           form-view="address-partner-address-form" grid-view="address-grid"/>
         <field name="addressStr" readonlyIf="statusSelect &gt; 1" height="5">
-          <viewer>{{record.addressStr}}</viewer>
+          <viewer><![CDATA[<>{addressStr}</>]]></viewer>
 
         </field>
         <field name="paymentMode.typeSelect" hidden="true"/>
@@ -556,24 +574,23 @@
       <panel name="supplierInvoiceNbPanel" colSpan="6">
         <field name="supplierInvoiceNb" colSpan="6"
           showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-          requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
+          requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
           onChange="action-invoice-group-supplier-invoice-nb-onchange"/>
         <field name="originDate" colSpan="6"
           showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-          requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
+          requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
           onChange="action-invoice-group-payment-condition-onchange"/>
         <field name="$duplicateInvoiceNbrSameYear" hidden="true" colSpan="12"
           showTitle="false" type="boolean" readonly="true">
           <viewer depends="$supplierInvoiceNbStatic">
                     <![CDATA[
-                         <h4>
-                           <span class="label label-default" style="background-color: #B6473F; color: #FFFFFF;white-space:normal;">
-                                   <span x-translate>Watch out, an invoice with the same number</span>
-                                           ({{record.$supplierInvoiceNbStatic}})
-                                               <span x-translate>already exists for this supplier</span> {{record.partner.fullName}}
-                                                   <span x-translate>and the year</span> {{record.originDate|date:'YYYY'}}
-                                   </span>
-                      </h4>
+                      	<>
+                      		<Badge style={{ backgroundColor: "#B6473F" }}>
+                      			<span> {_t('Watch out, an invoice with the same number')} </span> ({$supplierInvoiceNbStatic})
+                      			<span> {_t('already exists for this supplier')} </span> {partner.fullName}
+                      			<span> {_t('and the year')} </span> {$moment(originDate).format('YYYY')}
+                      		</Badge>
+                      	</>
                       ]]>
           </viewer>
         </field>
@@ -617,9 +634,9 @@
           readonlyIf="!invoiceTermList.length"/>
         <panel-related name="invoiceTermListPanel" field="invoiceTermList"
           onChange="action-group-account-invoice-invoice-term-list-onchange" colSpan="12"
-          form-view="invoice-term-invoice-form" grid-view="invoice-term-move-line-invoice-grid"/>
+          form-view="invoice-term-related-form" grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
-      <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "
+      <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2"
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()">
         <panel name="deliveryAddressPanel" colSpan="12" hidden="true"
           showIf="operationTypeSelect == 3">
@@ -628,10 +645,13 @@
             onChange="action-method-invoice-compute-delivery-address-str"
             form-view="address-partner-address-form" canEdit="false" canNew="true" colSpan="6"/>
           <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
-            grid-view="incoterm-grid" if="__config__.app.isApp('supplychain')"/>
+            grid-view="incoterm-grid"
+            if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
+          <spacer colSpan="6"
+            if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled)"/>
           <field name="deliveryAddressStr" colSpan="6" readonlyIf="statusSelect &gt; 1"
             height="5">
-            <viewer>{{record.addressStr}}</viewer>
+            <viewer><![CDATA[<>{addressStr}</>]]></viewer>
           </field>
         </panel>
         <panel-related field="stockMoveSet"
@@ -675,11 +695,11 @@
           <field name="subrogationRelease" readonly="true" showIf="subrogationRelease"/>
           <field name="subrogationReleaseMove" readonly="true" showIf="subrogationReleaseMove"/>
         </panel>
-        <panel name="refundPanel" title="Refund" showIf="statusSelect != 1 || originalInvoice"
-          colSpan="12" showTitle="false">
-          <button name="createRefundBtn" title="Generate refund" colSpan="3"
-            showIf="statusSelect != 1 &amp;&amp; operationSubTypeSelect != 2"
-            onClick="save,action-invoice-method-create-refund,save"/>
+        <panel name="refundPanel" title="Credit note"
+          showIf="statusSelect != 1 || originalInvoice" colSpan="12" showTitle="false">
+          <button name="createRefundBtn" title="Generate credit note" colSpan="3"
+            showIf="statusSelect != 1 &amp;&amp; ($contains([1, 3], operationTypeSelect) || operationSubTypeSelect != 2)"
+            onClick="save,action-invoice-method-create-refund"/>
           <field name="originalInvoice" readonly="true" showIf="originalInvoice"
             form-view="invoice-form" grid-view="invoice-grid"/>
           <panel-related name="refundInvoiceListPanel" field="refundInvoiceList"
@@ -717,12 +737,13 @@
           readonly="true"/>
       </panel>
       <panel name="advancePaymentPanel" title="Advance payments"
-        showIf="operationSubTypeSelect != 2 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp;
-InvoiceSet.length > 0))"
+        showIf="((operationSubTypeSelect != 2 &amp;&amp; $contains([1, 3], operationTypeSelect)) || (operationSubTypeSelect != 1 &amp;&amp; $contains([2, 4], operationTypeSelect)))
+        &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp; InvoiceSet.length > 0))"
         if="__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()">
         <field name="advancePaymentInvoiceSet" widget="TagSelect" canNew="false"
           canEdit="false" onSelect="action-invoice-method-create-advance-payment-domain"
-          readonlyIf="statusSelect == 3" form-view="invoice-form" grid-view="invoice-grid"/>
+          readonlyIf="statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)"
+          form-view="invoice-form" grid-view="invoice-grid"/>
       </panel>
       <panel title="Printing" name="printingPanel" colSpan="12">
         <field name="printingSettings" canEdit="false"/>
@@ -737,10 +758,16 @@ InvoiceSet.length > 0))"
           hidden="true"/>
         <field name="displayExpenseOnPrinting" if-module="axelor-business-project"
           hidden="true"/>
+        <field name="isExpenseLineOnInvoiceGrouped" if-module="axelor-business-project"
+          if="__config__.app.getApp('business-project')?.getEnableToInvoiceExpense()"
+          showIf="displayExpenseOnPrinting"/>
+        <field name="groupingPeriodSelect" if-module="axelor-business-project"
+          if="__config__.app.getApp('business-project')?.getEnableToInvoiceExpense()"
+          showIf="isExpenseLineOnInvoiceGrouped &amp;&amp; displayExpenseOnPrinting"/>
         <field name="displayStockMoveOnInvoicePrinting" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')" showIf="[3,4].includes(operationTypeSelect)"/>
-        <field name="$language" title="Language" type="many-to-one"
-          target="com.axelor.apps.base.db.Language" hidden="true"/>
+        <field name="$localization" title="Localization" type="many-to-one"
+          target="com.axelor.apps.base.db.Localization" hidden="true"/>
         <panel name="descriptionToDisplayOnInvoicePanel" title="Comment to display on invoice"
           colSpan="12">
           <field name="note" widget="html" colSpan="12" showTitle="false"/>
@@ -784,6 +811,20 @@ InvoiceSet.length > 0))"
           showIf="[2,3].includes(statusSelect) &amp;&amp; ( invoiceAutomaticMail || invoiceAutomaticMailOnValidate )"
           onClick="action.message.view.messages" css="btn-custom" colSpan="3"/>
       </panel>
+      <panel name="financialDiscountPanel" colSpan="12" title="Financial discount"
+        if="__config__.app.getApp('account').getManageFinancialDiscount()"
+        hideIf="operationSubTypeSelect == 2">
+        <field name="financialDiscount" readonlyIf="[3,4].includes(statusSelect)"
+          onChange="action-invoice-group-financial-discount"/>
+        <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
+        <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
+          <field name="financialDiscountRate" readonly="true"/>
+          <field name="financialDiscountTotalAmount" readonly="true"
+            x-scale="currency.numberOfDecimals"/>
+          <field name="remainingAmountAfterFinDiscount" readonly="true"
+            x-scale="currency.numberOfDecimals"/>
+        </panel>
+      </panel>
       <panel name="blockingsPanel" title="Blockings" showIf="statusSelect == 3"
         showTitle="false">
         <field name="debitBlockingOk"/>
@@ -825,19 +866,8 @@ InvoiceSet.length > 0))"
           <field name="reasonOfRefusalToPayStr" readonly="true"
             showIf="reasonOfRefusalToPay  &amp;&amp; reasonOfRefusalToPayStr &amp;&amp; pfpValidateStatusSelect == 3"
             colSpan="12" css="red">
-            <viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
+            <viewer><![CDATA[<>{reasonOfRefusalToPayStr}</>]]></viewer>
           </field>
-        </panel>
-        <panel name="financialDiscountPanel" showIf="statusSelect > 2" colSpan="12">
-          <field name="financialDiscount" readonlyIf="amountPaid > 0"
-            onChange="action-invoice-group-financial-discount"/>
-          <field name="financialDiscountDeadlineDate" readonly="true"
-            showIf="financialDiscount"/>
-          <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
-            <field name="financialDiscountRate" readonly="true"/>
-            <field name="financialDiscountTotalAmount" readonly="true"/>
-            <field name="remainingAmountAfterFinDiscount" readonly="true"/>
-          </panel>
         </panel>
         <panel-related name="invoicePaymentListPanel" title="Payments details"
           field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid"
@@ -868,7 +898,6 @@ InvoiceSet.length > 0))"
     </panel-tabs>
 
     <panel name="actionsPanel" hideIf="partner == null" sidebar="true">
-      <field name="amountRemaining" hidden="true"/>
       <field name="hasPendingPayments" hidden="true"/>
       <button name="validateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-on-validate"/>
@@ -913,117 +942,133 @@ InvoiceSet.length > 0))"
       </panel>
     </panel>
     <panel sidebar="true" name="totalsPanel" title="Totals" showTitle="false" itemSpan="6"
-      hideIf="partner == null">
+      hideIf="partner == null" gap="0">
       <field name="currency.code" hidden="true"/>
       <field name="currency.symbol" hidden="true"/>
-      <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-        <viewer depends="exTaxTotal,currency.symbol,taxTotal"><![CDATA[
-		         <dl class="dl-horizontal">
-		           <dt x-translate>Total W.T.</dt>
-		           <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
-		           <dt x-translate>Total tax</dt>
-		           <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
-		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		           <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
-		         </dl>]]>
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="exTaxTotal" x-currency="currency.symbol" hidden="true"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="taxTotal" x-currency="currency.symbol" hidden="true"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
+        <viewer depends="exTaxTotal,taxTotal">
+        	<![CDATA[
+	                  <>
+	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
+	                     </Box>
+	                  </>
+		         ]]>
         </viewer>
       </field>
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
-      <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12"
-        css="order-subtotal">
+      <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
         <viewer
-          depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
+          depends="move,typeSelect,statusSelect,id,paymentDate,amount,totalAmountWithFinancialDiscount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount,currency.numberOfDecimals">
                 <![CDATA[
-                  <div class="form-item-container" style="flex-direction: column">
-					<dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
-						<dt>
-							<a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}"><i class="fa fa-link" ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}"></i></a>
-							<span>
-								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3">Paid on</font>
-								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2">Canceled payment on</font>
-								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3">Pending payment</font>
-								<font x-translate ng-if="record.typeSelect == 3">Ref. on</font>
-								<font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
-								<font x-translate ng-if="record.typeSelect == 5">On</font>
-								<font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
-								<font x-translate ng-if="record.typeSelect == 7">Exp. accounted on</font>
-								<font x-translate ng-if="record.typeSelect == 8">Doubtful on</font>
-								<font>
-									 {{$fmt('paymentDate')}}
-								</font>
-							</span>
-						</dt>
-						<dd  ng-if="record.typeSelect == 8">
-							{{$fmt('amount') | currency: record.currency.symbol}}
-						</dd>
-						<dd ng-if="record.typeSelect != 8">
-							-{{$fmt('amount') | currency: record.currency.symbol}}
-						</dd>
-					</dl>
-					<dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
-						<dt>
-							<a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}"><i ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}" ng-if="record.applyFinancialDiscount == true"></i></a>
-							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3 && record.applyFinancialDiscount == true">Discounted on</font>
-							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2 && record.applyFinancialDiscount == true">Canceled discount on</font>
-							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3 && record.applyFinancialDiscount == true">Pending discount</font>
-							<font x-translate ng-if="record.typeSelect == 3 && record.applyFinancialDiscount == true">Ref. on</font>
-							<font x-translate ng-if="record.typeSelect == 4 && record.applyFinancialDiscount == true">Inv. on</font>
-							<font x-translate ng-if="record.typeSelect == 5 && record.applyFinancialDiscount == true">On</font>
-							<font x-translate ng-if="record.typeSelect == 6 && record.applyFinancialDiscount == true">Imputed on</font>
-							<font x-translate ng-if="record.typeSelect == 7 && record.applyFinancialDiscount == true">Exp. accounted on</font>
-							<font x-translate ng-if="record.applyFinancialDiscount == true">
-								{{$fmt('paymentDate')}}
-							</font>
-						</dt>
-						<dd ng-if="record.applyFinancialDiscount == true && record.financialDiscountTaxAmount > 0">
-							-{{$fmt('financialDiscountTotalAmount')| currency: record.currency.symbol}}
-						</dd>
-						<dd ng-if="record.applyFinancialDiscount == true && record.financialDiscountTaxAmount == 0">
-							-{{$fmt('financialDiscountAmount') | currency: record.currency.symbol}}
-						</dd>
-					</dl>
-				</div>
+				<>
+					<Box d="flex" flexDirection="column">
+						<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
+							<Box as="dt" m={0} px={3} py={1} fontWeight="normal">
+								<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"} textDecoration="none" style={{ verticalAlign: "middle" }}><Icon icon="link" fontSize="22.5px"/></Box>
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Paid on')} </span>}
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled payment on')} </span>}
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending payment')} </span>}
+								{typeSelect == 3 && <span> {_t('Ref. on')} </span>}
+								{typeSelect == 4 && <span> {_t('Inv. on')} </span>}
+								{typeSelect == 5 && <span> {_t('On')} </span>}
+								{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
+								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
+								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
+								{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
+								<span>{$fmt('paymentDate')}</span>
+							</Box>
+							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+						</Box>
+
+						{applyFinancialDiscount &&
+							<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
+								<Box as="dt" m={0} px={3} py={1} fontWeight="normal">
+									<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"} textDecoration="none" style={{ verticalAlign: "middle" }}><Icon icon="link" fontSize="22.5px"/></Box>
+									{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Discounted on')} </span>}
+									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled discount on')} </span>}
+									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending discount')} </span>}
+									{typeSelect == 3 && <span> {_t('Ref. on')} </span>}
+									{typeSelect == 4 && <span> {_t('Inv. on')} </span>}
+									{typeSelect == 5 && <span> {_t('On')} </span>}
+									{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
+									{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
+									{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
+									<span>{$fmt('paymentDate')}</span>
+								</Box>
+								{financialDiscountTaxAmount > 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(financialDiscountTotalAmount).toFixed(currency.numberOfDecimals)}</Box>}
+								{financialDiscountTaxAmount == 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(financialDiscountAmount).toFixed(currency.numberOfDecimals)}</Box>}
+							</Box>
+						}
+					</Box>
+				</>
                 ]]>
         </viewer>
         <editor></editor>
       </field>
-      <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3">
-        <viewer depends="amountRemaining,currency.symbol"><![CDATA[
-		         <dl class="dl-horizontal">
-		           <dt class="order-subtotal-total" x-translate>Amount due</dt>
-		           <dd class="order-subtotal-total">{{$fmt('amountRemaining') | currency: record.currency.symbol}}</dd>
-		         </dl>]]>
+      <field name="amountRemaining" showTitle="false" colSpan="12"
+        showIf="statusSelect == 2 || statusSelect == 3" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
+        <viewer depends="amountRemaining"><![CDATA[
+		         <>
+		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
+				 		<Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal">{_t('Amount due')}</Box>
+				 		<Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold">{$fmt('amountRemaining')}</Box>
+				 	</Box>
+		         </>
+		      ]]>
         </viewer>
       </field>
     </panel>
     <panel name="totalsCompanyCurrencyPanel" title="Totals company currency" showTitle="false"
       itemSpan="6" sidebar="true"
-      hideIf="partner == null || company == null || currency == null || company.currency.code == currency.code">
+      hideIf="partner == null || company == null || currency == null || company.currency.code == currency.code"
+      gap="0">
       <field name="company.currency" hidden="true"/>
       <field name="company.currency.code" hidden="true"/>
       <field name="company.currency.symbol" hidden="true"/>
-      <field name="companyInTaxTotalRemaining" hidden="true"/>
-      <field name="companyInTaxTotal" showTitle="false" colSpan="12" css="order-subtotal">
-        <viewer
-          depends="companyExTaxTotal,company.currency.symbol,companyTaxTotal,companyInTaxTotal,companyInTaxTotalRemaining"><![CDATA[
-		         <dl class="dl-horizontal">
-		           <dt x-translate>Total W.T.</dt>
-		           <dd>{{$fmt('companyExTaxTotal') | currency: record.company.currency.symbol}}</dd>
-		           <dt x-translate>Total tax</dt>
-		           <dd>{{$fmt('companyTaxTotal') | currency: record.company.currency.symbol}}</dd>
-		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotal') | currency: record.company.currency.symbol}}</dd>
-		         </dl>
+      <field name="company.currency.numberOfDecimals" hidden="true"/>
+      <field name="companyExTaxTotal" x-currency="company.currency.symbol" hidden="true"
+        x-scale="company.currency.numberOfDecimals"/>
+      <field name="companyTaxTotal" x-currency="company.currency.symbol" hidden="true"
+        x-scale="company.currency.numberOfDecimals"/>
+      <field name="companyInTaxTotal" showTitle="false" colSpan="12"
+        x-currency="company.currency.symbol" x-scale="company.currency.numberOfDecimals">
+        <viewer depends="companyExTaxTotal,companyTaxTotal,companyInTaxTotal"><![CDATA[
+	                  <>
+	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('companyExTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('companyTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('companyInTaxTotal')}</Box>
+	                     </Box>
+	                  </>
 		       ]]></viewer>
       </field>
-      <field name="companyInTaxTotal" css="order-subtotal" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3">
-        <viewer depends="companyInTaxTotalRemaining,company.currency.symbol"><![CDATA[
-		         <dl class="dl-horizontal">
-				   <dt class="order-subtotal-total" x-translate>Amount due</dt>
-		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotalRemaining') | currency: record.company.currency.symbol}}</dd>
-		         </dl>]]>
+      <field name="companyInTaxTotalRemaining" showTitle="false" colSpan="12"
+        showIf="statusSelect == 2 || statusSelect == 3" x-currency="company.currency.symbol"
+        x-scale="company.currency.numberOfDecimals">
+        <viewer depends="companyInTaxTotalRemaining"><![CDATA[
+		         <>
+		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
+				 		<Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal">{_t('Amount due')}</Box>
+				 		<Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold">{$fmt('companyInTaxTotalRemaining')}</Box>
+				 	</Box>
+		         </>
+		       ]]>
         </viewer>
       </field>
     </panel>
@@ -1036,7 +1081,7 @@ InvoiceSet.length > 0))"
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true"
         collapseIf="true">
-        <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"
+        <field name="invoiceDate" onChange="action-invoice-group-invoice-date-on-change"
           readonlyIf="ventilatedByUser || ventilatedDateTime"/>
         <spacer/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"
@@ -1055,32 +1100,30 @@ InvoiceSet.length > 0))"
 
 
   <form name="invoice-reports-wizard-form" title="Reports" model="com.axelor.utils.db.Wizard"
-    onNew="action-invoice-reports-wizard-attrs-set-report-type-select">
+    onNew="action-invoice-reports-wizard-attrs-set-report-type-select,action-invoice-reports-wizard-method-set-invoice-print-template">
     <panel name="mainPanel">
       <panel name="invoiceTypePanel" colSpan="6">
         <field name="$reportType" title="Invoice type" type="integer" selection-in="[1]"
           selection="invoice.report.type" required="true"
-          onChange="action-invoice-reports-wizard-attrs-set-format-select"
           showIf="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)"
           readonly="true" colSpan="12"/>
         <field name="$reportType" title="Invoice type" type="integer" selection-in="[2,3]"
           selection="invoice.report.type" required="true"
-          onChange="action-invoice-reports-wizard-attrs-set-format-select"
           showIf="(_statusSelect == 3  || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF == null"
           colSpan="12"/>
         <field name="$reportType" title="Invoice type" type="integer" selection-in="[2,3,4]"
           selection="invoice.report.type" colSpan="12" required="true"
-          onChange="action-invoice-reports-wizard-attrs-set-format-select"
           showIf="(_statusSelect == 3 || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF != null"/>
       </panel>
-      <panel name="formatPanel" colSpan="6">
-        <field name="$format" title="Format" type="integer" selection="invoice.report.format"
-          colSpan="12" required="true"/>
-      </panel>
-      <field name="$language" title="Language" type="many-to-one"
-        target="com.axelor.apps.base.db.Language" showIf="$reportType ==1 || $reportType==3"/>
-      <button name="printBtn" title="Print" onClick="action-invoice-group-report-print,close"
-        readonlyIf="$reportType==null || $format==null"/>
+      <field name="$invoicePrintTemplate" title="Invoice template" type="many-to-one"
+        target="com.axelor.apps.base.db.PrintingTemplate" required="true"
+        domain="self.metaModel.name = 'Invoice' AND self.statusSelect = 2"
+        grid-view="printing-template-grid" form-view="printing-template-form"
+        readonlyIf="$reportType != 1"/>
+      <field name="$localization" title="Localization" type="many-to-one"
+        target="com.axelor.apps.base.db.Localization" showIf="$reportType ==1 || $reportType==3"/>
+      <button name="printBtn" title="Print" onClick="action-invoice-wizard-group-print"
+        readonlyIf="$reportType==null || $invoicePrintTemplate == null"/>
     </panel>
   </form>
 
@@ -1089,7 +1132,7 @@ InvoiceSet.length > 0))"
     onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
 
     <toolbar>
-      <button name="showInvoiceBtn" title="Print" icon="fa-print"
+      <button name="printBtn" title="Print" icon="fa-print"
         onClick="save,action-invoice-method-show-invoice"/>
       <button name="showAnnexBtn" title="Print annex" icon="fa-print"
         onClick="action-business-project-group-print-annex" if-module="axelor-business-project"
@@ -1105,15 +1148,13 @@ InvoiceSet.length > 0))"
           readonlyIf="statusSelect &gt; 1" showTitle="false"
           onChange="action-group-account-invoice-operationtype-onchange">
           <viewer>
-						<![CDATA[
-
-			 			<h3>
-			             <span class="label label-important" ng-if="operationTypeSelect = 1" x-translate ng-show="record.operationTypeSelect == 1">Supplier purchase</span>
-			             <span class="label label-important" ng-if="operationTypeSelect = 2" x-translate ng-show="record.operationTypeSelect == 2">Supplier refund</span>
-			             <span class="label label-important" ng-if="operationTypeSelect = 3" x-translate ng-show="record.operationTypeSelect == 3">Customer sale</span>
-			             <span class="label label-important" ng-if="operationTypeSelect = 4" x-translate ng-show="record.operationTypeSelect == 4">Customer refund</span>
-			           </h3>
-
+					<![CDATA[
+	                   <>
+	                       {operationTypeSelect == 1 && <Badge bg="danger">{_t('Supplier purchase')}</Badge>}
+	                       {operationTypeSelect == 2 && <Badge bg="danger">{_t('Supplier credit note')}</Badge>}
+	                       {operationTypeSelect == 3 && <Badge bg="danger">{_t('Customer sale')}</Badge>}
+	                       {operationTypeSelect == 4 && <Badge bg="danger">{_t('Customer credit note')}</Badge>}
+	                   </>
 					]]>
           </viewer>
         </field>
@@ -1149,7 +1190,9 @@ InvoiceSet.length > 0))"
       <field name="$partnerBankDetailsListWarning" showTitle="false" hidden="true"
         readonly="true" colSpan="12">
         <viewer><![CDATA[
-               		<span x-translate style="color:red">Watch out, this partner has no active bank details</span>
+                	<>
+               			<Box as="span" color="danger">{_t('Watch out, this partner has no active bank details')}</Box>
+               		</>
            		]]></viewer>
       </field>
       <panel name="addressDetailsPanel" stacked="true">
@@ -1158,7 +1201,7 @@ InvoiceSet.length > 0))"
           onChange="action-method-invoice-address-str" form-view="address-partner-address-form"
           canEdit="false" canNew="true"/>
         <field name="addressStr" readonlyIf="statusSelect &gt; 1" height="5">
-          <viewer>{{record.addressStr}}</viewer>
+          <viewer><![CDATA[<>{addressStr}</>]]></viewer>
         </field>
       </panel>
       <field name="paymentMode" canEdit="false" grid-view="payment-mode-grid"
@@ -1188,7 +1231,8 @@ InvoiceSet.length > 0))"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
           readonlyIf="statusSelect == 3 || partner == null" colSpan="12"
           form-view="invoice-line-client-form" grid-view="invoice-line-grid"
-          onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+          onChange="action-invoice-group-invoice-line-list-report-onchange" canMove="true"
+          orderBy="sequence"/>
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
@@ -1200,7 +1244,7 @@ InvoiceSet.length > 0))"
         <field name="externalReference"/>
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
-        <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"/>
+        <field name="invoiceDate" onChange="action-invoice-group-invoice-date-on-change"/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"
           onChange="action-invoice-method-estimated-payment-date"/>
         <field name="paymentCondition.isFree" hidden="true"/>
@@ -1210,7 +1254,8 @@ InvoiceSet.length > 0))"
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="validateBtn" title="Validate" showIf="statusSelect == 1"
         onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
-      <button name="ventilateBtn" title="Ventilate" showIf="statusSelect == 2"
+      <button name="ventilateBtn" title="Ventilate"
+        showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
         onClick="action-invoice-group-ventilate-button"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
@@ -1225,7 +1270,6 @@ InvoiceSet.length > 0))"
         <button name="addPaymentBtn" title="Register payment"
           showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments"
           colSpan="12" onClick="save,action-invoice-view-register-payment-voucher"/>
-        <field name="amountRemaining" hidden="true"/>
         <field name="hasPendingPayments" hidden="true"/>
         <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
           canView="false"/>
@@ -1236,76 +1280,69 @@ InvoiceSet.length > 0))"
       </panel>
     </panel>
 
-    <panel sidebar="true" name="totalsPanel" title="Totals" itemSpan="6">
+    <panel sidebar="true" name="totalsPanel" title="Totals" itemSpan="6" gap="0">
       <field name="currency.symbol" hidden="true"/>
-      <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-        <viewer depends="exTaxTotal,currency.symbol,taxTotal,inTaxTotal"><![CDATA[
-		         <dl class="dl-horizontal">
-		           <dt x-translate>Total W.T.</dt>
-		           <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
-		           <dt x-translate>Total tax</dt>
-		           <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
-		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		           <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
-		         </dl>]]>
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="taxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
+        <viewer depends="exTaxTotal,taxTotal,inTaxTotal">
+        	<![CDATA[
+	                  <>
+	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
+	                     </Box>
+	                  </>
+		         ]]>
         </viewer>
       </field>
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
-      <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12"
-        css="order-subtotal">
+      <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
         <viewer
-          depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
+          depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount,currency.numberOfDecimals">
                 <![CDATA[
-                  <div class="form-item-container" style="flex-direction: column">
-					<dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
-						<dt>
-							<a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}"><i class="fa fa-link" ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}"></i></a>
-							<span>
-								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3">
-									Paid on
-								</font>
-								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2">
-									Canceled payment on
-								</font>
-								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3">
-									Pending payment
-								</font>
-								<font x-translate ng-if="record.typeSelect == 3">
-									Ref. on
-								</font>
-								<font x-translate ng-if="record.typeSelect == 4">
-									Inv. on
-								</font>
-								<font x-translate ng-if="record.typeSelect == 5">
-									Other on
-								</font>
-								<font x-translate ng-if="record.typeSelect == 6">
-									Imputed on
-								</font>
-								<font x-translate ng-if="record.typeSelect == 7">
-									Exp. accounted on
-								/font>
-								<font>
-									 {{$fmt('paymentDate')}}
-								</font>
-							</span>
-						</dt>
-						<dd>
-							-{{$fmt('amount') | currency: record.currency.symbol}}
-						</dd>
-					</dl>
-				</div>
+					<>
+						<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
+							<Box as="dt" m={0} px={3} py={1} fontWeight="normal">
+								<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"} textDecoration="none" style={{ verticalAlign: "middle" }}><Icon icon="link" fontSize="22.5px"/></Box>
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Paid on')} </span>}
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled payment on')} </span>}
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending payment')} </span>}
+								{typeSelect == 3 && <span> {_t('Ref. on')} </span>}
+								{typeSelect == 4 && <span> {_t('Inv. on')} </span>}
+								{typeSelect == 5 && <span> {_t('On')} </span>}
+								{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
+								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
+								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
+								{typeSelect == 9 && <span> {_t('Ref. imputed on')} </span>}
+								<span>{$fmt('paymentDate')}</span>
+							</Box>
+							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+						</Box>
+					</>
                 ]]>
         </viewer>
         <editor/>
       </field>
-      <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3">
-        <viewer depends="amountRemaining,currency.symbol"><![CDATA[
-		         <dl class="dl-horizontal">
-		           <dt class="order-subtotal-total" x-translate>Amount due</dt>
-		           <dd class="order-subtotal-total">{{$fmt('amountRemaining') | currency: record.currency.symbol}}</dd>
-		         </dl>]]>
+      <field name="amountRemaining" showTitle="false" colSpan="12"
+        showIf="statusSelect == 2 || statusSelect == 3" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
+        <viewer depends="amountRemaining"><![CDATA[
+		         <>
+		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
+				 		<Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal">{_t('Amount due')}</Box>
+				 		<Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold">{$fmt('amountRemaining')}</Box>
+				 	</Box>
+		         </>
+		      ]]>
         </viewer>
       </field>
     </panel>
@@ -1504,10 +1541,10 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-show-validate-button"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-record-interco-supplychain"/>
-    <action name="action-invoice-attrs-change-create-refund-title"/>
+    <action name="action-invoice-method-manage-refund-titles"/>
     <action name="action-invoice-record-printing-fields"
       if="__config__.app.isApp('business-project')"/>
-    <action name="action-invoice-record-set-dummy-field-language"/>
+    <action name="action-invoice-record-set-dummy-field-localization"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
     <action name="action-invoice-record-set-display-stock-move-on-invoice-printing"
       if="__config__.app.isApp('supplychain')"/>
@@ -1517,6 +1554,9 @@ InvoiceSet.length > 0))"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-invoice-attrs-operationsubtype-selection"/>
+    <action name="action-record-invoice-set-discount-values"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-invoice-attrs-display-line-coefficient"/>
   </action-group>
 
   <action-group name="action-account-invoice-onload-group">
@@ -1526,7 +1566,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-printing-fields"/>
     <action name="action-invoice-attrs-show-validate-button"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
-    <action name="action-invoice-attrs-change-create-refund-title"/>
+    <action name="action-invoice-method-manage-refund-titles"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
@@ -1536,11 +1576,13 @@ InvoiceSet.length > 0))"
       if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2))"/>
     <action name="action-invoice-method-hide-send-email-pfp-btn"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect > 0"/>
-    <action name="action-invoice-record-set-dummy-field-language"/>
+    <action name="action-invoice-record-set-dummy-field-localization"/>
     <action name="action-invoice-method-set-payment-visibility"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-invoice-attrs-operationsubtype-selection"/>
     <action name="action-invoice-attrs-set-subrogation-partner-readonly"/>
+    <action name="action-invoice-method-set-invoice-line-list-scale"/>
+    <action name="action-invoice-attrs-display-line-coefficient"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
@@ -1557,6 +1599,7 @@ InvoiceSet.length > 0))"
 
   <action-group name="action-group-account-invoice-operationtype-onchange">
     <action name="action-invoice-attrs-operationsubtype-selection"/>
+    <action name="action-invoice-record-operationsubtype-reset"/>
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-record-partner-change"/>
   </action-group>
@@ -1565,7 +1608,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-fill-company-bank-details"/>
     <action name="action-invoice-attrs-hide-cancel-button"/>
     <action name="action-invoice-record-update-info-company"/>
-    <action name="action-invoice-record-set-dummy-field-language"/>
+    <action name="action-invoice-record-set-dummy-field-localization"/>
     <action name="action-invoice-attrs-in-ati"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
@@ -1596,7 +1639,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
     <action name="action-invoice-method-set-pfp-validator-user"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect > 0"/>
-    <action name="action-invoice-record-set-dummy-field-language"/>
+    <action name="action-invoice-record-set-dummy-field-localization"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
     <action name="action-invoice-record-set-payment-condition"/>
     <action name="action-method-invoice-address-str"/>
@@ -1630,20 +1673,18 @@ InvoiceSet.length > 0))"
 
   <action-group name="action-invoice-group-ventilate-button">
     <action name="action-invoice-group-before-ventilate"/>
-    <action name="action-invoice-method-ventilate"/>
     <action name="save"/>
+    <action name="action-invoice-method-ventilate"/>
   </action-group>
 
   <action-group name="action-invoice-group-before-ventilate">
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-validate-check-pfp-validator-user"/>
     <action name="action-invoice-line-check-distribution-template-account"/>
-    <action name="save"/>
-    <action name="action-invoice-method-generate-invoice-terms"/>
-    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
+    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
   </action-group>
 
   <action-group name="action-invoice-group-pfp-validate">
@@ -1665,7 +1706,10 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-compute"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
+    <action name="action-invoice-method-update-final-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
+    <action name="action-invoice-method-set-invoice-line-list-scale"/>
   </action-group>
 
   <action-group name="action-invoice-group-on-validate">
@@ -1685,7 +1729,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect) &amp;&amp; operationSubTypeSelect != 2"/>
-    <action name="action-invoice-method-validate"/>
   </action-group>
 
   <action-group name="action-invoice-group-payment-condition-onchange">
@@ -1705,7 +1748,7 @@ InvoiceSet.length > 0))"
       if="statusSelect == 1 &amp;&amp; invoiceTermList?.isEmpty() &amp;&amp; invoiceLineList?.size() > 0 &amp;&amp; paymentCondition != null"/>
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
-    <action name="action-invoice-record-due-date"/>
+    <action name="action-invoice-record-due-dates"/>
     <action name="action-invoice-method-update-unpaid-invoice-terms" if="statusSelect == 3"/>
     <action name="save"/>
     <action name="action-invoice-method-manage-pfp-status"
@@ -1754,6 +1797,11 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-update-invoice-terms"/>
   </action-group>
 
+  <action-group name="action-invoice-group-invoice-line-list-report-onchange">
+    <action name="action-invoice-method-compute"/>
+    <action name="action-invoice-method-set-invoice-line-list-scale"/>
+  </action-group>
+
   <action-group name="action-invoice-group-payment-mode-onchange">
     <action name="action-invoice-method-fill-company-bank-details"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
@@ -1771,6 +1819,15 @@ InvoiceSet.length > 0))"
 										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"
       if="company != null"/>
     <attribute name="hidden" for="inAti" expr="eval: true" if="company == null"/>
+    <attribute name="title" for="invoiceLineList.priceDiscounted"
+      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')" if="inAti"/>
+    <attribute name="title" for="invoiceLineList.priceDiscounted"
+      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')" if="!inAti"/>
+  </action-attrs>
+
+  <action-attrs name="action-invoice-attrs-display-line-coefficient">
+    <attribute name="hidden" for="invoiceLineList.coefficient"
+      expr="eval: !__repo__(AccountConfig).findByCompany(company)?.isInvoiceCoefficientEnabled"/>
 
   </action-attrs>
 
@@ -1793,18 +1850,23 @@ InvoiceSet.length > 0))"
   </action-attrs>
 
   <action-attrs name="action-invoice-attrs-operationsubtype-selection">
-    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [1,2]"
-      if="operationTypeSelect == 3"/>
-    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: null"
+    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [1,2]"/>
+    <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [1,2,3]"
       if="operationTypeSelect == 1"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-attrs-set-subrogation-partner-readonly">
-    <attribute name="readonly" for="subrogationPartner"
+    <attribute name="readonly" for="thirdPartyPayerPartner"
       expr="eval: invoiceTermList.every{it -> it.isPaid}"/>
   </action-attrs>
 
   <!-- ACTION RECORD -->
+
+  <action-record name="action-invoice-record-operationsubtype-reset"
+    model="com.axelor.apps.account.db.Invoice">
+    <field name="operationSubTypeSelect"
+      expr="eval: __repo__(Invoice).OPERATION_SUB_TYPE_DEFAULT"/>
+  </action-record>
 
   <action-record name="action-invoice-record-hide-discount"
     model="com.axelor.apps.account.db.Invoice">
@@ -1851,7 +1913,7 @@ InvoiceSet.length > 0))"
     <field name="address"
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     <field name="currency" expr="eval: partner?.currency"
-      if="eval: (!invoiceLineList || invoiceLineList?.length == 0) &amp;&amp; partner"/>
+      if="eval: (!invoiceLineList || invoiceLineList?.empty) &amp;&amp; partner"/>
     <field name="bankDetails"
       expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
     <field name="contactPartner"
@@ -1925,10 +1987,10 @@ InvoiceSet.length > 0))"
       expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + (partner?.invoiceComments ? partner.invoiceComments + &quot;&lt;br&gt;&quot; : '')"/>
   </action-record>
 
-  <action-record name="action-invoice-record-set-dummy-field-language"
+  <action-record name="action-invoice-record-set-dummy-field-localization"
     model="com.axelor.apps.account.db.Invoice">
-    <field name="$language"
-      expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.language : partner?.language"
+    <field name="$localization"
+      expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.localization : partner?.localization"
       if="company"/>
   </action-record>
 
@@ -1952,7 +2014,7 @@ InvoiceSet.length > 0))"
 
   <action-record name="action-invoice-record-set-subrogation-partner"
     model="com.axelor.apps.account.db.Invoice">
-    <field name="subrogationPartner"
+    <field name="thirdPartyPayerPartner"
       expr="call: com.axelor.apps.account.service.PartnerAccountService:getPayedByPartner(partner)"/>
   </action-record>
 
@@ -1967,7 +2029,7 @@ InvoiceSet.length > 0))"
 
   <action-attrs name="action-invoice-attrs-hide-cancel-button">
     <attribute name="hidden" for="cancelBtn"
-      expr="(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3"/>
+      expr="((operationSubTypeSelect == 2) &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3"/>
   </action-attrs>
 
   <action-attrs name="action-set-partner-domain">
@@ -2027,12 +2089,6 @@ InvoiceSet.length > 0))"
       for="validateAndVentilateBtn"/>
   </action-attrs>
 
-  <action-attrs name="action-invoice-attrs-change-create-refund-title">
-    <attribute name="title" for="createRefundBtn"
-      expr="eval: com.axelor.i18n.I18n.get('Generate invoice')"
-      if="operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_REFUND || operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_SUPPLIER_REFUND"/>
-  </action-attrs>
-
   <action-attrs name="action-attrs-invoice-other-reason">
     <attribute for="reasonOfRefusalToPayStr" name="hidden"
       expr="reasonOfRefusalToPay?.freeText == false"/>
@@ -2054,24 +2110,17 @@ InvoiceSet.length > 0))"
       expr="eval: __repo__(InvoiceTerm).all().filter('self.invoice.id = ?1 AND (self.pfpValidateStatusSelect = ?2 OR self.pfpValidateStatusSelect = ?3)', id, __repo__(InvoiceTerm).PFP_STATUS_VALIDATED, __repo__(InvoiceTerm).PFP_STATUS_LITIGATION).count() == 0"/>
   </action-attrs>
 
-  <action-attrs name="action-invoice-reports-wizard-attrs-set-format-select">
-    <attribute name="readonly" for="$format" expr="eval: true"
-      if="reportType != null &amp;&amp; reportType != 1"/>
-    <attribute name="readonly" for="$format" expr="eval: false"
-      if="reportType != null &amp;&amp; reportType == 1"/>
-    <attribute name="value" for="$format" expr="eval: 'pdf'"
-      if="reportType != null &amp;&amp; reportType != 1"/>
-    <attribute name="readonly" for="$format" expr="eval: false" if="reportType == null"/>
-    <attribute name="value" for="$format" expr="eval: null" if="reportType == null"/>
-  </action-attrs>
-
   <action-attrs name="action-invoice-reports-wizard-attrs-set-report-type-select">
     <attribute name="value" for="$reportType" expr="eval: 1"
       if="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)"/>
-    <attribute name="value" for="$format" expr="pdf" if="_statusSelect == 3"/>
-    <attribute name="readonly" for="$format" expr="eval: _statusSelect == 3"/>
-    <attribute name="value" expr="eval: _language" for="$language"/>
+    <attribute name="value" expr="eval: _localization" for="$localization"/>
   </action-attrs>
+
+  <action-method
+    name="action-invoice-reports-wizard-method-set-invoice-print-template">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setInvoicePrintTemplate"/>
+  </action-method>
 
   <action-attrs name="action-invoice-attrs-selection-in-operation-type-select">
     <attribute name="selection-in" for="operationTypeSelect" expr="eval: [1,2,3,4]"/>
@@ -2235,6 +2284,11 @@ InvoiceSet.length > 0))"
       method="mergeSupplInvoiceFromPopup"/>
   </action-method>
 
+  <action-method name="action-invoice-method-convert-selected-lines-to-merge-lines">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="convertSelectedLinesToMergeLines"/>
+  </action-method>
+
   <action-method name="action-invoice-method-create-advance-payment-domain">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="fillAdvancePaymentInvoiceSetDomain"/>
@@ -2341,11 +2395,6 @@ InvoiceSet.length > 0))"
       method="validateInvoiceTermsBeforeSave"/>
   </action-method>
 
-  <action-method name="action-method-invoice-financial-discount-update-invoice-terms">
-    <call class="com.axelor.apps.account.web.InvoiceController"
-      method="updateInvoiceTermsFinancialDiscount"/>
-  </action-method>
-
   <action-method name="action-invoice-method-update-unpaid-invoice-terms">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="updateUnpaidInvoiceTerms"/>
@@ -2390,7 +2439,15 @@ InvoiceSet.length > 0))"
 
   <action-method name="action-invoice-method-update-subrogation-partner">
     <call class="com.axelor.apps.account.web.InvoiceController"
-      method="updateSubrogationPartner"/>
+      method="updateThirdPartyPayerPartner"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-set-invoice-line-list-scale">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="setInvoiceLinesScale"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-manage-refund-titles">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="manageRefundFields"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
@@ -2444,8 +2501,8 @@ InvoiceSet.length > 0))"
     <context name="_statusSelect" expr="eval: statusSelect"/>
     <context name="_operationSubTypeSelect" expr="eval: operationSubTypeSelect"/>
     <context name="_printedPDF" expr="eval: printedPDF"/>
-    <context name="id" expr="eval: id"/>
-    <context name="_language" expr="eval: language"/>
+    <context name="_invoiceId" expr="eval: id"/>
+    <context name="_localization" expr="eval: localization"/>
   </action-view>
 
 
@@ -2502,25 +2559,26 @@ InvoiceSet.length > 0))"
     <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
     <field name="companyTaxTotal" title="Total tax in company currency"/>
     <field name="companyInTaxTotal" title="Total A.T.I. in company currency"/>
-    <filter title="Validated">
+    <filter name="customer-invoices-filters-validated" title="Validated">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Ventilated">
+    <filter name="customer-invoices-filters-ventilated" title="Ventilated">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Unpaid">
+    <filter name="customer-invoices-filters-unpaid" title="Unpaid">
       <domain>self.companyInTaxTotalRemaining &gt; 0</domain>
     </filter>
-    <filter title="Unpaid Due">
+    <filter name="customer-invoices-filters-unpaid-due" title="Unpaid Due">
       <domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
     </filter>
-    <filter title="With Payment Rejected">
+    <filter name="customer-invoices-filters-with-payment-rejected"
+      title="With Payment Rejected">
       <domain>self.rejectMoveLine IS NOT NULL</domain>
     </filter>
-    <filter title="B2B">
+    <filter name="customer-invoices-filters-b2b" title="B2B">
       <domain>self.partner.partnerTypeSelect = 1</domain>
     </filter>
-    <filter title="B2C">
+    <filter name="customer-invoices-filters-b2c" title="B2C">
       <domain>self.partner.partnerTypeSelect = 2</domain>
     </filter>
   </search-filters>
@@ -2566,16 +2624,16 @@ InvoiceSet.length > 0))"
     <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
     <field name="companyTaxTotal" title="Total tax in company currency"/>
     <field name="companyInTaxTotal" title="Total A.T.I. in company currency"/>
-    <filter title="Validated">
+    <filter name="customer-refunds-filters-validated" title="Validated">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Ventilated">
+    <filter name="customer-refunds-filters-ventilated" title="Ventilated">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Unpaid">
+    <filter name="customer-refunds-filters-unpaid" title="Unpaid">
       <domain>self.companyInTaxTotalRemaining &gt; 0</domain>
     </filter>
-    <filter title="Unpaid Due">
+    <filter name="customer-refunds-filters-unpaid-due" title="Unpaid Due">
       <domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
     </filter>
   </search-filters>
@@ -2621,25 +2679,25 @@ InvoiceSet.length > 0))"
     <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
     <field name="companyTaxTotal" title="Total tax in company currency"/>
     <field name="companyInTaxTotal" title="Total A.T.I. in company currency"/>
-    <filter title="Draft">
+    <filter name="supplier-invoices-filters-draft" title="Draft">
       <domain>self.statusSelect = 1</domain>
     </filter>
-    <filter title="Validated">
+    <filter name="supplier-invoices-filters-validated" title="Validated">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Ventilated">
+    <filter name="supplier-invoices-filters-ventilated" title="Ventilated">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Unpaid">
+    <filter name="supplier-invoices-filters-unpaid" title="Unpaid">
       <domain>self.companyInTaxTotalRemaining &gt; 0</domain>
     </filter>
-    <filter title="Unpaid Due">
+    <filter name="supplier-invoices-filters-unpaid-due" title="Unpaid Due">
       <domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
     </filter>
   </search-filters>
 
   <search-filters name="supplier-refunds-filters"
-    model="com.axelor.apps.account.db.Invoice" title="Supplier refunds filters">
+    model="com.axelor.apps.account.db.Invoice" title="Supplier credit notes filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" hidden="true"
@@ -2679,19 +2737,19 @@ InvoiceSet.length > 0))"
     <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
     <field name="companyTaxTotal" title="Total tax in company currency"/>
     <field name="companyInTaxTotal" title="Total A.T.I. in company currency"/>
-    <filter title="Draft">
+    <filter name="supplier-refunds-filters-draft" title="Draft">
       <domain>self.statusSelect = 1</domain>
     </filter>
-    <filter title="Validated">
+    <filter name="supplier-refunds-filters-validated" title="Validated">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Ventilated">
+    <filter name="supplier-refunds-filters-ventilated" title="Ventilated">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Unpaid">
+    <filter name="supplier-refunds-filters-unpaid" title="Unpaid">
       <domain>self.companyInTaxTotalRemaining &gt; 0</domain>
     </filter>
-    <filter title="Unpaid Due">
+    <filter name="supplier-refunds-filters-unpaid-due" title="Unpaid Due">
       <domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
     </filter>
   </search-filters>
@@ -2706,8 +2764,10 @@ InvoiceSet.length > 0))"
 
   <action-record name="action-record-invoice-set-discount-values"
     model="com.axelor.apps.account.db.Invoice">
-    <field name="financialDiscount" expr="eval: partner.financialDiscount" if="partner"/>
-    <field name="financialDiscount" expr="eval: null" if="!partner"/>
+    <field name="financialDiscount" expr="eval: partner.financialDiscount"
+      if="partner &amp;&amp; financialDiscount == null"/>
+    <field name="financialDiscount" expr="eval: null"
+      if="!partner &amp;&amp; financialDiscount == null"/>
     <field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate"
       if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountTotalAmount"
@@ -2721,8 +2781,6 @@ InvoiceSet.length > 0))"
     <field name="financialDiscountDeadlineDate"
       expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__, financialDiscount)"
       if="dueDate &amp;&amp; id != null &amp;&amp; financialDiscount != null"/>
-    <field name="financialDiscount" expr="eval: null"
-      if="!partner || !partner.financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: 0"
       if="!partner || !partner.financialDiscount"/>
     <field name="financialDiscountTotalAmount" expr="eval: 0"
@@ -2751,7 +2809,7 @@ InvoiceSet.length > 0))"
   <action-view name="action-invoice-view-show-related-invoice-terms"
     title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-invoice-grid"/>
-    <view type="form" name="invoice-term-invoice-form"/>
+    <view type="form" name="invoice-term-related-form"/>
     <domain>self.invoice.id = :_invoiceId</domain>
     <context name="_invoiceId" expr="eval: id"/>
   </action-view>
@@ -2759,7 +2817,7 @@ InvoiceSet.length > 0))"
   <action-view name="action-invoice-view-show-related-invoice-terms-by-reason"
     title="Invoice term in dispute" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-invoice-grid"/>
-    <view type="form" name="invoice-term-invoice-form"/>
+    <view type="form" name="invoice-term-related-form"/>
     <domain>self.reasonOfRefusalToPayStr = :_reasonOfRefusalToPayName AND (:_company is null OR
       self.company = :_company)</domain>
     <context name="_reasonOfRefusalToPayName" expr="eval: reasonOfRefusalToPayName"/>
@@ -2785,5 +2843,19 @@ InvoiceSet.length > 0))"
     <action name="save"/>
     <action name="action-invoice-view-reports-wizard"/>
   </action-group>
+
+  <action-group name="action-invoice-wizard-group-print">
+    <action name="action-invoice-group-report-print"/>
+    <action name="close"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-invoice-date-on-change">
+    <action name="action-invoice-method-compute-invoice-amounts"/>
+    <action name="action-invoice-group-payment-condition-onchange"/>
+  </action-group>
+
+  <action-method name="action-invoice-method-compute-invoice-amounts">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="computeInvoiceAmounts"/>
+  </action-method>
 
 </object-views>

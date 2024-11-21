@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -17,6 +17,7 @@
       name="billOfMaterial" title="Bill of material"/>
     <boolean name="hasNoManageStock" title="Not manage stock"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <decimal name="wasteRate" title="Waste rate (%)"/>
 
     <track>
       <field name="priority"/>
@@ -24,6 +25,7 @@
       <field name="product"/>
       <field name="hasNoManageStock"/>
       <field name="billOfMaterial"/>
+      <field name="wasteRate"/>
     </track>
   </entity>
 

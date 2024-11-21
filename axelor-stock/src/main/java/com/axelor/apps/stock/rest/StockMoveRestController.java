@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,9 +38,7 @@ import com.axelor.utils.api.RequestStructure;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -50,7 +48,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/stock-move")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -66,7 +63,7 @@ public class StockMoveRestController {
   public Response realizeStockMove(@PathParam("id") long stockMoveId, RequestStructure requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockMove.class).check();
+    new SecurityCheck().writeAccess(StockMove.class, stockMoveId).check();
 
     StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
 
@@ -87,7 +84,10 @@ public class StockMoveRestController {
       @PathParam("id") long stockMoveId, StockMoveLinePostRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockMove.class).createAccess(StockMoveLine.class).check();
+    new SecurityCheck()
+        .writeAccess(StockMove.class, stockMoveId)
+        .readAccess(StockMoveLine.class)
+        .check();
 
     StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
     new StockMoveLineRequestValidator(
@@ -155,7 +155,7 @@ public class StockMoveRestController {
       @PathParam("id") long stockMoveId, StockInternalMovePutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockMove.class).check();
+    new SecurityCheck().writeAccess(StockMove.class, stockMoveId).check();
 
     StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
 

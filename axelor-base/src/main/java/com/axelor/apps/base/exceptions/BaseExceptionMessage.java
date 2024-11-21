@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -178,7 +178,7 @@ public final class BaseExceptionMessage {
   public static final String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/
       "Unable to generate Birt report file" /*)*/;
 
-  public static final String BIRT_TEMPLATE_MESSAGE_STANDARD_TEMPLATE_NOT_FOUND = /*$$(*/
+  public static final String FILE_NOT_FOUND_IN_STANDARD_APPLICATION = /*$$(*/
       "%s was not found in the standard application." /*)*/;
 
   /** Tax service */
@@ -195,6 +195,9 @@ public final class BaseExceptionMessage {
   /** Sequence service */
   public static final String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/
       "Can't generate draft sequence number on an unsaved record." /*)*/;
+
+  public static final String SEQUENCE_PATTERN_LENGTH_NOT_VALID = /*$$(*/
+      "The pattern length should be equal to padding ." /*)*/;
 
   public static final String SEQUENCE_LENGTH_NOT_VALID = /*$$(*/
       "Total sequence length must be less than 15 characters." /*)*/;
@@ -488,7 +491,7 @@ public final class BaseExceptionMessage {
       "Multiple pricings found for the product/category '%s', company '%s' and model '%s', only one expected." /*)*/;
 
   public static final String PRICING_2 = /*$$(*/
-      "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
+      "There is already a pricing that has the selected pricing as previous pricing, for the formula '%s', company '%s' and model '%s'." /*)*/;
 
   public static final String PRICING_3 = /*$$(*/
       "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
@@ -546,11 +549,6 @@ public final class BaseExceptionMessage {
   public static final String COMPANY_LOCALE_MISSING = /*$$(*/
       "Please fill locale for the company %s" /*)*/;
 
-  public static final String SWAGGER_DISABLED = /*$$(*/ "Swagger is not enabled." /*)*/;
-
-  public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
-      "Swagger is enabled but not resource packages is specified." /*)*/;
-
   public static final String FAKER_METHOD_DOES_NOT_EXIST = /*$$(*/
       "The method '%s' doesn't exist in the Faker API." /*)*/;
 
@@ -595,7 +593,7 @@ public final class BaseExceptionMessage {
   public static final String PRODUCT_MISSING_UNITS_TO_CONVERT = /*$$(*/
       "The product %s is missing stock unit or purchase unit to make the conversion of last purchase price." /*)*/;
 
-  public static final String BIRT_TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
+  public static final String TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
       "The configuration to print this model has not been found" /*)*/;
 
   public static final String SIGNING_PDF_ERROR = /*$$(*/ "Error while signing pdf : %s" /*)*/;
@@ -620,4 +618,40 @@ public final class BaseExceptionMessage {
 
   public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
       "The file could not be generated." /*)*/;
+  public static final String SEQUENCE_GROOVY_CONFIGURATION = /*$$(*/
+      "An error occurred while generating the sequence. Please check the configuration." /*)*/;
+
+  public static final String ADDRESS_TEMPLATE_ERROR = /*$$(*/
+      "An error occurred while generating the address template: '%s'" /*)*/;
+
+  public static final String ADDRESS_FIELD_TEMPLATE_ERROR = /*$$(*/
+      "An error occurred while generating the address template: '%s' - '%s'" /*)*/;
+
+  public static final String PRICING_UNAVAILABLE_FOR_THIS_CLASS = /*$$(*/
+      "Pricing process unavailable for this class : %s" /*)*/;
+  public static final String REGISTRATION_CODE_EMPTY_FOR_COMPANIES = /*$$(*/
+      "Registration code is required for companies" /*)*/;
+
+  /** Import Configuration */
+  public static final String IMPORT_CONFIGURATION_ERROR_MESSAGE = /*$$(*/
+      "There is an error in the import configuration." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_CLOSING_MESSAGE = /*$$(*/
+      "The import configuration executed successfully." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_BINDING_FILE_TYPE_MESSAGE = /*$$(*/
+      "The binding file should be only an XML file." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_CSV_MESSAGE = /*$$(*/
+      "The data file should be only a CSV or ZIP file." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_XML_MESSAGE = /*$$(*/
+      "The data file should be only an XML or ZIP file." /*)*/;
+
+  public static final String MISSING_ADDRESS_FIELD = /*$$(*/ "Address Field is missing : %s" /*)*/;
+
+  public static final String FACTORY_NO_FOUND = /*$$(*/
+      "Factory not found this type of generator" /*)*/;
+
+  public static final String MISSING_BIRT_PARAMETER = /*$$(*/ "Missing %s parameter(s)" /*)*/;
 }

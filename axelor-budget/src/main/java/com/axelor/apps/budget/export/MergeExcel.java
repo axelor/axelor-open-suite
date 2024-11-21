@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.export;
 
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,9 +36,17 @@ import org.slf4j.LoggerFactory;
 
 public class MergeExcel {
 
+  protected Workbook sourceExcel;
+  protected Workbook destExcel;
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  public void mergeExcels(Workbook sourceExcel, Workbook destExcel) {
+  @Inject
+  public MergeExcel(Workbook sourceExcel, Workbook destExcel) {
+    this.sourceExcel = sourceExcel;
+    this.destExcel = destExcel;
+  }
+
+  public void merge() {
     for (int sheetIndex = 0; sheetIndex < sourceExcel.getNumberOfSheets(); ++sheetIndex) {
       Sheet sheet = sourceExcel.getSheetAt(sheetIndex);
 

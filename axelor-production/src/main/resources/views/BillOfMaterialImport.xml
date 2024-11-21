@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="bill-of-material-import-grid" title="Bill of materials imports"
+    model="com.axelor.apps.production.db.BillOfMaterialImport">
+    <field name="name"/>
+    <field name="mainBillOfMaterialGenerated"/>
+    <field name="statusSelect"/>
+  </grid>
+
+  <form name="bill-of-material-import-form" title="Bill of materials import"
+    model="com.axelor.apps.production.db.BillOfMaterialImport"
+    onLoad="action-bill-of-material-import-get-created-products">
+    <panel name="mainPanel">
+      <field name="statusSelect" showTitle="true" readonly="true" colSpan="12"
+        widget="NavSelect"/>
+      <field name="name"/>
+      <field name="importSource"/>
+      <field name="importMetaFile" widget="binary-link"/>
+      <field name="documentMetaFile" widget="binary-link"/>
+      <field name="mainBillOfMaterialGenerated" readonly="true"/>
+    </panel>
+    <panel-tabs showIf="statusSelect > 1">
+      <panel-related field="billOfMaterialImportLineList"
+        name="billOfMaterialImportLineListPanel" title="Result grid" colSpan="12" orderBy="bomLevel"
+        grid="bill-of-material-import-line-grid" form-view="bill-of-material-import-line-form"/>
+      <panel-dashlet name="taskTreePanel" title="Result Tree" colSpan="12"
+        action="action-bill-of-material-import-line-view-tree"/>
+      <panel name="billOfMaterialImportConfiguration" title="Configuration">
+        <panel-related field="$createdProducts" name="createdProductsPanel"
+          target="com.axelor.apps.base.db.Product" title="Created products" colSpan="12"
+          grid="product-grid" form-view="product-form" canNew="false" canRemove="false"
+          canEdit="false"/>
+        <panel-dashlet action="action-bill-of-material-import-view-show-trace-back"
+          colSpan="12"/>
+        <panel-related field="billOfMaterialGeneratedList"
+          name="Bills of materials generated" colSpan="12"/>
+      </panel>
+    </panel-tabs>
+    <panel name="actionPanel" sidebar="true" showIf="statusSelect != 3">
+      <button name="importBtn" title="Import" hidden="true" showIf="statusSelect == 1"
+        onClick="save, action-bill-of-material-import-method-import"/>
+      <button name="validateBtn" title="Validate" hidden="true" showIf="statusSelect == 2"
+        onClick="action-bill-of-material-import-group-on-validate-btn"/>
+    </panel>
+  </form>
+
+  <action-view name="action-bill-of-material-import-view-show-trace-back"
+    title="Anomalies" model="com.axelor.apps.base.db.TraceBack">
+    <view type="grid" name="trace-back-grid"/>
+    <view type="form" name="trace-back-form"/>
+    <domain>self.ref = 'com.axelor.apps.production.db.BillOfMaterialImport' AND self.refId = :refId</domain>
+    <context name="refId" expr="eval: id"/>
+  </action-view>
+
+  <action-attrs
+    name="action-bill-of-material-import-attrs-set-document-meta-file-to-readonly">
+    <attribute for="documentMetaFile" name="readonly" expr="eval: true"/>
+  </action-attrs>
+
+  <action-method name="action-bill-of-material-import-method-import">
+    <call class="com.axelor.apps.production.web.BillOfMaterialImportController"
+      method="runImport"/>
+  </action-method>
+
+  <action-method name="action-bill-of-material-import-method-validate">
+    <call class="com.axelor.apps.production.web.BillOfMaterialImportController"
+      method="createBoMFromImport"/>
+  </action-method>
+
+  <action-method name="action-bill-of-material-import-get-created-products">
+    <call class="com.axelor.apps.production.web.BillOfMaterialImportController"
+      method="getCreatedProducts"/>
+  </action-method>
+
+  <action-group name="action-bill-of-material-import-group-on-validate-btn">
+    <action name="save"/>
+    <action name="action-bill-of-material-import-method-validate"/>
+    <action name="action-bill-of-material-import-attrs-set-document-meta-file-to-readonly"/>
+  </action-group>
+
+</object-views>
+
+

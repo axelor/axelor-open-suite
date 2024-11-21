@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="production-order-grid" title="Production orders"
     model="com.axelor.apps.production.db.ProductionOrder" orderBy="-productionOrderSeq">
@@ -35,15 +35,7 @@
       <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
         widget="NavSelect"/>
       <field name="productionOrderSeq"/>
-      <field name="prioritySelect">
-        <viewer>
-                <![CDATA[
-                    <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prioritySelect == 1" x-translate>Low</span>
-                    <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prioritySelect == 2" x-translate>Normal</span>
-                    <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prioritySelect == 3" x-translate>High</span>
-                ]]>
-        </viewer>
-      </field>
+      <field name="prioritySelect" widget="SingleSelect"/>
       <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"
         domain="self.isCustomer = true" canEdit="false"
         onChange="action-production-order-atts-sale-order-onchange-client-partner"/>
@@ -72,7 +64,7 @@
           if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
       </panel-related>
       <panel-dashlet name="operationOrderDetailsPanel"
-        action="action-production-order-view-operation-order" title="Operation order"/>
+        action="action-production-order-view-operation-order" title="Manufacturing operation"/>
     </panel-tabs>
   </form>
 
@@ -155,11 +147,10 @@
   </action-attrs>
 
   <action-view name="action-production-order-view-operation-order"
-    title="Operation orders" model="com.axelor.apps.production.db.OperationOrder">
+    title="Manufacturing operations" model="com.axelor.apps.production.db.OperationOrder">
     <view type="grid" name="operation-order-group-grid"/>
     <view type="form" name="operation-order-form"/>
     <domain>:id member of self.manufOrder.productionOrderSet</domain>
-    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-production-order-view-add-manuf-order-wizard"
@@ -174,7 +165,8 @@
     model="com.axelor.apps.production.db.ProductionOrder" title="Production order filters">
     <field name="project" hidden="true"
       if="!__config__.app.getApp('production')?.getManageBusinessProduction()"/>
-    <filter title="Production orders closed">
+    <filter name="production-order-filters-production-orders-closed"
+      title="Production orders closed">
       <domain>self.isClosed = true</domain>
     </filter>
   </search-filters>

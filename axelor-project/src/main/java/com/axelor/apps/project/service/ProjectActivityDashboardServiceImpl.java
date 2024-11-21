@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
@@ -99,8 +100,11 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
       }
       activityMap.put("title", message.getRelatedName());
       activityMap.put("time", createdOn);
-      activityMap.put("userId", message.getAuthor().getId());
-      activityMap.put("user", message.getAuthor().getName());
+      User author = message.getAuthor();
+      if (author != null) {
+        activityMap.put("userId", author.getId());
+        activityMap.put("user", author.getName());
+      }
       activityMap.putAll(getModelWithUtilityClass(message));
       try {
         activityMap.put("activity", getActivity(message));
@@ -174,11 +178,11 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
               .map(Option::getTitle)
               .orElse("Project task");
       dataMap.put("modelName", modelName);
-      dataMap.put("utilityClass", "label-success");
+      dataMap.put("utilityClass", "success");
 
     } else if (Wiki.class.getName().equals(model)) {
       dataMap.put("modelName", "Wiki");
-      dataMap.put("utilityClass", "label-warning");
+      dataMap.put("utilityClass", "warning");
     }
     return dataMap;
   }

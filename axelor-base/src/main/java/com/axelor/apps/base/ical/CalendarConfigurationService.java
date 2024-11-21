@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,7 +32,7 @@ import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.utils.MetaActionTool;
+import com.axelor.utils.helpers.MetaActionHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -136,6 +136,6 @@ public class CalendarConfigurationService {
             .context("_calendarIdList", expr)
             .get();
 
-    return MetaActionTool.actionToMetaAction(actionView, name, type, module);
+    return MetaActionHelper.actionToMetaAction(actionView, name, type, module);
   }
 }

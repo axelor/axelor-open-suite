@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,14 +18,14 @@
  */
 package com.axelor.apps.hr.service;
 
+import com.axelor.apps.base.db.File;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.EmployeeFile;
 import com.axelor.apps.hr.db.MedicalVisit;
 import java.util.List;
 
 public interface MedicalVisitService {
 
-  List<EmployeeFile> addToEmployeeFiles(Employee employee);
+  List<File> addToEmployeeFiles(Employee employee);
 
   String getMedicalVisitSubject(MedicalVisit medicalVisit);
 }

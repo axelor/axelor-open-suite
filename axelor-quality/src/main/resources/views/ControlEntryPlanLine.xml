@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="control-plan-line-grid" title="Control plan lines"
+    model="com.axelor.apps.quality.db.ControlEntryPlanLine" canEdit="false">
+    <field name="name"/>
+    <field name="priority"/>
+    <field name="reference"/>
+    <field name="typeSelect"/>
+    <field name="characteristic"/>
+    <field name="machineType"/>
+    <field name="isCustomFrequency"/>
+  </grid>
+
+  <form name="control-plan-line-form" title="Control plan line"
+    model="com.axelor.apps.quality.db.ControlEntryPlanLine"
+    onNew="action-quality-control-plan-line-record-default">
+    <panel name="mainPanel" colSpan="12">
+      <field name="priority" colSpan="3"/>
+      <field name="controlType" colSpan="3" required="true"/>
+      <field name="characteristic" colSpan="6"/>
+      <field name="name" required="true" colSpan="6"/>
+      <field name="machineType" colSpan="6"/>
+      <field name="isCustomFrequency" colSpan="3"/>
+      <field name="controlPlanFrequency" colSpan="9" showIf="isCustomFrequency"/>
+      <field name="description" widget="html" colSpan="12"/>
+    </panel>
+
+    <panel name="attrsPanel" showIf="controlType">
+      <field name="planAttrs"/>
+    </panel>
+  </form>
+
+  <grid name="control-entry-sample-line-grid" title="Control entry sample lines"
+    model="com.axelor.apps.quality.db.ControlEntryPlanLine">
+    <field name="controlPlanLine"/>
+    <field name="resultSelect"/>
+  </grid>
+
+  <form name="control-entry-sample-line-form" title="Control entry sample line"
+    model="com.axelor.apps.quality.db.ControlEntryPlanLine"
+    onNew="action-quality-control-entry-line-record-default,action-quality-record-control-entry-line-load-control-plan-parent"
+    onLoad="action-quality-record-control-entry-line-load-control-plan-parent">
+    <panel name="mainPanel" colSpan="12">
+      <field name="controlPlanLine" colSpan="6" form-view="control-plan-line-form"
+        grid-view="control-plan-line-grid"
+        domain="self.typeSelect = 1 AND self.controlPlan = :controlPlanParent"
+        onChange="action-quality-control-entry-line-copy-record" required="true" readonly="true"/>
+      <field name="controlPlanLine.characteristic" colSpan="6"/>
+      <field name="controlType" readonly="true"/>
+      <field name="resultSelect" colSpan="6" readonly="true"/>
+      <field name="controlEntrySample" colSpan="6" readonly="true"/>
+      <field name="$controlPlanParent" type="many-to-one"
+        target="com.axelor.apps.quality.db.ControlPlan" hidden="true"/>
+    </panel>
+
+    <panel name="planAttrsPanel" showIf="controlPlanLine" readonly="true">
+      <field name="planAttrs"/>
+    </panel>
+
+    <panel name="attrsPanel" showIf="controlPlanLine">
+      <field name="entryAttrs"/>
+
+      <button name="checkConformityBtn" title="Check conformity"
+        onClick="save,action-quality-control-entry-line-method-control-conformity"/>
+    </panel>
+
+  </form>
+
+
+  <action-record
+    name="action-quality-record-control-entry-line-load-control-plan-parent"
+    model="com.axelor.apps.quality.db.ControlEntryPlanLine">
+    <field name="$controlPlanParent" expr="eval: __parent__?.parentContext?.controlPlan"/>
+  </action-record>
+
+  <action-record name="action-quality-control-plan-line-record-default"
+    model="com.axelor.apps.quality.db.ControlEntryPlanLine">
+    <field name="typeSelect" expr="eval: 1"/>
+  </action-record>
+
+  <action-record name="action-quality-control-entry-line-record-default"
+    model="com.axelor.apps.quality.db.ControlEntryPlanLine">
+    <field name="typeSelect" expr="eval: 2"/>
+    <field name="resultSelect" expr="eval: 1"/>
+  </action-record>
+
+  <action-record name="action-quality-control-entry-line-copy-record"
+    model="com.axelor.apps.quality.db.ControlEntryPlanLine">
+    <field name="entryAttrs" expr="eval: controlPlanLine?.entryAttrs" if="controlPlanLine"/>
+    <field name="planAttrs" expr="eval: controlPlanLine?.planAttrs" if="controlPlanLine"/>
+    <field name="entryAttrs" expr="eval: null" if="controlPlanLine == null"/>
+    <field name="planAttrs" expr="eval: null" if="controlPlanLine == null"/>
+    <field name="controlType" expr="eval: controlPlanLine?.controlType"/>
+  </action-record>
+
+  <action-method name="action-quality-control-entry-line-method-control-conformity">
+    <call class="com.axelor.apps.quality.web.ControlEntryPlanLineController"
+      method="controlConformity"/>
+  </action-method>
+
+
+</object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
 
   <grid name="price-list-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList">
@@ -23,8 +23,9 @@
   </grid>
 
   <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
-    onNew="action-price-list-record-default,action-price-list-attrs-readonly-type-select"
-    onSave="action-price-list-method-check-anomaly" width="large">
+    onNew="action-group-base-pricelist-onnew"
+    onSave="action-price-list-method-check-anomaly,action-price-list-method-check-dates"
+    width="large">
     <panel name="mainPanel">
       <field name="title"/>
       <field name="typeSelect" colSpan="4"/>
@@ -53,29 +54,9 @@
       action="action-price-list-view-dashlet-partner-price-list" colSpan="12"/>
   </form>
 
-  <form name="sale-price-list-form" title="Price list"
-    model="com.axelor.apps.base.db.PriceList" onNew="action-group-base-sale-pricelist-onnew"
-    onLoad="action-price-list-attrs-readonly-type-select-true"
-    onSave="action-price-list-method-check-anomaly" width="100%">
-    <panel-include view="price-list-form"/>
-  </form>
-
-  <form name="purchase-price-list-form" title="Price list"
-    model="com.axelor.apps.base.db.PriceList" onNew="action-group-base-purchase-pricelist-onnew"
-    onLoad="action-price-list-attrs-readonly-type-select-true"
-    onSave="action-price-list-method-check-anomaly" width="100%">
-    <panel-include view="price-list-form"/>
-  </form>
-
-  <action-group name="action-group-base-sale-pricelist-onnew">
+  <action-group name="action-group-base-pricelist-onnew">
     <action name="action-price-list-record-default"/>
-    <action name="action-price-list-record-sale-type"/>
-    <action name="action-price-list-attrs-readonly-type-select-true"/>
-  </action-group>
-
-  <action-group name="action-group-base-purchase-pricelist-onnew">
-    <action name="action-price-list-record-default"/>
-    <action name="action-price-list-record-purchase-type"/>
+    <action name="action-price-list-record-on-new"/>
     <action name="action-price-list-attrs-readonly-type-select-true"/>
   </action-group>
 
@@ -85,6 +66,10 @@
       if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
     <field name="typeSelect" expr="2"
       if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+    <field name="typeSelect" expr="3"
+      if="__parent__?._model == 'com.axelor.apps.contract.db.Contract'  &amp;&amp; __parent__.targetTypeSelect == 1"/>
+    <field name="typeSelect" expr="4"
+      if="__parent__?._model == 'com.axelor.apps.contract.db.Contract'  &amp;&amp; __parent__.targetTypeSelect == 2"/>
     <field name="typeSelect" expr="1"
       if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (__parent__.operationTypeSelect == 3 || __parent__.operationTypeSelect == 4)"/>
     <field name="typeSelect" expr="2"
@@ -93,19 +78,15 @@
     <field name="hideDiscount" expr="false"/>
   </action-record>
 
-  <action-record name="action-price-list-record-sale-type"
+  <action-record name="action-price-list-record-on-new"
     model="com.axelor.apps.base.db.PriceList">
-    <field name="typeSelect" expr="1"/>
-  </action-record>
-
-  <action-record name="action-price-list-record-purchase-type"
-    model="com.axelor.apps.base.db.PriceList">
-    <field name="typeSelect" expr="2"/>
+    <field name="typeSelect" expr="eval: _typeSelect" if="!__parent__"/>
+    <field name="typeSelect" expr="eval: __parent__?.typeSelect" if="__parent__"/>
   </action-record>
 
   <action-attrs name="action-price-list-attrs-readonly-type-select">
     <attribute name="readonly" for="typeSelect"
-      expr="eval: __parent__?._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+      expr="eval: __parent__?._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || __parent__?._model == 'com.axelor.apps.contract.db.Contract'"/>
   </action-attrs>
 
   <action-attrs name="action-price-list-attrs-readonly-type-select-true">
@@ -123,8 +104,7 @@
   <action-view name="action-price-list-view-dashlet-partner-price-list"
     title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
     <view type="grid" name="partner-price-list-grid"/>
-    <view type="form" name="sale-partner-price-list-form" if="typeSelect == 1"/>
-    <view type="form" name="purchase-partner-price-list-form" if="typeSelect == 2"/>
+    <view type="form" name="partner-price-list-form"/>
     <domain>:priceList MEMBER OF self.priceListSet</domain>
     <context name="priceList" expr="eval: __self__"/>
   </action-view>

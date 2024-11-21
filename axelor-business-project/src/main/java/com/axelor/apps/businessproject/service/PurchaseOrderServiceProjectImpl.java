@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
 import com.axelor.auth.AuthUtils;
 import com.google.inject.Inject;
@@ -40,18 +40,18 @@ public class PurchaseOrderServiceProjectImpl implements PurchaseOrderProjectServ
   protected PurchaseOrderLineProjectService purchaseOrderLineProjectService;
   protected PurchaseOrderFromSaleOrderLinesService purchaseOrderFromSaleOrderLinesService;
 
-  protected PurchaseOrderService purchaseOrderService;
+  protected PurchaseOrderCreateService purchaseOrderCreateService;
 
   @Inject
   public PurchaseOrderServiceProjectImpl(
       PurchaseOrderRepository purchaseOrderRepository,
       PurchaseOrderLineProjectService purchaseOrderLineProjectService,
       PurchaseOrderFromSaleOrderLinesService purchaseOrderFromSaleOrderLinesService,
-      PurchaseOrderService purchaseOrderService) {
+      PurchaseOrderCreateService purchaseOrderCreateService) {
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.purchaseOrderLineProjectService = purchaseOrderLineProjectService;
     this.purchaseOrderFromSaleOrderLinesService = purchaseOrderFromSaleOrderLinesService;
-    this.purchaseOrderService = purchaseOrderService;
+    this.purchaseOrderCreateService = purchaseOrderCreateService;
   }
 
   @Override
@@ -78,7 +78,7 @@ public class PurchaseOrderServiceProjectImpl implements PurchaseOrderProjectServ
     }
     PurchaseOrder purchaseOrder =
         purchaseOrderRepository.save(
-            purchaseOrderService.createPurchaseOrder(
+            purchaseOrderCreateService.createPurchaseOrder(
                 AuthUtils.getUser(),
                 projectTask.getProject().getCompany(),
                 null,

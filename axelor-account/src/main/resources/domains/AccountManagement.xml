@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AccountManagement">
+
+    <boolean name="chargeOnOriginalAccount" title="Charge directly on original account"/>
 
     <many-to-one name="purchaseAccount" ref="com.axelor.apps.account.db.Account"
       title="Purchase account"/>
@@ -66,22 +68,10 @@
     <many-to-one name="saleTaxVatSystem2Account"
       ref="com.axelor.apps.account.db.Account" title="Sale account on payments"
       help="Account settings which will be used when generating accounting tax move lines depending on the VAT System accounting setting on the financial account and the partner VAT System in the accountingSituation by company."/>
-    <many-to-one name="allowedFinDiscountTaxVatSystem1Account"
-      ref="com.axelor.apps.account.db.Account"
-      title="Allowed Financial discount account on deliveries/invoice"
-      help="Account settings which will be used when generating accounting tax move lines depending on the VAT System accounting setting on the financial account and the partner VAT System in the accountingSituation by company."/>
-    <many-to-one name="allowedFinDiscountTaxVatSystem2Account"
-      ref="com.axelor.apps.account.db.Account"
-      title="Allowed Financial discount account on payments"
-      help="Account settings which will be used when generating accounting tax move lines depending on the VAT System accounting setting on the financial account and the partner VAT System in the accountingSituation by company."/>
-    <many-to-one name="obtainedFinDiscountTaxVatSystem1Account"
-      ref="com.axelor.apps.account.db.Account"
-      title="Obtained Financial discount account on deliveries/invoice"
-      help="Account settings which will be used when generating accounting tax move lines depending on the VAT System accounting setting on the financial account and the partner VAT System in the accountingSituation by company."/>
-    <many-to-one name="obtainedFinDiscountTaxVatSystem2Account"
-      ref="com.axelor.apps.account.db.Account"
-      title="Obtained financial discount account on payments"
-      help="Account settings which will be used when generating accounting tax move lines depending on the VAT System accounting setting on the financial account and the partner VAT System in the accountingSituation by company."/>
+
+    <many-to-one name="vatPendingAccount" ref="com.axelor.apps.account.db.Account"
+      title="Pending tax account"
+      help="This tax account is used while generating taxes which are due by the company while receiving payments and while they should be deducted from the taxes due when the final invoices are issued. If this configuration is empty, then no tax will be deducted from advance payments."/>
 
     <string name="name">
           <![CDATA[

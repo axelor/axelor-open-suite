@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -26,8 +26,8 @@
     <string name="priceRequest" title="Message for requesting prices" large="true"/>
     <boolean name="isAnalyticDistributionRequired"
       title="Analytic distribution required on purchase order line"/>
-    <many-to-one name="purchaseOrderBirtTemplate" title="Purchase order template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="purchaseOrderPrintTemplate" title="Purchase order template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
     <track>
       <field name="company" on="UPDATE"/>
       <field name="purchaseOrderInAtiSelect" on="UPDATE"/>
@@ -40,7 +40,7 @@
       <field name="priceRequest" on="UPDATE"/>
       <field name="isAnalyticDistributionRequired" on="UPDATE"/>
       <field name="displayPriceOnQuotationRequest" on="UPDATE"/>
-      <field name="purchaseOrderBirtTemplate" on="UPDATE"/>
+      <field name="purchaseOrderPrintTemplate" on="UPDATE"/>
     </track>
   </entity>
 

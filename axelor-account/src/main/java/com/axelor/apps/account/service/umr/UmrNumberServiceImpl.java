@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,31 +18,39 @@
  */
 package com.axelor.apps.account.service.umr;
 
+import com.axelor.apps.account.db.InvoicingPaymentSituation;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import net.fortuna.ical4j.model.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.StringJoiner;
 
 public class UmrNumberServiceImpl implements UmrNumberService {
 
   @Override
-  public String getUmrNumber(Partner partner) {
-    return getUmrNumber(partner, false);
+  public String getUmrNumber(InvoicingPaymentSituation invoicingPaymentSituation, LocalDate date) {
+    return getUmrNumber(invoicingPaymentSituation, false, date);
   }
 
   @Override
-  public String getUmrNumber(Partner partner, boolean isRecovery) {
-
-    String rumNumber = "";
-
-    if (isRecovery) {
-      rumNumber += "++";
+  public String getUmrNumber(
+      InvoicingPaymentSituation invoicingPaymentSituation, boolean isRecovery, LocalDate date) {
+    Partner partner = invoicingPaymentSituation.getPartner();
+    Company company = invoicingPaymentSituation.getCompany();
+    if (partner == null || company == null) {
+      return "";
     }
 
-    rumNumber += partner.getPartnerSeq();
+    StringJoiner rumNumber = new StringJoiner("/");
+    rumNumber.add(company.getCode());
 
-    rumNumber += "/" + new SimpleDateFormat("yyyyMMdd").format(Date.from(Instant.now()));
+    if (isRecovery) {
+      rumNumber.add("++");
+    }
+    rumNumber
+        .add(partner.getPartnerSeq())
+        .add(date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
-    return rumNumber;
+    return rumNumber.toString();
   }
 }

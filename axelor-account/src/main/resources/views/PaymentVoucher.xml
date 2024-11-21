@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="payment-voucher-grid" title="Payment vouchers"
     model="com.axelor.apps.account.db.PaymentVoucher" orderBy="-paymentDate">
+    <toolbar>
+      <button name="printBtn" hidden="true" onClick=""/>
+    </toolbar>
     <field name="ref" width="120"/>
     <field name="operationTypeSelect"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
     <field name="paymentDate"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-    <field name="paidAmount" aggregate="sum"/>
+    <field name="paidAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="generatedMove" width="120" form-view="move-form" grid-view="move-grid"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -22,6 +26,9 @@
     onNew="action-account-payment-voucher-onnew-group"
     onLoad="action-account-payment-voucher-onload-group"
     onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum">
+    <toolbar>
+      <button name="printBtn" hidden="true" onClick=""/>
+    </toolbar>
     <panel name="mainPanel" readonlyIf="statusSelect == 2 || statusSelect == 3" itemSpan="12">
       <field name="ref" readonly="true" colSpan="4"/>
       <field name="operationTypeSelect" colSpan="4"
@@ -45,7 +52,7 @@
         showIf="statusSelect == 1 || !id"
         readonlyIf="paidAmount == 0 || (moveLine != null &amp;&amp; payVoucherElementToPayList.length == 0)"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
-        icon="fa-print" onClick="save,action-method-print-birt"/>
+        icon="fa-print" onClick="save,action-method-print-template"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info" readonly="true">
@@ -111,15 +118,18 @@
     <panel name="paymentInfoPanel" readonlyIf="statusSelect == 2 || statusSelect == 3"
       colSpan="12">
       <field name="paidAmount" colSpan="4"
-        onChange="action-group-payment-voucher-reset-imputation,save"/>
+        onChange="action-group-payment-voucher-reset-imputation,save"
+        x-scale="currency.numberOfDecimals"/>
       <field name="currency" canEdit="false" colSpan="4" form-view="currency-form"
         grid-view="currency-grid" onChange="action-group-payment-voucher-reset-imputation"/>
-      <field name="remainingAmount" readonly="true" colSpan="4"/>
+      <field name="remainingAmount" readonly="true" colSpan="4"
+        x-scale="currency.numberOfDecimals"/>
       <field name="moveLine"
         onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs"
         onSelect="action-pv-moveLine-domain" colSpan="4"
         showIf="operationTypeSelect == 3 || operationTypeSelect == 4" form-view="move-line-form"
         grid-view="move-line-grid"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
     </panel>
 
     <panel-stack name="otherDetailsPanel" readonlyIf="statusSelect > 1">
@@ -132,7 +142,7 @@
           onClick="action-method-payment-voucher-load-selected-lines,save"
           readonlyIf="paidAmount == 0 || payVoucherDueElementList.length == 0" colSpan="6"/>
         <button name="resetImputationBtn" title="Reset imputation"
-          onClick="action-payment-voucher-method-reset-imputation"
+          onClick="action-payment-voucher-method-reset-imputation,save"
           readonlyIf="payVoucherElementToPayList.length == 0" colSpan="6"/>
       </panel>
       <panel-related name="payVoucherElementToPayListPanel" colSpan="12"
@@ -157,22 +167,19 @@
     <action name="action-payment-voucher-getDate"/>
     <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
     <action name="action-payment-voucher-method-set-receipt-display"/>
-    <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-hidden-fields-if-purchase"/>
     <action name="action-attrs-payment-voucher-manage-bank-details"/>
-    <action name="action-pv-attrs-auto-imputation"/>
     <action name="action-payment-voucher-from-invoice" if="_invoice"/>
+    <action name="action-pv-attrs-auto-imputation"/>
     <action name="action-attrs-payment-voucher-hide-trading-name"/>
     <action name="action-payment-voucher-record-value-for-collection-account"/>
     <action name="action-payment-voucher-record-cheque-owner"/>
     <action name="action-payment-voucher-record-cheque-due-date"/>
-    <action name="save" if="_invoice"/>
   </action-group>
 
   <action-group name="action-account-payment-voucher-onload-group">
     <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
     <action name="action-payment-voucher-method-set-receipt-display"/>
-    <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-hidden-fields-if-purchase"/>
     <action name="action-attrs-payment-voucher-manage-bank-details"/>
     <action name="action-attrs-payment-voucher-hide-trading-name"/>
@@ -182,13 +189,11 @@
     <action name="save"/>
     <action name="action-method-account-payment-voucher-ask"/>
     <action name="action-method-account-payment-voucher-confirm"/>
-    <action name="action-attrs-payment-voucher-readonly-status"/>
   </action-group>
 
   <action-group name="action-group-account-payment-voucher-paymentmode-onchange">
     <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
     <action name="action-payment-voucher-method-set-receipt-display"/>
-    <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-method-fill-bank-details"/>
     <action name="action-payment-voucher-record-value-for-collection-account"
       if="paymentMode?.typeSelect == 7"/>
@@ -214,23 +219,19 @@
 
   <action-record name="action-record-fill-paidAmount-fromMoveLine"
     model="com.axelor.apps.account.db.PaymentVoucher">
-    <field name="paidAmount" expr="eval: moveLine?.amountRemaining"/>
+    <field name="paidAmount" expr="eval: moveLine?.amountRemaining?.abs()"/>
+    <field name="remainingAmount" expr="eval: paidAmount"/>
   </action-record>
 
   <action-attrs name="action-pv-attrs-auto-imputation">
     <attribute name="hidden" for="hasAutoInput"
-      expr="eval: __repo__(AccountConfig).all().filter('self.company.id = ?1',company?.id).fetchOne()?.autoReconcileOnPayment == false"/>
+      expr="eval: !company || !__repo__(AccountConfig).all().filter('self.company.id = ?1',company?.id).fetchOne()?.autoReconcileOnPayment"/>
     <attribute name="value" for="hasAutoInput"
-      expr="eval: __repo__(AccountConfig).all().filter('self.company.id = ?1',company?.id).fetchOne()?.autoReconcileOnPayment == true"/>
+      expr="eval: company &amp;&amp; __repo__(AccountConfig).all().filter('self.company.id = ?1',company?.id).fetchOne()?.autoReconcileOnPayment"/>
   </action-attrs>
 
   <action-attrs name="action-pv-moveLine-attrs">
     <attribute name="readonly" for="paidAmount" expr="eval: moveLine != null"/>
-  </action-attrs>
-
-  <action-attrs name="action-attrs-payment-voucher-readonly-status">
-    <attribute name="readonly" for="paidGroup"
-      expr="eval: statusSelect > com.axelor.apps.account.db.repo.PaymentVoucherRepository.STATUS_DRAFT"/>
   </action-attrs>
 
   <action-attrs name="action-pv-attrs-hidden-bankCardTransactionNumber">
@@ -299,35 +300,41 @@
 
   <search-filters name="payment-voucher-filters"
     model="com.axelor.apps.account.db.PaymentVoucher" title="Payment voucher filters">
-    <filter title="Customer payments">
+    <filter name="payment-voucher-filters-customer-payments" title="Customer payments">
       <domain>self.operationTypeSelect = 3</domain>
     </filter>
-    <filter title="Draft Customer payments">
+    <filter name="payment-voucher-filters-draft-customer-payments"
+      title="Draft Customer payments">
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 1</domain>
     </filter>
-    <filter title="Customer payments waiting for deposit slip"
+    <filter name="payment-voucher-filters-customer-payments-waiting-for-deposit-slip"
+      title="Customer payments waiting for deposit slip"
       if="__config__.app.getApp('account').paymentVouchersOnCustomerInvoice">
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 2</domain>
     </filter>
-    <filter title="Confirmed Customer payments">
+    <filter name="payment-voucher-filters-confirmed-customer-payments"
+      title="Confirmed Customer payments">
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 3</domain>
     </filter>
-    <filter title="Customer payments with remaining">
+    <filter name="payment-voucher-filters-customer-payments-with-remaining"
+      title="Customer payments with remaining">
       <domain>self.operationTypeSelect = 3 AND self.remainingAllocatedAmount &gt; 0</domain>
     </filter>
-    <filter title="Customer refunds">
+    <filter name="payment-voucher-filters-customer-refunds" title="Customer credit notes">
       <domain>self.operationTypeSelect = 4</domain>
     </filter>
-    <filter title="Supplier payments">
+    <filter name="payment-voucher-filters-supplier-payments" title="Supplier payments">
       <domain>self.operationTypeSelect = 1</domain>
     </filter>
-    <filter title="Draft Supplier payments">
+    <filter name="payment-voucher-filters-draft-supplier-payments"
+      title="Draft Supplier payments">
       <domain>self.operationTypeSelect = 1 AND self.statusSelect = 1</domain>
     </filter>
-    <filter title="Confirmed Supplier payments">
+    <filter name="payment-voucher-filters-confirmed-supplier-payments"
+      title="Confirmed Supplier payments">
       <domain>self.operationTypeSelect = 1 AND self.statusSelect = 3</domain>
     </filter>
-    <filter title="Supplier refunds">
+    <filter name="payment-voucher-filters-supplier-refunds" title="Supplier refunds">
       <domain>self.operationTypeSelect = 2</domain>
     </filter>
   </search-filters>

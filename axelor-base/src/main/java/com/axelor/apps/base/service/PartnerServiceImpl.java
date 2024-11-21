@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,6 @@ import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_INDIVI
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -45,7 +44,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.repo.MessageRepository;
-import com.axelor.utils.ComputeNameTool;
+import com.axelor.utils.helpers.ComputeNameHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -60,9 +59,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import javax.inject.Singleton;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -157,7 +154,7 @@ public class PartnerServiceImpl implements PartnerService {
         && appBaseService.getAppBase().getGeneratePartnerSequence()) {
       String seq =
           Beans.get(SequenceService.class)
-              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
+              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner);
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -198,7 +195,6 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     this.setPartnerFullName(partner);
-    this.setCompanyStr(partner);
   }
 
   /**
@@ -279,7 +275,7 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String computeFullName(Partner partner) {
-    return ComputeNameTool.computeFullName(
+    return ComputeNameHelper.computeFullName(
         partner.getFirstName(),
         partner.getName(),
         partner.getPartnerSeq(),
@@ -288,7 +284,7 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String computeSimpleFullName(Partner partner) {
-    return ComputeNameTool.computeSimpleFullName(
+    return ComputeNameHelper.computeSimpleFullName(
         partner.getFirstName(), partner.getName(), String.valueOf(partner.getId()));
   }
 
@@ -546,7 +542,10 @@ public class PartnerServiceImpl implements PartnerService {
   public void convertToIndividualPartner(Partner partner) {
     partner.setIsContact(false);
     partner.setPartnerTypeSelect(PARTNER_TYPE_INDIVIDUAL);
-    addPartnerAddress(partner, partner.getMainAddress(), true, false, false);
+    Address mainAddress = partner.getMainAddress();
+    if (mainAddress != null) {
+      addPartnerAddress(partner, mainAddress, true, false, false);
+    }
     partner.setMainAddress(null);
   }
 
@@ -597,24 +596,24 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   /**
-   * Get the partner language code. If null, return the default partner language.
+   * Get the partner Localization.code. If null, return the default partner locale.
    *
    * @param partner
    * @return
    */
   @Override
-  public String getPartnerLanguageCode(Partner partner) {
+  public String getPartnerLocale(Partner partner) {
 
     String locale = null;
 
-    if (partner != null && partner.getLanguage() != null) {
-      locale = partner.getLanguage().getCode();
+    if (partner != null && partner.getLocalization() != null) {
+      locale = partner.getLocalization().getCode();
     }
     if (!Strings.isNullOrEmpty(locale)) {
       return locale;
     }
 
-    return appBaseService.getDefaultPartnerLanguageCode();
+    return appBaseService.getDefaultPartnerLocale();
   }
 
   /**
@@ -653,54 +652,6 @@ public class PartnerServiceImpl implements PartnerService {
     return actionName.substring(actionName.lastIndexOf('-') + 1);
   }
 
-  @Override
-  public void setCompanyStr(Partner partner) {
-    partner.setCompanyStr(this.computeCompanyStr(partner));
-  }
-
-  @Override
-  public String computeCompanyStr(Partner partner) {
-    String companyStr = "";
-    if (partner.getCompanySet() != null && partner.getCompanySet().size() > 0) {
-      for (Company company : partner.getCompanySet()) {
-        companyStr += company.getCode() + ",";
-      }
-      return companyStr.substring(0, companyStr.length() - 1);
-    }
-    return null;
-  }
-
-  @Override
-  public String getTaxNbrFromRegistrationCode(Partner partner) {
-    String taxNbr = "";
-
-    if (partner.getMainAddress() != null
-        && partner.getMainAddress().getAddressL7Country() != null) {
-      String countryCode = partner.getMainAddress().getAddressL7Country().getAlpha2Code();
-      String regCode = partner.getRegistrationCode();
-
-      if (regCode != null) {
-        regCode = regCode.replaceAll(" ", "");
-
-        if (regCode.length() == 14) {
-          String siren = regCode.substring(0, 9);
-          String taxKey = getTaxKeyFromSIREN(siren);
-
-          taxNbr = String.format("%s%s%s", countryCode, taxKey, siren);
-        }
-      }
-    }
-
-    return taxNbr;
-  }
-
-  protected String getTaxKeyFromSIREN(String sirenStr) {
-    int siren = Integer.parseInt(sirenStr);
-    int taxKey = Math.floorMod(siren, 97);
-    taxKey = Math.floorMod(12 + 3 * taxKey, 97);
-    return String.format("%02d", taxKey);
-  }
-
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {
     return isThereDuplicatePartnerQuery(partner, true);
   }
@@ -733,89 +684,5 @@ public class PartnerServiceImpl implements PartnerService {
       partnerQuery = partnerQuery.bind("partnerId", partnerId);
     }
     return partnerQuery.fetchOne();
-  }
-
-  @Override
-  public String getNicFromRegistrationCode(Partner partner) {
-    String regCode = partner.getRegistrationCode();
-    String nic = "";
-
-    if (regCode != null) {
-      regCode = regCode.replaceAll(" ", "");
-
-      if (regCode.length() == 14) {
-        nic = regCode.substring(9, 14);
-      }
-    }
-
-    return nic;
-  }
-
-  @Override
-  public String getSirenFromRegistrationCode(Partner partner) {
-    String regCode = partner.getRegistrationCode();
-    String siren = "";
-
-    if (regCode != null) {
-      regCode = regCode.replaceAll(" ", "");
-
-      if (regCode.length() == 14) {
-        siren = regCode.substring(0, 9);
-      }
-    }
-
-    return siren;
-  }
-
-  @Override
-  public boolean isRegistrationCodeValid(Partner partner) {
-    List<PartnerAddress> addresses = partner.getPartnerAddressList();
-    String registrationCode = partner.getRegistrationCode();
-    if (partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
-        || Strings.isNullOrEmpty(registrationCode)
-        || CollectionUtils.isEmpty(addresses)
-        || addresses.stream()
-                .filter(
-                    address ->
-                        address.getAddress() != null
-                            && address.getAddress().getAddressL7Country() != null
-                            && "FR"
-                                .equals(address.getAddress().getAddressL7Country().getAlpha2Code()))
-                .collect(Collectors.toList())
-                .size()
-            == 0) {
-      return true;
-    }
-
-    return computeRegistrationCodeValidity(registrationCode);
-  }
-
-  protected boolean computeRegistrationCodeValidity(String registrationCode) {
-    int sum = 0;
-    boolean isOddNumber = true;
-    registrationCode = registrationCode.replace(" ", "");
-    if (registrationCode.length() != 14) {
-      return false;
-    }
-    int i = registrationCode.length() - 1;
-    while (i > -1) {
-      int number = Character.getNumericValue(registrationCode.charAt(i));
-      if (number < 0) {
-        i--;
-        continue;
-      }
-      if (!isOddNumber) {
-        number *= 2;
-      }
-      if (number < 10) {
-        sum += number;
-      } else {
-        number -= 10;
-        sum += number + 1;
-      }
-      i--;
-      isOddNumber = !isOddNumber;
-    }
-    return sum % 10 == 0;
   }
 }

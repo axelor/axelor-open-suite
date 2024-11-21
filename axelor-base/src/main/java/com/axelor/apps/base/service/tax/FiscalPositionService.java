@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,10 +21,14 @@ package com.axelor.apps.base.service.tax;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
+import java.util.Set;
 
 public interface FiscalPositionService {
 
-  public Tax getTax(FiscalPosition fiscalPosition, Tax tax);
+  public Set<Tax> getTaxSet(FiscalPosition fiscalPosition, Set<Tax> taxSet);
 
-  public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Tax tax);
+  public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Set<Tax> taxSet);
+
+  public TaxEquiv getTaxEquivFromTaxLines(FiscalPosition fiscalPosition, Set<TaxLine> taxLineSet);
 }

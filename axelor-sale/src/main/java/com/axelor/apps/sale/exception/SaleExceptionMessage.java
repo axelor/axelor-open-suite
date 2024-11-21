@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -113,4 +113,7 @@ public final class SaleExceptionMessage {
 
   public static final String SALE_ORDER_NO_NEW_VERSION = /*$$(*/
       "Actual version overwritten." /*)*/;
+
+  public static final String SALE_ORDER_CANNOT_DELETE_COMFIRMED_ORDER = /*$$(*/
+      "It is not possible to delete a confirmed order." /*)*/;
 }

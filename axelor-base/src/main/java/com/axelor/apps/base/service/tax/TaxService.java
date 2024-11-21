@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,11 +24,16 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
+import com.google.common.collect.Sets;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class TaxService {
@@ -67,7 +72,7 @@ public class TaxService {
 
         for (TaxLine taxLine : tax.getTaxLineList()) {
 
-          if (DateTool.isBetween(taxLine.getStartDate(), taxLine.getEndDate(), localDate)) {
+          if (LocalDateHelper.isBetween(taxLine.getStartDate(), taxLine.getEndDate(), localDate)) {
             return taxLine;
           }
         }
@@ -85,25 +90,106 @@ public class TaxService {
         tax.getName());
   }
 
-  public BigDecimal convertUnitPrice(
-      Boolean priceIsAti, TaxLine taxLine, BigDecimal price, int scale) {
+  /**
+   * Fonction permettant de récupérer le taux de TVA d'une TVA
+   *
+   * @param taxSet Une TVA
+   * @return Le taux de TVA
+   * @throws AxelorException
+   */
+  public Set<TaxLine> getTaxLineSet(Set<Tax> taxSet, LocalDate localDate) throws AxelorException {
 
-    if (taxLine == null) {
+    if (CollectionUtils.isEmpty(taxSet)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(BaseExceptionMessage.TAX_2));
+    }
+    Set<TaxLine> taxLineSet = Sets.newHashSet();
+
+    for (Tax tax : taxSet) {
+      if (tax.getActiveTaxLine() != null) {
+        taxLineSet.add(tax.getActiveTaxLine());
+      } else if (CollectionUtils.isNotEmpty(tax.getTaxLineList()) && localDate != null) {
+        taxLineSet.add(
+            tax.getTaxLineList().stream()
+                .filter(
+                    taxLine ->
+                        LocalDateHelper.isBetween(
+                            taxLine.getStartDate(), taxLine.getEndDate(), localDate))
+                .findFirst()
+                .orElse(null));
+      }
+    }
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      return taxLineSet;
+    }
+    if (localDate == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(BaseExceptionMessage.TAX_DATE_MISSING),
+          taxSet.stream().map(Tax::getName).collect(Collectors.joining(",")));
+    }
+
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(BaseExceptionMessage.TAX_1),
+        taxSet.stream()
+            .map(Tax::getName)
+            .filter(Objects::nonNull)
+            .collect(Collectors.joining(",")));
+  }
+
+  public BigDecimal convertUnitPrice(
+      Boolean priceIsAti, Set<TaxLine> taxLineSet, BigDecimal price, int scale) {
+
+    if (CollectionUtils.isEmpty(taxLineSet)) {
       return price;
     }
 
     if (priceIsAti) {
       price =
           price.divide(
-              taxLine.getValue().divide(new BigDecimal(100)).add(BigDecimal.ONE),
-              scale,
-              RoundingMode.HALF_UP);
+              getTotalTaxRate(taxLineSet).add(BigDecimal.ONE), scale, RoundingMode.HALF_UP);
     } else {
       price =
           price
-              .add(price.multiply(taxLine.getValue().divide(new BigDecimal(100))))
+              .add(price.multiply(getTotalTaxRate(taxLineSet)))
               .setScale(scale, RoundingMode.HALF_UP);
     }
     return price;
+  }
+
+  public BigDecimal getTotalTaxRate(Set<TaxLine> taxLineSet) {
+    return getTotalTaxRateInPercentage(taxLineSet).divide(BigDecimal.valueOf(100));
+  }
+
+  public BigDecimal getTotalTaxRateInPercentage(Set<TaxLine> taxLineSet) {
+    if (CollectionUtils.isEmpty(taxLineSet)) {
+      return BigDecimal.ZERO;
+    }
+    return taxLineSet.stream()
+        .filter(Objects::nonNull)
+        .map(TaxLine::getValue)
+        .filter(Objects::nonNull)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  public String computeTaxCode(Set<TaxLine> taxLineSet) {
+    if (CollectionUtils.isEmpty(taxLineSet)) {
+      return "";
+    }
+    return taxLineSet.stream()
+        .filter(Objects::nonNull)
+        .map(TaxLine::getTax)
+        .filter(Objects::nonNull)
+        .map(Tax::getCode)
+        .sorted()
+        .collect(Collectors.joining("/"));
+  }
+
+  public Set<Tax> getTaxSet(Set<TaxLine> taxLineSet) {
+    if (CollectionUtils.isEmpty(taxLineSet)) {
+      return Sets.newHashSet();
+    }
+    return taxLineSet.stream().map(TaxLine::getTax).collect(Collectors.toSet());
   }
 }

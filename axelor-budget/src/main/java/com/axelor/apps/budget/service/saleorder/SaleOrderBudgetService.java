@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,4 +36,6 @@ public interface SaleOrderBudgetService {
 
   @CallMethod
   String getBudgetExceedAlert(SaleOrder saleOrder);
+
+  void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException;
 }

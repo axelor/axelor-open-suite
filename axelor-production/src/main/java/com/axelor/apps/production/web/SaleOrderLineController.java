@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,9 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.service.BillOfMaterialService;
+import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -52,6 +54,33 @@ public class SaleOrderLineController {
                 .param("show-confirm", "false")
                 .param("popup-save", "true")
                 .context("_showRecord", copyBillOfMaterial.getId())
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createCustomizedProdProcess(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+      ProdProcess copyProdProcess =
+          Beans.get(ProdProcessService.class).createCustomizedProdProcess(saleOrderLine);
+
+      if (copyProdProcess != null) {
+        response.setValue("prodProcess", copyProdProcess);
+        response.setView(
+            ActionView.define(I18n.get("Personalized production processes"))
+                .model(ProdProcess.class.getName())
+                .add("form", "prod-process-form")
+                .add("grid", "prod-process-grid")
+                .param("popup", "true")
+                .param("forceEdit", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("popup-save", "true")
+                .context("_showRecord", copyProdProcess.getId())
                 .map());
       }
     } catch (Exception e) {

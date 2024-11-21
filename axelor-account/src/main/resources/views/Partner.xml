@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="incl-invoice-payment-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-specific-tax-note">
@@ -40,11 +40,12 @@
     <panel name="bankDetailsPanel" title="Bank details" colSpan="12">
       <field name="bankDetailsList" colSpan="12" showTitle="false">
         <viewer depends="isDefault,fullName,bankCode,sortCode,accountNbr,bbanKey"><![CDATA[
-                    <dl>
-                      <dd ng-if="!record.isDefault" ng-style="!record.active && {'color':'orange'}"> {{record.fullName}} </dd>
-                      <dd ng-if="record.isDefault" ng-style="!record.active && {'color':'orange'}"> <b>{{record.fullName}}</b> </dd>
-                    </dl>
-                ]]></viewer>
+              <>
+                  <dl>
+                        {<Box as="dd" {...(!active && {color:"warning"})} {...(isDefault && {fontWeight:"bold"})}>{fullName}</Box>}
+                  </dl>
+              </>
+        ]]></viewer>
         <editor onNew="action-set-default-partner" x-show-on-new="false">
           <field name="ownerName"/>
           <field name="iban"/>
@@ -62,13 +63,20 @@
     </panel>
   </form>
 
-  <form name="incl-customer-balance-partner-form" title="Partner"
-    model="com.axelor.apps.base.db.Partner">
-    <panel name="accountingBalancePanel" title="Accounting balance" colSpan="12">
-      <field name="accountingSituationList" colSpan="12" widget="MasterDetail"
-        title="Customer balance" hideIf="isContact" grid-view="accounting-situation-partner-grid"
-        form-view="accounting-situation-partner-form"
-        onSelect="action-account-accounting-situation-method-update-customer-account"/>
+  <form name="incl-accounting-situation-partner-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner"
+    onLoad="action-partner-account-method-accounting-situation-label">
+    <panel name="accountingSituationPanel" if-module="axelor-account"
+      onTabSelect="action-partner-account-method-accounting-situation-label"
+      if="__config__.app.isApp('account')" title="Accounting situation"
+      hideIf="isContact || isProspect">
+      <field name="isCompensation" colSpan="12" widget="boolean-switch"
+        showIf="isCustomer &amp;&amp; isSupplier"/>
+      <label name="errorOnCompaniesLabel" css="label-danger" colSpan="12" hidden="true"/>
+      <panel-related name="accountingSituationListPanel"
+        field="accountingSituationList" title="Accounting situation" hideIf="isContact" colSpan="12"
+        grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form"
+        onChange="action-partner-account-method-accounting-situation-label"/>
     </panel>
   </form>
 
@@ -117,9 +125,34 @@
     model="com.axelor.apps.base.db.Partner" extension="true">
     <extend target="//panel[@name='rightPanel']">
       <insert position="inside">
-        <field name="isSubrogation" widget="InlineCheckbox"
+        <field name="isThirdPartyPayer" widget="InlineCheckbox"
           showIf="(isCustomer || isSupplier) &amp;&amp; !isFactor"
           if="__config__.app.getApp('base')?.activatePartnerRelations"/>
+      </insert>
+    </extend>
+
+    <extend target="panel-tabs[@name='mainPanelTab']/panel[@name='eventPanel']">
+      <insert position="before">
+        <panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact || isProspect"
+          if-module="axelor-account" colSpan="12" if="__config__.app.isApp('invoice')">
+          <panel-include view="incl-invoice-payment-partner-form"/>
+          <panel-related name="invoicingPaymentSituationListPanel"
+            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+            field="invoicingPaymentSituationList" title="Invoicing/payment situations" colSpan="12"/>
+          <panel name="invoiceCommentsPanel" title="Comment to display on invoice"
+            colSpan="12">
+            <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
+          </panel>
+          <panel name="descriptionToDisplayOnProformaPanel"
+            title="Comment to display on proforma" colSpan="12">
+            <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
+          </panel>
+        </panel>
+
+        <panel-include if-module="axelor-account"
+          view="incl-accounting-situation-partner-form" if="__config__.app.isApp('account')"/>
+        <panel-include if-module="axelor-account" view="incl-blocking-partner-form"
+          if="__config__.app.isApp('account')"/>
       </insert>
     </extend>
   </form>
@@ -144,14 +177,6 @@
   <!-- </field> -->
   <!-- </form> -->
 
-  <form name="incl-sepa-direct-debit-partner-form" title="Partner"
-    model="com.axelor.apps.base.db.Partner">
-    <panel name="sepaDirectDebitPanel" title="SEPA Direct Debit" colSpan="12">
-      <field name="activeUmr" colSpan="3" canNew="false" domain="self.partner.id = :id"/>
-      <panel-related name="umrListPanel" field="umrList" title="History" colSpan="12"/>
-    </panel>
-  </form>
-
   <action-view name="action-partner-view-partner-invoice" title="Invoices"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
@@ -175,6 +200,11 @@
   <action-method name="action-partner-method-get-default-specific-tax-note">
     <call class="com.axelor.apps.account.web.PartnerController"
       method="getDefaultSpecificTaxNote"/>
+  </action-method>
+
+  <action-method name="action-partner-account-method-accounting-situation-label">
+    <call class="com.axelor.apps.account.web.PartnerController"
+      method="computeAccountingSituationLabel"/>
   </action-method>
 
   <action-attrs name="action-partner-account-attrs-hide-supplier-account">

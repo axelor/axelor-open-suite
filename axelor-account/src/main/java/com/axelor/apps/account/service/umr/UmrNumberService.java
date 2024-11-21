@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,15 @@
  */
 package com.axelor.apps.account.service.umr;
 
-import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.account.db.InvoicingPaymentSituation;
 import com.axelor.meta.CallMethod;
+import java.time.LocalDate;
 
 public interface UmrNumberService {
 
   @CallMethod
-  public String getUmrNumber(Partner partner);
+  public String getUmrNumber(InvoicingPaymentSituation invoicingPaymentSituation, LocalDate date);
 
-  public String getUmrNumber(Partner partner, boolean isRecovery);
+  public String getUmrNumber(
+      InvoicingPaymentSituation invoicingPaymentSituation, boolean isRecovery, LocalDate date);
 }

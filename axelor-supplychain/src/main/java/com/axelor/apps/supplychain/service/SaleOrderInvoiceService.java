@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface SaleOrderInvoiceService {
+
+  String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
 
   /**
    * Generate an invoice from a sale order. call {@link
@@ -226,16 +228,6 @@ public interface SaleOrderInvoiceService {
   BigDecimal computeAmountToInvoicePercent(
       SaleOrder saleOrder, BigDecimal amount, boolean isPercent) throws AxelorException;
 
-  BigDecimal computeAmountToInvoice(
-      BigDecimal amountToInvoice,
-      int operationSelect,
-      SaleOrder saleOrder,
-      Map<Long, BigDecimal> qtyToInvoiceMap,
-      Map<Long, BigDecimal> priceMap,
-      Map<Long, BigDecimal> qtyMap,
-      boolean isPercent)
-      throws AxelorException;
-
   /**
    * Set the updated sale order amount invoiced without checking.
    *
@@ -292,7 +284,14 @@ public interface SaleOrderInvoiceService {
    * @throws AxelorException
    */
   void displayErrorMessageIfSaleOrderIsInvoiceable(
-      SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException;
+      SaleOrder saleOrder,
+      BigDecimal amountToInvoice,
+      int operationSelect,
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      Map<Long, BigDecimal> priceMap,
+      Map<Long, BigDecimal> qtyMap,
+      boolean isPercent)
+      throws AxelorException;
 
   /**
    * Display error message if all invoices have been generated for the sale order
@@ -303,4 +302,15 @@ public interface SaleOrderInvoiceService {
   void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException;
 
   void updateInvoicingState(SaleOrder saleOrder);
+
+  List<Invoice> generateInvoicesFromSaleOrderLines(
+      Map<SaleOrder, Map<Long, BigDecimal>> priceMaps,
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyToInvoiceMaps,
+      Map<SaleOrder, Map<Long, BigDecimal>> qtyMaps,
+      Map<SaleOrder, BigDecimal> amountToInvoiceMap,
+      boolean isPercent,
+      int operationSelect)
+      throws AxelorException;
+
+  List<Map<String, Object>> getSaleOrderLineList(SaleOrder saleOrder);
 }

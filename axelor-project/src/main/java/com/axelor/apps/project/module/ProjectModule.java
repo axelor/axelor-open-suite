@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,8 @@ import com.axelor.apps.project.service.MetaJsonFieldProjectService;
 import com.axelor.apps.project.service.MetaJsonFieldProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectActivityDashboardService;
 import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
+import com.axelor.apps.project.service.ProjectCreateTaskService;
+import com.axelor.apps.project.service.ProjectCreateTaskServiceImpl;
 import com.axelor.apps.project.service.ProjectDashboardService;
 import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
 import com.axelor.apps.project.service.ProjectMenuService;
@@ -52,6 +54,8 @@ import com.axelor.apps.project.service.TimerProjectTaskService;
 import com.axelor.apps.project.service.TimerProjectTaskServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.service.app.AppProjectServiceImpl;
+import com.axelor.apps.project.service.config.ProjectConfigService;
+import com.axelor.apps.project.service.config.ProjectConfigServiceImpl;
 import com.axelor.team.db.repo.TeamRepository;
 
 public class ProjectModule extends AxelorModule {
@@ -75,5 +79,7 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectDashboardService.class).to(ProjectDashboardServiceImpl.class);
     bind(ProjectActivityDashboardService.class).to(ProjectActivityDashboardServiceImpl.class);
     bind(WikiRepository.class).to(WikiProjectRepository.class);
+    bind(ProjectCreateTaskService.class).to(ProjectCreateTaskServiceImpl.class);
+    bind(ProjectConfigService.class).to(ProjectConfigServiceImpl.class);
   }
 }

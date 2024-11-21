@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,12 +20,13 @@ package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
-import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -67,27 +68,26 @@ public class InventoryController {
     try {
       Inventory inventory = request.getContext().asType(Inventory.class);
       inventory = Beans.get(InventoryRepository.class).find(inventory.getId());
-      BirtTemplate inventoryBirtTemplate =
-          Beans.get(StockConfigService.class)
-              .getStockConfig(inventory.getCompany())
-              .getInventoryBirtTemplate();
-      if (ObjectUtils.isEmpty(inventoryBirtTemplate)) {
+
+      PrintingTemplate inventoryPrintTemplate = inventory.getInventoryPrintTemplate();
+      if (ObjectUtils.isEmpty(inventoryPrintTemplate)) {
+        inventoryPrintTemplate =
+            Beans.get(StockConfigService.class)
+                .getStockConfig(inventory.getCompany())
+                .getInventoryPrintTemplate();
+      }
+      if (ObjectUtils.isEmpty(inventoryPrintTemplate)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+            I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
       }
 
       String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
       String outputName = Beans.get(InventoryService.class).computeExportFileName(inventory);
       String fileLink =
-          Beans.get(BirtTemplateService.class)
-              .generateBirtTemplateLink(
-                  inventoryBirtTemplate,
-                  inventory,
-                  null,
-                  outputName,
-                  inventoryBirtTemplate.getAttach(),
-                  inventory.getFormatSelect());
+          Beans.get(PrintingTemplatePrintService.class)
+              .getPrintLink(
+                  inventoryPrintTemplate, new PrintingGenFactoryContext(inventory), outputName);
 
       logger.debug("Printing " + name);
 
@@ -127,7 +127,8 @@ public class InventoryController {
 
       Path filePath = Beans.get(InventoryService.class).importFile(inventory);
       response.setInfo(
-          String.format(I18n.get(StockExceptionMessage.INVENTORY_8), filePath.toString()));
+          String.format(
+              I18n.get(StockExceptionMessage.INVENTORY_8), filePath.getFileName().toString()));
 
       response.setReload(true);
     } catch (Exception e) {

@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-	http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+	http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="consumption-line-grid" title="Consumption Lines"
     model="com.axelor.apps.contract.db.ConsumptionLine" orderBy="lineDate">
@@ -11,7 +11,7 @@
     <field name="lineDate"/>
     <field name="reference"/>
     <field name="product"/>
-    <field name="qty"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit"/>
     <field name="isInvoiced" hidden="true"/>
     <field name="isError" hidden="true"/>
@@ -24,16 +24,22 @@
   <form name="consumption-line-form" title="Consumption Line"
     model="com.axelor.apps.contract.db.ConsumptionLine"
     onNew="action-consumption-line-attrs-scale-and-precision"
-    onLoad="action-consumption-line-attrs-scale-and-precision">
+    onLoad="action-consumption-line-attrs-init-qty-init-product">
     <panel readonlyIf="isInvoiced" name="mainPanel">
       <field name="product" required="true" canEdit="false"
-        onChange="action-consumption-line-method-change-product" domain="self.dtype = 'Product'"/>
+        onChange="action-consumption-line-group-product-change" domain="self.dtype = 'Product'"/>
       <field name="lineDate" required="true"/>
       <field name="reference"/>
       <field name="unit" canEdit="false"/>
-      <field name="qty"/>
+      <field name="qty" x-scale="$nbDecimalDigitForQty"
+        onChange="action-contract-method-check-consumption-line-quantity"/>
       <field name="isInvoiced" readonly="true" colSpan="3"/>
       <field name="isError" readonly="true" colSpan="3"/>
+    </panel>
+
+    <panel name="hiddenFields" hidden="true">
+      <field name="$initQty" type="decimal" min="0" hidden="true"/>
+      <field name="$initProduct" type="many-to-one" hidden="true"/>
     </panel>
   </form>
 
@@ -45,5 +51,20 @@
     <attribute name="scale" for="qty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
+
+  <action-method name="action-contract-method-check-consumption-line-quantity">
+    <call class="com.axelor.apps.contract.web.ConsumptionLineController"
+      method="checkConsumptionLineQuantity"/>
+  </action-method>
+
+  <action-attrs name="action-consumption-line-attrs-init-qty-init-product">
+    <attribute for="$initQty" name="value" expr="eval: qty"/>
+    <attribute for="$initProduct" name="value" expr="eval: product"/>
+  </action-attrs>
+
+  <action-group name="action-consumption-line-group-product-change">
+    <action name="action-consumption-line-method-change-product"/>
+    <action name="action-contract-method-check-consumption-line-quantity"/>
+  </action-group>
 
 </object-views>

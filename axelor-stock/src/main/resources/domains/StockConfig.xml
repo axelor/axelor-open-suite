@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -44,6 +44,11 @@
     <many-to-one name="realStockMoveMessageTemplate" title="Message template"
       ref="com.axelor.message.db.Template"/>
 
+    <boolean name="supplierArrivalCancellationAutomaticMail"
+      title="Send email on supplier arrival cancellation" default="false"/>
+    <many-to-one name="supplierArrivalCancellationMessageTemplate"
+      title="Message template" ref="com.axelor.message.db.Template"/>
+
     <boolean name="logisticalFormAutomaticEmail"
       title="Send email when saving logistical form" default="false"/>
     <many-to-one name="logisticalFormMessageTemplate" title="Message template"
@@ -78,15 +83,15 @@
     <boolean name="pickingOrderPrintingDetailed" title="Picking order printing detailed"
       default="true"/>
     <boolean name="isDisplaySaleValueInPrinting"
-      title="Display sale value in location financial data printing" default="true"/>
+      title="Display sale value in location financial data printing" default="false"/>
     <boolean name="isDisplayAccountingValueInPrinting"
-      title="Display accounting value in location financial data printing" default="true"/>
+      title="Display accounting value in location financial data printing" default="false"/>
     <boolean name="isDisplayAgPriceInPrinting" title="Display average price in printing"
       default="true"/>
     <boolean name="isDisplayPurchaseValueInPrinting"
-      title="Display purchase value in location financial data printing" default="true"/>
+      title="Display purchase value in location financial data printing" default="false"/>
     <integer name="stockValuationTypeSelect" title="Stock location value on form view"
-      selection="stock.stock.location.value.type"/>
+      selection="stock.stock.location.value.type" default="5"/>
     <integer name="inventoryValuationTypeSelect" title="Inventory valuation type"
       selection="stock.stock.location.value.type"/>
 
@@ -104,14 +109,14 @@
 
     <integer name="percentToleranceForWapChange" title="Tolerance on WAP changes (%)"
       min="0" nullable="true"/>
-    <many-to-one name="pickingStockMoveBirtTemplate" title="Picking stock move template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="conformityCertificateBirtTemplate"
-      title="Conformity certificate template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="inventoryBirtTemplate" title="Inventory template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="stockLocationBirtTemplate" title="Stock location template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="pickingStockMovePrintTemplate"
+      title="Picking stock move template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="conformityCertificatePrintTemplate"
+      title="Conformity certificate template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="inventoryPrintTemplate" title="Inventory template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="stockLocationPrintTemplate" title="Stock location template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
     <extra-code><![CDATA[
 		public static final int VALUATION_TYPE_WAP_VALUE = 1;
@@ -174,10 +179,10 @@
       <field name="displayPriceOnPrinting" on="UPDATE"/>
       <field name="displayOrderReferenceAndOrderDate" on="UPDATE"/>
       <field name="percentToleranceForWapChange" on="UPDATE"/>
-      <field name="pickingStockMoveBirtTemplate" on="UPDATE"/>
-      <field name="conformityCertificateBirtTemplate" on="UPDATE"/>
-      <field name="inventoryBirtTemplate" on="UPDATE"/>
-      <field name="stockLocationBirtTemplate" on="UPDATE"/>
+      <field name="pickingStockMovePrintTemplate" on="UPDATE"/>
+      <field name="conformityCertificatePrintTemplate" on="UPDATE"/>
+      <field name="inventoryPrintTemplate" on="UPDATE"/>
+      <field name="stockLocationPrintTemplate" on="UPDATE"/>
     </track>
   </entity>
 

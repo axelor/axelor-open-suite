@@ -21,5 +21,6 @@ axelor {
 
 dependencies {
 	api project(":modules:axelor-base")
+	implementation libs.swagger_jaxrs
 
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="PrintingTemplateLine">
+
+    <integer name="typeSelect" title="Type" selection="base.printing.template.type.select"
+      default="0"/>
+    <integer name="sequence" title="Sequence" default="0"/>
+    <many-to-one ref="com.axelor.meta.db.MetaFile" name="metaFile" title="File"/>
+    <many-to-one ref="com.axelor.apps.base.db.BirtTemplate" name="birtTemplate"
+      title="Birt template"/>
+    <many-to-one ref="com.axelor.apps.base.db.PrintingTemplate" name="printTemplate"
+      title="Printing template"/>
+
+    <extra-code><![CDATA[
+		public static final Integer PRINTING_TEMPLATE_LINE_TYPE_SELECT_FILE = 1;
+		public static final Integer PRINTING_TEMPLATE_LINE_TYPE_SELECT_BIRT = 2;
+
+	]]></extra-code>
+
+  </entity>
+
+
+</domain-models>

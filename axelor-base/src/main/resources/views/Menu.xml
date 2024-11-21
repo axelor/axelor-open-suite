@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <menuitem id="abs-menu-mail" name="menu-mail"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnterpriseCommunication()"
@@ -125,7 +125,9 @@
     model="com.axelor.apps.base.db.UnitConversion">
     <view type="grid" name="unit-conversion-grid"/>
     <view type="form" name="unit-conversion-form"/>
+    <domain>self.entitySelect = 0</domain>
     <context name="_duplicateFinderFields" expr="startUnit;endUnit"/>
+    <context name="_entitySelect" expr="eval: 0"/>
   </action-view>
 
   <menuitem name="admin-root-general-year" parent="admin-root-general" title="Years"
@@ -167,6 +169,15 @@
     <view type="form" name="barcode-type-config-form"/>
   </action-view>
 
+  <menuitem name="admin-root-general-localization" parent="admin-root-general"
+    title="Localizations" action="admin.root.general.localization" order="850"/>
+
+  <action-view name="admin.root.general.localization" title="Localizations"
+    model="com.axelor.apps.base.db.Localization">
+    <view type="grid" name="localization-grid"/>
+    <view type="form" name="localization-form"/>
+  </action-view>
+
   <menuitem name="admin-root-general-language" parent="admin-root-general"
     title="Languages" action="admin.root.general.language" order="900"/>
 
@@ -186,6 +197,16 @@
     <view type="form" name="import-export-interface-form"/>
   </action-view>
 
+  <menuitem name="admin-root-general-import-export-translation"
+    title="Import/Export translations" parent="admin-root-general"
+    action="admin.root.general.import.export.translation" order="1100"/>
+
+  <action-view name="admin.root.general.import.export.translation"
+    title="Import/Export translations" model="com.axelor.apps.base.db.ImportExportTranslation">
+    <view type="grid" name="import-export-translation-grid"/>
+    <view type="form" name="import-export-translation-form"/>
+  </action-view>
+
   <menuitem name="referential-root" title="Referential" order="300" parent="admin-root"
     if="__config__.app.isApp('base')"/>
   <menuitem name="referential-root-partners" parent="referential-root" title="Partners"
@@ -199,7 +220,6 @@
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="partner-filters"/>
     <domain>self.isContact != true</domain>
-    <context name="json-enhance" expr="eval:true"/>
     <context name="_domain" expr="self.isContact != true"/>
     <context name="_showIsEmployee" expr="eval: true"/>
   </action-view>
@@ -282,6 +302,35 @@
       PartnerPriceList partnerPriceList on priceList member of partnerPriceList.priceListSet where
       partnerPriceList.isExclusive IS TRUE )</domain>
   </action-view>
+
+  <menuitem title="Sites" name="referential-sites" parent="referential-root"
+    action="referential.sites" order="310"/>
+
+  <action-view name="referential.sites" title="Sites"
+    model="com.axelor.apps.base.db.Site">
+    <view type="grid" name="site-grid"/>
+    <view type="form" name="site-form"/>
+  </action-view>
+
+  <menuitem title="Address templates" name="referential-conf-address-template"
+    parent="referential-conf" action="referential.conf.address.templates" order="650"/>
+
+  <action-view name="referential.conf.address.templates" title="Address templates"
+    model="com.axelor.apps.base.db.AddressTemplate">
+    <view type="grid" name="address-template-grid"/>
+    <view type="form" name="address-template-form"/>
+  </action-view>
+
+  <menuitem title="Registration number templates"
+    name="referential-conf-registration-number-template" parent="referential-conf"
+    action="referential.conf.registration.number.templates" order="675"/>
+
+  <action-view name="referential.conf.registration.number.templates"
+    title="Registration number templates" model="com.axelor.apps.base.db.RegistrationNumberTemplate">
+    <view type="grid" name="registration-number-template-grid"/>
+    <view type="form" name="registration-number-template-form"/>
+  </action-view>
+
 
   <menuitem name="referential-conf" title="Configuration" order="600"
     parent="referential-root" icon="fa-cog"/>
@@ -773,7 +822,7 @@
   </action-view>
 
   <menuitem name="admin-root-calendars" parent="admin-root"
-    if="__config__.app.isApp('base')" title="Calendars" order="1300"/>
+    if="__config__.app.isApp('base')" title="Calendars" order="1200"/>
 
   <menuitem name="admin-root-calendars-icalendars" title="iCalendars"
     parent="admin-root-calendars" action="admin.root.calendars.icalendars" order="100"/>
@@ -899,13 +948,31 @@
   <menuitem name="print-conf" parent="admin-root" if="__config__.app.isApp('base')"
     title="Printing" order="900"/>
 
-  <menuitem name="print-conf-print-templates" parent="print-conf" title="Print templates"
-    action="action.print.template.view.all" order="100"/>
+  <menuitem name="print-conf-advanced-print-templates" parent="print-conf"
+    title="Advanced print templates" action="action.advanced.print.template.view.all" order="100"/>
 
-  <action-view name="action.print.template.view.all" title="Print templates"
-    model="com.axelor.apps.base.db.PrintTemplate">
+  <action-view name="action.advanced.print.template.view.all"
+    title="Advanced print templates" model="com.axelor.apps.base.db.PrintTemplate">
     <view type="grid" name="print-template-grid"/>
     <view type="form" name="print-template-form"/>
+  </action-view>
+
+  <menuitem name="print-conf-printing-templates" parent="print-conf"
+    title="Printing templates" action="print.conf.printing.templates" order="200"/>
+
+  <action-view name="print.conf.printing.templates" title="Printing templates"
+    model="com.axelor.apps.base.db.PrintingTemplate">
+    <view type="grid" name="printing-template-grid"/>
+    <view type="form" name="printing-template-form"/>
+  </action-view>
+
+  <menuitem name="print-conf-printing-template-wizard" parent="print-conf"
+    title="Printing wizard" action="print.conf.printing.template.wizard" order="300"/>
+
+  <action-view name="print.conf.printing.template.wizard" title="Birt printing wizard"
+    model="com.axelor.apps.base.db.PrintingTemplateWizard">
+    <view type="grid" name="printing-template-wizard-grid"/>
+    <view type="form" name="printing-template-wizard-form"/>
   </action-view>
 
   <!-- File source connector -->
@@ -973,16 +1040,8 @@
   <menuitem id="admin-menu-admin-app-management" name="menu-admin-app-management"
     parent="admin-root" order="100" title="Apps management" action="menu.admin.app.management"/>
 
-  <menuitem name="admin-root-api-documentation" parent="admin-root"
-    if="__config__.app.isApp('base') &amp;&amp; __config__.swagger" title="API Documentation"
-    order="1100" action="admin.root.api.documentation"/>
-
-  <action-view name="admin.root.api.documentation" title="API Documentation">
-    <view type="html" name="swagger/"/>
-  </action-view>
-
   <menuitem name="admin-root-maintenance" parent="admin-root"
-    if="__config__.app.isApp('base')" title="Technical maintenance" order="1200"/>
+    if="__config__.app.isApp('base')" title="Technical maintenance" order="1100"/>
 
   <menuitem name="admin-root-data-backup" parent="admin-root-maintenance" title="Backup"
     order="1300"/>
@@ -1049,6 +1108,44 @@
     model="com.axelor.apps.base.db.BirtTemplate">
     <view type="grid" name="birt-template-grid"/>
     <view type="form" name="birt-template-form"/>
+  </action-view>
+
+  <!-- Pricing menus -->
+
+  <menuitem title="Pricings" name="root-base-pricing" parent="admin-root" order="1300"
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
+
+  <menuitem title="Pricings" name="base-pricing" parent="root-base-pricing" order="10"
+    action="root.base.pricing"/>
+
+  <action-view name="root.base.pricing" title="Pricings"
+    model="com.axelor.apps.base.db.Pricing">
+    <view type="grid" name="pricing-grid"/>
+    <view type="form" name="pricing-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect" expr="eval: PricingRepository.PRICING_TYPE_SELECT_DEFAULT"/>
+  </action-view>
+
+  <menuitem title="Pricing classification rules" name="base-pricing-classification-rule"
+    parent="root-base-pricing" order="20" action="action-base-pricing-classification-rule"/>
+
+  <action-view name="action-base-pricing-classification-rule"
+    title="Pricing classification rules" model="com.axelor.apps.base.db.PricingRule">
+    <view type="grid" name="pricing-rule-grid"/>
+    <view type="form" name="pricing-rule-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect" expr="eval: 1"/>
+  </action-view>
+
+  <menuitem title="Pricing result rules" name="base-pricing-result-rule"
+    parent="root-base-pricing" order="30" action="action-base-pricing-result-rule"/>
+
+  <action-view name="action-base-pricing-result-rule" title="Pricing result rules"
+    model="com.axelor.apps.base.db.PricingRule">
+    <view type="grid" name="pricing-rule-grid"/>
+    <view type="form" name="pricing-rule-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
 
 </object-views>

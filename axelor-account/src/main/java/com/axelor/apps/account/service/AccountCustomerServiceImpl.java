@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,8 @@ import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -88,7 +90,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     Query query =
         JPA.em()
             .createNativeQuery(
-                "SELECT SUM(CASE WHEN ml.debit > 0 THEN ml.amount_remaining ELSE ml.amount_remaining * -1 END) "
+                "SELECT SUM(ml.amount_remaining) "
                     + "FROM public.account_move_line AS ml  "
                     + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
@@ -33,10 +34,12 @@ import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchAutoMoveLettering;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -47,6 +50,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.App;
 import com.google.inject.Singleton;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -370,5 +374,28 @@ public class AccountingBatchController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void setGeneratedStatusDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    if (!Arrays.asList(
+            AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS,
+            AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF)
+        .contains(accountingBatch.getActionSelect())) {
+      return;
+    }
+
+    Journal journal =
+        accountingBatch.getActionSelect() == AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF
+            ? accountingBatch.getMiscOpeJournal()
+            : null;
+
+    response.setAttr(
+        "generatedMoveStatusSelect",
+        "selection-in",
+        Beans.get(MoveToolService.class)
+            .getMoveStatusSelection(accountingBatch.getCompany(), journal));
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,11 +32,13 @@ import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -52,6 +54,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   protected MassEntryMoveCreateService massEntryMoveCreateService;
   protected MoveLineTaxService moveLineTaxService;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public MoveLineMassEntryRecordServiceImpl(
@@ -61,7 +64,8 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       MassEntryMoveCreateService massEntryMoveCreateService,
       MoveLineTaxService moveLineTaxService,
-      AnalyticMoveLineRepository analyticMoveLineRepository) {
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      MoveLineToolService moveLineToolService) {
     this.moveLineMassEntryService = moveLineMassEntryService;
     this.moveLineRecordService = moveLineRecordService;
     this.taxAccountToolService = taxAccountToolService;
@@ -69,6 +73,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
     this.massEntryMoveCreateService = massEntryMoveCreateService;
     this.moveLineTaxService = moveLineTaxService;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -160,7 +165,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
       moveLine.setPartnerFullName(null);
       moveLine.setMovePartnerBankDetails(null);
       moveLine.setVatSystemSelect(null);
-      moveLine.setTaxLine(null);
+      moveLine.setTaxLineSet(Sets.newHashSet());
       moveLine.setAnalyticDistributionTemplate(null);
       moveLine.setCurrencyCode(null);
     } else {
@@ -171,7 +176,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
       moveLine.setPartnerFullName(newPartner.getFullName());
       moveLine.setMovePartnerBankDetails(newMoveLine.getMovePartnerBankDetails());
       moveLine.setVatSystemSelect(newMoveLine.getVatSystemSelect());
-      moveLine.setTaxLine(newMoveLine.getTaxLine());
+      moveLine.setTaxLineSet(newMoveLine.getTaxLineSet());
       moveLine.setAnalyticDistributionTemplate(newMoveLine.getAnalyticDistributionTemplate());
       moveLine.setCurrencyCode(newMoveLine.getCurrencyCode());
     }
@@ -223,7 +228,8 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
     } else {
       moveLine.setAccount(null);
     }
-    moveLine.setTaxLine(moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount));
+    moveLine.setTaxLineSet(
+        moveLoadDefaultConfigService.getTaxLineSet(move, moveLine, accountingAccount));
   }
 
   @Override
@@ -274,7 +280,8 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   @Override
   public MoveLineMassEntry setInputAction(MoveLineMassEntry moveLine, Move move) {
     if (moveLine.getInputAction() == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_MOVE) {
-      moveLine = moveLineMassEntryService.createMoveLineMassEntry();
+      moveLine = moveLineMassEntryService.createMoveLineMassEntry(move.getCompany());
+      moveLineToolService.setDecimals(moveLine, move);
       this.setNextTemporaryMoveNumber(moveLine, move);
 
       moveLine.setCounter(1);

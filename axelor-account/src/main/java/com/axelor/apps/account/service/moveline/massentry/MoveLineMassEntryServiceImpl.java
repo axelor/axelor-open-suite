@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -49,6 +50,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   protected CurrencyService currencyService;
   protected InvoiceTermService invoiceTermService;
   protected AppAccountService appAccountService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public MoveLineMassEntryServiceImpl(
@@ -57,13 +59,15 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       MassEntryToolService massEntryToolService,
       CurrencyService currencyService,
       InvoiceTermService invoiceTermService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      AppBaseService appBaseService) {
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryToolService = massEntryToolService;
     this.currencyService = currencyService;
     this.invoiceTermService = invoiceTermService;
     this.appAccountService = appAccountService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -135,26 +139,28 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
     }
   }
 
-  protected void setDefaultValues(MoveLineMassEntry moveLine) {
+  protected void setDefaultValues(MoveLineMassEntry moveLine, Company company) {
+    LocalDate todayDate = appBaseService.getTodayDate(company);
+
     moveLine.setTemporaryMoveNumber(1);
     moveLine.setCounter(1);
-    moveLine.setDate(LocalDate.now());
-    moveLine.setOriginDate(LocalDate.now());
+    moveLine.setDate(todayDate);
+    moveLine.setOriginDate(todayDate);
     moveLine.setCurrencyRate(BigDecimal.ONE);
     moveLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
     moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
 
     if (appAccountService.getAppAccount().getManageCutOffPeriod()) {
-      moveLine.setCutOffStartDate(LocalDate.now());
-      moveLine.setCutOffEndDate(LocalDate.now());
-      moveLine.setDeliveryDate(LocalDate.now());
+      moveLine.setCutOffStartDate(todayDate);
+      moveLine.setCutOffEndDate(todayDate);
+      moveLine.setDeliveryDate(todayDate);
     }
   }
 
   @Override
-  public MoveLineMassEntry createMoveLineMassEntry() {
+  public MoveLineMassEntry createMoveLineMassEntry(Company company) {
     MoveLineMassEntry newMoveLine = new MoveLineMassEntry();
-    setDefaultValues(newMoveLine);
+    setDefaultValues(newMoveLine, company);
 
     return newMoveLine;
   }

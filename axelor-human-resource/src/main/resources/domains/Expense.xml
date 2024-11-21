@@ -1,13 +1,14 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="Expense" cacheable="true">
 
     <string name="expenseSeq" title="Expense N°" readonly="true"/>
+    <integer name="typeSelect" title="Type" selection="hr.expense.type.select"/>
 
     <datetime name="sentDateTime" title="Sent Date" readonly="true"/>
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
@@ -87,6 +88,9 @@
 
             public static final int COMPANY_CB_PAYMENT_NO = 1;
             public static final int COMPANY_CB_PAYMENT_COMPANYS_CREDIT_CARD = 2;
+
+            public static final int TYPE_EXPENSE = 1;
+	  		public static final int TYPE_EXPENSE_DECLARATION = 2;
 	  ]]>
     </extra-code>
   </entity>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -131,7 +131,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
     }
 
     for (int i = 0; i < saleOrderLineList.size(); i++) {
-      saleOrderLineList.get(i).setSequence(i);
+      saleOrderLineList.get(i).setSequence(i + 1);
     }
 
     return saleOrderLineList;

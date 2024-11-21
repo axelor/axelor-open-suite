@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,6 +35,7 @@ import com.axelor.apps.gdpr.service.GdprAnonymizeService;
 import com.axelor.apps.gdpr.service.GdprErasureLogService;
 import com.axelor.apps.gdpr.service.app.AppGdprService;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
@@ -56,8 +57,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
-import wslite.json.JSONException;
 
 public class GdprResponseErasureServiceImpl implements GdprResponseErasureService {
 
@@ -468,7 +467,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       gdprResponse.setSendingDateT(appBaseService.getTodayDateTime().toLocalDateTime());
       gdprResponse.setResponseMessage(message);
 
-    } catch (JSONException | IOException | ClassNotFoundException e) {
+    } catch (IOException | ClassNotFoundException e) {
       throw new AxelorException(
           e,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

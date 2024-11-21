@@ -1,12 +1,14 @@
-"importId";"name";"selectedByMgtOnly";"exportCode";"unitSelect"
-1;"Leave to justify";"false";"AB";1
-2;"Accident at work";"false";"AT";1
-3;"Maternity";"false";"MATER";1
-4;"Paid leave and seniority";"false";"CPA";1
-5;"Exceptional paid leave";"false";"CPE";1
-6;"Public holiday";"false";"JF";1
-7;"Sickness";"false";"MALA";1
-8;"Working time reduction";"false";"RTTs";1
-9;"Sick child";"false";"EM";1
-10;"Unpaid leave";"false";"CSS";1
-11;"Parental leave";"false";"PAREN";1
+"importId";"name";"selectedByMgtOnly";"exportCode";"unitSelect";"leaveReasonTypeSelect";"isToBeResetYearly";"allowNegativeValue";"isDaysAddedProrated";"defaultDayNumberGain";"recoveryLeaveReason_importId";"allowInjection";"isAutoIncrement"
+1;"Leave to justify";"false";"AB";1;2;"false";"false";"false";"0";"";"false";"false"
+2;"Accident at work";"true";"AT";1;2;"false";"false";"false";"0";"";"false";"false"
+3;"Maternity";"true";"MATER";1;2;"false";"false";"false";"0";"";"false";"false"
+4;"Paid leave and seniority";"false";"CPA";1;1;"false";"false";"false";"0";"";"false";"false"
+5;"Exceptional paid leave";"true";"CPE";1;2;"false";"false";"false";"0";"";"false";"false"
+6;"Public holiday";"true";"JF";1;2;"false";"false";"false";"0";"";"false";"false"
+7;"Sickness";"false";"MALA";1;2;"false";"false";"false";"0";"";"false";"false"
+8;"Working time reduction";"false";"RTTs";2;1;"true";"false";"true";"12";"";"true";"true"
+9;"Sick child";"false";"EM";1;3;"true";"false";"false";"5";"";"false";"true"
+10;"Unpaid leave";"false";"CSS";1;2;"false";"false";"false";"0";"";"false";"false"
+11;"Parental leave";"true";"PAREN";1;2;"false";"false";"false";"0";;"false";"false"
+12;"Leave N-1";"false";"CN";1;1;"true";"false";"false";0;;"false";"true"
+13;"Leave N and seniority";"false";CNA;1;1;"true";"true";"true";"2.5";12;"false";"true"

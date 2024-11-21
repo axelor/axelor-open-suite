@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -17,6 +17,9 @@
     <one-to-many name="moveTemplateLineList" ref="MoveTemplateLine"
       mappedBy="moveTemplate" title="Template Move Lines"/>
     <date name="endOfValidityDate" title="End of validity date"/>
+    <integer name="functionalOriginSelect" title="Functional origin"
+      selection="iaccount.move.functional.origin.select"/>
+
     <string name="fullName" namecolumn="true" search="code,name">
 	    <![CDATA[
     		return code+" - " + name;

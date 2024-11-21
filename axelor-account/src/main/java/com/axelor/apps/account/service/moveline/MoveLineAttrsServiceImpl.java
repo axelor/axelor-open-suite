@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,10 +26,10 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.JournalService;
-import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
@@ -47,7 +47,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   protected AccountConfigService accountConfigService;
   protected MoveLineControlService moveLineControlService;
   protected AnalyticLineService analyticLineService;
-  protected PeriodServiceAccount periodServiceAccount;
+  protected PeriodCheckService periodCheckService;
   protected JournalService journalService;
   protected MoveLineTaxService moveLineTaxService;
   protected MoveLineService moveLineService;
@@ -57,14 +57,14 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       AccountConfigService accountConfigService,
       MoveLineControlService moveLineControlService,
       AnalyticLineService analyticLineService,
-      PeriodServiceAccount periodServiceAccount,
+      PeriodCheckService periodCheckService,
       JournalService journalService,
       MoveLineTaxService moveLineTaxService,
       MoveLineService moveLineService) {
     this.accountConfigService = accountConfigService;
     this.moveLineControlService = moveLineControlService;
     this.analyticLineService = analyticLineService;
-    this.periodServiceAccount = periodServiceAccount;
+    this.periodCheckService = periodCheckService;
     this.journalService = journalService;
     this.moveLineTaxService = moveLineTaxService;
     this.moveLineService = moveLineService;
@@ -176,7 +176,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     this.addAttr(
         "$validatePeriod",
         "value",
-        !periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), AuthUtils.getUser()),
+        !periodCheckService.isAuthorizedToAccountOnPeriod(move.getPeriod(), AuthUtils.getUser()),
         attrsMap);
   }
 
@@ -272,11 +272,12 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   }
 
   @Override
-  public void addSubrogationPartnerHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+  public void addThirdPartyPayerPartnerHidden(
+      Move move, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr(
-        "invoiceTermList.subrogationPartner",
+        "invoiceTermList.thirdPartyPayerPartner",
         "hidden",
-        !journalService.isSubrogationOk(move.getJournal()),
+        !journalService.isThirdPartyPayerOk(move.getJournal()),
         attrsMap);
   }
 
@@ -284,7 +285,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   public void addTaxLineRequired(
       Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr(
-        "taxLine",
+        "taxLineSet",
         "required",
         moveLineTaxService.isMoveLineTaxAccountRequired(moveLine, move.getFunctionalOriginSelect())
             || (moveLine.getAccount() != null

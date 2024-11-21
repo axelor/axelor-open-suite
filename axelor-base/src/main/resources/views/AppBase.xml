@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="app-base-config-form" title="App base" model="com.axelor.studio.db.AppBase"
     width="large" canDelete="false" canNew="false" canCopy="false"
@@ -14,13 +14,15 @@
       <button name="remindTimesheetsBtn" title="Timesheets Reminder"
         onClick="action-method-general-remind-timesheet"/>
     </toolbar>
-    <panel name="testingPanel" title="Testing"
-      if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
-      <field name="todayDateT"/>
+    <panel name="testingPanel" title="Testing" itemSpan="4">
+      <field name="todayDateT"
+        if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'"/>
+      <field name="isActivateInstanceInfoShortcut" widget="boolean-switch"/>
+      <field name="isActivateCompanyChangeShortcut" widget="boolean-switch"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="configurationPanel" title="Configuration" colSpan="12">
-        <field name="defaultPartnerLanguage"/>
+        <field name="defaultPartnerLocalization"/>
         <field name="enableTradingNamesManagement" widget="boolean-switch"/>
         <field name="activateSendingEmail" widget="boolean-switch" colSpan="4"/>
         <field name="emailAccountByUser" widget="boolean-switch" colSpan="4"/>
@@ -49,7 +51,6 @@
             requiredIf="activateBarCodeGeneration &amp;&amp; !editProductBarcodeType"/>
         </panel>
         <field name="generatePartnerSequence" widget="boolean-switch"/>
-        <field name="checkRegistrationCode" widget="boolean-switch"/>
         <field name="manageProductVariants" widget="boolean-switch"/>
         <field name="activatePartnerRelations" widget="boolean-switch"
           if="['supplychain','account'].any{module -> __config__.app.isApp(module)}"/>
@@ -71,8 +72,11 @@
           onChange="action-base-validate-multi-company-boolean"/>
         <field name="storeStreets" widget="boolean-switch"/>
         <field name="isSharedAddress" widget="boolean-switch"/>
+        <field name="enableTaxNumbers" widget="boolean-switch"/>
+        <spacer/>
         <panel-related field="companySpecificProductFieldsSet"
-          domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product' AND self.name IN ('sellable','purchasable','procurementMethodSelect','salePrice','saleCurrency','purchasePrice','purchaseCurrency','costPrice','costTypeSelect','managPriceCoef','avgPrice','autoUpdateSalePrice','lastPurchasePrice','defaultBillOfMaterial','controlOnReceipt','customsCodeNomenclature')"
+          domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product'
+           AND self.name IN ('sellable','purchasable','procurementMethodSelect','salePrice','saleCurrency','purchasePrice','purchaseCurrency','costPrice','costTypeSelect','managPriceCoef','avgPrice','autoUpdateSalePrice','lastPurchasePrice','defaultBillOfMaterial','controlOnReceipt','customsCodeNomenclature', 'trackingNumberConfiguration')"
           canNew="false" canEdit="false" grid-view="meta-field-details-grid"
           form-view="meta-field-form"/>
         <panel itemSpan="12" colSpan="6">
@@ -83,9 +87,6 @@
         </panel>
         <field name="emailLinkList" colSpan="12"
           onChange="action-base-method-model-email-link-onsave"/>
-        <panel name="stylePanel" title="Style" colSpan="12">
-          <field name="customAppStyle" colSpan="12" widget="CodeEditor" x-code-syntax="css"/>
-        </panel>
       </panel>
       <panel name="interfacesPanel" title="Interfaces" colSpan="12">
         <panel name="mapPanel" title="Mapping" colSpan="12">
@@ -157,18 +158,25 @@
             colspan="6"/>
         </panel>
         <panel name="printingTemplatesPanel" colSpan="12">
-          <field name="clientSituationBirtTemplate"/>
-          <field name="companyPhoneBookBirtTemplate"/>
-          <field name="contactPhoneBookBirtTemplate"/>
-          <field name="productCatalogPGQLBirtTemplate"/>
+          <field name="clientSituationPrintTemplate"/>
+          <field name="companyPhoneBookPrintTemplate"/>
+          <field name="contactPhoneBookPrintTemplate"/>
+          <field name="productCatalogPGQLPrintTemplate"/>
         </panel>
-        <panel-related name="birtTemplateConfigLineListPanel" colSpan="12"
-          field="birtTemplateConfigLineList" grid-view="birt-template-config-line-grid"
-          form-view="birt-template-config-line-form"/>
       </panel>
       <panel name="signaturePanel" title="Signature">
         <field name="pfxCertificate" canNew="true" canEdit="true"
           form-view="pfx-certificate-form"/>
+      </panel>
+      <panel name="pricingScalePanel" colSpan="12" title="Pricings">
+        <field name="enablePricingScale" widget="boolean-switch"/>
+        <field name="isPricingComputingOrder" title="Pricing computing order"
+          widget="boolean-radio" x-true-text="Previous" x-false-text="Next"
+          showIf="enablePricingScale"/>
+      </panel>
+      <panel name="siteManagementPanel" title="Site management" colSpan="12"
+        if="__config__.app.isApp('stock') || __config__.app.isApp('project')">
+        <!-- This panel will be extended in other modules, add module to if condition -->
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">

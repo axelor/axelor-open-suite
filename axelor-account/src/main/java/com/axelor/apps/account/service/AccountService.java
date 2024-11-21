@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,7 +35,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -177,6 +177,10 @@ public class AccountService {
                   .getAccountConfig(account.getCompany())
                   .getAnalyticDistributionTypeSelect()
               != AccountConfigRepository.DISTRIBUTION_TYPE_FREE
+          && accountConfigService
+                  .getAccountConfig(account.getCompany())
+                  .getAnalyticDistributionTypeSelect()
+              != AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT
           && (isRequiredOnInvoiceLine || isRequiredOnMoveLine)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -247,7 +251,7 @@ public class AccountService {
           && account.getAccountType() != null
           && !AccountTypeRepository.TYPE_VIEW.equals(
               account.getAccountType().getTechnicalTypeSelect())) {
-        account.setCode(StringTool.fillStringRight(code, '0', accountCodeNbrCharSelect));
+        account.setCode(StringHelper.fillStringRight(code, '0', accountCodeNbrCharSelect));
       }
     }
     return account;
@@ -271,7 +275,7 @@ public class AccountService {
           && account.getAccountType() != null
           && !AccountTypeRepository.TYPE_VIEW.equals(
               account.getAccountType().getTechnicalTypeSelect())) {
-        account.setCode(StringTool.fillStringRight(code, '0', accountCodeNbrCharSelect));
+        account.setCode(StringHelper.fillStringRight(code, '0', accountCodeNbrCharSelect));
       }
     }
     return account;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,13 @@
  */
 package com.axelor.apps.budget.service.saleorder;
 
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
-import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
@@ -32,13 +33,16 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -112,70 +116,38 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
     return budgetStr;
   }
 
-  @Transactional
   @Override
-  public List<BudgetDistribution> addBudgetDistribution(SaleOrderLine saleOrderLine) {
-    List<BudgetDistribution> budgetDistributionList = new ArrayList<>();
-    if (appBudgetService.getAppBudget() != null
-        && !appBudgetService.getAppBudget().getManageMultiBudget()
-        && saleOrderLine.getBudget() != null) {
-      BudgetDistribution budgetDistribution = new BudgetDistribution();
-      budgetDistribution.setBudget(saleOrderLine.getBudget());
-      LocalDate date = null;
-      if (saleOrderLine.getSaleOrder() != null) {
-        date =
-            saleOrderLine.getSaleOrder().getOrderDate() != null
-                ? saleOrderLine.getSaleOrder().getOrderDate()
-                : saleOrderLine.getSaleOrder().getCreationDate();
+  public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    Company company = null;
+    LocalDate date = null;
+    Set<GlobalBudget> globalBudgetSet = new HashSet<>();
+    if (saleOrder != null) {
+      if (saleOrder.getCompany() != null) {
+        company = saleOrder.getCompany();
       }
+      date =
+          saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
 
-      budgetDistribution.setBudgetAmountAvailable(
-          budgetToolsService.getAvailableAmountOnBudget(saleOrderLine.getBudget(), date));
-      budgetDistribution.setAmount(saleOrderLine.getExTaxTotal());
-      budgetDistributionList.add(budgetDistribution);
-      saleOrderLine.setBudgetDistributionList(budgetDistributionList);
-    }
-    return budgetDistributionList;
-  }
-
-  @Override
-  public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-    String query =
-        "self.totalAmountExpected > 0 AND self.statusSelect = 2 AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect = 2";
-    if (saleOrderLine != null) {
-      if (saleOrderLine.getLine() != null) {
-        query = query.concat(String.format(" AND self.id = %d", saleOrderLine.getLine().getId()));
-      } else if (saleOrderLine.getSection() != null) {
-        query =
-            query.concat(
-                String.format(" AND self.budgetLevel.id = %d", saleOrderLine.getSection().getId()));
-      } else if (saleOrderLine.getGroupBudget() != null) {
-        query =
-            query.concat(
-                String.format(
-                    " AND self.budgetLevel.parentBudgetLevel.id = %d",
-                    saleOrderLine.getGroupBudget().getId()));
-      }
-      LocalDate date = null;
-      if (saleOrder != null) {
-        date =
-            saleOrder.getOrderDate() != null
-                ? saleOrder.getOrderDate()
-                : saleOrder.getCreationDate();
-      }
-      if (date != null) {
-        query =
-            query.concat(
-                String.format(" AND self.fromDate <= '%s' AND self.toDate >= '%s'", date, date));
+      if (saleOrder.getProject() != null
+          && !ObjectUtils.isEmpty(saleOrder.getProject().getGlobalBudgetSet())) {
+        globalBudgetSet = saleOrder.getProject().getGlobalBudgetSet();
       }
     }
-    return query;
+
+    return budgetDistributionService.getBudgetDomain(
+        company,
+        date,
+        AccountTypeRepository.TYPE_INCOME,
+        saleOrderLine.getAccount(),
+        globalBudgetSet);
   }
 
   @Override
   public void checkAmountForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
     if (saleOrderLine.getBudgetDistributionList() != null
         && !saleOrderLine.getBudgetDistributionList().isEmpty()) {
+      BigDecimal totalAmount = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : saleOrderLine.getBudgetDistributionList()) {
         if (budgetDistribution.getAmount().compareTo(saleOrderLine.getCompanyExTaxTotal()) > 0) {
           throw new AxelorException(
@@ -183,126 +155,16 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_PO),
               budgetDistribution.getBudget().getCode(),
               saleOrderLine.getProductName());
+        } else {
+          totalAmount = totalAmount.add(budgetDistribution.getAmount());
         }
       }
-    }
-  }
-
-  @Override
-  public void computeBudgetDistributionSumAmount(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-    List<BudgetDistribution> budgetDistributionList = saleOrderLine.getBudgetDistributionList();
-    BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
-    LocalDate computeDate =
-        saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
-
-    if (budgetDistributionList != null && !budgetDistributionList.isEmpty()) {
-
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        budgetDistributionSumAmount =
-            budgetDistributionSumAmount.add(budgetDistribution.getAmount());
-        budgetDistributionService.computeBudgetDistributionSumAmount(
-            budgetDistribution, computeDate);
+      if (totalAmount.compareTo(saleOrderLine.getCompanyExTaxTotal()) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_PO),
+            saleOrderLine.getProductName());
       }
     }
-    saleOrderLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
-  }
-
-  @Override
-  public String getGroupBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-
-    if (saleOrderLine == null || saleOrder == null || saleOrder.getCompany() == null) {
-      return "self.id = 0";
-    }
-
-    String query =
-        String.format(
-            "self.globalBudget.budgetTypeSelect = %d AND self.parentBudgetLevel IS NULL AND self.statusSelect = '%s'",
-            GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE,
-            BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
-
-    if (saleOrderLine.getBudget() != null
-        && saleOrderLine.getBudget().getBudgetLevel() != null
-        && saleOrderLine.getBudget().getBudgetLevel().getParentBudgetLevel() != null) {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.id = %d",
-                  saleOrderLine.getBudget().getBudgetLevel().getParentBudgetLevel().getId()));
-    } else {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.globalBudget.company.id = %d", saleOrder.getCompany().getId()));
-    }
-    return query;
-  }
-
-  @Override
-  public String getSectionBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-
-    if (saleOrderLine == null || saleOrder == null || saleOrder.getCompany() == null) {
-      return "self.id = 0";
-    }
-
-    String query =
-        String.format(
-            "self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.parentBudgetLevel.globalBudget.budgetTypeSelect = %d AND self.statusSelect = '%s'",
-            GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE,
-            BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
-    if (saleOrderLine.getBudget() != null && saleOrderLine.getBudget().getBudgetLevel() != null) {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.id = %d", saleOrderLine.getBudget().getBudgetLevel().getId()));
-    } else if (saleOrderLine.getGroupBudget() != null) {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.parentBudgetLevel.id = %d", saleOrderLine.getGroupBudget().getId()));
-    } else {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.parentBudgetLevel.globalBudget.company.id = %d",
-                  saleOrder.getCompany().getId()));
-    }
-    return query;
-  }
-
-  @Override
-  public String getLineBudgetDomain(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean isBudget) {
-
-    if (saleOrderLine == null || saleOrder == null || saleOrder.getCompany() == null) {
-      return "self.id = 0";
-    }
-
-    String query =
-        String.format(
-            "self.budgetLevel.parentBudgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect = %d AND self.budgetLevel.parentBudgetLevel.globalBudget.statusSelect = %d",
-            GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE,
-            GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID);
-    if (saleOrderLine.getBudget() != null && !isBudget) {
-      query = query.concat(String.format(" AND self.id = %d", saleOrderLine.getBudget().getId()));
-    } else if (saleOrderLine.getLine() != null && isBudget) {
-      query = query.concat(String.format(" AND self.id = %d", saleOrderLine.getLine().getId()));
-    } else if (saleOrderLine.getSection() != null) {
-      query =
-          query.concat(
-              String.format(" AND self.budgetLevel.id = %d", saleOrderLine.getSection().getId()));
-    } else if (saleOrderLine.getGroupBudget() != null) {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.budgetLevel.parentBudgetLevel.id = %d",
-                  saleOrderLine.getGroupBudget().getId()));
-    } else {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.budgetLevel.parentBudgetLevel.globalBudget.company.id = %d",
-                  saleOrder.getCompany().getId()));
-    }
-    return query;
   }
 }

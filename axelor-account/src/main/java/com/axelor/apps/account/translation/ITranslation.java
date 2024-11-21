@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,4 +35,7 @@ public interface ITranslation {
   public static final String FIXED_ASSET_SPLIT_AMOUNT = /*$$(*/ "fixedAsset.amount" /*)*/;
 
   public static final String FISCAL_YEAR_CODE = /*$$(*/ "fiscalYear.code" /*)*/;
+  public static final String FIXED_ASSET_IMPORT_BTN_IMPORT = /*$$(*/
+      "Define origin as Imported/Transferred" /*)*/;
+  public static final String FIXED_ASSET_IMPORT_BTN_MANUAL = /*$$(*/ "Reset origin" /*)*/;
 }

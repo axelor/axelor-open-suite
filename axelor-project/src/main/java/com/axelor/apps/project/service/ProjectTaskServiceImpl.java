@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -115,7 +116,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     nextProjectTask.setFullName(projectTask.getFullName());
     nextProjectTask.setProject(projectTask.getProject());
     nextProjectTask.setProjectTaskCategory(projectTask.getProjectTaskCategory());
-    nextProjectTask.setProgressSelect(0);
+    nextProjectTask.setProgress(BigDecimal.ZERO);
 
     projectTask.getMembersUserSet().forEach(nextProjectTask::addMembersUserSetItem);
 
@@ -185,18 +186,8 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     newProjectTask.setTaskDeadline(date);
     newProjectTask.setNextProjectTask(null);
     // Module 'project' fields
-    newProjectTask.setProgressSelect(0);
+    newProjectTask.setProgress(BigDecimal.ZERO);
     newProjectTask.setTaskEndDate(date);
-  }
-
-  @Override
-  public TaskStatus getDefaultCompletedStatus(Project project) {
-    return project == null || ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
-        ? null
-        : project.getProjectTaskStatusSet().stream()
-            .filter(TaskStatus::getIsDefaultCompleted)
-            .findAny()
-            .orElse(null);
   }
 
   @Override

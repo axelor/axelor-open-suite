@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
+
+  <entity name="MobileDashboard">
+    <string name="name" title="Name"/>
+    <string name="appName" title="Application"
+      help="Parent application of the dashboard menu entry."
+      selection="mobilesettings.mobile.config.sequence.select"/>
+    <boolean name="isCustom" title="Custom menu entry"
+      help="Enable the user to create a new menu entry with custom title, icon and order."/>
+    <string name="menuTitle" title="Menu title" translatable="true"/>
+    <string name="iconName" title="Icon name"
+      help="Bootstrap icon name, see https://icons.getbootstrap.com/"/>
+    <integer name="menuOrder" title="Menu order" nullable="true"
+      help="Allows the user to define the position of the menu in the list. By default, the new menu entry is positioned at the end, but it can also be inserted between two existing menus. The order value for standard menus is its index in the list multiplied by 10. So to position a new menu between the first and second menu entries, you need to give it an order between 10 and 20."/>
+    <many-to-one name="appMobileSettings" title="App mobile settings"
+      ref="com.axelor.studio.db.AppMobileSettings"/>
+    <one-to-many name="mobileDashboardLineList" title="Mobile dashboard line list"
+      ref="com.axelor.apps.mobilesettings.db.MobileDashboardLine" mappedBy="mobileDashboard"/>
+    <many-to-many name="authorizedRoleSet" title="Authorized roles"
+      ref="com.axelor.auth.db.Role"/>
+  </entity>
+
+</domain-models>

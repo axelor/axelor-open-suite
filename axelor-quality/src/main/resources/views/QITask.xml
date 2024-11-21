@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="qi-task-grid" title="QI Tasks" model="com.axelor.apps.quality.db.QITask">
     <field name="qiDecision"/>
     <field name="qiAction"/>
+    <field name="responsiblePartner"/>
     <field name="advancement" widget="progress"/>
     <field name="qiProcess"/>
     <field name="totalCost"/>
@@ -16,9 +17,11 @@
       <panel name="calendarPanel" title="Calendar" colSpan="12">
         <field name="subject" showTitle="false" colSpan="12">
           <viewer depends="subject"><![CDATA[
-			  <h3>
-				  <span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.subject}}</span>
-			  </h3>
+			  <>
+				  <h3>
+					  <span>{subject}</span>
+				  </h3>
+			  </>
 		  ]]></viewer>
           <editor>
             <field name="subject" showTitle="true" colSpan="12"/>
@@ -37,6 +40,9 @@
         <field name="qiDecision" onChange="action-qi-task-group-qi-decision-on-change"
           domain="self.isProductDecision = true AND self.isPreventive = true"
           form-view="qi-decision-form" grid-view="qi-decision-grid"/>
+        <field name="responsible"/>
+        <field name="responsiblePartner" grid-view="partner-grid" form-view="partner-form"
+          onSelect="action-qi-task-attrs-set-responsible-partner-domain"/>
         <field name="qiAction" onSelect="action-qi-task-attrs-set-qi-action-domain"
           form-view="qi-action-form" grid-view="qi-action-grid"/>
         <field name="qiProcess" onSelect="action-qi-task-attrs-set-qi-process-domain"
@@ -108,5 +114,20 @@
     model="com.axelor.apps.quality.db.QIResolutionDecision">
     <field name="totalCost" expr="eval: fixedAmount + directCost"/>
   </action-record>
+
+  <action-attrs name="action-qi-task-attrs-set-responsible-partner-domain">
+    <attribute name="domain" for="responsiblePartner"
+      expr="eval: &quot; self.isEmployee = true &quot;" if="responsible == 1"/>
+    <attribute name="domain" for="responsiblePartner"
+      expr="eval: &quot; self.isCustomer = true &quot;" if="responsible == 2"/>
+    <attribute name="domain" for="responsiblePartner"
+      expr="eval: &quot; self.isSupplier = true &quot;" if="responsible == 3"/>
+    <attribute name="domain" for="responsiblePartner"
+      expr="eval: &quot; self.isContact = true AND EXISTS (SELECT p FROM Partner p WHERE p.isCustomer = true AND self.id IN (SELECT id FROM p.contactPartnerSet)) &quot;"
+      if="responsible == 4"/>
+    <attribute name="domain" for="responsiblePartner"
+      expr="eval: &quot; self.isContact = true AND EXISTS (SELECT p FROM Partner p WHERE p.isSupplier = true AND self.id IN (SELECT id FROM p.contactPartnerSet)) &quot;"
+      if="responsible == 5"/>
+  </action-attrs>
 
 </object-views>

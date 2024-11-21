@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.AccountingBatch;
-import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -32,6 +31,8 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
+import com.axelor.apps.account.service.batch.BatchDoubtfulCustomer;
+import com.axelor.apps.account.service.batch.PreviewBatch;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -40,6 +41,8 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -61,10 +64,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,6 +75,7 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected int jpaLimit = 20;
+  private final int ALTERNATIVE_SCALE = 10;
 
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
@@ -84,6 +86,8 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected MoveLineControlService moveLineControlService;
   protected AccountingCutOffService cutOffService;
   protected MoveLineTaxService moveLineTaxService;
+  protected CurrencyScaleService currencyScaleService;
+  protected AccountingBatchRepository accountingBatchRepo;
 
   @Inject
   public MoveLineServiceImpl(
@@ -95,7 +99,9 @@ public class MoveLineServiceImpl implements MoveLineService {
       InvoiceTermService invoiceTermService,
       MoveLineControlService moveLineControlService,
       AccountingCutOffService cutOffService,
-      MoveLineTaxService moveLineTaxService) {
+      MoveLineTaxService moveLineTaxService,
+      CurrencyScaleService currencyScaleService,
+      AccountingBatchRepository accountingBatchRepo) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -105,6 +111,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineControlService = moveLineControlService;
     this.cutOffService = cutOffService;
     this.moveLineTaxService = moveLineTaxService;
+    this.currencyScaleService = currencyScaleService;
+    this.accountingBatchRepo = accountingBatchRepo;
   }
 
   @Override
@@ -360,10 +368,11 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     BigDecimal prorata = BigDecimal.ONE;
     if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
-      prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+      prorata = daysProrata.divide(daysTotal, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
     }
 
-    return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
+    return currencyScaleService.getScaledValue(
+        moveLine, prorata.multiply(moveLine.getCurrencyAmount()));
   }
 
   @Override
@@ -378,7 +387,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     Query<MoveLine> moveLineQuery =
         cutOffService.getMoveLines(company, journalSet, moveDate, accountingCutOffTypeSelect);
 
-    while (!(moveLineList = moveLineQuery.fetch(10, offset)).isEmpty()) {
+    while (!(moveLineList = moveLineQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
 
       for (MoveLine moveLine : moveLineList) {
         ++offset;
@@ -405,11 +414,12 @@ public class MoveLineServiceImpl implements MoveLineService {
       if (daysTotal.compareTo(BigDecimal.ZERO) != 0) {
         BigDecimal prorata = BigDecimal.ONE;
         if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
-          prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+          prorata = daysProrata.divide(daysTotal, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
         }
 
         moveLine.setCutOffProrataAmount(
-            prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP));
+            currencyScaleService.getScaledValue(
+                moveLine, prorata.multiply(moveLine.getCurrencyAmount())));
         moveLine.setAmountBeforeCutOffProrata(moveLine.getCredit().max(moveLine.getDebit()));
         moveLine.setDurationCutOffProrata(daysProrata.toString() + "/" + daysTotal.toString());
       }
@@ -419,75 +429,23 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  public LocalDate getFinancialDiscountDeadlineDate(MoveLine moveLine) {
-    if (moveLine == null) {
-      return null;
-    }
+  public Batch validatePreviewBatch(List<Long> recordIdList, Long batchId, int actionSelect)
+      throws AxelorException {
+    PreviewBatch batch;
 
-    int discountDelay =
-        Optional.of(moveLine)
-            .map(MoveLine::getFinancialDiscount)
-            .map(FinancialDiscount::getDiscountDelay)
-            .orElse(0);
-
-    LocalDate deadlineDate = moveLine.getDueDate().minusDays(discountDelay);
-
-    return deadlineDate.isBefore(moveLine.getDate()) ? moveLine.getDate() : deadlineDate;
-  }
-
-  @Override
-  public void computeFinancialDiscount(MoveLine moveLine) {
-    if (!appAccountService.getAppAccount().getManageFinancialDiscount()) {
-      return;
-    }
-
-    if (moveLine.getAccount() != null
-        && moveLine.getAccount().getUseForPartnerBalance()
-        && moveLine.getFinancialDiscount() != null) {
-      FinancialDiscount financialDiscount = moveLine.getFinancialDiscount();
-      BigDecimal amount = moveLine.getCredit().max(moveLine.getDebit());
-
-      moveLine.setFinancialDiscountRate(financialDiscount.getDiscountRate());
-      moveLine.setFinancialDiscountTotalAmount(
-          amount.multiply(
-              financialDiscount
-                  .getDiscountRate()
-                  .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
-      moveLine.setRemainingAmountAfterFinDiscount(
-          amount.subtract(moveLine.getFinancialDiscountTotalAmount()));
+    if (actionSelect == AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF) {
+      batch = Beans.get(BatchAccountingCutOff.class);
+    } else if (actionSelect == AccountingBatchRepository.ACTION_DOUBTFUL_CUSTOMER) {
+      batch = Beans.get(BatchDoubtfulCustomer.class);
     } else {
-      moveLine.setFinancialDiscount(null);
-      moveLine.setFinancialDiscountRate(BigDecimal.ZERO);
-      moveLine.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
-      moveLine.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, AccountExceptionMessage.BATCH_NO_PREVIEW);
     }
 
-    this.computeInvoiceTermsFinancialDiscount(moveLine);
-  }
+    batch.setRecordIdList(recordIdList);
+    batch.run(accountingBatchRepo.find(batchId));
 
-  @Override
-  public void computeInvoiceTermsFinancialDiscount(MoveLine moveLine) {
-    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      moveLine.getInvoiceTermList().stream()
-          .filter(it -> !it.getIsPaid() && it.getAmountRemaining().compareTo(it.getAmount()) == 0)
-          .forEach(
-              it ->
-                  invoiceTermService.computeFinancialDiscount(
-                      it,
-                      moveLine.getCredit().max(moveLine.getDebit()),
-                      moveLine.getFinancialDiscount(),
-                      moveLine.getFinancialDiscountTotalAmount(),
-                      moveLine.getRemainingAmountAfterFinDiscount()));
-    }
-  }
-
-  public Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) {
-    BatchAccountingCutOff batchAccountingCutOff = Beans.get(BatchAccountingCutOff.class);
-
-    batchAccountingCutOff.recordIdList = recordIdList;
-    batchAccountingCutOff.run(Beans.get(AccountingBatchRepository.class).find(batchId));
-
-    return batchAccountingCutOff.getBatch();
+    return batch.getBatch();
   }
 
   public void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner) {

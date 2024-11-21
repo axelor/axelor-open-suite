@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,28 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.interfaces.PdfViewer;
+import com.axelor.db.Model;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.meta.db.MetaFile;
+import java.util.List;
 
 public interface DMSService {
   DMSFile setDmsFile(MetaFile metaFile, PdfViewer pdfViewer);
 
   String getInlineUrl(DMSFile dmsFile);
+
+  void addLinkedDMSFiles(List<? extends Model> entityList, Model entityMerged);
+
+  void unzip(String zipFilePath, Model model) throws AxelorException;
+
+  DMSFile getDMSRoot(Model related);
+
+  DMSFile getDMSHome(Model related, DMSFile dmsRoot);
+
+  DMSFile getDMSFolder(Model model, String fileName, DMSFile dmsRoot);
+
+  DMSFile addDMSFileToParentFolder(
+      Model model, String fileName, DMSFile dmsFolder, MetaFile metaFile);
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="quality" package="com.axelor.apps.quality.db"/>
 
@@ -29,6 +29,8 @@
     <datetime name="efficiencyCheckedOn" title="Efficiency checked on"/>
     <one-to-many name="qiTasksList" title="Tasks"
       ref="com.axelor.apps.quality.db.QITask" mappedBy="qiAnalysis"/>
+    <one-to-many name="qiActionDistributionList" title="Distributions"
+      ref="com.axelor.apps.quality.db.QIActionDistribution" mappedBy="qiAnalysis"/>
 
     <extra-code><![CDATA[
 	    public static final int EFFICIENCY_NO_CHECKED = 1;

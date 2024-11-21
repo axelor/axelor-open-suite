@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,11 +24,15 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
+import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -41,10 +45,13 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.List;
+import java.util.Objects;
 
 public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceProjectServiceImpl {
 
   protected BudgetDistributionRepository budgetDistributionRepository;
+  protected BudgetToolsService budgetToolsService;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public PurchaseOrderInvoiceBudgetServiceImpl(
@@ -57,11 +64,15 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
       CommonInvoiceService commonInvoiceService,
       AddressService addressService,
       InvoiceLineOrderService invoiceLineOrderService,
+      CurrencyService currencyService,
+      CurrencyScaleService currencyScaleService,
       PriceListService priceListService,
       PurchaseOrderLineService purchaseOrderLineService,
       AppBusinessProjectService appBusinessProjectService,
       ProductCompanyService productCompanyService,
-      BudgetDistributionRepository budgetDistributionRepository) {
+      BudgetDistributionRepository budgetDistributionRepository,
+      BudgetToolsService budgetToolsService,
+      AppBudgetService appBudgetService) {
     super(
         invoiceServiceSupplychain,
         invoiceService,
@@ -72,11 +83,15 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
         commonInvoiceService,
         addressService,
         invoiceLineOrderService,
+        currencyService,
+        currencyScaleService,
         priceListService,
         purchaseOrderLineService,
         appBusinessProjectService,
         productCompanyService);
     this.budgetDistributionRepository = budgetDistributionRepository;
+    this.budgetToolsService = budgetToolsService;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -85,16 +100,23 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
       throws AxelorException {
     super.processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
 
-    invoiceLineList = copyBudgetDistribution(invoiceLineList, purchaseOrderLine);
+    if (appBudgetService.isApp("budget")) {
+      invoiceLineList = copyBudgetDistribution(invoiceLineList, purchaseOrderLine);
+    }
   }
 
   protected List<InvoiceLine> copyBudgetDistribution(
       List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine) {
-    if (!ObjectUtils.isEmpty(invoiceLineList)) {
-      for (InvoiceLine invoiceLine : invoiceLineList) {
+    if (ObjectUtils.isEmpty(invoiceLineList)) {
+      return invoiceLineList;
+    }
+
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      if (invoiceLine.getPurchaseOrderLine() != null
+          && Objects.equals(invoiceLine.getPurchaseOrderLine(), purchaseOrderLine)) {
         invoiceLine.setBudget(purchaseOrderLine.getBudget());
-        invoiceLine.setBudgetDistributionSumAmount(
-            purchaseOrderLine.getBudgetDistributionSumAmount());
+        invoiceLine.setBudgetRemainingAmountToAllocate(
+            purchaseOrderLine.getBudgetRemainingAmountToAllocate());
         if (!ObjectUtils.isEmpty(purchaseOrderLine.getBudgetDistributionList())) {
           for (BudgetDistribution budgetDistribution :
               purchaseOrderLine.getBudgetDistributionList()) {
@@ -105,6 +127,9 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
                 budgetDistribution.getBudgetAmountAvailable());
             invoiceLine.addBudgetDistributionListItem(copyBudgetDistribution);
           }
+          invoiceLine.setBudgetRemainingAmountToAllocate(
+              budgetToolsService.getBudgetRemainingAmountToAllocate(
+                  invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
         }
       }
     }

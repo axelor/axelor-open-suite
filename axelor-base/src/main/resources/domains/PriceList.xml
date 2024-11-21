@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -30,6 +30,8 @@
                     // TYPE SELECT
 					public static final int TYPE_SALE = 1;
 					public static final int TYPE_PURCHASE = 2;
+					public static final int TYPE_CUSTOMER_CONTRACT = 3;
+					public static final int TYPE_SUPPLIER_CONTRACT = 4;
 
 					// BASED ON SELECT
 					public static final int BASED_ON_COST_PRICE = 1;

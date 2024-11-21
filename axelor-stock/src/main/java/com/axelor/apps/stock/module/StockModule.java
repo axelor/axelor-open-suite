@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,8 @@ import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.base.service.ProductVariantServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.InventoryLineManagementRepository;
+import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
@@ -64,16 +66,22 @@ import com.axelor.apps.stock.service.StockCorrectionService;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryService;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
+import com.axelor.apps.stock.service.StockLocationAttrsService;
+import com.axelor.apps.stock.service.StockLocationAttrsServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
+import com.axelor.apps.stock.service.StockLocationPrintService;
+import com.axelor.apps.stock.service.StockLocationPrintServiceImpl;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveCheckWapService;
 import com.axelor.apps.stock.service.StockMoveCheckWapServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
+import com.axelor.apps.stock.service.StockMoveMergingService;
+import com.axelor.apps.stock.service.StockMoveMergingServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
@@ -82,8 +90,12 @@ import com.axelor.apps.stock.service.StockMoveUpdateService;
 import com.axelor.apps.stock.service.StockMoveUpdateServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
+import com.axelor.apps.stock.service.TrackingNumberConfigurationProfileService;
+import com.axelor.apps.stock.service.TrackingNumberConfigurationProfileServiceImpl;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationServiceImpl;
+import com.axelor.apps.stock.service.TrackingNumberService;
+import com.axelor.apps.stock.service.TrackingNumberServiceImpl;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.WeightedAveragePriceServiceImpl;
 import com.axelor.apps.stock.service.app.AppStockService;
@@ -133,6 +145,13 @@ public class StockModule extends AxelorModule {
     bind(StockHistoryLineRepository.class).to(StockHistoryLineManagementRepository.class);
     bind(StockMoveCheckWapService.class).to(StockMoveCheckWapServiceImpl.class);
     bind(StockLocationLineHistoryService.class).to(StockLocationLineHistoryServiceImpl.class);
+    bind(StockMoveMergingService.class).to(StockMoveMergingServiceImpl.class);
     bind(InventoryLineService.class).to(InventoryLineServiceImpl.class);
+    bind(StockLocationPrintService.class).to(StockLocationPrintServiceImpl.class);
+    bind(InventoryLineRepository.class).to(InventoryLineManagementRepository.class);
+    bind(TrackingNumberService.class).to(TrackingNumberServiceImpl.class);
+    bind(TrackingNumberConfigurationProfileService.class)
+        .to(TrackingNumberConfigurationProfileServiceImpl.class);
+    bind(StockLocationAttrsService.class).to(StockLocationAttrsServiceImpl.class);
   }
 }

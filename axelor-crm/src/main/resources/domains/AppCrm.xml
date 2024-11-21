@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -14,11 +14,12 @@
       ref="com.axelor.auth.db.Group"/>
     <boolean name="displayCustomerDescriptionInOpportunity"
       title="Display customer description in opportunity"/>
-    <boolean name="isManageRecurrent" title="Manage recurrent on opportunities"/>
+    <boolean name="isManageRecurrent" title="Manage recurring opportunities"/>
     <integer name="defaultRecurringDuration" title="Default recurring duration (in months)"/>
     <boolean name="isManageCatalogs" title="Manage catalogs" default="false"/>
     <boolean name="agenciesManagement" title="Agencies management"/>
-    <boolean name="crmProcessOnPartner" title="Manage status on prospect" default="false"/>
+    <boolean name="crmProcessOnPartner" title="Manage statuses on prospect partner"
+      default="false"/>
     <boolean name="isSearchFunctionalityEnabled" title="Enable search functionality"
       default="false"/>
     <boolean name="isCorporatePartnerEnabled" title="Enable corporate partner"

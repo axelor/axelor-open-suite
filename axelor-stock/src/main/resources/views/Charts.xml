@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <chart onInit="action.base.default.month.value"
     name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
@@ -31,7 +31,7 @@
       AND
       stockLocation.typeSelect = 2 AND
       self.toAddress = address AND
-      address.addressL7Country =
+      address.country =
       country
       AND
       self.realDate BETWEEN
@@ -75,7 +75,7 @@
       AND
       stockMove.toAddress
       = address AND
-      address.addressL7Country = country
+      address.country = country
       GROUP BY
       country.name
     </dataset>
@@ -116,7 +116,7 @@
       AND
       stockMove.toAddress
       = address AND
-      address.addressL7Country = country AND
+      address.country = country AND
       self.product.productFamily = productFamily
       GROUP BY
       country.name, productFamily.name
@@ -156,9 +156,9 @@
       _user.active_company
       JOIN
       stock_stock_location AS _location
-      ON _location.type_select = 2
+      ON _location.type_select = 1
       AND
-      self.to_stock_location = _location.id
+      self.from_stock_location = _location.id
       WHERE
       self.type_select = 2 AND
       self.status_select = 3 AND
@@ -203,8 +203,8 @@
       JOIN
       stock_stock_location AS
       _location
-      ON self.to_stock_location = _location.id
-      AND _location.type_select = 2
+      ON self.from_stock_location = _location.id
+      AND _location.type_select = 1
       LEFT JOIN
       meta_translation as translation
       ON

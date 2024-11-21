@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,11 +26,11 @@ import java.util.Set;
 
 public interface TargetListService {
 
-  public String getPartnerQuery(TargetList targetList);
+  String getPartnerQuery(TargetList targetList);
 
-  public String getLeadQuery(TargetList targetList);
+  String getLeadQuery(TargetList targetList);
 
-  public Set<Partner> getAllPartners(Set<TargetList> targetListSet) throws AxelorException;
+  Set<Partner> getAllPartners(Set<TargetList> targetListSet) throws AxelorException;
 
-  public Set<Lead> getAllLeads(Set<TargetList> targetListSet) throws AxelorException;
+  Set<Lead> getAllLeads(Set<TargetList> targetListSet) throws AxelorException;
 }

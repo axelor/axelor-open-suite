@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="stock-location-grid" title="Stock Locations"
     model="com.axelor.apps.stock.db.StockLocation">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-stock-location-method-open-print-wizard"/>
+        onClick="action-stock-location-validate-selected-locations,action-stock-location-method-open-print-wizard"/>
       <button name="treeBtn" title="Stock location tree"
         onClick="action-stock-location-view-tree"/>
     </toolbar>
@@ -60,7 +60,7 @@
   <form name="stock-location-form" title="Stock location"
     model="com.axelor.apps.stock.db.StockLocation"
     onNew="action-stock-location-record-new,action-stock-location-attrs-set-is-valued" width="large"
-    onLoad="action-stock-location-method-set-stock-location-value">
+    onLoad="action-stock-location-method-set-stock-location-value,action-stock-location-record-set-stock-location-value-btn">
     <toolbar>
       <button name="createInventoryBtn" title="Create inventory"
         onClick="action-location-view-create-inventory"/>
@@ -68,43 +68,63 @@
         onClick="save,action-stock-location-method-open-print-wizard"/>
     </toolbar>
     <panel name="mainPanel">
-      <field name="name"
-        onChange="action-stock-location-attrs-set-default-serial-number-with-name"/>
-      <field name="typeSelect" colSpan="3"
-        onChange="action-stock-location-attrs-set-isOutsourcingLocation,action-stock-set-partner-domain-attrs,action-stock-location-attrs-set-is-valued"/>
-      <field name="parentStockLocation" canEdit="false" form-view="stock-location-form"
-        grid-view="stock-location-grid"/>
-      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid"/>
-      <field name="partner" canEdit="false" showIf="typeSelect == 2"
-        domain="self.isContact = false AND :company member of self.companySet"
-        form-view="partner-form" grid-view="partner-grid"/>
-      <field name="address" canEdit="false" form-view="address-form" grid-view="address-grid"/>
-      <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
-      <field name="stockLocationValue" readonly="true" showIf="isValued">
-        <viewer>
-					<![CDATA[
-						<h4> {{$fmt('stockLocationValue')}} </h4>
-					]]>
-        </viewer>
-      </field>
-      <panel name="barcodePanel" title="Barcode" colSpan="12"
-        if="__config__.app.getApp('stock')?.getActivateStockLocationBarCodeGeneration()">
-        <field name="barCode" showTitle="false" widget="Image" colSpan="2"/>
-        <field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
-        <field name="barcodeTypeConfig" readonlyIf="barCode != null"
-          if="__config__.app.getApp('stock')?.getEditStockLocationBarcodeType()" colSpan="4"/>
+      <panel name="centralPanel" colSpan="8">
+        <field name="name"
+          onChange="action-stock-location-attrs-set-default-serial-number-with-name" colSpan="12"/>
+        <field name="site" if="__config__.app.getApp('base')?.enableSiteManagementForStock"
+          showIf="typeSelect != 3" onSelect="action-stock-location-attrs-set-site-domain"
+          colSpan="4" onChange="action-stock-location-group-site-on-change"/>
+        <field name="parentStockLocation" canEdit="false" form-view="stock-location-form"
+          grid-view="stock-location-grid" colSpan="4"
+          onSelect="action-stock-location-method-set-parent-stock-location-domain"
+          onChange="action-stock-location-record-auto-fill-site"/>
+        <field name="partner" canEdit="false" showIf="typeSelect == 2"
+          domain="self.isContact = false AND :company member of self.companySet"
+          form-view="partner-form" grid-view="partner-grid" colSpan="4"/>
+        <field name="address" canEdit="false" form-view="address-form"
+          grid-view="address-grid" colSpan="12"/>
+      </panel>
+      <panel name="sidePanel" colSpan="4">
+        <panel name="leftPanel" colSpan="6">
+          <field name="company" widget="SuggestBox" canEdit="false" colSpan="12"
+            onChange="action-stock-location-record-empty-site-parent-stock-location"
+            form-view="company-form" grid-view="company-grid"/>
+        </panel>
+        <panel name="rightPanel" colSpan="6">
+          <field name="typeSelect"
+            onChange="action-stock-location-group-type-select-on-change" colSpan="12"/>
+          <button name="$stockLocationValueBtn" title="Stock location value" colSpan="12"
+            hidden="true" showIf="isValued &amp;&amp; id &amp;&amp; $readonly()" onClick=""
+            widget="info-button"/>
+          <field name="stockLocationValue" hidden="true"/>
+        </panel>
+        <panel name="barcodePanel" colSpan="12"
+          if="__config__.app.getApp('stock')?.getActivateStockLocationBarCodeGeneration()">
+          <panel name="barcodeInfoPanel" colSpan="8" stacked="true">
+            <field name="serialNumber" readonlyIf="barCode != null" colSpan="6"/>
+            <field name="barcodeTypeConfig" readonlyIf="barCode != null"
+              if="__config__.app.getApp('stock')?.getEditStockLocationBarcodeType()" colSpan="6"/>
+          </panel>
+          <panel name="barcodeImagePanel" colSpan="4">
+            <field name="barCode" showTitle="false" widget="Image" colSpan="12"/>
+          </panel>
+        </panel>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="locationContentPanel" title="Location Content">
+        <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
         <panel-dashlet name="stockLocationLinesPanel" title="Location Lines"
           field="stockLocationLineList" canNew="false" colSpan="12"
           action="action-location-view-location-content" canSearch="true" height="600"/>
       </panel>
-      <panel-dashlet name="detailsStockLocationLinesPanel"
-        title="Stock location details" field="detailsStockLocationLineList"
-        action="action-location-details-view-location-content" canSearch="true" height="600"/>
+      <panel name="detailsLocationContentPanel" title="Stock location details">
+        <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
+        <panel-dashlet name="detailsStockLocationLinesPanel"
+          title="Stock location details" field="detailsStockLocationLineList"
+          action="action-location-details-view-location-content" canSearch="true" height="600"
+          colSpan="12"/>
+      </panel>
       <panel name="configPanel" title="Configuration" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">
         <field name="usableOnSaleOrder" colSpan="3"/>
@@ -134,10 +154,18 @@
     <panel name="mainPanel">
       <field name="$printingType" title="Printing Type"
         selection="stock.stock.location.printing.type"/>
-      <field name="$exportTypeSelect" title="Export Type"
-        selection="iadministration.export.type.select" selection-in="['pdf','xlsx']" colSpan="3"/>
+      <field name="$stockLocationPrintTemplate" title="Stock location template"
+        type="many-to-one" target="com.axelor.apps.base.db.PrintingTemplate" colSpan="3"
+        domain="self.metaModel.name = 'StockLocation'" grid-view="printing-template-grid"
+        form-view="printing-template-form"/>
+      <field name="$financialDataDateTime" title="Date and time" type="datetime" hidden="true"
+        showIf="$printingType == 1" colSpan="3"/>
+      <spacer colSpan="3"/>
+      <field name="$withoutDetailsByStockLocation" type="boolean"
+        title="Without details by stock location" hidden="true" showIf="$printingType == 1"
+        colSpan="3"/>
       <button name="printBtn" title="Print" onClick="action-stock-location-method-print"
-        readonlyIf="$exportTypeSelect == null" colSpan="3"/>
+        readonlyIf="$stockLocationPrintTemplate == null" colSpan="3"/>
     </panel>
   </form>
 
@@ -218,6 +246,12 @@
       method="setStocklocationValue"/>
   </action-method>
 
+  <action-record name="action-stock-location-record-set-stock-location-value-btn"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <field name="$stockLocationValueBtn"
+      expr="call:com.axelor.apps.base.service.user.UserLocaleHelper:formatNumberWithLocale(stockLocationValue)"/>
+  </action-record>
+
   <action-view name="action-stock-location-view-show-form-view" title="Stock location"
     model="com.axelor.apps.stock.db.StockLocation">
     <view type="form" name="stock-location-form"/>
@@ -228,7 +262,6 @@
     name="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
     <attribute name="value" for="$printingType"
       expr="eval: _stockLocation?.isValued ? '1' : '2'"/>
-    <attribute name="value" for="$exportTypeSelect" expr="pdf"/>
     <attribute name="selection-in" for="$printingType" expr="eval:['2']"
       if="!_stockLocation?.isValued"/>
   </action-attrs>
@@ -241,10 +274,75 @@
     <attribute name="value" for="serialNumber" expr="eval: name" if="eval: id == null"/>
   </action-attrs>
 
+  <action-attrs name="action-stock-location-attrs-set-site-domain">
+    <attribute for="site" name="domain"
+      expr="self.typeSelect = 1 AND :company MEMBER OF self.companySet" if="eval: typeSelect == 1"/>
+    <attribute for="site" name="domain"
+      expr="self.typeSelect = 2 AND self.partner = :partner AND :company MEMBER OF self.companySet"
+      if="eval: typeSelect == 2 &amp;&amp; partner != null"/>
+    <attribute for="site" name="domain"
+      expr="self.typeSelect = 2 AND :company MEMBER OF self.companySet"
+      if="eval: typeSelect == 2 &amp;&amp; partner == null"/>
+  </action-attrs>
+
   <action-view name="action-stock-location-view-tree" title="Stock Location Tree"
     model="com.axelor.apps.stock.db.StockLocation">
     <view type="tree" name="stock-location-tree"/>
   </action-view>
+
+  <action-validate name="action-stock-location-validate-selected-locations">
+    <error message="Please select the Stock Location(s) to print." if="!_ids"/>
+  </action-validate>
+
+  <action-record name="action-stock-location-record-empty-site-parent-stock-location"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <field name="site" expr="eval: null"/>
+    <field name="parentStockLocation" expr="eval: null"/>
+  </action-record>
+
+  <action-attrs name="action-stock-location-attrs-set-parent-stock-location-domain">
+    <attribute for="parentStockLocation" name="domain" expr="self.company = :company"
+      if="site == null"/>
+    <attribute for="parentStockLocation" name="domain"
+      expr="self.company = :company AND self.site = :site" if="site != null"/>
+  </action-attrs>
+
+  <action-method name="action-stock-location-method-set-parent-stock-location-domain">
+    <call class="com.axelor.apps.stock.web.StockLocationController"
+      method="setParentStockLocationDomain"/>
+  </action-method>
+
+  <action-record name="action-stock-location-record-remove-parent-stock-location"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <field name="parentStockLocation" expr="eval: null" if="site == null"/>
+  </action-record>
+
+  <action-record name="action-stock-location-record-auto-fill-address"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <field name="address" expr="eval: site.address" if="site != null"/>
+  </action-record>
+
+  <action-group name="action-stock-location-group-site-on-change">
+    <action name="action-stock-location-record-remove-parent-stock-location"/>
+    <action name="action-stock-location-record-auto-fill-address"/>
+  </action-group>
+
+  <action-record name="action-stock-location-record-auto-fill-site"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <field name="site" expr="eval: parentStockLocation.site" if="site == null"/>
+  </action-record>
+
+  <action-record name="action-stock-location-record-empty-site"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <field name="site" expr="eval: null"/>
+  </action-record>
+
+  <action-group name="action-stock-location-group-type-select-on-change">
+    <action name="action-stock-location-attrs-set-isOutsourcingLocation"/>
+    <action name="action-stock-set-partner-domain-attrs"/>
+    <action name="action-stock-location-attrs-set-is-valued"/>
+    <action name="action-stock-location-record-empty-site"/>
+  </action-group>
 
   <search-filters name="stock-location-filters"
     model="com.axelor.apps.stock.db.StockLocation" title="Stock location filters">

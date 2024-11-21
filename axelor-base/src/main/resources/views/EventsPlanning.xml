@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <grid name="events-planning-grid" title="Public holidays planning"
     model="com.axelor.apps.base.db.EventsPlanning">
@@ -10,6 +10,10 @@
 
   <form name="events-planning-form" title="Public holidays planning"
     model="com.axelor.apps.base.db.EventsPlanning">
+    <toolbar>
+      <button title="Add a period" name="addPeriodBtn"
+        onClick="save,action-events-planning-view-add-period-wizard"/>
+    </toolbar>
     <panel name="mainPanel">
       <field name="name"/>
     </panel>
@@ -17,4 +21,27 @@
       editable="true" grid-view="events-planning-line-grid" form-view="events-planning-line-form"/>
   </form>
 
+  <form name="add-period-wizard-form" model="com.axelor.utils.db.Wizard" title="Add a period"
+    onSave="action-method-generate-event-planning-lines">
+    <panel name="mainPanel">
+      <field name="startDate" type="date" title="Start date" required="true"/>
+      <field name="endDate" type="date" title="End date" required="true"
+        validIf="startDate &lt;= endDate"/>
+      <field name="description" type="string" title="Description" required="true"/>
+    </panel>
+  </form>
+
+  <action-view name="action-events-planning-view-add-period-wizard" title="Add a period"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="add-period-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_eventsPlanning" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-method-generate-event-planning-lines">
+    <call class="com.axelor.apps.base.web.EventsPlanningController"
+      method="generateEventsPlanningLines"/>
+  </action-method>
 </object-views>

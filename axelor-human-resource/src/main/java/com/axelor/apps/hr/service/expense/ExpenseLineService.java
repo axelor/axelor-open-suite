@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import java.util.List;
@@ -39,4 +41,8 @@ public interface ExpenseLineService {
   boolean isFilePdfOrImage(ExpenseLine expenseLine);
 
   boolean isFilePdf(ExpenseLine expenseLine);
+
+  Product getExpenseProduct(ExpenseLine expenseLine) throws AxelorException;
+
+  String computeProjectTaskDomain(ExpenseLine expenseLine);
 }

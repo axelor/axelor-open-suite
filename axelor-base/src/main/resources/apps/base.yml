@@ -8,5 +8,5 @@ description: |
    Basic configuration
 image: app-base.png
 modules: 
-   axelor-admin,axelor-base
+   axelor-base
 sequence: 1

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,7 +49,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppProduction;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -63,7 +63,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -323,10 +322,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                   origin,
                   unitCostCalculation);
 
-          BigDecimal wasteRate =
-              Optional.ofNullable(billOfMaterialLine.getBillOfMaterial())
-                  .map(BillOfMaterial::getWasteRate)
-                  .orElse(null);
+          BigDecimal wasteRate = billOfMaterialLine.getWasteRate();
 
           if (wasteRate != null && wasteRate.compareTo(BigDecimal.ZERO) > 0) {
             costSheetLineService.createConsumedProductWasteCostSheetLine(
@@ -618,30 +614,13 @@ public class CostSheetServiceImpl implements CostSheetService {
         continue;
       }
 
-      BigDecimal valuationQty = BigDecimal.ZERO;
-
-      if (calculationTypeSelect == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS) {
-
-        BigDecimal plannedConsumeQty =
-            computeTotalQtyPerUnit(toConsumeProdProductList, product, unit);
-
-        valuationQty = realQty.subtract(plannedConsumeQty.multiply(ratio));
-      }
-
-      valuationQty =
-          valuationQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
-
-      if (valuationQty.compareTo(BigDecimal.ZERO) == 0) {
-        continue;
-      }
-
       costSheetLineService.createConsumedProductCostSheetLine(
           parentCostSheet.getManufOrder().getCompany(),
           product,
           unit,
           bomLevel,
           parentCostSheetLine,
-          valuationQty,
+          realQty,
           CostSheetService.ORIGIN_MANUF_ORDER,
           null);
     }
@@ -819,7 +798,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
       BigDecimal plannedDuration =
           new BigDecimal(
-                  DurationTool.getSecondsDuration(
+                  DurationHelper.getSecondsDuration(
                       Duration.between(
                           operationOrder.getPlannedStartDateT(),
                           operationOrder.getPlannedEndDateT())))
@@ -999,8 +978,8 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     BigDecimal costPerHour =
         appProductionService.getIsCostPerProcessLine()
-            ? prodProcessLine.getCostAmount()
-            : workCenter.getCostAmount();
+            ? prodProcessLine.getHrCostAmount()
+            : workCenter.getHrCostAmount();
     BigDecimal durationHours =
         realDuration.divide(
             new BigDecimal(3600),

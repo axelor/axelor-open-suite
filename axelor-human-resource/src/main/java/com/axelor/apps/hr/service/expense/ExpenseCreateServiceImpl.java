@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,12 +27,15 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 public class ExpenseCreateServiceImpl implements ExpenseCreateService {
 
@@ -73,6 +76,24 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
     expenseComputationService.compute(expense);
 
     return expenseRepository.save(expense);
+  }
+
+  @Override
+  public Expense createExpense(User user) throws AxelorException {
+    Employee employee = user.getEmployee();
+    Company company =
+        Optional.ofNullable(employee)
+            .map(Employee::getMainEmploymentContract)
+            .map(EmploymentContract::getPayCompany)
+            .orElse(user.getActiveCompany());
+    Currency currency = Optional.ofNullable(company).map(Company::getCurrency).orElse(null);
+    BankDetails bankDetails =
+        Optional.ofNullable(company).map(Company::getDefaultBankDetails).orElse(null);
+    Integer companyCbSelect =
+        Optional.ofNullable(employee).map(Employee::getCompanyCbSelect).orElse(null);
+
+    return createExpense(
+        company, employee, currency, bankDetails, null, companyCbSelect, List.of());
   }
 
   protected void setExpenseInfo(

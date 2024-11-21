@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
   <form name="wizard-client-form" title="My space" model="com.axelor.utils.db.Wizard"
     onNew="action-group-client-view-onnew" width="large" editable="false" canDelete="false"
@@ -59,7 +59,7 @@
             widget="info-button" onClick="action-method-show-client-view-awaiting-invoices"/>
           <button name="$totalRemaining" title="Total remaining" width="190px"
             widget="info-button" onClick="action-method-show-client-view-total-remaining"/>
-          <button name="$myRefund" title="My refund" width="190px" widget="info-button"
+          <button name="$myRefund" title="My credit notes" width="190px" widget="info-button"
             onClick="action-method-show-client-view-refund"/>
 
         </panel>

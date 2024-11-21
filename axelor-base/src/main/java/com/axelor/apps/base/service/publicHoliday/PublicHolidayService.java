@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.EventsPlanningLineRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -89,5 +90,18 @@ public class PublicHolidayService {
                 "self.eventsPlanning = ?1 AND self.date = ?2", publicHolidayEventsPlanning, date)
             .fetch();
     return ObjectUtils.notEmpty(publicHolidayDayList);
+  }
+
+  @Transactional
+  public void generateEventsPlanningLines(
+      EventsPlanning eventsPlanning, LocalDate startDate, LocalDate endDate, String description) {
+    for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+      EventsPlanningLine eventsPlanningLine = new EventsPlanningLine();
+      eventsPlanningLine.setYear(date.getYear());
+      eventsPlanningLine.setDate(date);
+      eventsPlanningLine.setDescription(description);
+      eventsPlanningLine.setEventsPlanning(eventsPlanning);
+      eventsPlanningLineRepo.save(eventsPlanningLine);
+    }
   }
 }

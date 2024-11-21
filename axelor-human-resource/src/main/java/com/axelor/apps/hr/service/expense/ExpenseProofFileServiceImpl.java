@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
-import org.camunda.bpm.engine.impl.util.CollectionUtil;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
 
@@ -55,7 +55,7 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
   @Override
   public void convertProofFilesInPdf(Expense expense) throws AxelorException {
     List<ExpenseLine> expenseLineList = expense.getGeneralExpenseLineList();
-    if (CollectionUtil.isEmpty(expenseLineList)) {
+    if (CollectionUtils.isEmpty(expenseLineList)) {
       return;
     }
 
@@ -64,9 +64,14 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
     }
   }
 
-  protected void signJustificationFile(ExpenseLine expenseLine) throws AxelorException {
+  @Override
+  public void signJustificationFile(ExpenseLine expenseLine) throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
     PfxCertificate pfxCertificate = appBase.getPfxCertificate();
+    if (expenseLine.getIsJustificationFileDigitallySigned()
+        && expenseLine.getJustificationMetaFile() != null) {
+      return;
+    }
     if (pfxCertificate != null) {
       convertProofFileToPdf(pfxCertificate, expenseLine);
       signPdf(pfxCertificate, expenseLine);

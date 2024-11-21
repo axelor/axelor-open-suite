@@ -1,0 +1,4 @@
+"importId";"name";"modelName";"statusSelect";"toAttach"
+"26";"SaleOrder PDF";"com.axelor.apps.sale.db.SaleOrder";"2";"false"
+"124";"SaleOrder XLSX";"com.axelor.apps.sale.db.SaleOrder";"2";"false"
+"125";"SaleOrder DOC";"com.axelor.apps.sale.db.SaleOrder";"2";"false"

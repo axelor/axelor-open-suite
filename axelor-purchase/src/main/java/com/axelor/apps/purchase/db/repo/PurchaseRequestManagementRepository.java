@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,22 +26,29 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class PurchaseRequestManagementRepository extends PurchaseRequestRepository {
+
+  protected SequenceService sequenceService;
+
+  @Inject
+  public PurchaseRequestManagementRepository(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
 
   @Override
   public PurchaseRequest save(PurchaseRequest entity) {
     try {
       if (entity.getPurchaseRequestSeq() == null) {
         String seq =
-            Beans.get(SequenceService.class)
-                .getSequenceNumber(
-                    SequenceRepository.PURCHASE_REQUEST,
-                    entity.getCompany(),
-                    PurchaseRequest.class,
-                    "purchaseRequestSeq");
+            sequenceService.getSequenceNumber(
+                SequenceRepository.PURCHASE_REQUEST,
+                entity.getCompany(),
+                PurchaseRequest.class,
+                "purchaseRequestSeq",
+                entity);
         if (seq == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

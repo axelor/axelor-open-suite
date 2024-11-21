@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,8 +41,8 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.filter.Filter;
-import com.axelor.utils.NamingTool;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.NamingHelper;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -182,6 +182,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       for (int subIndex = 1; subIndex <= parentIndex; subIndex++) {
         tempAliasName = isKeyword(splitField, subIndex);
         if (!aliasName.equals(splitField[parentIndex])) {
+          tempAliasName = aliasName + "_" + tempAliasName;
           joinFieldSet.add(
               "LEFT JOIN " + aliasName + "." + splitField[subIndex] + " " + tempAliasName);
           aliasName = tempAliasName;
@@ -195,7 +196,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
   }
 
   protected String isKeyword(String[] fieldNames, int ind) {
-    if (NamingTool.isKeyword(fieldNames[ind])) {
+    if (NamingHelper.isKeyword(fieldNames[ind])) {
       return fieldNames[ind] + "_id";
     }
     return fieldNames[ind];
@@ -220,7 +221,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       if (!isNormalField && index != 0) {
         alias = aliasName;
       }
-      addSelectionField(fieldName[index], alias, StringTool.getIdListString(metaSelectList));
+      addSelectionField(fieldName[index], alias, StringHelper.getIdListString(metaSelectList));
     }
   }
 

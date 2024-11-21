@@ -1,0 +1,20 @@
+"importId";"name";"typeSelect";"docType";"reportExportTypeSelect"
+"GBR_COA101";"Income Statement";3000;1;1
+"GBR_COA102";"Balance sheet";3000;1;1
+"GBR_COA1";"Journal";11;1;1
+"GBR_COA2";"Ledger";1;1;1
+"GBR_COA3";"Ledger (Old Presentation)";14;1;1
+"GBR_COA4";"Auxiliary ledger";7;1;1
+"GBR_COA5";"General Balance";2;1;1
+"GBR_COA6";"Balance Auxiliary";6;1;1
+"GBR_COA7";"Aged Balance";4;1;1
+"GBR_COA8";"Detailed customer balance";3;1;1
+"GBR_COA9";"Customer/supplier invoices whose term has expired";23;1;1
+"GBR_COA10";"Customer/supplier invoices experiencing late payment";24;1;1
+"GBR_COA11";"Cheque remittance slip";5;1;1
+"GBR_COA12";"Summary of cash receipts";10;1;1
+"GBR_COA13";"Payment differences";13;1;1
+"GBR_COA14";"VAT statement on invoicing";12;1;1
+"GBR_COA15";"VAT statement on collection";15;1;1
+"GBR_COA16";"Acquisitions table";16;1;1
+"GBR_COA17";"Summary of gross values and depreciation";17;1;1

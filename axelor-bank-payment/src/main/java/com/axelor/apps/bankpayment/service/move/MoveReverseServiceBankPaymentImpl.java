@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,26 +18,32 @@
  */
 package com.axelor.apps.bankpayment.service.move;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -46,6 +52,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -53,6 +60,8 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
 
   protected BankReconciliationService bankReconciliationService;
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
+  protected BankReconciliationLineService bankReconciliationLineService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public MoveReverseServiceBankPaymentImpl(
@@ -66,7 +75,12 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       InvoicePaymentCancelService invoicePaymentCancelService,
       MoveToolService moveToolService,
       BankReconciliationService bankReconciliationService,
-      BankReconciliationLineRepository bankReconciliationLineRepository) {
+      BankReconciliationLineRepository bankReconciliationLineRepository,
+      BankReconciliationLineService bankReconciliationLineService,
+      CurrencyScaleService currencyScaleService,
+      UnreconcileService unReconcileService,
+      MoveInvoiceTermService moveInvoiceTermService,
+      AnalyticLineService analyticLineService) {
     super(
         moveCreateService,
         reconcileService,
@@ -76,9 +90,14 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         extractContextMoveService,
         invoicePaymentRepository,
         invoicePaymentCancelService,
-        moveToolService);
+        moveToolService,
+        unReconcileService,
+        moveInvoiceTermService,
+        analyticLineService);
     this.bankReconciliationService = bankReconciliationService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
+    this.bankReconciliationLineService = bankReconciliationLineService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -109,13 +128,18 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
     }
     Move newMove = super.generateReverse(move, assistantMap);
     if (isHiddenMoveLinesInBankReconciliation) {
-      bankReconciliationService.unreconcileLines(
+      fillBankReconciledAmount(newMove);
+
+      bankReconciliationLineService.unreconcileLines(
           bankReconciliationLineList.stream()
               .filter(
                   bankReconciliationLine ->
                       bankReconciliationLine.getBankReconciliation().getStatusSelect()
                           == BankReconciliationRepository.STATUS_UNDER_CORRECTION)
               .collect(Collectors.toList()));
+
+      fillBankReconciledAmount(move);
+
     } else {
       this.updateBankAmountReconcile(newMove);
     }
@@ -156,7 +180,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
                 .bind("moveLines", move.getMoveLineList())
                 .bind("statusUnderCorrection", BankReconciliationRepository.STATUS_UNDER_CORRECTION)
                 .fetch();
-        bankReconciliationService.unreconcileLines(bankReconciliationUnderCorrectionLineList);
+        bankReconciliationLineService.unreconcileLines(bankReconciliationUnderCorrectionLineList);
       }
     }
     if (CollectionUtils.isNotEmpty(movesReconciled)) {
@@ -202,11 +226,14 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         .getAccountType()
         .getTechnicalTypeSelect()
         .equals(AccountTypeRepository.TYPE_CASH)) {
-      reverseMoveLine.setBankReconciledAmount(
-          reverseMoveLine
-              .getCurrencyAmount()
-              .abs()
-              .subtract(orgineMoveLine.getBankReconciledAmount()));
+      BigDecimal amount =
+          currencyScaleService.getScaledValue(
+              reverseMoveLine,
+              reverseMoveLine
+                  .getCurrencyAmount()
+                  .abs()
+                  .subtract(orgineMoveLine.getBankReconciledAmount()));
+      reverseMoveLine.setBankReconciledAmount(amount);
     }
     return reverseMoveLine;
   }
@@ -214,6 +241,22 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   protected void updateBankAmountReconcile(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
       moveLine.setBankReconciledAmount(BigDecimal.ZERO);
+    }
+  }
+
+  protected void fillBankReconciledAmount(Move move) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (Optional.of(moveLine)
+          .map(MoveLine::getAccount)
+          .map(Account::getAccountType)
+          .map(
+              accountType ->
+                  AccountTypeRepository.TYPE_CASH.equals(accountType.getTechnicalTypeSelect()))
+          .orElse(false)) {
+        BigDecimal amount =
+            currencyScaleService.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
+        moveLine.setBankReconciledAmount(amount);
+      }
     }
   }
 }

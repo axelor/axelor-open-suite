@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,12 @@ import com.google.inject.Inject;
 
 public class QualityAlertManagementRepository extends QualityAlertRepository {
 
-  @Inject private SequenceService sequenceService;
+  protected SequenceService sequenceService;
+
+  @Inject
+  public QualityAlertManagementRepository(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
 
   /**
    * Generate and set sequence in reference with predefined prefix.
@@ -41,7 +46,11 @@ public class QualityAlertManagementRepository extends QualityAlertRepository {
       try {
         qualityAlert.setReference(
             sequenceService.getSequenceNumber(
-                SequenceRepository.QUALITY_ALERT, null, QualityAlert.class, "reference"));
+                SequenceRepository.QUALITY_ALERT,
+                null,
+                QualityAlert.class,
+                "reference",
+                qualityAlert));
       } catch (AxelorException e) {
         TraceBackService.traceExceptionFromSaveMethod(e);
       }
