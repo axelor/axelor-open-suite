@@ -62,7 +62,8 @@
   <grid name="sale-order-line-editable-grid-menu" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true"
     widget="tree-grid" x-tree-field="subSaleOrderLineList"
-    x-tree-field-title="Add a new sale order line" canNew="false">
+    summary-view="sale-order-line-summary-form" x-tree-field-title="Add a new sale order line"
+    canNew="false">
 
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
