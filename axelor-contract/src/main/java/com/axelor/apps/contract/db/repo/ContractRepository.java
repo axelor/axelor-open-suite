@@ -49,7 +49,7 @@ public class ContractRepository extends AbstractContractRepository {
     this.contractLineService = contractLineService;
     this.contractVersionService = contractVersionService;
     this.sequenceService = sequenceService;
-    this.contractLineService = contractLineService;
+    this.contractVersionRepository = contractVersionRepository;
   }
 
   @Override
