@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.CALCULATION_SCALE;
+import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.CURRENCY_MAX_SCALE;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
@@ -221,23 +222,29 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   public void multiplyLineBy(FixedAssetLine line, BigDecimal prorata) throws AxelorException {
     FixedAsset fixedAsset = line.getFixedAsset();
     line.setDepreciationBase(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getDepreciationBase(), prorata, fixedAsset, BigDecimal::multiply));
+        prorata
+            .multiply(line.getDepreciationBase())
+            .setScale(CURRENCY_MAX_SCALE, RoundingMode.HALF_UP));
     line.setDepreciation(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getDepreciation(), prorata, fixedAsset, BigDecimal::multiply));
+        prorata
+            .multiply(line.getDepreciation())
+            .setScale(CURRENCY_MAX_SCALE, RoundingMode.HALF_UP));
     line.setCumulativeDepreciation(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getCumulativeDepreciation(), prorata, fixedAsset, BigDecimal::multiply));
+        prorata
+            .multiply(line.getCumulativeDepreciation())
+            .setScale(CURRENCY_MAX_SCALE, RoundingMode.HALF_UP));
     line.setAccountingValue(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getAccountingValue(), prorata, fixedAsset, BigDecimal::multiply));
+        prorata
+            .multiply(line.getAccountingValue())
+            .setScale(CURRENCY_MAX_SCALE, RoundingMode.HALF_UP));
     line.setCorrectedAccountingValue(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getCorrectedAccountingValue(), prorata, fixedAsset, BigDecimal::multiply));
+        prorata
+            .multiply(line.getCorrectedAccountingValue())
+            .setScale(CURRENCY_MAX_SCALE, RoundingMode.HALF_UP));
     line.setImpairmentValue(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getImpairmentValue(), prorata, fixedAsset, BigDecimal::multiply));
+        prorata
+            .multiply(line.getImpairmentValue())
+            .setScale(CURRENCY_MAX_SCALE, RoundingMode.HALF_UP));
   }
 
   @Override
