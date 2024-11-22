@@ -1,3 +1,5 @@
 ---
 title: "Timesheet: fix timeseet duplicate creation"
 module: axelor-human-resource
+developer: |
+  Added the employeeRepository in the TimesheetQueryServiceImpl constructor
