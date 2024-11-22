@@ -25,7 +25,7 @@
 	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
 	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
 	var formatPattern = basePart + decimalPart;
-	return formatNumber(number, formatPattern);
+	return Formatter.format(number, formatPattern);
 }]]></method>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
