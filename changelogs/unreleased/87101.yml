@@ -1,0 +1,3 @@
+---
+title: "Contract: fixed error in the constructor of ContractRepository."
+module: axelor-contract
