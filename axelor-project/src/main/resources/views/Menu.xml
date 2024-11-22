@@ -80,14 +80,6 @@
     <view-param name="search-filters" value="project-task-category-filters"/>
   </action-view>
 
-  <menuitem name="project-task-section" parent="project-configurations" title="Section"
-    action="project.task.section" order="200"/>
-  <action-view name="project.task.section" title="Project Task Section"
-    model="com.axelor.apps.project.db.ProjectTaskSection">
-    <view type="grid" name="project-task-section-grid"/>
-    <view type="form" name="project-task-section-form"/>
-  </action-view>
-
   <menuitem name="project-topic" title="Topics" parent="project-configurations"
     action="project.topic" order="300"/>
   <action-view name="project.topic" title="Topics"

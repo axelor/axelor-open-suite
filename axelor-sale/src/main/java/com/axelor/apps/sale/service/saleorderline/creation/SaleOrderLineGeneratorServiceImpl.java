@@ -110,8 +110,8 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     saleOrderLineRepository.save(saleOrderLine);
 
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
-    saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderComplementaryProductService.handleComplementaryProducts(saleOrder);
+    saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderRepository.save(saleOrder);
 
     return saleOrderLine;

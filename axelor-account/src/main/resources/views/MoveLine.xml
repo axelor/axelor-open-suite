@@ -450,6 +450,7 @@
       <panel name="datesPanel" colSpan="12" itemSpan="3">
         <field name="date" onChange="account-move-line-method-date-onchange"/>
         <field name="dueDate" showIf="dueDate"/>
+        <field name="accountingDate" showIf="accountingDate"/>
       </panel>
       <panel name="amountPanel" colSpan="12" itemSpan="3">
         <field name="debit"

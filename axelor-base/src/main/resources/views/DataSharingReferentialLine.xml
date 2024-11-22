@@ -26,7 +26,15 @@
         </viewer>
       </field>
       <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
-      <field name="queryCondition" colSpan="12"/>
+      <panel name="queryPanel" colSpan="12">
+        <help>
+        	<![CDATA[Please set a JPQL domain (For example: self.id = 1)]]>
+        </help>
+        <field name="queryCondition" colSpan="12"/>
+        <button name="testQueryBtn" title="Test query"
+          onClick="action-data-sharing-referential-line-method-test-query" colSpan="3" hidden="true"
+          showIf="queryCondition"/>
+      </panel>
     </panel>
     <panel name="hiddenPanel" hidden="true">
       <field name="wizardMetaModel"/>
@@ -40,5 +48,10 @@
     <view type="grid" name="data-sharing-product-wizard-grid"/>
     <context name="_showRecord" expr="eval: wizardRefId"/>
   </action-view>
+
+  <action-method name="action-data-sharing-referential-line-method-test-query">
+    <call class="com.axelor.apps.base.web.DataSharingReferentialLineController"
+      method="testQueryCondition"/>
+  </action-method>
 
 </object-views>

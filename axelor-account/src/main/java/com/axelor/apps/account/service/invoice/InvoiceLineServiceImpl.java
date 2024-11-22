@@ -47,6 +47,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.studio.db.AppInvoice;
@@ -80,6 +81,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected InvoiceLineAttrsService invoiceLineAttrsService;
   protected CurrencyScaleService currencyScaleService;
   protected ProductPriceService productPriceService;
+  protected FiscalPositionService fiscalPositionService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -96,7 +98,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
       CurrencyScaleService currencyScaleService,
-      ProductPriceService productPriceService) {
+      ProductPriceService productPriceService,
+      FiscalPositionService fiscalPositionService) {
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
@@ -111,6 +114,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.invoiceLineAttrsService = invoiceLineAttrsService;
     this.currencyScaleService = currencyScaleService;
     this.productPriceService = productPriceService;
+    this.fiscalPositionService = fiscalPositionService;
   }
 
   @Override
@@ -750,5 +754,29 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     invoiceLineAttrsService.addCoefficientScale(invoice, attrsMap, "");
 
     return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> recomputeTax(Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException {
+    Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
+    TaxEquiv taxEquiv = null;
+    FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+
+    Map<String, Object> valuesMap = new HashMap<>();
+    if (fiscalPosition == null || CollectionUtils.isEmpty(taxLineSet)) {
+      valuesMap.put("taxEquiv", taxEquiv);
+      return valuesMap;
+    }
+    taxEquiv = fiscalPositionService.getTaxEquivFromOrToTaxSet(fiscalPosition, taxLineSet);
+    if (taxEquiv != null) {
+      taxLineSet =
+          taxService.getTaxLineSet(
+              taxEquiv.getToTaxSet(), appAccountService.getTodayDate(invoice.getCompany()));
+    }
+
+    valuesMap.put("taxLineSet", taxLineSet);
+    valuesMap.put("taxEquiv", taxEquiv);
+    return valuesMap;
   }
 }

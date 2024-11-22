@@ -86,7 +86,8 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
     Unit unit = null;
     BigDecimal qty = BigDecimal.ZERO;
 
-    if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
+    boolean isNormalLine = saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL;
+    if (isNormalLine) {
 
       if (saleOrderLine.getProduct() != null) {
         unit = saleOrderLine.getProduct().getPurchasesUnit();
@@ -103,10 +104,14 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
 
     PurchaseOrderLine purchaseOrderLine =
         super.createPurchaseOrderLine(
-            purchaseOrder, saleOrderLine.getProduct(), null, null, qty, unit);
+            purchaseOrder,
+            saleOrderLine.getProduct(),
+            isNormalLine ? null : saleOrderLine.getProductName(),
+            null,
+            qty,
+            unit);
 
-    purchaseOrderLine.setIsTitleLine(
-        !(saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL));
+    purchaseOrderLine.setIsTitleLine(!isNormalLine);
 
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
     analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
