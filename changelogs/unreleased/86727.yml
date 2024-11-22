@@ -1,0 +1,5 @@
+---
+title: "MoveLine/Tax: fix required in move line view on tax lines and hide isTaxRequired for tax account"
+module: axelor-account
+developer : |
+  Remove functionalOriginSelect from MoveLineTaxServiceImpl.isMoveLineTaxAccountRequired parameters
