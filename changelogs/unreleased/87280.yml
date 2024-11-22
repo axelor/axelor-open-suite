@@ -1,0 +1,3 @@
+---
+title: "Accounting report: fixed 'Aged balance' report doesn't display the values of due amounts in the delay columns."
+module: axelor-account
