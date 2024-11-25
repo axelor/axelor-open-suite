@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuditableRunner;
 import com.axelor.db.JPA;
+import com.axelor.db.tenants.TenantAware;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -66,21 +67,16 @@ public class DataBackupServiceImpl implements DataBackupService {
     if (dataBackup.getUpdateImportId()) {
       updateImportId();
     }
-    try {
-      executor.submit(
-          new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
+    executor.submit(
+        new TenantAware(
+            () -> {
               RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
               try (RequestScoper.CloseableScope ignored = scope.open()) {
                 startBackup(obj);
+              } catch (Exception e) {
+                TraceBackService.trace(e);
               }
-              return true;
-            }
-          });
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
+            }));
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -117,18 +113,15 @@ public class DataBackupServiceImpl implements DataBackupService {
   public void restoreBackUp(DataBackup dataBackup) {
     setStatus(dataBackup);
 
-    try {
-      executor.submit(
-          new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-              startRestore(dataBackup);
-              return true;
-            }
-          });
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
+    executor.submit(
+        new TenantAware(
+            () -> {
+              try {
+                startRestore(dataBackup);
+              } catch (Exception e) {
+                TraceBackService.trace(e);
+              }
+            }));
   }
 
   protected void startRestore(DataBackup dataBackup) throws Exception {
