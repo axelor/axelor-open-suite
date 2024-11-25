@@ -220,12 +220,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoice.setIncoterm(saleOrder.getIncoterm());
       }
 
-      // fill default advance payment invoice
-      if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-        invoice.setAdvancePaymentInvoiceSet(
-            Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice));
-      }
-
       invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
       invoice.setNote(fillInvoiceNoteFromOutStockMove(saleOrderSet));
       invoice.setProformaComments(fillInvoiceProformaCommentsFromOutStockMove(saleOrderSet));
@@ -236,6 +230,12 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoice.setStockMoveSet(stockMoveSet);
       }
       stockMoveSet.add(stockMove);
+
+      // fill default advance payment invoice
+      if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+        invoice.setAdvancePaymentInvoiceSet(
+            Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice));
+      }
 
       invoiceRepository.save(invoice);
     }
