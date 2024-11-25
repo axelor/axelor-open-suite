@@ -1,0 +1,3 @@
+---
+title: "Sale order invoicing: fixed the missing title 'To invoice' on the corresponding column when invoicing time table lines from a sale order."
+module: axelor-supplychain
