@@ -308,12 +308,12 @@
             domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
             form-view="tax-line-form" widget="TagSelect"/>
           <field name="exTaxTotal" readonly="true" colSpan="3"
-            x-scale="$currency.numberOfDecimals"/>
+            x-scale="currency.numberOfDecimals"/>
           <field name="inTaxTotal" readonly="true" colSpan="3"
-            x-scale="$currency.numberOfDecimals"/>
-          <field name="$currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"
-            hidden="true"/>
-          <field name="$currency.numberOfDecimals" hidden="true"/>
+            x-scale="currency.numberOfDecimals"/>
+          <field name="currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"
+            hidden="true" x-dirty="false"/>
+          <field name="currency.numberOfDecimals" hidden="true"/>
         </panel>
         <panel name="reservationPanel" colSpan="12" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')">
@@ -386,14 +386,14 @@
       <panel name="marginPanel" title="Margin" readonlyIf="$isReadOnly !== false">
         <field name="subTotalCostPrice"
           onChange="action-sale-order-line-method-compute-subMargin"
-          x-scale="$companyCurrency.numberOfDecimals"/>
+          x-scale="companyCurrency.numberOfDecimals"/>
         <field name="subTotalGrossMargin" readonly="true"
-          x-scale="$companyCurrency.numberOfDecimals"/>
+          x-scale="companyCurrency.numberOfDecimals"/>
         <field name="subMarginRate" readonly="true"/>
         <field name="subTotalMarkup" readonly="true"/>
-        <field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one"
-          target="com.axelor.apps.base.db.Currency"/>
-        <field name="$companyCurrency.numberOfDecimals" hidden="true"/>
+        <field name="companyCurrency" readonly="true" title="Currency" type="many-to-one"
+          target="com.axelor.apps.base.db.Currency" x-dirty="false"/>
+        <field name="companyCurrency.numberOfDecimals" hidden="true" x-dirty="false"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery">
         <field name="desiredDeliveryDate" readonlyIf="$availabiltyRequest"/>
@@ -417,7 +417,7 @@
       <panel name="invoicingFollowUpPanel" title="Invoicing"
         readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">
-        <field name="amountInvoiced" x-scale="$currency.numberOfDecimals"/>
+        <field name="amountInvoiced" x-scale="currency.numberOfDecimals"/>
         <panel-dashlet name="invoiceLinesFromSOLinePanel"
           action="action-sale-order-line-view-show-invoice-lines" colSpan="12"/>
       </panel>
@@ -495,13 +495,13 @@
         onChange="action-sale-order-line-method-tax-line-onchange"
         domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
         form-view="tax-line-form" widget="TagSelect"/>
-      <field name="exTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
-      <field name="inTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
+      <field name="exTaxTotal" readonly="true" x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotal" readonly="true" x-scale="currency.numberOfDecimals"/>
       <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
         form-view="tax-equiv-form"/>
-      <field name="$currency" hidden="true" type="many-to-one"
-        target="com.axelor.apps.base.db.Currency"/>
-      <field name="$currency.numberOfDecimals" hidden="true"/>
+      <field name="currency" hidden="true" type="many-to-one"
+        target="com.axelor.apps.base.db.Currency" x-dirty="false"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
       <panel name="descriptionPanel" title="Description" colSpan="12">
         <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
       </panel>
@@ -515,14 +515,14 @@
       <panel name="marginPanel" title="Margin">
         <field name="subTotalCostPrice"
           onChange="action-sale-order-line-method-compute-subMargin"
-          x-scale="$companyCurrency.numberOfDecimals"/>
+          x-scale="companyCurrency.numberOfDecimals"/>
         <field name="subTotalGrossMargin" readonly="true"
-          x-scale="$companyCurrency.numberOfDecimals"/>
+          x-scale="companyCurrency.numberOfDecimals"/>
         <field name="subMarginRate" readonly="true"/>
         <field name="subTotalMarkup" readonly="true"/>
-        <field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one"
-          target="com.axelor.apps.base.db.Currency"/>
-        <field name="$companyCurrency.numberOfDecimals" hidden="true"/>
+        <field name="companyCurrency" readonly="true" title="Currency" type="many-to-one"
+          target="com.axelor.apps.base.db.Currency" x-dirty="false"/>
+        <field name="companyCurrency.numberOfDecimals" hidden="true"/>
       </panel>
       <panel name="projectPanel"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"

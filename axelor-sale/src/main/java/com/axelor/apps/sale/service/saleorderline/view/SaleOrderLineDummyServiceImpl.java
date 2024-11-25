@@ -130,10 +130,10 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
 
   protected Map<String, Object> initCurrency(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
     Map<String, Object> dummyFields = new HashMap<>();
-    dummyFields.put("$currency", saleOrder.getCurrency());
+    dummyFields.put("currency", saleOrder.getCurrency());
     SaleOrder oldVersionSaleOrder = saleOrderLine.getOldVersionSaleOrder();
     if (oldVersionSaleOrder != null) {
-      dummyFields.put("$currency", oldVersionSaleOrder.getCurrency());
+      dummyFields.put("currency", oldVersionSaleOrder.getCurrency());
     }
     return dummyFields;
   }
@@ -170,13 +170,13 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
     if (company != null) {
       currency = company.getCurrency();
     }
-    dummyFields.put("$companyCurrency", currency);
+    dummyFields.put("companyCurrency", currency);
 
     SaleOrder oldVersionSaleOrder = saleOrderLine.getOldVersionSaleOrder();
     if (oldVersionSaleOrder != null) {
       Company oldCompany = oldVersionSaleOrder.getCompany();
       if (oldCompany != null && oldCompany.getCurrency() != null) {
-        dummyFields.put("$currency", oldCompany.getCurrency());
+        dummyFields.put("currency", oldCompany.getCurrency());
       }
     }
 
