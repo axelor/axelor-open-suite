@@ -58,7 +58,7 @@
   <grid name="invoicing-wizard-timetable-grid" title="Select timetables to invoice"
     edit-icon="false" model="com.axelor.apps.supplychain.db.Timetable" orderBy="estimatedDate"
     editable="true">
-    <field name="toInvoice" type="boolean" title=" "/>
+    <field name="toInvoice" type="boolean"/>
     <field name="estimatedDate" readonly="true"/>
     <field name="amount" readonly="true" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="percentage" readonly="true"/>
