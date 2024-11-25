@@ -228,7 +228,6 @@
 "Represents the expected amount minus the sum of realized amounts.",,,
 "Represents the sum of amounts realized with or without commitment that exceed the initial",,,
 "Represents the sum of moves of status simulated.",,,
-"Represents the sum of orders of status requested, validated or finished and that don't have a invoiced invoice.",,,
 "Represents the sum of orders of status requested, validated or finished and that don't have an invoiced invoice.",,,
 "Represents the sum of purchase orders of status requested, validated or finished and that don't have a invoiced invoice.",,,
 "Represents the sum of ventilated invoices with an order.",,,

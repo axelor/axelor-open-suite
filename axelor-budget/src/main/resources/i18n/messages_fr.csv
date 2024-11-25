@@ -228,7 +228,6 @@
 "Represents the expected amount minus the sum of realized amounts.","Représente la différence entre le montant initial et la somme des montants réalisés.",,
 "Represents the sum of amounts realized with or without commitment that exceed the initial","Représente la somme des montants réalisés avec ou sans engagement qui dépasse l'initial",,
 "Represents the sum of moves of status simulated.","Représente la somme des écritures au statut simulé.",,
-"Represents the sum of orders of status requested, validated or finished and that don't have a invoiced invoice.",,,
 "Represents the sum of orders of status requested, validated or finished and that don't have an invoiced invoice.","Représente la somme des commandes au statut demandé, validé ou terminé et qui n'ont pas encore de factures ventilées",,
 "Represents the sum of purchase orders of status requested, validated or finished and that don't have a invoiced invoice.",,,
 "Represents the sum of ventilated invoices with an order.","Représente la somme des factures ventilées avec une commande.",,
