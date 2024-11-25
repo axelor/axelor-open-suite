@@ -84,7 +84,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected static final int CALCULATION_SCALE = 20;
-  protected static final int CURRENCY_MAX_SCALE = 3;
 
   @Inject
   public FixedAssetServiceImpl(

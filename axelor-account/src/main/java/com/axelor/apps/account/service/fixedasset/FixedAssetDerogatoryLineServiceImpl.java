@@ -18,8 +18,6 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.CURRENCY_MAX_SCALE;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
@@ -31,7 +29,6 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -229,28 +226,11 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   }
 
   protected void multiplyLineBy(FixedAssetDerogatoryLine line, BigDecimal prorata) {
-    FixedAsset fixedAsset = line.getFixedAsset();
-
-    line.setDepreciationAmount(
-        prorata
-            .multiply(line.getDepreciationAmount())
-            .setScale(CURRENCY_MAX_SCALE, RoundingMode.HALF_UP));
-    line.setFiscalDepreciationAmount(
-        prorata
-            .multiply(line.getFiscalDepreciationAmount())
-            .setScale(CURRENCY_MAX_SCALE, RoundingMode.HALF_UP));
-    line.setDerogatoryAmount(
-        prorata
-            .multiply(line.getDerogatoryAmount())
-            .setScale(CURRENCY_MAX_SCALE, RoundingMode.HALF_UP));
-    line.setIncomeDepreciationAmount(
-        prorata
-            .multiply(line.getIncomeDepreciationAmount())
-            .setScale(CURRENCY_MAX_SCALE, RoundingMode.HALF_UP));
-    line.setDerogatoryBalanceAmount(
-        prorata
-            .multiply(line.getDerogatoryBalanceAmount())
-            .setScale(CURRENCY_MAX_SCALE, RoundingMode.HALF_UP));
+    line.setDepreciationAmount(fixedAssetLineToolService.getCurrenciesMaxScaledValue(prorata, line.getDepreciationAmount(), BigDecimal::multiply));
+    line.setFiscalDepreciationAmount(fixedAssetLineToolService.getCurrenciesMaxScaledValue(prorata, line.getFiscalDepreciationAmount(), BigDecimal::multiply));
+    line.setDerogatoryAmount(fixedAssetLineToolService.getCurrenciesMaxScaledValue(prorata, line.getDerogatoryAmount(), BigDecimal::multiply));
+    line.setIncomeDepreciationAmount(fixedAssetLineToolService.getCurrenciesMaxScaledValue(prorata, line.getIncomeDepreciationAmount(), BigDecimal::multiply));
+    line.setDerogatoryBalanceAmount(fixedAssetLineToolService.getCurrenciesMaxScaledValue(prorata, line.getDerogatoryBalanceAmount(), BigDecimal::multiply));
   }
 
   /**
