@@ -145,8 +145,7 @@
               colSpan="5"
               onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
             <field name="name" showTitle="false" css="highlight" placeholder="Name"
-              colSpan="5"
-              onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
+              colSpan="5"/>
           </editor>
         </field>
         <static name="duplicateLeadText" hidden="true" colSpan="12">
@@ -378,7 +377,6 @@
   </action-group>
 
   <action-group name="action-group-crm-lead-onload">
-    <action name="action-lead-method-set-social-network-url"/>
     <action name="action-crm-lead-method-check-name"/>
     <action name="action-lead-method-compute-is-lost"/>
     <action name="action-lead-attrs-display-lost-reason"/>
