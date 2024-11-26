@@ -290,6 +290,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           currencyScaleService.getScaledValue(move, amountInSpecificMoveCurrency.negate());
     }
 
+    String moveLineDescription =
+        StringHelper.cutTooLongString(
+            moveLineToolService.determineDescriptionMoveLine(
+                move.getJournal(), origin, description));
     MoveLine moveLine =
         new MoveLine(
             move,
@@ -300,11 +304,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             counter,
             currencyScaleService.getCompanyScaledValue(move, debit),
             currencyScaleService.getCompanyScaledValue(move, credit),
-            Strings.isNullOrEmpty(move.getDescription())
-                ? StringHelper.cutTooLongString(
-                    moveLineToolService.determineDescriptionMoveLine(
-                        move.getJournal(), origin, description))
-                : move.getDescription(),
+            Strings.isNullOrEmpty(moveLineDescription)
+                ? move.getDescription()
+                : moveLineDescription,
             origin,
             currencyRate.setScale(5, RoundingMode.HALF_UP),
             amountInSpecificMoveCurrency,
