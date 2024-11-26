@@ -17,9 +17,14 @@
     <view type="dashboard" name="my.hr.dashboard"/>
   </action-view>
 
-  <menuitem name="all-leave-request" parent="my-hr-root" title="Leave Requests"
-    action="leave.all" order="200" if="__config__.app.isApp('leave')" icon="airplane"
-    icon-background="#84429f"/>
+  <menuitem name="my-hr-leave-request-root" parent="my-hr-root" title="Leave Requests"
+    if="__config__.app.isApp('leave')" icon="airplane" icon-background="#84429f" order="200"/>
+
+  <menuitem name="edit-leave-request" parent="my-hr-leave-request-root"
+    title="Complete my leave request" action="edit.leave.request" order="100"/>
+
+  <menuitem name="all-leave-request" parent="my-hr-leave-request-root"
+    title="Leave Requests" action="leave.all" order="200"/>
 
   <action-view name="leave.all" model="com.axelor.apps.hr.db.LeaveRequest"
     title="My Leave Requests">
