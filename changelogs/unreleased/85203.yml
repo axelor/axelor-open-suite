@@ -1,3 +1,6 @@
 ---
 title: "TaskTemplate: initialize all tasks with task templates models."
 module: axelor-project
+developer :
+  Added taskTemplateService in the ProjectCreateTaskServiceSupportImpl constructor
+  Added taskTemplateService in the ProjectCreateTaskServiceImpl
