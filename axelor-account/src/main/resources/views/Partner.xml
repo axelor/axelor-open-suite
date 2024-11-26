@@ -72,7 +72,7 @@
     <panel name="accountingSituationPanel" if-module="axelor-account"
       onTabSelect="action-partner-account-method-accounting-situation-label"
       if="__config__.app.isApp('account')" title="Accounting situation"
-      hideIf="isContact || isProspect">
+      showIf="isSupplier || isCustomer || isSubcontractor || isInternal || isCarrier || isFactor || isEmployee || isCorporatePartner || isThirdPartyPayer">
       <field name="isCompensation" colSpan="12" widget="boolean-switch"
         showIf="isCustomer &amp;&amp; isSupplier"/>
       <label name="errorOnCompaniesLabel" css="label-danger" colSpan="12" hidden="true"/>
@@ -136,7 +136,8 @@
 
     <extend target="panel-tabs[@name='mainPanelTab']/panel[@name='eventPanel']">
       <insert position="before">
-        <panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact || isProspect"
+        <panel name="paymentPanel" title="Invoicing/Payment"
+          showIf="isSupplier || isCustomer || isSubcontractor || isInternal || isCarrier || isFactor || isEmployee || isCorporatePartner || isThirdPartyPayer"
           if-module="axelor-account" colSpan="12" if="__config__.app.isApp('invoice')">
           <panel-include view="incl-invoice-payment-partner-form"/>
           <panel-related name="invoicingPaymentSituationListPanel"
