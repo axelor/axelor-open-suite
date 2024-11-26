@@ -719,14 +719,4 @@
   <menuitem name="top-menu-hr-my-extra-hours" parent="top-menu-hr" title="My extra hours"
     action="edit.extra.hours" top="true" if="__config__.app.isApp('exthrs')"/>
 
-  <menuitem name="quick-timesheet" title="Weekly timesheet assistant" parent="my-hr-root"
-    action="quick.timesheet" icon="clock" icon-background="#84429f" order="410"
-    if="__config__.app.isApp('timesheet')"/>
-
-  <action-view name="quick.timesheet" title="Timesheet"
-    model="com.axelor.utils.db.Wizard">
-    <view type="form" name="quick-timesheet-form"/>
-    <view-param name="forceEdit" value="true"/>
-  </action-view>
-
 </object-views>

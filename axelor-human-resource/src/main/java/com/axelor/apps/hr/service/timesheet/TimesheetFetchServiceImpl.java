@@ -49,26 +49,19 @@ public class TimesheetFetchServiceImpl implements TimesheetFetchService {
   }
 
   @Override
-  public Timesheet getDraftTimesheet(Employee employee, LocalDate fromDate, LocalDate toDate) {
+  public Timesheet getDraftTimesheet(Employee employee, LocalDate date) {
 
     Objects.requireNonNull(employee);
-    Objects.requireNonNull(fromDate);
-
-    String filter =
-        "self.statusSelect = :timesheetStatus AND self.employee = :employee AND self.fromDate <= :fromDate AND self.isCompleted = false";
-
-    if (toDate != null) {
-      filter = filter.concat(" AND (self.toDate IS NULL OR :toDate <= self.toDate)");
-    }
+    Objects.requireNonNull(date);
 
     Timesheet timesheet =
         timesheetRepository
             .all()
-            .filter(filter)
+            .filter(
+                "self.statusSelect = :timesheetStatus AND self.employee = :employee AND self.fromDate <= :date AND self.isCompleted = false")
             .bind("timesheetStatus", TimesheetRepository.STATUS_DRAFT)
             .bind("employee", employee)
-            .bind("fromDate", fromDate)
-            .bind("toDate", toDate)
+            .bind("date", date)
             .order("-id")
             .fetchOne();
     if (timesheet != null) {
@@ -83,17 +76,16 @@ public class TimesheetFetchServiceImpl implements TimesheetFetchService {
 
     return getOrCreateOpenTimesheet(
         employeeService.getEmployee(AuthUtils.getUser()),
-        appHumanResourceService.getTodayDateTime().toLocalDate(),
-        null);
+        appHumanResourceService.getTodayDateTime().toLocalDate());
   }
 
   @Override
-  public Timesheet getOrCreateOpenTimesheet(Employee employee, LocalDate fromDate, LocalDate toDate)
+  public Timesheet getOrCreateOpenTimesheet(Employee employee, LocalDate date)
       throws AxelorException {
-    Timesheet timesheet = getDraftTimesheet(employee, fromDate, toDate);
+    Timesheet timesheet = getDraftTimesheet(employee, date);
     if (timesheet == null) {
 
-      timesheet = timesheetCreateService.createTimesheet(employee, fromDate, toDate);
+      timesheet = timesheetCreateService.createTimesheet(employee, date, null);
     }
     return timesheet;
   }
