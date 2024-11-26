@@ -58,6 +58,8 @@
 
     <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
 
+    <many-to-one name="timeUnit" ref="com.axelor.apps.base.db.Unit" title="Time unit"/>
+
     <!-- Gantt view fields -->
 
     <decimal name="plannedProgress" title="Planned progress"/>
