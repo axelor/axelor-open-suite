@@ -180,9 +180,11 @@ public class ProjectServiceImpl implements ProjectService {
                 ? 1
                 : taskTemplatet1.getParentTaskTemplate().equals(taskTemplate2) ? -1 : 1);
 
-    taskTemplateList.forEach(
-        taskTemplate ->
-            projectCreateTaskService.createTask(taskTemplate, project, taskTemplateSet));
+    if (!ObjectUtils.isEmpty(taskTemplateList)) {
+      for (TaskTemplate taskTemplate : taskTemplateList) {
+        projectCreateTaskService.createTask(taskTemplate, project, taskTemplateSet);
+      }
+    }
     return project;
   }
 

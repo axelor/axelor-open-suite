@@ -8,7 +8,7 @@
     <field name="name"/>
     <field name="product"/>
     <field name="assignedTo"/>
-    <field name="team"/>
+    <field name="team" hidden="true"/>
     <field name="delayToStart"/>
     <field name="duration"/>
     <field name="totalPlannedHrs"/>
@@ -25,7 +25,7 @@
       <field name="duration"/>
       <field name="totalPlannedHrs"/>
       <field name="assignedTo" canEdit="false"/>
-      <field name="team" canEdit="false"/>
+      <field name="team" canEdit="false" hidden="true"/>
       <field name="isUniqueTaskForMultipleQuantity" widget="boolean-switch"/>
       <field name="projectTaskCategory"/>
       <field name="parentTaskTemplate" domain=":id IS NULL OR self.id != :id"/>
