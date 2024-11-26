@@ -48,6 +48,9 @@ public interface FixedAssetLineToolService {
       FixedAsset fixedAsset,
       ArithmeticOperation arithmeticOperation);
 
+  BigDecimal getCurrenciesMaxScaledValue(
+      BigDecimal amount1, BigDecimal amount2, ArithmeticOperation arithmeticOperation);
+
   BigDecimal getCompanyScaledValue(BigDecimal amount1, FixedAsset fixedAsset);
 
   BigDecimal getCompanyScaledValue(

@@ -41,6 +41,7 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
 
   protected CurrencyScaleService currencyScaleService;
   protected FindFixedAssetService findFixedAssetService;
+  protected static final int CURRENCY_MAX_SCALE = 3;
 
   @Inject
   public FixedAssetLineToolServiceImpl(
@@ -120,6 +121,15 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
         ? BigDecimal.ZERO
         : currencyScaleService.getCompanyScaledValue(
             fixedAsset, arithmeticOperation.operate(amount1, amount2));
+  }
+
+  @Override
+  public BigDecimal getCurrenciesMaxScaledValue(
+      BigDecimal amount1, BigDecimal amount2, ArithmeticOperation arithmeticOperation) {
+    return amount1 == null
+        ? BigDecimal.ZERO
+        : currencyScaleService.getScaledValue(
+            arithmeticOperation.operate(amount1, amount2), CURRENCY_MAX_SCALE);
   }
 
   @Override
