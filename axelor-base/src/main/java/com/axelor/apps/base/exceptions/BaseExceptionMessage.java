@@ -75,6 +75,9 @@ public final class BaseExceptionMessage {
 
   public static final String UNIT_CONVERSION_4 = /*$$(*/ "End unit cannot be void." /*)*/;
 
+  public static final String COEFFICIENT_SHOULD_NOT_BE_ZERO = /*$$(*/
+      "The coefficient for unit conversion from %s to %s should not be 0." /*)*/;
+
   public static final String CURRENCY_CONVERSION_1 = /*$$(*/
       "WARNING : Please close the current conversion period before creating new one" /*)*/;
   public static final String CURRENCY_CONVERSION_2 = /*$$(*/
@@ -685,6 +688,11 @@ public final class BaseExceptionMessage {
 
   public static final String LOCALIZATION_LANGUAGE_EMPTY = /*$$(*/
       "Language is empty for the localization %s" /*)*/;
+
+  public static final String DATA_SHARING_REFERENTIAL_LINE_JPQL_SYNTAX_IS_WRONG = /*$$(*/
+      "Wrong JPQL syntax : %s" /*)*/;
+  public static final String DATA_SHARING_REFERENTIAL_LINE_JPQL_SYNTAX_IS_CORRECT = /*$$(*/
+      "The syntax of the script is correct." /*)*/;
 
   public static final String APP_BASE_NO_UNIT_DAYS = /*$$(*/
       "There is no configured unit days in the app base config" /*)*/;

@@ -1,3 +1,0 @@
----
-title: "Purchase order lines: fixed an issue where the warning about default supplier was not displayed."
-module: axelor-purchase

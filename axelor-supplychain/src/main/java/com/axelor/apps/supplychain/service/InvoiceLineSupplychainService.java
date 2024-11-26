@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -72,7 +73,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
       CurrencyScaleService currencyScaleService,
-      ProductPriceService productPriceService) {
+      ProductPriceService productPriceService,
+      FiscalPositionService fiscalPositionService) {
     super(
         currencyService,
         priceListService,
@@ -87,7 +89,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         internationalService,
         invoiceLineAttrsService,
         currencyScaleService,
-        productPriceService);
+        productPriceService,
+        fiscalPositionService);
     this.supplierCatalogService = supplierCatalogService;
   }
 

@@ -827,9 +827,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             .domain(domain)
             .param("details-view", "true");
 
-    if (project.getIsShowKanbanPerSection() && project.getIsShowCalendarPerSection()) {
-      builder.add("kanban", "task-per-section-kanban");
-      builder.add("calendar", "project-task-per-section-calendar");
+    if (project.getIsShowKanbanPerCategory() && project.getIsShowCalendarPerCategory()) {
+      builder.add("kanban", "task-per-category-kanban");
+      builder.add("calendar", "project-task-per-category-calendar");
     } else {
       builder.add("kanban", "project-task-kanban");
       builder.add("calendar", "project-task-per-status-calendar");

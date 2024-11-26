@@ -29,6 +29,8 @@ import com.axelor.apps.stock.rest.dto.StockProductGetRequest;
 import com.axelor.apps.stock.rest.dto.StockProductPutRequest;
 import com.axelor.apps.stock.rest.dto.StockProductVariantResponse;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -101,10 +103,10 @@ public class StockProductRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Update locker for product with id "
-            + product.getId()
-            + " to "
-            + requestBody.getNewLocker());
+        String.format(
+            I18n.get(ITranslation.UPDATE_LOCKER_FOR_PRODUCT),
+            product.getId(),
+            requestBody.getNewLocker()));
   }
 
   @Operation(
@@ -129,7 +131,7 @@ public class StockProductRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Request completed",
+        I18n.get(ITranslation.REQUEST_COMPLETED),
         new StockProductVariantResponse(
             product, Beans.get(StockProductRestService.class).fetchAttributes(product)));
   }

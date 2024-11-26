@@ -236,6 +236,8 @@
       </panel>
       <panel name="financialDataPanel" title="Financial Data" colSpan="12"
         if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
+        <field name="invoicingType" onChange="action-project-task-attrs-onchange-invoice-type"
+          readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length > 0"/>
         <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true">
           <field name="product" colSpan="3" canEdit="false"
             onChange="action-business-project-project-task-group-product-onchange"
@@ -255,9 +257,6 @@
             form-view="currency-form" canEdit="false" readonlyIf="saleOrderLine"/>
           <field name="exTaxTotal" readonly="true" colSpan="3"/>
           <field name="totalCosts" colSpan="3"/>
-          <field name="invoicingType" colSpan="3"
-            onChange="action-project-task-attrs-onchange-invoice-type"
-            readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length > 0"/>
           <field name="toInvoice" colSpan="2" readonly="true"
             if="__config__.app.getApp('business-project').automaticInvoicing"/>
           <field name="toInvoice" colSpan="2" readonlyIf="invoiced"

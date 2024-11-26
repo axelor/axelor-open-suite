@@ -263,10 +263,8 @@
         <field name="contract" readonly="true" hidden="true" showIf="contract"
           form-view="contract-form" grid-view="contract-grid"/>
         <field name="project" domain="self.isBusinessProject = true"
-          form-view="business-project-form" grid-view="project-grid" colSpan="6"/>
-        <button name="updateLinesBtn" title="Update lines with selected project"
-          onClick="save,action-business-project-purchase-order-method-update-lines,save" colSpan="6"
-          readonlyIf="!project"/>
+          form-view="business-project-form" grid-view="project-grid" colSpan="6"
+          onChange="action-business-project-purchase-order-method-update-lines"/>
         <field name="projectTask" domain="self.project = :project"
           form-view="business-project-task-form" grid-view="business-project-task-grid" colSpan="6"/>
       </panel>

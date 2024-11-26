@@ -29,7 +29,6 @@ import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -107,25 +106,16 @@ public class PurchaseOrderLineController {
   }
 
   public void getTaxEquiv(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+      PurchaseOrder purchaseOrder = getPurchaseOrder(context);
 
-    Context context = request.getContext();
-    PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
-    PurchaseOrder purchaseOrder = getPurchaseOrder(context);
-
-    response.setValue("taxEquiv", null);
-
-    Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
-    if (purchaseOrder == null
-        || purchaseOrderLine == null
-        || purchaseOrder.getSupplierPartner() == null
-        || CollectionUtils.isEmpty(taxLineSet)) return;
-
-    FiscalPositionService fiscalPositionService = Beans.get(FiscalPositionService.class);
-    TaxService taxService = Beans.get(TaxService.class);
-    response.setValue(
-        "taxEquiv",
-        fiscalPositionService.getTaxEquiv(
-            purchaseOrder.getFiscalPosition(), taxService.getTaxSet(taxLineSet)));
+      response.setValues(
+          Beans.get(PurchaseOrderLineService.class).recomputeTax(purchaseOrder, purchaseOrderLine));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void updateProductInformation(ActionRequest request, ActionResponse response) {

@@ -24,6 +24,22 @@
         </panel>
       </insert>
     </extend>
+    <extend target="//panel-tabs[@name='mainPanelTab']/*[last()]">
+      <insert position="after">
+        <panel name="dmsConfigPanel" title="DMS"
+          if="__config__.app.getApp('mobile-settings')?.getIsDMSAppEnabled()">
+          <field name="dmsRoot" domain="self.isDirectory = true"/>
+          <panel-related name="favouriteFolderSetPanel" field="favouriteFolderSet"
+            domain="self.isDirectory = true" colSpan="12"
+            if="__config__.app.getApp('mobile-settings')?.getIsFavoritesManagementEnabled()"
+            canNew="false"/>
+          <panel-related name="favouriteFileSetPanel" field="favouriteFileSet"
+            domain="self.isDirectory = false" colSpan="12"
+            if="__config__.app.getApp('mobile-settings')?.getIsFavoritesManagementEnabled()"
+            canNew="false"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <form id="base-user-preferences-form-mobilesettings" name="user-preferences-form"

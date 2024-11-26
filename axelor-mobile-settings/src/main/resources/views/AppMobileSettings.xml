@@ -41,6 +41,7 @@
     </panel>
     <panel name="versionPanel" sidebar="true">
       <field name="minimalRequiredMobileAppVersion"/>
+      <field name="currentApkFile" widget="binary-link" x-accept=".apk"/>
     </panel>
     <panel name="configPanel" sidebar="true">
       <panel name="configBasePanel" title="General">
@@ -160,6 +161,19 @@
         <field name="reportingTypesToDisplaySelect" widget="SingleSelect" placeholder="All"
           colSpan="6"/>
         <field name="isTimesheetProjectInvoicingEnabled" widget="boolean-switch" colSpan="6"/>
+      </panel>
+      <panel name="dmsConfigPanel" title="DMS" showIf="isDMSAppEnabled">
+        <field name="defaultDmsRoot" domain="self.isDirectory = true"/>
+        <field name="isFavoritesManagementEnabled" widget="boolean-switch"/>
+        <field name="isDownloadAllowed" widget="boolean-switch"/>
+        <field name="isRenamingAllowed" widget="boolean-switch"/>
+        <panel name="folderPanel" title="Folders">
+          <field name="isFolderCreationAllowed" widget="boolean-switch"/>
+        </panel>
+        <panel name="filePanel" title="Files">
+          <field name="isFileCreationAllowed" widget="boolean-switch"/>
+          <field name="isFileDeletionAllowed" widget="boolean-switch"/>
+        </panel>
       </panel>
     </panel-tabs>
 
