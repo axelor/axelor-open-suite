@@ -118,9 +118,16 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
 
   protected void setBankDetails(Employee employee, BankDetails bankDetails, Expense expense) {
     BankDetails payCompanyBankDetails =
-        employee.getMainEmploymentContract().getPayCompany().getDefaultBankDetails();
+        Optional.ofNullable(employee.getMainEmploymentContract())
+            .map(EmploymentContract::getPayCompany)
+            .map(Company::getDefaultBankDetails)
+            .orElse(null);
+
     BankDetails activeCompanyBankDetails =
-        employee.getUser().getActiveCompany().getDefaultBankDetails();
+        Optional.ofNullable(employee.getUser())
+            .map(User::getActiveCompany)
+            .map(Company::getDefaultBankDetails)
+            .orElse(null);
 
     if (bankDetails != null) {
       expense.setBankDetails(bankDetails);

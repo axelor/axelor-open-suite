@@ -1,0 +1,3 @@
+---
+title: "Expense API: fixed the error when an employee did not have a contract while creating an expense."
+module: axelor-human-resource
