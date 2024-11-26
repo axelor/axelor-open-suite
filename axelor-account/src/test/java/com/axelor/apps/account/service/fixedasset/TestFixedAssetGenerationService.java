@@ -102,6 +102,15 @@ class TestFixedAssetGenerationService {
                         .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     when(currencyScaleService.getCompanyScale(any(FixedAsset.class)))
         .thenReturn(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS);
+    when(fixedAssetLineToolService.getCurrenciesMaxScaledValue(any(), any(), any(ArithmeticOperation.class)))
+            .then(
+                    (Answer<BigDecimal>)
+                            invocation ->
+                                    currencyScaleService.getScaledValue(
+                                            ((ArithmeticOperation) invocation.getArguments()[2])
+                                                    .operate(
+                                                            ((BigDecimal) invocation.getArguments()[0]),
+                                                            ((BigDecimal) invocation.getArguments()[1]))));
 
     FixedAssetLineComputationServiceFactory fixedAssetLineComputationServiceFactory =
         mock(FixedAssetLineComputationServiceFactory.class);
