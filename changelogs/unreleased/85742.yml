@@ -1,0 +1,5 @@
+---
+title: "ProjectPlanningTime: added missing computation duration at change of time units."
+module: axelor-human-resource
+developer: |
+  Removed `action-project-planning-time-record-start-time-onchange`, replaced by `action-project-planning-time-method-compute-planned-time`.
