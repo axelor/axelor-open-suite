@@ -19,6 +19,9 @@
 package com.axelor.apps.sale.service.saleorderline;
 
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ContextHelper;
 
@@ -26,8 +29,21 @@ public class SaleOrderLineContextHelper {
 
   private SaleOrderLineContextHelper() {}
 
-  public static SaleOrder getSaleOrder(Context context) {
+  public static SaleOrder getSaleOrder(Context context, SaleOrderLine saleOrderLine) {
+    SaleOrder saleOrder = ContextHelper.getOriginParent(context, SaleOrder.class);
+    if (saleOrder != null) {
+      return saleOrder;
+    }
 
-    return ContextHelper.getOriginParent(context, SaleOrder.class);
+    SaleOrderLineRepository saleOrderLineRepository = Beans.get(SaleOrderLineRepository.class);
+
+    // Line is persisted and is not a subline
+    if (saleOrderLine.getId() != null) {
+      saleOrder = saleOrderLineRepository.find(saleOrderLine.getId()).getSaleOrder();
+      if (saleOrder != null) {
+        return saleOrder;
+      }
+    }
+    return saleOrder;
   }
 }
