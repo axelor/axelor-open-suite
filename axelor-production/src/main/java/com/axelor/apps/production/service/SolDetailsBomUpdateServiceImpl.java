@@ -130,14 +130,10 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
             .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
             .count();
     return nbBomLinesAccountable == nbSaleOrderLineDetails
-        && Optional.of(
-                saleOrderLine.getSaleOrderLineDetailsList().stream()
-                    .filter(
-                        line ->
-                            line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
-                    .collect(Collectors.toList()))
+        && Optional.ofNullable(saleOrderLine.getSaleOrderLineDetailsList())
             .orElse(List.of())
             .stream()
+            .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
             .allMatch(this::isSolDetailsSyncWithBomLine);
   }
 
