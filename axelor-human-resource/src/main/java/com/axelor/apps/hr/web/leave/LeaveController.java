@@ -254,6 +254,8 @@ public class LeaveController {
       }
       response.setValue(
           "duration", Beans.get(LeaveRequestComputeDurationService.class).computeDuration(leave));
+      response.setValue(
+          "leaveDaysToDate", Beans.get(LeaveRequestService.class).getLeaveDaysToDate(leave));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

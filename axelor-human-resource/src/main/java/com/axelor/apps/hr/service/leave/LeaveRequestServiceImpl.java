@@ -83,14 +83,6 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
 
   @Override
   public boolean willHaveEnoughDays(LeaveRequest leaveRequest) {
-
-    LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
-    LocalDateTime endDate = leaveRequest.getToDateT();
-
-    LeaveReason leaveReason = leaveRequest.getLeaveReason();
-    int leaveReasonTypeSelect = leaveReason.getLeaveReasonTypeSelect();
-
-    int interval = getInterval(leaveReasonTypeSelect, endDate, todayDate);
     LeaveLine leaveLine =
         leaveLineRepository
             .all()
@@ -103,18 +95,45 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
           && leaveReasonService.isExceptionalDaysReason(leaveRequest.getLeaveReason());
     }
 
-    BigDecimal num =
-        leaveLine
-            .getQuantity()
-            .add(
-                leaveRequest
-                    .getEmployee()
-                    .getWeeklyPlanning()
-                    .getLeaveCoef()
-                    .multiply(leaveRequest.getLeaveReason().getDefaultDayNumberGain())
-                    .multiply(BigDecimal.valueOf(interval)));
+    BigDecimal num = getLeaveDaysToDate(leaveRequest);
 
     return leaveRequest.getDuration().compareTo(num) <= 0;
+  }
+
+  @Override
+  public BigDecimal getLeaveDaysToDate(LeaveRequest leaveRequest) {
+    LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
+    LocalDateTime endDate = leaveRequest.getToDateT();
+    if (todayDate == null || endDate == null) {
+      return BigDecimal.ZERO;
+    }
+
+    LeaveReason leaveReason = leaveRequest.getLeaveReason();
+    int leaveReasonTypeSelect = leaveReason.getLeaveReasonTypeSelect();
+
+    int interval = getInterval(leaveReasonTypeSelect, endDate, todayDate);
+
+    LeaveLine leaveLine =
+        leaveLineRepository
+            .all()
+            .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
+            .bind("leaveReason", leaveRequest.getLeaveReason())
+            .bind("employee", leaveRequest.getEmployee())
+            .fetchOne();
+
+    if (leaveLine == null) {
+      return BigDecimal.ZERO;
+    }
+
+    return leaveLine
+        .getQuantity()
+        .add(
+            leaveRequest
+                .getEmployee()
+                .getWeeklyPlanning()
+                .getLeaveCoef()
+                .multiply(leaveRequest.getLeaveReason().getDefaultDayNumberGain())
+                .multiply(BigDecimal.valueOf(interval)));
   }
 
   protected int getInterval(
