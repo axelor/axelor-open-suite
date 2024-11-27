@@ -20,11 +20,11 @@
     		<![CDATA[
                        String fullName = "";
     				   if (reference != null && reference != "") {
-                            if(product.getCode() != null)
+                            if(product != null && product.getCode() != null)
     						fullName +=  reference + "[" + product.getCode() + "]";
                             else
                               fullName += reference;
-    				    }else if(product.getCode() != null)
+    				    }else if(product != null && product.getCode() != null)
                               fullName += "[" + product.getCode() + "]";
     					return fullName;
 
