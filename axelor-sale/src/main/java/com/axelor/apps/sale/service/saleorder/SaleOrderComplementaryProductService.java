@@ -32,4 +32,6 @@ public interface SaleOrderComplementaryProductService {
    * @return
    */
   List<SaleOrderLine> handleComplementaryProducts(SaleOrder saleOrder) throws AxelorException;
+
+  void setNewManualId(SaleOrderLine saleOrderLine);
 }
