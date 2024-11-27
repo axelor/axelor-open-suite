@@ -30,9 +30,9 @@ public interface ProjectBusinessService extends ProjectService {
 
   SaleOrder generateQuotation(Project project) throws AxelorException;
 
-  Project generateProject(SaleOrder saleOrder);
+  Project generateProject(SaleOrder saleOrder) throws AxelorException;
 
-  Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent);
+  Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent) throws AxelorException;
 
   void computeProjectTotals(Project project) throws AxelorException;
 

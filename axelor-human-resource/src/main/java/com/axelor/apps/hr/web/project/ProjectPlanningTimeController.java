@@ -21,9 +21,8 @@ package com.axelor.apps.hr.web.project;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.hr.service.project.PlannedTimeValueService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
-import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
@@ -34,7 +33,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -116,42 +114,20 @@ public class ProjectPlanningTimeController {
     ProjectPlanningTime projectPlanningTime =
         request.getContext().asType(ProjectPlanningTime.class);
 
-    response.setValue(
-        "plannedTime",
-        Beans.get(ProjectPlanningTimeService.class).computePlannedTime(projectPlanningTime));
-    Optional<Company> optCompany =
-        Optional.ofNullable(projectPlanningTime)
-            .map(ProjectPlanningTime::getProject)
-            .map(Project::getCompany);
-    if (optCompany.isPresent()
-        && Beans.get(ProjectConfigService.class)
-            .getProjectConfig(optCompany.get())
-            .getIsSelectionOnDisplayPlannedTime()) {
-      if (projectPlanningTime.getDisplayPlannedTimeRestricted() != null) {
-        response.setValue(
-            "displayPlannedTime",
-            Optional.of(projectPlanningTime)
-                .map(ProjectPlanningTime::getDisplayPlannedTimeRestricted)
-                .map(PlannedTimeValue::getPlannedTime)
-                .orElse(BigDecimal.ZERO));
-      }
-    } else {
-      response.setValue(
-          "displayPlannedTimeRestricted",
-          Beans.get(PlannedTimeValueService.class)
-              .createPlannedTimeValue(projectPlanningTime.getDisplayPlannedTime()));
-    }
+    response.setValues(
+        Beans.get(ProjectPlanningTimeComputeService.class)
+            .computePlannedTimeValues(projectPlanningTime));
   }
 
   public void computeDisplayTimeUnitDomain(ActionRequest request, ActionResponse response) {
     ProjectPlanningTime projectPlanningTime =
         request.getContext().asType(ProjectPlanningTime.class);
 
-    response.setAttr(
-        "displayTimeUnit",
-        "domain",
+    String domain =
         Beans.get(ProjectPlanningTimeService.class)
-            .computeDisplayTimeUnitDomain(projectPlanningTime));
+            .computeDisplayTimeUnitDomain(projectPlanningTime);
+    response.setAttr("displayTimeUnit", "domain", domain);
+    response.setAttr("timeUnit", "domain", domain);
   }
 
   public void computeDisplayPlannedTimeRestrictedDomain(

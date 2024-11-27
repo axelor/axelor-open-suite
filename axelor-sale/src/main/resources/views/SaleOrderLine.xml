@@ -60,7 +60,8 @@
   </grid>
 
   <grid name="sale-order-line-editable-grid" title="SO lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true">
+    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true"
+    onNew="action-sale-order-line-attrs-set-compute-with-sol">
 
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
@@ -83,7 +84,7 @@
       validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="price" colSpan="3"
-      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable || subSaleOrderLineList.length &gt; 0"
+      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable || (subSaleOrderLineList.length &gt; 0 &amp;&amp; $computeWithSOL)"
       onChange="action-sale-order-line-method-onchange-price" hidden="true"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="inTaxPrice" readonlyIf="$isReadOnly !== false || deliveryState == 3"
@@ -114,6 +115,7 @@
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
+    <field name="$computeWithSOL" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -269,7 +271,7 @@
             onChange="action-sale-order-line-method-unit-onchange" requiredIf="typeSelect == 0"
             canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
           <field name="price" colSpan="3"
-            readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable || subSaleOrderLineList.length &gt; 0"
+            readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable || (subSaleOrderLineList.length &gt; 0 &amp;&amp; $computeWithSOL)"
             onChange="action-sale-order-line-method-onchange-price" hidden="true"/>
           <field name="inTaxPrice" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
@@ -299,6 +301,7 @@
           <label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
           <field name="discountsNeedReview" hidden="true"/>
           <field name="$qtyValid" hidden="true" colSpan="12"/>
+          <field name="$computeWithSOL" hidden="true"/>
         </panel>
 
         <panel name="taxPanel" colSpan="12">
@@ -740,4 +743,8 @@
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="addToCart"/>
   </action-method>
 
+  <action-attrs name="action-sale-order-line-attrs-set-compute-with-sol">
+    <attribute for="$computeWithSOL" name="value"
+      expr="eval: _config__.app.getApp('sale')?.getIsSOLPriceTotalOfSubLines()"/>
+  </action-attrs>
 </object-views>

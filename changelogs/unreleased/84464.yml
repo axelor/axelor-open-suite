@@ -1,0 +1,3 @@
+---
+title: "HR batch: fixed an error occurring when launching Leave Management Reset Batch."
+module: axelor-human-resource

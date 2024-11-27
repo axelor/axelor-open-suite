@@ -17,6 +17,8 @@
 
     <many-to-one name="billOfMaterialLine"
       ref="com.axelor.apps.production.db.BillOfMaterialLine" title="BoM line"/>
+    <one-to-many name="saleOrderLineDetailsList" title="Sale order line details list"
+      ref="com.axelor.apps.production.db.SaleOrderLineDetails" mappedBy="saleOrderLine"/>
 
     <boolean name="isToProduce" transient="true">
       <![CDATA[

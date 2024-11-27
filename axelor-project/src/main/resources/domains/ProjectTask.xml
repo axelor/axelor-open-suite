@@ -58,6 +58,8 @@
 
     <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
 
+    <many-to-one name="timeUnit" ref="com.axelor.apps.base.db.Unit" title="Time unit"/>
+
     <!-- Gantt view fields -->
 
     <decimal name="plannedProgress" title="Planned progress"/>
@@ -76,8 +78,6 @@
     <many-to-one name="metaFile" title="Signature" ref="com.axelor.meta.db.MetaFile"/>
 
     <many-to-many name="tagSet" ref="com.axelor.apps.base.db.Tag" title="Tags"/>
-    <many-to-one name="projectTaskSection"
-      ref="com.axelor.apps.project.db.ProjectTaskSection" title="Section"/>
 
     <string name="ticketNumber" title="Ticker number" readonly="true"/>
 
