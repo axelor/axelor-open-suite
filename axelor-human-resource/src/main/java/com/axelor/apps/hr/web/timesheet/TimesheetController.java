@@ -48,6 +48,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -573,15 +574,44 @@ public class TimesheetController {
 
       BigDecimal periodTotal =
           Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet);
+      BigDecimal periodTotalConvert =
+          Beans.get(TimesheetLineService.class).computeHoursDuration(timesheet, periodTotal, false);
+      String periodTotalConvertTitle = timesheetService.getPeriodTotalConvertTitle(timesheet);
 
       response.setAttr("$periodTotalConvert", "hidden", false);
+      response.setAttr("$periodTotalConvert", "value", periodTotalConvert);
+      response.setAttr("$periodTotalConvert", "title", periodTotalConvertTitle);
+
+      Employee employee = timesheet.getEmployee();
+      LocalDate fromDate = timesheet.getFromDate();
+      LocalDate toDate = timesheet.getToDate();
+      String timeUnit = timesheet.getTimeLoggingPreferenceSelect();
+
+      if (employee == null || fromDate == null || toDate == null || StringUtils.isEmpty(timeUnit)) {
+        return;
+      }
+
+      BigDecimal periodTotalLeavesAndHolidays =
+          timesheetService.computeTotalLeavesAndHolidaysForPeriod(
+              employee, fromDate, toDate, timeUnit);
+      BigDecimal periodTotalWorkDurtion =
+          timesheetService.computeTotalWorkDurtionForPeriod(employee, fromDate, toDate, timeUnit);
+
+      response.setAttr("$periodTotalLeavesAndHolidays", "hidden", false);
+      response.setAttr("$periodTotalDueTimeEntries", "hidden", false);
+      response.setAttr("$periodTotalLeavesAndHolidays", "value", periodTotalLeavesAndHolidays);
       response.setAttr(
-          "$periodTotalConvert",
+          "$periodTotalDueTimeEntries",
           "value",
-          Beans.get(TimesheetLineService.class)
-              .computeHoursDuration(timesheet, periodTotal, false));
+          periodTotalWorkDurtion.subtract(periodTotalConvert));
       response.setAttr(
-          "$periodTotalConvert", "title", timesheetService.getPeriodTotalConvertTitle(timesheet));
+          "$periodTotalLeavesAndHolidays",
+          "title",
+          I18n.get("Leaves and public holidays") + " (" + periodTotalConvertTitle + ")");
+      response.setAttr(
+          "$periodTotalDueTimeEntries",
+          "title",
+          I18n.get("Due time entries") + " (" + periodTotalConvertTitle + ")");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -599,16 +629,6 @@ public class TimesheetController {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       Beans.get(TimesheetService.class).updateTimeLoggingPreference(timesheet);
-      response.setAttr("$periodTotalConvert", "hidden", false);
-      response.setAttr(
-          "$periodTotalConvert",
-          "value",
-          Beans.get(TimesheetLineService.class)
-              .computeHoursDuration(timesheet, timesheet.getPeriodTotal(), false));
-      response.setAttr(
-          "$periodTotalConvert",
-          "title",
-          Beans.get(TimesheetService.class).getPeriodTotalConvertTitle(timesheet));
       response.setValue("timeLoggingPreferenceSelect", timesheet.getTimeLoggingPreferenceSelect());
       response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
     } catch (Exception e) {
