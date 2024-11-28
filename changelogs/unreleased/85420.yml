@@ -1,3 +1,5 @@
 ---
 title: "Employee: checked unicity constraints when creating user at the end of employee creation process."
 module: axelor-human-resource
+developer: |
+  Renamed `action-condition-user-validCode` to `action-user-method-validate-code`.
