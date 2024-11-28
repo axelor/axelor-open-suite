@@ -7,14 +7,15 @@
     onSave="action-employee-view-create-user" onNew="action-employee-record-user-creation-onnew">
     <panel name="userPanel">
       <field name="group" placeholder="user group"/>
-      <field name="code" placeholder="login name" onChange="action-condition-user-validCode"
+      <field name="code" placeholder="login name" onChange="action-user-method-validate-code"
         validIf="code.length >= 2" readonlyIf="id &amp;&amp; code == 'admin'" title="Login"/>
       <field name="activateOn"
         validIf="!activateOn || (activateOn &amp;&amp; !expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/>
       <field name="expiresOn"
         validIf="!expiresOn || (!activateOn &amp;&amp; expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/>
       <field name="$generateRandomPassword" hidden="true"/>
-      <button name="okBtn" title="OK" onClick="validate,action-employee-view-create-user"/>
+      <button name="okBtn" title="OK" readonly="true"
+        onClick="validate,action-employee-view-create-user"/>
     </panel>
   </form>
 
