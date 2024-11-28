@@ -154,11 +154,12 @@ public class SaleOrderLineProductProductionServiceImpl
       throws AxelorException {
     if (saleOrderLine.getIsToProduce()) {
       if (!solBomUpdateService.isUpdated(saleOrderLine)) {
-      saleOrderLineBomService
-          .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
-          .stream()
-          .filter(Objects::nonNull)
-          .forEach(saleOrderLine::addSubSaleOrderLineListItem);}
+        saleOrderLineBomService
+            .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+            .stream()
+            .filter(Objects::nonNull)
+            .forEach(saleOrderLine::addSubSaleOrderLineListItem);
+      }
       saleOrderLineDetailsBomService
           .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
           .stream()
