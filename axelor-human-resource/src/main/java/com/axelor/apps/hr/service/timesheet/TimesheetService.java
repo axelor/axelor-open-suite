@@ -19,7 +19,10 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public interface TimesheetService {
 
@@ -32,4 +35,12 @@ public interface TimesheetService {
    * @return the updated timesheet
    */
   void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
+
+  BigDecimal computeTotalLeavesAndHolidaysForPeriod(
+      Employee employee, LocalDate fromDate, LocalDate toDate, String timeUnit)
+      throws AxelorException;
+
+  BigDecimal computeTotalWorkDurtionForPeriod(
+      Employee employee, LocalDate fromDate, LocalDate toDate, String timeUnit)
+      throws AxelorException;
 }
