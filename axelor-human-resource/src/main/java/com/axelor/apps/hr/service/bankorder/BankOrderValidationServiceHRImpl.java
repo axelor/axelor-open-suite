@@ -91,10 +91,18 @@ public class BankOrderValidationServiceHRImpl extends BankOrderValidationService
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void validatePayment(BankOrder bankOrder)
+  protected BankOrder generateMoves(BankOrder bankOrder)
       throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
-    super.validatePayment(bankOrder);
+    if (bankOrder
+        .getFunctionalOriginSelect()
+        .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_EXPENSE)) {
+      this.validateExpensePayment(bankOrder);
+    }
+    return super.generateMoves(bankOrder);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void validateExpensePayment(BankOrder bankOrder) throws AxelorException {
     if (!appBaseService.isApp("employee")) {
       return;
     }

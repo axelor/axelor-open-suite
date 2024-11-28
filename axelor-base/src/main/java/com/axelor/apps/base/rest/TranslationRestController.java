@@ -23,6 +23,8 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.rest.dto.GlobalTranslationsResponse;
 import com.axelor.apps.base.rest.dto.TranslationResponse;
 import com.axelor.apps.base.service.language.LanguageCheckerService;
+import com.axelor.apps.base.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -64,10 +66,12 @@ public class TranslationRestController {
           Beans.get(TranslationRestService.class).createNewTranslation(translationMap, language);
 
       if (addedTranslation == 0) {
-        return ResponseConstructor.build(Response.Status.OK, "Translations already up-to-date.");
+        return ResponseConstructor.build(
+            Response.Status.OK, I18n.get(ITranslation.TRANSLATIONS_UP_TO_DATE));
       }
       return ResponseConstructor.build(
-          Response.Status.CREATED, addedTranslation + " translation(s) successfully added.");
+          Response.Status.CREATED,
+          String.format(I18n.get(ITranslation.TRANSLATIONS_ADDED), addedTranslation));
 
     } catch (IOException e) {
       throw new AxelorException(

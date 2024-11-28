@@ -57,7 +57,10 @@ public class ReconcileGroupProposalServiceImpl implements ReconcileGroupProposal
         moveLineList.stream()
             .map(MoveLine::getReconcileGroup)
             .filter(Objects::nonNull)
-            .filter(r -> r.getStatusSelect() == ReconcileGroupRepository.STATUS_PARTIAL)
+            .filter(
+                r ->
+                    r.getStatusSelect() == ReconcileGroupRepository.STATUS_PARTIAL
+                        || r.getStatusSelect() == ReconcileGroupRepository.STATUS_PROPOSAL)
             .findFirst()
             .orElseGet(
                 () -> createProposalReconcileGroup(moveLineList.get(0).getMove().getCompany()));

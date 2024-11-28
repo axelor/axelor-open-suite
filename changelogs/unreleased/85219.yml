@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed the note and proforma comments on the invoice based on stock moves generated from sale orders."
+module: axelor-supplychain

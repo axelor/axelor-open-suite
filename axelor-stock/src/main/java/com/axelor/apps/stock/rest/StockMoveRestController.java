@@ -31,6 +31,8 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveUpdateService;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -70,7 +72,8 @@ public class StockMoveRestController {
     Beans.get(StockMoveService.class).realize(stockmove);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Stock move with id " + stockmove.getId() + " successfully realized.");
+        Response.Status.OK,
+        String.format(I18n.get(ITranslation.STOCK_MOVE_REALIZED), stockmove.getId()));
   }
 
   /** Add new line in a stock move. Full path to request is /ws/aos/stock-move/add-line/{id} */
@@ -111,7 +114,9 @@ public class StockMoveRestController {
     Beans.get(StockMoveService.class).updateStocks(stockmove);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Line successfully added to stock move with id " + stockmove.getId());
+        Response.Status.OK,
+        String.format(
+            I18n.get(ITranslation.STOCK_MOVE_LINE_ADDED_TO_STOCK_MOVE), stockmove.getId()));
   }
 
   /**
@@ -167,6 +172,8 @@ public class StockMoveRestController {
     }
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Successfully updated", new StockInternalMoveResponse(stockmove));
+        Response.Status.OK,
+        I18n.get(ITranslation.STOCK_MOVE_UPDATED),
+        new StockInternalMoveResponse(stockmove));
   }
 }

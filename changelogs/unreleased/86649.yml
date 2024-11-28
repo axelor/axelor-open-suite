@@ -1,0 +1,3 @@
+---
+title: "Timesheet: fixed NPE because of daily limit configuration."
+module: axelor-human-resource

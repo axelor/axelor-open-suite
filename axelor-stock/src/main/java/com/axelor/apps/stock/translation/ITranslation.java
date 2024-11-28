@@ -35,4 +35,24 @@ public interface ITranslation {
   String MASS_STOCK_MOVE_NEED_TO_PICK = /*$$(*/ "To pick"; /*)*/
   String MASS_STOCK_MOVE_NEED_STORED = /*$$(*/ "Stored"; /*)*/
   String MASS_STOCK_MOVE_NEED_TO_STORE = /*$$(*/ "To store"; /*)*/
+
+  public static final String REQUEST_COMPLETED = /*$$(*/ "Request completed" /*)*/;
+  public static final String INVENTORY_LINE_UPDATED = /*$$(*/
+      "Inventory line successfully updated" /*)*/;
+  public static final String INVENTORY_UPDATED = /*$$(*/ "Inventory successfully updated" /*)*/;
+  public static final String REAL_QTY_UPDATED = /*$$(*/ "Real qty updated;" /*)*/;
+  public static final String REASON_UPDATED = /*$$(*/ "Reason updated;" /*)*/;
+  public static final String STATUS_UPDATED = /*$$(*/ "Status updated;" /*)*/;
+  public static final String COMMENTS_UPDATED = /*$$(*/ "Comments updated;" /*)*/;
+  public static final String STOCK_MOVE_LINE_UPDATED = /*$$(*/ "Line successfully updated." /*)*/;
+  public static final String STOCK_MOVE_LINE_SPLIT = /*$$(*/ "Line successfully split." /*)*/;
+  public static final String STOCK_MOVE_LINE_ADDED_TO_STOCK_MOVE = /*$$(*/
+      "Line successfully added to stock move with id %s" /*)*/;
+  public static final String STOCK_MOVE_LINE_QUANTITY_AVAILABILITY = /*$$(*/
+      "Stock move line quantity availability." /*)*/;
+  public static final String STOCK_MOVE_REALIZED = /*$$(*/
+      "Stock move with id %s successfully realized." /*)*/;
+  public static final String STOCK_MOVE_UPDATED = /*$$(*/ "Successfully updated" /*)*/;
+  public static final String UPDATE_LOCKER_FOR_PRODUCT = /*$$(*/
+      "Update locker for product with id %s to %s" /*)*/;
 }

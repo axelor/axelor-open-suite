@@ -49,6 +49,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
+import java.util.Optional;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 public class InvoicePaymentMoveCreateServiceBankPayImpl
@@ -144,5 +145,13 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
     if (invoicePayment.getPaymentMode().getAutoConfirmBankOrder()) {
       bankOrderValidationService.confirm(bankOrder);
     }
+  }
+
+  @Override
+  public String getOriginFromInvoicePayment(InvoicePayment invoicePayment) {
+    return Optional.of(invoicePayment)
+        .map(InvoicePayment::getBankOrder)
+        .map(BankOrder::getBankOrderSeq)
+        .orElseGet(() -> super.getOriginFromInvoicePayment(invoicePayment));
   }
 }

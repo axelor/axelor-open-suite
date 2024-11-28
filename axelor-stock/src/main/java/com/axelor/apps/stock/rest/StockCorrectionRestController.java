@@ -24,6 +24,8 @@ import com.axelor.apps.stock.rest.dto.StockCorrectionPostRequest;
 import com.axelor.apps.stock.rest.dto.StockCorrectionPutRequest;
 import com.axelor.apps.stock.rest.dto.StockCorrectionResponse;
 import com.axelor.apps.stock.service.StockCorrectionService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -92,13 +94,13 @@ public class StockCorrectionRestController {
     if (requestBody.getRealQty() != null) {
       Beans.get(StockCorrectionService.class)
           .updateCorrectionQtys(stockCorrection, requestBody.getRealQty());
-      message += "Real qty updated; ";
+      message += I18n.get(ITranslation.REAL_QTY_UPDATED);
     }
 
     if (requestBody.fetchReason() != null) {
       Beans.get(StockCorrectionService.class)
           .updateReason(stockCorrection, requestBody.fetchReason());
-      message += "Reason updated; ";
+      message += I18n.get(ITranslation.REASON_UPDATED);
     }
 
     // Stock correction is not already validated
@@ -108,7 +110,7 @@ public class StockCorrectionRestController {
       // user wants to validate stock correction
       if (status == StockCorrectionRepository.STATUS_VALIDATED) {
         if (Beans.get(StockCorrectionService.class).validate(stockCorrection)) {
-          message += "Status updated; ";
+          message += I18n.get(ITranslation.STATUS_UPDATED);
         }
       }
     }
@@ -116,7 +118,7 @@ public class StockCorrectionRestController {
     final String comments = requestBody.getComments();
     if (comments != null) {
       Beans.get(StockCorrectionService.class).updateComments(stockCorrection, comments);
-      message += "Comments updated; ";
+      message += I18n.get(ITranslation.COMMENTS_UPDATED);
     }
 
     StockCorrectionResponse objectBody = new StockCorrectionResponse(stockCorrection);

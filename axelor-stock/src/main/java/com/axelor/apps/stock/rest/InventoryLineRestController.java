@@ -25,6 +25,8 @@ import com.axelor.apps.stock.rest.dto.InventoryLinePostRequest;
 import com.axelor.apps.stock.rest.dto.InventoryLinePutRequest;
 import com.axelor.apps.stock.rest.dto.InventoryLineResponse;
 import com.axelor.apps.stock.service.InventoryLineService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -66,7 +68,7 @@ public class InventoryLineRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Inventory line successfully updated",
+        I18n.get(ITranslation.INVENTORY_LINE_UPDATED),
         new InventoryLineResponse(inventoryLine));
   }
 

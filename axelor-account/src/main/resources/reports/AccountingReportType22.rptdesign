@@ -31,6 +31,14 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[function formatNumber(number) {
+	var exportTypeSelect = params["ExportTypeSelect"];
+	var numberOfDecimals = vars["numberOfDecimals"];
+	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
+	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
+	var formatPattern = basePart + decimalPart;
+	return Formatter.format(number, formatPattern);
+}]]></method>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
@@ -99,6 +107,17 @@
             <simple-property-list name="defaultValue">
                 <value type="constant"></value>
             </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="ExportTypeSelect" id="4614">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -841,6 +860,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     </structure>
                 </list-property>
             </structure>
+            <method name="onFetch"><![CDATA[vars["numberOfDecimals"] = dataSetRow["number_of_decimals"];]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -2488,7 +2508,7 @@ this.height=row["logo_height"];]]></method>
                                         <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["depreciation_a"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["depreciation_a"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4495">
@@ -2509,7 +2529,7 @@ this.height=row["logo_height"];]]></method>
                                         <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["depreciation_b"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["depreciation_b"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4497">
@@ -2530,7 +2550,7 @@ this.height=row["logo_height"];]]></method>
                                         <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["depreciation_c"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["depreciation_c"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4499">
@@ -2551,7 +2571,7 @@ this.height=row["logo_height"];]]></method>
                                         <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["depreciation_d"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["depreciation_d"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -2626,7 +2646,7 @@ this.height=row["logo_height"];]]></method>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["depreciation_a_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["depreciation_a_total"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4557">
@@ -2654,7 +2674,7 @@ this.height=row["logo_height"];]]></method>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["depreciation_b_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["depreciation_b_total"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4558">
@@ -2682,7 +2702,7 @@ this.height=row["logo_height"];]]></method>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["depreciation_c_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["depreciation_c_total"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4559">
@@ -2710,7 +2730,7 @@ this.height=row["logo_height"];]]></method>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["depreciation_d_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["depreciation_d_total"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -3287,7 +3307,7 @@ this.height=row["logo_height"];]]></method>
                                         <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["impairment_value_a"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["impairment_value_a"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4461">
@@ -3308,7 +3328,7 @@ this.height=row["logo_height"];]]></method>
                                         <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["impairment_value_b"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["impairment_value_b"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4463">
@@ -3329,7 +3349,7 @@ this.height=row["logo_height"];]]></method>
                                         <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["impairment_value_c"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["impairment_value_c"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4465">
@@ -3350,7 +3370,7 @@ this.height=row["logo_height"];]]></method>
                                         <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["impairment_value_d"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["impairment_value_d"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -3426,7 +3446,7 @@ this.height=row["logo_height"];]]></method>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["impairment_value_a_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["impairment_value_a_total"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4570">
@@ -3454,7 +3474,7 @@ this.height=row["logo_height"];]]></method>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["impairment_value_b_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["impairment_value_b_total"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4571">
@@ -3482,7 +3502,7 @@ this.height=row["logo_height"];]]></method>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["impairment_value_c_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["impairment_value_c_total"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4572">
@@ -3510,7 +3530,7 @@ this.height=row["logo_height"];]]></method>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["impairment_value_d_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["impairment_value_d_total"])</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -3519,7 +3539,7 @@ this.height=row["logo_height"];]]></method>
                 </cell>
             </row>
         </grid>
-        <grid id="4593">
+        <grid id="4613">
             <property name="marginTop">10pt</property>
             <property name="dataSet">AccountingReportFixedAssetLineDS</property>
             <list-property name="visibility">
@@ -3565,4 +3585,9 @@ this.height=row["logo_height"];]]></method>
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="numberOfDecimals">
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

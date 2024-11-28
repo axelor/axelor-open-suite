@@ -275,7 +275,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
                       printCopiesToFile(
                           invoice,
                           false,
-                          null,
+                          InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
                           accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
                           null));
                 } catch (Exception e) {

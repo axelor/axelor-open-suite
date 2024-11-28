@@ -41,7 +41,7 @@ public class TagController {
         "concernedModelSet", "domain", "self.packageName like '%" + packageName + "%'");
   }
 
-  public void setDefaultConcernedModel(ActionRequest request, ActionResponse response) {
+  public void onNew(ActionRequest request, ActionResponse response) {
 
     Tag tag = request.getContext().asType(Tag.class);
     Context parentContext = request.getContext().getParent();
@@ -51,14 +51,15 @@ public class TagController {
     }
 
     TagService tagService = Beans.get(TagService.class);
+    String fullNameModel = null;
+    String fieldModel = null;
     if (parentContext != null && parentContext.get("_model") != null) {
-      String fullNameModel = parentContext.get("_model").toString();
-      tagService.addMetaModelToTag(tag, fullNameModel);
+      fullNameModel = parentContext.get("_model").toString();
     }
     if (request.getContext().get("_fieldModel") != null) {
-      tagService.addMetaModelToTag(tag, request.getContext().get("_fieldModel").toString());
+      fieldModel = request.getContext().get("_fieldModel").toString();
     }
 
-    response.setValue("concernedModelSet", tag.getConcernedModelSet());
+    response.setValues(tagService.getOnNewValuesMap(tag, fullNameModel, fieldModel));
   }
 }

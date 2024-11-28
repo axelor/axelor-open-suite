@@ -20,9 +20,12 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Tag;
 import com.axelor.common.StringUtils;
+import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TagServiceImpl implements TagService {
 
@@ -43,5 +46,23 @@ public class TagServiceImpl implements TagService {
         tag.addConcernedModelSetItem(metaModel);
       }
     }
+  }
+
+  protected void setDefaultColor(Tag tag) {
+    String primaryColor = MetaStore.getSelectionItem("color.name.selection", "blue").getColor();
+    tag.setColor(primaryColor);
+  }
+
+  @Override
+  public Map<String, Object> getOnNewValuesMap(Tag tag, String fullNameModel, String fieldModel) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    this.addMetaModelToTag(tag, fullNameModel);
+    this.addMetaModelToTag(tag, fieldModel);
+    this.setDefaultColor(tag);
+
+    valuesMap.put("concernedModelSet", tag.getConcernedModelSet());
+    valuesMap.put("color", tag.getColor());
+    return valuesMap;
   }
 }

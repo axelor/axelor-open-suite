@@ -29,6 +29,7 @@ import com.axelor.apps.base.rest.dto.AddressResponse;
 import com.axelor.apps.base.service.address.AddressCreationService;
 import com.axelor.apps.base.service.address.CityService;
 import com.axelor.apps.base.service.address.CountryService;
+import com.axelor.apps.base.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -90,12 +91,14 @@ public class AddressRestController {
         }
         return ResponseConstructor.build(
             Response.Status.CREATED,
-            I18n.get("Address created"),
+            I18n.get(ITranslation.ADDRESS_CREATED),
             new AddressResponse(
                 addressCreationService.createAndSaveAddress(country, city, zip, streetName)));
       }
       return ResponseConstructor.build(
-          Response.Status.OK, I18n.get("Address found"), new AddressResponse(address.get()));
+          Response.Status.OK,
+          I18n.get(ITranslation.ADDRESS_FOUND),
+          new AddressResponse(address.get()));
     } catch (AxelorException e) {
       return ResponseConstructor.build(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
     }

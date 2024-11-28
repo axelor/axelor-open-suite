@@ -26,4 +26,7 @@ public interface ITranslation {
   public static final String CRM_DUPLICATE_LEADS = /*$$(*/ "Duplicate leads :" /*)*/;
   public static final String CRM_DUPLICATE_CONTACTS = /*$$(*/ "Duplicate contacts :" /*)*/;
   public static final String CRM_DUPLICATE_PROSPECTS = /*$$(*/ "Duplicate prospects :" /*)*/;
+  public static final String TOUR_LINE_VALIDATED = /*$$(*/
+      "Tour line successfully validated." /*)*/;
+  public static final String TOUR_VALIDATED = /*$$(*/ "Tour successfully validated." /*)*/;
 }

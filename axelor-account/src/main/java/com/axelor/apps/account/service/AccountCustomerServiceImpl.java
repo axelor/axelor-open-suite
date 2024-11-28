@@ -90,7 +90,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     Query query =
         JPA.em()
             .createNativeQuery(
-                "SELECT SUM(CASE WHEN ml.debit > 0 THEN ml.amount_remaining ELSE ml.amount_remaining * -1 END) "
+                "SELECT SUM(ml.amount_remaining) "
                     + "FROM public.account_move_line AS ml  "
                     + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "

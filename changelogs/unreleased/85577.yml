@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed an issue where too much memory could be used when displaying customer invoice lines."
-module: axelor-account

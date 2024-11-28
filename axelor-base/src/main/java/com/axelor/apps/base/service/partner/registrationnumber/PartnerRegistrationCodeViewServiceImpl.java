@@ -74,8 +74,7 @@ public class PartnerRegistrationCodeViewServiceImpl implements PartnerRegistrati
 
   @Override
   public boolean isTaxNbrHidden(Partner partner) {
-    boolean isCustomer = partner.getIsCustomer();
-    boolean hideTaxNbr = !isCustomer;
+    boolean hideTaxNbr = !partner.getIsCustomer() && !partner.getIsSupplier();
     Address address = partner.getMainAddress();
     if (address != null && address.getCountry() != null) {
       RegistrationNumberTemplate registrationNumberTemplate =
@@ -84,7 +83,7 @@ public class PartnerRegistrationCodeViewServiceImpl implements PartnerRegistrati
         return hideTaxNbr;
       }
       boolean useTaxNbr = registrationNumberTemplate.getUseTaxNbr();
-      hideTaxNbr = !useTaxNbr || !isCustomer;
+      hideTaxNbr = !useTaxNbr || hideTaxNbr;
     }
     return hideTaxNbr;
   }

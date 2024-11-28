@@ -1,0 +1,3 @@
+---
+title: "FEC Import: fixed move line without accounting date when importing from fec import"
+module: axelor-account

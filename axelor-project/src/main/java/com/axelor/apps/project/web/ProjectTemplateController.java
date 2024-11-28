@@ -27,6 +27,7 @@ import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectTemplateService;
+import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -79,11 +80,12 @@ public class ProjectTemplateController {
               .createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
       response.setCanClose(true);
 
+      ProjectToolService projectToolService = Beans.get(ProjectToolService.class);
       response.setView(
           ActionView.define(I18n.get("Project"))
               .model(Project.class.getName())
-              .add("form", "project-form")
-              .add("grid", "project-grid")
+              .add("form", projectToolService.getProjectFormName(project))
+              .add("grid", projectToolService.getProjectGridName(project))
               .param("search-filters", "project-project-filters")
               .context("_showRecord", project.getId())
               .map());

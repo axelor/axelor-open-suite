@@ -32,8 +32,10 @@ import com.axelor.apps.production.rest.dto.ManufOrderStockMoveLineResponse;
 import com.axelor.apps.production.rest.dto.WastedProductPostRequest;
 import com.axelor.apps.production.rest.dto.WastedProductPutRequest;
 import com.axelor.apps.production.rest.dto.WastedProductResponse;
+import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -77,7 +79,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Request successfully completed",
+        I18n.get(ITranslation.REQUEST_COMPLETED),
         new ManufOrderProductListResponse(consumedProductList, requestBody.fetchManufOrder()));
   }
 
@@ -101,7 +103,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Request successfully completed",
+        I18n.get(ITranslation.REQUEST_COMPLETED),
         new ManufOrderProductListResponse(producedProductList, requestBody.fetchManufOrder()));
   }
 
@@ -123,7 +125,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Quantity successfully updated.",
+        I18n.get(ITranslation.QUANTITY_UPDATED),
         new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 
@@ -147,7 +149,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Manufacturing order successfully updated.",
+        I18n.get(ITranslation.MANUFACTURING_ORDER_UPDATED),
         new ManufOrderResponse(manufOrder));
   }
 
@@ -198,7 +200,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Wasted product quantity successfully updated.",
+        I18n.get(ITranslation.WASTED_PRODUCT_QUANTITY_UPDATED),
         new WastedProductResponse(prodProduct));
   }
 

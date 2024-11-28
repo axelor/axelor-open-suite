@@ -185,6 +185,8 @@ import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
 import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
@@ -373,5 +375,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ReconcileCheckServiceImpl.class).to(ReconcileCheckServiceHRImpl.class);
     bind(PayrollPreparationExportService.class).to(PayrollPreparationExportServiceImpl.class);
     bind(TimesheetLineRemoveService.class).to(TimesheetLineRemoveServiceImpl.class);
+
+    bind(ProjectPlanningTimeComputeService.class).to(ProjectPlanningTimeComputeServiceImpl.class);
   }
 }

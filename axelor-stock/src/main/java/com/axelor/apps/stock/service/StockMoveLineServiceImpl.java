@@ -1878,7 +1878,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     BigDecimal realQty = fulfilledStockMoveLine.getRealQty();
     unfulfilledStockMoveLine.setQty(fulfilledStockMoveLine.getQty().subtract(realQty));
     fulfilledStockMoveLine.setQty(realQty);
-    unfulfilledStockMoveLine.setTrackingNumber(null);
     unfulfilledStockMoveLine.setTotalNetMass(BigDecimal.ZERO);
     unfulfilledStockMoveLine.setNetMass(BigDecimal.ZERO);
     unfulfilledStockMoveLine.setRealQty(BigDecimal.ZERO);

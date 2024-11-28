@@ -259,4 +259,10 @@
     id="project.unit.conversion.entity.select">
     <option value="1">Project</option>
   </selection>
+
+  <selection name="message.related.to.select" id="hr.message.related.to.select">
+    <option value="com.axelor.apps.hr.db.Employee">Employee</option>
+    <option value="com.axelor.apps.hr.db.EmploymentContract">Employment contract</option>
+  </selection>
+
 </object-views>

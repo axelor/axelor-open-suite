@@ -71,4 +71,14 @@ public class ProjectToolServiceImpl implements ProjectToolService {
     this.getChildProjectIds(projectIdsSet, project);
     return projectIdsSet;
   }
+
+  @Override
+  public String getProjectFormName(Project project) {
+    return "project-form";
+  }
+
+  @Override
+  public String getProjectGridName(Project project) {
+    return "project-grid";
+  }
 }

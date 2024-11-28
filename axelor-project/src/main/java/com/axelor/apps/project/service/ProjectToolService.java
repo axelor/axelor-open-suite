@@ -31,4 +31,8 @@ public interface ProjectToolService {
 
   @CallMethod
   Set<Long> getRelatedProjectIds(Project project);
+
+  String getProjectFormName(Project project);
+
+  String getProjectGridName(Project project);
 }

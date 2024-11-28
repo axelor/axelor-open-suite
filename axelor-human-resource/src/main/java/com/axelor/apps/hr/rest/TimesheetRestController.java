@@ -31,6 +31,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
 import com.axelor.apps.hr.service.timesheet.timer.TimerTimesheetGenerationService;
+import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -38,7 +39,6 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import com.axelor.web.ITranslation;
 import io.swagger.v3.oas.annotations.Operation;
 import java.io.IOException;
 import java.util.List;
@@ -109,7 +109,9 @@ public class TimesheetRestController {
     Beans.get(TimesheetPeriodComputationService.class).setComputedPeriodTotal(timesheet);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Timesheet successfully updated.", new TimesheetResponse(timesheet));
+        Response.Status.OK,
+        I18n.get(ITranslation.TIMESHEET_UPDATED),
+        new TimesheetResponse(timesheet));
   }
 
   @Operation(
@@ -146,7 +148,9 @@ public class TimesheetRestController {
     }
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Timesheet successfully updated.", new TimesheetResponse(timesheet));
+        Response.Status.OK,
+        I18n.get(ITranslation.TIMESHEET_UPDATED),
+        new TimesheetResponse(timesheet));
   }
 
   @Operation(
@@ -179,7 +183,7 @@ public class TimesheetRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Timesheet converted period total.",
+        I18n.get(ITranslation.TIMESHEET_CONVERTED_PERIOD_TOTAL),
         Map.of(
             "periodTotalConvertTitle",
             Beans.get(TimesheetService.class).getPeriodTotalConvertTitle(timesheet),

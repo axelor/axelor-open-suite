@@ -47,10 +47,17 @@ public class EmployeeComputeDaysLeaveLunchVoucherService extends EmployeeCompute
   @Override
   protected BigDecimal computeDuration(LeaveRequest leave, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
+
+    LocalDate leaveFromDate = leave.getFromDateT().toLocalDate();
+    LocalDate leaveToDate = leave.getToDateT().toLocalDate();
+
+    LocalDate finalToDate = leaveToDate.isAfter(toDate) ? toDate : leaveToDate;
+    LocalDate finalFromDate = leaveFromDate.isBefore(fromDate) ? fromDate : leaveFromDate;
+
     return leaveRequestComputeDurationService.computeDuration(
         leave,
-        leave.getFromDateT(),
-        leave.getToDateT(),
+        finalFromDate.atStartOfDay(),
+        finalToDate.atStartOfDay(),
         LeaveRequestRepository.SELECT_MORNING,
         LeaveRequestRepository.SELECT_AFTERNOON);
   }

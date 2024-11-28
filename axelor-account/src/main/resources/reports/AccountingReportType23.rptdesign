@@ -19,6 +19,14 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[function formatNumber(number) {
+	var exportTypeSelect = params["ExportTypeSelect"];
+	var numberOfDecimals = vars["numberOfDecimals"];
+	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
+	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
+	var formatPattern = basePart + decimalPart;
+	return Formatter.format(number, formatPattern);
+}]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -86,6 +94,17 @@
             <simple-property-list name="defaultValue">
                 <value type="constant"></value>
             </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="ExportTypeSelect" id="4413">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -1026,6 +1045,7 @@ WHERE AccountingReport.id = ?]]></xml-property>
                     </structure>
                 </list-property>
             </structure>
+            <method name="onFetch"><![CDATA[vars["numberOfDecimals"] = dataSetRow["number_of_decimals"];]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -3035,7 +3055,7 @@ row["count_sale_doubtful_0"] >0 || row["count_sale_doubtful_1"] > 0 || row["coun
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<VALUE-OF>
 if(params["__locale"].value.substring(0, 2) == 'fr') {
-java.lang.String.format(row["translation"],Formatter.format(row._outer._outer["dateTo"], "dd-MM-yyyy"))
+java.lang.String.format(row["translation"],formatNumber(row._outer._outer["dateTo"], "dd-MM-yyyy"))
 }
 else{
 java.lang.String.format(row["translation"],row._outer._outer["dateTo"])
@@ -3100,7 +3120,7 @@ java.lang.String.format(row["translation"],row._outer._outer["dateTo"])
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
 if(params["__locale"].value.substring(0, 2) == 'fr') {
-java.lang.String.format(row["translation"],Formatter.format(row._outer._outer["dateTo"], "dd-MM-yyyy"))
+java.lang.String.format(row["translation"],formatNumber(row._outer._outer["dateTo"], "dd-MM-yyyy"))
 }
 else{
 java.lang.String.format(row["translation"],row._outer._outer["dateTo"])
@@ -3145,7 +3165,7 @@ java.lang.String.format(row["translation"],row._outer._outer["dateTo"])
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
 if(params["__locale"].value.substring(0, 2) == 'fr') {
-java.lang.String.format(row["translation"],Formatter.format(row._outer._outer["dateTo"], "dd-MM-yyyy"))
+java.lang.String.format(row["translation"],formatNumber(row._outer._outer["dateTo"], "dd-MM-yyyy"))
 }
 else{
 java.lang.String.format(row["translation"],row._outer._outer["dateTo"])
@@ -3919,7 +3939,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_0"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["purchase_total_0"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4140">
@@ -3939,7 +3959,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_30"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["purchase_total_30"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4141">
@@ -3959,7 +3979,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_60"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["purchase_total_60"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4142">
@@ -3979,7 +3999,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_90"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["purchase_total_90"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4143">
@@ -3999,7 +4019,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_91"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["purchase_total_91"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4144">
@@ -4019,7 +4039,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["purchase_total_1"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4145">
@@ -4039,7 +4059,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_0"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sale_total_0"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4146">
@@ -4059,7 +4079,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_30"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sale_total_30"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4147">
@@ -4079,7 +4099,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_60"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sale_total_60"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4148">
@@ -4099,7 +4119,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_90"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sale_total_90"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4149">
@@ -4119,7 +4139,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_91"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sale_total_91"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4150">
@@ -4139,7 +4159,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sale_total_1"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -4834,7 +4854,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_doubtful_0"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["purchase_total_doubtful_0"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4224">
@@ -4854,7 +4874,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_doubtful_30"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["purchase_total_doubtful_30"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4225">
@@ -4874,7 +4894,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_doubtful_60"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["purchase_total_doubtful_60"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4226">
@@ -4894,7 +4914,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_doubtful_90"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["purchase_total_doubtful_90"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4227">
@@ -4914,7 +4934,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_doubtful_91"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["purchase_total_doubtful_91"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4228">
@@ -4934,7 +4954,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["purchase_total_doubtful_1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["purchase_total_doubtful_1"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4229">
@@ -4954,7 +4974,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_doubtful_0"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sale_total_doubtful_0"])</VALUE-OF>
 ]]></text-property>
                                 </text>
                             </cell>
@@ -4975,7 +4995,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_doubtful_30"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sale_total_doubtful_30"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4231">
@@ -4995,7 +5015,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_doubtful_60"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sale_total_doubtful_60"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4232">
@@ -5015,7 +5035,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_doubtful_90"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sale_total_doubtful_90"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4233">
@@ -5035,7 +5055,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_doubtful_91"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sale_total_doubtful_91"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="4234">
@@ -5055,7 +5075,7 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["sale_total_doubtful_1"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sale_total_doubtful_1"])</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -5284,6 +5304,9 @@ java.lang.String.format(row["translation"], row._outer._outer["currency_code"] ?
     <property name="pageVariables">
         <variable-element name="PositiveValues">
             <expression name="value" type="javascript">0</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="numberOfDecimals">
             <property name="type">report</property>
         </variable-element>
     </property>

@@ -300,24 +300,27 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       if (isStockMoveInvoicingPartiallyActivated(invoice, stockMoveLine)) {
         BigDecimal qty = stockMoveLine.getQtyInvoiced();
         StockMove stockMove = stockMoveLine.getStockMove();
+        Unit movUnit = stockMoveLine.getUnit();
+        Unit invUnit = invoiceLine.getUnit();
 
-        if (stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMove, invoice)) {
-          qty = qty.subtract(invoiceLine.getQty());
-        } else {
-          qty = qty.add(invoiceLine.getQty());
-        }
+        BigDecimal invoiceQty = invoiceLine.getQty();
 
-        Unit movUnit = stockMoveLine.getUnit(), invUnit = invoiceLine.getUnit();
         try {
-          qty =
+          invoiceQty =
               unitConversionService.convert(
-                  invUnit, movUnit, qty, appBaseService.getNbDecimalDigitForQty(), null);
+                  invUnit, movUnit, invoiceQty, appBaseService.getNbDecimalDigitForQty(), null);
         } catch (AxelorException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_QTY_INVONVERTIBLE_UNIT)
                   + "\n"
                   + e.getMessage());
+        }
+
+        if (stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMove, invoice)) {
+          qty = qty.subtract(invoiceQty);
+        } else {
+          qty = qty.add(invoiceQty);
         }
 
         if (stockMoveLine.getRealQty().compareTo(qty) >= 0) {

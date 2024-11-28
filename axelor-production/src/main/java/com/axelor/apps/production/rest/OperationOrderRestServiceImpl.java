@@ -87,7 +87,7 @@ public class OperationOrderRestServiceImpl implements OperationOrderRestService 
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Manufacturing operation status successfully updated.",
+        I18n.get(ITranslation.MANUFACTURING_OPERATION_STATUS_UPDATED),
         new OperationOrderResponse((operationOrder)));
   }
 

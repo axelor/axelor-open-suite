@@ -27,8 +27,6 @@ public interface ITranslation {
   public static final String DELIVERY = /*$$(*/ "MapRest.Delivery" /*)*/;
 
   public static final String MAP_ZERO_RESULTS = /*$$(*/ "MapRest.ZERO_RESULTS" /*)*/;
-  public static final String CHECK_RESPONSE_RESPONSE = /*$$(*/
-      "Here is the list of the warnings and errors" /*)*/;
 
   public static final String PRICING_OBSERVER_IDENTIFIED_PRICING = /*$$(*/
       "Identified pricing scale: %s"; /*)*/

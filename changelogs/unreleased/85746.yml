@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed error related to budget when finalizing a quotation."
+module: axelor-sale

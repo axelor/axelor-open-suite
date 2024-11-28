@@ -23,6 +23,8 @@ import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.rest.dto.InventoryPutRequest;
 import com.axelor.apps.stock.rest.dto.InventoryResponse;
 import com.axelor.apps.stock.service.InventoryUpdateService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -60,6 +62,8 @@ public class InventoryRestController {
         .updateInventoryStatus(inventory, requestBody.getStatus(), requestBody.fetchUser());
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Inventory successfully updated", new InventoryResponse(inventory));
+        Response.Status.OK,
+        I18n.get(ITranslation.INVENTORY_UPDATED),
+        new InventoryResponse(inventory));
   }
 }

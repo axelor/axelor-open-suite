@@ -653,6 +653,6 @@
 
   <action-attrs name="action-lead-attrs-set-lead-tag-domain">
     <attribute name="domain" for="tagSet"
-      expr="eval: &quot; ${__repo__(MetaModel).findByName('Lead')?.id} member of self.concernedModelSet AND (:company IS NULL OR :company member of self.companySet OR self.companySet IS EMPTY) &quot;"/>
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Lead')?.id} MEMBER OF self.concernedModelSet OR self.concernedModelSet IS EMPTY) AND (:company IS NULL OR :company MEMBER OF self.companySet OR self.companySet IS EMPTY) &quot;"/>
   </action-attrs>
 </object-views>

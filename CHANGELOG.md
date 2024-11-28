@@ -1,3 +1,161 @@
+## [8.2.2] (2024-11-14)
+
+### Fixes
+#### Base
+
+* Updated Axelor Open Platform to 7.2.3.
+* Updated studio module to version 3.3.5.
+* Updated message module to version 3.2.2.
+* Updated utils module to version 3.3.0.
+* Partner: tax number will be displayed for suppliers too along with customers.
+* Tag: added default color tag
+* Unit conversion: fixed NPE when getting the coefficient for a unit conversion of type coeff with value zero.
+* Tag: allowed to select tag when concerned model is empty on tag.
+* Template: fixed an issue where 'Test template' button was always readonly with custom model.
+* Pricing: fixed the product category filter in pricing formula.
+
+#### Account
+
+* Invoice: fixed invoice printing that does not work without business project module.
+* Analytic move line query: fixed always readonly button in 'Analytic move lines to reverse' dashlet.
+* Accounting export: fixed skipped lines on accounting export when we have more than 10 000 lines.
+* Accounting report: replaced move line partner full name with partner sequence and partner full name in reports.
+* Invoice: fixed NPE when clicking on print button on grid lines.
+* Move/Analytic: record analytic account on moveline on the reverse move
+* Partner: fixed an issue where the partner balance was wrong after an unreconcile.
+* Move: blocked generation of reverse move if reverse move date is before the date of the move to reverse.
+* FEC Import: fixed importing moves with a validation date.
+* Bank reconciliation line: fixed an issue where too much memory could be used when filtering move lines.
+* Analytic move line query: optimized filter to handle high data volumes efficiently.
+
+#### Bank Payment
+
+* Bank statement: fixed error when importing bank statement with negative final balance.
+* Move/Payment session: added bank order origin in the generated move if needed.
+
+#### Contract
+
+* Contract/Invoice: fixed analytic wrong management on contract line.
+
+#### Human Resource
+
+* Expense API: expense line creation with a manual distance is no longer overriden by computed distance.
+* Expense: fixed an error occurring when cancelling an expense payment linked to a bank order.
+
+#### Production
+
+* Sale order: no personalized BOM will be created if the option is not enabled.
+
+#### Project
+
+* Project: fixed NPE when opening project in project activity dashboard.
+
+#### Purchase
+
+* Purchase order lines: fixed an issue where the warning about default supplier was not displayed.
+
+#### Quality
+
+* Quality: fixed translation of 'Check conformity'.
+
+#### Sale
+
+* Sale order: fixed display of 'Send email' button when record is not saved.
+
+#### Stock
+
+* Stock move line: fixed tracking number domain filter.
+
+#### Supply Chain
+
+* Stock move: fixed issue where partial invoicing was not working.
+* Sale order: fixed an issue where the invoicing of sale order lines was blocked.
+
+
+### Developer
+
+#### Base
+
+- Action "action-tag-method-set-concerned-model" have been replaced by "action-tag-method-on-new".
+- And setDefaultConcernedModel method in TagController have been renamed by onNew
+
+#### Supply Chain
+
+- Added new arguments to SaleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable()
+- Updated SaleOrderInvoiceService.computeAmountToInvoice visibility to protected and removed it from interface
+
+## [8.2.1] (2024-10-31)
+
+### Fixes
+#### Base
+
+* Sequence: fixed draft prefix when checking for the draft sequence number.
+* Birt report: fixed number formatting for excel format.
+* Partner: added check on parent partner to avoid same partner as parent.
+* Partner: fixed NPE when manually adding an accounting situation.
+
+#### Account
+
+* Move: fixed blocked accounting when missing budget alert is required and account type is not one of the charge, income, immobilisation.
+* Accounting batch: fixed multiple auto lettering.
+* Accounting cut off batch: fixed wrong analytic distribution and axis on generated moves.
+* Partner:  fixed automatic account creation when partner is prospect based on 'Automatic partner account creation mode' in account config.
+* Invoice: fixed an issue where too much memory could be used when displaying customer invoice lines.
+* Invoice/Move: recompute currency rate of movelines after invoice ventilation.
+
+#### Budget
+
+* Purchase order: removed required condition on company department.
+
+#### Contract
+
+* Contract: fixed invoicing contract with revaluation and prorata enabled.
+* Contract: fixed a issue when generating a sale order from a contract
+
+#### CRM
+
+* Opportunity: fixed filter on contact domain.
+* Lead: fixed an issue preventing lead conversion when having only CRM module.
+* Lead: fixed address while converting a lead to a prospect.
+
+#### Human Resource
+
+* Expense: fixed an issue preventing to go to reimbursed status with a payment mode generating a bank order.
+
+#### Production
+
+* Prod process: added workflow buttons instead of clickable status.
+* Manufacturing order: fixed issue when updating quantity in manufacturing order.
+
+#### Purchase
+
+* Purchase order: fixed value of 'total without tax' in birt report.
+
+#### Sale
+
+* Sale order: fixed an issue preventing from editing a sale order with editable grid and pending order modification enabled
+* Sale order: fixed sale order printing when only sale module is used, without supplychain.
+
+#### Stock
+
+* Stock move: fixed an error occurring when splitting a stock move line.
+
+#### Supply Chain
+
+* Invoice: fixed invoice line price generated from stock move with different unit.
+
+
+### Developer
+
+#### Budget
+
+SaleOrderDummyBudgetServiceImpl class was removed, as well as following actions:
+
+- `action-budget-group-purchase-order-on-new-actions`
+- `action-budget-purchase-order-record-load-budget-key-config`
+- `action-group-budget-saleorder-onload`
+- `action-budget-sale-order-record-load-budget-key-config`
+
 ## [8.2.0] (2024-10-18)
 
 ### Features
@@ -122,4 +280,6 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.2]: https://github.com/axelor/axelor-open-suite/compare/v8.2.1...v8.2.2
+[8.2.1]: https://github.com/axelor/axelor-open-suite/compare/v8.2.0...v8.2.1
 [8.2.0]: https://github.com/axelor/axelor-open-suite/compare/v8.1.9...v8.2.0

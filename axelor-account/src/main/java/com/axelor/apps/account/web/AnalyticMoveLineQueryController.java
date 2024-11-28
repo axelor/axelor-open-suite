@@ -56,11 +56,18 @@ public class AnalyticMoveLineQueryController {
       String query =
           Beans.get(AnalyticMoveLineQueryService.class)
               .getAnalyticMoveLineQuery(analyticMoveLineQuery);
-      List<AnalyticMoveLine> analyticMoveLineList =
-          Beans.get(AnalyticMoveLineRepository.class).all().filter(query).fetch();
-      response.setValue(
-          "__analyticMoveLineList",
-          analyticMoveLineList.stream().map(l -> l.getId()).collect(Collectors.toList()));
+
+      List<Long> analyticMoveLineList =
+          Beans.get(AnalyticMoveLineRepository.class)
+              .all()
+              .filter(query)
+              .select("id")
+              .fetch(0, 0)
+              .stream()
+              .map(m -> (Long) m.get("id"))
+              .collect(Collectors.toList());
+
+      response.setValue("__analyticMoveLineList", analyticMoveLineList);
       response.setAttr("filteredAnalyticmoveLinesDashlet", "refresh", true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -71,12 +78,15 @@ public class AnalyticMoveLineQueryController {
     try {
 
       Context context = request.getContext();
-      if (!context.containsKey("_ids") || ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+      AnalyticMoveLineQuery analyticMoveLineQuery =
+          context.getParent().asType(AnalyticMoveLineQuery.class);
+      if (!context.containsKey("_ids")
+          || ObjectUtils.isEmpty(request.getContext().get("_ids"))
+          || ObjectUtils.isEmpty(
+              analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList())) {
         return;
       }
 
-      AnalyticMoveLineQuery analyticMoveLineQuery =
-          context.getParent().asType(AnalyticMoveLineQuery.class);
       List<AnalyticMoveLine> analyticMoveLines =
           Beans.get(AnalyticMoveLineRepository.class)
               .all()
@@ -96,7 +106,11 @@ public class AnalyticMoveLineQueryController {
 
       AnalyticMoveLineQuery analyticMoveLineQuery =
           request.getContext().getParent().asType(AnalyticMoveLineQuery.class);
-
+      if (ObjectUtils.isEmpty(analyticMoveLineQuery.getSearchAnalyticMoveLineQueryParameterList())
+          || ObjectUtils.isEmpty(
+              analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList())) {
+        return;
+      }
       String query =
           Beans.get(AnalyticMoveLineQueryService.class)
               .getAnalyticMoveLineQuery(analyticMoveLineQuery);

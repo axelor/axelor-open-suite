@@ -25,4 +25,5 @@ public interface ITranslation {
   public static final String CHART_TICKET_RESOLVED = /*$$(*/ "chart.resolved"; /*)*/
   public static final String CHART_TICKET_SOLVED = /*$$(*/ "Solved"; /*)*/
   public static final String CHART_TICKET_UNSOLVED = /*$$(*/ "Unsolved"; /*)*/
+  public static final String TICKET_UPDATED = /*$$(*/ "Ticket updated." /*)*/;
 }

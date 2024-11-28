@@ -447,6 +447,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     invoice.setDeliveryAddressStr(deliveryAddressStr.toString());
 
+    fillInvoiceCommentsFromMultiOutStockMove(stockMoveList, invoice);
+
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     for (StockMove stockMoveLocal : stockMoveList) {
@@ -948,5 +950,30 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     invoiceLine.setCompanyInTaxTotal(invoiceLine.getCompanyInTaxTotal().negate());
     invoiceLine.setExTaxTotal(invoiceLine.getExTaxTotal().negate());
     invoiceLine.setCompanyExTaxTotal(invoiceLine.getCompanyExTaxTotal().negate());
+  }
+
+  protected void fillInvoiceCommentsFromMultiOutStockMove(
+      List<StockMove> stockMoveList, Invoice invoice) {
+    StringBuilder notes = new StringBuilder();
+    StringBuilder proformaComments = new StringBuilder();
+
+    for (StockMove stockMove : stockMoveList) {
+      Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
+
+      if (ObjectUtils.isEmpty(saleOrderSet)) {
+        continue;
+      }
+      String note = stockMoveInvoiceService.fillInvoiceNoteFromOutStockMove(saleOrderSet);
+      if (StringUtils.notEmpty(note)) {
+        notes.append(note);
+      }
+      String proformaComment =
+          stockMoveInvoiceService.fillInvoiceProformaCommentsFromOutStockMove(saleOrderSet);
+      if (StringUtils.notEmpty(proformaComment)) {
+        proformaComments.append(proformaComment);
+      }
+    }
+    invoice.setNote(notes.toString());
+    invoice.setProformaComments(proformaComments.toString());
   }
 }

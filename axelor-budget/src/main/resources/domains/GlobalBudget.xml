@@ -28,7 +28,7 @@
       help="Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels."
       precision="20" scale="3"/>
     <decimal name="totalAmountCommitted" title="Committed amount"
-      help="Represents the sum of orders of status requested, validated or finished and that don't have a invoiced invoice."
+      help="Represents the sum of orders of status requested, validated or finished and that don't have an invoiced invoice."
       precision="20" scale="3"/>
     <decimal name="totalAmountRealized" title="Realized total amount" precision="20"
       scale="3"/>

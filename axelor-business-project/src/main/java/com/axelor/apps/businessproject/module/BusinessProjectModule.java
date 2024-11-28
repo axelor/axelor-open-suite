@@ -71,6 +71,7 @@ import com.axelor.apps.businessproject.service.ProjectRestService;
 import com.axelor.apps.businessproject.service.ProjectRestServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectTemplateBusinessServiceImpl;
+import com.axelor.apps.businessproject.service.ProjectToolBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineProjectService;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineServiceProjectImpl;
@@ -138,6 +139,7 @@ import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.project.service.ProjectTemplateServiceImpl;
+import com.axelor.apps.project.service.ProjectToolServiceImpl;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
@@ -238,6 +240,8 @@ public class BusinessProjectModule extends AxelorModule {
 
     bind(ProjectTaskGroupService.class).to(ProjectTaskGroupServiceImpl.class);
     bind(ProjectTaskComputeService.class).to(ProjectTaskComputeServiceImpl.class);
+
+    bind(ProjectToolServiceImpl.class).to(ProjectToolBusinessProjectServiceImpl.class);
     bind(InvoicePaymentToolServiceSupplychainImpl.class)
         .to(InvoicePaymentToolServiceBusinessProjectImpl.class);
     bind(MoveLineCreateServiceImpl.class).to(MoveLineCreateServiceBusinessProjectImpl.class);
