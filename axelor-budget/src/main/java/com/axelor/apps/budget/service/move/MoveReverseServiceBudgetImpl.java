@@ -20,10 +20,13 @@ package com.axelor.apps.budget.service.move;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -72,6 +75,9 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
       MoveInvoiceTermService moveInvoiceTermService,
       AnalyticLineService analyticLineService,
       PaymentModeRepository paymentModeRepository,
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      AnalyticMoveLineService analyticMoveLineService,
+      ReconcileRepository reconcileRepository,
       ExpensePaymentService expensePaymentService,
       AppService appService,
       BudgetDistributionService budgetDistributionService,
@@ -94,6 +100,9 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
         moveInvoiceTermService,
         analyticLineService,
         paymentModeRepository,
+        analyticMoveLineRepository,
+        analyticMoveLineService,
+        reconcileRepository,
         expensePaymentService,
         appService);
     this.budgetDistributionService = budgetDistributionService;

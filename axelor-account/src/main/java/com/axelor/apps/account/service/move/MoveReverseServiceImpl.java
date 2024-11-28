@@ -44,7 +44,6 @@ import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -75,6 +74,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected AnalyticLineService analyticLineService;
   protected PaymentModeRepository paymentModeRepository;
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
+  protected AnalyticMoveLineService analyticMoveLineService;
+  protected ReconcileRepository reconcileRepository;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -90,7 +92,10 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       UnreconcileService unReconcileService,
       MoveInvoiceTermService moveInvoiceTermService,
       AnalyticLineService analyticLineService,
-      PaymentModeRepository paymentModeRepository) {
+      PaymentModeRepository paymentModeRepository,
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      AnalyticMoveLineService analyticMoveLineService,
+      ReconcileRepository reconcileRepository) {
 
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
@@ -105,9 +110,11 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.analyticLineService = analyticLineService;
     this.paymentModeRepository = paymentModeRepository;
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
+    this.analyticMoveLineService = analyticMoveLineService;
+    this.reconcileRepository = reconcileRepository;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   @Override
   public Move generateReverse(
       Move move,
@@ -163,8 +170,6 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
 
       MoveLine newMoveLine = generateReverseMoveLine(newMove, moveLine, dateOfReversion, isDebit);
-      AnalyticMoveLineRepository analyticMoveLineRepository =
-          Beans.get(AnalyticMoveLineRepository.class);
       newMoveLine.setAnalyticDistributionTemplate(moveLine.getAnalyticDistributionTemplate());
       List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
       if (!CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
@@ -176,12 +181,11 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         }
       } else if (moveLine.getAnalyticDistributionTemplate() != null) {
         analyticMoveLineList =
-            Beans.get(AnalyticMoveLineService.class)
-                .generateLines(
-                    newMoveLine.getAnalyticDistributionTemplate(),
-                    newMoveLine.getDebit().add(newMoveLine.getCredit()),
-                    AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
-                    dateOfReversion);
+            analyticMoveLineService.generateLines(
+                newMoveLine.getAnalyticDistributionTemplate(),
+                newMoveLine.getDebit().add(newMoveLine.getCredit()),
+                AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
+                dateOfReversion);
       }
       if (CollectionUtils.isNotEmpty(analyticMoveLineList)) {
         newMoveLine.clearAnalyticMoveLineList();
@@ -199,7 +203,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
 
       if (isUnreconcileOriginalMove) {
         List<Reconcile> reconcileList =
-            Beans.get(ReconcileRepository.class)
+            reconcileRepository
                 .all()
                 .filter(
                     "self.statusSelect != ?1 AND (self.debitMoveLine.id = ?2 OR self.creditMoveLine.id = ?2)",
@@ -224,9 +228,16 @@ public class MoveReverseServiceImpl implements MoveReverseService {
 
     if (validatedMove && isAutomaticAccounting) {
       moveValidateService.accounting(newMove);
+    } else {
+      saveNewMove(newMove);
     }
 
-    return moveRepository.save(newMove);
+    return newMove;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void saveNewMove(Move move) {
+    moveRepository.save(move);
   }
 
   protected void cancelInvoicePayment(Move move) throws AxelorException {
