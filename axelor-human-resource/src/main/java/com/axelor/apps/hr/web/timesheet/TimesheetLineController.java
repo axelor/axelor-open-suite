@@ -246,4 +246,11 @@ public class TimesheetLineController {
 
     response.setReload(true);
   }
+
+  /** To update periodTotal on Timesheet */
+  public void saveTimesheet(ActionRequest request, ActionResponse response) {
+
+    TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+    Beans.get(TimesheetLineService.class).saveTimesheet(timesheetLine);
+  }
 }

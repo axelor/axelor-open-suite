@@ -89,4 +89,6 @@ public interface TimesheetLineService {
   Product getDefaultProduct(TimesheetLine timesheetLine);
 
   void resetTimesheetLineTimer(TSTimer tsTimer);
+
+  public void saveTimesheet(TimesheetLine timesheetLine);
 }

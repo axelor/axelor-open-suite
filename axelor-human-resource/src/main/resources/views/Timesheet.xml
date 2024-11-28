@@ -116,8 +116,8 @@
         <field if-module="axelor-business-production"
           if=" __config__.app.getApp('production')?.getManageBusinessProduction()"
           name="employee.timesheetImputationSelect" hidden="true"/>
-        <field name="fromDate"
-          onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date" colSpan="5"/>
+        <field name="fromDate" onChange="action-timesheet-group-from-date-onchange"
+          colSpan="5"/>
         <field name="toDate" onChange="action-timesheet-group-to-date-onchange" colSpan="5"/>
         <button name="createBtn" title="Create" colSpan="2" hideIf="id"
           if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
@@ -180,6 +180,10 @@
       <field name="$logTime" type="decimal"/>
       <button name="generateLinesBtn" title="Generate lines"
         onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generate-lines-panel-hidden-true,save,action-timesheet-attrs-refresh-editor"/>
+    </panel>
+    <panel name="openProjectTaskPanel" title="Open tasks" showIf="id" collapseIf="true">
+      <panel-dashlet name="projectTaskPanel"
+        action="action-timesheet-method-view-tasks" readonly="true" colSpan="12" height="200%"/>
     </panel>
     <panel name="linesPanel">
       <panel-dashlet name="timesheetLineEditorPanel" colSpan="12"
@@ -269,6 +273,7 @@
     <action name="action-timesheet-method-update-time-logging-preference"/>
     <action name="action-timesheet-method-timesheet-compute-period-total"/>
     <action name="action-timesheet-attrs-set-visible-duration-title"/>
+    <action name="action-timesheet-attrs-refresh-open-project-task-panel"/>
   </action-group>
 
   <action-group name="action-timesheet-group-onsave">
@@ -351,6 +356,13 @@
     <action name="action-timesheet-prefill-lines"
       if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet')?.getCreateLinesForLeaves() || __config__.app.getApp('timesheet')?.getCreateLinesForHolidays())"/>
     <action name="action-timesheet-attrs-refresh-editor" if="showEditor"/>
+    <action name="action-timesheet-attrs-refresh-open-project-task-panel"/>
+  </action-group>
+
+  <action-group name="action-timesheet-group-from-date-onchange">
+    <action name="action-timesheet-validate-fromDate"/>
+    <action name="action-timesheet-record-to-date"/>
+    <action name="action-timesheet-attrs-refresh-open-project-task-panel"/>
   </action-group>
 
   <action-method name="action-timesheet-prefill-lines">
@@ -528,6 +540,10 @@
       expr="eval: __config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
   </action-attrs>
 
+  <action-attrs name="action-timesheet-attrs-refresh-open-project-task-panel">
+    <attribute name="refresh" for="projectTaskPanel" expr="eval: true"/>
+  </action-attrs>
+
   <action-record name="action-timesheet-record-from-period-date"
     model="com.axelor.apps.hr.db.Timesheet">
     <field name="fromDate"
@@ -598,6 +614,10 @@
   <action-method name="action-timesheet-method-remove-after-to-date-timesheetlines">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
       method="removeAfterToDateTimesheetLines"/>
+  </action-method>
+
+  <action-method name="action-timesheet-method-view-tasks">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="viewOpenTasks"/>
   </action-method>
 
   <action-view name="action-timesheet-view-total-hours-per-day" title="">

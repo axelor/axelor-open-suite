@@ -369,6 +369,10 @@
   <action-group name="action-timesheet-line-group-project-task-form-on-save">
     <action name="action-project-task-validate-check-timesheet-line-date"/>
     <action name="action-timesheet-line-attrs-set-duration-label"/>
+    <!-- To update periodTotal on Timesheet -->
+    <action name="save"/>
+    <action name="action-timesheet-line-method-save-timesheet"/>
+    <!-- To update periodTotal on Timesheet -->
   </action-group>
 
   <action-attrs name="action-project-task-attrs-default-timesheet-line">
@@ -381,6 +385,8 @@
     <attribute name="value" for="employee" expr="eval: _employee"/>
     <attribute name="value" for="enableEditor" expr="eval: true"
       if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
+    <attribute name="readonly" for="employee,timesheet" expr="eval: _readonly"
+      if="_readonly"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-line-atts-overview-readonly">
@@ -535,6 +541,11 @@
       method="removeProjectTimeSheetLines"/>
   </action-method>
 
+  <action-method name="action-timesheet-line-method-save-timesheet">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController"
+      method="saveTimesheet"/>
+  </action-method>
+
   <action-validate name="action-project-task-validate-check-employee">
     <error message="Please create an employee for the user ${assignedTo.name}"
       if="assignedTo.employee == null"/>
@@ -630,6 +641,20 @@
     <context name="_user" expr="eval: __user__"/>
     <context name="_employee" expr="eval: __user__.employee"/>
 
+  </action-view>
+
+  <action-view name="action-timesheet-line-view-new-line" title="Timesheet line"
+    model="com.axelor.apps.hr.db.TimesheetLine">
+    <view type="form" name="timesheet-line-timesheet-project-task-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_timesheet" expr="eval: __parent__"/>
+    <context name="_employee" expr="eval: __parent__?.employee"/>
+    <context name="_projectTask" expr="eval: __self__" if="__id__"/>
+    <context name="_project" expr="eval: __self__?.project" if="__id__"/>
+    <context name="_readonly" expr="eval: true"/>
   </action-view>
 
   <action-attrs name="action-timesheet-line-attrs-set-site-domain">

@@ -34,6 +34,7 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetDomainService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
@@ -45,6 +46,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -69,6 +71,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -655,5 +658,30 @@ public class TimesheetController {
       Beans.get(TimesheetRemoveService.class).removeAfterToDateTimesheetLines(timesheet);
     }
     response.setValues(timesheet);
+  }
+
+  public void viewOpenTasks(ActionRequest request, ActionResponse response) {
+
+    Timesheet timesheet = request.getContext().asType(Timesheet.class);
+
+    Employee employee = timesheet.getEmployee();
+    LocalDate fromDate = timesheet.getFromDate();
+    LocalDate toDate = timesheet.getToDate();
+
+    List<Long> openProjectTaskIdList =
+        Beans.get(ProjectPlanningTimeService.class)
+            .getOpenProjectTaskIdList(employee, fromDate, toDate);
+
+    ActionView.ActionViewBuilder actionViewBuilder =
+        ActionView.define(I18n.get("Tasks"))
+            .model(ProjectTask.class.getName())
+            .add("grid", "project-task-timesheet-grid")
+            .add("form", "project-task-form")
+            .domain("self.id in (:idList)")
+            .context(
+                "idList",
+                CollectionUtils.isNotEmpty(openProjectTaskIdList) ? openProjectTaskIdList : 0L);
+
+    response.setView(actionViewBuilder.map());
   }
 }

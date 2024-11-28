@@ -21,11 +21,13 @@ package com.axelor.apps.hr.service.project;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -71,4 +73,7 @@ public interface ProjectPlanningTimeService {
 
   PlannedTimeValue getDefaultPlanningRestrictedTime(ProjectPlanningTime projectPlanningTime)
       throws AxelorException;
+
+  public List<Long> getOpenProjectTaskIdList(
+      Employee employee, LocalDate fromDate, LocalDate toDate);
 }
