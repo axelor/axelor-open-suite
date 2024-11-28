@@ -287,7 +287,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     this.addAttr(
         "taxLineSet",
         "required",
-        moveLineTaxService.isMoveLineTaxAccountRequired(moveLine, move.getFunctionalOriginSelect())
+        moveLineTaxService.isMoveLineTaxAccountRequired(moveLine)
             || (moveLine.getAccount() != null
                 && moveLine.getAccount().getIsTaxRequiredOnMoveLine()),
         attrsMap);

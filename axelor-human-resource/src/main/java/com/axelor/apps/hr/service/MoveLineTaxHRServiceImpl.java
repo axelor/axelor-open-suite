@@ -54,13 +54,12 @@ public class MoveLineTaxHRServiceImpl extends MoveLineTaxServiceImpl {
   }
 
   @Override
-  public boolean isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect) {
+  public boolean isMoveLineTaxAccountRequired(MoveLine moveLine) {
 
     if (moveLine.getMove() == null) {
-      return super.isMoveLineTaxAccountRequired(moveLine, functionalOriginSelect);
+      return super.isMoveLineTaxAccountRequired(moveLine);
     }
 
-    return moveLine.getMove().getExpense() == null
-        && super.isMoveLineTaxAccountRequired(moveLine, functionalOriginSelect);
+    return moveLine.getMove().getExpense() == null && super.isMoveLineTaxAccountRequired(moveLine);
   }
 }
