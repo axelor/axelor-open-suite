@@ -1,3 +1,44 @@
+## [7.2.27] (2024-11-28)
+
+### Fixes
+#### Base
+
+* Group view: fixed inexistant field 'canViewCollaboration' to display only with the Enterprise Edition.
+* City: fixed geonames import errors.
+
+#### Account
+
+* Fixed Asset: fixed degressive computation with prorata temporis of fixed asset starting in february.
+* Move: fixed condition to display payment voucher and payment session according to functional origin.
+* Invoice: fixed wrong total gross amount on birt report.
+* Fixed Asset: fixed accounting value when we validate fixed asset without depreciation plan.
+* FEC Import: fixed move line without accounting date when importing from fec import
+* Move: fixed description when we generate invoice move.
+
+#### Budget
+
+* Budget: fixed help of 'Committed amount' in budget level and global budget.
+
+#### Human Resource
+
+* Lunch voucher: fixed computation for leaves with overlapping periods.
+* Timesheet: fixed NPE because of daily limit configuration.
+
+#### Production
+
+* Production API: fixed error while fetching consumed products.
+
+#### Sale
+
+* Sale order line: fixed issue when opening a sale order line with analytic enabled.
+* Sale order: fixed price list value on change of client partner.
+
+#### Supply Chain
+
+* Sale order: fixed sale order with a title line tagged as partially invoiced while it has been totally invoiced.
+* Credit note: fixed an issue on stock move credit note with different purchase and stock unit.
+* Purchase order line: fixed product name when generating purchase order from sale order.
+
 ## [7.2.26] (2024-11-14)
 
 ### Fixes
@@ -1324,6 +1365,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.27]: https://github.com/axelor/axelor-open-suite/compare/v7.2.26...v7.2.27
 [7.2.26]: https://github.com/axelor/axelor-open-suite/compare/v7.2.25...v7.2.26
 [7.2.25]: https://github.com/axelor/axelor-open-suite/compare/v7.2.24...v7.2.25
 [7.2.24]: https://github.com/axelor/axelor-open-suite/compare/v7.2.23...v7.2.24
