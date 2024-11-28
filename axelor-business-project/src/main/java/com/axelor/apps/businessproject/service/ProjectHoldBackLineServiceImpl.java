@@ -467,7 +467,7 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
                     hb.getProjectHoldBack().getHoldBackTypeSelect()
                         == ProjectHoldBackRepository.HOLD_BACK_AS_IN_TAX_TOTAL)
             .collect(Collectors.toList());
-    invoice.setProjectHoldBackLineList(projectHoldBackLineList);
+    invoice.setProjectHoldBackLineSet(new HashSet<>(projectHoldBackLineList));
     return createHoldBackATIs(invoice, projectHoldBackLineList);
   }
 

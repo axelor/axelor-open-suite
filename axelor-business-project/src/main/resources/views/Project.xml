@@ -492,7 +492,7 @@
             action="action-project-dashlet-analytic-move-lines" colSpan="12"/>
         </panel>
 
-        <panel title="HoldBacks" name="projectHoldBacksPanel" showIf="isBusinessProject">
+        <panel title="HoldBacks" name="projectHoldBacksPanel" colSpan="12">
           <button name="invoiceReleasedProjectHoldBacksBtn"
             title="Re-invoice selected holdBacks" onClick="action-project-view-release-hold-backs"/>
           <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"

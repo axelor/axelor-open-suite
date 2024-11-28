@@ -895,8 +895,8 @@
       </panel>
       <panel name="holdBackPanel" title="HoldBacks" showIf="projectHoldBackATIList"
         if-module="axelor-business-project">
-        <panel-related name="holdBackLineListPanel" title="HoldBacks lines"
-          colSpan="12" field="projectHoldBackLineList" form-view="project-hold-back-line-form"
+        <panel-related name="holdBackLineSetPanel" title="HoldBacks lines"
+          colSpan="12" field="projectHoldBackLineSet" form-view="project-hold-back-line-form"
           grid-view="project-hold-back-line-grid" editable="true" readonlyIf="!project"
           onChange="action-invoice-group-on-hold-back-lines-change"/>
         <field name="holdBacksTotal" hidden="true"/>
