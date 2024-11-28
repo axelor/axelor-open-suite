@@ -188,6 +188,7 @@ public class FECImporter extends Importer {
     }
   }
 
+  @Transactional
   protected Move setVatSystemSelect(ImporterListener listener, Move move) {
     try {
       if (move != null) {
