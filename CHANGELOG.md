@@ -1,3 +1,52 @@
+## [8.0.20] (2024-11-28)
+
+### Fixes
+#### Base
+
+* Group view: fixed inexistant field 'canViewCollaboration' to display only with the Enterprise Edition.
+* Updated studio module to 2.0.9.
+* City: fixed geonames import errors.
+
+#### Account
+
+* Fixed Asset: fixed degressive computation with prorata temporis of fixed asset starting in february.
+* Move: fixed condition to display payment voucher and payment session according to functional origin.
+* Invoice: fixed wrong total gross amount on birt report.
+* Fixed Asset: fixed accounting value when we validate fixed asset without depreciation plan.
+* FEC Import: fixed move line without accounting date when importing from fec import
+* Move: fixed description when we generate invoice move.
+
+#### Budget
+
+* Budget: fixed help of 'Committed amount' in budget level and global budget.
+
+#### Human Resource
+
+* Lunch voucher: fixed computation for leaves with overlapping periods.
+* HR batch: fixed an error occurring when launching Leave Management Reset Batch.
+* Leave request: fixed future quantity day computation when sending a leave request.
+* Timesheet: fixed NPE because of daily limit configuration.
+
+#### Production
+
+* Production API: fixed error while fetching consumed products.
+
+#### Sale
+
+* Sale order line: fixed issue when opening a sale order line with analytic enabled.
+* Sale order: fixed price list value on change of client partner.
+* Sale order: fixed error related to budget when finalizing a quotation.
+
+#### Stock
+
+* Stock move line: fixed the tracking number issue during the inline split.
+
+#### Supply Chain
+
+* Sale order: fixed sale order with a title line tagged as partially invoiced while it has been totally invoiced.
+* Credit note: fixed an issue on stock move credit note with different purchase and stock unit.
+* Purchase order line: fixed product name when generating purchase order from sale order.
+
 ## [8.0.19] (2024-11-14)
 
 ### Fixes
@@ -1252,6 +1301,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.20]: https://github.com/axelor/axelor-open-suite/compare/v8.0.19...v8.0.20
 [8.0.19]: https://github.com/axelor/axelor-open-suite/compare/v8.0.18...v8.0.19
 [8.0.18]: https://github.com/axelor/axelor-open-suite/compare/v8.0.17...v8.0.18
 [8.0.17]: https://github.com/axelor/axelor-open-suite/compare/v8.0.16...v8.0.17
