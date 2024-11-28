@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="business-project" package="com.axelor.apps.businessproject.db"/>
+
+  <entity name="ProjectHoldBackATI">
+    <string name="name" required="true" namecolumn="true"/>
+    <decimal name="amount" title="Amount"/>
+    <decimal name="companyAmount" title="Amount"/>
+    <decimal name="percentage" title="Percentage"/>
+    <many-to-one name="projectHoldBack"
+      ref="com.axelor.apps.businessproject.db.ProjectHoldBack" title="HoldBack product"
+      required="true"/>
+    <boolean name="isVentilatedProjectHoldBackATI" title="Ventilated hold back ATI"
+      default="false" nullable="false"/>
+    <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
+  </entity>
+
+</domain-models>

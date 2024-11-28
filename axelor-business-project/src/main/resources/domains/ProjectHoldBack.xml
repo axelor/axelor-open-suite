@@ -9,6 +9,8 @@
     <string name="name" required="true" unique="true" namecolumn="true"/>
     <decimal name="defaultPercentage" min="0" max="100" title="Default percentage"
       default="0"/>
+    <integer name="holdBackTypeSelect" title="Hold back type"
+      selection="project.hold.back.type.select" required="true" default="2"/>
     <many-to-one name="projectHoldBackProduct" ref="com.axelor.apps.base.db.Product"
       title="HoldBack product" required="true"/>
     <many-to-many name="productsHeldBackSet" ref="com.axelor.apps.base.db.Product"
@@ -16,6 +18,16 @@
     <one-to-many name="projectHoldBackLineList"
       ref="com.axelor.apps.businessproject.db.ProjectHoldBackLine" title="HoldBacks lines"
       mappedBy="projectHoldBack"/>
+
+
+    <extra-code>
+      <![CDATA[
+
+          // HOLD BACK TYPE SELECT
+          public static final int HOLD_BACK_AS_EX_TAX_TOTAL = 1;
+	      public static final int HOLD_BACK_AS_IN_TAX_TOTAL = 2;
+      ]]>
+    </extra-code>
   </entity>
 
 </domain-models>

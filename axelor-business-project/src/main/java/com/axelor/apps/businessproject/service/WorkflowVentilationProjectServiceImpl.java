@@ -117,6 +117,8 @@ public class WorkflowVentilationProjectServiceImpl
       return;
     }
 
+    confirmReleasedHoldBackInvoiceLinesVentilation(invoice);
+
     InvoicingProject invoicingProject =
         invoicingProjectRepo.all().filter("self.invoice.id = ?", invoice.getId()).fetchOne();
 
@@ -176,5 +178,17 @@ public class WorkflowVentilationProjectServiceImpl
             .count();
 
     return timesheetLineCnt == 0;
+  }
+
+  protected void confirmReleasedHoldBackInvoiceLinesVentilation(Invoice invoice) {
+    invoice.getInvoiceLineList().stream()
+        .filter(il -> il.getRelatedProjectHoldBackLineInvoiceLine() != null)
+        .forEach(
+            il ->
+                il.getRelatedProjectHoldBackLineInvoiceLine()
+                    .setIsVentilatedReleasedProjectHoldBackLineInvoiceLine(true));
+    invoice.getInvoiceLineList().stream()
+        .filter(il -> il.getRelatedProjectHoldBackATI() != null)
+        .forEach(il -> il.getRelatedProjectHoldBackATI().setIsVentilatedProjectHoldBackATI(true));
   }
 }

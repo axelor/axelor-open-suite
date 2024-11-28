@@ -72,4 +72,5 @@
     <option value="project">Project</option>
     <option value="task">Project task</option>
   </selection>
+
 </object-views>

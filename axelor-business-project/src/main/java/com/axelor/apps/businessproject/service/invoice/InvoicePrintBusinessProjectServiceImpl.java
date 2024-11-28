@@ -43,8 +43,10 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -237,5 +239,46 @@ public class InvoicePrintBusinessProjectServiceImpl extends InvoicePrintServiceI
   protected String getReportFileName(Invoice invoice) {
     return String.format(
         "%s %s", I18n.get(ITranslation.INVOICE_EXPENSE_ON_INVOICE), invoice.getInvoiceId());
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public File getPrintedInvoice(
+      Invoice invoice,
+      boolean forceRefresh,
+      Integer reportType,
+      PrintingTemplate invoicePrintTemplate,
+      String locale)
+      throws AxelorException {
+
+    // if invoice is ventilated (or just validated for advance payment invoices)
+    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+        || (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+            && invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED)) {
+
+      // return a previously generated printing if possible
+      if (!forceRefresh
+          && invoice.getPrintedPDF() != null
+          && reportType != null
+          && reportType != InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS
+          && reportType != InvoiceRepository.REPORT_TYPE_INVOICE_WITH_HOLD_BACKS_DETAILS
+          && reportType
+              != InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_AND_HOLD_BACKS_DETAILS) {
+
+        Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFilePath());
+        return path.toFile();
+      } else {
+
+        // generate a new printing
+        return reportType != null
+                && reportType == InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS
+            ? print(invoice, reportType, invoicePrintTemplate, locale)
+            : printAndSave(invoice, reportType, invoicePrintTemplate, locale);
+      }
+    } else {
+      // invoice is not ventilated (or validated for advance payment invoices) --> generate and
+      // don't save
+      return print(invoice, reportType, invoicePrintTemplate, locale);
+    }
   }
 }
