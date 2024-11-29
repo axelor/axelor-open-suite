@@ -266,7 +266,7 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
         InvoiceLine invLine = generate(invoice, tmp);
 
         AppAccount appAccount = appAccountService.getAppAccount();
-        fillCutOffDate(contract, appAccount, start, invLine, end);
+        fillCutOffDate(contract, appAccount, start, invLine, end, isPeriodicInvoicing);
         invLine.setContractLine(line);
         setContractLineInAnalyticMoveLine(line, invLine);
       }
@@ -278,14 +278,42 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
       AppAccount appAccount,
       LocalDate start,
       InvoiceLine invLine,
-      LocalDate end) {
+      LocalDate end,
+      boolean isPeriodicInvoicing) {
     if (appAccount.getManageCutOffPeriod()) {
+      if (!isPeriodicInvoicing) {
+        start = getNonPeriodicInvoiceCutOffStartDate(contract);
+        end = contract.getInvoicingDate();
+        if (end == null) {
+          end = appBaseService.getTodayDate(contract.getCompany());
+        }
+      }
       if (start == null) {
-        start = contract.getStartDate();
+        start =
+            contract.getInvoicePeriodStartDate() != null
+                ? contract.getInvoicePeriodStartDate()
+                : contract.getStartDate();
       }
       invLine.setCutOffStartDate(start);
       invLine.setCutOffEndDate(end);
     }
+  }
+
+  protected LocalDate getNonPeriodicInvoiceCutOffStartDate(Contract contract) {
+    LocalDate start;
+    List<Invoice> invoiceList =
+        invoiceRepository
+            .all()
+            .filter(":contractId MEMBER OF self.contractSet")
+            .bind("contractId", contract.getId())
+            .order("invoiceDate")
+            .fetch();
+    if (CollectionUtils.isEmpty(invoiceList)) {
+      start = contract.getCurrentContractVersion().getActivationDateTime().toLocalDate();
+    } else {
+      start = invoiceList.get(invoiceList.size() - 2).getInvoiceDate();
+    }
+    return start;
   }
 
   protected void computeConsumptionLines(Contract contract, Invoice invoice)
