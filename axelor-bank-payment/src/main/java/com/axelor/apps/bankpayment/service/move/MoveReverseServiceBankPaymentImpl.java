@@ -22,9 +22,13 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -81,7 +85,11 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       CurrencyScaleService currencyScaleService,
       UnreconcileService unReconcileService,
       MoveInvoiceTermService moveInvoiceTermService,
-      AnalyticLineService analyticLineService) {
+      AnalyticLineService analyticLineService,
+      PaymentModeRepository paymentModeRepository,
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      AnalyticMoveLineService analyticMoveLineService,
+      ReconcileRepository reconcileRepository) {
     super(
         moveCreateService,
         reconcileService,
@@ -94,7 +102,11 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         moveLineToolService,
         unReconcileService,
         moveInvoiceTermService,
-        analyticLineService);
+        analyticLineService,
+        paymentModeRepository,
+        analyticMoveLineRepository,
+        analyticMoveLineService,
+        reconcileRepository);
     this.bankReconciliationService = bankReconciliationService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankReconciliationLineUnreconciliationService =
@@ -149,7 +161,6 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public List<Move> massReverse(List<Move> moveList, Map<String, Object> assistantMap)
       throws AxelorException {
     boolean isHiddenMoveLinesInBankReconciliation =
