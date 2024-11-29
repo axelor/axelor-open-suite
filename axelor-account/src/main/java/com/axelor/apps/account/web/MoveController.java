@@ -124,7 +124,6 @@ public class MoveController {
                 .filter("self.id IN :moveList AND self.statusSelect <> :simulatedStatus")
                 .bind("moveList", moveIds)
                 .bind("simulatedStatus", MoveRepository.STATUS_SIMULATED)
-                .order("id")
                 .fetch();
 
         if (CollectionUtils.isNotEmpty(moveList)) {

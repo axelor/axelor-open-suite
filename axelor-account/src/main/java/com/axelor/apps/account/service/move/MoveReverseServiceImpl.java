@@ -22,12 +22,10 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -40,10 +38,9 @@ import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.common.ObjectUtils;
-import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -73,10 +70,6 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected UnreconcileService unReconcileService;
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected AnalyticLineService analyticLineService;
-  protected PaymentModeRepository paymentModeRepository;
-  protected AnalyticMoveLineRepository analyticMoveLineRepository;
-  protected AnalyticMoveLineService analyticMoveLineService;
-  protected ReconcileRepository reconcileRepository;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -91,11 +84,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       MoveLineToolService moveLineToolService,
       UnreconcileService unReconcileService,
       MoveInvoiceTermService moveInvoiceTermService,
-      AnalyticLineService analyticLineService,
-      PaymentModeRepository paymentModeRepository,
-      AnalyticMoveLineRepository analyticMoveLineRepository,
-      AnalyticMoveLineService analyticMoveLineService,
-      ReconcileRepository reconcileRepository) {
+      AnalyticLineService analyticLineService) {
 
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
@@ -109,12 +98,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     this.unReconcileService = unReconcileService;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.analyticLineService = analyticLineService;
-    this.paymentModeRepository = paymentModeRepository;
-    this.analyticMoveLineRepository = analyticMoveLineRepository;
-    this.analyticMoveLineService = analyticMoveLineService;
-    this.reconcileRepository = reconcileRepository;
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public Move generateReverse(
       Move move,
@@ -136,11 +122,6 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       origin = move.getJournal().getPrefixOrigin() + origin;
     }
 
-    PaymentMode paymentMode = move.getPaymentMode();
-    if (paymentMode != null) {
-      paymentMode = paymentModeRepository.find(paymentMode.getId());
-    }
-
     Move newMove =
         moveCreateService.createMove(
             move.getJournal(),
@@ -148,7 +129,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             move.getCurrency(),
             move.getPartner(),
             dateOfReversion,
-            paymentMode,
+            move.getPaymentMode(),
             move.getFiscalPosition(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             move.getFunctionalOriginSelect(),
@@ -170,6 +151,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
 
       MoveLine newMoveLine = generateReverseMoveLine(newMove, moveLine, dateOfReversion, isDebit);
+      AnalyticMoveLineRepository analyticMoveLineRepository =
+          Beans.get(AnalyticMoveLineRepository.class);
       newMoveLine.setAnalyticDistributionTemplate(moveLine.getAnalyticDistributionTemplate());
       List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
       if (!CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
@@ -181,11 +164,12 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         }
       } else if (moveLine.getAnalyticDistributionTemplate() != null) {
         analyticMoveLineList =
-            analyticMoveLineService.generateLines(
-                newMoveLine.getAnalyticDistributionTemplate(),
-                newMoveLine.getDebit().add(newMoveLine.getCredit()),
-                AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
-                dateOfReversion);
+            Beans.get(AnalyticMoveLineService.class)
+                .generateLines(
+                    newMoveLine.getAnalyticDistributionTemplate(),
+                    newMoveLine.getDebit().add(newMoveLine.getCredit()),
+                    AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
+                    dateOfReversion);
       }
       if (CollectionUtils.isNotEmpty(analyticMoveLineList)) {
         newMoveLine.clearAnalyticMoveLineList();
@@ -203,7 +187,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
 
       if (isUnreconcileOriginalMove) {
         List<Reconcile> reconcileList =
-            reconcileRepository
+            Beans.get(ReconcileRepository.class)
                 .all()
                 .filter(
                     "self.statusSelect != ?1 AND (self.debitMoveLine.id = ?2 OR self.creditMoveLine.id = ?2)",
@@ -228,16 +212,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
 
     if (validatedMove && isAutomaticAccounting) {
       moveValidateService.accounting(newMove);
-    } else {
-      saveNewMove(newMove);
     }
 
-    return newMove;
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void saveNewMove(Move move) {
-    moveRepository.save(move);
+    return moveRepository.save(newMove);
   }
 
   protected void cancelInvoicePayment(Move move) throws AxelorException {
@@ -309,10 +286,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         isChooseDate ? (LocalDate) assistantMap.get("dateOfReversion") : null;
     List<Move> reverseMoveList = new ArrayList<>();
     List<String> errorList = new ArrayList<>();
-    int i = 0;
     for (Move move : moveList) {
       try {
-        move = moveRepository.find(move.getId());
         if (!isChooseDate) {
           dateOfReversion =
               extractContextMoveService.getDateOfReversion(null, move, dateOfReversionSelect);
@@ -326,11 +301,6 @@ public class MoveReverseServiceImpl implements MoveReverseService {
                 dateOfReversion));
       } catch (Exception e) {
         errorList.add(String.format("%s: %s", move.getReference(), e.getMessage()));
-      } finally {
-        i++;
-        if (i % AbstractBatch.FETCH_LIMIT == 0) {
-          JPA.clear();
-        }
       }
     }
     if (ObjectUtils.notEmpty(errorList)) {
