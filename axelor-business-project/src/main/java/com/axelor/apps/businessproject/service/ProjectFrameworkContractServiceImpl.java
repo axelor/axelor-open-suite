@@ -133,7 +133,7 @@ public class ProjectFrameworkContractServiceImpl implements ProjectFrameworkCont
     if (frameworkSupplierContract == null) {
       productMap.put(
           "unitCost",
-          productCompanyService.get(product, "salePrice", projectTask.getProject().getCompany()));
+          productCompanyService.get(product, "costPrice", projectTask.getProject().getCompany()));
       return productMap;
     }
 

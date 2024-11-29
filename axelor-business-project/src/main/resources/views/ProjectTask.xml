@@ -242,11 +242,12 @@
             onSelect="action-project-task-attrs-set-product-domain" form-view="product-form"
             grid-view="product-grid"/>
           <field name="quantity" colSpan="3"
-            onChange="action-project-task-method-update-financial-datas" readonlyIf="saleOrderLine"/>
+            onChange="action-project-task-method-recompute-total-amounts" readonlyIf="saleOrderLine"/>
           <field name="unitPrice" colSpan="3"
             onChange="action-project-task-group-unit-price-onchange"
             readonlyIf="saleOrderLine || frameworkCustomerContract"/>
           <field name="unitCost" colSpan="3"
+            onChange="action-project-task-method-recompute-total-amounts"
             readonlyIf="saleOrderLine || frameworkSupplierContract"/>
           <field name="invoicingUnit" colSpan="3" domain="self.unitTypeSelect=3"
             form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"
@@ -511,6 +512,11 @@
   <action-method name="action-project-task-method-update-financial-datas">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="updateFinancialDatas"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-recompute-total-amounts">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="recomputeTotalAmounts"/>
   </action-method>
 
   <action-attrs name="action-project-task-attrs-scale-and-precision">
