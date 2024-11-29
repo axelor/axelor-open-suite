@@ -1,0 +1,3 @@
+---
+title: "ProjectTask : fix default cost of tasks and compute of total amounts"
+module: axelor-business-project
