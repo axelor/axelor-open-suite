@@ -19,28 +19,11 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.Map;
 
-public interface TimesheetService {
+public interface TimesheetAttrsService {
 
-  String getPeriodTotalConvertTitle(Timesheet timesheet);
-
-  /**
-   * Update {@link Timesheet#timeLoggingPreferenceSelect} and recompute all durations.
-   *
-   * @param timesheet a context timesheet
-   * @return the updated timesheet
-   */
-  void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
-
-  BigDecimal computePeriodTotalLeavesAndHolidays(
-      Employee employee, LocalDate fromDate, LocalDate toDate, String timeUnit)
-      throws AxelorException;
-
-  BigDecimal computePeriodTotalWorkDurtion(
-      Employee employee, LocalDate fromDate, LocalDate toDate, String timeUnit)
+  public Map<String, Map<String, Object>> getPeriodTotalsAttrsMap(Timesheet timesheet)
       throws AxelorException;
 }
