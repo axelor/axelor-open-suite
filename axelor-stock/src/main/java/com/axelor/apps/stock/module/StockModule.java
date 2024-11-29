@@ -218,5 +218,8 @@ public class StockModule extends AxelorModule {
     bind(MassStockMoveNeedToPickedProductService.class)
         .to(MassStockMoveNeedToPickedProductServiceImpl.class);
     bind(StoredProductService.class).to(StoredProductServiceImpl.class);
+
+    // TODO Check to make work this bind with tests
+    // bind(PricingGroupServiceImpl.class).to(PricingGroupStockServiceImpl.class);
   }
 }
