@@ -1,8 +1,0 @@
----
-title: "Move: reduce the time of mass reversing via the move's grid view"
-module: axelor-account
-developer:
-  Add in MoveReverseServiceImpl, MoveReverseServiceBankPaymentImpl, MoveReverseServiceBudgetImpl and ExpenseMoveReverseServiceImpl 
-  the AnalyticMoveLineRepository, AnalyticMoveLineService and ReconcileRepository.
-  Remove the Transactional from MoveReverseServiceImpl and ExpenseMoveReverseServiceImpl's generateReverse method.
-  Remove the Transactional from MoveReverseServiceBankPaymentImpl's massReverse method
