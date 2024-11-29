@@ -33,7 +33,7 @@
     <panel-tabs name="mainPanelTab">
       <panel title="Content" name="contentPanel">
         <field name="contractLineList" hidden="true"
-          showIf="isInvoicingManagement &amp;&amp; targetTypeSelect &lt; 2" colSpan="12"
+          showIf="isInvoicingManagement &amp;&amp; targetTypeSelect &lt;= 2" colSpan="12"
           form-view="contract-line-form-for-template" grid-view="contract-line-grid-for-template"/>
         <field name="contractLineList" showTitle="false" colSpan="12"
           form-view="contract-line-yer-form-for-template" grid-view="contract-line-yer-grid"
