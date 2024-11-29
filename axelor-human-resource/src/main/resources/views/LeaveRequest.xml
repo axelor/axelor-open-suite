@@ -128,7 +128,7 @@
         </panel>
       </panel>
       <field name="duration" readonly="true" onChange="action-leave-request-methode-duration"/>
-      <field name="leaveDaysToDate" readonly="true"/>
+      <field name="leaveDaysToDate" readonly="true" x-scale="1"/>
       <field name="leaveReason.unitSelect" readonly="true"/>
 
       <field name="comments" colSpan="12"/>

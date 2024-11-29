@@ -37,7 +37,7 @@
       scale="4" precision="8"/>
     <boolean name="toJustifyLeaveReason" title="Leave to justify"/>
     <boolean name="isPayrollInput" title="Payroll input" default="false" readonly="true"/>
-    <integer name="leaveDaysToDate" title="Leave days to date" transient="true"/>
+    <decimal name="leaveDaysToDate" title="Leave days to date" transient="true"/>
 
     <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
