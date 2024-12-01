@@ -19,6 +19,11 @@
       <attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
       <attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
     </extend>
+    <extend target="//field[@name='isIspmRequired']">
+      <insert position="after">
+        <button name="selectPricingLineBtn" onClick=""/>
+      </insert>
+    </extend>
   </form>
 
   <form name="sale-order-form-partner" title="Sale order"
@@ -360,5 +365,20 @@
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="updateTimetableAmounts"/>
   </action-method>
+
+  <!-- Shipment process -->
+  <action-view name="action-suppplychain-view-pricing-list-wizard"
+    title="Freight carrier pricings" model="com.axelor.utils.db.Wizard">
+    <view type="grid" name="freight-carrier-pricings-wizard-grid"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+  </action-view>
+
+  <grid name="freight-carrier-pricings-wizard-grid" title="Freight carrier pricings"
+    model="com.axelor.apps.stock.db.FreightCarrierPricing">
+    <field name="freightCarrierMode"/>
+    <field name="pricing"/>
+  </grid>
 
 </object-views>
