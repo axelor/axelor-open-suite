@@ -847,64 +847,6 @@
     <view-param name="search-filters" value="accounting-batch-filters"/>
   </action-view>
 
-  <!-- Top Menus -->
-
-
-  <menuitem name="top-invoicing" title="Invoicing" order="5" top="true"
-    if="__config__.app.isApp('invoice')" left="false"/>
-
-  <menuitem name="top-invoicing-custinvoices" title="Cust. Invoices"
-    action="top.invoicing.custinvoices" parent="top-invoicing" top="true"/>
-
-  <action-view name="top.invoicing.custinvoices" title="Cust. Invoices"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-grid"/>
-    <view type="form" name="invoice-form"/>
-    <view-param name="search-filters" value="customer-invoices-filters"/>
-    <domain>self.operationTypeSelect = 3</domain>
-    <context name="_operationTypeSelect" expr="eval:3"/>
-  </action-view>
-
-
-  <menuitem name="top-invoicing-cust-credit-note" title="Cust. Credit notes"
-    action="top.invoicing.custrefunds" parent="top-invoicing" top="true"/>
-
-  <action-view name="top.invoicing.custrefunds" title="Cust. Credit notes"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-refund-grid"/>
-    <view type="form" name="invoice-form"/>
-    <view-param name="search-filters" value="customer-refunds-filters"/>
-    <domain>self.operationTypeSelect = 4</domain>
-    <context name="_operationSubTypeSelect" expr="eval:1"/>
-    <context name="_operationTypeSelect" expr="eval:4"/>
-  </action-view>
-
-  <menuitem name="top-invoicing-supplinvoices" title="Suppl. Invoices"
-    action="top.invoicing.supplinvoices" parent="top-invoicing" top="true"/>
-
-  <action-view name="top.invoicing.supplinvoices" title="Suppl. Invoices"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-supplier-grid"/>
-    <view type="form" name="invoice-form"/>
-    <view-param name="search-filters" value="supplier-invoices-filters"/>
-    <domain>self.operationTypeSelect = 1</domain>
-
-    <context name="_operationTypeSelect" expr="eval:1"/>
-  </action-view>
-
-  <menuitem name="top-invoicing-suppl-credit-note" title="Suppl. Credit notes"
-    action="top.invoicing.supplrefunds" parent="top-invoicing" top="true"/>
-
-  <action-view name="top.invoicing.supplrefunds" title="Suppl. Credit notes"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-supplier-refund-grid"/>
-    <view type="form" name="invoice-form"/>
-    <view-param name="search-filters" value="supplier-refunds-filters"/>
-    <domain>self.operationTypeSelect = 2</domain>
-    <context name="_operationTypeSelect" expr="eval:2"/>
-    <context name="_operationSubTypeSelect" expr="eval:1"/>
-  </action-view>
-
   <menuitem name="menu-account-sale-invoice-dashboard-1" parent="invoice-root-report"
     title="Sale Invoices" action="account.sale.invoice.dashboard.1.view" order="100"/>
 
@@ -967,7 +909,7 @@
   <!-- Move template -->
 
   <menuitem name="move-template-wizard" title="Move From Template"
-    parent="account-root-move" action="move.template.wizard" top="true" order="400"/>
+    parent="account-root-move" action="move.template.wizard" order="400"/>
   <action-view name="move.template.wizard" title="Move From Template"
     model="com.axelor.utils.db.Wizard">
     <view type="form" name="move-template-wizard-form"/>
@@ -986,7 +928,7 @@
     order="400"/>
 
   <menuitem name="move-template" title="Move Templates" parent="move-template-root"
-    action="move.template" top="true" order="100"/>
+    action="move.template" order="100"/>
 
   <action-view name="move.template" title="Move Templates"
     model="com.axelor.apps.account.db.MoveTemplate">
@@ -996,7 +938,7 @@
   </action-view>
 
   <menuitem name="move-template-type" title="Move Template Types"
-    parent="move-template-root" action="move.template.type" top="true" order="200"/>
+    parent="move-template-root" action="move.template.type" order="200"/>
   <action-view name="move.template.type" title="Move Template Types"
     model="com.axelor.apps.account.db.MoveTemplateType">
     <view type="grid" name="move-template-type-grid"/>

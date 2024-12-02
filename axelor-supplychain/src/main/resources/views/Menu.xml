@@ -115,33 +115,6 @@
       expr="eval: com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING"/>
   </action-view>
 
-  <menuitem name="top-menu-purchase-suparrivals" parent="top-menu-purchase"
-    title="Supplier Arrivals" action="top.menu.purchase.suparrivals" top="true"/>
-
-  <action-view name="top.menu.purchase.suparrivals" title="Supplier Arrivals"
-    model="com.axelor.apps.stock.db.StockMove">
-    <view type="grid" name="stock-move-in-grid"/>
-    <view type="form" name="stock-move-form"/>
-    <view-param name="search-filters" value="supplier-arrivals-filters"/>
-    <domain>self.stockMoveLineList.fromStockLocation.typeSelect = 2</domain>
-    <context name="_typeSelect" expr="3"/>
-    <context name="_newDate" expr="eval: __config__.date.plusWeeks(1)"/>
-  </action-view>
-
-  <menuitem name="top-menu-sales-custdeliveries" parent="top-menu-sales"
-    if="__config__.app.isApp('stock')" title="Customer deliveries"
-    action="top.menu.sales.custdeliveries" top="true"/>
-
-  <action-view name="top.menu.sales.custdeliveries" title="Customer deliveries"
-    model="com.axelor.apps.stock.db.StockMove">
-    <view type="grid" name="stock-move-out-grid"/>
-    <view type="form" name="stock-move-form"/>
-    <view-param name="search-filters" value="customer-deliveries-filters"/>
-    <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
-    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
-    <context name="_isReversion" expr="eval: false"/>
-  </action-view>
-
   <menuitem name="purchase-root-purchase-orders-without-stock.move"
     title="Purchase order without stock move" parent="sc-root-purchase"
     action="purchase.root.purchase.orders.without.stock.move" order="700"

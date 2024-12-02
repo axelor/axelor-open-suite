@@ -701,22 +701,4 @@
     <context name="_forceTimeUnit" expr="eval: true"/>
   </action-view>
 
-  <!-- Top Menus -->
-
-  <menuitem name="top-menu-hr" title="HR" order="4" top="true" left="false"
-    if="__config__.app.isApp('employee')"/>
-
-  <menuitem name="top-menu-hr-my-timesheet" parent="top-menu-hr" title="My timesheet"
-    action="edit.timesheet" top="true" if="__config__.app.isApp('timesheet')"/>
-
-  <menuitem name="top-menu-hr-my-expense" parent="top-menu-hr" title="My expense"
-    action="edit.expense" top="true" if="__config__.app.isApp('expense')"/>
-
-  <menuitem name="top-menu-hr-my-leave-request" parent="top-menu-hr"
-    title="My leave request" action="edit.leave.request" top="true"
-    if="__config__.app.isApp('leave')"/>
-
-  <menuitem name="top-menu-hr-my-extra-hours" parent="top-menu-hr" title="My extra hours"
-    action="edit.extra.hours" top="true" if="__config__.app.isApp('exthrs')"/>
-
 </object-views>

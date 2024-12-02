@@ -286,48 +286,6 @@
     <view-param name="search-filters" value="sale-batch-filters"/>
   </action-view>
 
-
-  <!-- TOP MENU -->
-
-  <menuitem name="top-menu-sales" top="true" order="2" title="Sales"
-    if="__config__.app.isApp('sale')" left="false"/>
-
-  <menuitem name="top-menu-sales-quotations" parent="top-menu-sales"
-    title="Sale quotations" action="top.menu.sales.quotations" top="true"/>
-
-  <action-view name="top.menu.sales.quotations" title="Sale quotations"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <view type="cards" name="sale-order-quotation-cards"/>
-    <view type="grid" name="sale-order-quotation-grid"/>
-    <view type="calendar" name="sale-order-calendar"/>
-    <view type="form" name="sale-order-form"/>
-    <view-param name="search-filters" value="sale-order-filters"/>
-    <view-param name="forceTitle" value="true"/>
-    <domain>self.template = false and self.statusSelect &lt; 3</domain>
-    <context name="_internalUser" expr="eval: __user__.id"/>
-    <context name="_myActiveTeam"
-      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    <context name="_template" expr="eval:false"/>
-  </action-view>
-
-  <menuitem name="top-menu-sales-sale-orders" parent="top-menu-sales" title="Sale orders"
-    action="top.menu.sales.sale.orders" top="true"/>
-
-  <action-view name="top.menu.sales.sale.orders" title="Sale orders"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <view type="cards" name="sale-order-cards"/>
-    <view type="grid" name="sale-order-grid"/>
-    <view type="calendar" name="sale-order-calendar"/>
-    <view type="form" name="sale-order-form"/>
-    <view-param name="search-filters" value="sale-order-filters"/>
-    <domain>self.template = false and self.statusSelect = 3</domain>
-    <context name="_internalUser" expr="eval: __user__.id"/>
-    <context name="_myActiveTeam"
-      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    <context name="_template" expr="eval:false"/>
-    <context name="status" expr="3"/>
-  </action-view>
-
   <menuitem name="menu-saleman-dashboard-sample" parent="sc-root-sale-report" order="100"
     title="Salesperson" action="saleman.dashboard.view.sample"/>
 
