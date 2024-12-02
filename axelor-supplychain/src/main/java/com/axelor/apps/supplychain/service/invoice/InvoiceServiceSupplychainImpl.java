@@ -156,6 +156,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
                 .bind("invoice", originalInvoice)
                 .fetchOne();
         timetable.setInvoiced(false);
+        timetable.setInvoice(null);
       }
     }
   }
