@@ -1,0 +1,3 @@
+---
+title: "InvoicePayment: fixed amount to 0 after changing payment date two times"
+module: axelor-account
