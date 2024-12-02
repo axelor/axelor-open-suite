@@ -86,6 +86,8 @@ import com.axelor.apps.base.service.BirtTemplateViewService;
 import com.axelor.apps.base.service.BirtTemplateViewServiceImpl;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
+import com.axelor.apps.base.service.ConnectorMapperService;
+import com.axelor.apps.base.service.ConnectorMapperServiceImpl;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
 import com.axelor.apps.base.service.CurrencyService;
@@ -507,5 +509,6 @@ public class BaseModule extends AxelorModule {
     bind(DataSharingProductWizardRepository.class)
         .to(DataSharingProductWizardManagementRepository.class);
     bind(LanguageCheckerService.class).to(LanguageCheckerServiceImpl.class);
+    bind(ConnectorMapperService.class).to(ConnectorMapperServiceImpl.class);
   }
 }
