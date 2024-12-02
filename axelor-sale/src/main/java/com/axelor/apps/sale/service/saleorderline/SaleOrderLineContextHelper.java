@@ -24,7 +24,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ContextHelper;
-import java.util.Optional;
 
 public class SaleOrderLineContextHelper {
 
@@ -33,12 +32,21 @@ public class SaleOrderLineContextHelper {
   public static SaleOrder getSaleOrder(Context context, SaleOrderLine saleOrderLine) {
     SaleOrder saleOrder = ContextHelper.getOriginParent(context, SaleOrder.class);
     if (saleOrder != null) {
+      // Opening a sale order line from a Sale order form view whether is it persisted or not.
       return saleOrder;
     }
 
+    // Opening a sale order line form view from a form view that is not a SaleOrder
+    return getParentSaleOrderFromOtherFormView(saleOrderLine);
+  }
+
+  protected static SaleOrder getParentSaleOrderFromOtherFormView(SaleOrderLine saleOrderLine) {
+    SaleOrder saleOrder;
     SaleOrderLineRepository saleOrderLineRepository = Beans.get(SaleOrderLineRepository.class);
 
-    // Line is persisted and is not a subline
+    // We only work with persisted line
+
+    // Not a subline
     if (saleOrderLine.getId() != null) {
       saleOrder = saleOrderLineRepository.find(saleOrderLine.getId()).getSaleOrder();
       if (saleOrder != null) {
@@ -46,44 +54,22 @@ public class SaleOrderLineContextHelper {
       }
     }
 
-    // Line is not persisted
-    SaleOrderLine saleOrderLine1 = getParentSol(context);
-    saleOrderLine1 = saleOrderLineRepository.find(saleOrderLine1.getId());
-    saleOrder = saleOrderLine1.getSaleOrder();
-    if (saleOrder == null) {
-      saleOrder = getParentOrder(saleOrderLine1);
-    }
+    // Is a subline
+    SaleOrderLine parentSol = getParentSol(saleOrderLine);
+    parentSol = saleOrderLineRepository.find(parentSol.getId());
+    saleOrder = parentSol.getSaleOrder();
     return saleOrder;
   }
 
-  protected static SaleOrderLine getParentSol(Context context) {
-    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    Long id = saleOrderLine.getId();
-    if (id == null) {
-      saleOrderLine = getParentSol(context.getParent());
+  protected static SaleOrderLine getParentSol(SaleOrderLine saleOrderLine) {
+    SaleOrderLine parentSaleOrderLine = saleOrderLine.getParentSaleOrderLine();
+    if (parentSaleOrderLine != null) {
+      return getParentSol(parentSaleOrderLine);
+    } else {
+      if (saleOrderLine.getSaleOrder() != null) {
+        return saleOrderLine;
+      }
     }
-    saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
-
     return saleOrderLine;
-  }
-
-  protected static SaleOrder getParentOrder(SaleOrderLine saleOrderLine) {
-    if (saleOrderLine.getSaleOrder() != null) {
-      return saleOrderLine.getSaleOrder();
-    }
-
-    return Optional.ofNullable(getPersistedParentSol(saleOrderLine))
-        .map(SaleOrderLine::getSaleOrder)
-        .orElse(null);
-  }
-
-  protected static SaleOrderLine getPersistedParentSol(SaleOrderLine saleOrderLine) {
-    if (saleOrderLine.getParentSaleOrderLine() != null) {
-      return getPersistedParentSol(saleOrderLine.getParentSaleOrderLine());
-    }
-    if (saleOrderLine.getSaleOrder() != null) {
-      return saleOrderLine;
-    }
-    return null;
   }
 }
