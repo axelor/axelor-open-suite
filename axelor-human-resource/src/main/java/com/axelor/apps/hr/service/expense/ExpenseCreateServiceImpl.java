@@ -107,6 +107,7 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
     expense.setCompany(company);
     expense.setEmployee(employee);
     expense.setCompanyCbSelect(companyCbSelect);
+    expense.setTypeSelect(ExpenseRepository.TYPE_EXPENSE);
     setCurrency(company, currency, expense);
     setBankDetails(employee, bankDetails, expense);
     setPeriod(company, period, expense);
