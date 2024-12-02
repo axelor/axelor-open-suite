@@ -34,11 +34,10 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.timesheet.TimesheetAttrsService;
 import com.axelor.apps.hr.service.timesheet.TimesheetDomainService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
-import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
-import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetRemoveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
@@ -567,21 +566,10 @@ public class TimesheetController {
   }
 
   public void timesheetPeriodTotalController(ActionRequest request, ActionResponse response) {
+
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
-      TimesheetService timesheetService = Beans.get(TimesheetService.class);
-
-      BigDecimal periodTotal =
-          Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet);
-
-      response.setAttr("$periodTotalConvert", "hidden", false);
-      response.setAttr(
-          "$periodTotalConvert",
-          "value",
-          Beans.get(TimesheetLineService.class)
-              .computeHoursDuration(timesheet, periodTotal, false));
-      response.setAttr(
-          "$periodTotalConvert", "title", timesheetService.getPeriodTotalConvertTitle(timesheet));
+      response.setAttrs(Beans.get(TimesheetAttrsService.class).getPeriodTotalsAttrsMap(timesheet));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -599,16 +587,6 @@ public class TimesheetController {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       Beans.get(TimesheetService.class).updateTimeLoggingPreference(timesheet);
-      response.setAttr("$periodTotalConvert", "hidden", false);
-      response.setAttr(
-          "$periodTotalConvert",
-          "value",
-          Beans.get(TimesheetLineService.class)
-              .computeHoursDuration(timesheet, timesheet.getPeriodTotal(), false));
-      response.setAttr(
-          "$periodTotalConvert",
-          "title",
-          Beans.get(TimesheetService.class).getPeriodTotalConvertTitle(timesheet));
       response.setValue("timeLoggingPreferenceSelect", timesheet.getTimeLoggingPreferenceSelect());
       response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
     } catch (Exception e) {
