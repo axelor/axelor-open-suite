@@ -37,6 +37,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -274,5 +275,12 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     if (timesheetLine != null) {
       timesheetLine.setTimer(null);
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void saveTimesheet(TimesheetLine timesheetLine) {
+
+    timesheetRepo.save(timesheetLine.getTimesheet());
   }
 }

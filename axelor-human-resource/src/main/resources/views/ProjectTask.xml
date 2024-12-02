@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
+    name="project-task-timesheet-grid">
+
+    <field name="name"/>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="project"/>
+    <button onClick="action-timesheet-line-view-new-line" name="logBtn" icon="clock-history"/>
+
+  </grid>
+
+</object-views>
