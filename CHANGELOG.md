@@ -1,3 +1,86 @@
+## [8.2.3] (2024-11-28)
+
+### Fixes
+#### Base
+
+* Updated studio module to 3.3.6.
+* Template: changed title from 'Print Template' to 'Print template'.
+* Group view: fixed inexistant field 'canViewCollaboration' to display only with the Enterprise Edition.
+* Rest API: fixed response message translation.
+* City: fixed geonames import errors.
+
+#### Account
+
+* Fixed Asset: fixed degressive computation with prorata temporis of fixed asset starting in february.
+* Move: fixed condition to display payment voucher and payment session according to functional origin.
+* Invoice: fixed wrong total gross amount on birt report.
+* Fixed Asset: fixed accounting value when we validate fixed asset without depreciation plan.
+* FEC Import: fixed move line without accounting date when importing from fec import
+* Move: fixed description when we generate invoice move.
+
+#### Budget
+
+* Budget: fixed help of 'Committed amount' in budget level and global budget.
+
+#### Business Project
+
+* Project template: show the generated business project with the right view.
+
+#### Contract
+
+* Contract: prorata is now based on invoice period start date instead of contract start date.
+
+#### Human Resource
+
+* Lunch voucher: fixed computation for leaves with overlapping periods.
+* Timesheet: fixed timeseet duplicate creation.
+* Employee: checked unicity constraints when creating user at the end of employee creation process.
+* HR batch: fixed an error occurring when launching Leave Management Reset Batch.
+* ProjectPlanningTime: added missing computation duration at change of time units.
+* Leave request: fixed future quantity day computation when sending a leave request.
+* HR: added employee and employment contract in 'Related to' of message.
+* Timesheet: fixed NPE because of daily limit configuration.
+
+#### Production
+
+* Production API: fixed error while fetching consumed products.
+
+#### Purchase
+
+* Purchase order: fixed an error occurring when generating purchase request if the order was not saved
+
+#### Sale
+
+* Sale API: fixed issue related to complementary products price computation.
+* Sale order: a partner blocked from sale order is now correctly filtered out from the list of customers
+* Sale order: fixed error related to budget when finalizing a quotation.
+
+#### Stock
+
+* Stock move line: fixed the tracking number issue during the inline split.
+
+#### Supply Chain
+
+* Sale order: fixed sale order with a title line tagged as partially invoiced while it has been totally invoiced.
+* Invoice: fixed the note and proforma comments on the invoice based on stock moves generated from sale orders.
+* Credit note: fixed an issue on stock move credit note with different purchase and stock unit.
+* Purchase order line: fixed product name when generating purchase order from sale order.
+
+
+### Developer
+
+#### Human Resource
+
+Added the employeeRepository in the TimesheetQueryServiceImpl constructor
+
+---
+
+Renamed `action-condition-user-validCode` to `action-user-method-validate-code`.
+
+---
+
+Removed `action-project-planning-time-record-start-time-onchange`, replaced by `action-project-planning-time-method-compute-planned-time`.
+
 ## [8.2.2] (2024-11-14)
 
 ### Fixes
@@ -280,6 +363,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.3]: https://github.com/axelor/axelor-open-suite/compare/v8.2.2...v8.2.3
 [8.2.2]: https://github.com/axelor/axelor-open-suite/compare/v8.2.1...v8.2.2
 [8.2.1]: https://github.com/axelor/axelor-open-suite/compare/v8.2.0...v8.2.1
 [8.2.0]: https://github.com/axelor/axelor-open-suite/compare/v8.1.9...v8.2.0

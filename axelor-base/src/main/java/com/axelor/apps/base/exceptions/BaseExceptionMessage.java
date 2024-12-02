@@ -358,6 +358,8 @@ public final class BaseExceptionMessage {
       "Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special." /*)*/;
   public static final String USER_PATTERN_MISMATCH_CUSTOM = /*$$(*/
       "Password doesn't match with configured pattern." /*)*/;
+  public static final String USER_CODE_LENGTH_SHOULD_BE_GREATER_THAN_2 = /*$$(*/
+      "Code length should be greater than 2." /*)*/;
 
   /** Convert demo data file */
   public static final String DUPLICATE_CSV_FILE_NAME_EXISTS = /*$$(*/
