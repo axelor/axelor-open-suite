@@ -16,23 +16,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
+package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.project.db.Project;
-import com.axelor.meta.CallMethod;
-import java.util.Set;
+import com.axelor.apps.project.service.ProjectToolServiceImpl;
+import com.google.inject.Inject;
+import java.util.Objects;
 
-public interface ProjectToolService {
+public class ProjectToolBusinessProjectServiceImpl extends ProjectToolServiceImpl {
 
-  void getChildProjectIds(Set<Long> projectIdsSet, Project project);
+  @Inject
+  public ProjectToolBusinessProjectServiceImpl() {}
 
-  @CallMethod
-  Set<Long> getActiveProjectIds();
+  @Override
+  public String getProjectFormName(Project project) {
+    if (Objects.isNull(project) || !project.getIsBusinessProject()) {
+      return super.getProjectFormName(project);
+    }
 
-  @CallMethod
-  Set<Long> getRelatedProjectIds(Project project);
+    return "business-project-form";
+  }
 
-  String getProjectFormName(Project project);
+  @Override
+  public String getProjectGridName(Project project) {
+    if (Objects.isNull(project) || !project.getIsBusinessProject()) {
+      return super.getProjectGridName(project);
+    }
 
-  String getProjectGridName(Project project);
+    return "business-project-grid";
+  }
 }
