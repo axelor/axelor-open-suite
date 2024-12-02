@@ -62,9 +62,10 @@ public class InvoicePaymentFinancialDiscountServiceImpl
     computeFinancialDiscountFields(invoicePayment);
 
     if (invoicePayment.getFinancialDiscountDeadlineDate() == null
-        || invoicePayment
-            .getFinancialDiscountDeadlineDate()
-            .isBefore(invoicePayment.getPaymentDate())) {
+        || (invoicePayment.getPaymentDate() != null
+            && invoicePayment
+                .getFinancialDiscountDeadlineDate()
+                .isBefore(invoicePayment.getPaymentDate()))) {
       this.resetFinancialDiscount(invoicePayment);
     }
   }
