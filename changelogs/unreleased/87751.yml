@@ -1,0 +1,3 @@
+---
+title: "Invoice payment : fix financial discount when changing payment date."
+module: axelor-account
