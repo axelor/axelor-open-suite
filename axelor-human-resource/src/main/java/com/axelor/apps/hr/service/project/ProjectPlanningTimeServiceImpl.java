@@ -555,4 +555,24 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     }
     return null;
   }
+
+  @Override
+  public List<ProjectTask> getOpenProjectTaskIdList(
+      Employee employee, LocalDate fromDate, LocalDate toDate) {
+
+    return projectTaskRepo
+        .all()
+        .filter(
+            "self.status.isCompleted is false "
+                + "and self.project.manageTimeSpent is true "
+                + "and self.projectPlanningTimeList.employee = :employee "
+                + "and exists(select 1 from ProjectPlanningTime planningTime where planningTime.projectTask.id = self.id and ((planningTime.startDateTime < :fromDate and planningTime.endDateTime > :toDate) or planningTime.startDateTime between :fromDate and :toDate or planningTime.endDateTime between :fromDate and :toDate))")
+        .bind("employee", employee)
+        .bind("fromDate", fromDate)
+        .bind("toDate", toDate)
+        .fetch()
+        .stream()
+        .distinct()
+        .collect(Collectors.toList());
+  }
 }

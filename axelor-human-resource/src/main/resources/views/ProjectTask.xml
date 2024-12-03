@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks" editable="true"
+    name="project-task-timesheet-grid" edit-icon="false" groupBy="project">
+    <field name="name" readonly="true"/>
+    <field name="ticketNumber" readonly="true"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="project" readonly="true"/>
+    <field name="$duration" type="decimal" title="Duration"/>
+  </grid>
+
+  <form model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
+    name="resume-project-task-form" canEdit="false">
+    <panel>
+      <field name="name"/>
+      <field name="project"/>
+      <field name="parentTask"/>
+      <field name="assignedTo"/>
+    </panel>
+  </form>
+
+</object-views>
