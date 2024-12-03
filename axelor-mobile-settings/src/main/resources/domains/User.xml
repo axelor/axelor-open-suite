@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="auth" package="com.axelor.auth.db"/>
 
   <entity name="User" sequential="true">
     <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="dmsRoot" title="DMS root on the mobile application"
+      ref="com.axelor.dms.db.DMSFile"
+      help="Used to define the EDM root for the user on the mobile application. If no value is entered, the value defined in the mobile application configuration will be used."/>
+    <many-to-many name="favouriteFolderSet" title="Favourite folders"
+      ref="com.axelor.dms.db.DMSFile"
+      help="Allows you to define favorite folders on the DMS to create shortcuts on the mobile application."/>
+    <many-to-many name="favouriteFileSet" title="Favourite files"
+      ref="com.axelor.dms.db.DMSFile"
+      help="Allows you to define favorite files for quick access in a dedicated menu on the mobile application."/>
 
     <track>
       <field name="qrCode" on="UPDATE"/>

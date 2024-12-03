@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="extra-hours-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours"
     canNew="true" orderBy="-sentDate">
@@ -32,9 +32,8 @@
   </grid>
 
   <form name="extra-hours-form" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours"
-    width="large" onNew="action-group-extra-hours-onnew"
-    onLoad="action-extra-hours-attrs-buttons,action-extra-hours-attrs-title-project" canNew="false"
-    canCopy="false">
+    width="large" onNew="action-group-extra-hours-onnew" onLoad="action-group-extra-hours-onload"
+    canNew="false" canCopy="false">
     <panel name="mainPanel" colSpan="12">
       <panel colSpan="9" name="statusPanel">
         <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
@@ -61,7 +60,8 @@
         grid-view="company-grid"/>
       <field name="employee" colSpan="3" form-view="employee-form" grid-view="employee-grid"
         canNew="false" canEdit="false" canView="false"
-        onChange="action-extra-hours-method-update-line-employee"/>
+        onSelect="action-extra-hours-method-employee-domain"
+        onChange="action-extra-hours-method-update-line-employee" readonly="true"/>
     </panel>
     <panel-related name="extraHoursLineListPanel" field="extraHoursLineList"
       readonlyIf="statusSelect &gt; 2" grid-view="extra-hours-line-grid"
@@ -100,6 +100,13 @@
     <action name="action-extra-hours-record-default"/>
     <action name="action-extra-hours-attrs-buttons"/>
     <action name="action-extra-hours-attrs-title-project"/>
+    <action name="action-extra-hours-attrs-employee-readonly"/>
+  </action-group>
+
+  <action-group name="action-group-extra-hours-onload">
+    <action name="action-extra-hours-attrs-buttons"/>
+    <action name="action-extra-hours-attrs-title-project"/>
+    <action name="action-extra-hours-attrs-employee-readonly"/>
   </action-group>
 
   <action-group name="action-extra-hours-group-confirm">
@@ -180,6 +187,11 @@
       method="updateLineEmployee"/>
   </action-method>
 
+  <action-method name="action-extra-hours-method-employee-domain">
+    <call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController"
+      method="getEmployeeDomain"/>
+  </action-method>
+
   <action-view name="action-extra-hours-refusal-popup-form" title="Ground for refusal"
     model="com.axelor.apps.hr.db.ExtraHours">
     <view type="form" name="popup-extra-hours-refusal-form"/>
@@ -196,4 +208,9 @@
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
+
+  <action-attrs name="action-extra-hours-attrs-employee-readonly">
+    <attribute for="employee" name="readonly"
+      expr="eval: !__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0"/>
+  </action-attrs>
 </object-views>

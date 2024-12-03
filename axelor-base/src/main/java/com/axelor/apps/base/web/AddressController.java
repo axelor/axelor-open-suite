@@ -30,11 +30,13 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressAttrsService;
+import com.axelor.apps.base.service.address.AddressCreationService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -290,7 +292,7 @@ public class AddressController {
   public void createPartnerAddress(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     Context parentContext = context.getParent();
-    if (parentContext.isEmpty()) {
+    if (ObjectUtils.isEmpty(parentContext)) {
       return;
     }
 
@@ -299,6 +301,13 @@ public class AddressController {
 
     String partnerField = PartnerAddressRepository.modelPartnerFieldMap.get(parentModel);
     LOG.debug("Create partner address : Parent field = {}", partnerField);
+
+    Context parentParentContext = parentContext.getParent();
+    if (partnerField == null
+        || (parentParentContext != null
+            && parentParentContext.get("_model").toString().equals(Partner.class.getName()))) {
+      return;
+    }
 
     Partner partner = null;
     if (parentContext.get(partnerField) instanceof Partner) {
@@ -345,7 +354,7 @@ public class AddressController {
 
   public void autocompleteAddress(ActionRequest request, ActionResponse response) {
     Address address = request.getContext().asType(Address.class);
-    Beans.get(AddressService.class).autocompleteAddress(address);
+    Beans.get(AddressCreationService.class).autocompleteAddress(address);
     response.setValues(address);
   }
 
@@ -356,5 +365,13 @@ public class AddressController {
       response.setAttrs(
           Beans.get(AddressAttrsService.class).getCountryAddressMetaFieldOnChangeAttrsMap(address));
     }
+
+    Context context = request.getContext();
+    Context parentContext = context.getParent();
+    response.setAttr(
+        "addressTypePanel",
+        "hidden",
+        parentContext != null
+            && parentContext.get("_model").toString().equals(PartnerAddress.class.getName()));
   }
 }

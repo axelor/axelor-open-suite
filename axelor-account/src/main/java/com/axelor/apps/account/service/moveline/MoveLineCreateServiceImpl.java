@@ -293,6 +293,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           currencyScaleService.getScaledValue(move, amountInSpecificMoveCurrency.negate());
     }
 
+    String moveLineDescription =
+        StringHelper.cutTooLongString(
+            moveLineToolService.determineDescriptionMoveLine(
+                move.getJournal(), origin, description));
     MoveLine moveLine =
         new MoveLine(
             move,
@@ -303,11 +307,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             counter,
             currencyScaleService.getCompanyScaledValue(move, debit),
             currencyScaleService.getCompanyScaledValue(move, credit),
-            Strings.isNullOrEmpty(move.getDescription())
-                ? StringHelper.cutTooLongString(
-                    moveLineToolService.determineDescriptionMoveLine(
-                        move.getJournal(), origin, description))
-                : move.getDescription(),
+            Strings.isNullOrEmpty(moveLineDescription)
+                ? move.getDescription()
+                : moveLineDescription,
             origin,
             currencyRate,
             amountInSpecificMoveCurrency,
@@ -584,13 +586,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     int moveLineId = 1;
     BigDecimal totalCompanyAmount = BigDecimal.ZERO;
     List<MoveLine> moveLines = new ArrayList<MoveLine>();
-    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
     MoveLine moveLine = null;
     MoveLine holdBackMoveLine;
     LocalDate latestDueDate = invoiceTermService.getLatestInvoiceTermDueDate(invoice);
-    BigDecimal currencyRate =
-        currencyService.getCurrencyConversionRate(
-            invoice.getCurrency(), companyCurrency, invoice.getInvoiceDate());
     BigDecimal companyAmount;
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
@@ -611,7 +609,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 account,
                 invoiceTerm.getAmount(),
                 companyAmount,
-                currencyRate,
+                null,
                 isDebitCustomer,
                 invoice.getInvoiceDate(),
                 invoiceTerm.getDueDate(),
@@ -630,7 +628,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   account,
                   invoiceTerm.getAmount(),
                   companyAmount,
-                  currencyRate,
+                  null,
                   isDebitCustomer,
                   invoice.getInvoiceDate(),
                   latestDueDate,

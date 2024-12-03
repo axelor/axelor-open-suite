@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -27,13 +27,7 @@
     <string name="department" title="Dep./Div."/>
     <string name="webSite" title="Website"/>
 
-    <!-- Primary address group -->
-    <string name="primaryAddress" title="Address"/>
-    <many-to-one name="primaryCity" title="City" ref="com.axelor.apps.base.db.City"/>
-    <many-to-one name="primaryState" title="Region" ref="com.axelor.apps.base.db.Region"/>
-    <string name="primaryPostalCode" title="Postal code"/>
-    <many-to-one name="primaryCountry" ref="com.axelor.apps.base.db.Country"
-      title="Country"/>
+    <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
 
     <one-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
       title="Email" unique="true"/>
@@ -86,13 +80,12 @@
       SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.event_lead = id AND ICAL_EVENT.start_date_time > NOW() AND ICAL_EVENT.status_select = 1 ORDER BY ICAL_EVENT.start_date_time ASC LIMIT 1
       ]]>
     </datetime>
-    <integer name="leadScoringSelect" title="Lead scoring"
-      selection="gold.rating.icon.select"/>
+    <integer name="leadScoringSelect" title="Lead scoring"/>
     <integer name="sizeSelect" title="Size" selection="crm.lead.size.select"/>
     <boolean name="isKeyAccount" title="Key account"/>
     <many-to-one ref="com.axelor.apps.base.db.PartnerCategory" name="type"
       title="Category"/>
-    <many-to-many ref="com.axelor.apps.base.db.Tag" name="leadTagSet" title="Tags"/>
+    <many-to-many ref="com.axelor.apps.base.db.Tag" name="tagSet" title="Tags"/>
     <integer name="sequence" title="Sequence"/>
     <extra-code>
     <![CDATA[

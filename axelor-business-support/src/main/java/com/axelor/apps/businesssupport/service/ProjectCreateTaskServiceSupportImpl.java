@@ -18,24 +18,28 @@
  */
 package com.axelor.apps.businesssupport.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.service.ProjectCreateTaskServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskService;
+import com.axelor.apps.project.service.TaskTemplateService;
 import com.google.inject.Inject;
 import java.util.Set;
 
 public class ProjectCreateTaskServiceSupportImpl extends ProjectCreateTaskServiceImpl {
 
   @Inject
-  public ProjectCreateTaskServiceSupportImpl(ProjectTaskService projectTaskService) {
-    super(projectTaskService);
+  public ProjectCreateTaskServiceSupportImpl(
+      ProjectTaskService projectTaskService, TaskTemplateService taskTemplateService) {
+    super(projectTaskService, taskTemplateService);
   }
 
   @Override
   public ProjectTask createTask(
-      TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet) {
+      TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet)
+      throws AxelorException {
 
     ProjectTask task = super.createTask(taskTemplate, project, taskTemplateSet);
     task.setInternalDescription(taskTemplate.getInternalDescription());

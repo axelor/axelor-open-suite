@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -55,6 +56,7 @@ import java.util.Objects;
 public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanningTimeServiceImpl {
 
   protected AppBusinessProjectService appBusinessProjectService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public ProjectPlanningTimeBusinessProjectServiceImpl(
@@ -73,7 +75,8 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       UnitConversionRepository unitConversionRepository,
       AppBusinessProjectService appBusinessProjectService,
       ICalendarService iCalendarService,
-      ICalendarEventRepository iCalendarEventRepository) {
+      ICalendarEventRepository iCalendarEventRepository,
+      AppBaseService appBaseService) {
     super(
         planningTimeRepo,
         projectRepo,
@@ -91,6 +94,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
         unitConversionForProjectService,
         unitConversionRepository);
     this.appBusinessProjectService = appBusinessProjectService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -103,7 +107,8 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       Product activity,
       BigDecimal dailyWorkHrs,
       LocalDateTime taskEndDateTime,
-      Site site)
+      Site site,
+      Unit defaultTimeUnit)
       throws AxelorException {
     ProjectPlanningTime planningTime =
         super.createProjectPlanningTime(
@@ -115,9 +120,10 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
             activity,
             dailyWorkHrs,
             taskEndDateTime,
-            site);
+            site,
+            defaultTimeUnit);
 
-    if (!appBusinessProjectService.isApp("business-project")) {
+    if (!appBusinessProjectService.isApp("business-project") || !project.getIsBusinessProject()) {
       return planningTime;
     }
 
@@ -132,9 +138,9 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       planningTime.setTimeUnit(timeUnit);
 
     } else {
-      planningTime.setTimeUnit(appBusinessProjectService.getHoursUnit());
+      planningTime.setTimeUnit(appBaseService.getUnitHours());
     }
-    if (planningTime.getTimeUnit().equals(appBusinessProjectService.getDaysUnit())) {
+    if (planningTime.getTimeUnit().equals(appBaseService.getUnitDays())) {
       BigDecimal numberHoursADay = project.getNumberHoursADay();
 
       if (numberHoursADay.signum() <= 0) {

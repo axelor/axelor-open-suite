@@ -75,6 +75,9 @@ public final class BaseExceptionMessage {
 
   public static final String UNIT_CONVERSION_4 = /*$$(*/ "End unit cannot be void." /*)*/;
 
+  public static final String COEFFICIENT_SHOULD_NOT_BE_ZERO = /*$$(*/
+      "The coefficient for unit conversion from %s to %s should not be 0." /*)*/;
+
   public static final String CURRENCY_CONVERSION_1 = /*$$(*/
       "WARNING : Please close the current conversion period before creating new one" /*)*/;
   public static final String CURRENCY_CONVERSION_2 = /*$$(*/
@@ -355,6 +358,8 @@ public final class BaseExceptionMessage {
       "Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special." /*)*/;
   public static final String USER_PATTERN_MISMATCH_CUSTOM = /*$$(*/
       "Password doesn't match with configured pattern." /*)*/;
+  public static final String USER_CODE_LENGTH_SHOULD_BE_GREATER_THAN_2 = /*$$(*/
+      "Code length should be greater than 2." /*)*/;
 
   /** Convert demo data file */
   public static final String DUPLICATE_CSV_FILE_NAME_EXISTS = /*$$(*/
@@ -664,5 +669,39 @@ public final class BaseExceptionMessage {
       "This product comes in multiple quantities, so please specify a quantity that is a multiple of at least one from the list %s." /*)*/;
 
   public static final String QUANTITY_NOT_MULTIPLE = /*$$(*/
-      "This product comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
+      "The product %s comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
+
+  public static final String NO_DEFAULT_ADDRESS_TEMPLATE = /*$$(*/
+      "Please fill the default address template." /*)*/;
+
+  public static final String NO_COUNTRY_FOUND = /*$$(*/ "No country found for: %s." /*)*/;
+  public static final String CITY_AND_ZIP_BOTH_EMPTY = /*$$(*/
+      "The city and postcode cannot be empty at the same time." /*)*/;
+  public static final String NO_CITY_FOUND = /*$$(*/ "No city found" /*)*/;
+  public static final String NO_ZIP_FOUND = /*$$(*/
+      "No zip found in request body or in the found city" /*)*/;
+  public static final String NO_ADDRESS_FOUND_WITH_INFO = /*$$(*/
+      "No address found with this country, zip and street name. City name is required to create a new city." /*)*/;
+
+  public static final String DATA_SHARING_MISSING_ELEMENTS = /*$$(*/
+      "Please fill in or modify some elements to be able to register" /*)*/;
+
+  public static final String LOCALIZATION_EMPTY = /*$$(*/ "Localization is empty" /*)*/;
+
+  public static final String LOCALIZATION_LANGUAGE_EMPTY = /*$$(*/
+      "Language is empty for the localization %s" /*)*/;
+
+  public static final String DATA_SHARING_REFERENTIAL_LINE_JPQL_SYNTAX_IS_WRONG = /*$$(*/
+      "Wrong JPQL syntax : %s" /*)*/;
+  public static final String DATA_SHARING_REFERENTIAL_LINE_JPQL_SYNTAX_IS_CORRECT = /*$$(*/
+      "The syntax of the script is correct." /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_DAYS = /*$$(*/
+      "There is no configured unit days in the app base config" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_HOURS = /*$$(*/
+      "There is no configured unit hours in the app base config" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_DAILY_WORK_HOURS = /*$$(*/
+      "There is no configured daily work hours in the app base config" /*)*/;
 }

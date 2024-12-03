@@ -50,7 +50,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   protected TimesheetLineService timesheetLineService;
   protected TimesheetRepository timesheetRepository;
   protected TimesheetLineCreateService timesheetLineCreateService;
-  protected TimesheetService timesheetService;
+  protected TimesheetQueryService timesheetQueryService;
   protected EmployeeRepository employeeRepository;
 
   @Inject
@@ -60,14 +60,14 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
       TimesheetLineService timesheetLineService,
       TimesheetRepository timesheetRepository,
       TimesheetLineCreateService timesheetLineCreateService,
-      TimesheetService timesheetService,
+      TimesheetQueryService timesheetQueryService,
       EmployeeRepository employeeRepository) {
     this.userHrService = userHrService;
     this.projectRepository = projectRepository;
     this.timesheetLineService = timesheetLineService;
     this.timesheetRepository = timesheetRepository;
     this.timesheetLineCreateService = timesheetLineCreateService;
-    this.timesheetService = timesheetService;
+    this.timesheetQueryService = timesheetQueryService;
     this.employeeRepository = employeeRepository;
   }
 
@@ -76,15 +76,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   public Timesheet createTimesheet(Employee employee, LocalDate fromDate, LocalDate toDate) {
     Timesheet timesheet = new Timesheet();
 
-    Company company = null;
-    if (employee != null) {
-      employee = employeeRepository.find(employee.getId());
-      if (employee.getMainEmploymentContract() != null) {
-        company = employee.getMainEmploymentContract().getPayCompany();
-      } else if (employee.getUser() != null) {
-        company = employee.getUser().getActiveCompany();
-      }
-    }
+    Company company = timesheetQueryService.getDefaultCompany(employee);
 
     String timeLoggingPreferenceSelect =
         employee == null ? null : employee.getTimeLoggingPreferenceSelect();
@@ -157,28 +149,42 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public TimesheetLine getOrCreateTimesheet(TimesheetLine timesheetLine) {
-    Timesheet timesheet = timesheetService.getTimesheetQuery(timesheetLine).order("id").fetchOne();
+  public Timesheet getOrCreateTimesheet(TimesheetLine timesheetLine) {
+    return getOrCreateTimesheet(
+        timesheetLine.getEmployee(), timesheetLine.getProject(), timesheetLine.getDate());
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Timesheet getOrCreateTimesheet(Employee employee, Project project, LocalDate date) {
+    Company company = null;
+    if (project != null) {
+      company = project.getCompany();
+    }
+    if (company == null) {
+      company = timesheetQueryService.getDefaultCompany(employee);
+    }
+    Timesheet timesheet =
+        timesheetQueryService.getTimesheetQuery(employee, company, date).order("id").fetchOne();
     if (timesheet == null) {
       Timesheet lastTimesheet =
           timesheetRepository
               .all()
               .filter(
                   "self.employee = ?1 AND self.statusSelect != ?2 AND self.toDate is not null",
-                  timesheetLine.getEmployee(),
+                  employee,
                   TimesheetRepository.STATUS_CANCELED)
               .order("-toDate")
               .fetchOne();
       timesheet =
           createTimesheet(
-              timesheetLine.getEmployee(),
+              employee,
               lastTimesheet != null && lastTimesheet.getToDate() != null
                   ? lastTimesheet.getToDate().plusDays(1)
-                  : timesheetLine.getDate(),
+                  : date,
               null);
       timesheet = timesheetRepository.save(timesheet);
     }
-    timesheetLine.setTimesheet(timesheet);
-    return timesheetLine;
+    return timesheet;
   }
 }

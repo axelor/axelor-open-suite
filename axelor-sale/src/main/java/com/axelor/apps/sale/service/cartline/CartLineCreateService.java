@@ -22,8 +22,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
+import java.math.BigDecimal;
 
 public interface CartLineCreateService {
 
+  CartLine createCartLine(Cart cart, Product product, BigDecimal qty) throws AxelorException;
+
   CartLine createCartLine(Cart cart, Product product) throws AxelorException;
+
+  CartLine createCartLineWithVariant(Cart cart, Product product, BigDecimal qty)
+      throws AxelorException;
 }

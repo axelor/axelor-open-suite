@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="project-form" id="business-support-project-form" title="Project"
     model="com.axelor.apps.project.db.Project" extension="true">
-    <extend target="//panel-include[@view='incl-log-times-panel-form']">
+    <extend target="//panel[@name='logTimesPanel']">
       <insert position="after">
         <panel-include view="incl-project-announcement-panel-form"
           if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
@@ -19,7 +19,7 @@
   <form name="business-project-form" title="Business project"
     id="business-support-business-project-form" extension="true"
     model="com.axelor.apps.project.db.Project">
-    <extend target="//panel-include[@view='incl-log-times-panel-form']">
+    <extend target="//panel[@name='logTimesPanel']">
       <insert position="after">
         <panel-include view="incl-project-announcement-panel-form"
           if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="app-mobile-settings-config-form" title="App mobile"
     model="com.axelor.studio.db.AppMobileSettings" width="large"
@@ -27,6 +27,8 @@
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
         <field name="isProjectAppEnabled" widget="boolean-switch"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
+        <field name="isDMSAppEnabled" widget="boolean-switch"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
       </panel>
       <panel name="qrCodePanel" colSpan="2">
         <field name="qrCode" colSpan="12" showTitle="false" hidden="true" readonly="true"
@@ -39,6 +41,7 @@
     </panel>
     <panel name="versionPanel" sidebar="true">
       <field name="minimalRequiredMobileAppVersion"/>
+      <field name="currentApkFile" widget="binary-link" x-accept=".apk"/>
     </panel>
     <panel name="configPanel" sidebar="true">
       <panel name="configBasePanel" title="General">
@@ -72,6 +75,8 @@
           onClick="action.sale.config.view"/>
         <button name="projectAppBtn" title="Config Project" hidden="true"
           showIf="isProjectAppEnabled" onClick="action.project.config.view"/>
+        <button name="dmsAppBtn" title="Config DMS" hidden="true" showIf="isDMSAppEnabled"
+          onClick="action.dms.config.view"/>
       </panel>
     </panel>
     <panel-tabs name="appConfigPanelTab">
@@ -150,6 +155,25 @@
           colSpan="4"/>
         <field name="isGenericProductShown" widget="boolean-switch" colSpan="4"/>
         <field name="isConfiguratorProductShown" widget="boolean-switch" colSpan="4"/>
+      </panel>
+      <panel name="projectConfigPanel" title="Project" itemSpan="12"
+        showIf="isProjectAppEnabled">
+        <field name="reportingTypesToDisplaySelect" widget="SingleSelect" placeholder="All"
+          colSpan="6"/>
+        <field name="isTimesheetProjectInvoicingEnabled" widget="boolean-switch" colSpan="6"/>
+      </panel>
+      <panel name="dmsConfigPanel" title="DMS" showIf="isDMSAppEnabled">
+        <field name="defaultDmsRoot" domain="self.isDirectory = true"/>
+        <field name="isFavoritesManagementEnabled" widget="boolean-switch"/>
+        <field name="isDownloadAllowed" widget="boolean-switch"/>
+        <field name="isRenamingAllowed" widget="boolean-switch"/>
+        <panel name="folderPanel" title="Folders">
+          <field name="isFolderCreationAllowed" widget="boolean-switch"/>
+        </panel>
+        <panel name="filePanel" title="Files">
+          <field name="isFileCreationAllowed" widget="boolean-switch"/>
+          <field name="isFileDeletionAllowed" widget="boolean-switch"/>
+        </panel>
       </panel>
     </panel-tabs>
 
@@ -261,6 +285,16 @@
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord"
       expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-project').fetchOne()?.id"/>
+  </action-view>
+
+  <action-view name="action.dms.config.view" title="DMS config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-dms').fetchOne()?.id"/>
   </action-view>
 
   <action-view name="action.hr.config.mobile.dashboards.view" title="Mobile dashboards"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -214,8 +214,6 @@
 
     <!--Product -->
 
-    <many-to-one name="invoicingProduct" title="Product to partially invoice sale order"
-      ref="com.axelor.apps.base.db.Product"/>
     <many-to-one name="advancePaymentProduct" title="Advance payment product"
       ref="com.axelor.apps.base.db.Product"/>
 
@@ -487,7 +485,6 @@
       <field name="suppInvSequence" on="UPDATE"/>
       <field name="suppRefSequence" on="UPDATE"/>
 
-      <field name="invoicingProduct" on="UPDATE"/>
       <field name="advancePaymentProduct" on="UPDATE"/>
 
       <field name="displayDelAddrOnPrinting" on="UPDATE"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -58,6 +58,8 @@
 
     <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
 
+    <many-to-one name="timeUnit" ref="com.axelor.apps.base.db.Unit" title="Time unit"/>
+
     <!-- Gantt view fields -->
 
     <decimal name="plannedProgress" title="Planned progress"/>
@@ -75,10 +77,7 @@
     <decimal name="budgetedTime" title="Estimated time"/>
     <many-to-one name="metaFile" title="Signature" ref="com.axelor.meta.db.MetaFile"/>
 
-    <many-to-many name="projectTaskTagSet"
-      ref="com.axelor.apps.project.db.ProjectTaskTag" title="Tags"/>
-    <many-to-one name="projectTaskSection"
-      ref="com.axelor.apps.project.db.ProjectTaskSection" title="Section"/>
+    <many-to-many name="tagSet" ref="com.axelor.apps.base.db.Tag" title="Tags"/>
 
     <string name="ticketNumber" title="Ticker number" readonly="true"/>
 
@@ -91,6 +90,10 @@
     <string name="categoryJson" title="Category json" json="true"/>
 
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+
+    <one-to-many name="projectCheckListItemList"
+      ref="com.axelor.apps.project.db.ProjectCheckListItem" title="Check list"
+      mappedBy="projectTask"/>
 
     <extra-code>
 

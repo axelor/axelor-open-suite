@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.project.service;
 
 import com.axelor.apps.project.db.Project;
@@ -66,7 +84,7 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
       return Optional.ofNullable(project.getCompletedTaskStatus());
     }
 
-    return Optional.ofNullable(appProject).map(AppProject::getCompletedTaskStatus);
+    return Optional.empty();
   }
 
   @Override
@@ -87,22 +105,15 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
     if (enableTaskStatusManagementByCategory
         && project.getTaskStatusManagementSelect()
             == ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY
-        && projectTask.getProjectTaskCategory() != null
-        && !ObjectUtils.isEmpty(projectTask.getProjectTaskCategory().getProjectTaskStatusSet())) {
+        && projectTask.getProjectTaskCategory() != null) {
       return projectTask.getProjectTaskCategory().getProjectTaskStatusSet();
     }
 
-    if (Arrays.asList(
-                ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT,
-                ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY)
-            .contains(project.getTaskStatusManagementSelect())
-        && !ObjectUtils.isEmpty(project.getProjectTaskStatusSet())) {
+    if (project.getTaskStatusManagementSelect()
+        == ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT) {
       return project.getProjectTaskStatusSet();
     }
 
-    if (appProject != null) {
-      return appProject.getDefaultTaskStatusSet();
-    }
     return null;
   }
 
@@ -115,41 +126,24 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
       return "";
     }
 
-    AppProject appProject = appProjectService.getAppProject();
-    boolean enableTaskStatusManagementByCategory = false;
-    if (appProject != null) {
-      enableTaskStatusManagementByCategory = appProject.getEnableStatusManagementByTaskCategory();
-    }
+    boolean enableTaskStatusManagementByCategory =
+        Optional.ofNullable(appProjectService.getAppProject())
+            .map(AppProject::getEnableStatusManagementByTaskCategory)
+            .orElse(false);
 
     if (enableTaskStatusManagementByCategory
         && project.getTaskStatusManagementSelect()
             == ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY
         && projectTask.getProjectTaskCategory() != null
         && projectTask.getProjectTaskCategory().getCompletedTaskStatus() == null) {
-      Optional<TaskStatus> taskStatus = getCompletedTaskStatus(project, projectTask);
-      if (taskStatus.isPresent()) {
-        return String.format(
-            I18n.get(
-                ProjectExceptionMessage.CATEGORY_COMPLETED_TASK_STATUS_MISSING_WITH_DEFAULT_STATUS),
-            I18n.get(taskStatus.get().getName()));
-      } else {
-        return I18n.get(
-            ProjectExceptionMessage.CATEGORY_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS);
-      }
+      return I18n.get(
+          ProjectExceptionMessage.CATEGORY_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS);
     }
 
     if (project.getTaskStatusManagementSelect() == ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT
         && project.getCompletedTaskStatus() == null) {
-      Optional<TaskStatus> taskStatus = getCompletedTaskStatus(project, projectTask);
-      if (taskStatus.isPresent()) {
-        return String.format(
-            I18n.get(
-                ProjectExceptionMessage.PROJECT_COMPLETED_TASK_STATUS_MISSING_WITH_DEFAULT_STATUS),
-            I18n.get(taskStatus.get().getName()));
-      } else {
-        return I18n.get(
-            ProjectExceptionMessage.PROJECT_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS);
-      }
+      return I18n.get(
+          ProjectExceptionMessage.PROJECT_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS);
     }
 
     return "";

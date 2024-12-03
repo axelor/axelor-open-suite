@@ -208,11 +208,13 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
     Map<String, Object> values = new HashMap<>();
     BigDecimal budgetRemainingAmountToAllocate = saleOrderLine.getCompanyExTaxTotal();
     saleOrderLine.setBudgetRemainingAmountToAllocate(budgetRemainingAmountToAllocate);
-    saleOrderLine.setBudgetDistributionList(new ArrayList<>());
     saleOrderLine.setBudget(null);
     values.put("budgetRemainingAmountToAllocate", budgetRemainingAmountToAllocate);
-    values.put("budgetDistributionList", new ArrayList<>());
     values.put("budget", null);
+    if (CollectionUtils.isNotEmpty(saleOrderLine.getBudgetDistributionList())) {
+      saleOrderLine.setBudgetDistributionList(new ArrayList<>());
+      values.put("budgetDistributionList", new ArrayList<>());
+    }
     return values;
   }
 }

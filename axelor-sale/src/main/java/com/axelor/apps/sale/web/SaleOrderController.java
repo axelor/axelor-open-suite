@@ -48,15 +48,16 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
@@ -67,7 +68,7 @@ import com.axelor.apps.sale.service.saleorder.views.SaleOrderGroupService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
@@ -637,7 +638,8 @@ public class SaleOrderController {
 
     try {
       List<SaleOrderLine> saleOrderLineList =
-          Beans.get(SaleOrderOnLineChangeService.class).handleComplementaryProducts(saleOrder);
+          Beans.get(SaleOrderComplementaryProductService.class)
+              .handleComplementaryProducts(saleOrder);
       response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

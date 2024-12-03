@@ -34,12 +34,14 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.google.inject.Inject;
+import java.util.Map;
 
 public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServiceImpl {
 
@@ -64,7 +66,8 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServi
       CurrencyScaleService currencyScaleService,
       BudgetToolsService budgetToolsService,
       AppBudgetService appBudgetService,
-      ProductPriceService productPriceService) {
+      ProductPriceService productPriceService,
+      FiscalPositionService fiscalPositionService) {
     super(
         currencyService,
         priceListService,
@@ -80,19 +83,25 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServi
         internationalService,
         invoiceLineAttrsService,
         currencyScaleService,
-        productPriceService);
+        productPriceService,
+        fiscalPositionService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
   }
 
   @Override
-  public void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
-    super.compute(invoice, invoiceLine);
+  public Map<String, Object> compute(Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException {
+    Map<String, Object> invoiceLineMap = super.compute(invoice, invoiceLine);
 
     if (appBudgetService.isApp("budget")) {
       invoiceLine.setBudgetRemainingAmountToAllocate(
           budgetToolsService.getBudgetRemainingAmountToAllocate(
               invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
+      invoiceLineMap.put(
+          "budgetRemainingAmountToAllocate", invoiceLine.getBudgetRemainingAmountToAllocate());
     }
+
+    return invoiceLineMap;
   }
 }

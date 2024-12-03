@@ -27,11 +27,11 @@ import com.axelor.apps.sale.rest.dto.SaleOrderLineResponse;
 import com.axelor.apps.sale.rest.dto.SaleOrderPostRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderPutRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
-import com.axelor.apps.sale.service.SaleOrderRestService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderRestService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGeneratorService;
+import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGeneratorService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -102,7 +102,7 @@ public class SaleOrderRestController {
         .createAccess(SaleOrderLine.class)
         .writeAccess(SaleOrder.class, saleOrderId)
         .check();
-    SaleOrder saleOrder = ObjectFinder.find(SaleOrder.class, saleOrderId, ObjectFinder.NO_VERSION);
+    SaleOrder saleOrder = ObjectFinder.find(SaleOrder.class, saleOrderId, requestBody.getVersion());
     SaleOrderLineGeneratorService saleorderLineCreateService =
         Beans.get(SaleOrderLineGeneratorService.class);
     Product product = requestBody.getSaleOrderLine().fetchProduct();

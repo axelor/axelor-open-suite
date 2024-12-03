@@ -52,7 +52,6 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   public Map<String, Object> getData(Project project) {
     Map<String, Object> dataMap = new HashMap<>();
     dataMap.put("$projectId", project.getId());
-    dataMap.put("$name", project.getFullName());
 
     if (StringUtils.notEmpty(project.getDescription())) {
       dataMap.put("$description", Jsoup.parse(project.getDescription()).text());
@@ -101,7 +100,7 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
           projectTaskList.stream()
               .filter(
                   task ->
-                      Optional.of(task)
+                      Optional.ofNullable(task)
                           .map(ProjectTask::getStatus)
                           .map(TaskStatus::getIsCompleted)
                           .orElse(false))
@@ -140,12 +139,13 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   }
 
   protected List<Project> getSubprojects(Project project) {
-    Set<Long> contextProjectIds = projectToolService.getRelatedProjectIds(project);
-    contextProjectIds.remove(project.getId());
-    if (contextProjectIds.isEmpty()) {
+    Set<Long> projectIdsSet = new HashSet<>();
+    projectToolService.getChildProjectIds(projectIdsSet, project);
+    projectIdsSet.remove(project.getId());
+    if (projectIdsSet.isEmpty()) {
       return new ArrayList<>();
     }
-    return projectRepo.all().filter("self.id IN ?1", contextProjectIds).fetch();
+    return projectRepo.all().filter("self.id IN ?1", projectIdsSet).fetch();
   }
 
   protected Comparator<ProjectTask> getTaskComparator() {

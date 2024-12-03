@@ -37,8 +37,10 @@ public class CartLineRetrievalServiceImpl implements CartLineRetrievalService {
   public CartLine getCartLine(Cart cart, Product product) {
     return cartLineRepository
         .all()
-        .filter("self.product = :product AND self.cart = :cart")
+        .filter(
+            "(self.product = :product OR self.variantProduct=:variantProduct) AND self.cart = :cart")
         .bind("product", product)
+        .bind("variantProduct", product)
         .bind("cart", cart)
         .fetchOne();
   }

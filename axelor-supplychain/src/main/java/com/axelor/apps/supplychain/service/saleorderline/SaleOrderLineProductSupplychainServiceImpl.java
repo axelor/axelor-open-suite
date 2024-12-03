@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.supplychain.service.saleorderline;
 
 import com.axelor.apps.base.AxelorException;
@@ -17,9 +35,9 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -84,9 +102,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
 
       saleOrderLineMap.putAll(setStandardDelay(saleOrderLine));
       saleOrderLineMap.putAll(setSupplierPartnerDefault(saleOrderLine, saleOrder));
+      saleOrderLineMap.putAll(setAnalyticMap(saleOrderLine, saleOrder));
 
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
-      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
       saleOrderLineMap.putAll(
           saleOrderLineAnalyticService.printAnalyticAccounts(saleOrder, saleOrderLine));
     } else {
@@ -100,6 +117,22 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(setStandardDelay(saleOrderLine));
+    return saleOrderLineMap;
+  }
+
+  protected Map<String, Object> setAnalyticMap(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+    saleOrderLineMap.put(
+        "analyticDistributionTemplate", saleOrderLine.getAnalyticDistributionTemplate());
+    saleOrderLineMap.put("axis1AnalyticAccount", saleOrderLine.getAxis1AnalyticAccount());
+    saleOrderLineMap.put("axis2AnalyticAccount", saleOrderLine.getAxis2AnalyticAccount());
+    saleOrderLineMap.put("axis3AnalyticAccount", saleOrderLine.getAxis3AnalyticAccount());
+    saleOrderLineMap.put("axis4AnalyticAccount", saleOrderLine.getAxis4AnalyticAccount());
+    saleOrderLineMap.put("axis5AnalyticAccount", saleOrderLine.getAxis5AnalyticAccount());
+    saleOrderLineMap.put("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
     return saleOrderLineMap;
   }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -19,11 +19,13 @@
       ref="com.axelor.apps.stock.db.StockLocation" title="Common source location"/>
     <many-to-one name="commonToStockLocation"
       ref="com.axelor.apps.stock.db.StockLocation" title="Common destination location"/>
-    <one-to-many name="productToMoveList"
+    <one-to-many name="massStockMoveNeedList"
       ref="com.axelor.apps.stock.db.MassStockMoveNeed" title="Products to move"
       mappedBy="massStockMove"/>
     <integer name="statusSelect" selection="stock.mass.stock.move.status.select"
       title="Status" default="1"/>
+    <integer name="stepSelect" selection="stock.mass.stock.move.step.select" title="Step"
+      default="1"/>
 
     <extra-code><![CDATA[
            // STATUS SELECT
@@ -31,6 +33,12 @@
         public static final int STATUS_IN_PROGRESS = 2;
         public static final int STATUS_REALIZED = 3;
         public static final int STATUS_CANCELED = 4;
+
+                   // STEP SELECT
+        public static final int STEP_HEADER = 1;
+        public static final int STEP_PREPARE = 2;
+        public static final int STEP_PICK = 3;
+        public static final int STEP_STORE = 4;
     ]]></extra-code>
   </entity>
 

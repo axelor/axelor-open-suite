@@ -31,6 +31,7 @@ import com.axelor.apps.hr.service.expense.ExpenseCreateService;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
+import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -39,7 +40,6 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import com.axelor.web.ITranslation;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -114,7 +114,7 @@ public class ExpenseRestController {
         .addExpenseLinesToExpenseAndCompute(expense, requestBody.fetchExpenseLines());
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
+        Response.Status.OK, I18n.get(ITranslation.EXPENSE_UPDATED), new ExpenseResponse(expense));
   }
 
   @Operation(
@@ -132,7 +132,7 @@ public class ExpenseRestController {
     Beans.get(ExpenseConfirmationService.class).confirm(expense);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
+        Response.Status.OK, I18n.get(ITranslation.EXPENSE_UPDATED), new ExpenseResponse(expense));
   }
 
   @Operation(
@@ -151,7 +151,7 @@ public class ExpenseRestController {
     Beans.get(ExpenseValidateService.class).validate(expense);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
+        Response.Status.OK, I18n.get(ITranslation.EXPENSE_UPDATED), new ExpenseResponse(expense));
   }
 
   @Operation(
@@ -171,7 +171,7 @@ public class ExpenseRestController {
         .refuseWithReason(expense, requestBody.getGroundForRefusal());
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
+        Response.Status.OK, I18n.get(ITranslation.EXPENSE_UPDATED), new ExpenseResponse(expense));
   }
 
   @Operation(

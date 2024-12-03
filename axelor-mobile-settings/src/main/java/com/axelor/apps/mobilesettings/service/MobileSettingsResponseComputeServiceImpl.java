@@ -107,7 +107,16 @@ public class MobileSettingsResponseComputeServiceImpl
         getAuthorizedShortcutList(appMobileSettings),
         appMobileSettings.getIsGenericProductShown(),
         appMobileSettings.getIsConfiguratorProductShown(),
-        getProductTypesToDisplay(appMobileSettings));
+        getProductTypesToDisplay(appMobileSettings),
+        getReportingTypesToDisplay(appMobileSettings),
+        appMobileSettings.getCurrentApkFile(),
+        appMobileSettings.getDefaultDmsRoot(),
+        appMobileSettings.getIsFavoritesManagementEnabled(),
+        appMobileSettings.getIsDownloadAllowed(),
+        appMobileSettings.getIsRenamingAllowed(),
+        appMobileSettings.getIsFolderCreationAllowed(),
+        appMobileSettings.getIsFileCreationAllowed(),
+        appMobileSettings.getIsFileDeletionAllowed());
   }
 
   protected List<Long> getAuthorizedDashboardIdList(AppMobileSettings appMobileSettings) {
@@ -241,13 +250,22 @@ public class MobileSettingsResponseComputeServiceImpl
                     .getAuthorizedRoles()),
             getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_PROJECT)
                 .getIsCustomizeMenuEnabled(),
-            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_PROJECT)));
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_PROJECT)),
+        new MobileConfigResponse(
+            MobileConfigRepository.APP_SEQUENCE_DMS,
+            checkConfigWithRoles(
+                appMobileSettings.getIsDMSAppEnabled(),
+                getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_DMS)
+                    .getAuthorizedRoles()),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_DMS)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_DMS)));
   }
 
   protected List<MobileMenuResponse> getAccessibleMenusFromApp(String appSequence) {
     MobileConfig mobileConfig = getMobileConfigFromAppSequence(appSequence);
     if (mobileConfig.getIsCustomizeMenuEnabled()) {
-      return mobileConfig.getMenus().stream()
+      return mobileConfig.getMenuList().stream()
           .filter(
               mobileMenu ->
                   mobileMenu.getAuthorizedRoles().isEmpty()
@@ -284,5 +302,16 @@ public class MobileSettingsResponseComputeServiceImpl
           ProductRepository.PRODUCT_TYPE_STORABLE, ProductRepository.PRODUCT_TYPE_SERVICE);
     }
     return Arrays.stream(productTypesToDisplay.split(",")).collect(Collectors.toList());
+  }
+
+  protected List<String> getReportingTypesToDisplay(AppMobileSettings appMobileSettings) {
+    String reportingTypesToDisplay = appMobileSettings.getReportingTypesToDisplaySelect();
+    if (StringUtils.isEmpty(reportingTypesToDisplay)) {
+      return List.of(
+          AppMobileSettingsRepository.REPORTING_TYPE_DISPLAY_INDICATORS,
+          AppMobileSettingsRepository.REPORTING_TYPE_DISPLAY_ACTIVITIES,
+          AppMobileSettingsRepository.REPORTING_TYPE_DISPLAY_NONE);
+    }
+    return Arrays.stream(reportingTypesToDisplay.split(",")).collect(Collectors.toList());
   }
 }

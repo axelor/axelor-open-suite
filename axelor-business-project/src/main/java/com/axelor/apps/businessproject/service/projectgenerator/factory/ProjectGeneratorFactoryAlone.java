@@ -27,6 +27,7 @@ import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.i18n.I18n;
@@ -37,35 +38,38 @@ import java.time.LocalDateTime;
 
 public class ProjectGeneratorFactoryAlone implements ProjectGeneratorFactory {
 
-  private ProjectBusinessService projectBusinessService;
-  private ProjectRepository projectRepository;
-  protected final SequenceService sequenceService;
+  protected ProjectBusinessService projectBusinessService;
+  protected ProjectRepository projectRepository;
+  protected SequenceService sequenceService;
+  protected AppProjectService appProjectService;
 
   @Inject
   public ProjectGeneratorFactoryAlone(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
-      SequenceService sequenceService) {
+      SequenceService sequenceService,
+      AppProjectService appProjectService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
     this.sequenceService = sequenceService;
+    this.appProjectService = appProjectService;
   }
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public Project create(SaleOrder saleOrder) {
+  public Project create(SaleOrder saleOrder) throws AxelorException {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsBusinessProject(true);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       saleOrderLine.setProject(project);
     }
-    project = projectRepository.save(project);
     try {
-      project.setCode(sequenceService.getDraftSequenceNumber(project));
+      if (!appProjectService.getAppProject().getGenerateProjectSequence()) {
+        project.setCode(sequenceService.getDraftSequenceNumber(project));
+      }
     } catch (AxelorException e) {
       TraceBackService.trace(e);
     }
-
     return projectRepository.save(project);
   }
 

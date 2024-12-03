@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -67,7 +67,6 @@
       ref="com.axelor.apps.businessproject.db.ProjectFolder" title="Project Folders"/>
 
     <!-- planification fields -->
-    <decimal name="numberHoursADay" title="Number of hours in a day" min="0"/>
     <integer name="spentTimeCostComputationMethod" default="1"
       title="Spent time actual cost computation method"
       selection="business.project.spent.time.computation.method.select"

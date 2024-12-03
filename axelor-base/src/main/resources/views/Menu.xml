@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <menuitem id="abs-menu-mail" name="menu-mail"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnterpriseCommunication()"
@@ -1132,7 +1132,8 @@
   </action-view>
 
   <menuitem name="studio-app-root" id="base-studio-app-root" title="App" order="-250"
-    icon="pencil-square" icon-background="#9c27b0" if="__config__.app.isApp('studio')"/>
+    icon="wrench-adjustable-circle-fill" icon-background="indigo"
+    if="__config__.app.isApp('studio')"/>
 
   <menuitem name="birt-print-conf" parent="admin-root" if="__config__.app.isApp('base')"
     title="BIRT printings" order="1000"/>

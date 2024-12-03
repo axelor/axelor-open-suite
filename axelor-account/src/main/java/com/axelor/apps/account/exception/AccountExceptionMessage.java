@@ -1224,6 +1224,9 @@ public final class AccountExceptionMessage {
   public static final String REVERSE_DATE_SELECT_UNKNOW_TYPE = /*$$(*/
       "There is no reverse date select value of value %d" /*)*/;
 
+  public static final String REVERSE_DATE_CAN_NOT_BE_BEFORE_MOVE_DATE = /*$$(*/
+      "The chosen date for the reverse entry can't be lower than the entry to be reversed." /*)*/;
+
   /*Check not lettered advance move lines*/
   public static final String INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES = /*$$(*/
       "There is at least one advance payment or payment that can be imputed to this invoice." /*)*/;
@@ -1776,4 +1779,22 @@ public final class AccountExceptionMessage {
 
   public static final String LATE_PAYMENT_INTEREST_BELOW_THRESHOLD = /*$$(*/
       "The amount remaining is below the threshold defined in configuration." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_NO_PAYMENT_MODE_RATE = /*$$(*/
+      "There is no interest rate defined in invoice term payment mode." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_NO_INTEREST_RATE = /*$$(*/
+      "There is no interest rate defined in payment mode." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_DATES_INCONSISTENCY = /*$$(*/
+      "Inconsistency in begin and ending dates." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_PERIOD_CONTINUITY = /*$$(*/
+      "The periods must be continuous." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_PERIOD_OVERLAP = /*$$(*/
+      "2 interest rate history line periods can not overlap." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_END_DATE_IN_FUTURE = /*$$(*/
+      "The end date must be in the past." /*)*/;
 }

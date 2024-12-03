@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
     <field name="name"/>
@@ -38,8 +38,8 @@
         colSpan="12">
         <field name="name" placeholder="user name" onChange="action-condition-user-validName"
           validIf="name.length >= 2"/>
-        <field name="code" placeholder="login name" onChange="action-condition-user-validCode"
-          validIf="code.length >= 2"/>
+        <field name="code" placeholder="login name"
+          onChange="action-user-method-validate-code" validIf="code.length >= 2"/>
         <field name="group" placeholder="user group"/>
         <field name="email" widget="Email"
           showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
@@ -50,11 +50,8 @@
 
 
         <field name="theme" widget="theme-select"/>
-        <panel name="actionsPanel" stacked="true">
-          <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
-          <field name="__actionSelect" title="Action" widget="SuggestBox" canNew="false"
-            target="com.axelor.meta.db.MetaAction" target-name="name" domain="self.home = true"/>
-        </panel>
+        <field name="homeAction" widget="ref-text" x-target="com.axelor.meta.db.MetaAction"
+          x-target-name="name" domain="self.type = 'action-view' and self.home = true"/>
         <field name="singleTab" widget="inline-checkbox" colSpan="3"/>
         <field name="noHelp" widget="inline-checkbox" colSpan="3"/>
         <field name="change" title="Change password?" showIf="id &amp;&amp; !$readonly()"
@@ -167,8 +164,8 @@
       <panel name="overviewPanel" title="Overview" colSpan="12">
         <field name="name" placeholder="user name" onChange="action-condition-user-validName"
           validIf="name.length >= 2"/>
-        <field name="code" placeholder="login name" onChange="action-condition-user-validCode"
-          validIf="code.length >= 2"/>
+        <field name="code" placeholder="login name"
+          onChange="action-user-method-validate-code" validIf="code.length >= 2"/>
         <field name="group" placeholder="user group"/>
         <field name="email" widget="Email"
           showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
@@ -176,11 +173,8 @@
           onChange="action-base-user-record-change-language" form-view="localization-form"
           grid-view="localization-grid"/>
         <field name="theme" widget="theme-select"/>
-        <panel name="actionsPanel" stacked="true">
-          <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
-          <field name="__actionSelect" title="Action" widget="SuggestBox" canNew="false"
-            target="com.axelor.meta.db.MetaAction" target-name="name" domain="self.home = true"/>
-        </panel>
+        <field name="homeAction" widget="ref-text" x-target="com.axelor.meta.db.MetaAction"
+          x-target-name="name" domain="self.type = 'action-view' and self.home = true"/>
         <field name="singleTab" widget="inline-checkbox" colSpan="3"/>
         <field name="noHelp" widget="inline-checkbox" colSpan="3"/>
         <field name="language" hidden="true"/>
@@ -504,13 +498,9 @@
     <call class="com.axelor.apps.base.web.UserController" method="validatePassword"/>
   </action-method>
 
-  <action-condition name="action-condition-user-validCode"
-    id="base-action-condition-user-validCode">
-    <check error="Code length should be greater than 2." field="code"
-      if="code?.length() &lt; 2"/>
-    <check error="A user with this login already exists." field="code"
-      if="code &amp;&amp; ![null, id].contains(__repo__(User).findByCode(code)?.id)"/>
-  </action-condition>
+  <action-method name="action-user-method-validate-code">
+    <call class="com.axelor.apps.base.web.UserController" method="validateCode"/>
+  </action-method>
 
   <action-view name="action-user-view-show-all-permissions" title="All permissions"
     model="com.axelor.auth.db.Permission">

@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.service.saleorder.views;
 
 import com.axelor.apps.base.AxelorException;
@@ -16,6 +34,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppSale;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,6 +84,7 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
       throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     MapTools.addMap(attrs, hideContactPartner(saleOrder));
+    MapTools.addMap(attrs, hideDiscount());
     return attrs;
   }
 
@@ -91,6 +111,9 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
   protected Map<String, Map<String, Object>> inAti(SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     SaleConfig saleConfig = saleConfigService.getSaleConfig(saleOrder.getCompany());
+    AppSale appSale = appSaleService.getAppSale();
+    boolean isClassicLineList =
+        appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_CLASSIC;
 
     boolean inAti = saleOrder.getInAti();
     attrs.put("saleOrderLineList.exTaxTotal", Map.of(HIDDEN_ATTRS, inAti));
@@ -107,11 +130,12 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
       attrs.put("inAti", Map.of(HIDDEN_ATTRS, hideInAti));
     }
 
-    if (inAti) {
+    if (inAti && isClassicLineList) {
       attrs.put(
           "saleOrderLineList.priceDiscounted", Map.of(TITLE_ATTRS, I18n.get("Unit price A.T.I.")));
+    }
 
-    } else {
+    if (!inAti && isClassicLineList) {
       attrs.put(
           "saleOrderLineList.priceDiscounted", Map.of(TITLE_ATTRS, I18n.get("Unit price W.T.")));
     }
@@ -171,14 +195,18 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
   protected Map<String, Map<String, Object>> hideDiscount() {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     AppSale appSale = appSaleService.getAppSale();
-    boolean editableGridEnabled = appSale.getIsEditableGridEnabled();
+    boolean isClassicList =
+        appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_CLASSIC;
     boolean discountOnEditableGridEnabled = appSale.getIsDiscountEnabledOnEditableGrid();
 
     attrs.put(
         "saleOrderLineList.discountTypeSelect",
-        Map.of(HIDDEN_ATTRS, !editableGridEnabled || !discountOnEditableGridEnabled));
+        Map.of(HIDDEN_ATTRS, !discountOnEditableGridEnabled));
     attrs.put(
         "saleOrderLineList.discountAmount", Map.of(HIDDEN_ATTRS, !discountOnEditableGridEnabled));
+    attrs.put(
+        "saleOrderLineList.priceDiscounted",
+        Map.of(HIDDEN_ATTRS, !isClassicList && !discountOnEditableGridEnabled));
     return attrs;
   }
 

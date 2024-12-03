@@ -57,4 +57,11 @@ public interface ITranslation {
   public static final String PRICING_BTN =
       /*$$(*/
       "Apply pricings"; /*)*/
+
+  public static final String ADDRESS_CREATED = /*$$(*/ "Address created" /*)*/;
+  public static final String ADDRESS_FOUND = /*$$(*/ "Address found" /*)*/;
+  public static final String TRANSLATIONS_UP_TO_DATE = /*$$(*/
+      "Translations already up-to-date." /*)*/;
+  public static final String TRANSLATIONS_ADDED = /*$$(*/
+      "%s translation(s) successfully added." /*)*/;
 }

@@ -1,9 +1,30 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.Cart;
+import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.rest.dto.CartAddLinePutResquest;
 import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
+import com.axelor.apps.sale.service.cart.CartProductService;
 import com.axelor.apps.sale.service.cart.CartResetService;
 import com.axelor.apps.sale.service.cart.CartSaleOrderGeneratorService;
 import com.axelor.i18n.I18n;
@@ -57,5 +78,21 @@ public class CartRestController {
     Cart cart = ObjectFinder.find(Cart.class, cartId, requestBody.getVersion());
     SaleOrder saleOrder = Beans.get(CartSaleOrderGeneratorService.class).createSaleOrder(cart);
     return ResponseConstructor.buildCreateResponse(saleOrder, new SaleOrderResponse(saleOrder));
+  }
+
+  @Operation(
+      summary = "Add a product to the the cart",
+      tags = {"Cart"})
+  @Path("/add-line/{cartId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response createCartLine(
+      @PathParam("cartId") Long cartId, CartAddLinePutResquest requestBody) throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(Cart.class, cartId).createAccess(CartLine.class).check();
+    Cart cart = ObjectFinder.find(Cart.class, cartId, requestBody.getVersion());
+    Beans.get(CartProductService.class)
+        .addToCart(cart, requestBody.fetchProduct(), requestBody.getQty());
+    return ResponseConstructor.build(Response.Status.OK, I18n.get(ITranslation.PRODUCT_IS_ADDED));
   }
 }

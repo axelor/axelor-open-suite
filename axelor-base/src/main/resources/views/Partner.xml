@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -341,7 +341,7 @@
             onChange="action-record-base-partner-set-business-card"/>
           <field name="functionBusinessCard"/>
         </panel>
-        <field name="partnerTagSet" widget="TagSelect" x-color-field="colorSelect"
+        <field name="tagSet" widget="TagSelect" x-color-field="color"
           grid-view="tag-simplified-grid" form-view="tag-form"
           onSelect="action-partner-attrs-set-partner-tag-domain"/>
       </panel>
@@ -357,9 +357,8 @@
         <field name="paymentDelay" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')"/>
         <field name="parentPartner" hideIf="partnerTypeSelect != 1"
-          if="__config__.app.getApp('base')?.getManageSubsidiaryPartner()"
-          domain="self.isContact = false AND self.partnerTypeSelect = 1 AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
-          form-view="partner-form" grid-view="partner-grid"/>
+          if="__config__.app.getApp('base')?.getManageSubsidiaryPartner()" form-view="partner-form"
+          grid-view="partner-grid" onSelect="action-partner-method-set-parent-partner-domain"/>
         <field name="sellerCode" showIf="isFactor"
           if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFactors()"
           if-module="axelor-account"/>
@@ -549,8 +548,9 @@
           if-module="axelor-purchase"
           if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
         <field name="supplierQualityRating" hidden="true"/>
-        <field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false"
-          colSpan="3" onChange="action-record-set-supplier-quality-rating"/>
+        <field name="supplierQualityRatingSelect" widget="Rating"
+          x-rating-color="black,black,black,black,black" colSpan="3"
+          onChange="action-record-set-supplier-quality-rating"/>
         <field name="supplierArrivalProductQty" colSpan="3"/>
         <spacer name="supplierSpacer"/>
         <field name="partnerProductQualityRatingList" colSpan="12"
@@ -1246,6 +1246,9 @@
   <action-method name="action-partner-method-set-user-partner">
     <call class="com.axelor.apps.base.web.UserController" method="setUserPartner"/>
   </action-method>
+  <action-method name="action-partner-method-set-parent-partner-domain">
+    <call class="com.axelor.apps.base.web.PartnerController" method="setParentPartnerDomain"/>
+  </action-method>
 
   <action-attrs name="action-partner-attrs-partner-seq-editable">
     <attribute name="readonly" for="partnerSeq"
@@ -1743,8 +1746,8 @@
   </action-attrs>
 
   <action-attrs name="action-partner-attrs-set-partner-tag-domain">
-    <attribute name="domain" for="partnerTagSet"
-      expr="eval: &quot; ${__repo__(MetaModel).findByName('Partner')?.id} member of self.concernedModelSet AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
+    <attribute name="domain" for="tagSet"
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} MEMBER OF self.concernedModelSet OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
   </action-attrs>
 
   <action-view name="action-partner-view-related-projects" title="Projects"

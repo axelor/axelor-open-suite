@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
@@ -4343,13 +4343,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="4315">
-                            <structure name="dateTimeFormat">
-                                <property name="category">Short Date</property>
-                                <property name="pattern">Short Date</property>
-                            </structure>
-                            <property name="resultSetColumn">date</property>
-                        </data>
+                        <text id="4324">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["total_wt"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="214">
                         <property name="borderBottomStyle">solid</property>
@@ -4824,13 +4821,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="4316">
-                            <structure name="dateTimeFormat">
-                                <property name="category">Short Date</property>
-                                <property name="pattern">Short Date</property>
-                            </structure>
-                            <property name="resultSetColumn">expense_date</property>
-                        </data>
+                        <text id="4322">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="270">
                         <property name="borderBottomStyle">solid</property>
@@ -5336,13 +5330,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="4317">
-                            <structure name="dateTimeFormat">
-                                <property name="category">Short Date</property>
-                                <property name="pattern">Short Date</property>
-                            </structure>
-                            <property name="resultSetColumn">from_date</property>
-                        </data>
+                        <text id="4325">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["total_tax"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="328">
                         <property name="borderBottomStyle">solid</property>
@@ -5353,13 +5344,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="4318">
-                            <structure name="dateTimeFormat">
-                                <property name="category">Short Date</property>
-                                <property name="pattern">Short Date</property>
-                            </structure>
-                            <property name="resultSetColumn">to_date</property>
-                        </data>
+                        <text id="4326">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["to_invoice"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="330">
                         <property name="borderBottomStyle">solid</property>
@@ -5370,13 +5358,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="4319">
-                            <structure name="dateTimeFormat">
-                                <property name="category">Short Date</property>
-                                <property name="pattern">Short Date</property>
-                            </structure>
-                            <property name="resultSetColumn">due_date</property>
-                        </data>
+                        <text id="4327">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["comments"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
             </detail>

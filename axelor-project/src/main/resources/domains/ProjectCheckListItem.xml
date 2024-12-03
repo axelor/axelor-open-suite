@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="ProjectCheckListItem">
+    <string name="title" title="Title" namecolumn="true"/>
+    <boolean name="completed" title="Completed"/>
+    <integer name="sequence" title="Sequence"/>
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask"
+      title="Project task"/>
+    <many-to-one name="parentItem" ref="com.axelor.apps.project.db.ProjectCheckListItem"
+      title="Parent"/>
+    <one-to-many name="projectCheckListItemList"
+      ref="com.axelor.apps.project.db.ProjectCheckListItem" mappedBy="parentItem"/>
+    <many-to-one name="projectCheckListTemplate"
+      ref="com.axelor.apps.project.db.ProjectCheckListTemplate"/>
+  </entity>
+
+</domain-models>

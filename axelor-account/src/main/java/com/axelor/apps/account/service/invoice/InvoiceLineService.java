@@ -63,7 +63,7 @@ public interface InvoiceLineService {
 
   Unit getUnit(Product product, boolean isPurchase);
 
-  void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+  Map<String, Object> compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
 
   Map<String, Object> resetProductInformation(Invoice invoice) throws AxelorException;
 
@@ -121,4 +121,6 @@ public interface InvoiceLineService {
   BigDecimal getInTaxPrice(InvoiceLine invoiceLine);
 
   Map<String, Map<String, Object>> setScale(InvoiceLine invoiceLine, Invoice invoice);
+
+  Map<String, Object> recomputeTax(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
 }

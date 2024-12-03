@@ -244,7 +244,7 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
               durationService.computeRatio(
                   start,
                   end,
-                  contract.getStartDate(),
+                  contract.getInvoicePeriodStartDate(),
                   contract.getInvoicePeriodEndDate(),
                   contract.getCurrentContractVersion().getInvoicingDuration());
         }

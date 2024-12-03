@@ -126,9 +126,9 @@ public class InvoiceLineController {
     }
 
     try {
-      Beans.get(InvoiceLineService.class).compute(invoice, invoiceLine);
-
-      response.setValues(invoiceLine);
+      Map<String, Object> invoiceLineMap =
+          Beans.get(InvoiceLineService.class).compute(invoice, invoiceLine);
+      response.setValues(invoiceLineMap);
       response.setAttr(
           "priceDiscounted",
           "hidden",
@@ -604,6 +604,18 @@ public class InvoiceLineController {
       Invoice invoice = this.getInvoice(request.getContext());
 
       response.setAttrs(Beans.get(InvoiceLineService.class).setScale(invoiceLine, invoice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void recomputeTax(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Invoice invoice = getInvoice(context);
+
+      response.setValues(Beans.get(InvoiceLineService.class).recomputeTax(invoice, invoiceLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

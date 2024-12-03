@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -546,6 +546,7 @@
     <option value='7'>Fixed asset</option>
     <option value='8'>Doubtful customer</option>
     <option value='9'>Irrecoverable</option>
+    <option value='10'>Late payment interest</option>
   </selection>
 
   <selection name='iaccount.move.line.mass.entry.input.action.select'>

@@ -32,6 +32,7 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.StockMoveProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.stock.db.StockConfig;
@@ -41,7 +42,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -66,7 +66,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   public static final int STOCK_LOCATION_IN = 1;
   public static final int STOCK_LOCATION_OUT = 2;
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  protected StockMoveService stockMoveService;
+  protected StockMoveProductionService stockMoveProductionService;
   protected StockMoveLineService stockMoveLineService;
   protected AppBaseService appBaseService;
   protected SupplyChainConfigService supplyChainConfigService;
@@ -82,7 +82,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
   @Inject
   public ManufOrderStockMoveServiceImpl(
-      StockMoveService stockMoveService,
+      StockMoveProductionService stockMoveProductionService,
       StockMoveLineService stockMoveLineService,
       AppBaseService appBaseService,
       SupplyChainConfigService supplyChainConfigService,
@@ -95,7 +95,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
       ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
     this.supplyChainConfigService = supplyChainConfigService;
-    this.stockMoveService = stockMoveService;
+    this.stockMoveProductionService = stockMoveProductionService;
     this.stockMoveLineService = stockMoveLineService;
     this.appBaseService = appBaseService;
     this.productCompanyService = productCompanyService;
@@ -229,8 +229,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
     if (stockMove != null && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
       stockMove.setIsWithBackorder(false);
-      stockMoveService.copyQtyToRealQty(stockMove);
-      stockMoveService.realize(stockMove);
+      stockMoveProductionService.copyQtyToRealQty(stockMove);
+      stockMoveProductionService.realize(stockMove);
     }
   }
 
@@ -303,7 +303,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     // generate new stock move
 
     StockMove newStockMove =
-        stockMoveService.createStockMove(
+        stockMoveProductionService.createStockMove(
             null,
             null,
             company,
@@ -322,7 +322,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
     if (!newStockMove.getStockMoveLineList().isEmpty()) {
       // plan the stockmove
-      stockMoveService.plan(newStockMove);
+      stockMoveProductionService.plan(newStockMove);
 
       if (inOrOut == PART_FINISH_IN) {
         manufOrder.addInStockMoveListItem(newStockMove);
@@ -349,7 +349,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
     if (stockMove != null) {
 
-      stockMoveService.cancel(stockMove);
+      stockMoveProductionService.cancelFromManufOrder(stockMove);
 
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 

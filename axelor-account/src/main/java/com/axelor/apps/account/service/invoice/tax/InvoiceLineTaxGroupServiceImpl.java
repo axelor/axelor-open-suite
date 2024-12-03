@@ -56,11 +56,7 @@ public class InvoiceLineTaxGroupServiceImpl implements InvoiceLineTaxGroupServic
       throws AxelorException {
     Map<String, Object> values = new HashMap<>();
 
-    invoiceLineTax.setInTaxTotal(invoiceLineTaxRecordService.computeInTaxTotal(invoiceLineTax));
-    invoiceLineTax.setCompanyTaxTotal(
-        invoiceLineTaxRecordService.computeCompanyTaxTotal(invoiceLineTax, invoice));
-    invoiceLineTax.setCompanyInTaxTotal(
-        invoiceLineTaxRecordService.computeCompanyInTaxTotal(invoiceLineTax));
+    invoiceLineTaxRecordService.recomputeAmounts(invoiceLineTax, invoice);
 
     values.put("inTaxTotal", invoiceLineTax.getInTaxTotal());
     values.put("companyTaxTotal", invoiceLineTax.getCompanyTaxTotal());

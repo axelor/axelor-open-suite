@@ -197,7 +197,13 @@ public class FECImporter extends Importer {
         }
 
         if (fecImport.getValidGeneratedMove()) {
-          moveValidateService.accounting(move);
+          if (move.getAccountingDate() != null) {
+            move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
+            move.getMoveLineList().forEach(ml -> ml.setAccountingDate(move.getAccountingDate()));
+            moveRepository.save(move);
+          } else {
+            moveValidateService.accounting(move);
+          }
         } else {
           return moveRepository.save(move);
         }

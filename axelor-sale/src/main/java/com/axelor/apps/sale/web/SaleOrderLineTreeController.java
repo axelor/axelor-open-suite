@@ -28,7 +28,7 @@ import com.axelor.apps.sale.db.SaleOrderLineTree;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineTreeRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCalculationComboService;
+import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineCalculationComboService;
 import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;

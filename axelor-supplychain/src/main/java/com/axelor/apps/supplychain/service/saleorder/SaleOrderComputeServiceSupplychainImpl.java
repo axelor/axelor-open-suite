@@ -25,10 +25,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCreateTaxLineService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
 import com.axelor.inject.Beans;
@@ -49,8 +51,15 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
       SaleOrderLineCreateTaxLineService saleOrderLineCreateTaxLineService,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
-      AdvancePaymentRefundService refundService) {
-    super(saleOrderLineCreateTaxLineService, saleOrderLineComputeService, saleOrderLinePackService);
+      SubSaleOrderLineComputeService subSaleOrderLineComputeService,
+      AdvancePaymentRefundService refundService,
+      AppSaleService appSaleService) {
+    super(
+        saleOrderLineCreateTaxLineService,
+        saleOrderLineComputeService,
+        saleOrderLinePackService,
+        subSaleOrderLineComputeService,
+        appSaleService);
     this.refundService = refundService;
   }
 

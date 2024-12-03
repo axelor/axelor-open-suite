@@ -23,6 +23,8 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.rest.dto.StockMoveLinePutRequest;
 import com.axelor.apps.stock.rest.dto.StockMoveLineResponse;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -32,6 +34,7 @@ import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -73,7 +76,9 @@ public class StockMoveLineRestController {
             requestBody.fetchToStockLocation());
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Line successfully updated.", new StockMoveLineResponse(stockmoveLine));
+        Response.Status.OK,
+        I18n.get(ITranslation.STOCK_MOVE_LINE_UPDATED),
+        new StockMoveLineResponse(stockmoveLine));
   }
 
   @Operation(
@@ -97,6 +102,26 @@ public class StockMoveLineRestController {
         .splitIntoFulfilledMoveLineAndUnfulfilledOne(stockmoveLine);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Line successfully split.", new StockMoveLineResponse(stockmoveLine));
+        Response.Status.OK,
+        I18n.get(ITranslation.STOCK_MOVE_LINE_SPLIT),
+        new StockMoveLineResponse(stockmoveLine));
+  }
+
+  @Operation(
+      summary = "Stock move line quantity availability",
+      tags = {"Stock move line"})
+  @Path("check-quantity/{stockMoveLineId}")
+  @GET
+  @HttpExceptionHandler
+  public Response checkStockMoveLineQty(@PathParam("stockMoveLineId") long stockMoveLineId)
+      throws AxelorException {
+    new SecurityCheck().readAccess(StockMoveLine.class, stockMoveLineId).check();
+    StockMoveLine stockMoveLine =
+        ObjectFinder.find(StockMoveLine.class, stockMoveLineId, ObjectFinder.NO_VERSION);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.STOCK_MOVE_LINE_QUANTITY_AVAILABILITY),
+        Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine));
   }
 }

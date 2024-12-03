@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -19,6 +19,12 @@
     <boolean name="manageByAmount" title="Tax amount management type"/>
 
     <unique-constraint columns="code,name"/>
+
+    <track>
+      <field name="activeTaxLine"/>
+      <field name="taxType"/>
+      <field name="manageByAmount"/>
+    </track>
 
   </entity>
 

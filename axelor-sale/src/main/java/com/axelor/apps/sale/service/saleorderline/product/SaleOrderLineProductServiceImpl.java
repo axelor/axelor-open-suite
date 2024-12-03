@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.service.saleorderline.product;
 
 import com.axelor.apps.account.db.FiscalPosition;
@@ -19,7 +37,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.db.mapper.Mapper;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -27,6 +45,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductService {
 
@@ -240,9 +259,11 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     saleOrderLineMap.put("companyExTaxTotal", null);
     saleOrderLineMap.put("description", null);
     saleOrderLineMap.put("typeSelect", SaleOrderLineRepository.TYPE_NORMAL);
-    line.clearSelectedComplementaryProductList();
-    saleOrderLineMap.put(
-        "selectedComplementaryProductList", line.getSelectedComplementaryProductList());
+    if (CollectionUtils.isNotEmpty(line.getSelectedComplementaryProductList())) {
+      line.clearSelectedComplementaryProductList();
+      saleOrderLineMap.put(
+          "selectedComplementaryProductList", line.getSelectedComplementaryProductList());
+    }
     saleOrderLineMap.put("taxLineSet", Sets.newHashSet());
     saleOrderLineMap.put("taxEquiv", null);
 

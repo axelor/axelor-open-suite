@@ -33,7 +33,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.collect.Lists;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.inject.Singleton;
 import java.util.List;
 
@@ -97,8 +97,7 @@ public class ProdProcessController {
     ProdProcess prodProcess =
         prodProcessRepository.find(request.getContext().asType(ProdProcess.class).getId());
 
-    List<ProdProcess> prodProcessSet = Lists.newArrayList();
-    prodProcessSet =
+    List<ProdProcess> prodProcessSet =
         prodProcessRepository
             .all()
             .filter("self.originalProdProcess = :origin")
@@ -108,15 +107,14 @@ public class ProdProcessController {
 
     if (!prodProcessSet.isEmpty()) {
 
-      String existingVersions = "";
-      for (ProdProcess prodProcessVersion : prodProcessSet) {
-        existingVersions += "<li>" + prodProcessVersion.getFullName() + "</li>";
-      }
+      StringHtmlListBuilder builder = new StringHtmlListBuilder();
+      prodProcessSet.stream().map(ProdProcess::getFullName).forEach(builder::append);
+
       message =
           String.format(
               I18n.get(
-                  "This production process already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"),
-              existingVersions);
+                  "This production process already has the following versions : <br/> %s And these versions may also have ones. Do you still wish to create a new one ?"),
+              builder.toString());
     } else {
       message = I18n.get("Do you really wish to create a new version of this production process ?");
     }

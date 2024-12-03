@@ -77,7 +77,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -112,8 +111,7 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
 
     try {
-      invoice = Beans.get(InvoiceService.class).compute(invoice);
-      response.setValues(invoice);
+      response.setValues(Beans.get(InvoiceService.class).compute(invoice));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -480,15 +478,7 @@ public class InvoiceController {
                     .getCode()
                 : null;
 
-        PrintingTemplate invoicePrintTemplate = null;
-        if (context.get("invoicePrintTemplate") != null) {
-          invoicePrintTemplate =
-              Mapper.toBean(
-                  PrintingTemplate.class,
-                  (Map<String, Object>) context.get("invoicePrintTemplate"));
-          invoicePrintTemplate =
-              Beans.get(PrintingTemplateRepository.class).find(invoicePrintTemplate.getId());
-        }
+        PrintingTemplate invoicePrintTemplate = getPrintingTemplate(context, invoice);
 
         fileLink =
             Beans.get(InvoicePrintService.class)
@@ -503,6 +493,17 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  protected PrintingTemplate getPrintingTemplate(Context context, Invoice invoice)
+      throws AxelorException {
+    if (context.get("invoicePrintTemplate") == null) {
+      return Beans.get(AccountConfigService.class).getInvoicePrintTemplate(invoice.getCompany());
+    }
+    PrintingTemplate invoicePrintTemplate =
+        Mapper.toBean(
+            PrintingTemplate.class, (Map<String, Object>) context.get("invoicePrintTemplate"));
+    return Beans.get(PrintingTemplateRepository.class).find(invoicePrintTemplate.getId());
   }
 
   public void regenerateAndShowInvoice(ActionRequest request, ActionResponse response) {
@@ -1055,12 +1056,27 @@ public class InvoiceController {
 
   @SuppressWarnings("unchecked")
   protected String getIdListString(ActionRequest request) {
-    return Optional.ofNullable((List<Integer>) request.getContext().get("_ids"))
-        .map(idList -> idList.stream().map(String::valueOf).collect(Collectors.joining(",")))
-        .orElseGet(
-            () ->
-                StringHelper.getIdListString(
-                    request.getCriteria().createQuery(Invoice.class).fetch()));
+
+    String idListString =
+        Optional.ofNullable((List<Integer>) request.getContext().get("_ids"))
+            .map(idList -> idList.stream().map(String::valueOf).collect(Collectors.joining(",")))
+            .orElseGet(
+                () ->
+                    request
+                        .getCriteria()
+                        .createQuery(Invoice.class)
+                        .select("id")
+                        .fetch(0, 0)
+                        .stream()
+                        .map(m -> (Long) m.get("id"))
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(",")));
+
+    if (idListString.isBlank()) {
+      return "0";
+    }
+
+    return idListString;
   }
 
   public void checkInvoiceLinesAnalyticDistribution(
@@ -1340,13 +1356,12 @@ public class InvoiceController {
   protected Map<String, Object> getParamsMap(ActionRequest request) {
     Context context = request.getContext();
     Map<String, Object> params = new HashMap<>();
-    Invoice invoice =
-        Beans.get(InvoiceRepository.class)
-            .find(Long.parseLong(context.get("_invoiceId").toString()));
+    Object invoiceId = Optional.ofNullable(context.get("_invoiceId")).orElse(context.get("id"));
+    Invoice invoice = Beans.get(InvoiceRepository.class).find(Long.parseLong(invoiceId.toString()));
     Integer reportType =
         context.get("reportType") != null
             ? Integer.parseInt(context.get("reportType").toString())
-            : null;
+            : InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE;
     params.put("reportType", reportType);
     params.put("invoice", invoice);
     return params;
@@ -1363,6 +1378,16 @@ public class InvoiceController {
       PrintingTemplate invoicePrintTemplate =
           Beans.get(AccountConfigService.class).getInvoicePrintTemplate(invoice.getCompany());
       response.setValue("$invoicePrintTemplate", invoicePrintTemplate);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void computeInvoiceAmounts(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    try {
+      response.setValues(InvoiceToolService.computeInvoiceAmounts(invoice));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

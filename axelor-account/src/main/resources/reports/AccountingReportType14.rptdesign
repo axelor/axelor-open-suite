@@ -19,6 +19,14 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[function formatNumber(number, isCompanyCurrency) {
+	var exportTypeSelect = params["ExportTypeSelect"];
+	var numberOfDecimals = isCompanyCurrency ? vars["ccNumberOfDecimals"] : vars["numberOfDecimals"];
+	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
+	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
+	var formatPattern = basePart + decimalPart;
+	return Formatter.format(number, formatPattern);
+}]]></method>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
@@ -67,6 +75,17 @@
         </scalar-parameter>
         <scalar-parameter name="Password" id="2481">
             <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="ExportTypeSelect" id="5352">
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -299,6 +318,8 @@
                 </list-property>
             </structure>
             <property name="rowFetchLimit">0</property>
+            <method name="onFetch"><![CDATA[vars["numberOfDecimals"] = dataSetRow["number_of_decimals"];
+vars["ccNumberOfDecimals"] = dataSetRow["cc_number_of_decimals"];]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -429,9 +450,9 @@ left outer join public.account_accounting_report_account_set as AccountSet on (A
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
 left outer join public.account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.account_tag_set)
+left outer join public.account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
 left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.base_partner_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.partner_tag_set)
+left outer join public.base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 
 where 
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
@@ -1787,7 +1808,7 @@ else {
                                 <property name="textAlign">right</property>
                                 <structure name="toc"/>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumDebitPerAccount"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+                                <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["SumDebitPerAccount"], true)</VALUE-OF>
 ]]></text-property>
                             </text>
                         </cell>
@@ -1810,7 +1831,7 @@ else {
                                 <property name="textAlign">right</property>
                                 <structure name="toc"/>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["SumCreditPerAccount"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+                                <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["SumCreditPerAccount"], true)</VALUE-OF>
 ]]></text-property>
                             </text>
                         </cell>
@@ -1949,7 +1970,7 @@ else {
                                 <structure name="toc"/>
                                 <property name="contentType">html</property>
                                 <text-property name="content"><![CDATA[<VALUE-OF>if(row["SumDebitPerAccount"] - row["SumCreditPerAccount"] > 0){
-Formatter.format(row["SumDebitPerAccount"] - row["SumCreditPerAccount"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))}</VALUE-OF>]]></text-property>
+formatNumber(row["SumDebitPerAccount"] - row["SumCreditPerAccount"], true)}</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="2542">
@@ -1972,7 +1993,7 @@ Formatter.format(row["SumDebitPerAccount"] - row["SumCreditPerAccount"], row["cc
                                 <structure name="toc"/>
                                 <property name="contentType">html</property>
                                 <text-property name="content"><![CDATA[<VALUE-OF>if(row["SumCreditPerAccount"] - row["SumDebitPerAccount"] > 0){
-Formatter.format(row["SumCreditPerAccount"] - row["SumDebitPerAccount"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))}</VALUE-OF>]]></text-property>
+formatNumber(row["SumCreditPerAccount"] - row["SumDebitPerAccount"], true)}</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="3215">
@@ -2099,7 +2120,7 @@ Formatter.format(row["SumCreditPerAccount"] - row["SumDebitPerAccount"], row["cc
                             <property name="textAlign">right</property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["Debit"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["Debit"], true)</VALUE-OF>
 ]]></text-property>
                         </text>
                     </cell>
@@ -2115,7 +2136,7 @@ Formatter.format(row["SumCreditPerAccount"] - row["SumDebitPerAccount"], row["cc
                             <property name="textAlign">right</property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["Credit"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["Credit"], true)</VALUE-OF>
 ]]></text-property>
                         </text>
                     </cell>
@@ -2131,7 +2152,7 @@ Formatter.format(row["SumCreditPerAccount"] - row["SumDebitPerAccount"], row["cc
                             <property name="textAlign">right</property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["currencyDebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["currencyDebit"], false)</VALUE-OF>
 ]]></text-property>
                         </text>
                     </cell>
@@ -2147,7 +2168,7 @@ Formatter.format(row["SumCreditPerAccount"] - row["SumDebitPerAccount"], row["cc
                             <property name="textAlign">right</property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["currencyCredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["currencyCredit"], false)</VALUE-OF>
 ]]></text-property>
                         </text>
                     </cell>
@@ -2369,7 +2390,7 @@ Formatter.format(row["SumCreditPerAccount"] - row["SumDebitPerAccount"], row["cc
                             </list-property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["TotalDebit"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["TotalDebit"], true)</VALUE-OF>
 ]]></text-property>
                         </text>
                     </cell>
@@ -2397,7 +2418,7 @@ Formatter.format(row["SumCreditPerAccount"] - row["SumDebitPerAccount"], row["cc
                             </list-property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["TotalCredit"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["TotalCredit"], true)</VALUE-OF>
 ]]></text-property>
                         </text>
                     </cell>
@@ -2522,7 +2543,7 @@ Formatter.format(row["SumCreditPerAccount"] - row["SumDebitPerAccount"], row["cc
                             </list-property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["DiffDebit"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["DiffDebit"], true)</VALUE-OF>
 ]]></text-property>
                         </text>
                     </cell>
@@ -2550,7 +2571,7 @@ Formatter.format(row["SumCreditPerAccount"] - row["SumDebitPerAccount"], row["cc
                             </list-property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["DiffCredit"], row["cc_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["cc_number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["DiffCredit"], true)</VALUE-OF>
 ]]></text-property>
                         </text>
                     </cell>
@@ -2645,4 +2666,12 @@ Formatter.format(row["SumCreditPerAccount"] - row["SumDebitPerAccount"], row["cc
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="numberOfDecimals">
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="ccNumberOfDecimals">
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

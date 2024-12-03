@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="purchase-order-line-purchase-order-grid" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -145,7 +145,7 @@
 	          ]]></viewer>
         </field>
         <spacer name="receiptStateSpacer" if="__config__.app.isApp('supplychain')"/>
-        <field name="product" canEdit="false"
+        <field name="product" canEdit="false" x-image-field="picture"
           onChange="action-group-purchase-purchase-orderline-product-onchange"
           onSelect="action-purchase-order-line-attrs-product-domain" form-view="product-form"
           grid-view="product-purchase-grid"/>
@@ -206,8 +206,17 @@
       <panel name="supplierRequestsPanel" title="Suppliers requests"
         if-module="axelor-supplier-management"
         if="__config__.app.getApp('purchase')?.getSupplierRequestMgt()">
+        <field name="$isPoSaved" showTitle="false" colSpan="12" readonly="true"
+          showIf="!$isPoSaved">
+          <viewer>
+            <![CDATA[
+                     <><Badge bg="warning">{_t("You can not generate supplier requests if the order is not saved.")}</Badge></>
+            ]]>
+          </viewer>
+        </field>
         <button name="generateSuppliersRequestsBtn" title="Generate suppliers requests"
-          onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
+          onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"
+          readonlyIf="!$isPoSaved"/>
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"
           onSelect="action-purchase-order-line-set-supplierPartner-domain"/>
         <panel-related name="purchaseOrderSupplierLineListPanel"
@@ -331,6 +340,7 @@
     <action name="action-purchase-order-line-attrs-hide-different-supplier-warning-label"/>
     <action name="action-purchase-order-line-attrs-display-different-language-message"/>
     <action name="action-purchase-order-line-record-init-dummy-fields"/>
+    <action name="action-purchase-order-attrs-is-po-saved"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-onload">
@@ -344,6 +354,7 @@
     <action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
     <action name="action-purchase-order-line-attrs-set-currency"/>
     <action name="action-purchase-order-line-attrs-display-different-language-message"/>
+    <action name="action-purchase-order-attrs-is-po-saved"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-product-onchange">
@@ -366,6 +377,7 @@
 
   <action-group
     name="action-group-purchase-purchase-orderline-generate-supplierreq-click">
+    <action name="action-purchase-order-validate-check-product"/>
     <action name="save"/>
     <action name="action-purchase-order-line-method-generate-suppliers-requests"/>
     <action name="save"/>
@@ -620,5 +632,13 @@
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     <field name="$nbDecimalDigitForQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-record>
+
+  <action-attrs name="action-purchase-order-attrs-is-po-saved">
+    <attribute for="$isPoSaved" name="value" expr="eval: __parent__?.id != null"/>
+  </action-attrs>
+
+  <action-validate name="action-purchase-order-validate-check-product">
+    <error message="Please select a product." if="product == null"/>
+  </action-validate>
 
 </object-views>

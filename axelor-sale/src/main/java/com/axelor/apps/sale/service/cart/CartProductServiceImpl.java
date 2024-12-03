@@ -26,6 +26,7 @@ import com.axelor.apps.sale.service.cartline.CartLineCreateService;
 import com.axelor.apps.sale.service.cartline.CartLineRetrievalService;
 import com.axelor.apps.sale.service.cartline.CartLineUpdateService;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 
 public class CartProductServiceImpl implements CartProductService {
 
@@ -60,6 +61,21 @@ public class CartProductServiceImpl implements CartProductService {
       cartLineCreateService.createCartLine(cart, product);
     } else {
       cartLineUpdateService.updateCartLine(cartLine);
+    }
+  }
+
+  @Override
+  public void addToCart(Cart cart, Product product, BigDecimal qty) throws AxelorException {
+
+    CartLine cartLine = cartLineRetrievalService.getCartLine(cart, product);
+    if (cartLine == null) {
+      if (product.getParentProduct() != null) {
+        cartLineCreateService.createCartLineWithVariant(cart, product, qty);
+      } else {
+        cartLineCreateService.createCartLine(cart, product, qty);
+      }
+    } else {
+      cartLineUpdateService.updateCartLine(cartLine, qty);
     }
   }
 }

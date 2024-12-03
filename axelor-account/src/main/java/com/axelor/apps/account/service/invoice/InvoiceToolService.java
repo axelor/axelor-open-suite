@@ -44,6 +44,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
@@ -288,6 +289,8 @@ public class InvoiceToolService {
     int functionalOrigin = 0;
     if (isPurchase(invoice)) {
       functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE;
+    } else if (isLatePaymentInterest(invoice)) {
+      functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_LATE_PAYMENT_INTEREST;
     } else {
       functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
     }
@@ -361,7 +364,7 @@ public class InvoiceToolService {
     copy.setLegalNotice(legalNotice);
   }
 
-  protected static void computeInvoiceAmounts(Invoice copy) throws AxelorException {
+  public static Map<String, Object> computeInvoiceAmounts(Invoice copy) throws AxelorException {
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
     // Update invoice lines with new currency rate
     for (InvoiceLine invoiceLine : copy.getInvoiceLineList()) {
@@ -372,6 +375,10 @@ public class InvoiceToolService {
     }
 
     // Update invoice
-    Beans.get(InvoiceService.class).compute(copy);
+    return Beans.get(InvoiceService.class).compute(copy);
+  }
+
+  protected static boolean isLatePaymentInterest(Invoice invoice) {
+    return invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_LATE_PAYMENT;
   }
 }
