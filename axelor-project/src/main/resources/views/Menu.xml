@@ -215,6 +215,17 @@
   <menuitem name="project-my-reporting" parent="menu-my-project-root" order="1000"
     title="Reporting" action="project.my.projects"/>
 
+  <!-- BATCH -->
+  <menuitem name="admin-root-batch-project" parent="admin-root-batch"
+    if="__config__.app.isApp('project')" if-module="axelor-project" title="Project batches"
+    action="admin.root.batch.project" order="1600"/>
+
+  <action-view name="admin.root.batch.project" title="Project batches"
+    model="com.axelor.apps.project.db.ProjectBatch">
+    <view type="grid" name="project-batch-grid"/>
+    <view type="form" name="project-batch-form"/>
+  </action-view>
+
   <menuitem name="project-project-check-list-template" parent="project-configurations"
     title="Check list templates" action="project.root.project.checklist.template.all" order="1600"/>
 

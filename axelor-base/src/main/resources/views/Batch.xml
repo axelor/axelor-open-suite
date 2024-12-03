@@ -88,6 +88,8 @@
       <button name="showReconciledMoveLinesBtn" title="Reconciled move lines" hidden="true"
         colSpan="6" onClick="action-batch-show-reconciled-move-lines,close"
         if-module="axelor-account"/>
+      <button name="showProjectTaskBtn" title="Project tasks" hidden="true" colSpan="4"
+        onClick="action-batch-show-project-tasks,close" if-module="axelor-project"/>
     </panel>
     <panel name="originPanel" title="Origin" sidebar="true" itemSpan="12">
       <field name="companyCode"/>
@@ -169,6 +171,10 @@
       expr="eval: __parent__?.actionSelect != 1"
       if="__parent__?._model == 'com.axelor.apps.contract.db.ContractBatch'"/>
 
+    <attribute name="hidden" for="showProjectTaskBtn"
+      expr="eval: __parent__?.actionSelect != 1"
+      if="__parent__?._model == 'com.axelor.apps.project.db.ProjectBatch'"/>
+
   </action-attrs>
 
   <action-view name="action-batch-show-trace-back" title="Anomalies"
@@ -213,6 +219,14 @@
     title="Reconciled move lines" model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-account-batch-auto-move-lettering-grid"/>
     <view type="form" name="move-line-form"/>
+    <domain>:batch MEMBER OF self.batchSet</domain>
+    <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
+  <action-view name="action-batch-show-project-tasks" title="Project tasks"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="project-task-grid"/>
+    <view type="form" name="project-task-form"/>
     <domain>:batch MEMBER OF self.batchSet</domain>
     <context name="batch" expr="eval: __self__"/>
   </action-view>

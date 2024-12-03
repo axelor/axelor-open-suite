@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="ProjectBatch" cacheable="true">
+
+    <!-- HEADER -->
+    <string name="code" title="Code" namecolumn="true" unique="true"/>
+    <integer name="actionSelect" title="Action" required="true"
+      selection="project.batch.action.select" default="1"/>
+
+    <!-- OTHERS INFORMATIONS -->
+    <string name="description" title="Description" large="true"/>
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
+      mappedBy="projectBatch" title="Batches"/>
+
+    <!-- REMOVE STATUS BATCH -->
+    <many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project"
+      title="Projects"
+      help="The selectable projects are those for which the 'Manage via project' option is enabled."/>
+    <many-to-many name="taskCategorySet"
+      ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Task categories"/>
+    <many-to-many name="taskStatusSet" ref="com.axelor.apps.project.db.TaskStatus"
+      title="Task statuses"/>
+
+    <extra-code><![CDATA[
+
+	   	// ACTION TYPE
+		public static final int ACTION_REMOVE_TASK_STATUS = 1;
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>
