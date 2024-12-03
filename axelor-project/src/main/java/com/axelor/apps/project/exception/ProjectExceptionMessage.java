@@ -79,16 +79,16 @@ public final class ProjectExceptionMessage {
   public static final String TASK_STATUS_USED_ON_PROJECT_TASK_CATEGORY = /*$$(*/
       "This task status is used on project task category for the auto progress process. Do you want to update all unmodified values with this one ?" /*)*/;
 
-  public static final String BATCH_TASK_STATUS_UPDATION_TASK = /*$$(*/ "Task %s" /*)*/;
+  public static final String BATCH_TASK_STATUS_UPDATE_TASK = /*$$(*/ "Task %s" /*)*/;
 
-  public static final String BATCH_TASK_STATUS_UPDATION_PROJECT = /*$$(*/ "Project %s" /*)*/;
+  public static final String BATCH_TASK_STATUS_UPDATE_PROJECT = /*$$(*/ "Project %s" /*)*/;
 
-  public static final String BATCH_TASK_STATUS_UPDATION_PROJECT_TASK_CATEGORY = /*$$(*/
+  public static final String BATCH_TASK_STATUS_UPDATE_PROJECT_TASK_CATEGORY = /*$$(*/
       "Project task category %s" /*)*/;
 
-  public static final String BATCH_TASK_STATUS_UPDATION_2 = /*$$(*/
+  public static final String BATCH_TASK_STATUS_UPDATE_2 = /*$$(*/
       "Tasks status update completed:" /*)*/;
 
-  public static final String BATCH_TASK_STATUS_UPDATION_DONE = /*$$(*/
+  public static final String BATCH_TASK_STATUS_UPDATE_DONE = /*$$(*/
       "* %s project task updated" /*)*/;
 }

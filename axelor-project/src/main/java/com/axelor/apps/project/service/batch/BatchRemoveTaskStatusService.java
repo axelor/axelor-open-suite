@@ -144,7 +144,7 @@ public class BatchRemoveTaskStatusService extends BatchStrategy {
         TraceBackService.trace(
             e,
             String.format(
-                I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATION_TASK), projectTask),
+                I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATE_TASK), projectTask),
             batch.getId());
       }
 
@@ -180,7 +180,7 @@ public class BatchRemoveTaskStatusService extends BatchStrategy {
         TraceBackService.trace(
             e,
             String.format(
-                I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATION_PROJECT), project),
+                I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATE_PROJECT), project),
             batch.getId());
       }
 
@@ -218,7 +218,7 @@ public class BatchRemoveTaskStatusService extends BatchStrategy {
         TraceBackService.trace(
             e,
             String.format(
-                I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATION_PROJECT_TASK_CATEGORY),
+                I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATE_PROJECT_TASK_CATEGORY),
                 taskCategory),
             batch.getId());
       }
@@ -325,10 +325,10 @@ public class BatchRemoveTaskStatusService extends BatchStrategy {
 
   @Override
   protected void stop() {
-    String comment = I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATION_2);
+    String comment = I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATE_2);
     comment +=
         String.format(
-            "\t" + I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATION_DONE),
+            "\t" + I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATE_DONE),
             batch.getDone());
     comment +=
         String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
