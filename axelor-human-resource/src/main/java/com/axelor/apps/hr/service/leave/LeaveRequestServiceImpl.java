@@ -109,10 +109,6 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     }
 
     LeaveReason leaveReason = leaveRequest.getLeaveReason();
-    int leaveReasonTypeSelect = leaveReason.getLeaveReasonTypeSelect();
-
-    int interval = getInterval(leaveReasonTypeSelect, endDate, todayDate);
-
     LeaveLine leaveLine =
         leaveLineRepository
             .all()
@@ -121,9 +117,13 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
             .bind("employee", leaveRequest.getEmployee())
             .fetchOne();
 
-    if (leaveLine == null) {
+    if (leaveReason == null || leaveLine == null) {
       return BigDecimal.ZERO;
     }
+
+    int leaveReasonTypeSelect = leaveReason.getLeaveReasonTypeSelect();
+
+    int interval = getInterval(leaveReasonTypeSelect, endDate, todayDate);
 
     return leaveLine
         .getQuantity()
