@@ -402,4 +402,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String TIMESHEET_LINE_INVALID_DATES = /*$$(*/
       "%s date is invalid. It must be included in the timesheet's period." /*)*/;
+
+  public static final String NO_TIMESHEET_LINE_GENERATED = /*$$(*/
+      "No timesheet lines can be generated because no duration is entered. Please fill the duration field if you want to generate timesheet lines." /*)*/;
 }

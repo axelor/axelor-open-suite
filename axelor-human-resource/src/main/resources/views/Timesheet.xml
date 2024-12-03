@@ -181,6 +181,20 @@
       <button name="generateLinesBtn" title="Generate lines"
         onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generate-lines-panel-hidden-true,save,action-timesheet-attrs-refresh-editor"/>
     </panel>
+
+    <panel name="openProjectTaskPanel" title="Open tasks"
+      showIf="employee &amp;&amp; fromDate &amp;&amp; toDate &amp;&amp; statusSelect == 1"
+      collapseIf="true">
+      <panel-related field="$projectTaskList"
+        title="Project task with planned time on the duration"
+        target="com.axelor.apps.project.db.ProjectTask" type="one-to-many" canRemove="false"
+        canNew="false" canView="false" grid-view="project-task-timesheet-grid"
+        form-view="resume-project-task-form" height="200%" colSpan="12"/>
+      <spacer colSpan="6"/>
+      <field name="$generationDate" type="date" title="Date" colSpan="3"/>
+      <button name="generateLinesBtn" title="Generate timesheet lines"
+        onClick="action-timesheet-group-generate-lines-using-project-task" colSpan="3"/>
+    </panel>
     <panel name="linesPanel">
       <panel-dashlet name="timesheetLineEditorPanel" colSpan="12"
         action="action-timesheet-show-timesheet-line-editor" showIf="showEditor" height="365"/>
@@ -288,6 +302,7 @@
     <action name="action-timesheet-attrs-panels"/>
     <action name="action-timesheet-attrs-refresh-editor"/>
     <action name="action-timesheet-method-timesheet-compute-period-total"/>
+    <action name="action-timesheet-method-init-project-tasks"/>
   </action-group>
 
   <action-attrs name="action-hr-timesheet-attrs-domain-product">
@@ -342,6 +357,7 @@
     <action name="action-timesheet-attrs-from-date-on-new"/>
     <action name="action-timesheet-attrs-panels"/>
     <action name="action-validate-check-user-employee"/>
+    <action name="action-timesheet-method-init-project-tasks"/>
   </action-group>
 
   <action-group name="action-timesheet-group-to-date-onchange">
@@ -351,6 +367,12 @@
     <action name="action-timesheet-prefill-lines"
       if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet')?.getCreateLinesForLeaves() || __config__.app.getApp('timesheet')?.getCreateLinesForHolidays())"/>
     <action name="action-timesheet-attrs-refresh-editor" if="showEditor"/>
+  </action-group>
+
+  <action-group name="action-timesheet-group-generate-lines-using-project-task">
+    <action name="action-timesheet-method-generate-timesheet-lines"/>
+    <action name="save"/>
+    <action name="action-timesheet-group-onload"/>
   </action-group>
 
   <action-method name="action-timesheet-prefill-lines">
@@ -598,6 +620,16 @@
   <action-method name="action-timesheet-method-remove-after-to-date-timesheetlines">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
       method="removeAfterToDateTimesheetLines"/>
+  </action-method>
+
+  <action-method name="action-timesheet-method-init-project-tasks">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="initOpenProjectTasks"/>
+  </action-method>
+
+  <action-method name="action-timesheet-method-generate-timesheet-lines">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="generateTimesheetLine"/>
   </action-method>
 
   <action-view name="action-timesheet-view-total-hours-per-day" title="">
