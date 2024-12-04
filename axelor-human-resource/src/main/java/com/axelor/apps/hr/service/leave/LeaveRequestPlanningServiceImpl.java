@@ -16,9 +16,14 @@ public class LeaveRequestPlanningServiceImpl implements LeaveRequestPlanningServ
   @Override
   public WeeklyPlanning getWeeklyPlanning(LeaveRequest leave, Employee employee)
       throws AxelorException {
+    Company comp = leave.getCompany();
+    return getWeeklyPlanning(employee, comp);
+  }
+
+  @Override
+  public WeeklyPlanning getWeeklyPlanning(Employee employee, Company comp) throws AxelorException {
     WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
     if (weeklyPlanning == null) {
-      Company comp = leave.getCompany();
       if (comp != null) {
         HRConfig conf = comp.getHrConfig();
         if (conf != null) {
@@ -37,11 +42,15 @@ public class LeaveRequestPlanningServiceImpl implements LeaveRequestPlanningServ
 
   @Override
   public EventsPlanning getPublicHolidayEventsPlanning(LeaveRequest leave, Employee employee) {
+    Company company = leave.getCompany();
+    return getPublicHolidayEventsPlanning(employee, company);
+  }
+
+  @Override
+  public EventsPlanning getPublicHolidayEventsPlanning(Employee employee, Company company) {
     EventsPlanning publicHolidayPlanning = employee.getPublicHolidayEventsPlanning();
-    if (publicHolidayPlanning == null
-        && leave.getCompany() != null
-        && leave.getCompany().getHrConfig() != null) {
-      publicHolidayPlanning = leave.getCompany().getHrConfig().getPublicHolidayEventsPlanning();
+    if (publicHolidayPlanning == null && company != null && company.getHrConfig() != null) {
+      publicHolidayPlanning = company.getHrConfig().getPublicHolidayEventsPlanning();
     }
     return publicHolidayPlanning;
   }
