@@ -117,6 +117,10 @@
         <field name="targetVersion" if-module="axelor-business-support"
           if="__config__.app.isApp('business-support')" domain=":project member of self.projectSet"
           colSpan="4" form-view="project-version-form" grid-view="project-version-grid"/>
+        <field name="activeSprint" if-module="axelor-business-support"
+          if="__config__.app.isApp('business-support')" showIf="targetVersion"
+          domain="self.targetVersion = :targetVersion" colSpan="4" form-view="sprint-form"
+          grid-view="sprint-grid"/>
         <field name="assignment" showIf="typeSelect == 'ticket'"
           if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
           colSpan="4"/>
@@ -130,6 +134,22 @@
       </insert>
     </extend>
   </form>
+
+  <kanban columnBy="activeSprint" model="com.axelor.apps.project.db.ProjectTask"
+    sequenceBy="sequence" title="Tasks per sprint" name="project-task-sprint-kanban">
+    <field name="name"/>
+    <field name="assignedTo.name"/>
+    <field name="totalPlannedHrs"/>
+    <template>
+      <![CDATA[
+			<>
+				<strong>{name}</strong><br /><br />
+				<strong>User:</strong> {assignedTo.name}<br />
+				<strong>Total planned time:</strong> {totalPlannedHrs}
+			</>
+		]]>
+    </template>
+  </kanban>
 
   <action-view name="action-dashlet-version-view-show-task" title="Ticket associated"
     model="com.axelor.apps.project.db.ProjectTask">

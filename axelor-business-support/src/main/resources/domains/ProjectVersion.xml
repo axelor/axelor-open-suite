@@ -14,6 +14,8 @@
     <date name="testingServerDate" title="Testing server date"/>
     <date name="productionServerDate" title="Production server date"/>
     <string name="content" title="Content" large="true"/>
+    <one-to-many name="sprintList" ref="com.axelor.apps.businesssupport.db.Sprint"
+      title="Sprints" mappedBy="targetVersion"/>
 
     <extra-code>
 	   		<![CDATA[

@@ -15,6 +15,9 @@
       ref="com.axelor.apps.businesssupport.db.ProjectVersion"/>
     <boolean name="isOrderProposed" title="Order Proposed"/>
 
+    <many-to-one name="activeSprint" title="Active sprint"
+      ref="com.axelor.apps.businesssupport.db.Sprint"/>
+
     <extra-code>
 			<![CDATA[
 				// ASSIGNMENT
@@ -27,6 +30,7 @@
       <field name="isOrderAccepted"/>
       <field name="assignment"/>
       <field name="targetVersion"/>
+      <field name="activeSprint"/>
     </track>
   </entity>
 

@@ -31,6 +31,8 @@ import com.axelor.apps.businesssupport.service.ProjectCreateTaskServiceSupportIm
 import com.axelor.apps.businesssupport.service.ProjectDashboardBusinessSupportServiceImpl;
 import com.axelor.apps.businesssupport.service.ProjectTaskBusinessSupportServiceImpl;
 import com.axelor.apps.businesssupport.service.TaskTemplateBusinessSupportServiceImpl;
+import com.axelor.apps.businesssupport.service.sprint.SprintService;
+import com.axelor.apps.businesssupport.service.sprint.SprintServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
 import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
 import com.axelor.apps.project.service.ProjectCreateTaskServiceImpl;
@@ -52,5 +54,6 @@ public class BusinessSupportModule extends AxelorModule {
         .to(ProjectActivityDashboardServiceBusinessSupportImpl.class);
     bind(TaskTemplateBusinessProjectServiceImpl.class)
         .to(TaskTemplateBusinessSupportServiceImpl.class);
+    bind(SprintService.class).to(SprintServiceImpl.class);
   }
 }

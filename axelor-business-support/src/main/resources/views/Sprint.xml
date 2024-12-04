@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="sprint-grid" title="Sprints" model="com.axelor.apps.businesssupport.db.Sprint"
+    orderBy="sequence" canMove="true" editable="true" onNew="action-sprint-group-onnew">
+    <field name="name" required="true"/>
+    <field name="description"/>
+    <field name="targetVersion" required="true"/>
+    <field name="sequence" hidden="true"/>
+  </grid>
+
+  <form name="sprint-form" title="Sprint" model="com.axelor.apps.businesssupport.db.Sprint"
+    width="large" onNew="action-sprint-group-onnew">
+    <panel name="mainPanel">
+      <field name="name" required="true"/>
+      <field name="targetVersion" required="true"/>
+      <field name="description" colSpan="12"/>
+      <field name="projectTaskList" canSelect="true" canNew="false" canEdit="false"
+        domain="self.project=:project" showIf="id" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-group name="action-sprint-group-onnew">
+    <action name="action-sprint-record-init-version"/>
+  </action-group>
+
+  <action-record name="action-sprint-record-init-version"
+    model="com.axelor.apps.businesssupport.db.Sprint">
+    <field name="targetVersion"
+      expr="eval: __parent__?._model == 'com.axelor.apps.businesssupport.db.ProjectVersion' ? __parent__ : null"/>
+  </action-record>
+
+</object-views>
