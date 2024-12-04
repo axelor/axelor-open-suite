@@ -59,6 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -449,5 +450,47 @@ public class AccountingBatchController {
               accountingBatch.getYear().getName(),
               daybookMoveCount));
     }
+  }
+
+  public void setClosureAccountSet(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    List<Account> closureAccountSet =
+        Beans.get(BatchCloseAnnualAccounts.class)
+            .getClosureAccountSet(
+                accountingBatch, (boolean) request.getContext().get("closeAllAccounts"));
+    response.setValue("closureAccountSet", closureAccountSet);
+  }
+
+  public void setOpeningAccountSet(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    List<Account> openingAccountSet =
+        Beans.get(BatchCloseAnnualAccounts.class)
+            .getOpeningAccountSet(
+                accountingBatch, (boolean) request.getContext().get("openAllAccounts"));
+    response.setValue("openingAccountSet", openingAccountSet);
+  }
+
+  public void setCloseAllAccounts(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    Set<Account> closureAccountSet = accountingBatch.getClosureAccountSet();
+    if (ObjectUtils.isEmpty(closureAccountSet)) {
+      response.setValue("$closeAllAccounts", false);
+      return;
+    }
+    List<Account> newClosureAccountSet =
+        Beans.get(BatchCloseAnnualAccounts.class).getClosureAccountSet(accountingBatch, true);
+    response.setValue("$closeAllAccounts", closureAccountSet.size() == newClosureAccountSet.size());
+  }
+
+  public void setOpenAllAccounts(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    Set<Account> openingAccountSet = accountingBatch.getOpeningAccountSet();
+    if (ObjectUtils.isEmpty(openingAccountSet)) {
+      response.setValue("$openAllAccounts", false);
+      return;
+    }
+    List<Account> newOpeningAccountSet =
+        Beans.get(BatchCloseAnnualAccounts.class).getOpeningAccountSet(accountingBatch, true);
+    response.setValue("$openAllAccounts", openingAccountSet.size() == newOpeningAccountSet.size());
   }
 }

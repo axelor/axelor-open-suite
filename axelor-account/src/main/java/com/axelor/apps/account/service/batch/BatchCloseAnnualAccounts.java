@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -580,5 +581,48 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       }
     }
     return 0;
+  }
+
+  public List<Account> getClosureAccountSet(
+      AccountingBatch accountingBatch, boolean closeAllAccounts) {
+    return getAccountSet(accountingBatch, closeAllAccounts, true);
+  }
+
+  public List<Account> getOpeningAccountSet(
+      AccountingBatch accountingBatch, boolean openAllAccounts) {
+    return getAccountSet(accountingBatch, openAllAccounts, false);
+  }
+
+  public List<Account> getAccountSet(
+      AccountingBatch accountingBatch, boolean includeAllAccounts, boolean isClosure) {
+    if (!includeAllAccounts) {
+      return new ArrayList<>();
+    }
+    List<String> accountTypeList =
+        new ArrayList<>(
+            List.of(
+                AccountTypeRepository.TYPE_EQUITY,
+                AccountTypeRepository.TYPE_PROVISION,
+                AccountTypeRepository.TYPE_DEBT,
+                AccountTypeRepository.TYPE_IMMOBILISATION,
+                AccountTypeRepository.TYPE_CURRENT_ASSET,
+                AccountTypeRepository.TYPE_RECEIVABLE,
+                AccountTypeRepository.TYPE_PAYABLE,
+                AccountTypeRepository.TYPE_TAX,
+                AccountTypeRepository.TYPE_CASH,
+                AccountTypeRepository.TYPE_ASSET));
+
+    if (isClosure) {
+      accountTypeList.add(AccountTypeRepository.TYPE_CHARGE);
+      accountTypeList.add(AccountTypeRepository.TYPE_INCOME);
+    }
+
+    return accountRepository
+        .all()
+        .filter(
+            "self.company = :company AND self.accountType.technicalTypeSelect IN (:accountTypes)")
+        .bind("company", accountingBatch.getCompany())
+        .bind("accountTypes", accountTypeList)
+        .fetch();
   }
 }
