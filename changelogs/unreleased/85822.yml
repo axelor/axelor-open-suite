@@ -1,0 +1,3 @@
+---
+title: "Quality alert: fixed NPE when opening kanban view."
+module: axelor-quality
