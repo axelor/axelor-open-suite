@@ -27,10 +27,15 @@ import java.util.Comparator;
 
 public class PaymentConditionToolService {
 
-  public static LocalDate getMaxDueDate(PaymentCondition paymentCondition, LocalDate defaultDate) {
+  public static LocalDate getMaxDueDate(
+      PaymentCondition paymentCondition, LocalDate defaultDate, LocalDate dueDate) {
     if (paymentCondition == null
         || ObjectUtils.isEmpty(paymentCondition.getPaymentConditionLineList())) {
       return defaultDate;
+    }
+
+    if (paymentCondition.getIsFree() && dueDate != null) {
+      return dueDate;
     }
 
     return getDueDate(

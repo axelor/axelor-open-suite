@@ -1,0 +1,3 @@
+---
+title: "Invoice: fix due date when we save with free payment condition"
+module: axelor-account
