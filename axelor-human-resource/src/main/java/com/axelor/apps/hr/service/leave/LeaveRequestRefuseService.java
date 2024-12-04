@@ -5,5 +5,5 @@ import com.axelor.apps.hr.db.LeaveRequest;
 
 public interface LeaveRequestRefuseService {
 
-  void refuse(LeaveRequest leaveRequest) throws AxelorException;
+  void refuse(LeaveRequest leaveRequest, String groundForRefusal) throws AxelorException;
 }

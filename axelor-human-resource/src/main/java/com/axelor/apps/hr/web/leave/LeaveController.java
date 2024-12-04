@@ -322,7 +322,7 @@ public class LeaveController {
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
-      Beans.get(LeaveRequestRefuseService.class).refuse(leaveRequest);
+      Beans.get(LeaveRequestRefuseService.class).refuse(leaveRequest, null);
 
       Message message = Beans.get(LeaveRequestMailService.class).sendRefusalEmail(leaveRequest);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {

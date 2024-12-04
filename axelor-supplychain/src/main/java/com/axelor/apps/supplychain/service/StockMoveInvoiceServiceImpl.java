@@ -50,9 +50,9 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGenerato
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -209,6 +209,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       invoice.setInternalReference(
           fillInternalReferenceInvoiceFromOutStockMove(stockMove, saleOrderSet));
 
+      if (saleOrderSet.size() == 1) {
+        invoice.setSaleOrder(saleOrder);
+      }
+
       invoice.setDeliveryAddress(stockMove.getToAddress());
       invoice.setDeliveryAddressStr(stockMove.getToAddressStr());
       invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
@@ -216,21 +220,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoice.setIncoterm(saleOrder.getIncoterm());
       }
 
-      // fill default advance payment invoice
-      if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-        invoice.setAdvancePaymentInvoiceSet(
-            Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice));
-      }
-
       invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
-      if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())) {
-        invoice.setNote(saleOrder.getInvoiceComments());
-      }
-
-      if (ObjectUtils.isEmpty(invoice.getProformaComments())
-          && !Strings.isNullOrEmpty(saleOrder.getProformaComments())) {
-        invoice.setProformaComments(saleOrder.getProformaComments());
-      }
+      invoice.setNote(fillInvoiceNoteFromOutStockMove(saleOrderSet));
+      invoice.setProformaComments(fillInvoiceProformaCommentsFromOutStockMove(saleOrderSet));
 
       Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
       if (stockMoveSet == null) {
@@ -238,6 +230,12 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoice.setStockMoveSet(stockMoveSet);
       }
       stockMoveSet.add(stockMove);
+
+      // fill default advance payment invoice
+      if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+        invoice.setAdvancePaymentInvoiceSet(
+            Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice));
+      }
 
       invoiceRepository.save(invoice);
     }
@@ -741,5 +739,21 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             purchaseOrder ->
                 stockMove.getStockMoveSeq() + ":" + purchaseOrder.getPurchaseOrderSeq())
         .collect(Collectors.joining("|"));
+  }
+
+  @Override
+  public String fillInvoiceNoteFromOutStockMove(Set<SaleOrder> saleOrderSet) {
+    return saleOrderSet.stream()
+        .map(SaleOrder::getInvoiceComments)
+        .filter(StringUtils::notEmpty)
+        .collect(Collectors.joining("<br>"));
+  }
+
+  @Override
+  public String fillInvoiceProformaCommentsFromOutStockMove(Set<SaleOrder> saleOrderSet) {
+    return saleOrderSet.stream()
+        .map(SaleOrder::getProformaComments)
+        .filter(StringUtils::notEmpty)
+        .collect(Collectors.joining("<br>"));
   }
 }

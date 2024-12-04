@@ -23,18 +23,13 @@
       <attribute name="width" value="large"/>
     </extend>
 
-    <extend target="//field[@name='project']">
-      <attribute name="onChange"
-        value="budget-action-purchase-order-record-project-onchange"/>
-    </extend>
-
     <extend target="//panel[@name='timetablePanel']">
       <insert position="after">
         <panel name="budgetDistributionPanel" title="Budget distribution"
           if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
           showIf="statusSelect &lt;= 4">
           <field name="project" colSpan="3"
-            onChange="budget-action-purchase-order-record-project-onchange"
+            onChange="action-business-project-purchase-order-method-update-lines"
             hideIf="orderTypeSelect == 4"/>
           <field name="companyDepartment" colSpan="3"
             onChange="action-budget-purchase-order-attrs-company-dept-onchange"/>
@@ -169,11 +164,6 @@
     <attribute name="value" for="globalBudget" expr="eval:null"
       if="__config__.app.isApp('budget')"/>
   </action-attrs>
-
-  <action-record name="budget-action-purchase-order-record-project-onchange"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="company" expr="eval: project ? project.company : null"/>
-  </action-record>
 
   <action-method
     name="action-method-budget-purchase-order-compute-budget-distribution">

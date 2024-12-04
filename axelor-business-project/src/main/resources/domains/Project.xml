@@ -67,7 +67,6 @@
       ref="com.axelor.apps.businessproject.db.ProjectFolder" title="Project Folders"/>
 
     <!-- planification fields -->
-    <decimal name="numberHoursADay" title="Number of hours in a day" min="0"/>
     <integer name="spentTimeCostComputationMethod" default="1"
       title="Spent time actual cost computation method"
       selection="business.project.spent.time.computation.method.select"

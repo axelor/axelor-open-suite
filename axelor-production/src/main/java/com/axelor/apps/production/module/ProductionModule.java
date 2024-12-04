@@ -108,6 +108,7 @@ import com.axelor.apps.production.service.SopService;
 import com.axelor.apps.production.service.SopServiceImpl;
 import com.axelor.apps.production.service.StockMoveLineProductionServiceImpl;
 import com.axelor.apps.production.service.StockMoveMergingServiceProductionImpl;
+import com.axelor.apps.production.service.StockMoveProductionService;
 import com.axelor.apps.production.service.StockMoveServiceProductionImpl;
 import com.axelor.apps.production.service.StockRulesSupplychainServiceProductionImpl;
 import com.axelor.apps.production.service.SubSaleOrderLineComputeServiceProductionImpl;
@@ -282,6 +283,7 @@ public class ProductionModule extends AxelorModule {
     bind(OperationOrderRestService.class).to(OperationOrderRestServiceImpl.class);
     bind(ManufOrderWorkflowService.class).to(ManufOrderWorkflowServiceImpl.class);
     bind(StockMoveServiceSupplychainImpl.class).to(StockMoveServiceProductionImpl.class);
+    bind(StockMoveProductionService.class).to(StockMoveServiceProductionImpl.class);
     bind(MachineService.class).to(MachineServiceImpl.class);
     bind(OperationOrderWorkflowService.class).to(OperationOrderWorkflowServiceImpl.class);
     bind(OperationOrderPlanningService.class).to(OperationOrderPlanningServiceImpl.class);

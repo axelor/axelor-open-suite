@@ -431,7 +431,9 @@ public class PaymentServiceImpl implements PaymentService {
           } else {
             currencyRate =
                 currencyService.getCurrencyConversionRate(
-                    move.getCurrency(), company.getCurrency());
+                    move.getCurrency(),
+                    company.getCurrency(),
+                    appBaseService.getTodayDate(company));
           }
 
           BigDecimal moveLineAmount = amountDebit;
