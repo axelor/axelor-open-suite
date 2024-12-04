@@ -384,4 +384,7 @@ public final class SupplychainExceptionMessage {
   public static final String
       COULD_NOT_FIND_RECIPIENTS_FOR_MESSAGE_GENERATED_FROM_STOCK_RULES = /*$$(*/
           "Could not find recipients for message generated from stock rules: %s" /*)*/;
+
+  public static final String SALE_ORDER_EDIT_ERROR_TIMETABLE_INVOICED = /*$$(*/
+      "At least one timetable is invoiced, you cannot edit the order anymore." /*)*/;
 }
