@@ -394,5 +394,5 @@ public final class SupplychainExceptionMessage {
       "There is a configuration error, partner %s is its own parent." /*)*/;
 
   public static final String SALE_ORDER_EDIT_ERROR_TIMETABLE_INVOICED = /*$$(*/
-      "At least one timetable is invoiced, you can not edit the order anymore." /*)*/;
+      "At least one timetable is invoiced, you cannot edit the order anymore." /*)*/;
 }

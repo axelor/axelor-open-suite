@@ -59,7 +59,7 @@
 "Associated estimated delivery mrp line","Ligne de livraison estimée associée",,
 "At least one sale order line must be selected","Au moins une ligne de commande client doit être sélectionnée",,
 "At least one stock move is in litigation, do you really want to validate passed for payment ?","Au moins une réception fournisseur est en litige pour cette facture. Voulez-vous valider ce BAP ?",,
-"At least one timetable is invoiced, you can not edit the order anymore.","Un des échéanciers est facturé, vous ne pouvez plus modifier la commande.",,
+"At least one timetable is invoiced, you cannot edit the order anymore.","Un des échéanciers est facturé, vous ne pouvez plus modifier la commande.",,
 "Auto allocate during an availability request","Allouer automatiquement lors d'une demande de mise à disposition",,
 "Auto allocate stock on other stock moves","Allouer automatiquement le stock sur les autres mouvements",,
 "Auto allocate stock on receipt","Allouer automatiquement le stock lors d'une réception",,
