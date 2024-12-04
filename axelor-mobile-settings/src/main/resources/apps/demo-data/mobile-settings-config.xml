@@ -53,8 +53,7 @@
       <bind to="isDeliveryAddr" eval="true"/>
       <bind to="isDefaultAddr" eval="true"/>
     </bind>
-    <bind to="mainAddress" search="self.importId = :address"
-      if="address != null &amp;&amp; isContact == 'true'" update="true"/>
+    <bind to="mainAddress" search="self.importId = :address" if="address != null" update="true"/>
     <bind to="language" search="self.code = :languageCode"/>
     <bind column="companySet_importId" to="companySet"
       search="self.importId in :companySet_importId" eval="companySet_importId.split('\\|') as List"/>
