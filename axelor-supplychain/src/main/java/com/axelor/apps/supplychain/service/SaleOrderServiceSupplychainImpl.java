@@ -147,6 +147,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       return checkAvailabiltyRequest;
     }
 
+    List<Timetable> timetableList = saleOrder.getTimetableList();
+    if (CollectionUtils.isNotEmpty(timetableList)
+        && timetableList.stream().anyMatch(Timetable::getInvoiced)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_EDIT_ERROR_TIMETABLE_INVOICED));
+    }
+
     List<StockMove> allStockMoves =
         Beans.get(StockMoveRepository.class)
             .findAllBySaleOrderAndStatus(saleOrder, StockMoveRepository.STATUS_PLANNED)
