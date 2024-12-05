@@ -78,4 +78,13 @@ public final class ProjectExceptionMessage {
 
   public static final String TASK_STATUS_USED_ON_PROJECT_TASK_CATEGORY = /*$$(*/
       "This task status is used on project task category for the auto progress process. Do you want to update all unmodified values with this one ?" /*)*/;
+
+  public static final String PROJECT_TASK_NO_UNIT_FOUND = /*$$(*/
+      "Please set the unit for the task %s." /*)*/;
+
+  public static final String PROJECT_NO_UNIT_FOUND = /*$$(*/
+      "Please set the unit for the project %s." /*)*/;
+
+  public static final String PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING = /*$$(*/
+      "Please set the default number of hours per day in the project configuration." /*)*/;
 }

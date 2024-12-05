@@ -56,6 +56,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -91,6 +92,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   private PartnerPriceListService partnerPriceListService;
   private ProductCompanyService productCompanyService;
   private TimesheetLineRepository timesheetLineRepository;
+  protected ProjectTimeUnitService projectTimeUnitService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -106,7 +108,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
-      TimesheetLineRepository timesheetLineRepository) {
+      TimesheetLineRepository timesheetLineRepository,
+      ProjectTimeUnitService projectTimeUnitService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -121,6 +124,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.partnerPriceListService = partnerPriceListService;
     this.productCompanyService = productCompanyService;
     this.timesheetLineRepository = timesheetLineRepository;
+    this.projectTimeUnitService = projectTimeUnitService;
   }
 
   @Override
@@ -545,9 +549,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     BigDecimal plannedTime;
     BigDecimal spentTime = BigDecimal.ZERO;
 
-    Unit timeUnit =
-        Optional.ofNullable(projectTask.getTimeUnit())
-            .orElse(projectTask.getProject().getProjectTimeUnit());
+    Unit timeUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
 
     plannedTime =
         projectTask.getProjectPlanningTimeList().stream()
@@ -680,7 +682,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     Map<String, Object> data = new HashMap<>();
     data.put(
         "unit",
-        Optional.ofNullable(projectTask.getTimeUnit())
+        Optional.ofNullable(projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask))
             .map(unit -> unit.getName() + "(s)")
             .orElse(""));
     data.put("progress", projectTask.getPercentageOfProgress() + " %");

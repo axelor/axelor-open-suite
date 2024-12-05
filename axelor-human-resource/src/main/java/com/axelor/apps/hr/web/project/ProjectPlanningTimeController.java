@@ -119,7 +119,8 @@ public class ProjectPlanningTimeController {
             .computePlannedTimeValues(projectPlanningTime));
   }
 
-  public void computeDisplayTimeUnitDomain(ActionRequest request, ActionResponse response) {
+  public void computeDisplayTimeUnitDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     ProjectPlanningTime projectPlanningTime =
         request.getContext().asType(ProjectPlanningTime.class);
 
