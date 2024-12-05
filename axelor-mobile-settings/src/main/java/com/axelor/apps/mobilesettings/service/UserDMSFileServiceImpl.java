@@ -19,19 +19,10 @@
 package com.axelor.apps.mobilesettings.service;
 
 import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.dms.db.DMSFile;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class UserDMSFileServiceImpl implements UserDMSFileService {
-
-  protected UserRepository userRepository;
-
-  @Inject
-  public UserDMSFileServiceImpl(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -41,7 +32,6 @@ public class UserDMSFileServiceImpl implements UserDMSFileService {
     } else {
       user.addFavouriteFileSetItem(dmsFile);
     }
-    userRepository.save(user);
   }
 
   @Override
@@ -52,6 +42,5 @@ public class UserDMSFileServiceImpl implements UserDMSFileService {
     } else {
       user.removeFavouriteFileSetItem(dmsFile);
     }
-    userRepository.save(user);
   }
 }
