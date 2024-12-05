@@ -21,7 +21,8 @@
     </extend>
     <extend target="//field[@name='isIspmRequired']">
       <insert position="after">
-        <button name="selectPricingLineBtn" onClick=""/>
+        <button name="selectPricingLineBtn" onClick="action-suppplychain-view-pricing-list"
+          title="Select pricing line"/>
       </insert>
     </extend>
   </form>
@@ -367,18 +368,37 @@
   </action-method>
 
   <!-- Shipment process -->
-  <action-view name="action-suppplychain-view-pricing-list-wizard"
+  <action-view name="action-suppplychain-view-pricing-list"
     title="Freight carrier pricings" model="com.axelor.utils.db.Wizard">
-    <view type="grid" name="freight-carrier-pricings-wizard-grid"/>
+    <view type="form" name="freight-carrier-pricings-wizard-form"/>
     <view-param name="popup" value="reload"/>
-    <view-param name="popup-save" value="false"/>
     <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="false"/>
   </action-view>
 
-  <grid name="freight-carrier-pricings-wizard-grid" title="Freight carrier pricings"
-    model="com.axelor.apps.stock.db.FreightCarrierPricing">
-    <field name="freightCarrierMode"/>
-    <field name="pricing"/>
-  </grid>
+  <form title="Freight carrier pricings" name="freight-carrier-pricings-wizard-form"
+    model="com.axelor.utils.db.Wizard"
+    onNew="action-supplychain-sale-order-attrs-set-freight-carrier-pricings-set">
+    <panel name="main">
+      <field name="$freightCarrierPricingsSet" title="Freight carrier pricings list"
+        type="many-to-many" target="com.axelor.apps.stock.db.FreightCarrierPricing"
+        form-view="freight-carrier-pricings-form" grid-view="freight-carrier-pricings-grid"
+        colSpan="12" canNew="false" canEdit="false" canRemove="false" canSelect="false" widget=""/>
+      <button name="selectBtn" title="Select"
+        onClick="action-supplychain-sale-order-method-select-freight-carrier-pricings" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-attrs
+    name="action-supplychain-sale-order-attrs-set-freight-carrier-pricings-set">
+    <attribute for="$freightCarrierPricingsSet" name="value"
+      expr="eval: __repo__(FreightCarrierPricing).all().fetch().toSet()"/>
+  </action-attrs>
+
+  <action-method
+    name="action-supplychain-sale-order-method-select-freight-carrier-pricings">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="selectFreightCarrierPricings"/>
+  </action-method>
 
 </object-views>

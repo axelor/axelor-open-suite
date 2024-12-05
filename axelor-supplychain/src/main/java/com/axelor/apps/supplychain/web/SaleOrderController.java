@@ -36,8 +36,10 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.stock.db.FreightCarrierPricing;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.FreightCarrierPricingRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
@@ -52,6 +54,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.exception.MessageExceptionMessage;
@@ -813,6 +816,25 @@ public class SaleOrderController {
                 ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
                 : Beans.get(CurrencyScaleService.class).getScale(saleOrder));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void selectFreightCarrierPricings(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    try {
+      FreightCarrierPricingRepository freightCarrierPricingRepository =
+          Beans.get(FreightCarrierPricingRepository.class);
+      List<FreightCarrierPricing> freightCarrierPricingList =
+          ((List<Map<String, Object>>) context.get("freightCarrierPricingsSet"))
+              .stream()
+                  .map(o -> Mapper.toBean(FreightCarrierPricing.class, o))
+                  .filter(FreightCarrierPricing::isSelected)
+                  .map(it -> freightCarrierPricingRepository.find(it.getId()))
+                  .collect(Collectors.toList());
+
+      // TODO set invoice.freightCarrierMode
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
