@@ -129,6 +129,7 @@
         if="__config__.app.isApp('timesheet')">
         <panel-include view="incl-log-times-panel-form"/>
       </panel>
+      <panel-include view="incl-project-roadmap-panel-form"/>
 
       <panel title="Configurations" name="configurationsPanel">
         <panel-include view="incl-project-config-panel-form"/>
@@ -369,6 +370,14 @@
         form-view="project-check-list-item-form" grid-view="project-check-list-item-grid"
         widget="tree-grid" x-tree-field="projectCheckListItemList"
         x-tree-field-title="Add a new check list item" editable="true" x-expand-all="true"/>
+    </panel>
+  </form>
+
+  <form name="incl-project-roadmap-panel-form" title="Project"
+    model="com.axelor.apps.project.db.Project">
+    <panel title="Roadmap" name="roadmapPanel">
+      <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
+        form-view="project-version-form" grid-view="project-version-grid"/>
     </panel>
   </form>
 

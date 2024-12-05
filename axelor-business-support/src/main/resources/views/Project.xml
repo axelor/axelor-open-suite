@@ -9,9 +9,6 @@
       <insert position="after">
         <panel-include view="incl-project-announcement-panel-form"
           if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-        <panel-include view="incl-project-roadmap-panel-form"
-          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-
       </insert>
     </extend>
   </form>
@@ -23,9 +20,6 @@
       <insert position="after">
         <panel-include view="incl-project-announcement-panel-form"
           if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-        <panel-include view="incl-project-roadmap-panel-form"
-          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-
       </insert>
     </extend>
   </form>
@@ -42,16 +36,4 @@
     </panel>
   </form>
 
-  <form name="incl-project-roadmap-panel-form" title="Project"
-    model="com.axelor.apps.project.db.Project">
-    <panel title="Roadmap" name="roadmapPanel">
-      <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
-        form-view="project-version-form">
-        <field name="title"/>
-        <field name="projectStatus"/>
-        <field name="testingServerDate"/>
-        <field name="productionServerDate"/>
-      </panel-related>
-    </panel>
-  </form>
 </object-views>

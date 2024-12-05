@@ -4,14 +4,14 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="project-version-grid" title="Project.version"
-    model="com.axelor.apps.businesssupport.db.ProjectVersion">
+    model="com.axelor.apps.project.db.ProjectVersion">
     <field name="title"/>
     <field name="statusSelect"/>
     <field name="testingServerDate"/>
   </grid>
 
   <form name="project-version-form" title="Project.version"
-    model="com.axelor.apps.businesssupport.db.ProjectVersion" width="large"
+    model="com.axelor.apps.project.db.ProjectVersion" width="large"
     onNew="action-business-support-attrs-project-default">
     <panel name="mainPanel">
       <field name="title"/>
@@ -32,5 +32,13 @@
     <attribute name="domain" for="project"
       expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet &quot;"/>
   </action-attrs>
+
+  <action-view name="action-dashlet-version-view-show-task" title="Tasks associated"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="project-task-grid"/>
+    <view type="form" name="project-task-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.targetVersion.id = :id</domain>
+  </action-view>
 
 </object-views>

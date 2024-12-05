@@ -287,6 +287,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     projectTask.setPriority(parentTask.getPriority());
     projectTask.setTagSet(parentTask.getTagSet());
     projectTask.setAssignedTo(parentTask.getAssignedTo());
+    projectTask.setTargetVersion(projectTask.getParentTask().getTargetVersion());
   }
 
   @Override
