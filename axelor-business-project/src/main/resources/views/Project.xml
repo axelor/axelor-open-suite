@@ -263,6 +263,14 @@
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
+      <panel title="Sale order" name="saleOrderPanel" hidden="true">
+        <panel-related readonly="true" field="saleOrderLineList" widget="tree-grid"
+          canNew="false" canEdit="false" canRemove="false" title="Details Lines (Tree)"
+          orderBy="sequence" form-view="sale-order-line-form"
+          x-tree-field-title="Add a new sale order line" summary-view="sale-order-line-summary-form"
+          x-expand-all="subSaleOrderLineList,saleOrderLineDetailsList"
+          grid-view="sale-order-line-editable-grid" x-tree-field="subSaleOrderLineList" colSpan="12"/>
+      </panel>
       <panel-include view="incl-wiki-panel-form"/>
 
       <panel-include view="incl-checklist-panel-form"/>
@@ -298,7 +306,7 @@
         <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
           canCollapse="true" collapseIf="false">
           <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
-          <field name="projectTimeUnit"/>
+          <field name="projectTimeUnit" onSelect="action-project-attrs-set-time-unit-domain"/>
           <field name="numberHoursADay"/>
           <field name="spentTimeCostComputationMethod"/>
           <field name="allowToGetPricesFromFrameworkContract"/>
@@ -600,10 +608,9 @@
     <action name="action-project-group-on-new-project"/>
     <action name="action-attrs-project-set-project-type"
       if="__config__.app.isApp('business-project')"/>
-    <action name="action-business-project-project-attrs-defaults"/>
-    <action name="action-project-attrs-set-time-unit-domain"/>
     <action name="action-business-project-method-get-analytic-distribution-template"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+    <action name="action-project-attrs-sale-order-panel-display"/>
   </action-group>
 
   <action-group name="action-business-project-project-group-on-load">
@@ -612,8 +619,8 @@
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-method-count-to-invoice"
       if="__config__.app.isApp('business-project')"/>
-    <action name="action-project-attrs-set-time-unit-domain"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+    <action name="action-project-attrs-sale-order-panel-display"/>
   </action-group>
 
   <action-method name="action-project-method-generate-quotation">
@@ -645,16 +652,6 @@
     <attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
     <attribute name="value" for="assignedTo" expr="eval: __user__"/>
     <attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
-  </action-attrs>
-
-  <action-attrs name="action-business-project-project-attrs-defaults"
-    model="com.axelor.apps.project.db.Project">
-    <attribute name="value" for="fromDate" expr="eval: __config__.date"/>
-    <attribute name="value" for="assignedTo" expr="eval: __user__"/>
-    <attribute name="value" for="numberHoursADay"
-      expr="eval: __config__.app.getApp('business-project')?.defaultHoursADay"/>
-    <attribute name="value" for="projectTimeUnit"
-      expr="eval: __config__.app.getApp('business-project')?.daysUnit"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-invoicing-sequence">
@@ -1283,11 +1280,6 @@
       method="showInvoicingProjects"/>
   </action-method>
 
-  <action-attrs name="action-project-attrs-set-time-unit-domain">
-    <attribute name="domain" for="projectTimeUnit"
-      expr="eval: &quot; self.id = ${__config__.app.getApp('business-project')?.daysUnit?.id} OR self.id = ${__config__.app.getApp('business-project')?.hoursUnit?.id}&quot;"/>
-  </action-attrs>
-
   <action-method name="action-project-method-compute-project-totals">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="computeProjectTotals"/>
@@ -1324,6 +1316,11 @@
   <action-attrs name="action-project-attrs-set-default-supplier-contract-domain">
     <attribute for="defaultFrameworkSupplierContract" name="domain"
       expr="eval: &quot;self.id IN (${frameworkSupplierContractSet?.collect{it.id}.join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-sale-order-panel-display">
+    <attribute for="saleOrderPanel" name="hidden"
+      expr="eval: __config__.app.getApp('sale')?.getListDisplayTypeSelect() != __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI || saleOrderLineList == null || saleOrderLineList?.size() == 0"/>
   </action-attrs>
 
   <!-- Analytic -->

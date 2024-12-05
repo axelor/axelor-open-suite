@@ -21,6 +21,7 @@ package com.axelor.apps.businesssupport.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.projecttask.TaskTemplateBusinessProjectServiceImpl;
 import com.axelor.apps.businesssupport.db.repo.ProjectAnnouncementBusinessSupportRepository;
 import com.axelor.apps.businesssupport.db.repo.ProjectAnnouncementRepository;
 import com.axelor.apps.businesssupport.db.repo.ProjectTaskBusinessSupportRepository;
@@ -29,6 +30,7 @@ import com.axelor.apps.businesssupport.service.ProjectActivityDashboardServiceBu
 import com.axelor.apps.businesssupport.service.ProjectCreateTaskServiceSupportImpl;
 import com.axelor.apps.businesssupport.service.ProjectDashboardBusinessSupportServiceImpl;
 import com.axelor.apps.businesssupport.service.ProjectTaskBusinessSupportServiceImpl;
+import com.axelor.apps.businesssupport.service.TaskTemplateBusinessSupportServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
 import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
 import com.axelor.apps.project.service.ProjectCreateTaskServiceImpl;
@@ -48,5 +50,7 @@ public class BusinessSupportModule extends AxelorModule {
         .to(ProjectActivityDashboardServiceBusinessSupportImpl.class);
     bind(ProjectActivityDashboardBusinessSupportService.class)
         .to(ProjectActivityDashboardServiceBusinessSupportImpl.class);
+    bind(TaskTemplateBusinessProjectServiceImpl.class)
+        .to(TaskTemplateBusinessSupportServiceImpl.class);
   }
 }

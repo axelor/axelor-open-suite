@@ -167,9 +167,10 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
       Employee employee, LeaveLine leaveLine, LeaveReason leaveReason, String comment)
       throws AxelorException {
     LeaveReason recoveryLeaveReason = leaveReason.getRecoveryLeaveReason();
-    recoveryLeaveReason = leaveReasonRepository.find(recoveryLeaveReason.getId());
-    BigDecimal qty = leaveLine.getQuantity();
+
     if (recoveryLeaveReason != null) {
+      recoveryLeaveReason = leaveReasonRepository.find(recoveryLeaveReason.getId());
+      BigDecimal qty = leaveLine.getQuantity();
       LeaveLine nextLeaveLine =
           leaveLineService.addLeaveReasonOrCreateIt(employee, recoveryLeaveReason);
       if (qty.signum() != 0) {

@@ -149,13 +149,14 @@ public class SaleOrderLineProductProductionServiceImpl
 
   protected void generateLines(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    if (saleOrderLine.getIsToProduce() && !saleOrderLineBomService.isUpdated(saleOrderLine)) {
-      saleOrderLineBomService
-          .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
-          .stream()
-          .filter(Objects::nonNull)
-          .forEach(saleOrderLine::addSubSaleOrderLineListItem);
-
+    if (saleOrderLine.getIsToProduce()) {
+      if (!saleOrderLineBomService.isUpdated(saleOrderLine)) {
+        saleOrderLineBomService
+            .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+            .stream()
+            .filter(Objects::nonNull)
+            .forEach(saleOrderLine::addSubSaleOrderLineListItem);
+      }
       saleOrderLineDetailsBomService
           .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
           .stream()

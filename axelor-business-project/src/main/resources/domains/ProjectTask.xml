@@ -34,7 +34,6 @@
       ref="com.axelor.apps.contract.db.Contract"/>
 
     <!-- planification fields -->
-    <many-to-one name="timeUnit" ref="com.axelor.apps.base.db.Unit" title="Time unit"/>
     <decimal name="soldTime" title="Sold time"/>
     <decimal name="updatedTime" title="Updated time"/>
     <decimal name="plannedTime" title="Planned time"/>
