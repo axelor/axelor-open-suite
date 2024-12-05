@@ -198,7 +198,9 @@
     <field name="paymentMode"
       expr="eval: __repo__(PaymentMode).find(_invoice?.paymentMode.id)"
       if="_invoice?.paymentMode != null"/>
-    <field name="companyBankDetails" expr="eval: _invoice?.companyBankDetails"/>
+    <field name="companyBankDetails"
+      expr="eval: __repo__(BankDetails).find(_invoice?.companyBankDetails.id)"
+      if="_invoice?.companyBankDetails != null"/>
     <field name="invoice" expr="eval: _invoice"/>
     <field name="typeSelect" expr="2"/>
   </action-record>
