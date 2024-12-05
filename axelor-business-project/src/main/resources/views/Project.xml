@@ -279,6 +279,7 @@
         if="__config__.app.isApp('timesheet')">
         <panel-include view="incl-log-times-panel-form"/>
       </panel>
+      <panel-include view="incl-project-roadmap-panel-form"/>
 
       <panel title="Invoicing" name="invoicingPanel">
         <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>

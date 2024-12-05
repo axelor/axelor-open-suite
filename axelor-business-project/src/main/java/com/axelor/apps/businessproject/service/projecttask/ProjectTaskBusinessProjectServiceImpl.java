@@ -365,6 +365,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     nextProjectTask.setPriceDiscounted(projectTask.getPriceDiscounted());
     nextProjectTask.setInvoicingType(projectTask.getInvoicingType());
     nextProjectTask.setCustomerReferral(projectTask.getCustomerReferral());
+    nextProjectTask.setTargetVersion(projectTask.getTargetVersion());
   }
 
   @Override
