@@ -1,7 +1,9 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
@@ -24,6 +26,7 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected final BomLineCreationService bomLineCreationService;
+  protected final SaleOrderBomRemoveLineService saleOrderBomRemoveLineService;
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -31,10 +34,12 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
   public SolDetailsBomUpdateServiceImpl(
       BillOfMaterialRepository billOfMaterialRepository,
       BillOfMaterialLineRepository billOfMaterialLineRepository,
-      BomLineCreationService bomLineCreationService) {
+      BomLineCreationService bomLineCreationService,
+      SaleOrderBomRemoveLineService saleOrderBomRemoveLineService) {
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
     this.bomLineCreationService = bomLineCreationService;
+    this.saleOrderBomRemoveLineService = saleOrderBomRemoveLineService;
   }
 
   @Override
@@ -49,63 +54,56 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
         saleOrderLine.getSaleOrderLineDetailsList().stream()
             .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
             .collect(Collectors.toList());
+
     if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
       for (SaleOrderLineDetails saleOrderLineDetails : saleOrderLineDetailsList) {
-        if (!this.isSolDetailsSyncWithBomLine(saleOrderLineDetails)) {
-          var bomLine = saleOrderLineDetails.getBillOfMaterialLine();
-          // Updating the existing one
-          if (bomLine != null) {
-            logger.debug("Updating bomLine {} with sol details {}", bomLine, saleOrderLineDetails);
-            bomLine.setQty(saleOrderLineDetails.getQty());
-            bomLine.setProduct(saleOrderLineDetails.getProduct());
-            bomLine.setUnit(saleOrderLineDetails.getUnit());
-            bom.addBillOfMaterialLineListItem(bomLine);
-          }
-          // Creating a new one
-          else {
-            logger.debug(
-                "Creating bomLine from sol details {} and adding it to bom {}",
-                saleOrderLineDetails,
-                bom);
-            bomLine = bomLineCreationService.createBomLineFromSolDetails(saleOrderLineDetails);
-            logger.debug("Created bomLine {}", bomLine);
-            bom.addBillOfMaterialLineListItem(bomLine);
-            saleOrderLineDetails.setBillOfMaterialLine(bomLine);
-            billOfMaterialLineRepository.save(bomLine);
-          }
-        }
+        updateBomLineSolDetails(saleOrderLineDetails, bom);
       }
     }
 
-    var bomLines =
-        bom.getBillOfMaterialLineList().stream()
-            .filter(
-                bomLine ->
-                    bomLine
-                        .getProduct()
-                        .getProductSubTypeSelect()
-                        .equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT))
+    List<BillOfMaterialLine> saleOrderLineBomLineList =
+        saleOrderLine.getSaleOrderLineDetailsList().stream()
+            .map(SaleOrderLineDetails::getBillOfMaterialLine)
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
-    // Case where a line has been removed
-    logger.debug("Removing bom lines");
-    for (BillOfMaterialLine billOfMaterialLine : bomLines) {
-      var isInSubList =
-          saleOrderLine.getSaleOrderLineDetailsList().stream()
-              .map(SaleOrderLineDetails::getBillOfMaterialLine)
-              .filter(Objects::nonNull)
-              .anyMatch(bomLine -> bomLine.equals(billOfMaterialLine));
+    saleOrderBomRemoveLineService.removeBomLines(
+        saleOrderLineBomLineList, bom, ProductRepository.PRODUCT_SUB_TYPE_COMPONENT);
+    logger.debug("Updated saleOrderLine {} with bom {}", saleOrderLine, bom);
+  }
 
-      logger.debug(
-          "Checking existence of billOfMaterialLine {} in {}",
-          billOfMaterialLine,
-          saleOrderLine.getSaleOrderLineDetailsList());
-      if (!isInSubList) {
-        logger.debug("BomLine does not exist, removing it");
-        bom.removeBillOfMaterialLineListItem(billOfMaterialLine);
+  protected void updateBomLineSolDetails(
+      SaleOrderLineDetails saleOrderLineDetails, BillOfMaterial bom) {
+    if (!this.isSolDetailsSyncWithBomLine(saleOrderLineDetails)) {
+      var bomLine = saleOrderLineDetails.getBillOfMaterialLine();
+      // Updating the existing one
+      if (bomLine != null) {
+        updateBomLine(saleOrderLineDetails, bomLine, bom);
+      }
+      // Creating a new one
+      else {
+        createBomLine(saleOrderLineDetails, bom);
       }
     }
-    billOfMaterialRepository.save(bom);
-    logger.debug("Updated saleOrderLine {} with bom {}", saleOrderLine, bom);
+  }
+
+  protected void updateBomLine(
+      SaleOrderLineDetails saleOrderLineDetails, BillOfMaterialLine bomLine, BillOfMaterial bom) {
+    logger.debug("Updating bomLine {} with sol details {}", bomLine, saleOrderLineDetails);
+    bomLine.setQty(saleOrderLineDetails.getQty());
+    bomLine.setProduct(saleOrderLineDetails.getProduct());
+    bomLine.setUnit(saleOrderLineDetails.getUnit());
+    bom.addBillOfMaterialLineListItem(bomLine);
+  }
+
+  protected void createBomLine(SaleOrderLineDetails saleOrderLineDetails, BillOfMaterial bom) {
+    BillOfMaterialLine bomLine;
+    logger.debug(
+        "Creating bomLine from sol details {} and adding it to bom {}", saleOrderLineDetails, bom);
+    bomLine = bomLineCreationService.createBomLineFromSolDetails(saleOrderLineDetails);
+    logger.debug("Created bomLine {}", bomLine);
+    bom.addBillOfMaterialLineListItem(bomLine);
+    saleOrderLineDetails.setBillOfMaterialLine(bomLine);
+    billOfMaterialLineRepository.save(bomLine);
   }
 
   @Override
@@ -118,17 +116,16 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
     var nbBomLinesAccountable =
         saleOrderLine.getBillOfMaterial().getBillOfMaterialLineList().stream()
             .map(BillOfMaterialLine::getProduct)
-            .filter(
-                product ->
-                    product
-                        .getProductSubTypeSelect()
-                        .equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT))
+            .map(Product::getProductSubTypeSelect)
+            .filter(type -> type.equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT))
             .count();
 
     var nbSaleOrderLineDetails =
         Optional.ofNullable(saleOrderLine.getSaleOrderLineDetailsList()).orElse(List.of()).stream()
-            .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
+            .map(SaleOrderLineDetails::getTypeSelect)
+            .filter(type -> type == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
             .count();
+
     return nbBomLinesAccountable == nbSaleOrderLineDetails
         && Optional.ofNullable(saleOrderLine.getSaleOrderLineDetailsList())
             .orElse(List.of())

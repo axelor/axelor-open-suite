@@ -9,6 +9,8 @@ import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SolBomCustomizationServiceImpl implements SolBomCustomizationService {
@@ -45,7 +47,11 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
     saleOrderLine.setBillOfMaterial(personalizedBOM);
 
     if (saleOrderLine.getSubSaleOrderLineList() != null) {
-      for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
+      List<SaleOrderLine> subSaleOrderLineList =
+          saleOrderLine.getSubSaleOrderLineList().stream()
+              .filter(line -> line.getProduct().getProductSubTypeSelect() != null)
+              .collect(Collectors.toList());
+      for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
         if (subSaleOrderLine
             .getProduct()
             .getProductSubTypeSelect()

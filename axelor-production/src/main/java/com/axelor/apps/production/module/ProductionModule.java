@@ -85,6 +85,8 @@ import com.axelor.apps.production.service.ProductionProductStockLocationServiceI
 import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
+import com.axelor.apps.production.service.SaleOrderBomRemoveLineService;
+import com.axelor.apps.production.service.SaleOrderBomRemoveLineServiceImpl;
 import com.axelor.apps.production.service.SaleOrderComputeServiceProductionImpl;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionService;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionServiceImpl;
@@ -370,5 +372,6 @@ public class ProductionModule extends AxelorModule {
     bind(SolBomCustomizationService.class).to(SolBomCustomizationServiceImpl.class);
     bind(SolBomUpdateService.class).to(SolBomUpdateServiceImpl.class);
     bind(SolDetailsBomUpdateService.class).to(SolDetailsBomUpdateServiceImpl.class);
+    bind(SaleOrderBomRemoveLineService.class).to(SaleOrderBomRemoveLineServiceImpl.class);
   }
 }
