@@ -93,6 +93,11 @@
       ref="com.axelor.apps.project.db.ProjectCheckListItem" title="Check list"
       mappedBy="projectTask"/>
 
+    <many-to-one name="targetVersion" title="Target version"
+      ref="com.axelor.apps.project.db.ProjectVersion"/>
+    <many-to-one name="activeSprint" title="Active sprint"
+      ref="com.axelor.apps.project.db.Sprint"/>
+
     <extra-code>
 
       // TYPE SELECT
@@ -111,6 +116,8 @@
       <field name="projectTaskCategory"/>
       <field name="progress"/>
       <field name="assignedTo"/>
+      <field name="targetVersion"/>
+      <field name="activeSprint"/>
     </track>
 
   </entity>

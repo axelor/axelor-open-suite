@@ -89,7 +89,6 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
     // Module 'business support' fields
     nextProjectTask.setAssignment(ProjectTaskRepository.ASSIGNMENT_PROVIDER);
     nextProjectTask.setIsPrivate(projectTask.getIsPrivate());
-    nextProjectTask.setTargetVersion(projectTask.getTargetVersion());
   }
 
   @Override
@@ -100,11 +99,5 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
     task.setInternalDescription(template.getInternalDescription());
 
     return task;
-  }
-
-  @Override
-  public void fillSubtask(ProjectTask projectTask) {
-    super.fillSubtask(projectTask);
-    projectTask.setTargetVersion(projectTask.getParentTask().getTargetVersion());
   }
 }

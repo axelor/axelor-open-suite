@@ -126,6 +126,9 @@
     <one-to-many name="projectCheckListItemList"
       ref="com.axelor.apps.project.db.ProjectCheckListItem" title="Check list" mappedBy="project"/>
 
+    <many-to-many name="roadmapSet" ref="com.axelor.apps.project.db.ProjectVersion"
+      title="Project.version" mappedBy="projectSet"/>
+
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>
 
