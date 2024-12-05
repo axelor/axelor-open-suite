@@ -311,7 +311,12 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
     if (CollectionUtils.isEmpty(invoiceList)) {
       start = contract.getCurrentContractVersion().getActivationDateTime().toLocalDate();
     } else {
-      start = invoiceList.get(invoiceList.size() - 2).getInvoiceDate();
+      int invoiceListSize = invoiceList.size();
+      if (invoiceListSize > 1) {
+        start = invoiceList.get(invoiceList.size() - 2).getInvoiceDate();
+      } else {
+        start = invoiceList.get(0).getInvoiceDate();
+      }
     }
     return start;
   }
