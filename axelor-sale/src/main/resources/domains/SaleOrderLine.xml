@@ -59,6 +59,9 @@
     <date name="desiredDeliveryDate" title="Desired delivery date"/>
     <date name="estimatedDeliveryDate" title="Estimated delivery date"/>
     <decimal name="deliveredQty" title="Delivered quantity" precision="20" scale="10"/>
+    <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address"
+      title="Delivery address"/>
+    <string name="deliveryAddressStr" title="Delivery address" large="true" multiline="true"/>
 
     <!-- Versioning -->
     <integer name="versionNumber" title="Version Number" readonly="true" default="1"/>

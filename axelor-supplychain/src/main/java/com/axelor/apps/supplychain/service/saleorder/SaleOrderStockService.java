@@ -41,7 +41,11 @@ public interface SaleOrderStockService {
   public List<Long> createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
   public StockMove createStockMove(
-      SaleOrder saleOrder, Company company, LocalDate estimatedDeliveryDate) throws AxelorException;
+      SaleOrder saleOrder,
+      Company company,
+      String deliveryAddressStr,
+      LocalDate estimatedDeliveryDate)
+      throws AxelorException;
 
   public StockMoveLine createStockMoveLine(
       StockMove stockMove,
