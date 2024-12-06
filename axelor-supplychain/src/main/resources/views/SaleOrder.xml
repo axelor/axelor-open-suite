@@ -380,7 +380,7 @@
     model="com.axelor.utils.db.Wizard"
     onNew="action-supplychain-sale-order-attrs-set-freight-carrier-pricings-set">
     <panel name="main">
-      <field name="$freightCarrierPricingsSet" title="Freight carrier pricings list"
+      <field name="$freightCarrierPricingsSet" title="Freight carrier pricings"
         type="many-to-many" target="com.axelor.apps.stock.db.FreightCarrierPricing"
         form-view="freight-carrier-pricings-form" grid-view="freight-carrier-pricings-grid"
         colSpan="12" canNew="false" canEdit="false" canRemove="false" canSelect="false" widget=""/>
