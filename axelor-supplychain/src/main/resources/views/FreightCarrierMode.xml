@@ -7,14 +7,20 @@
     model="com.axelor.apps.stock.db.FreightCarrierMode" x-selector="none">
     <field name="name"/>
     <field name="carrierPartner"/>
+      <field name="pricing"/>
   </grid>
 
   <form name="freight-carrier-pricings-form"
-    model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight carrier pricing">
+    model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight carrier pricing" onLoad="action-freight-carrier-pricing-set-freight-carrier-mode-readonly">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="carrierPartner" form-view="partner-form" grid-view="partner-grid"/>
+      <field name="pricing" form-view="pricing-form" grid-view="pricing-grid"/>
     </panel>
   </form>
+
+  <action-attrs name="action-freight-carrier-pricing-set-freight-carrier-mode-readonly">
+    <attribute for="freightCarrierMode" name="readonly" expr="eval: freightCarrierMode"/>
+  </action-attrs>
 
 </object-views>
