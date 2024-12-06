@@ -9,8 +9,9 @@
       <insert position="before">
         <panel name="LinkPanel" title="Link" showIf="isContact != true &amp;&amp; isCustomer"
           colSpan="12">
-          <field name="tradingName" requiredIf="isContact != true &amp;&amp; isCustomer"
-            colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+          <field name="tradingNameSet" requiredIf="isContact != true &amp;&amp; isCustomer"
+            colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+            widget="TagSelect"/>
         </panel>
       </insert>
     </extend>

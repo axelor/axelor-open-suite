@@ -12,8 +12,6 @@
     <field name="equipmentFamily"/>
     <field name="updatableQuantities"/>
     <field name="numberOfElementsToGenerate"/>
-    <field name="partner.tradingName.name" title="Partner trading name"
-      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
     <button icon="fa-plus" name="newBtn"
       onClick="action-equipment-model-view-new-equipment-model"/>
     <button icon="fa-trash" name="deleteBtn"
