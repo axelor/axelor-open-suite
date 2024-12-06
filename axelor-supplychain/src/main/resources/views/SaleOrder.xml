@@ -22,7 +22,8 @@
     <extend target="//field[@name='isIspmRequired']">
       <insert position="after">
         <button name="selectPricingLineBtn"
-          onClick="save,action-suppplychain-view-pricing-list" title="Select pricing line"/>
+          onClick="save,action-suppplychain-view-pricing-list" title="Select pricing line"
+          colSpan="6" showIf="!$readonly()"/>
       </insert>
     </extend>
   </form>
@@ -380,10 +381,10 @@
     model="com.axelor.utils.db.Wizard"
     onNew="action-supplychain-sale-order-attrs-set-freight-carrier-pricings-set">
     <panel name="main">
-      <field name="$freightCarrierPricingsSet" title="Freight carrier pricings"
-        type="many-to-many" target="com.axelor.apps.stock.db.FreightCarrierPricing"
+      <field name="$freightCarrierPricingsSet" type="many-to-many" showTitle="false"
+        target="com.axelor.apps.stock.db.FreightCarrierPricing"
         form-view="freight-carrier-pricings-form" grid-view="freight-carrier-pricings-grid"
-        colSpan="12" canNew="false" canEdit="false" canRemove="false" canSelect="false" widget=""/>
+        colSpan="12" canNew="false" canEdit="false" canRemove="false" canSelect="false"/>
       <button name="selectBtn" title="Select"
         onClick="action-supplychain-sale-order-method-select-freight-carrier-pricings" colSpan="12"/>
     </panel>
