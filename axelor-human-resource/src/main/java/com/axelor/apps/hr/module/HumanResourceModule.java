@@ -214,6 +214,8 @@ import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServ
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.project.TaskTemplateHrServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetAttrsService;
+import com.axelor.apps.hr.service.timesheet.TimesheetAttrsServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseService;
 import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameService;
@@ -417,5 +419,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveRequestCheckService.class).to(LeaveRequestCheckServiceImpl.class);
     bind(ExtraHoursDomainService.class).to(ExtraHoursDomainServiceImpl.class);
     bind(TaskTemplateServiceImpl.class).to(TaskTemplateHrServiceImpl.class);
+    bind(TimesheetAttrsService.class).to(TimesheetAttrsServiceImpl.class);
   }
 }

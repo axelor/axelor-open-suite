@@ -263,6 +263,14 @@
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
+      <panel title="Sale order" name="saleOrderPanel" hidden="true">
+        <panel-related readonly="true" field="saleOrderLineList" widget="tree-grid"
+          canNew="false" canEdit="false" canRemove="false" title="Details Lines (Tree)"
+          orderBy="sequence" form-view="sale-order-line-form"
+          x-tree-field-title="Add a new sale order line" summary-view="sale-order-line-summary-form"
+          x-expand-all="subSaleOrderLineList,saleOrderLineDetailsList"
+          grid-view="sale-order-line-editable-grid" x-tree-field="subSaleOrderLineList" colSpan="12"/>
+      </panel>
       <panel-include view="incl-wiki-panel-form"/>
 
       <panel-include view="incl-checklist-panel-form"/>
@@ -602,6 +610,7 @@
       if="__config__.app.isApp('business-project')"/>
     <action name="action-business-project-method-get-analytic-distribution-template"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+    <action name="action-project-attrs-sale-order-panel-display"/>
   </action-group>
 
   <action-group name="action-business-project-project-group-on-load">
@@ -611,6 +620,7 @@
     <action name="action-project-method-count-to-invoice"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+    <action name="action-project-attrs-sale-order-panel-display"/>
   </action-group>
 
   <action-method name="action-project-method-generate-quotation">
@@ -1306,6 +1316,11 @@
   <action-attrs name="action-project-attrs-set-default-supplier-contract-domain">
     <attribute for="defaultFrameworkSupplierContract" name="domain"
       expr="eval: &quot;self.id IN (${frameworkSupplierContractSet?.collect{it.id}.join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-sale-order-panel-display">
+    <attribute for="saleOrderPanel" name="hidden"
+      expr="eval: __config__.app.getApp('sale')?.getListDisplayTypeSelect() != __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI || saleOrderLineList == null || saleOrderLineList?.size() == 0"/>
   </action-attrs>
 
   <!-- Analytic -->

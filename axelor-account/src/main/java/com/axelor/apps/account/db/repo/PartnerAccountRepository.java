@@ -33,11 +33,11 @@ import org.apache.commons.collections.CollectionUtils;
 @Singleton
 public class PartnerAccountRepository extends PartnerBaseRepository {
 
-  private AppService appService;
+  protected AppService appService;
 
-  private AccountingSituationInitService accountingSituationInitService;
+  protected AccountingSituationInitService accountingSituationInitService;
 
-  private AccountingSituationCheckService accountingSituationCheckService;
+  protected AccountingSituationCheckService accountingSituationCheckService;
 
   @Inject
   public PartnerAccountRepository(

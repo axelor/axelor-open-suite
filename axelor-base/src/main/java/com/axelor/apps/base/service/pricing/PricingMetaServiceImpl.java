@@ -29,12 +29,13 @@ import com.axelor.meta.schema.views.Button;
 import com.axelor.meta.schema.views.FormView;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PricingMetaServiceImpl implements PricingMetaService {
 
   @Override
   public void managePricing(AbstractView view) {
-    String model = view.getModel();
+    String model = Optional.ofNullable(view).map(AbstractView::getModel).orElse(null);
     if (!(view instanceof FormView) || noPricingConfigured(model)) {
       return;
     }

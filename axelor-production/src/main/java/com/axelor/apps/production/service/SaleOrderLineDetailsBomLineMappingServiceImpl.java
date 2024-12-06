@@ -31,6 +31,7 @@ public class SaleOrderLineDetailsBomLineMappingServiceImpl
       saleOrderLineDetails.setTypeSelect(SaleOrderLineDetailsRepository.TYPE_COMPONENT);
       saleOrderLineDetails.setProduct(billOfMaterialLine.getProduct());
       saleOrderLineDetails.setQty(billOfMaterialLine.getQty());
+      saleOrderLineDetails.setBillOfMaterialLine(billOfMaterialLine);
       saleOrderLineDetailsService.productOnChange(saleOrderLineDetails, saleOrder);
 
       return saleOrderLineDetails;
