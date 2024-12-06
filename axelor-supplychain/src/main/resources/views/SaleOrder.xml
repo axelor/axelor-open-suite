@@ -21,8 +21,8 @@
     </extend>
     <extend target="//field[@name='isIspmRequired']">
       <insert position="after">
-        <button name="selectPricingLineBtn" onClick="action-suppplychain-view-pricing-list"
-          title="Select pricing line"/>
+        <button name="selectPricingLineBtn"
+          onClick="save,action-suppplychain-view-pricing-list" title="Select pricing line"/>
       </insert>
     </extend>
   </form>

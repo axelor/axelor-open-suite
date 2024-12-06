@@ -392,4 +392,10 @@ public final class SupplychainExceptionMessage {
 
   public static final String PARENT_PARTNER_CONFIGURATION_ERROR = /*$$(*/
       "There is a configuration error, partner %s is its own parent." /*)*/;
+
+  public static final String SALE_ORDER_NO_FREIGHT_CARRIER_PRICING_SELECTED = /*$$(*/
+      "No one freight carrier pricing line have been selected, please select one." /*)*/;
+
+  public static final String SALE_ORDER_MORE_THAN_ONE_FREIGHT_CARRIER_PRICING_SELECTED = /*$$(*/
+      "More than one freight carrier pricing line selected, please select only one line." /*)*/;
 }

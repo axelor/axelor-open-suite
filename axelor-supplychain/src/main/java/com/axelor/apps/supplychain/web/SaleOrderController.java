@@ -834,7 +834,12 @@ public class SaleOrderController {
                   .map(it -> freightCarrierPricingRepository.find(it.getId()))
                   .collect(Collectors.toList());
 
-      // TODO set invoice.freightCarrierMode
+      if (context.get("_id") != null) {
+        Beans.get(SaleOrderShipmentService.class)
+            .computeFreightCarrierPricing(
+                freightCarrierPricingList, Long.valueOf(context.get("_id").toString()));
+        response.setCanClose(true);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
