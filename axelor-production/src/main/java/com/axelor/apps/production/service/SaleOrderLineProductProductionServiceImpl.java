@@ -40,6 +40,9 @@ import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
+import com.axelor.studio.db.AppProduction;
+import com.axelor.studio.db.AppSale;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -149,7 +152,11 @@ public class SaleOrderLineProductProductionServiceImpl
 
   protected void generateLines(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    if (saleOrderLine.getIsToProduce()) {
+    AppProduction appProduction = appProductionService.getAppProduction();
+    AppSale appSale = appSaleService.getAppSale();
+    if (saleOrderLine.getIsToProduce()
+        && appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
+        && !appProduction.getIsBomLineGenerationInSODisabled()) {
       if (!saleOrderLineBomService.isUpdated(saleOrderLine)) {
         saleOrderLineBomService
             .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
