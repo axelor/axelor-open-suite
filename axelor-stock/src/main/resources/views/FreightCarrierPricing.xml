@@ -10,10 +10,29 @@
   </grid>
 
   <form name="freight-carrier-pricings-form"
-    model="com.axelor.apps.stock.db.FreightCarrierPricing" title="Freight carrier pricing">
+    model="com.axelor.apps.stock.db.FreightCarrierPricing" title="Freight carrier pricing"
+    onNew="action-freight-carrier-pricing-on-new"
+    onLoad="action-freight-carrier-pricing-set-freight-carrier-mode-readonly">
     <panel name="mainPanel">
       <field name="freightCarrierMode"/>
       <field name="pricing" form-view="pricing-form" grid-view="pricing-grid"/>
     </panel>
   </form>
+
+  <action-group name="action-freight-carrier-pricing-on-new">
+    <action name="action-freight-carrier-pricing-set-default-freight-carrier-mode"/>
+    <action name="action-freight-carrier-pricing-set-freight-carrier-mode-readonly"/>
+  </action-group>
+
+  <action-record
+    name="action-freight-carrier-pricing-set-default-freight-carrier-mode"
+    model="com.axelor.apps.stock.db.FreightCarrierPricing">
+    <field name="freightCarrierMode" expr="eval: __parent__"
+      if="__parent__ != null &amp;&amp; __parent__.get('_model') == 'com.axelor.apps.stock.db.FreightCarrierMode'"/>
+  </action-record>
+
+  <action-attrs name="action-freight-carrier-pricing-set-freight-carrier-mode-readonly">
+    <attribute for="freightCarrierMode" name="readonly" expr="eval: freightCarrierMode"/>
+  </action-attrs>
+
 </object-views>
