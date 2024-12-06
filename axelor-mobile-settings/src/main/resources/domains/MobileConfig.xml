@@ -32,6 +32,7 @@
 		public static final String APP_SEQUENCE_SALE = "app-sale";
 		public static final String APP_SEQUENCE_PROJECT = "app-project";
 		public static final String APP_SEQUENCE_DMS = "app-dms";
+		public static final String APP_SEQUENCE_PURCHASE = "app-purchase";
 
 	]]></extra-code>
 
