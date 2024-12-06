@@ -21,12 +21,15 @@ package com.axelor.apps.supplychain.service.saleorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
+import com.axelor.apps.stock.db.FreightCarrierPricing;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -43,17 +46,20 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
   protected SaleOrderMarginService saleOrderMarginService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
+  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public SaleOrderShipmentServiceImpl(
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
       SaleOrderLineRepository saleOrderLineRepo,
-      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService) {
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
+      SaleOrderRepository saleOrderRepository) {
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
+    this.saleOrderRepository = saleOrderRepository;
   }
 
   @Override
@@ -200,5 +206,38 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
       }
     }
     return exTaxTotal;
+  }
+
+  @Transactional
+  public void computeFreightCarrierPricing(
+      List<FreightCarrierPricing> freightCarrierPricingList, Long saleOrderId)
+      throws AxelorException {
+    SaleOrder saleOrder = saleOrderRepository.find(saleOrderId);
+    if (saleOrder != null) {
+      this.checkSelectedFreightCarrierPricing(freightCarrierPricingList);
+      saleOrder.setFreightCarrierMode(freightCarrierPricingList.get(0).getFreightCarrierMode());
+
+      saleOrderRepository.save(saleOrder);
+    }
+  }
+
+  protected void checkSelectedFreightCarrierPricing(
+      List<FreightCarrierPricing> freightCarrierPricingList) throws AxelorException {
+    if (freightCarrierPricingList.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(
+                  SupplychainExceptionMessage.SALE_ORDER_NO_FREIGHT_CARRIER_PRICING_SELECTED)));
+    }
+
+    if (freightCarrierPricingList.size() > 1) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(
+                  SupplychainExceptionMessage
+                      .SALE_ORDER_MORE_THAN_ONE_FREIGHT_CARRIER_PRICING_SELECTED)));
+    }
   }
 }
