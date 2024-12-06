@@ -918,7 +918,7 @@
           onClick="save,action-invoice-method-cancel,save"
           prompt="Are you sure you want to cancel the invoice ?"/>
         <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
-          onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
+          onClick="action-invoice-group-draft-button,action-account-invoice-onload-group"/>
         <button name="addPaymentBtn" title="Register payment" colSpan="12"
           onClick="action-invoice-group-add-invoice-payment" hidden="true"/>
         <button name="registerPaymentBtn" title="Register payment" colSpan="12"
@@ -1263,7 +1263,7 @@
           onClick="save,action-invoice-method-cancel,save"
           prompt="Are you sure you want to cancel the invoice ?"/>
         <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
-          onClick="save,action-invoice-record-draft,save"/>
+          onClick="action-invoice-group-draft-button"/>
         <button name="addPaymentBtn" title="Register payment"
           showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments"
           colSpan="12" onClick="action-invoice-group-add-invoice-payment"/>
@@ -1809,6 +1809,12 @@
       if="invoiceTermList &amp;&amp; !invoiceTermList.isEmpty()"/>
   </action-group>
 
+  <action-group name="action-invoice-group-draft-button">
+    <action name="save"/>
+    <action name="action-invoice-method-back-to-draft"/>
+    <action name="save"/>
+  </action-group>
+
   <action-attrs name="action-invoice-attrs-in-ati">
     <attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
     <attribute name="hidden" for="invoiceLineList.price" expr="inAti"/>
@@ -1930,11 +1936,6 @@
   <action-record name="action-invoice-record-reset-suboperationtype"
     model="com.axelor.apps.account.db.Invoice">
     <field name="operationSubTypeSelect" expr="eval: 1"/>
-  </action-record>
-
-  <action-record name="action-invoice-record-draft"
-    model="com.axelor.apps.account.db.Invoice">
-    <field name="statusSelect" expr="eval: __repo__(Invoice).STATUS_DRAFT"/>
   </action-record>
 
   <action-record name="action-record-load-dummy-field-confirm-merge-invoice"
@@ -2256,6 +2257,10 @@
 
   <action-method name="action-invoice-method-cancel">
     <call class="com.axelor.apps.account.web.InvoiceController" method="cancel"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-back-to-draft">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="backToDraft"/>
   </action-method>
 
   <action-method name="action-invoice-method-create-refund">
