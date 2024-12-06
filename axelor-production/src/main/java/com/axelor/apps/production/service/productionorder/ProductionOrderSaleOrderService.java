@@ -30,4 +30,6 @@ public interface ProductionOrderSaleOrderService {
 
   ProductionOrder generateManufOrders(ProductionOrder productionOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
+
+  ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException;
 }

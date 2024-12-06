@@ -48,7 +48,7 @@ public class ProductionOrderSaleOrderServiceBusinessImpl
   }
 
   @Override
-  protected ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
+  public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
 
     ProductionOrder productionOrder = super.createProductionOrder(saleOrder);
 
