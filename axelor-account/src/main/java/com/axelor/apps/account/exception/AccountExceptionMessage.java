@@ -1062,6 +1062,15 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_MISSING_CUT_OFF_DATE = /*$$(*/
       "Please enter a Cut off start and end date for the invoice lines that have an account Cut off management" /*)*/;
 
+  public static final String INVOICE_VALIDATE_WRONG_STATUS = /*$$(*/
+      "You can only validate a drafted invoice." /*)*/;
+  public static final String INVOICE_VENTILATE_WRONG_STATUS = /*$$(*/
+      "You can only ventilate a validated invoice" /*)*/;
+  public static final String INVOICE_CANCEL_WRONG_STATUS = /*$$(*/
+      "You can only cancel a drafted or validated invoice." /*)*/;
+  public static final String INVOICE_DRAFT_WRONG_STATUS = /*$$(*/
+      "You can only return to the draft status from a cancelled invoice." /*)*/;
+
   public static final String NO_CUT_OFF_TO_APPLY = /*$$(*/
       "No cut off period could be applied. Please check that you have entered lines and that the Cut off period is enabled on the account associated to each line." /*)*/;
 
