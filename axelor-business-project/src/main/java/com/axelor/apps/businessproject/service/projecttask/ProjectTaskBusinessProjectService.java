@@ -67,6 +67,12 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   @Transactional(rollbackOn = {Exception.class})
   ProjectTask setProjectTaskValues(ProjectTask projectTask) throws AxelorException;
 
+  /**
+   * Compute plannedTime and spentTime on project task
+   *
+   * @param projectTask
+   * @throws AxelorException
+   */
   void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException;
 
   Map<String, Object> processRequestToDisplayTimeReporting(Long id) throws AxelorException;
