@@ -17,8 +17,6 @@
     <field name="equipmentFamily"/>
     <field name="indicatorSelect" widget="single-select"/>
     <field name="contract" massUpdate="true" hidden="true"/>
-    <field name="partner.tradingName.name" title="Partner trading name"
-      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </grid>
 
   <grid model="com.axelor.apps.intervention.db.Equipment" title="Equipments"
@@ -34,8 +32,6 @@
     <field name="equipmentFamily"/>
     <field name="indicatorSelect" widget="single-select"/>
     <field name="contract" massUpdate="true" hidden="true"/>
-    <field name="partner.tradingName.name" title="Partner trading name"
-      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </grid>
 
   <form name="equipment-tree-partner-filter-form" width="large" title="Equipments tree"
@@ -266,7 +262,7 @@
 
   <search-filters name="equipment-filters"
     model="com.axelor.apps.intervention.db.Equipment" title="Equipment filters">
-    <field name="partner.tradingName.name" title="Partner trading name"
+    <field name="partner.tradingNameSet.name" title="Partner trading name"
       if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </search-filters>
 
