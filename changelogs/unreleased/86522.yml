@@ -1,3 +1,5 @@
 ---
-title: "Invoice: add controls before changing status."
+title: "Invoice: added server-side controls to prevent forbidden status changes, for example cancelling a ventilated invoice."
 module: axelor-account
+developer: |
+  `action-invoice-record-draft` was replaced by `action-invoice-method-back-to-draft`
