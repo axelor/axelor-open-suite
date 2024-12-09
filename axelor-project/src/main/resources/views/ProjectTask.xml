@@ -295,6 +295,9 @@
 
   <form name="incl-planning-panel-task-form" title="Planning"
     model="com.axelor.apps.project.db.ProjectTask" width="large">
+    <panel name="fullNamePanel" readonly="true">
+      <field name="fullName"/>
+    </panel>
     <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
       if-module="axelor-human-resource" showIf="project.isShowPlanning">
       <field name="budgetedTime" colSpan="4"/>
