@@ -98,6 +98,7 @@
 "Carriage paid threshold","Seuil pour franco de port",,
 "Carriage paid threshold is exceeded, all shipment cost lines are removed","Le franco de port est atteint ou dépassé, toutes les lignes de frais de port sont annulées",,
 "Carrier","Transporteur",,
+"Carrier pricings","Prix transporteur",,
 "Cart",,,
 "Cart lines",,,
 "Carts",,,
