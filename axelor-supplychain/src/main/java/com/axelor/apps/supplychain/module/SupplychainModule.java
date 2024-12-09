@@ -481,5 +481,6 @@ public class SupplychainModule extends AxelorModule {
     bind(CartLineProductServiceImpl.class).to(CartLineProductSupplychainServiceImpl.class);
     bind(CartResetServiceImpl.class).to(CartResetSupplychainServiceImpl.class);
     bind(InvoiceTaxService.class).to(InvoiceTaxServiceImpl.class);
+    // bind(PricingGroupSaleServiceImpl.class).to(PricingGroupSupplychainServiceImpl.class);
   }
 }
