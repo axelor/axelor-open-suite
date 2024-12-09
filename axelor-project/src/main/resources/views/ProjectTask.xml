@@ -181,6 +181,9 @@
         <panel-include view="incl-characteristics-panel-form"/>
         <field name="targetVersion" domain=":project member of self.projectSet" colSpan="4"
           form-view="project-version-form" grid-view="project-version-grid"/>
+        <field name="activeSprint" showIf="targetVersion"
+          domain="self.targetVersion = :targetVersion" colSpan="4" form-view="sprint-form"
+          grid-view="sprint-grid"/>
         <field name="description" colSpan="12" widget="html"/>
       </panel>
       <panel-include view="incl-customized-field-panel-form"/>
