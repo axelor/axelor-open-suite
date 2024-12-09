@@ -22,7 +22,6 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.base.service.ProductVariantServiceImpl;
-import com.axelor.apps.base.service.pricing.PricingGroupServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryLineManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
@@ -138,7 +137,6 @@ import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsServiceImpl
 import com.axelor.apps.stock.service.massstockmove.StoredProductService;
 import com.axelor.apps.stock.service.massstockmove.StoredProductServiceImpl;
 import com.axelor.apps.stock.service.observer.ProductPopulateStockObserver;
-import com.axelor.apps.stock.service.pricing.PricingGroupStockServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
@@ -220,6 +218,5 @@ public class StockModule extends AxelorModule {
     bind(MassStockMoveNeedToPickedProductService.class)
         .to(MassStockMoveNeedToPickedProductServiceImpl.class);
     bind(StoredProductService.class).to(StoredProductServiceImpl.class);
-    bind(PricingGroupServiceImpl.class).to(PricingGroupStockServiceImpl.class);
   }
 }

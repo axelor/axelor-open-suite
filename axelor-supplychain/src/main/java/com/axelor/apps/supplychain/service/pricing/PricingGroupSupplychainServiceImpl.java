@@ -1,18 +1,18 @@
-package com.axelor.apps.stock.service.pricing;
+package com.axelor.apps.supplychain.service.pricing;
 
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.pricing.PricingGenericService;
-import com.axelor.apps.base.service.pricing.PricingGroupServiceImpl;
+import com.axelor.apps.sale.service.PricingGroupSaleServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PricingGroupStockServiceImpl extends PricingGroupServiceImpl {
+public class PricingGroupSupplychainServiceImpl extends PricingGroupSaleServiceImpl {
 
   @Inject
-  public PricingGroupStockServiceImpl(PricingGenericService pricingGenericService) {
+  public PricingGroupSupplychainServiceImpl(PricingGenericService pricingGenericService) {
     super(pricingGenericService);
   }
 
