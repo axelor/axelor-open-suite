@@ -318,6 +318,9 @@
   <form title="Business project" model="com.axelor.apps.project.db.Project" width="large"
     name="business-project-financial-datas-form"
     onLoad="action-business-project-method-set-analytic-distribution-template-required">
+    <panel name="fullNamePanel" readonly="true">
+      <field name="fullName"/>
+    </panel>
     <panel-tabs>
       <panel title="Sales" name="salesPanel"
         if="__config__.app.isApp('business-project')
