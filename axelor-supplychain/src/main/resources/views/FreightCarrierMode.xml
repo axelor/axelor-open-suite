@@ -19,6 +19,45 @@
     </panel>
   </form>
 
+    <form id="supplychain-freight-carrier-mode-form" name="freight-carrier-mode-form"
+          title="Freight carrier mode" model="com.axelor.apps.stock.db.FreightCarrierMode"
+          extension="true">
+
+        <extend target="//panel[@name='mainPanel']">
+            <insert position="after">
+                <panel-related field="freightCarrierPricingSet"
+                               form-view="freight-carrier-pricings-grid" grid-view="freight-carrier-pricings-grid"
+                               colSpan="12" canSelect="true"/>
+            </insert>
+        </extend>
+    </form>
+
+    <form id="supplychain-freight-carrier-mode-shipment-mode-form"
+          name="freight-carrier-mode-shipment-mode-form" title="Freight carrier mode"
+          model="com.axelor.apps.stock.db.FreightCarrierMode" extension="true">
+
+        <extend target="//panel[@name='mainPanel']">
+            <insert position="after">
+                <panel name="carrierPricingPanel" title="Carrier pricings" colSpan="12">
+                    <field name="carrierPricingSet" colSpan="12" canSelect="true"/>
+                </panel>
+            </insert>
+        </extend>
+    </form>
+
+    <form id="supplychain-freight-carrier-mode-freight-carrier-form"
+          name="freight-carrier-mode-freight-carrier-form" title="Freight carrier mode"
+          model="com.axelor.apps.stock.db.FreightCarrierMode" extension="true">
+
+        <extend target="//panel[@name='mainPanel']">
+            <insert position="after">
+                <panel name="carrierPricingPanel" title="Carrier pricings" colSpan="12">
+                    <field name="carrierPricingSet" colSpan="12" canSelect="true"/>
+                </panel>
+            </insert>
+        </extend>
+    </form>
+
   <action-attrs name="action-freight-carrier-pricing-set-freight-carrier-mode-readonly">
     <attribute for="freightCarrierMode" name="readonly" expr="eval: freightCarrierMode"/>
   </action-attrs>

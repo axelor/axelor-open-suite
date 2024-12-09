@@ -3,14 +3,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
 
-  <form id="stock-pricing-form" name="pricing-form" title="Pricing"
+  <form id="supplychain-pricing-form" name="pricing-form" title="Pricing"
     model="com.axelor.apps.base.db.Pricing" extension="true">
     <extend target="/">
-      <attribute name="onNew" value="action-stock-group-pricing-onnew"/>
+      <attribute name="onNew" value="action-supplychain-group-pricing-onnew"/>
     </extend>
   </form>
 
-  <action-group name="action-stock-group-pricing-onnew">
+  <action-group name="action-supplychain-group-pricing-onnew">
     <action name="action-group-pricing-onnew"/>
     <action name="action-freight-carrier-pricing-attrs-init-type-select"/>
   </action-group>
