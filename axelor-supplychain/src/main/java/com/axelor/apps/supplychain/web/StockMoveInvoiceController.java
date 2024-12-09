@@ -94,23 +94,29 @@ public class StockMoveInvoiceController {
         Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
 
         if (ObjectUtils.notEmpty(saleOrderSet)) {
-          SaleOrderMergingResult result =
-              Beans.get(SaleOrderMergingService.class)
-                  .simulateMergeSaleOrders(new ArrayList<>(saleOrderSet));
-          if (result.isConfirmationNeeded()) {
-            ActionViewBuilder confirmView =
-                Beans.get(SaleOrderMergingViewService.class)
-                    .buildConfirmView(result, "saleOrderToMerge", new ArrayList<>(saleOrderSet));
-            confirmView.context("stockMoveId", stockMove.getId());
-            confirmView.context("qtyToInvoiceMap", qtyToInvoiceMap);
-            confirmView.context("fromStockMove", true);
+          if (saleOrderSet.size() > 1) {
+            SaleOrderMergingResult result =
+                Beans.get(SaleOrderMergingService.class)
+                    .simulateMergeSaleOrders(new ArrayList<>(saleOrderSet));
+            if (result.isConfirmationNeeded()) {
+              ActionViewBuilder confirmView =
+                  Beans.get(SaleOrderMergingViewService.class)
+                      .buildConfirmView(result, "saleOrderToMerge", new ArrayList<>(saleOrderSet));
+              confirmView.context("stockMoveId", stockMove.getId());
+              confirmView.context("qtyToInvoiceMap", qtyToInvoiceMap);
+              confirmView.context("fromStockMove", true);
 
-            response.setView(confirmView.map());
-            return;
+              response.setView(confirmView.map());
+              return;
+            }
+            invoice =
+                stockMoveInvoiceService.createInvoiceFromSaleOrder(
+                    stockMove, result.getSaleOrder(), qtyToInvoiceMap);
+          } else {
+            invoice =
+                stockMoveInvoiceService.createInvoiceFromSaleOrder(
+                    stockMove, saleOrderSet.iterator().next(), qtyToInvoiceMap);
           }
-          invoice =
-              stockMoveInvoiceService.createInvoiceFromSaleOrder(
-                  stockMove, result.getSaleOrder(), qtyToInvoiceMap);
         } else if (ObjectUtils.notEmpty(purchaseOrderSet)) {
           PurchaseOrderMergingResult result =
               Beans.get(PurchaseOrderMergingService.class)
@@ -697,22 +703,27 @@ public class StockMoveInvoiceController {
         Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
 
         if (ObjectUtils.notEmpty(saleOrderSet)) {
-          SaleOrderMergingResult result =
-              Beans.get(SaleOrderMergingService.class)
-                  .simulateMergeSaleOrders(new ArrayList<>(saleOrderSet));
-          if (result.isConfirmationNeeded()) {
-            ActionViewBuilder confirmView =
-                Beans.get(SaleOrderMergingViewService.class)
-                    .buildConfirmView(result, "saleOrderToMerge", new ArrayList<>(saleOrderSet));
-            confirmView.context("stockMoveId", stockMove.getId());
-            confirmView.context("fromStockMove", true);
+          SaleOrder saleOrder = null;
+          if (saleOrderSet.size() == 1) {
+            saleOrder = saleOrderSet.iterator().next();
+          } else {
+            SaleOrderMergingResult result =
+                Beans.get(SaleOrderMergingService.class)
+                    .simulateMergeSaleOrders(new ArrayList<>(saleOrderSet));
+            saleOrder = result.getSaleOrder();
 
-            response.setView(confirmView.map());
-            return;
+            if (result.isConfirmationNeeded()) {
+              ActionViewBuilder confirmView =
+                  Beans.get(SaleOrderMergingViewService.class)
+                      .buildConfirmView(result, "saleOrderToMerge", new ArrayList<>(saleOrderSet));
+              confirmView.context("stockMoveId", stockMove.getId());
+              confirmView.context("fromStockMove", true);
+
+              response.setView(confirmView.map());
+              return;
+            }
           }
-          invoice =
-              stockMoveInvoiceService.createInvoiceFromSaleOrder(
-                  stockMove, result.getSaleOrder(), null);
+          invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, saleOrder, null);
         } else if (ObjectUtils.notEmpty(purchaseOrderSet)) {
           PurchaseOrderMergingResult result =
               Beans.get(PurchaseOrderMergingService.class)

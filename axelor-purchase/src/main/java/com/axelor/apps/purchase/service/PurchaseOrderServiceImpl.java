@@ -295,7 +295,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                   purchaseOrder.getCurrency(),
                   purchaseOrder.getCompany().getCurrency(),
                   lastPurchasePrice,
-                  currencyService.getDateToConvert(null));
+                  appPurchaseService.getTodayDate(purchaseOrder.getCompany()));
 
           productCompanyService.set(
               product, "lastPurchasePrice", lastPurchasePrice, purchaseOrder.getCompany());

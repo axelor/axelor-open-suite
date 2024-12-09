@@ -53,6 +53,7 @@ public class SaleOrderLineProductProductionServiceImpl
   protected AppProductionService appProductionService;
   protected final SaleOrderLineBomService saleOrderLineBomService;
   protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
+  protected final SolBomUpdateService solBomUpdateService;
 
   @Inject
   public SaleOrderLineProductProductionServiceImpl(
@@ -72,7 +73,8 @@ public class SaleOrderLineProductProductionServiceImpl
       SaleOrderLineAnalyticService saleOrderLineAnalyticService,
       AppProductionService appProductionService,
       SaleOrderLineBomService saleOrderLineBomService,
-      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService) {
+      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
+      SolBomUpdateService solBomUpdateService) {
     super(
         appSaleService,
         appBaseService,
@@ -91,6 +93,7 @@ public class SaleOrderLineProductProductionServiceImpl
     this.appProductionService = appProductionService;
     this.saleOrderLineBomService = saleOrderLineBomService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
+    this.solBomUpdateService = solBomUpdateService;
   }
 
   @Override
@@ -150,7 +153,7 @@ public class SaleOrderLineProductProductionServiceImpl
   protected void generateLines(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     if (saleOrderLine.getIsToProduce()) {
-      if (!saleOrderLineBomService.isUpdated(saleOrderLine)) {
+      if (!solBomUpdateService.isUpdated(saleOrderLine)) {
         saleOrderLineBomService
             .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
             .stream()
