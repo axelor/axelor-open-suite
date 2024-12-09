@@ -1,3 +1,5 @@
 ---
-title: "Project/ProjectTask : fix planned and spent time when time unit are not the same"
+title: "Project/Project task: fixed planned and spent time when time units are not the same."
 module: axelor-business-project
+developer: |
+  Added dependency to `UnitConversionForProjectService` in `ProjectTaskBusinessProjectServiceImpl`.
