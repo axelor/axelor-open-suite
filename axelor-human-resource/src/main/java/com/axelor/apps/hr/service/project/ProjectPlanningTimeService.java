@@ -74,6 +74,6 @@ public interface ProjectPlanningTimeService {
   PlannedTimeValue getDefaultPlanningRestrictedTime(ProjectPlanningTime projectPlanningTime)
       throws AxelorException;
 
-  List<ProjectTask> getOpenProjectTaskIdList(
+  List<ProjectPlanningTime> getProjectPlanningTimeIdList(
       Employee employee, LocalDate fromDate, LocalDate toDate);
 }

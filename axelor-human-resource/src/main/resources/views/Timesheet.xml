@@ -182,16 +182,16 @@
         onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generate-lines-panel-hidden-true,save,action-timesheet-attrs-refresh-editor"/>
     </panel>
 
-    <panel name="openProjectTaskPanel" title="Open tasks"
+    <panel name="projectPlanningTimePanel" title="Project planning time on the duration"
       showIf="employee &amp;&amp; fromDate &amp;&amp; toDate &amp;&amp; statusSelect == 1"
       collapseIf="true">
-      <panel-related field="$projectTaskList"
-        title="Project task with planned time on the duration"
-        target="com.axelor.apps.project.db.ProjectTask" type="one-to-many" canRemove="false"
-        canNew="false" canView="false" grid-view="project-task-timesheet-grid"
+      <panel-related field="$projectPlanningTimeList" showTitle="false"
+        target="com.axelor.apps.project.db.ProjectPlanningTime" type="one-to-many" canRemove="false"
+        canNew="false" canView="false" grid-view="project-planning-timesheet-grid"
         form-view="resume-project-task-form" height="200%" colSpan="12"/>
       <spacer colSpan="6"/>
-      <field name="$generationDate" type="date" title="Date" colSpan="3"/>
+      <field name="$generationDate" type="date" title="Date" colSpan="3"
+        onChange="action-timesheet-validate-generation-date-onchange"/>
       <button name="generateLinesBtn" title="Generate timesheet lines"
         onClick="action-timesheet-group-generate-lines-using-project-task" colSpan="3"/>
     </panel>
@@ -302,7 +302,7 @@
     <action name="action-timesheet-attrs-panels"/>
     <action name="action-timesheet-attrs-refresh-editor"/>
     <action name="action-timesheet-method-timesheet-compute-period-total"/>
-    <action name="action-timesheet-method-init-project-tasks"/>
+    <action name="action-timesheet-method-init-project-planning"/>
   </action-group>
 
   <action-attrs name="action-hr-timesheet-attrs-domain-product">
@@ -357,7 +357,7 @@
     <action name="action-timesheet-attrs-from-date-on-new"/>
     <action name="action-timesheet-attrs-panels"/>
     <action name="action-validate-check-user-employee"/>
-    <action name="action-timesheet-method-init-project-tasks"/>
+    <action name="action-timesheet-method-init-project-planning"/>
   </action-group>
 
   <action-group name="action-timesheet-group-to-date-onchange">
@@ -622,14 +622,21 @@
       method="removeAfterToDateTimesheetLines"/>
   </action-method>
 
-  <action-method name="action-timesheet-method-init-project-tasks">
+  <action-method name="action-timesheet-method-init-project-planning">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
-      method="initOpenProjectTasks"/>
+      method="initProjectPlanningTime"/>
   </action-method>
 
   <action-method name="action-timesheet-method-generate-timesheet-lines">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
       method="generateTimesheetLine"/>
+  </action-method>
+
+
+  <action-method name="action-timesheet-validate-generation-date-onchange"
+    model="com.axelor.apps.hr.db.Timesheet">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="validateGenerationDate"/>
   </action-method>
 
   <action-view name="action-timesheet-view-total-hours-per-day" title="">

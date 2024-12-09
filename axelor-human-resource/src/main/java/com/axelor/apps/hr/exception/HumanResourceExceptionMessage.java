@@ -116,7 +116,7 @@ public final class HumanResourceExceptionMessage {
       "Please set a company up on leave request" /*)*/;
   public static final String LEAVE_REQUEST_NO_LINE_PRESENT = /*$$(*/
       "You need lines to fill your export." /*)*/;
-  public static final String LEAVE_REQUEST_INVALID_DATES = /*$$(*/ "Invalid dates" /*)*/;
+  public static final String INVALID_DATES = /*$$(*/ "Invalid dates" /*)*/;
   public static final String LEAVE_REQUEST_WRONG_DURATION = /*$$(*/ "Duration equals 0" /*)*/;
 
   public static final String EMPLOYEE_PLANNING = /*$$(*/
@@ -405,4 +405,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String NO_TIMESHEET_LINE_GENERATED = /*$$(*/
       "No timesheet lines can be generated because no duration is entered. Please fill the duration field if you want to generate timesheet lines." /*)*/;
+
+  public static final String NO_TIMESHEET_GENERATED_DATE = /*$$(*/
+      "Please fill a generation date." /*)*/;
 }

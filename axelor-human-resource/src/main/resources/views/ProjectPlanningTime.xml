@@ -25,6 +25,15 @@
       help="Delete"/>
   </grid>
 
+  <grid model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project Plannings"
+    editable="true" name="project-planning-timesheet-grid" edit-icon="false" groupBy="project">
+    <field name="project" readonly="true"/>
+    <field name="projectTask" readonly="true"/>
+    <field name="projectTask.ticketNumber" readonly="true"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="$duration" type="decimal" title="Duration"/>
+  </grid>
+
   <grid name="project-planning-db-grid" title="Project Plannings"
     model="com.axelor.apps.project.db.ProjectPlanningTime">
     <field name="project"/>

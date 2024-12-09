@@ -31,8 +31,9 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -50,7 +51,7 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
   protected UserHrService userHrService;
   protected TimesheetLineCheckService timesheetLineCheckService;
   protected AppBaseService appBaseService;
-  protected ProjectTaskRepository projectTaskRepository;
+  protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
 
   @Inject
   public TimesheetLineCreateServiceImpl(
@@ -59,13 +60,13 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
       UserHrService userHrService,
       TimesheetLineCheckService timesheetLineCheckService,
       AppBaseService appBaseService,
-      ProjectTaskRepository projectTaskRepository) {
+      ProjectPlanningTimeRepository projectPlanningTimeRepository) {
     this.timesheetLineService = timesheetLineService;
     this.timesheetLineRepository = timesheetLineRepository;
     this.userHrService = userHrService;
     this.timesheetLineCheckService = timesheetLineCheckService;
     this.appBaseService = appBaseService;
-    this.projectTaskRepository = projectTaskRepository;
+    this.projectPlanningTimeRepository = projectPlanningTimeRepository;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -188,24 +189,26 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
 
   @Override
   public void createTimesheetLinesUsingContextMap(
-      List<Map<String, Object>> projectTaskMapList, LocalDate date, Timesheet timesheet)
+      List<Map<String, Object>> projectPlanningTimeList, LocalDate date, Timesheet timesheet)
       throws AxelorException {
-    if (ObjectUtils.isEmpty(projectTaskMapList)) {
+    if (ObjectUtils.isEmpty(projectPlanningTimeList)) {
       return;
     }
 
     date = Optional.ofNullable(date).orElse(appBaseService.getTodayDate(timesheet.getCompany()));
 
-    for (Map<String, Object> projectTaskMap : projectTaskMapList) {
-      BigDecimal duration = new BigDecimal(String.valueOf(projectTaskMap.get("duration")));
-      ProjectTask projectTask =
-          projectTaskRepository.find(Long.parseLong(projectTaskMap.get("id").toString()));
+    for (Map<String, Object> projectPlanningTimeMap : projectPlanningTimeList) {
+      BigDecimal duration = new BigDecimal(String.valueOf(projectPlanningTimeMap.get("duration")));
+      ProjectPlanningTime projectPlanningTime =
+          projectPlanningTimeRepository.find(
+              Long.parseLong(projectPlanningTimeMap.get("id").toString()));
       duration = timesheetLineService.computeHoursDuration(timesheet, duration, true);
       Employee employee = timesheet.getEmployee();
+      ProjectTask projectTask = projectPlanningTime.getProjectTask();
 
       TimesheetLine timesheetLine =
           createTimesheetLine(
-              projectTask.getProject(),
+              projectPlanningTime.getProject(),
               userHrService.getTimesheetProduct(employee, projectTask),
               employee,
               date,

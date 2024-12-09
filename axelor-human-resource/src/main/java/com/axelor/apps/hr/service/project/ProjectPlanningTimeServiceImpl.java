@@ -60,9 +60,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -557,22 +562,46 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   }
 
   @Override
-  public List<ProjectTask> getOpenProjectTaskIdList(
+  public List<ProjectPlanningTime> getProjectPlanningTimeIdList(
       Employee employee, LocalDate fromDate, LocalDate toDate) {
 
-    return projectTaskRepo
+    return planningTimeRepo
         .all()
         .filter(
-            "self.status.isCompleted is false "
-                + "and self.project.manageTimeSpent is true "
-                + "and self.projectPlanningTimeList.employee = :employee "
-                + "and exists(select 1 from ProjectPlanningTime planningTime where planningTime.projectTask.id = self.id and ((planningTime.startDateTime < :fromDate and planningTime.endDateTime > :toDate) or planningTime.startDateTime between :fromDate and :toDate or planningTime.endDateTime between :fromDate and :toDate))")
+            "self.project IS NOT NULL and self.project.manageTimeSpent is true "
+                + "and self.employee = :employee "
+                + "and ((self.startDateTime < :fromDate and self.endDateTime > :toDate) or self.startDateTime between :fromDate and :toDate or (self.endDateTime between :fromDate and :toDate))")
         .bind("employee", employee)
         .bind("fromDate", fromDate)
         .bind("toDate", toDate)
         .fetch()
         .stream()
-        .distinct()
+        .filter(
+            distinctByTask(
+                (it ->
+                    new ProjectPlanningTimeObj(it.getProject(), it.getProjectTask()).toString())))
         .collect(Collectors.toList());
+  }
+
+  public static <T> Predicate<T> distinctByTask(Function<? super T, ?> keyExtractor) {
+    Set<Object> seen = Collections.synchronizedSet(new HashSet<>());
+    return t -> seen.add(keyExtractor.apply(t));
+  }
+
+  static class ProjectPlanningTimeObj {
+    String project;
+    String projectTask;
+
+    ProjectPlanningTimeObj(Project project, ProjectTask projectTask) {
+      this.project =
+          Optional.ofNullable(project).map(Project::getId).map(String::valueOf).orElse("");
+      this.projectTask =
+          Optional.ofNullable(projectTask).map(ProjectTask::getId).map(String::valueOf).orElse("");
+    }
+
+    @Override
+    public String toString() {
+      return "ProjectPlanningTime{project='" + project + "', projectTask=" + projectTask + '}';
+    }
   }
 }
