@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.groupingBy;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -794,7 +795,8 @@ public class SaleOrderController {
     response.setValues(saleOrder);
   }
 
-  public void updateTimetableAmounts(ActionRequest request, ActionResponse response) {
+  public void updateTimetableAmounts(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     Beans.get(SaleOrderSupplychainService.class).updateTimetableAmounts(saleOrder);
     response.setValues(saleOrder);

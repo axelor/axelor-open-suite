@@ -393,6 +393,9 @@ public final class SupplychainExceptionMessage {
   public static final String PARENT_PARTNER_CONFIGURATION_ERROR = /*$$(*/
       "There is a configuration error, partner %s is its own parent." /*)*/;
 
-  public static final String SALE_ORDER_EDIT_ERROR_TIMETABLE_INVOICED = /*$$(*/
-      "At least one timetable is invoiced, you cannot edit the order anymore." /*)*/;
+  public static final String SALE_ORDER_TIMETABLE_CAN_NOT_BE_UPDATED = /*$$(*/
+      "Invoice timetable has been updated because a part of the order has already been invoiced. Amount to be spread over the timetable : %s" /*)*/;
+
+  public static final String SALE_ORDER_TIMETABLE_PERCENTAGE_ERROR = /*$$(*/
+      "One of the timetables has a percentage exceeding 100%." /*)*/;
 }

@@ -31,5 +31,5 @@ public interface SaleOrderSupplychainService {
 
   public void setAdvancePayment(SaleOrder saleOrder);
 
-  public void updateTimetableAmounts(SaleOrder saleOrder);
+  String updateTimetableAmounts(SaleOrder saleOrder) throws AxelorException;
 }
