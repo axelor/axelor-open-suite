@@ -11,8 +11,6 @@
       title="Freight Carrier"/>
     <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode"
       title="Shipment Mode"/>
-    <many-to-many ref="com.axelor.apps.stock.db.FreightCarrierPricing"
-      name="freightCarrierPricingSet" title="Freight carrier pricings"/>
   </entity>
 
 </domain-models>
