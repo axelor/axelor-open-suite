@@ -288,7 +288,7 @@
           <field name="invoiceLineSet" readonly="true" showIf="invoiceLineSet"
             form-view="invoice-line-form" grid-view="invoice-line-grid" colSpan="12"/>
           <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
-            width="120" widget="Image"/>
+            width="120" widget="drawing"/>
         </panel>
       </panel>
 
