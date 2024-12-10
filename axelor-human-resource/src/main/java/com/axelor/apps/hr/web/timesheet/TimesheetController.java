@@ -587,35 +587,6 @@ public class TimesheetController {
     }
   }
 
-  /**
-   * Called from timesheet form, on user change. Call {@link
-   * TimesheetService#updateTimeLoggingPreference(Timesheet)} to update the timesheet, and update
-   * the dummy field $periodTotalConvert
-   *
-   * @param request
-   * @param response
-   */
-  public void updateTimeLoggingPreference(ActionRequest request, ActionResponse response) {
-    try {
-      Timesheet timesheet = request.getContext().asType(Timesheet.class);
-      Beans.get(TimesheetService.class).updateTimeLoggingPreference(timesheet);
-      response.setAttr("$periodTotalConvert", "hidden", false);
-      response.setAttr(
-          "$periodTotalConvert",
-          "value",
-          Beans.get(TimesheetLineService.class)
-              .computeHoursDuration(timesheet, timesheet.getPeriodTotal(), false));
-      response.setAttr(
-          "$periodTotalConvert",
-          "title",
-          Beans.get(TimesheetService.class).getPeriodTotalConvertTitle(timesheet));
-      response.setValue("timeLoggingPreferenceSelect", timesheet.getTimeLoggingPreferenceSelect());
-      response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void generateLinesFromExpectedPlanning(ActionRequest request, ActionResponse response) {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);

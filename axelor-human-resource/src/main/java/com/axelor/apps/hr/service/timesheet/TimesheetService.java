@@ -18,18 +18,9 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Timesheet;
 
 public interface TimesheetService {
 
   String getPeriodTotalConvertTitle(Timesheet timesheet);
-
-  /**
-   * Update {@link Timesheet#timeLoggingPreferenceSelect} and recompute all durations.
-   *
-   * @param timesheet a context timesheet
-   * @return the updated timesheet
-   */
-  void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
 }
