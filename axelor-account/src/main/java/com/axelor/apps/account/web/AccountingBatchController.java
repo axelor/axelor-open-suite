@@ -450,4 +450,22 @@ public class AccountingBatchController {
               daybookMoveCount));
     }
   }
+
+  public void setClosureAccountSet(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    List<Account> closureAccountSet =
+        Beans.get(BatchCloseAnnualAccounts.class)
+            .getClosureAccountSet(
+                accountingBatch, (boolean) request.getContext().get("closeAllAccounts"));
+    response.setValue("closureAccountSet", closureAccountSet);
+  }
+
+  public void setOpeningAccountSet(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    List<Account> openingAccountSet =
+        Beans.get(BatchCloseAnnualAccounts.class)
+            .getOpeningAccountSet(
+                accountingBatch, (boolean) request.getContext().get("openAllAccounts"));
+    response.setValue("openingAccountSet", openingAccountSet);
+  }
 }
