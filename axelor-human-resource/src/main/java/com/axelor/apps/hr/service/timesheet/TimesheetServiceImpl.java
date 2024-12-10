@@ -18,11 +18,8 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
-import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -32,12 +29,9 @@ import com.google.inject.Inject;
  * @author axelor
  */
 public class TimesheetServiceImpl implements TimesheetService {
-  protected TimesheetLineService timesheetLineService;
 
   @Inject
-  public TimesheetServiceImpl(TimesheetLineService timesheetLineService) {
-    this.timesheetLineService = timesheetLineService;
-  }
+  public TimesheetServiceImpl() {}
 
   @Override
   public String getPeriodTotalConvertTitle(Timesheet timesheet) {
@@ -56,26 +50,6 @@ public class TimesheetServiceImpl implements TimesheetService {
         return I18n.get("Minutes");
       default:
         return I18n.get("Hours");
-    }
-  }
-
-  @Override
-  public void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException {
-    String timeLoggingPref;
-    if (timesheet.getEmployee() == null) {
-      timeLoggingPref = EmployeeRepository.TIME_PREFERENCE_HOURS;
-    } else {
-      Employee employee = timesheet.getEmployee();
-      timeLoggingPref = employee.getTimeLoggingPreferenceSelect();
-    }
-    timesheet.setTimeLoggingPreferenceSelect(timeLoggingPref);
-
-    if (timesheet.getTimesheetLineList() != null) {
-      for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
-        timesheetLine.setDuration(
-            timesheetLineService.computeHoursDuration(
-                timesheet, timesheetLine.getHoursDuration(), false));
-      }
     }
   }
 }
