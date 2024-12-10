@@ -1,5 +1,5 @@
 ---
-title: "Contract: cut off dates are now correctly filled in invoice lines"
+title: "Contract: cut off dates are now correctly filled in invoice lines."
 module: axelor-contract
 developer: |
-  AppAccountService has been added to the constructor of ContractInvoicingServiceImpl.
+  `AppAccountService` has been added to the constructor of `ContractInvoicingServiceImpl`.
