@@ -452,6 +452,8 @@ public abstract class InvoiceGenerator {
       Beans.get(InvoiceTermService.class).computeInvoiceTerms(invoice);
     }
 
+    invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
+
     logger.debug(
         "Invoice amounts : W.T. = {}, Tax = {}, A.T.I. = {}",
         new Object[] {invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal()});

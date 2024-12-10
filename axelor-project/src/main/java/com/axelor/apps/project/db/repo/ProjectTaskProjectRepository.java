@@ -121,7 +121,7 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
       ProjectTask savedTask = find(Long.parseLong(json.get("id").toString()));
       if (json.get("plannedProgress") != null) {
         BigDecimal plannedProgress = new BigDecimal(json.get("plannedProgress").toString());
-        if (savedTask.getPlannedProgress().equals(plannedProgress)) {
+        if (!savedTask.getPlannedProgress().equals(plannedProgress)) {
           logger.debug("Updating progress: {}", plannedProgress);
           json.put("progress", plannedProgress);
         }

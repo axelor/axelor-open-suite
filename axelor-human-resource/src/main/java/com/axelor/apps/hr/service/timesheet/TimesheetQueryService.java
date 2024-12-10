@@ -30,4 +30,6 @@ public interface TimesheetQueryService {
   Query<Timesheet> getTimesheetQuery(TimesheetLine timesheetLine);
 
   Query<Timesheet> getTimesheetQuery(Employee employee, Company company, LocalDate date);
+
+  Company getDefaultCompany(Employee employee);
 }

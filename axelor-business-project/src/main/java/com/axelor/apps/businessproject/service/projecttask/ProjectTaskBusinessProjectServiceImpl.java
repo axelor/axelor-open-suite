@@ -47,6 +47,7 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
@@ -87,12 +88,13 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     implements ProjectTaskBusinessProjectService {
 
   public static final int BIG_DECIMAL_SCALE = 2;
-  private PriceListLineRepository priceListLineRepo;
-  private PriceListService priceListService;
-  private PartnerPriceListService partnerPriceListService;
-  private ProductCompanyService productCompanyService;
-  private TimesheetLineRepository timesheetLineRepository;
-  private AppBusinessProjectService appBusinessProjectService;
+  protected PriceListLineRepository priceListLineRepo;
+  protected PriceListService priceListService;
+  protected PartnerPriceListService partnerPriceListService;
+  protected ProductCompanyService productCompanyService;
+  protected TimesheetLineRepository timesheetLineRepository;
+  protected AppBusinessProjectService appBusinessProjectService;
+  protected UnitConversionForProjectService unitConversionForProjectService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -109,7 +111,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      UnitConversionForProjectService unitConversionForProjectService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -125,6 +128,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.productCompanyService = productCompanyService;
     this.timesheetLineRepository = timesheetLineRepository;
     this.appBusinessProjectService = appBusinessProjectService;
+    this.unitConversionForProjectService = unitConversionForProjectService;
   }
 
   @Override
@@ -546,7 +550,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Transactional(rollbackOn = {Exception.class})
   public void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException {
 
-    BigDecimal plannedTime;
+    BigDecimal plannedTime = BigDecimal.ZERO;
     BigDecimal spentTime = BigDecimal.ZERO;
 
     Unit timeUnit =

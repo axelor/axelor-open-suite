@@ -246,15 +246,11 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
         if (isPeriodicInvoicing && isTimeProratedInvoice) {
           start = computeStartDate(contract, line, version);
           tmp.setFromDate(start);
-          LocalDate totalStart =
-              contract.getIsToRevaluate()
-                  ? contract.getInvoicePeriodStartDate()
-                  : contract.getStartDate();
           ratio =
               durationService.computeRatio(
                   start,
                   end,
-                  totalStart,
+                  contract.getInvoicePeriodStartDate(),
                   contract.getInvoicePeriodEndDate(),
                   contract.getCurrentContractVersion().getInvoicingDuration());
         }
