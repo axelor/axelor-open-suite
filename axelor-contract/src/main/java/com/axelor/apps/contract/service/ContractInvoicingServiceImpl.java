@@ -296,7 +296,6 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
   }
 
   protected LocalDate getNonPeriodicInvoiceCutOffStartDate(Contract contract) {
-    LocalDate start;
     List<Invoice> invoiceList =
         invoiceRepository
             .all()
@@ -304,17 +303,15 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
             .bind("contractId", contract.getId())
             .order("invoiceDate")
             .fetch();
-    if (CollectionUtils.isEmpty(invoiceList)) {
-      start = contract.getCurrentContractVersion().getActivationDateTime().toLocalDate();
-    } else {
-      int invoiceListSize = invoiceList.size();
-      if (invoiceListSize > 1) {
-        start = invoiceList.get(invoiceList.size() - 2).getInvoiceDate();
-      } else {
-        start = invoiceList.get(0).getInvoiceDate();
-      }
+    int invoiceListSize = invoiceList.size();
+    switch (invoiceListSize) {
+      case 0:
+        return contract.getCurrentContractVersion().getActivationDateTime().toLocalDate();
+      case 1:
+        return invoiceList.get(0).getInvoiceDate();
+      default:
+        return invoiceList.get(invoiceListSize - 2).getInvoiceDate();
     }
-    return start;
   }
 
   protected void computeConsumptionLines(Contract contract, Invoice invoice)
