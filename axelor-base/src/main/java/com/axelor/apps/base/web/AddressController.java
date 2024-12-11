@@ -297,12 +297,19 @@ public class AddressController {
     }
 
     String parentModel = (String) parentContext.get("_model");
-    LOG.debug("Create partner address : Parent model = {}", parentModel);
 
     String partnerField = PartnerAddressRepository.modelPartnerFieldMap.get(parentModel);
-    LOG.debug("Create partner address : Parent field = {}", partnerField);
 
     Context parentParentContext = parentContext.getParent();
+
+    if (partnerField == null && parentParentContext != null) {
+      parentModel = (String) parentParentContext.get("_model");
+      partnerField = PartnerAddressRepository.modelPartnerFieldMap.get(parentModel);
+    }
+
+    LOG.debug("Create partner address : Parent model = {}", parentModel);
+    LOG.debug("Create partner address : Parent field = {}", partnerField);
+
     if (partnerField == null
         || (parentParentContext != null
             && parentParentContext.get("_model").toString().equals(Partner.class.getName()))) {
@@ -314,6 +321,9 @@ public class AddressController {
       partner = (Partner) parentContext.get(partnerField);
     } else if (parentContext.get(partnerField) instanceof Map) {
       partner = Mapper.toBean(Partner.class, (Map<String, Object>) parentContext.get(partnerField));
+    } else if (parentParentContext != null
+        && parentParentContext.get(partnerField) instanceof Partner) {
+      partner = (Partner) parentParentContext.get(partnerField);
     }
 
     LOG.debug("Create partner address : Partner = {}", partner);

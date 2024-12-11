@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed customer when creating addresses from the order lines."
+module: axelor-sale
