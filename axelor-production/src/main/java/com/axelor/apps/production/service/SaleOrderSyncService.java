@@ -19,13 +19,15 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
+import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
-public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSyncService {
+public abstract class SaleOrderSyncService {
 
   protected final SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService;
   protected final SaleOrderLineBomService saleOrderLineBomService;
@@ -36,7 +38,7 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
   protected final AppProductionService appProductionService;
 
   @Inject
-  public SaleOrderProductionSyncServiceImpl(
+  protected SaleOrderSyncService(
       SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
       SaleOrderLineBomService saleOrderLineBomService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
@@ -53,30 +55,34 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
     this.appProductionService = appProductionService;
   }
 
-  @Override
-  public void syncSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
-    Objects.requireNonNull(saleOrder);
+  /**
+   * This method will synchronize the sale order lines and sub sale order lines.
+   *
+   * @param saleOrderLineList
+   * @throws AxelorException
+   */
+  public void syncSaleOrderLineList(List<SaleOrderLine> saleOrderLineList) throws AxelorException {
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return;
+    }
 
     if (!appProductionService.getAppProduction().getAllowPersonalizedBOM()) {
       return;
     }
 
-    if (saleOrder.getSaleOrderLineList() != null) {
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        syncSaleOrderLine(saleOrderLine);
-      }
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      syncSaleOrderLine(saleOrderLine);
     }
   }
 
-  protected void syncSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
+  public void syncSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
     Objects.requireNonNull(saleOrderLine);
     // No personalized BOM = no synchronization
-    if (!appProductionService.getAppProduction().getAllowPersonalizedBOM()) {
+    if (!appProductionService.getAppProduction().getAllowPersonalizedBOM()
+        || !saleOrderLine.getIsToProduce()) {
       return;
     }
-    if (!saleOrderLine.getIsToProduce()) {
-      return;
-    }
+
     // First we sync sub lines, because if a change occurs is one of them
     // We take it into account when sync the current sale order line
     if (saleOrderLine.getSubSaleOrderLineList() != null) {
@@ -87,8 +93,15 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
 
     // if bom lines list is same size as sub line list (checking if more line or less)
     // and if each lines are sync
+    updateLines(saleOrderLine);
+  }
+
+  protected void updateLines(SaleOrderLine saleOrderLine) throws AxelorException {
+    List<SaleOrderLineDetails> saleOrderLineDetailsList =
+        getSaleOrderListDetailsList(saleOrderLine);
     var isUpdated = solBomUpdateService.isUpdated(saleOrderLine);
-    var isSolDetailsUpdated = solDetailsBomUpdateService.isSolDetailsUpdated(saleOrderLine);
+    var isSolDetailsUpdated =
+        solDetailsBomUpdateService.isSolDetailsUpdated(saleOrderLine, saleOrderLineDetailsList);
 
     if (isUpdated && isSolDetailsUpdated) {
       return;
@@ -102,9 +115,13 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
           solBomUpdateService.updateSolWithBillOfMaterial(saleOrderLine);
         }
         if (!isSolDetailsUpdated) {
-          solDetailsBomUpdateService.updateSolDetailslWithBillOfMaterial(saleOrderLine);
+          solDetailsBomUpdateService.updateSolDetailslWithBillOfMaterial(
+              saleOrderLine, saleOrderLineDetailsList);
         }
       }
     }
   }
+
+  protected abstract List<SaleOrderLineDetails> getSaleOrderListDetailsList(
+      SaleOrderLine saleOrderLine);
 }
