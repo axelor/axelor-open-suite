@@ -18,12 +18,14 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerPriceList;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -55,8 +57,12 @@ public class PartnerPriceListController {
   }
 
   public void computePriceListDomain(ActionRequest request, ActionResponse response) {
-    PartnerPriceList partnerPriceList = request.getContext().asType(PartnerPriceList.class);
-    Integer typeSelect = (Integer) request.getContext().get("_typeSelect");
-    response.setAttr("priceListSet", "domain", "self.typeSelect = " + typeSelect);
+    Context context = request.getContext();
+    Integer typeSelect = (Integer) context.get("_typeSelect");
+    Currency currency = (Currency) context.get("currency");
+    response.setAttr(
+        "priceListSet",
+        "domain",
+        String.format("self.typeSelect = %d AND self.currency = %d", typeSelect, currency.getId()));
   }
 }
