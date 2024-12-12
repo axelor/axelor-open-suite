@@ -28,15 +28,12 @@ import com.axelor.apps.project.db.ProjectTask;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public interface ProjectPlanningTimeService {
 
   public BigDecimal getTaskPlannedHrs(ProjectTask projectTask);
 
   public BigDecimal getProjectPlannedHrs(Project project);
-
-  public void addMultipleProjectPlanningTime(Map<String, Object> dataMap) throws AxelorException;
 
   void addSingleProjectPlanningTime(ProjectPlanningTime projectPlanningTime) throws AxelorException;
 

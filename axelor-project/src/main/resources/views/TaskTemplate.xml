@@ -19,12 +19,14 @@
     model="com.axelor.apps.project.db.TaskTemplate" width="large">
     <panel name="mainPanel">
       <field name="name" colSpan="12" css="label-bold bold large"/>
-      <field name="product" domain="self.productTypeSelect = 'service'"/>
+      <field name="product" domain="self.productTypeSelect = 'service'"
+        requiredIf="totalPlannedHrs &amp;&amp; totalPlannedHrs &gt; 0"/>
       <field name="qty"/>
       <field name="delayToStart"/>
       <field name="duration"/>
-      <field name="totalPlannedHrs"/>
-      <field name="assignedTo" canEdit="false"/>
+      <field name="totalPlannedHrs" min="0"/>
+      <field name="assignedTo" canEdit="false"
+        requiredIf="totalPlannedHrs &amp;&amp; totalPlannedHrs &gt; 0"/>
       <field name="team" canEdit="false" hidden="true"/>
       <field name="isUniqueTaskForMultipleQuantity" widget="boolean-switch"/>
       <field name="projectTaskCategory"/>

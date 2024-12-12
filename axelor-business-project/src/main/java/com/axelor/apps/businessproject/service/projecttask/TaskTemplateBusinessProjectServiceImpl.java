@@ -6,10 +6,13 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateService;
 import com.axelor.apps.hr.service.project.TaskTemplateHrServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -22,11 +25,18 @@ public class TaskTemplateBusinessProjectServiceImpl extends TaskTemplateHrServic
 
   @Inject
   public TaskTemplateBusinessProjectServiceImpl(
-      ProductCompanyService productCompanyService,
+      ProjectPlanningTimeCreateService projectPlanningTimeCreateService,
       AppBaseService appBaseService,
+      ProjectPlanningTimeComputeService projectPlanningTimeComputeService,
+      ProjectPlanningTimeRepository projectPlanningTimeRepository,
+      ProductCompanyService productCompanyService,
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
+    super(
+        projectPlanningTimeCreateService,
+        appBaseService,
+        projectPlanningTimeComputeService,
+        projectPlanningTimeRepository);
     this.productCompanyService = productCompanyService;
-    this.appBaseService = appBaseService;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
   }
 
