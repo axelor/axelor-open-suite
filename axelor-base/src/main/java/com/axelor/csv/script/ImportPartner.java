@@ -24,6 +24,8 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidator;
+import com.axelor.apps.base.service.partner.registrationnumber.factory.PartnerRegistrationValidatorFactoryService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
@@ -45,7 +47,10 @@ public class ImportPartner {
 
   @Inject protected SequenceService sequenceService;
 
-  public Object importPartner(Object bean, Map<String, Object> values) throws AxelorException {
+  @Inject protected PartnerRegistrationValidatorFactoryService registrationValidatorFactoryService;
+
+  public Object importPartner(Object bean, Map<String, Object> values)
+      throws AxelorException, ClassNotFoundException {
 
     assert bean instanceof Partner;
 
@@ -55,6 +60,12 @@ public class ImportPartner {
             SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner));
 
     partnerService.setPartnerFullName(partner);
+
+    RegistrationNumberValidator validator =
+        registrationValidatorFactoryService.getRegistrationNumberValidator(partner);
+    if (validator != null && !Strings.isNullOrEmpty(partner.getRegistrationCode())) {
+      validator.setRegistrationCodeValidationValues(partner);
+    }
 
     final Path path = (Path) values.get("__path__");
     String fileName = (String) values.get("picture_fileName");
