@@ -307,6 +307,9 @@
 
   <form title="Financial datas" name="business-project-task-financial-datas-form"
     model="com.axelor.apps.project.db.ProjectTask" width="large">
+    <panel name="fullNamePanel" readonly="true">
+      <field name="fullName"/>
+    </panel>
     <panel-tabs>
       <panel name="purchasePanel" title="Purchase" colSpan="12"
         if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
@@ -379,6 +382,9 @@
 
   <form name="incl-planning-panel-business-task-form" title="Planning"
     model="com.axelor.apps.project.db.ProjectTask" width="large">
+    <panel name="fullNamePanel" readonly="true">
+      <field name="fullName"/>
+    </panel>
     <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
       if-module="axelor-human-resource" showIf="project.isShowPlanning">
       <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"

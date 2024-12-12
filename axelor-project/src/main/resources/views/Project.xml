@@ -225,6 +225,9 @@
 
   <form name="incl-planning-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project" width="large">
+    <panel name="fullNamePanel" readonly="true">
+      <field name="fullName"/>
+    </panel>
     <panel title="Planning" name="planningPanel" colSpan="12">
       <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
         x-show-bars="true" action="action-project-dashlet-project-planning-time" colSpan="12"
