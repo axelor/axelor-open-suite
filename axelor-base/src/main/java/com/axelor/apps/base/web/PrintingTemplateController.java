@@ -66,6 +66,11 @@ public class PrintingTemplateController {
     Map<String, Object> map = getModelAndId(request);
     String modelName = map.get(CONTEXT_MODEL_CLASS).toString();
     Long recordId = (Long) map.get(CONTEXT_MODEL_ID);
+    if (recordId == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.NO_RECORD_SELECTED_TO_PRINT));
+    }
     boolean fromTestWizard = (boolean) map.get(CONTEXT_FROM_TEST_WIZARD);
 
     List<PrintingTemplate> printingTemplates =
@@ -186,7 +191,8 @@ public class PrintingTemplateController {
   protected Map<String, Object> getModelAndId(ActionRequest request) {
     String model = request.getModel();
     Context context = request.getContext();
-    Long id = Long.valueOf(context.get("id").toString());
+    Object idObj = context.get("id");
+    Long id = idObj == null ? 0l : Long.valueOf(idObj.toString());
     boolean fromTestWizard = false;
     if (context.getContextClass() == PrintingTemplateWizard.class) {
       PrintingTemplateWizard printingTemplateWizard = context.asType(PrintingTemplateWizard.class);
