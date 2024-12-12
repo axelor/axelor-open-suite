@@ -6,6 +6,9 @@ import com.axelor.apps.project.db.repo.ProjectVersionRepository;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProjectVersionRemoveServiceImpl implements ProjectVersionRemoveService {
 
@@ -21,8 +24,11 @@ public class ProjectVersionRemoveServiceImpl implements ProjectVersionRemoveServ
     if (ObjectUtils.isEmpty(project.getRoadmapSet())) {
       return;
     }
-
-    for (ProjectVersion projectVersion : project.getRoadmapSet()) {
+    List<ProjectVersion> projectVersionList =
+        project.getRoadmapSet().stream()
+            .sorted(Comparator.comparing(ProjectVersion::getId))
+            .collect(Collectors.toList());
+    for (ProjectVersion projectVersion : projectVersionList) {
       removeProjectFromVersion(project, projectVersion);
     }
   }
