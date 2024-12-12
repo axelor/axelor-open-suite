@@ -79,4 +79,10 @@
     <option value="3">In test</option>
     <option value="4">In production</option>
   </selection>
+
+  <selection name="project.sprint.management.select">
+    <option value="none">None</option>
+    <option value="project">Project</option>
+    <option value="version">Version</option>
+  </selection>
 </object-views>

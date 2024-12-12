@@ -307,4 +307,12 @@ public class ProjectTaskController {
         .generateCheckListItemsFromTemplate(projectTask, template);
     response.setValue("projectCheckListItemList", projectTask.getProjectCheckListItemList());
   }
+
+  public void computeSprintDomain(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    String domain = Beans.get(ProjectTaskAttrsService.class).getActiveSprintDomain(projectTask);
+
+    response.setAttr("activeSprint", "domain", domain);
+  }
 }
