@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
@@ -107,5 +108,9 @@ public class PaymentConditionToolService {
       default:
         return date;
     }
+  }
+
+  public static boolean isFreePaymentCondition(Invoice invoice) {
+    return invoice.getPaymentCondition() != null && invoice.getPaymentCondition().getIsFree();
   }
 }
