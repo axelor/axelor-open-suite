@@ -61,7 +61,7 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
           .validatePurchaseAmountWithBudgetDistribution(purchaseOrder);
 
       if (purchaseOrder.getStatusSelect() != null
-          && purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_REQUESTED) {
+          && purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_VALIDATED) {
         Beans.get(PurchaseOrderBudgetService.class)
             .updateBudgetLinesFromPurchaseOrder(purchaseOrder);
       }
