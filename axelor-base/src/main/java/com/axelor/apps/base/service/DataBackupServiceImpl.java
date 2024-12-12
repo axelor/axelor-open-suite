@@ -180,7 +180,7 @@ public class DataBackupServiceImpl implements DataBackupService {
   public void updateImportId() {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyHHmm");
     String filterStr =
-        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
+        "self.packageName NOT LIKE '%meta%' AND (self.packageName != 'com.axelor.studio.db' OR self.name LIKE 'App%') AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
 
     List<MetaModel> metaModelList = metaModelRepo.all().filter(filterStr).fetch();
     metaModelList.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
