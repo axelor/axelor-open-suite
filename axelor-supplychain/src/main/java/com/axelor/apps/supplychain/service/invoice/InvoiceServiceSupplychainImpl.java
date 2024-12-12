@@ -123,6 +123,10 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       intercoService.generateIntercoInvoice(invoice);
     }
 
+    updateTimetable(invoice);
+  }
+
+  protected void updateTimetable(Invoice invoice) {
     TimetableRepository timeTableRepo = Beans.get(TimetableRepository.class);
 
     List<Timetable> timetableList =
@@ -131,6 +135,22 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     for (Timetable timetable : timetableList) {
       timetable.setInvoiced(true);
       timeTableRepo.save(timetable);
+    }
+
+    int operationTypeSelect = invoice.getOperationTypeSelect();
+    if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+        || operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      Invoice originalInvoice = invoice.getOriginalInvoice();
+      if (originalInvoice != null) {
+        Timetable timetable =
+            timeTableRepo
+                .all()
+                .filter("self.invoice = :invoice")
+                .bind("invoice", originalInvoice)
+                .fetchOne();
+        timetable.setInvoiced(false);
+        timetable.setInvoice(null);
+      }
     }
   }
 
