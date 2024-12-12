@@ -22,11 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.db.repo.UnitConversionRepository;
-import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
@@ -34,9 +31,7 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
-import com.axelor.apps.hr.service.project.PlannedTimeValueService;
-import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateServiceImpl;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -44,8 +39,6 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.apps.project.service.app.AppProjectService;
-import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -53,13 +46,14 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanningTimeServiceImpl {
+public class ProjectPlanningTimeCreateBusinessProjectServiceImpl
+    extends ProjectPlanningTimeCreateServiceImpl {
 
   protected AppBusinessProjectService appBusinessProjectService;
   protected AppBaseService appBaseService;
 
   @Inject
-  public ProjectPlanningTimeBusinessProjectServiceImpl(
+  public ProjectPlanningTimeCreateBusinessProjectServiceImpl(
       ProjectPlanningTimeRepository planningTimeRepo,
       ProjectRepository projectRepo,
       ProjectTaskRepository projectTaskRepo,
@@ -68,14 +62,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       ProductRepository productRepo,
       EmployeeRepository employeeRepo,
       TimesheetLineRepository timesheetLineRepository,
-      AppProjectService appProjectService,
-      ProjectConfigService projectConfigService,
-      PlannedTimeValueService plannedTimeValueService,
-      UnitConversionForProjectService unitConversionForProjectService,
-      UnitConversionRepository unitConversionRepository,
       AppBusinessProjectService appBusinessProjectService,
-      ICalendarService iCalendarService,
-      ICalendarEventRepository iCalendarEventRepository,
       AppBaseService appBaseService) {
     super(
         planningTimeRepo,
@@ -85,20 +72,13 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
         holidayService,
         productRepo,
         employeeRepo,
-        timesheetLineRepository,
-        appProjectService,
-        projectConfigService,
-        plannedTimeValueService,
-        iCalendarService,
-        iCalendarEventRepository,
-        unitConversionForProjectService,
-        unitConversionRepository);
+        timesheetLineRepository);
     this.appBusinessProjectService = appBusinessProjectService;
     this.appBaseService = appBaseService;
   }
 
   @Override
-  protected ProjectPlanningTime createProjectPlanningTime(
+  public ProjectPlanningTime createProjectPlanningTime(
       LocalDateTime fromDate,
       ProjectTask projectTask,
       Project project,
