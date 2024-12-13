@@ -457,8 +457,7 @@
         <panel name="deliveryAddressPanel" stacked="true">
           <field name="deliveryAddress"
             hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true"
-            canEdit="false"
-            onChange="action-sale-order-method-address-str,action-sale-order-attrs-set-is-ispm-required"
+            canEdit="false" onChange="action-sale-order-group-delivery-address-change"
             onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-form"
             grid-view="address-grid"/>
           <field name="deliveryAddressStr"
@@ -2218,5 +2217,24 @@
     <attribute name="selection-in" for="saleOrderLineList.typeSelect"
       expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
   </action-attrs>
+
+  <action-group name="action-sale-order-group-delivery-address-change">
+    <action name="action-sale-order-method-address-str"/>
+    <action name="action-sale-order-attrs-set-is-ispm-required"/>
+    <action name="action-sale-order-validate-sale-order-lines-delivery-address"
+      if="saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()"/>
+    <action name="action-sale-order-method-update-sale-order-lines-delivery-address"/>
+  </action-group>
+
+  <action-validate
+    name="action-sale-order-validate-sale-order-lines-delivery-address">
+    <alert message="Would you like to update all lines with this new address?"/>
+  </action-validate>
+
+  <action-method
+    name="action-sale-order-method-update-sale-order-lines-delivery-address">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="updateSaleOrderLinesDeliveryAddress"/>
+  </action-method>
 
 </object-views>

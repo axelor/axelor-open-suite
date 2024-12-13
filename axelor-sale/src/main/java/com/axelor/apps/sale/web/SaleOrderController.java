@@ -838,4 +838,11 @@ public class SaleOrderController {
     response.setValues(saleOrderMap);
     response.setAttrs(Beans.get(SaleOrderViewService.class).getCompanyAttrs(saleOrder));
   }
+
+  public void updateSaleOrderLinesDeliveryAddress(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    List<SaleOrderLine> saleOrderLineList =
+        Beans.get(SaleOrderService.class).updateSaleOrderLinesDeliveryAddress(saleOrder);
+    response.setValue("saleOrderLineList", saleOrderLineList);
+  }
 }
