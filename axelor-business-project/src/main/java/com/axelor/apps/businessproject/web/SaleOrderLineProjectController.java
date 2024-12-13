@@ -136,7 +136,8 @@ public class SaleOrderLineProjectController {
   public void setProjectDomain(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Context context = request.getContext();
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     response.setAttr(
         "project",
         "domain",

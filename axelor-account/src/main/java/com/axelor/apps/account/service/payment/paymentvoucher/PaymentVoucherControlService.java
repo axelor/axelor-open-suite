@@ -131,7 +131,7 @@ public class PaymentVoucherControlService {
         } else {
           remainingAmountMoveLine = elementToPay.getMoveLine().getRemainingAmountAfterFinDiscount();
         }
-        if (!remainingAmountToPay.equals(remainingAmountMoveLine)) {
+        if (!remainingAmountToPay.abs().equals(remainingAmountMoveLine.abs())) {
           return false;
         }
       }

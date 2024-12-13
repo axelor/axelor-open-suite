@@ -19,7 +19,7 @@
     <field name="partnerLinkType" form-view="partner-link-type-form"
       grid-view="partner-link-type-grid" target-name="link2Name"/>
     <field name="partner2" form-view="partner-form" grid-view="partner-grid"
-      onSelect="action-partner-link-attrs-set-partners-domain"/>
+      onSelect="action-partner-link-attrs-set-partners-domain" required="true"/>
   </grid>
 
   <grid name="partner-link-partner-2-grid" title="Partner relations"
@@ -28,7 +28,7 @@
       grid-view="partner-link-type-grid" target-name="link1Name"
       onSelect="action-partner-link-attrs-set-partner-link-type-domain"/>
     <field name="partner1" form-view="partner-form" grid-view="partner-grid"
-      onSelect="action-partner-link-attrs-set-partners-domain"/>
+      onSelect="action-partner-link-attrs-set-partners-domain" required="true"/>
   </grid>
 
   <form title="Partner relation" name="partner-link-partner-1-form"
@@ -78,10 +78,12 @@
 
   <action-attrs name="action-partner-link-attrs-set-partner-1-readonly">
     <attribute name="readonly" for="partner1" expr="eval: __parent__?.id = partner1?.id"/>
+    <attribute name="required" for="partner2" expr="eval: __parent__?.id = partner1?.id"/>
   </action-attrs>
 
   <action-attrs name="action-partner-link-attrs-set-partner-2-readonly">
     <attribute name="readonly" for="partner2" expr="eval: __parent__?.id = partner2?.id"/>
+    <attribute name="required" for="partner1" expr="eval: __parent__?.id = partner2?.id"/>
   </action-attrs>
 
 </object-views>

@@ -1,0 +1,3 @@
+---
+title: "Timetable: timetable are now correctly updated to not invoiced when a linked credit note has been ventilated."
+module: axelor-supplychain

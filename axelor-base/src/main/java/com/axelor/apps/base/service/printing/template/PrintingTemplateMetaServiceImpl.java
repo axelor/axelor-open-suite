@@ -41,7 +41,8 @@ public class PrintingTemplateMetaServiceImpl implements PrintingTemplateMetaServ
 
   @Override
   public void addPrintButton(AbstractView view) {
-    if (!printingTemplateService.hasActivePrintingTemplates(view.getModel())
+    if (view == null
+        || !printingTemplateService.hasActivePrintingTemplates(view.getModel())
         || !isValidViewForToolBar(view)) {
       return;
     }
