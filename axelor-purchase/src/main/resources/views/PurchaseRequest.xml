@@ -117,16 +117,6 @@
       expr="eval:__repo__(Product).find(_product?.id)?.getDefaultSupplierPartner()" if="_product"/>
   </action-record>
 
-  <action-record name="action-purchase-request-record-set-requester-user"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
-    <field name="requesterUser" expr="eval:__user__"/>
-  </action-record>
-
-  <action-record name="action-purchase-request-record-set-validator-user"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
-    <field name="validatorUser" expr="eval:__user__"/>
-  </action-record>
-
   <!-- update status -->
 
   <action-method name="action-purchase-request-method-set-status-requested">
@@ -177,14 +167,12 @@
   <action-group name="action-purchase-request-group-request-button">
     <action name="save"/>
     <action name="action-purchase-request-method-set-status-requested"/>
-    <action name="action-purchase-request-record-set-requester-user"/>
     <action name="save"/>
   </action-group>
 
   <action-group name="action-purchase-request-group-accept-button">
     <action name="save"/>
     <action name="action-purchase-request-method-set-status-accepted"/>
-    <action name="action-purchase-request-record-set-validator-user"/>
     <action name="save"/>
   </action-group>
 
