@@ -3,17 +3,18 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
-  <module name="business-support" package="com.axelor.apps.businesssupport.db"/>
+  <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="ProjectVersion">
     <string name="title" title="Title" namecolumn="true"/>
     <many-to-many name="projectSet" title="Projects"
       ref="com.axelor.apps.project.db.Project"/>
-    <integer name="statusSelect" title="Status"
-      selection="support.project.version.status.select"/>
+    <integer name="statusSelect" title="Status" selection="project.version.status.select"/>
     <date name="testingServerDate" title="Testing server date"/>
     <date name="productionServerDate" title="Production server date"/>
     <string name="content" title="Content" large="true"/>
+    <one-to-many name="sprintList" ref="com.axelor.apps.project.db.Sprint"
+      title="Sprints" mappedBy="targetVersion"/>
 
     <extra-code>
 	   		<![CDATA[
