@@ -16,16 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.translation;
+package com.axelor.apps.purchase.rest.dto;
 
-public interface ITranslation {
+import com.axelor.apps.purchase.db.PurchaseRequest;
+import com.axelor.utils.api.ResponseStructure;
 
-  public static final String PURCHASE_APP_NAME = /*$$(*/ "value:Purchase"; /*)*/
-  public static final String PURCHASE_REQUEST_APP_NAME = /*$$(*/ "value:Purchase Request"; /*)*/
+public class PurchaseRequestResponse extends ResponseStructure {
 
-  public static final String ABC_ANALYSIS_START_DATE = /*$$(*/ "AbcAnalysis.startDate"; /*)*/
-  public static final String ABC_ANALYSIS_END_DATE = /*$$(*/ "AbcAnalysis.endDate"; /*)*/
+  private final Long id;
+  private final Integer status;
 
-  public static final String PURCHASE_REQUEST_UPDATED = /*$$(*/
-      "Purchase request successfully updated."; /*)*/
+  public PurchaseRequestResponse(PurchaseRequest purchaseRequest) {
+    super(purchaseRequest.getVersion());
+    this.id = purchaseRequest.getId();
+    this.status = purchaseRequest.getStatusSelect();
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public Integer getStatus() {
+    return status;
+  }
 }
