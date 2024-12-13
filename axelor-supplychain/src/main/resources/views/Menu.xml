@@ -289,16 +289,6 @@
   <menuitem title="Freight carrier pricings" name="stock-root-freight-carrier-pricing"
     parent="stock-root-conf" order="510"/>
 
-  <menuitem title="Freight carrier pricing" name="stock-pricing-freight-carrier-pricing"
-    parent="stock-root-freight-carrier-pricing" order="10"
-    action="stock.root.carrier.freight.pricing"/>
-
-  <action-view name="stock.root.carrier.freight.pricing" title="Freight carrier pricing"
-    model="com.axelor.apps.stock.db.FreightCarrierPricing">
-    <view type="grid" name="freight-carrier-pricings-grid"/>
-    <view type="form" name="freight-carrier-pricings-form"/>
-  </action-view>
-
   <menuitem title="Pricing" name="stock-pricing-freight-carrier-pricing-pricing"
     parent="stock-root-freight-carrier-pricing" order="10"
     action="stock.root.carrier.freight.pricing.pricing"/>
