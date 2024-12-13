@@ -32,30 +32,14 @@
     </extend>
   </form>
 
-  <form id="supplychain-freight-carrier-mode-shipment-mode-form"
-    name="freight-carrier-mode-shipment-mode-form" title="Freight carrier mode"
-    model="com.axelor.apps.stock.db.FreightCarrierMode" extension="true">
-
-    <extend target="//panel[@name='mainPanel']">
-      <insert position="after">
-        <panel name="carrierPricingPanel" title="Carrier pricings" colSpan="12">
-          <field name="freightCarrierPricing" form-view="pricing-form"
-            grid-view="pricing-grid" colSpan="12"/>
-        </panel>
-      </insert>
-    </extend>
-  </form>
-
   <form id="supplychain-freight-carrier-mode-freight-carrier-form"
     name="freight-carrier-mode-freight-carrier-form" title="Freight carrier mode"
     model="com.axelor.apps.stock.db.FreightCarrierMode" extension="true">
 
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
-        <panel name="carrierPricingPanel" title="Carrier pricings" colSpan="12">
-          <field name="freightCarrierPricing" form-view="pricing-form"
-            grid-view="pricing-grid" colSpan="12"/>
-        </panel>
+        <field name="freightCarrierPricing" form-view="pricing-form" grid-view="pricing-grid"
+          colSpan="6"/>
       </insert>
     </extend>
   </form>
