@@ -29,7 +29,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
-import com.axelor.apps.stock.db.FreightCarrierPricing;
+import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -209,21 +209,22 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
   }
 
   @Transactional
-  public void computeFreightCarrierPricing(
-      List<FreightCarrierPricing> freightCarrierPricingList, Long saleOrderId)
-      throws AxelorException {
+  public void computeFreightCarrierMode(
+      List<FreightCarrierMode> freightCarrierModeList, Long saleOrderId) throws AxelorException {
     SaleOrder saleOrder = saleOrderRepository.find(saleOrderId);
     if (saleOrder != null) {
-      this.checkSelectedFreightCarrierPricing(freightCarrierPricingList);
-      saleOrder.setFreightCarrierMode(freightCarrierPricingList.get(0).getFreightCarrierMode());
+      this.checkSelectedFreightCarrierMode(freightCarrierModeList);
+      FreightCarrierMode freightCarrierMode = freightCarrierModeList.get(0);
+      saleOrder.setFreightCarrierMode(freightCarrierMode);
+      saleOrder.setCarrierPartner(freightCarrierMode.getCarrierPartner());
 
       saleOrderRepository.save(saleOrder);
     }
   }
 
-  protected void checkSelectedFreightCarrierPricing(
-      List<FreightCarrierPricing> freightCarrierPricingList) throws AxelorException {
-    if (freightCarrierPricingList.isEmpty()) {
+  protected void checkSelectedFreightCarrierMode(List<FreightCarrierMode> freightCarrierModeList)
+      throws AxelorException {
+    if (freightCarrierModeList.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
@@ -231,7 +232,7 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
                   SupplychainExceptionMessage.SALE_ORDER_NO_FREIGHT_CARRIER_PRICING_SELECTED)));
     }
 
-    if (freightCarrierPricingList.size() > 1) {
+    if (freightCarrierModeList.size() > 1) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(

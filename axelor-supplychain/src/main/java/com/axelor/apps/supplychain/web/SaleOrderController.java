@@ -36,10 +36,10 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.stock.db.FreightCarrierPricing;
+import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.repo.FreightCarrierPricingRepository;
+import com.axelor.apps.stock.db.repo.FreightCarrierModeRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
@@ -824,20 +824,20 @@ public class SaleOrderController {
   public void selectFreightCarrierPricings(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     try {
-      FreightCarrierPricingRepository freightCarrierPricingRepository =
-          Beans.get(FreightCarrierPricingRepository.class);
-      List<FreightCarrierPricing> freightCarrierPricingList =
+      FreightCarrierModeRepository freightCarrierModeRepository =
+          Beans.get(FreightCarrierModeRepository.class);
+      List<FreightCarrierMode> freightCarrierModeList =
           ((List<Map<String, Object>>) context.get("freightCarrierPricingsSet"))
               .stream()
-                  .map(o -> Mapper.toBean(FreightCarrierPricing.class, o))
-                  .filter(FreightCarrierPricing::isSelected)
-                  .map(it -> freightCarrierPricingRepository.find(it.getId()))
+                  .map(o -> Mapper.toBean(FreightCarrierMode.class, o))
+                  .filter(FreightCarrierMode::isSelected)
+                  .map(it -> freightCarrierModeRepository.find(it.getId()))
                   .collect(Collectors.toList());
 
       if (context.get("_id") != null) {
         Beans.get(SaleOrderShipmentService.class)
-            .computeFreightCarrierPricing(
-                freightCarrierPricingList, Long.valueOf(context.get("_id").toString()));
+            .computeFreightCarrierMode(
+                freightCarrierModeList, Long.valueOf(context.get("_id").toString()));
         response.setCanClose(true);
       }
     } catch (Exception e) {
