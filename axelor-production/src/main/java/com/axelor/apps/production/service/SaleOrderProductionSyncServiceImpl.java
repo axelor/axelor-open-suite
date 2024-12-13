@@ -30,15 +30,27 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
 
   protected final SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService;
   protected final SaleOrderLineBomService saleOrderLineBomService;
+  protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
+  protected final SolBomCustomizationService solBomCustomizationService;
+  protected final SolDetailsBomUpdateService solDetailsBomUpdateService;
+  protected final SolBomUpdateService solBomUpdateService;
   protected final AppProductionService appProductionService;
 
   @Inject
   public SaleOrderProductionSyncServiceImpl(
-      SaleOrderLineBomService saleOrderLineBomService,
       SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
+      SaleOrderLineBomService saleOrderLineBomService,
+      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
+      SolBomCustomizationService solBomCustomizationService,
+      SolDetailsBomUpdateService solDetailsBomUpdateService,
+      SolBomUpdateService solBomUpdateService,
       AppProductionService appProductionService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.saleOrderLineBomService = saleOrderLineBomService;
+    this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
+    this.solBomCustomizationService = solBomCustomizationService;
+    this.solDetailsBomUpdateService = solDetailsBomUpdateService;
+    this.solBomUpdateService = solBomUpdateService;
     this.appProductionService = appProductionService;
   }
 
@@ -78,20 +90,24 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
 
     // if bom lines list is same size as sub line list (checking if more line or less)
     // and if each lines are sync
-    var isUpdated = saleOrderLineBomService.isUpdated(saleOrderLine);
+    var isUpdated = solBomUpdateService.isUpdated(saleOrderLine);
+    var isSolDetailsUpdated = solDetailsBomUpdateService.isSolDetailsUpdated(saleOrderLine);
 
-    if (isUpdated) {
+    if (isUpdated && isSolDetailsUpdated) {
       return;
     }
 
-    // Not sync
-    // Checking first if a personalized bom is created on saleOrderLine. If not, will create one.
-    if (!saleOrderLine.getBillOfMaterial().getPersonalized()) {
-      saleOrderLineBomService.customizeBomOf(saleOrderLine);
-    }
-    // Will sync with current personalized bom
-    else {
-      saleOrderLineBomService.updateWithBillOfMaterial(saleOrderLine);
+    if (!isUpdated || !isSolDetailsUpdated) {
+      if (!saleOrderLine.getBillOfMaterial().getPersonalized()) {
+        solBomCustomizationService.customizeBomOf(saleOrderLine);
+      } else {
+        if (!isUpdated) {
+          solBomUpdateService.updateSolWithBillOfMaterial(saleOrderLine);
+        }
+        if (!isSolDetailsUpdated) {
+          solDetailsBomUpdateService.updateSolDetailslWithBillOfMaterial(saleOrderLine);
+        }
+      }
     }
   }
 }

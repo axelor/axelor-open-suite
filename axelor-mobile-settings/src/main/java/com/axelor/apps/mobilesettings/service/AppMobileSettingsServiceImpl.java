@@ -74,5 +74,7 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
         appMobileSettings.getIsProjectAppEnabled(), MobileConfigRepository.APP_SEQUENCE_PROJECT);
     updateMobileConfig(
         appMobileSettings.getIsDMSAppEnabled(), MobileConfigRepository.APP_SEQUENCE_DMS);
+    updateMobileConfig(
+        appMobileSettings.getIsPurchaseAppEnabled(), MobileConfigRepository.APP_SEQUENCE_PURCHASE);
   }
 }

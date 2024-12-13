@@ -26,6 +26,7 @@ import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
+import com.axelor.apps.production.service.SolBomUpdateService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
 import com.axelor.i18n.I18n;
@@ -116,13 +117,10 @@ public class SaleOrderLineController {
       saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext(), saleOrderLine);
     }
     SaleOrderLineBomService saleOrderLineBomService = Beans.get(SaleOrderLineBomService.class);
-    if (saleOrderLine.getBillOfMaterial() != null
-        && saleOrder != null
-        && !saleOrderLineBomService.isUpdated(saleOrderLine)) {
+    BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
 
-      BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
-
-      if (billOfMaterial != null && saleOrder != null) {
+    if (billOfMaterial != null && saleOrder != null) {
+      if (!Beans.get(SolBomUpdateService.class).isUpdated(saleOrderLine)) {
         response.setValue(
             "subSaleOrderLineList",
             saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder));

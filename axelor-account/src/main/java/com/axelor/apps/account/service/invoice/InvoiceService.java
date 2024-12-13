@@ -96,6 +96,14 @@ public interface InvoiceService {
   public void cancel(Invoice invoice) throws AxelorException;
 
   /**
+   * Return to draft status.
+   *
+   * @param invoice
+   * @throws AxelorException
+   */
+  void backToDraft(Invoice invoice) throws AxelorException;
+
+  /**
    * Procédure permettant d'impacter la case à cocher "Passage à l'huissier" sur l'écriture de
    * facture. (Transaction)
    *
