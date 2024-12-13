@@ -39,6 +39,7 @@ import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -46,6 +47,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FECImporter extends Importer {
 
@@ -192,6 +194,7 @@ public class FECImporter extends Importer {
   protected Move setVatSystemSelect(ImporterListener listener, Move move) {
     try {
       if (move != null) {
+        // Set vatSystemSelect on charge/income/immobilisation lines
         for (MoveLine moveLine : move.getMoveLineList()) {
           String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
           boolean accountTypeCondition =
@@ -202,6 +205,30 @@ public class FECImporter extends Importer {
             moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
           }
         }
+
+        // Set vatSystemSelect on tax lines
+        List<Integer> vatSystemSelectList =
+            move.getMoveLineList().stream()
+                .filter(
+                    ml ->
+                        Lists.newArrayList(
+                                AccountTypeRepository.TYPE_CHARGE,
+                                AccountTypeRepository.TYPE_INCOME,
+                                AccountTypeRepository.TYPE_IMMOBILISATION)
+                            .contains(ml.getAccount().getAccountType().getTechnicalTypeSelect()))
+                .map(MoveLine::getVatSystemSelect)
+                .distinct()
+                .collect(Collectors.toList());
+        if (vatSystemSelectList.size() == 1) {
+          int vatSystemSelect = vatSystemSelectList.get(0);
+          for (MoveLine moveLine : move.getMoveLineList()) {
+            String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
+            if (accountType.equals(AccountTypeRepository.TYPE_TAX)) {
+              moveLine.setVatSystemSelect(vatSystemSelect);
+            }
+          }
+        }
+
         return moveRepository.save(move);
       }
 
