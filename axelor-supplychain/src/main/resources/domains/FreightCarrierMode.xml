@@ -7,8 +7,8 @@
 
   <entity name="FreightCarrierMode" cacheable="true">
 
-    <many-to-many ref="com.axelor.apps.stock.db.FreightCarrierPricing"
-      name="freightCarrierPricingSet" title="Freight carrier pricings"/>
+    <many-to-one ref="com.axelor.apps.base.db.Pricing" name="freightCarrierPricing"
+      title="Freight carrier pricing"/>
   </entity>
 
 </domain-models>

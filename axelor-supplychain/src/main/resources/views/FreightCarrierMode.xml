@@ -7,16 +7,16 @@
     model="com.axelor.apps.stock.db.FreightCarrierMode" x-selector="none">
     <field name="name"/>
     <field name="carrierPartner"/>
-    <field name="pricing"/>
+    <field name="freightCarrierPricing"/>
   </grid>
 
-  <form name="freight-carrier-pricings-form"
-    model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight carrier pricing"
+  <form name="freight-carrier-pricing-form" model="com.axelor.apps.stock.db.FreightCarrierMode"
+    title="Freight carrier pricing"
     onLoad="action-freight-carrier-pricing-set-freight-carrier-mode-readonly">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="carrierPartner" form-view="partner-form" grid-view="partner-grid"/>
-      <field name="pricing" form-view="pricing-form" grid-view="pricing-grid"/>
+      <field name="freightCarrierPricing" form-view="pricing-form" grid-view="pricing-grid"/>
     </panel>
   </form>
 
@@ -26,9 +26,8 @@
 
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
-        <panel-related field="freightCarrierPricingSet"
-          form-view="freight-carrier-pricings-grid" grid-view="freight-carrier-pricings-grid"
-          colSpan="12" canSelect="true"/>
+        <field name="freightCarrierPricing" form-view="pricing-form" grid-view="pricing-grid"
+          colSpan="12"/>
       </insert>
     </extend>
   </form>
@@ -40,7 +39,8 @@
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
         <panel name="carrierPricingPanel" title="Carrier pricings" colSpan="12">
-          <field name="carrierPricingSet" colSpan="12" canSelect="true"/>
+          <field name="freightCarrierPricing" form-view="pricing-form"
+            grid-view="pricing-grid" colSpan="12"/>
         </panel>
       </insert>
     </extend>
@@ -53,7 +53,8 @@
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
         <panel name="carrierPricingPanel" title="Carrier pricings" colSpan="12">
-          <field name="carrierPricingSet" colSpan="12" canSelect="true"/>
+          <field name="freightCarrierPricing" form-view="pricing-form"
+            grid-view="pricing-grid" colSpan="12"/>
         </panel>
       </insert>
     </extend>

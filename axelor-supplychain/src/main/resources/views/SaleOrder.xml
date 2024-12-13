@@ -384,7 +384,7 @@
     <panel name="main">
       <field name="$freightCarrierPricingsSet" type="many-to-many" showTitle="false"
         target="com.axelor.apps.stock.db.FreightCarrierMode"
-        form-view="freight-carrier-pricings-form" grid-view="freight-carrier-pricings-grid"
+        form-view="freight-carrier-pricing-form" grid-view="freight-carrier-pricings-grid"
         colSpan="12" canNew="false" canEdit="false" canRemove="false" canSelect="false"/>
       <button name="selectBtn" title="Select"
         onClick="action-supplychain-sale-order-method-select-freight-carrier-pricings" colSpan="12"/>
