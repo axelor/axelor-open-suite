@@ -46,7 +46,6 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
@@ -92,7 +91,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   protected PartnerPriceListService partnerPriceListService;
   protected ProductCompanyService productCompanyService;
   protected TimesheetLineRepository timesheetLineRepository;
-  protected UnitConversionForProjectService unitConversionForProjectService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -108,8 +106,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
-      TimesheetLineRepository timesheetLineRepository,
-      UnitConversionForProjectService unitConversionForProjectService) {
+      TimesheetLineRepository timesheetLineRepository) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -124,7 +121,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.partnerPriceListService = partnerPriceListService;
     this.productCompanyService = productCompanyService;
     this.timesheetLineRepository = timesheetLineRepository;
-    this.unitConversionForProjectService = unitConversionForProjectService;
   }
 
   @Override
