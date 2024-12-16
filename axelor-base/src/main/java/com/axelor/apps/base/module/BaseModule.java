@@ -65,6 +65,8 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.listener.BaseServerStartListener;
 import com.axelor.apps.base.quickmenu.ActiveCompanyUpdateQuickMenuCreator;
 import com.axelor.apps.base.quickmenu.InstanceInfoQuickMenuCreator;
+import com.axelor.apps.base.rest.PartnerRestService;
+import com.axelor.apps.base.rest.PartnerRestServiceImpl;
 import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
@@ -519,5 +521,6 @@ public class BaseModule extends AxelorModule {
     bind(ConnectorMapperFetchService.class).to(ConnectorMapperFetchServiceImpl.class);
     bind(ConnectorMapperReferenceService.class).to(ConnectorMapperReferenceServiceImpl.class);
     bind(ConnectorMapperManagementService.class).to(ConnectorMapperManagementServiceImpl.class);
+    bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
   }
 }
