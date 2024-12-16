@@ -78,4 +78,9 @@ public final class ProjectExceptionMessage {
 
   public static final String TASK_STATUS_USED_ON_PROJECT_TASK_CATEGORY = /*$$(*/
       "This task status is used on project task category for the auto progress process. Do you want to update all unmodified values with this one ?" /*)*/;
+
+  public static final String SPRINT_GENERATED = /*$$(*/ "%s sprints have been generated" /*)*/;
+
+  public static final String SPRINT_FIELDS_MISSING =
+      /*$$(*/ "Please fill all dates and the number of days in a sprint." /*)*/;
 }
