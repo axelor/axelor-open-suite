@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.meta.db.MetaModel;
 import java.util.List;
 
-public interface ConnectorMapperRetrievalService {
+public interface ConnectorMapperFetchService {
 
   /**
    * Retrieves a ConnectorMapper based on the given meta model, connector selection, external

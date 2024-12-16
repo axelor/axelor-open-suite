@@ -34,12 +34,12 @@ import org.apache.commons.lang3.StringUtils;
 
 public class ConnectorMapperReferenceServiceImpl implements ConnectorMapperReferenceService {
 
-  protected ConnectorMapperRetrievalService connectorMapperRetrievalService;
+  protected ConnectorMapperFetchService connectorMapperFetchService;
 
   @Inject
   public ConnectorMapperReferenceServiceImpl(
-      ConnectorMapperRetrievalService connectorMapperRetrievalService) {
-    this.connectorMapperRetrievalService = connectorMapperRetrievalService;
+      ConnectorMapperFetchService connectorMapperFetchService) {
+    this.connectorMapperFetchService = connectorMapperFetchService;
   }
 
   @Override
@@ -64,7 +64,7 @@ public class ConnectorMapperReferenceServiceImpl implements ConnectorMapperRefer
       Model model, String connectorSelect, Company company, TradingName tradingName) {
     MetaModel metaModel = MetaModelService.getMetaModel(model.getClass());
     List<ConnectorMapper> connectorMapperList =
-        connectorMapperRetrievalService.getConnectorMapperList(
+        connectorMapperFetchService.getConnectorMapperList(
             metaModel, connectorSelect, null, company, tradingName);
     if (CollectionUtils.isEmpty(connectorMapperList)) {
       return null;
@@ -106,7 +106,7 @@ public class ConnectorMapperReferenceServiceImpl implements ConnectorMapperRefer
       TradingName tradingName) {
     MetaModel metaModel = MetaModelService.getMetaModel(modelClass);
     List<ConnectorMapper> connectorMapperList =
-        connectorMapperRetrievalService.getConnectorMapperList(
+        connectorMapperFetchService.getConnectorMapperList(
             metaModel, connectorSelect, externalReference, company, tradingName);
     if (CollectionUtils.isEmpty(connectorMapperList)) {
       return null;

@@ -29,14 +29,14 @@ import com.google.inject.Inject;
 public class ConnectorMapperManagementServiceImpl implements ConnectorMapperManagementService {
 
   protected ConnectorMapperCreateService connectorMapperCreateService;
-  protected ConnectorMapperRetrievalService connectorMapperRetrievalService;
+  protected ConnectorMapperFetchService connectorMapperFetchService;
 
   @Inject
   public ConnectorMapperManagementServiceImpl(
       ConnectorMapperCreateService connectorMapperCreateService,
-      ConnectorMapperRetrievalService connectorMapperRetrievalService) {
+      ConnectorMapperFetchService connectorMapperFetchService) {
     this.connectorMapperCreateService = connectorMapperCreateService;
-    this.connectorMapperRetrievalService = connectorMapperRetrievalService;
+    this.connectorMapperFetchService = connectorMapperFetchService;
   }
 
   @Override
@@ -66,7 +66,7 @@ public class ConnectorMapperManagementServiceImpl implements ConnectorMapperMana
       TradingName tradingName) {
     MetaModel metaModel = MetaModelService.getMetaModel(model.getClass());
     ConnectorMapper connectorMapper =
-        connectorMapperRetrievalService.getConnectorMapper(
+        connectorMapperFetchService.getConnectorMapper(
             metaModel, connectorSelect, externalReference, company, tradingName);
     if (connectorMapper == null) {
       return connectorMapperCreateService.createConnectorMapper(

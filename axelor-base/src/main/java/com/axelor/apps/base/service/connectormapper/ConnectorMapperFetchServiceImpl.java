@@ -29,12 +29,12 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-public class ConnectorMapperRetrievalServiceImpl implements ConnectorMapperRetrievalService {
+public class ConnectorMapperFetchServiceImpl implements ConnectorMapperFetchService {
 
   protected ConnectorMapperRepository connectorMapperRepository;
 
   @Inject
-  public ConnectorMapperRetrievalServiceImpl(ConnectorMapperRepository connectorMapperRepository) {
+  public ConnectorMapperFetchServiceImpl(ConnectorMapperRepository connectorMapperRepository) {
     this.connectorMapperRepository = connectorMapperRepository;
   }
 
