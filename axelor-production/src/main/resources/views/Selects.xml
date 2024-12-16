@@ -188,9 +188,9 @@
   </selection>
 
   <selection name="production.sale.order.line.details.type.select">
-    <option value="1">Component</option>
-    <option value="2">Operation</option>
-    <option value="3">Budget item</option>
+    <option value="1" icon="fa-cpu-fill">Component</option>
+    <option value="2" icon="fa-stopwatch-fill">Operation</option>
+    <option value="3" icon="fa-cash-coin">Budget item</option>
   </selection>
 
 </object-views>
