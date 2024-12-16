@@ -16,9 +16,13 @@ public class SaleOrderLineDetailsController {
       throws AxelorException {
     Context context = request.getContext();
     SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
+    SaleOrderLineDetailsService saleOrderLineDetailsService =
+        Beans.get(SaleOrderLineDetailsService.class);
     SaleOrder saleOrder = ContextHelper.getOriginParent(context, SaleOrder.class);
+    if (saleOrder == null) {
+      saleOrder = saleOrderLineDetailsService.getParentSaleOrder(saleOrderLineDetails);
+    }
     response.setValues(
-        Beans.get(SaleOrderLineDetailsService.class)
-            .productOnChange(saleOrderLineDetails, saleOrder));
+        saleOrderLineDetailsService.productOnChange(saleOrderLineDetails, saleOrder));
   }
 }

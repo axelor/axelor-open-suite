@@ -109,7 +109,7 @@ public abstract class SaleOrderSyncService {
 
     if (!isUpdated || !isSolDetailsUpdated) {
       if (!saleOrderLine.getBillOfMaterial().getPersonalized()) {
-        solBomCustomizationService.customizeBomOf(saleOrderLine);
+        solBomCustomizationService.customizeBomOf(saleOrderLine, saleOrderLineDetailsList);
       } else {
         if (!isUpdated) {
           solBomUpdateService.updateSolWithBillOfMaterial(saleOrderLine);

@@ -31,11 +31,14 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public BillOfMaterial customizeBomOf(SaleOrderLine saleOrderLine) throws AxelorException {
-    return customizeBomOf(saleOrderLine, 0);
+  public BillOfMaterial customizeBomOf(
+      SaleOrderLine saleOrderLine, List<SaleOrderLineDetails> saleOrderLineDetailsList)
+      throws AxelorException {
+    return customizeBomOf(saleOrderLine, saleOrderLineDetailsList, 0);
   }
 
-  protected BillOfMaterial customizeBomOf(SaleOrderLine saleOrderLine, int depth)
+  protected BillOfMaterial customizeBomOf(
+      SaleOrderLine saleOrderLine, List<SaleOrderLineDetails> saleOrderLineDetailsList, int depth)
       throws AxelorException {
     var billOfMaterial = saleOrderLine.getBillOfMaterial();
     if (billOfMaterial == null) {
@@ -59,7 +62,8 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
           var bomLine = bomLineCreationService.createBomLineFromSol(subSaleOrderLine);
           // If it is not personalized, we will customize, else just use the personalized one.
           if (subSaleOrderLine.getIsToProduce() && !bomLine.getBillOfMaterial().getPersonalized()) {
-            subSaleOrderLine.setBillOfMaterial(customizeBomOf(subSaleOrderLine, depth + 1));
+            subSaleOrderLine.setBillOfMaterial(
+                customizeBomOf(subSaleOrderLine, saleOrderLineDetailsList, depth + 1));
           }
           // Relink billOfMaterialLine
           subSaleOrderLine.setBillOfMaterialLine(bomLine);
@@ -68,9 +72,8 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
       }
     }
 
-    if (CollectionUtils.isNotEmpty(saleOrderLine.getSaleOrderLineDetailsList())) {
-      for (SaleOrderLineDetails saleOrderLineDetails :
-          saleOrderLine.getSaleOrderLineDetailsList()) {
+    if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
+      for (SaleOrderLineDetails saleOrderLineDetails : saleOrderLineDetailsList) {
         if (saleOrderLineDetails.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT) {
           var bomLine = bomLineCreationService.createBomLineFromSolDetails(saleOrderLineDetails);
           saleOrderLineDetails.setBillOfMaterialLine(bomLine);

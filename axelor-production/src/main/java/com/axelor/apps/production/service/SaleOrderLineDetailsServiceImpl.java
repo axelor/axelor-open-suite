@@ -55,4 +55,9 @@ public class SaleOrderLineDetailsServiceImpl implements SaleOrderLineDetailsServ
     lineMap.put("unit", saleOrderLineDetails.getUnit());
     return lineMap;
   }
+
+  @Override
+  public SaleOrder getParentSaleOrder(SaleOrderLineDetails saleOrderLineDetails) {
+    return saleOrderLineDetails.getSaleOrderLine().getSaleOrder();
+  }
 }
