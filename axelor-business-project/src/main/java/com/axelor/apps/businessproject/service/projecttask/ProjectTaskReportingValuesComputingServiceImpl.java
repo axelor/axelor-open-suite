@@ -29,7 +29,6 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -96,41 +95,10 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     }
 
     defaultHoursADay = projectTimeUnitService.getDefaultNumberHoursADay(project);
-    Unit projectTaskUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
 
-    if (projectTaskBusinessProjectService.isTimeUnitValid(projectTaskUnit)) {
-      computeProjectTaskTimes(projectTask);
-    }
     computeFinancialReporting(projectTask, project);
     projectTaskBusinessProjectService.computeProjectTaskTotals(projectTask);
     projectTaskRepo.save(projectTask);
-  }
-
-  /**
-   * Compute plannedTime and spentTime
-   *
-   * @param projectTask
-   * @throws AxelorException
-   */
-  protected void computeProjectTaskTimes(ProjectTask projectTask) throws AxelorException {
-    BigDecimal spentTime = getTaskSpentTime(projectTask);
-
-    BigDecimal plannedTime =
-        projectTask.getProjectPlanningTimeList().stream()
-            .map(ProjectPlanningTime::getPlannedTime)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-    // compute task children
-    List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
-    for (ProjectTask task : projectTaskList) {
-      computeProjectTaskTimes(task);
-      // retrieving information from children
-      plannedTime = plannedTime.add(task.getPlannedTime());
-      spentTime = spentTime.add(task.getSpentTime());
-    }
-
-    projectTask.setPlannedTime(plannedTime);
-    projectTask.setSpentTime(spentTime);
   }
 
   /**

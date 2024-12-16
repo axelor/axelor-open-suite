@@ -59,7 +59,8 @@ public class InvoicePaymentComputeServiceImpl implements InvoicePaymentComputeSe
           invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
 
       if (!invoicePayment.getApplyFinancialDiscount()
-          && invoicePayment.getCurrency().equals(invoicePayment.getCompanyCurrency())) {
+          && invoicePayment.getCurrency().equals(invoicePayment.getCompanyCurrency())
+          && invoicePayment.getTotalAmountWithFinancialDiscount().signum() > 0) {
         invoicePayment.setAmount(invoicePayment.getTotalAmountWithFinancialDiscount());
       }
       invoicePayment.clearInvoiceTermPaymentList();

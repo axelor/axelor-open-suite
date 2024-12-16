@@ -21,11 +21,13 @@ package com.axelor.apps.hr.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class EmployeeComputeDaysLeaveService {
 
@@ -47,7 +49,13 @@ public abstract class EmployeeComputeDaysLeaveService {
 
   public BigDecimal computeDaysLeave(Employee employee, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
-    List<LeaveRequest> leaveRequestList = getEmployeeDaysLeave(employee, fromDate, toDate);
+    List<LeaveRequest> leaveRequestList =
+        getEmployeeDaysLeave(employee, fromDate, toDate).stream()
+            .filter(
+                request ->
+                    request.getLeaveReason().getUnitSelect()
+                        == LeaveReasonRepository.UNIT_SELECT_DAYS)
+            .collect(Collectors.toList());
 
     BigDecimal daysLeave = BigDecimal.ZERO;
     for (LeaveRequest leaveRequest : leaveRequestList) {

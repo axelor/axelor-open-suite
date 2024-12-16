@@ -87,11 +87,11 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     implements ProjectTaskBusinessProjectService {
 
   public static final int BIG_DECIMAL_SCALE = 2;
-  private PriceListLineRepository priceListLineRepo;
-  private PriceListService priceListService;
-  private PartnerPriceListService partnerPriceListService;
-  private ProductCompanyService productCompanyService;
-  private TimesheetLineRepository timesheetLineRepository;
+  protected PriceListLineRepository priceListLineRepo;
+  protected PriceListService priceListService;
+  protected PartnerPriceListService partnerPriceListService;
+  protected ProductCompanyService productCompanyService;
+  protected TimesheetLineRepository timesheetLineRepository;
   protected ProjectTimeUnitService projectTimeUnitService;
 
   @Inject
@@ -369,6 +369,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     nextProjectTask.setPriceDiscounted(projectTask.getPriceDiscounted());
     nextProjectTask.setInvoicingType(projectTask.getInvoicingType());
     nextProjectTask.setCustomerReferral(projectTask.getCustomerReferral());
+    nextProjectTask.setTargetVersion(projectTask.getTargetVersion());
   }
 
   @Override
@@ -546,7 +547,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Transactional(rollbackOn = {Exception.class})
   public void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException {
 
-    BigDecimal plannedTime;
+    BigDecimal plannedTime = BigDecimal.ZERO;
     BigDecimal spentTime = BigDecimal.ZERO;
 
     Unit timeUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
