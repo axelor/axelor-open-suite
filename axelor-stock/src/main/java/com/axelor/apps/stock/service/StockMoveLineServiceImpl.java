@@ -1857,7 +1857,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_STATUS));
       }
 
-      if (!stockMove.getTypeSelect().equals(StockMoveRepository.TYPE_INCOMING)) {
+      if (stockMove.getTypeSelect().equals(StockMoveRepository.TYPE_INTERNAL)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_TYPE));
