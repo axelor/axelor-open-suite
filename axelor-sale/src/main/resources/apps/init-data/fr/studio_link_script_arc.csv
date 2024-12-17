@@ -1,0 +1,4 @@
+"importId";"name";"toLinkScript.name";"dependencyLinkScript.name"
+"5";"saleOrder";"SaleOrderLine.saleOrder";"SaleOrderLine"
+"6";"product";"SaleOrderLine.product";"SaleOrderLine"
+"7";"qty";"SaleOrderLine.qty";"SaleOrderLine"

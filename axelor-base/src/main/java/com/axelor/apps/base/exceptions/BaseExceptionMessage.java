@@ -704,4 +704,7 @@ public final class BaseExceptionMessage {
 
   public static final String APP_BASE_NO_UNIT_DAILY_WORK_HOURS = /*$$(*/
       "There is no configured daily work hours in the app base config" /*)*/;
+
+  public static final String CONFIGURATOR_MISSING_REQUIRED_FIELDS = /*$$(*/
+      "Required fields are missing in configurator." /*)*/;
 }

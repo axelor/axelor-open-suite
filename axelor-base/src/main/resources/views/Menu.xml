@@ -1210,4 +1210,27 @@
     <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
 
+  <menuitem title="Configurator" name="referential-root-configurator" order="700"
+    parent="referential-root"/>
+
+  <menuitem title="Configurator generator"
+    name="referential-root-configurator-configurator-generator"
+    parent="referential-root-configurator" order="1" action="action.configurator.generator.view.all"/>
+
+  <action-view name="action.configurator.generator.view.all"
+    title="Configurator generator" model="com.axelor.apps.base.db.ConfiguratorGenerator">
+    <view type="grid" name="configurator-generator-grid"/>
+    <view type="form" name="configurator-generator-form"/>
+  </action-view>
+
+  <menuitem title="Configurator binding"
+    name="referential-root-configurator-configurator-bindings"
+    parent="referential-root-configurator" order="2" action="action.configurator.bindings.view.all"/>
+
+  <action-view name="action.configurator.bindings.view.all" title="Configurator binding"
+    model="com.axelor.apps.base.db.ConfiguratorBinding">
+    <view type="grid" name="configurator-binding-grid"/>
+    <view type="form" name="configurator-binding-form"/>
+  </action-view>
+
 </object-views>

@@ -1,0 +1,5 @@
+"importId";"name";"toLinkScript.name";"dependencyLinkScript.name"
+"1";"name";"Product.name";"Product"
+"2";"code";"Product.code";"Product"
+"3";"saleCurrency";"Product.saleCurrency";"Product"
+"4";"productTypeSelect";"Product.productTypeSelect";"Product"

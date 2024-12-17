@@ -1,0 +1,8 @@
+"import_id";"name";"transactional";"description";"body"
+1;"Product";false;<p>Create a product</p>;"if(variables) {
+    createProduct(variables)
+}"
+2;"Product.code";false;;"return prefix + 'CUSTOM'"
+3;"Product.name";false;;"return prefix + 'CUSTOM'"
+4;"Product.saleCurrency";false;;"return __repo__(Currency).findByCode('EUR')"
+5;"Product.productTypeSelect";false;;"return type ?: 'storable'"

@@ -1,0 +1,7 @@
+"import_id";"name";"transactional";"description";"body"
+6;"SaleOrderLine";false;<p>Génère une ligne de devis. Les champs saleOrder, product et qty sont requis.</p>;"if(variables) {
+    generateSaleOrderLine(variables)
+}"
+7;"SaleOrderLine.saleOrder";false;;"return __repo__(SaleOrder).find(1)"
+8;"SaleOrderLine.product";false;;"return __repo__(Product).find(11)"
+9;"SaleOrderLine.qty";false;;"return 1"

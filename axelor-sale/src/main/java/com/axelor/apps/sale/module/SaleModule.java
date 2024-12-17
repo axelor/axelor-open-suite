@@ -203,6 +203,8 @@ import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDummyService
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDummyServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewServiceImpl;
+import com.axelor.apps.sale.utils.ConfiguratorGeneratorLibrarySaleService;
+import com.axelor.apps.sale.utils.ConfiguratorGeneratorLibrarySaleServiceImpl;
 
 public class SaleModule extends AxelorModule {
 
@@ -309,5 +311,7 @@ public class SaleModule extends AxelorModule {
     bind(SubSaleOrderLineComputeService.class).to(SubSaleOrderLineComputeServiceImpl.class);
     bind(SaleOrderComplementaryProductService.class)
         .to(SaleOrderComplementaryProductServiceImpl.class);
+    bind(ConfiguratorGeneratorLibrarySaleService.class)
+        .to(ConfiguratorGeneratorLibrarySaleServiceImpl.class);
   }
 }

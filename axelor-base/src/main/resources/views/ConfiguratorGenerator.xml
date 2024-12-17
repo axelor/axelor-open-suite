@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="configurator-generator-grid" title="Configurator generator"
+    model="com.axelor.apps.base.db.ConfiguratorGenerator">
+    <field name="metaModel"/>
+  </grid>
+
+  <form name="configurator-generator-form" title="Configurator generator"
+    model="com.axelor.apps.base.db.ConfiguratorGenerator" width="large"
+    onSave="action-configurator-generator-method-sync-arc-dependencies">
+    <panel>
+      <field name="metaModel" domain="self IN (SELECT metaModel FROM ConfiguratorBinding)"/>
+      <button name="testBtn" title="Test configurator"
+        onClick="action-configurator-generator-method-test-configurator" colSpan="3" colOffset="3"
+        showIf="id"/>
+      <field name="configuratorGeneratorLineList" canNew="true" colSpan="12" showIf="id"/>
+    </panel>
+  </form>
+
+  <action-method name="action-configurator-generator-method-test-configurator">
+    <call class="com.axelor.apps.base.web.ConfiguratorGeneratorController"
+      method="testConfigurator"/>
+  </action-method>
+
+  <action-method name="action-configurator-generator-method-sync-arc-dependencies">
+    <call class="com.axelor.apps.base.web.ConfiguratorGeneratorController"
+      method="syncArcDependencies"/>
+  </action-method>
+
+</object-views>

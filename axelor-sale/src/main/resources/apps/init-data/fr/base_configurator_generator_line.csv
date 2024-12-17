@@ -1,0 +1,4 @@
+"importId";"configuratorGenerator.importId";"metaModel";"metaField";"linkScript.name"
+"5";"2";"SaleOrderLine";"saleOrder";"SaleOrderLine.saleOrder"
+"6";"2";"SaleOrderLine";"product";"SaleOrderLine.product"
+"7";"2";"SaleOrderLine";"qty";"SaleOrderLine.qty"

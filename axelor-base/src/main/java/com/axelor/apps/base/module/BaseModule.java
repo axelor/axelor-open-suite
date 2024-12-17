@@ -86,6 +86,8 @@ import com.axelor.apps.base.service.BirtTemplateViewService;
 import com.axelor.apps.base.service.BirtTemplateViewServiceImpl;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
+import com.axelor.apps.base.service.ConfiguratorGeneratorService;
+import com.axelor.apps.base.service.ConfiguratorGeneratorServiceImpl;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
 import com.axelor.apps.base.service.CurrencyService;
@@ -302,6 +304,8 @@ import com.axelor.apps.base.tracking.ExportObserver;
 import com.axelor.apps.base.tracking.GlobalAuditInterceptor;
 import com.axelor.apps.base.tracking.GlobalTrackingLogService;
 import com.axelor.apps.base.tracking.GlobalTrackingLogServiceImpl;
+import com.axelor.apps.base.utils.ConfiguratorGeneratorLibraryService;
+import com.axelor.apps.base.utils.ConfiguratorGeneratorLibraryServiceImpl;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.auth.pac4j.AuthPac4jUserService;
 import com.axelor.auth.service.PermissionService;
@@ -519,5 +523,8 @@ public class BaseModule extends AxelorModule {
     bind(ConnectorMapperFetchService.class).to(ConnectorMapperFetchServiceImpl.class);
     bind(ConnectorMapperReferenceService.class).to(ConnectorMapperReferenceServiceImpl.class);
     bind(ConnectorMapperManagementService.class).to(ConnectorMapperManagementServiceImpl.class);
+    bind(ConfiguratorGeneratorService.class).to(ConfiguratorGeneratorServiceImpl.class);
+    bind(ConfiguratorGeneratorLibraryService.class)
+        .to(ConfiguratorGeneratorLibraryServiceImpl.class);
   }
 }
