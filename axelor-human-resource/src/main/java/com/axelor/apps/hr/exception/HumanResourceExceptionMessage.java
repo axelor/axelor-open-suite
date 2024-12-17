@@ -408,4 +408,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String NO_TIMESHEET_GENERATED_DATE = /*$$(*/
       "Please fill a generation date." /*)*/;
+
+  public static final String DATE_NOT_IN_TIMESHEET_PERIOD = /*$$(*/
+      "The date must be in the timesheet period." /*)*/;
 }

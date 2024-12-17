@@ -633,7 +633,8 @@ public class TimesheetController {
         Beans.get(ProjectPlanningTimeService.class)
             .getProjectPlanningTimeIdList(employee, fromDate, toDate);
 
-    if (!ObjectUtils.isEmpty(projectPlanningTimeList)) {
+    if (!ObjectUtils.isEmpty(projectPlanningTimeList)
+        && TimesheetRepository.STATUS_DRAFT == timesheet.getStatusSelect()) {
       response.setValue("$projectPlanningTimeList", projectPlanningTimeList);
       LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(timesheet.getCompany());
       response.setValue(
@@ -652,10 +653,18 @@ public class TimesheetController {
       throws AxelorException {
     Timesheet timesheet = request.getContext().asType(Timesheet.class);
     Object generationDateObject = request.getContext().get("generationDate");
+
     if (generationDateObject == null) {
       response.setError(I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_GENERATED_DATE));
+      return;
     }
     LocalDate generationDate = LocalDate.parse(generationDateObject.toString());
+    if (!LocalDateHelper.isBetween(
+        timesheet.getFromDate(), timesheet.getToDate(), generationDate)) {
+      response.setError(I18n.get(HumanResourceExceptionMessage.DATE_NOT_IN_TIMESHEET_PERIOD));
+      return;
+    }
+
     List<Map<String, Object>> projectPlanningTimeList =
         ((List<Map<String, Object>>) request.getContext().get("projectPlanningTimeList"))
             .stream()

@@ -183,7 +183,6 @@
     </panel>
 
     <panel name="projectPlanningTimePanel" title="Project planning time on the duration"
-      showIf="employee &amp;&amp; fromDate &amp;&amp; toDate &amp;&amp; statusSelect == 1"
       collapseIf="true">
       <panel-related field="$projectPlanningTimeList" showTitle="false"
         target="com.axelor.apps.project.db.ProjectPlanningTime" type="one-to-many" canRemove="false"
@@ -367,6 +366,7 @@
     <action name="action-timesheet-prefill-lines"
       if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet')?.getCreateLinesForLeaves() || __config__.app.getApp('timesheet')?.getCreateLinesForHolidays())"/>
     <action name="action-timesheet-attrs-refresh-editor" if="showEditor"/>
+    <action name="action-timesheet-method-init-project-planning"/>
   </action-group>
 
   <action-group name="action-timesheet-group-generate-lines-using-project-task">

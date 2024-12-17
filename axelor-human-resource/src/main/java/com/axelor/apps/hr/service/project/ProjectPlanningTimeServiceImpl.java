@@ -570,10 +570,10 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         .filter(
             "self.project IS NOT NULL and self.project.manageTimeSpent is true "
                 + "and self.employee = :employee "
-                + "and ((self.startDateTime < :fromDate and self.endDateTime > :toDate) or self.startDateTime between :fromDate and :toDate or (self.endDateTime between :fromDate and :toDate))")
+                + "and ((self.startDateTime <= :fromDate and self.endDateTime >= :toDate) or self.startDateTime between :fromDate and :toDate or (self.endDateTime between :fromDate and :toDate))")
         .bind("employee", employee)
-        .bind("fromDate", fromDate)
-        .bind("toDate", toDate)
+        .bind("fromDate", fromDate.atStartOfDay())
+        .bind("toDate", toDate.atTime(23, 59))
         .fetch()
         .stream()
         .filter(
