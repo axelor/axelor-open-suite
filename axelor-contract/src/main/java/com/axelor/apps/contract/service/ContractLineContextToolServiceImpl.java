@@ -35,6 +35,7 @@ public class ContractLineContextToolServiceImpl implements ContractLineContextTo
           && Contract.class.equals(parentParentContext.getContextClass())) {
         return parentParentContext.asType(Contract.class);
       }
+      return parentContext.asType(ContractVersion.class).getNextContract();
     }
 
     // Additional line

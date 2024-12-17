@@ -25,27 +25,38 @@ import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineComplementaryProductService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineDiscountService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLinePriceService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLinePricingService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
+import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.axelor.apps.supplychain.service.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
+import com.axelor.studio.db.AppProduction;
+import com.axelor.studio.db.AppSale;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 public class SaleOrderLineProductProductionServiceImpl
     extends SaleOrderLineProductSupplychainServiceImpl
     implements SaleOrderLineProductProductionService {
 
   protected AppProductionService appProductionService;
+  protected final SaleOrderLineBomService saleOrderLineBomService;
+  protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
+  protected final SolBomUpdateService solBomUpdateService;
 
   @Inject
   public SaleOrderLineProductProductionServiceImpl(
@@ -62,7 +73,11 @@ public class SaleOrderLineProductProductionServiceImpl
       BlockingService blockingService,
       AnalyticLineModelService analyticLineModelService,
       AppSupplychainService appSupplychainService,
-      AppProductionService appProductionService) {
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService,
+      AppProductionService appProductionService,
+      SaleOrderLineBomService saleOrderLineBomService,
+      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
+      SolBomUpdateService solBomUpdateService) {
     super(
         appSaleService,
         appBaseService,
@@ -76,42 +91,87 @@ public class SaleOrderLineProductProductionServiceImpl
         saleOrderLineTaxService,
         blockingService,
         analyticLineModelService,
-        appSupplychainService);
+        appSupplychainService,
+        saleOrderLineAnalyticService);
     this.appProductionService = appProductionService;
+    this.saleOrderLineBomService = saleOrderLineBomService;
+    this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
+    this.solBomUpdateService = solBomUpdateService;
   }
 
   @Override
-  public Map<String, Object> computeProductInformation(
+  public Map<String, Object> computeProductInformationProduction(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
-    Map<String, Object> saleOrderLineMap =
-        super.computeProductInformation(saleOrderLine, saleOrder);
-    saleOrderLineMap.putAll(setBillOfMaterial(saleOrderLine));
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    saleOrderLineMap.putAll(setBillOfMaterial(saleOrderLine, saleOrder));
 
     return saleOrderLineMap;
   }
 
   @Override
-  public Map<String, Object> getProductionInformation(SaleOrderLine saleOrderLine) {
-    Map<String, Object> saleOrderLineMap = super.getProductionInformation(saleOrderLine);
-    saleOrderLineMap.putAll(setBillOfMaterial(saleOrderLine));
+  public Map<String, Object> getProductionInformation(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+    Map<String, Object> saleOrderLineMap = super.getProductionInformation(saleOrderLine, saleOrder);
+    saleOrderLineMap.putAll(setBillOfMaterial(saleOrderLine, saleOrder));
     return saleOrderLineMap;
   }
 
   @Override
-  public Map<String, Object> setBillOfMaterial(SaleOrderLine saleOrderLine) {
+  public Map<String, Object> setBillOfMaterial(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     if (appProductionService.isApp("production")) {
       Product product = saleOrderLine.getProduct();
-
+      saleOrderLine.clearSubSaleOrderLineList();
       if (product != null) {
-        if (product.getDefaultBillOfMaterial() != null) {
+        // First we will be checking if current sale order line has bom line
+        // If it's the case, then we'll check if the bom line has a bom
+        // And if it's also the case we'll check if this bom is for the same current product of sale
+        // order line
+        var isCurrentBomLineProductSame =
+            Optional.ofNullable(saleOrderLine.getBillOfMaterialLine())
+                .map(BillOfMaterialLine::getBillOfMaterial)
+                .map(BillOfMaterial::getProduct)
+                .map(bomLineProduct -> bomLineProduct.equals(product))
+                .orElse(false);
+        if (isCurrentBomLineProductSame) {
+          // If it is the case, we will use the bomLine.bom
+          saleOrderLine.setBillOfMaterial(
+              saleOrderLine.getBillOfMaterialLine().getBillOfMaterial());
+        } else if (product.getDefaultBillOfMaterial() != null) {
           saleOrderLine.setBillOfMaterial(product.getDefaultBillOfMaterial());
         } else if (product.getParentProduct() != null) {
           saleOrderLine.setBillOfMaterial(product.getParentProduct().getDefaultBillOfMaterial());
         }
+        generateLines(saleOrderLine, saleOrder);
+
         saleOrderLineMap.put("billOfMaterial", saleOrderLine.getBillOfMaterial());
       }
+      saleOrderLineMap.put("subSaleOrderLineList", saleOrderLine.getSubSaleOrderLineList());
+      saleOrderLineMap.put("saleOrderLineDetailsList", saleOrderLine.getSaleOrderLineDetailsList());
     }
     return saleOrderLineMap;
+  }
+
+  protected void generateLines(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    AppProduction appProduction = appProductionService.getAppProduction();
+    AppSale appSale = appSaleService.getAppSale();
+    if (saleOrderLine.getIsToProduce()
+        && appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
+        && !appProduction.getIsBomLineGenerationInSODisabled()) {
+      if (!solBomUpdateService.isUpdated(saleOrderLine)) {
+        saleOrderLineBomService
+            .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+            .stream()
+            .filter(Objects::nonNull)
+            .forEach(saleOrderLine::addSubSaleOrderLineListItem);
+      }
+      saleOrderLineDetailsBomService
+          .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+          .stream()
+          .filter(Objects::nonNull)
+          .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+    }
   }
 }

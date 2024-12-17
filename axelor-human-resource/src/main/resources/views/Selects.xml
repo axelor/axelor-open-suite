@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <selection name="hrs.expenses.status.select">
     <option value="1">Draft</option>
@@ -259,4 +259,10 @@
     id="project.unit.conversion.entity.select">
     <option value="1">Project</option>
   </selection>
+
+  <selection name="message.related.to.select" id="hr.message.related.to.select">
+    <option value="com.axelor.apps.hr.db.Employee">Employee</option>
+    <option value="com.axelor.apps.hr.db.EmploymentContract">Employment contract</option>
+  </selection>
+
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="invoice-payment-grid" title="Payments"
     model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
@@ -176,7 +176,7 @@
   <action-group name="action-invoice-payment-group-apply-financial-discount-on-change">
     <action name="action-invoice-payment-record-manual-change"/>
     <action name="action-invoice-payment-attrs-currency-scale"/>
-    <action name="action-invoice-payment-method-new-discount"/>
+    <action name="action-invoice-payment-method-apply-financial-discount-fields"/>
   </action-group>
 
   <action-group name="action-invoice-payment-group-payment-date-onchange">
@@ -198,7 +198,9 @@
     <field name="paymentMode"
       expr="eval: __repo__(PaymentMode).find(_invoice?.paymentMode.id)"
       if="_invoice?.paymentMode != null"/>
-    <field name="companyBankDetails" expr="eval: _invoice?.companyBankDetails"/>
+    <field name="companyBankDetails"
+      expr="eval: __repo__(BankDetails).find(_invoice?.companyBankDetails.id)"
+      if="_invoice?.companyBankDetails != null"/>
     <field name="invoice" expr="eval: _invoice"/>
     <field name="typeSelect" expr="2"/>
   </action-record>
@@ -230,7 +232,7 @@
 
   <action-attrs name="action-invoice-payment-attrs-set-is-partial-payment">
     <attribute name="value" for="$isPartialPayment"
-      expr="call: com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService:isPartialPayment(__this__)"/>
+      expr="call: com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentToolService:isPartialPayment(__this__)"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-payment-attrs-currency-scale">
@@ -245,6 +247,11 @@
   <action-method name="action-invoice-payment-method-new-discount">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="computeDatasForFinancialDiscount"/>
+  </action-method>
+
+  <action-method name="action-invoice-payment-method-apply-financial-discount-fields">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="applyFinancialDiscountFields"/>
   </action-method>
 
   <action-method name="action-invoice-payment-method-apply-financial-discount">

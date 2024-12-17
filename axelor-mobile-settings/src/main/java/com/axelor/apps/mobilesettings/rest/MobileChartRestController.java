@@ -21,6 +21,8 @@ package com.axelor.apps.mobilesettings.rest;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.mobilesettings.db.MobileChart;
 import com.axelor.apps.mobilesettings.service.MobileChartResponseComputeService;
+import com.axelor.apps.mobilesettings.translation.MobileSettingsTranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -47,13 +49,13 @@ public class MobileChartRestController {
   @HttpExceptionHandler
   public Response getMobileChart(@PathParam("mobileChartId") Long mobileChartId)
       throws AxelorException {
-    new SecurityCheck().writeAccess(MobileChart.class).createAccess(MobileChart.class).check();
+    new SecurityCheck().readAccess(MobileChart.class, mobileChartId).check();
     MobileChart mobileChart =
         ObjectFinder.find(MobileChart.class, mobileChartId, ObjectFinder.NO_VERSION);
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Response of the query of the chart",
+        I18n.get(MobileSettingsTranslation.QUERY_RESPONSE_CHART),
         Beans.get(MobileChartResponseComputeService.class).computeMobileChartResponse(mobileChart));
   }
 }

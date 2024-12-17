@@ -26,7 +26,7 @@ import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.Templates;
-import com.axelor.utils.service.TranslationBaseService;
+import com.axelor.utils.service.translation.TranslationBaseService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;

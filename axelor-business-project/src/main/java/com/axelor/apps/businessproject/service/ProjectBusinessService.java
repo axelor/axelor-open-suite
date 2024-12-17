@@ -23,15 +23,16 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import java.util.List;
 import java.util.Map;
 
 public interface ProjectBusinessService extends ProjectService {
 
   SaleOrder generateQuotation(Project project) throws AxelorException;
 
-  Project generateProject(SaleOrder saleOrder);
+  Project generateProject(SaleOrder saleOrder) throws AxelorException;
 
-  Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent);
+  Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent) throws AxelorException;
 
   void computeProjectTotals(Project project) throws AxelorException;
 
@@ -42,4 +43,6 @@ public interface ProjectBusinessService extends ProjectService {
   Map<String, Object> processRequestToDisplayFinancialReporting(Long id) throws AxelorException;
 
   void transitionBetweenPaidStatus(Project project) throws AxelorException;
+
+  List<String> checkPercentagesOver1000OnTasks(Project project);
 }

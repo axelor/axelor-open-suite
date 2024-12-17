@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -17,14 +17,17 @@
       mappedBy="projectTemplate"/>
     <string name="code" title="Code" unique="true"/>
     <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
-    <boolean name="imputable" default="true" massUpdate="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
       title="Type of authorized activities"/>
     <string name="fullName" namecolumn="true" title="Name"/>
-    <boolean name="isBusinessProject" title="Business project"/>
     <many-to-many name="taskTemplateSet" ref="com.axelor.apps.project.db.TaskTemplate"
       title="Task templates"/>
+    <integer name="taskStatusManagementSelect" title="Task status management" default="2"
+      selection="task.project.status.management.select"
+      help="The status of project tasks will be defined by the selection chosen. The priority of the statuses displayed is determined first by the category, then by the project."/>
+    <many-to-many name="projectTaskStatusSet"
+      ref="com.axelor.apps.project.db.TaskStatus" title="Type of authorized status"/>
   </entity>
 
 </domain-models>

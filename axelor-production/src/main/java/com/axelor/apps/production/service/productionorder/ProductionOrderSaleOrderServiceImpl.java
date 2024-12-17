@@ -27,7 +27,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -40,7 +40,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   protected ProductionOrderRepository productionOrderRepo;
   protected AppProductionService appProductionService;
   protected ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService;
-  protected StockLocationLineService stockLocationLineService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
   public ProductionOrderSaleOrderServiceImpl(
@@ -48,13 +48,13 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       ProductionOrderRepository productionOrderRepo,
       AppProductionService appProductionService,
       ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService,
-      StockLocationLineService stockLocationLineService) {
+      StockLocationLineFetchService stockLocationLineFetchService) {
 
     this.productionOrderService = productionOrderService;
     this.productionOrderRepo = productionOrderRepo;
     this.appProductionService = appProductionService;
     this.productionOrderSaleOrderMOGenerationService = productionOrderSaleOrderMOGenerationService;
-    this.stockLocationLineService = stockLocationLineService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   @Override
@@ -85,7 +85,8 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     return productionOrderIdList;
   }
 
-  protected ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
+  @Override
+  public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
 
     return productionOrderService.createProductionOrder(saleOrder, null);
   }
@@ -114,7 +115,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
         && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
 
       BigDecimal availableQty =
-          stockLocationLineService.getAvailableQty(
+          stockLocationLineFetchService.getAvailableQty(
               saleOrderLine.getSaleOrder().getStockLocation(), product);
       BigDecimal qtyToProduce = saleOrderLine.getQty().subtract(availableQty);
 

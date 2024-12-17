@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
 
   <menuitem name="sc-root-purchase" title="Purchases" order="-1800"
-    if="__config__.app.isApp('purchase')" icon="fa-shopping-cart" icon-background="#b6473f"/>
+    if="__config__.app.isApp('purchase')" icon="cart-fill" icon-background="#b6473f"/>
 
   <menuitem name="sc-root-purchase-suppliers" parent="sc-root-purchase" order="100"
     title="Suppliers" action="sc.root.purchase.suppliers"/>
@@ -53,7 +53,7 @@
   <!-- Purchase request menus -->
   <menuitem name="sc-root-purchase-request" parent="sc-root-purchase"
     if="__config__.app.isApp('purchase-request')" title="Internal purchase requests" order="400"
-    icon="fa-bullhorn" icon-background="#b6473f" action="sc.root.purchase.request.all"/>
+    icon="megaphone" icon-background="#b6473f" action="sc.root.purchase.request.all"/>
 
   <action-view name="sc.root.purchase.request.all"
     model="com.axelor.apps.purchase.db.PurchaseRequest" title="Internal purchase requests">
@@ -135,12 +135,14 @@
     order="1400" icon="fa-cog"/>
 
   <menuitem name="sc-root-purchase-conf-partner-price-list" parent="sc-root-purchase-conf"
-    title="Partner price lists" action="sc.root.purchase.conf.partner.price.list" order="100"/>
+    title="Supplier partner price lists" action="sc.root.purchase.conf.partner.price.list"
+    order="100"/>
 
   <action-view name="sc.root.purchase.conf.partner.price.list"
-    title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
+    title="Supplier partner price list" model="com.axelor.apps.base.db.PartnerPriceList">
     <view type="grid" name="partner-price-list-grid"/>
     <view type="form" name="partner-price-list-form"/>
+    <view-param name="forceTitle" value="true"/>
     <domain>self.typeSelect = 2</domain>
     <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
@@ -159,41 +161,6 @@
       IS TRUE )</domain>
     <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
-
-  <!-- TOP MENU -->
-
-  <menuitem name="top-menu-purchase" title="Purchases" order="3" top="true" left="false"
-    if="__config__.app.isApp('purchase')"/>
-
-  <menuitem name="top-menu-purchase-quotations" title="Purchase quotations" top="true"
-    action="top.menu.purchase.quotations" parent="top-menu-purchase"/>
-
-  <action-view name="top.menu.purchase.quotations" title="Purchase quotations"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <view type="cards" name="purchase-order-cards"/>
-    <view type="grid" name="purchase-order-quotation-grid"/>
-    <view type="form" name="purchase-order-form"/>
-    <view-param name="search-filters" value="purchase-order-filters"/>
-    <domain>self.statusSelect &lt; 3</domain>
-    <context name="_internalUser" expr="eval: __user__.id"/>
-  </action-view>
-
-  <menuitem name="top-menu-purchase-purchase-orders" title="Purchase orders" top="true"
-    action="top.menu.purchase.purchase.orders" parent="top-menu-purchase"/>
-
-  <action-view name="top.menu.purchase.purchase.orders" title="Purchase orders"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <view type="cards" name="purchase-order-cards"/>
-    <view type="grid" name="purchase-order-grid"/>
-    <view type="form" name="purchase-order-form"/>
-    <view-param name="search-filters" value="purchase-order-filters"/>
-    <domain>self.statusSelect &gt; 2</domain>
-    <context name="_internalUser" expr="eval: __user__.id"/>
-  </action-view>
-
-  <!-- <menuitem name="top-purchase-reqeust-my-current-cart" order="-65" title="My current cart" action="sc.root.purchase.request.my.current.cart"
-    parent="top-purchase" top="true" left="false"/> -->
-
 
   <menuitem name="menu-purchase-dashboard-1" parent="sc-root-purchase-report"
     title="Purchase Buyer" action="purchase.dashboard.1" order="100"/>

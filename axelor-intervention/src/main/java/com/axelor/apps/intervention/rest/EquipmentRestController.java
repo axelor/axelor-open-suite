@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.equipment.rest;
+package com.axelor.apps.intervention.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.intervention.db.Equipment;
@@ -24,6 +24,8 @@ import com.axelor.apps.intervention.db.Picture;
 import com.axelor.apps.intervention.rest.dto.EquipmentPicturePutRequest;
 import com.axelor.apps.intervention.rest.dto.EquipmentResponse;
 import com.axelor.apps.intervention.service.EquipmentRestService;
+import com.axelor.apps.intervention.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -64,7 +66,7 @@ public class EquipmentRestController {
     equipmentRestService.addPicture(request, equipment);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Picture successfully added.", new EquipmentResponse(equipment));
+        Response.Status.OK, I18n.get(ITranslation.PICTURE_ADDED), new EquipmentResponse(equipment));
   }
 
   @Operation(
@@ -87,6 +89,8 @@ public class EquipmentRestController {
     equipmentRestService.removePicture(request, equipment);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Picture successfully removed.", new EquipmentResponse(equipment));
+        Response.Status.OK,
+        I18n.get(ITranslation.PICTURE_REMOVED),
+        new EquipmentResponse(equipment));
   }
 }

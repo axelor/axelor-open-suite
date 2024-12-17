@@ -104,4 +104,7 @@ public interface PurchaseOrderLineService {
 
   public List<PurchaseOrderLine> updateLinesAfterFiscalPositionChange(PurchaseOrder purchaseOrder)
       throws AxelorException;
+
+  public Map<String, Object> recomputeTax(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 }

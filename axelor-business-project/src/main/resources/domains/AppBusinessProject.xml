@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -52,11 +52,6 @@
 
     <integer name="closingProjectRuleSelect"
       selection="business.project.app.closing.project.rule.select"/>
-
-    <!-- planification fields -->
-    <many-to-one name="daysUnit" ref="com.axelor.apps.base.db.Unit" title="Days unit"/>
-    <many-to-one name="hoursUnit" ref="com.axelor.apps.base.db.Unit" title="Hours unit"/>
-    <decimal name="defaultHoursADay" title="Default hours in a day" min="0"/>
 
     <many-to-one name="invoicingProjectAnnexPrintTemplate"
       title="Invoicing project annex template" ref="com.axelor.apps.base.db.PrintingTemplate"/>

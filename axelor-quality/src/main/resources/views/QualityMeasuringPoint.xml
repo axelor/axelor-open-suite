@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="quality-measuring-point-grid" title="Measuring points"
     model="com.axelor.apps.quality.db.QualityMeasuringPoint" edit-icon="true">
     <field name="name"/>
-    <field name="measuringNote" widget="ImageSelect" x-labels="false"/>
+    <field name="measuringNote" widget="Rating" x-rating-color="black,black,black,black,black"/>
     <field name="observations"/>
   </grid>
 
@@ -22,7 +22,8 @@
     <panel name="mainPanel">
       <field name="name"/>
       <field name="measuringTypeSelect"/>
-      <field name="measuringNote" widget="ImageSelect" x-labels="false" hidden="true"
+      <field name="measuringNote" widget="Rating"
+        x-rating-color="black,black,black,black,black" hidden="true"
         showIf="measuringTypeSelect == 1"/>
       <field name="coefficient" min="1"/>
       <field name="compliant" colSpan="3" widget="boolean-switch" hidden="true"

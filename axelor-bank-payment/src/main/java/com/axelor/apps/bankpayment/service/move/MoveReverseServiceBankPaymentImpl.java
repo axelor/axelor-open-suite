@@ -24,13 +24,14 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
@@ -38,7 +39,7 @@ import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineUnreconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -59,7 +60,8 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
 
   protected BankReconciliationService bankReconciliationService;
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
-  protected BankReconciliationLineService bankReconciliationLineService;
+  protected BankReconciliationLineUnreconciliationService
+      bankReconciliationLineUnreconciliationService;
   protected CurrencyScaleService currencyScaleService;
 
   @Inject
@@ -72,13 +74,14 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       ExtractContextMoveService extractContextMoveService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentCancelService invoicePaymentCancelService,
-      MoveToolService moveToolService,
+      MoveLineToolService moveLineToolService,
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
-      BankReconciliationLineService bankReconciliationLineService,
+      BankReconciliationLineUnreconciliationService bankReconciliationLineUnreconciliationService,
       CurrencyScaleService currencyScaleService,
       UnreconcileService unReconcileService,
-      MoveInvoiceTermService moveInvoiceTermService) {
+      MoveInvoiceTermService moveInvoiceTermService,
+      AnalyticLineService analyticLineService) {
     super(
         moveCreateService,
         reconcileService,
@@ -88,12 +91,14 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         extractContextMoveService,
         invoicePaymentRepository,
         invoicePaymentCancelService,
-        moveToolService,
+        moveLineToolService,
         unReconcileService,
-        moveInvoiceTermService);
+        moveInvoiceTermService,
+        analyticLineService);
     this.bankReconciliationService = bankReconciliationService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
-    this.bankReconciliationLineService = bankReconciliationLineService;
+    this.bankReconciliationLineUnreconciliationService =
+        bankReconciliationLineUnreconciliationService;
     this.currencyScaleService = currencyScaleService;
   }
 
@@ -127,7 +132,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
     if (isHiddenMoveLinesInBankReconciliation) {
       fillBankReconciledAmount(newMove);
 
-      bankReconciliationLineService.unreconcileLines(
+      bankReconciliationLineUnreconciliationService.unreconcileLines(
           bankReconciliationLineList.stream()
               .filter(
                   bankReconciliationLine ->
@@ -177,7 +182,8 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
                 .bind("moveLines", move.getMoveLineList())
                 .bind("statusUnderCorrection", BankReconciliationRepository.STATUS_UNDER_CORRECTION)
                 .fetch();
-        bankReconciliationLineService.unreconcileLines(bankReconciliationUnderCorrectionLineList);
+        bankReconciliationLineUnreconciliationService.unreconcileLines(
+            bankReconciliationUnderCorrectionLineList);
       }
     }
     if (CollectionUtils.isNotEmpty(movesReconciled)) {

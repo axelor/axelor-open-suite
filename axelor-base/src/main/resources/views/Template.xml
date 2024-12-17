@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="template-grid" id="template-grid-base" title="Templates"
     model="com.axelor.message.db.Template">
@@ -16,7 +16,8 @@
     onNew="action-template-record-new">
     <toolbar>
       <button name="testTemplateBtn" title="Test template"
-        onClick="save,action-template-view-test-template" readonlyIf="metaModel == null"/>
+        onClick="save,action-template-view-test-template"
+        readonlyIf="metaModel == null &amp;&amp; (!isJson || metaJsonModel == null)"/>
     </toolbar>
     <panel name="mainPanel" colSpan="12">
       <field name="name" showTitle="false" colSpan="12">

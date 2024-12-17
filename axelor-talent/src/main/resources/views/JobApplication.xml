@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="job-application-grid" title="Job applications"
     model="com.axelor.apps.talent.db.JobApplication">
@@ -220,7 +220,7 @@
 					<span>{_t('Fixed phone')}</span><span> : { fixedPhone }</span> <Box/>
 					<span>{_t('Mobile phone')}</span><span> : { mobilePhone }</span>
 					<Box mt={2}>
-						{dmsFile && <Link href={`#/ds/dms.file/edit/${dmsFile.id}`}>{_t('JobApplication.resume')}</Link>}
+						{dmsFile && <Link href={`#/ds/dms.file/edit/${dmsFile.id}`} target="_self">{_t('JobApplication.resume')}</Link>}
 					</Box>
 				</Box>
 			</>

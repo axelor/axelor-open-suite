@@ -1,5 +1,0 @@
----
-title: "Printing Template : refactor to be able to extend in other modules."
-module: axelor-base
-developer: |
-  Added the possibility to extend `base.printing.template.type.select` easily from other modules so any module can add new classes used to generate PDF from AOS models.

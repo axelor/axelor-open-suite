@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ConnectorMapper">
+
+    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"
+      required="true"/>
+    <long name="modelId" title="Id on AOS" required="true"/>
+    <string name="connectorSelect" title="Connector" selection="connector.mapper.select"
+      required="true"/>
+    <string name="externalReference" title="External reference" required="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
+      title="Trading name"/>
+
+  </entity>
+
+</domain-models>

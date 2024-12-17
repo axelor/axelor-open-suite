@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="project-check-list-template-grid" title="Check list templates"
+    model="com.axelor.apps.project.db.ProjectCheckListTemplate" groupBy="typeSelect">
+    <field name="title"/>
+    <field name="typeSelect"/>
+  </grid>
+
+  <form title="Check list template" name="project-check-list-template-form"
+    model="com.axelor.apps.project.db.ProjectCheckListTemplate">
+    <panel name="mainPanel">
+      <field name="title" placeholder="Title" required="true"/>
+      <field name="typeSelect" required="true"/>
+      <panel-related name="checkListItemListPanel" colSpan="12" x-tree-limit="1"
+        title="Check list" field="projectCheckListItemList" orderBy="sequence" canMove="true"
+        form-view="project-check-list-item-form" grid-view="project-check-list-item-grid"
+        widget="tree-grid" x-tree-field="projectCheckListItemList"
+        x-tree-field-title="Add a new item" editable="true" x-expand-all="true">
+        <field name="title" showTitle="false" placeholder="Title" required="true"/>
+        <field name="projectCheckListTemplate" hidden="true"/>
+        <field name="sequence" hidden="true"/>
+      </panel-related>
+    </panel>
+  </form>
+
+</object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form id="user-form-project" name="user-form" title="User" model="com.axelor.auth.db.User"
     extension="true">
@@ -9,16 +9,18 @@
     <extend
       target="//panel[@name='stepUserPanel']/panel[@name='stepOverviewPanel']/field[@name='noHelp']">
       <insert position="after">
-        <field name="contextProject" domain=":__self__ member of self.membersUserSet"/>
-        <field name="isIncludeSubContextProjects" showIf="contextProject"/>
+        <field name="activeProject"
+          domain=":__self__ member of self.membersUserSet AND (self.archived = false OR self.archived is null) AND (:activeCompany IS NULL OR self.company IS NULL OR self.company = :activeCompany)"/>
+        <field name="isIncludeSubProjects" showIf="activeProject"/>
       </insert>
     </extend>
 
     <extend
       target="//panel[@name='mainUserPanel']/panel[@name='overviewPanel']/field[@name='noHelp']">
       <insert position="after">
-        <field name="contextProject" domain=":__self__ member of self.membersUserSet"/>
-        <field name="isIncludeSubContextProjects" showIf="contextProject"/>
+        <field name="activeProject"
+          domain=":__self__ member of self.membersUserSet AND (self.archived = false OR self.archived is null) AND (:activeCompany IS NULL OR self.company IS NULL OR self.company = :activeCompany)"/>
+        <field name="isIncludeSubProjects" showIf="activeProject"/>
       </insert>
     </extend>
 
@@ -29,8 +31,9 @@
 
     <extend target="//field[@name='change']">
       <insert position="after">
-        <field name="contextProject" domain=":__self__ member of self.membersUserSet"/>
-        <field name="isIncludeSubContextProjects" showIf="contextProject"/>
+        <field name="activeProject"
+          domain=":__self__ member of self.membersUserSet AND (self.archived = false OR self.archived is null) AND (:activeCompany IS NULL OR self.company IS NULL OR self.company = :activeCompany)"/>
+        <field name="isIncludeSubProjects" showIf="activeProject"/>
       </insert>
     </extend>
 

@@ -31,6 +31,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderSequenceService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationServiceImpl;
 import com.axelor.apps.base.AxelorException;
@@ -66,6 +67,7 @@ public class BankOrderValidationServiceHRImpl extends BankOrderValidationService
       BankOrderLineOriginService bankOrderLineOriginService,
       PaymentSessionValidateService paymentSessionValidateService,
       ReconcileService reconcileService,
+      BankOrderSequenceService bankOrderSequenceService,
       ExpenseRepository expenseRepository,
       ExpensePaymentService expensePaymentService) {
     super(
@@ -82,16 +84,25 @@ public class BankOrderValidationServiceHRImpl extends BankOrderValidationService
         bankOrderMoveService,
         bankOrderLineOriginService,
         paymentSessionValidateService,
-        reconcileService);
+        reconcileService,
+        bankOrderSequenceService);
     this.expenseRepository = expenseRepository;
     this.expensePaymentService = expensePaymentService;
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void validatePayment(BankOrder bankOrder)
+  protected BankOrder generateMoves(BankOrder bankOrder)
       throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
-    super.validatePayment(bankOrder);
+    if (bankOrder
+        .getFunctionalOriginSelect()
+        .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_EXPENSE)) {
+      this.validateExpensePayment(bankOrder);
+    }
+    return super.generateMoves(bankOrder);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void validateExpensePayment(BankOrder bankOrder) throws AxelorException {
     if (!appBaseService.isApp("employee")) {
       return;
     }

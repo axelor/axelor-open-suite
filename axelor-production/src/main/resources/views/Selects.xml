@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -185,6 +185,12 @@
   <selection name="stock.tracking.number.origin.move.type.select"
     id="production.stock.tracking.number.origin.move.type.select">
     <option value="5">Manufacturing</option>
+  </selection>
+
+  <selection name="production.sale.order.line.details.type.select">
+    <option value="1">Component</option>
+    <option value="2">Operation</option>
+    <option value="3">Budget item</option>
   </selection>
 
 </object-views>

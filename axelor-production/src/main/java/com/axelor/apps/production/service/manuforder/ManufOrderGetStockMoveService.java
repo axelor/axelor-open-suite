@@ -33,7 +33,7 @@ public interface ManufOrderGetStockMoveService {
 
   List<StockMove> getResidualOutStockMoveLineList(ManufOrder manufOrder) throws AxelorException;
 
-  List<StockMove> getNonResidualOutStockMoveLineList(ManufOrder manufOrder) throws AxelorException;
+  List<StockMove> getFinishedProductOutStockMoveList(ManufOrder manufOrder) throws AxelorException;
 
   Optional<StockMove> getPlannedStockMove(List<StockMove> stockMoveList);
 }

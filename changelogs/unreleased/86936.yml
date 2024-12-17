@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed no such field 'typeSelect' error when selecting bill of material and prod process when maintenance module is missing."
+module: axelor-production

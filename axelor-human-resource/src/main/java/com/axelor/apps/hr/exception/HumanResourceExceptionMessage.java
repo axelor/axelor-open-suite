@@ -116,6 +116,8 @@ public final class HumanResourceExceptionMessage {
       "Please set a company up on leave request" /*)*/;
   public static final String LEAVE_REQUEST_NO_LINE_PRESENT = /*$$(*/
       "You need lines to fill your export." /*)*/;
+  public static final String LEAVE_REQUEST_INVALID_DATES = /*$$(*/ "Invalid dates" /*)*/;
+  public static final String LEAVE_REQUEST_WRONG_DURATION = /*$$(*/ "Duration equals 0" /*)*/;
 
   public static final String EMPLOYEE_PLANNING = /*$$(*/
       "Please, add a planning for employee : %s" /*)*/;
@@ -134,10 +136,6 @@ public final class HumanResourceExceptionMessage {
       "The employee %s has no seniority date" /*)*/;
   public static final String EMPLOYEE_NO_BIRTH_DATE = /*$$(*/
       "The employee %s has no birth date" /*)*/;
-  public static final String EMPLOYEE_NO_USER = /*$$(*/
-      "The employee %s has no associated user." /*)*/;
-  public static final String EMPLOYEE_NO_ACTIVE_COMPANY = /*$$(*/
-      "The employee %s user has no active company." /*)*/;
   public static final String CONTACT_CANNOT_DELETE = /*$$(*/
       "This contact is referenced from employee %s - %s" /*)*/;
 

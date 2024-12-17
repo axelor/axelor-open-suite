@@ -23,8 +23,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
+import com.axelor.apps.stock.translation.ITranslation;
 import com.axelor.apps.supplychain.rest.dto.SupplychainStockProductResponse;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.ResponseConstructor;
 import java.util.Map;
@@ -56,7 +58,7 @@ public class StockProductRestServiceSupplychainImpl extends StockProductRestServ
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Request completed",
+        I18n.get(ITranslation.REQUEST_COMPLETED),
         new SupplychainStockProductResponse(product, stockIndicators));
   }
 }

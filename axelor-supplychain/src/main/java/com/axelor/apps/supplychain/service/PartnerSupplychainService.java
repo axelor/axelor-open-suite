@@ -25,5 +25,5 @@ public interface PartnerSupplychainService {
 
   public void updateBlockedAccount(Partner partner) throws AxelorException;
 
-  public boolean isBlockedPartnerOrParent(Partner partner);
+  public boolean isBlockedPartnerOrParent(Partner partner) throws AxelorException;
 }

@@ -80,23 +80,11 @@ public final class BusinessProjectExceptionMessage {
   public static final String PROJECT_TASK_SOLD_TIME_ERROR = /*$$(*/
       "Sold time value error for project task %s." /*)*/;
 
-  public static final String PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING = /*$$(*/
-      "Please set the default number of hours per day in the project configuration." /*)*/;
-
-  public static final String PROJECT_CONFIG_DAYS_UNIT_MISSING = /*$$(*/
-      "Please set days unit in the configuration of app Business Project." /*)*/;
-
-  public static final String PROJECT_CONFIG_HOURS_UNIT_MISSING = /*$$(*/
-      "Please set hours unit in the configuration of app Business Project." /*)*/;
-
   public static final String PROJECT_TASK_UPDATE_REPORTING_VALUES_ERROR = /*$$(*/
       "Sold time and updated time must be greater than 0 for task %s" /*)*/;
 
   public static final String PROJECT_TASK_NO_PROJECT_FOUND = /*$$(*/
       "No project found for task %s." /*)*/;
-
-  public static final String PROJECT_TASK_NO_UNIT_FOUND = /*$$(*/
-      "Please set the unit for the task %s." /*)*/;
 
   public static final String BATCH_BACKUP_TO_PROJECT_HISTORY = /*$$(*/
       "Backup project data to project history" /*)*/;
@@ -152,4 +140,7 @@ public final class BusinessProjectExceptionMessage {
       "Transition between paid status for projects" /*)*/;
   public static final String BATCH_TRANSITION_BETWEEN_PAID_STATUS_ERROR = /*$$(*/
       "Error while trying to transition between paid status for project %s." /*)*/;
+
+  public static final String PROJECT_BUSINESS_PROJECT_MISSING_CLIENT_PARTNER_COMPANY = /*$$(*/
+      "Please fill the company and the client partner before conversion." /*)*/;
 }

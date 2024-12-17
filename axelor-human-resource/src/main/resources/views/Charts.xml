@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <chart name="chart.total.hours.per.day" title="" stacked="true">
     <dataset type="jpql"><![CDATA[
@@ -134,7 +134,7 @@
 								<Box d="flex" flexDirection="column" alignItems="center" mb={3}>
 									<span>{_t('Vacation pay')}</span>
 									<Badge fontSize={6} fontWeight="bold" bg="primary" mt={1}>
-										<Link href="#/ds/leave.all/edit/" color="white" style={{ textDecoration: "none" }}>{_t('Create Leave Request')}</Link>
+										<Link href="#/ds/leave.all/edit/" target="_self" color="white" style={{ textDecoration: "none" }}>{_t('Create Leave Request')}</Link>
 									</Badge>
 								</Box>
 								<Box d="flex" justifyContent="space-between" borderTop borderWidth={1} borderColor="black" w={100}>
@@ -227,7 +227,7 @@
 								<span>{_t('Absent')} ({item.notAtWork})</span>
 							</Box>
 							<Badge fontSize={6} fontWeight="bold" style={{ backgroundColor: "#159983"}} mt={2}>
-								<Link href="#/ds/edit.timesheet/" color="white" style={{ textDecoration: "none" }}>{_t('I am at work')}</Link>
+								<Link href="#/ds/edit.timesheet/" target="_self" color="white" style={{ textDecoration: "none" }}>{_t('I am at work')}</Link>
 							</Badge>
 						</Box>
 					</Box>

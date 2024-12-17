@@ -34,7 +34,8 @@ public interface BillOfMaterialLineService {
       BigDecimal qty,
       Unit unit,
       Integer priority,
-      boolean hasNoManageStock);
+      boolean hasNoManageStock,
+      BigDecimal wasteRate);
 
   BillOfMaterialLine createFromRawMaterial(
       long productId, int priority, BillOfMaterial billOfMaterial) throws AxelorException;

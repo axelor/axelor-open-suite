@@ -25,9 +25,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.auth.db.User;
-import com.axelor.meta.CallMethod;
 import java.util.Map;
-import java.util.Set;
 
 public interface ProjectService {
   Project generateProject(
@@ -35,7 +33,8 @@ public interface ProjectService {
       String fullName,
       User assignedTo,
       Company company,
-      Partner clientPartner);
+      Partner clientPartner)
+      throws AxelorException;
 
   /**
    * Generate a project from a partner.
@@ -43,13 +42,10 @@ public interface ProjectService {
    * @param partner
    * @return
    */
-  Project generateProject(Partner partner);
+  Project generateProject(Partner partner) throws AxelorException;
 
   public Project createProjectFromTemplate(
       ProjectTemplate projectTemplate, String projectCode, Partner clientPartner)
-      throws AxelorException;
-
-  public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
       throws AxelorException;
 
   public Map<String, Object> getTaskView(
@@ -63,12 +59,4 @@ public interface ProjectService {
   public ProjectStatus getDefaultProjectStatus();
 
   boolean checkIfResourceBooked(Project project);
-
-  public void getChildProjectIds(Set<Long> projectIdsSet, Project project);
-
-  @CallMethod
-  public Set<Long> getContextProjectIds();
-
-  @CallMethod
-  public String getContextProjectIdsString();
 }

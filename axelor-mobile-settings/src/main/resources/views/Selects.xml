@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
@@ -13,6 +13,10 @@
     <option value="app-hr">HR</option>
     <option value="app-quality">Quality</option>
     <option value="app-intervention">Intervention</option>
+    <option value="app-sale">Sale</option>
+    <option value="app-project">Project</option>
+    <option value="app-dms">DMS</option>
+    <option value="app-purchase">Purchase</option>
   </selection>
 
   <selection name='trace.back.origin.select' id="trace.back.origin.select.mobilesettings">
@@ -24,6 +28,7 @@
     <option value="line">Line</option>
     <option value="pie">Pie</option>
     <option value="donut">Donut</option>
+    <option value="indicator">Chart.indicator</option>
   </selection>
 
   <selection name="mobilesettings.employee.timesheet.imputation.select">
@@ -38,6 +43,12 @@
     <option value="menu">Menu</option>
     <option value="separator">Separator</option>
     <option value="submenu">Submenu</option>
+  </selection>
+
+  <selection name="mobilesettings.reporting.type.display.select">
+    <option value="indicators">Indicators</option>
+    <option value="activities">Activities</option>
+    <option value="none">None</option>
   </selection>
 
 </object-views>

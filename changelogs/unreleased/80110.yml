@@ -1,3 +1,0 @@
----
-title: "Purchase order line: fixed an issue where changing the account in tab budget changed the analytic configuration on the line."
-module: axelor-budget

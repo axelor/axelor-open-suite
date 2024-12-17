@@ -20,6 +20,8 @@ package com.axelor.apps.businessproduction.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.businessproduction.db.repo.ManufOrderBusinessProductionManagementRepository;
+import com.axelor.apps.businessproduction.service.BusinessProjectProdOrderService;
+import com.axelor.apps.businessproduction.service.BusinessProjectProdOrderServiceImpl;
 import com.axelor.apps.businessproduction.service.CostSheetServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.InvoicingProjectServiceBusinessProdImpl;
 import com.axelor.apps.businessproduction.service.ManufOrderServiceBusinessImpl;
@@ -37,19 +39,20 @@ import com.axelor.apps.businessproduction.service.ProductionOrderSaleOrderServic
 import com.axelor.apps.businessproduction.service.ProductionOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderWizardServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderLineBusinessProductionServiceImpl;
-import com.axelor.apps.businessproduction.service.SaleOrderWorkflowServiceBusinessProductionImpl;
 import com.axelor.apps.businessproduction.service.TimesheetBusinessProductionWorkflowServiceImpl;
 import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductionService;
 import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductionServiceImpl;
 import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessService;
 import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessServiceImpl;
+import com.axelor.apps.businessproduction.service.TimesheetLineRemoveBusinessProductionServiceImpl;
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessService;
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessServiceImpl;
+import com.axelor.apps.businessproduction.service.saleorder.status.SaleOrderWorkflowServiceBusinessProductionImpl;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
-import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
@@ -57,7 +60,8 @@ import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowS
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderLineCreateSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderWorkflowServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCreateSupplychainServiceImpl;
 
 public class BusinessProductionModule extends AxelorModule {
 
@@ -80,7 +84,7 @@ public class BusinessProductionModule extends AxelorModule {
     bind(OperationOrderTimesheetService.class).to(OperationOrderTimesheetServiceImpl.class);
     bind(ManufOrderManagementRepository.class)
         .to(ManufOrderBusinessProductionManagementRepository.class);
-    bind(SaleOrderWorkflowServiceProductionImpl.class)
+    bind(SaleOrderWorkflowServiceSupplychainImpl.class)
         .to(SaleOrderWorkflowServiceBusinessProductionImpl.class);
     bind(SaleOrderLineCreateSupplychainServiceImpl.class)
         .to(SaleOrderLineBusinessProductionServiceImpl.class);
@@ -94,5 +98,8 @@ public class BusinessProductionModule extends AxelorModule {
     bind(TimesheetLineCreateBusinessService.class).to(TimesheetLineCreateBusinessServiceImpl.class);
     bind(TimesheetLineUpdateBusinessService.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
     bind(TimesheetLineUpdateServiceImpl.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
+    bind(TimesheetLineRemoveServiceImpl.class)
+        .to(TimesheetLineRemoveBusinessProductionServiceImpl.class);
+    bind(BusinessProjectProdOrderService.class).to(BusinessProjectProdOrderServiceImpl.class);
   }
 }

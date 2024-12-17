@@ -33,6 +33,7 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.db.tenants.TenantAware;
 import com.axelor.inject.Beans;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailException;
@@ -76,7 +77,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.inject.Singleton;
@@ -353,13 +353,14 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
     // send email using a separate process to void thread blocking
     executor.submit(
-        new Callable<Boolean>() {
-          @Override
-          public Boolean call() throws Exception {
-            send(sender, email);
-            return true;
-          }
-        });
+        new TenantAware(
+            () -> {
+              try {
+                send(sender, email);
+              } catch (Exception e) {
+                throw new RuntimeException(e);
+              }
+            }));
   }
 
   @Override

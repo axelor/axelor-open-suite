@@ -26,12 +26,16 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPriority;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
+import com.axelor.apps.project.db.TaskStatusProgressByCategory;
 import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.studio.db.AppProject;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -50,6 +54,9 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected FrequencyService frequencyService;
   protected AppBaseService appBaseService;
   protected ProjectRepository projectRepository;
+  protected AppProjectService appProjectService;
+  protected TaskStatusToolService taskStatusToolService;
+  protected TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository;
 
   private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
@@ -59,12 +66,18 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       FrequencyRepository frequencyRepo,
       FrequencyService frequencyService,
       AppBaseService appBaseService,
-      ProjectRepository projectRepository) {
+      ProjectRepository projectRepository,
+      AppProjectService appProjectService,
+      TaskStatusToolService taskStatusToolService,
+      TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository) {
     this.projectTaskRepo = projectTaskRepo;
     this.frequencyRepo = frequencyRepo;
     this.frequencyService = frequencyService;
     this.appBaseService = appBaseService;
     this.projectRepository = projectRepository;
+    this.appProjectService = appProjectService;
+    this.taskStatusToolService = taskStatusToolService;
+    this.taskStatusProgressByCategoryRepository = taskStatusProgressByCategoryRepository;
   }
 
   @Override
@@ -168,7 +181,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     task.setName(subject);
     task.setAssignedTo(assignedTo);
     task.setTaskDate(appBaseService.getTodayDate(null));
-    task.setStatus(getStatus(project));
+    task.setStatus(getStatus(project, task));
     task.setPriority(getPriority(project));
     project.addProjectTaskListItem(task);
     projectTaskRepo.save(task);
@@ -191,13 +204,13 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
-  public TaskStatus getStatus(Project project) {
+  public TaskStatus getStatus(Project project, ProjectTask projectTask) {
     if (project == null) {
       return null;
     }
 
     project = projectRepository.find(project.getId());
-    Set<TaskStatus> projectStatusSet = project.getProjectTaskStatusSet();
+    Set<TaskStatus> projectStatusSet = taskStatusToolService.getTaskStatusSet(project, projectTask);
 
     return ObjectUtils.isEmpty(projectStatusSet)
         ? null
@@ -231,6 +244,17 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
+  public void deleteProjectTasks(List<Integer> projectTasksIds) {
+    if (ObjectUtils.isEmpty(projectTasksIds)) {
+      return;
+    }
+
+    for (Integer id : projectTasksIds) {
+      deleteProjectTask(projectTaskRepo.find(Long.valueOf(id)));
+    }
+  }
+
+  @Override
   public String getTaskLink(String value) {
     if (StringUtils.isEmpty(value)) {
       return value;
@@ -260,9 +284,42 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     ProjectTask parentTask = projectTaskRepo.find(projectTask.getParentTask().getId());
     projectTask.setParentTask(parentTask);
     projectTask.setProjectTaskCategory(parentTask.getProjectTaskCategory());
-    projectTask.setProjectTaskSection(parentTask.getProjectTaskSection());
     projectTask.setPriority(parentTask.getPriority());
-    projectTask.setProjectTaskTagSet(parentTask.getProjectTaskTagSet());
+    projectTask.setTagSet(parentTask.getTagSet());
     projectTask.setAssignedTo(parentTask.getAssignedTo());
+    projectTask.setTargetVersion(projectTask.getParentTask().getTargetVersion());
+  }
+
+  @Override
+  public void changeProgress(ProjectTask projectTask, Project project) {
+    if (projectTask == null) {
+      return;
+    }
+
+    projectTask.setProgress(getNewProgress(projectTask, project));
+  }
+
+  protected BigDecimal getNewProgress(ProjectTask projectTask, Project project) {
+    AppProject appProject = appProjectService.getAppProject();
+    if (appProject != null
+        && appProject.getSelectAutoProgressOnProjectTask()
+        && projectTask.getStatus() != null) {
+      BigDecimal newProgress = projectTask.getStatus().getDefaultProgress();
+      if (appProject.getEnableStatusManagementByTaskCategory()
+          && project != null
+          && project.getEnableStatusProgressByCategory()
+          && projectTask.getProjectTaskCategory() != null) {
+        TaskStatusProgressByCategory taskStatusProgressByCategory =
+            taskStatusProgressByCategoryRepository.findByCategoryAndStatus(
+                projectTask.getProjectTaskCategory(), projectTask.getStatus());
+        if (taskStatusProgressByCategory != null) {
+          newProgress = taskStatusProgressByCategory.getProgress();
+        }
+      }
+
+      return newProgress;
+    }
+
+    return projectTask.getProgress();
   }
 }

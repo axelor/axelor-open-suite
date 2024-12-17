@@ -19,9 +19,10 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -33,11 +34,24 @@ public class ImportSaleOrderLine {
 
     SaleOrderLine saleOrderLine = (SaleOrderLine) bean;
     SaleOrderLineTaxService saleOrderLineTaxService = Beans.get(SaleOrderLineTaxService.class);
-    saleOrderLine.setTaxLineSet(
-        saleOrderLineTaxService.getTaxLineSet(saleOrderLine.getSaleOrder(), saleOrderLine));
-    Beans.get(SaleOrderLineComputeService.class)
-        .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrder == null) {
+      saleOrder = getSaleOrder(saleOrderLine);
+    }
+    saleOrderLine.setTaxLineSet(saleOrderLineTaxService.getTaxLineSet(saleOrder, saleOrderLine));
+    Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, saleOrderLine);
 
     return saleOrderLine;
+  }
+
+  protected SaleOrder getSaleOrder(SaleOrderLine saleOrderLine) {
+    SaleOrderLine parentSaleOrderLine = saleOrderLine.getParentSaleOrderLine();
+    if (parentSaleOrderLine != null) {
+      return getSaleOrder(parentSaleOrderLine);
+    }
+    if (saleOrderLine.getSaleOrder() != null) {
+      return saleOrderLine.getSaleOrder();
+    }
+    return null;
   }
 }

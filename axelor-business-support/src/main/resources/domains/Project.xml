@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module package="com.axelor.apps.project.db" name="project"/>
 
@@ -9,9 +9,6 @@
     <one-to-many name="announcementList"
       ref="com.axelor.apps.businesssupport.db.ProjectAnnouncement" title="Announcement"
       mappedBy="project"/>
-    <many-to-many name="roadmapSet"
-      ref="com.axelor.apps.businesssupport.db.ProjectVersion" title="Project.version"
-      mappedBy="projectSet"/>
   </entity>
 
 </domain-models>

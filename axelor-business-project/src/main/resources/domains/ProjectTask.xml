@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -34,7 +34,6 @@
       ref="com.axelor.apps.contract.db.Contract"/>
 
     <!-- planification fields -->
-    <many-to-one name="timeUnit" ref="com.axelor.apps.base.db.Unit" title="Time unit"/>
     <decimal name="soldTime" title="Sold time"/>
     <decimal name="updatedTime" title="Updated time"/>
     <decimal name="plannedTime" title="Planned time"/>

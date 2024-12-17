@@ -1,9 +1,26 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingSettings;
-import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
@@ -26,7 +43,7 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
 
   protected AppBaseService appBaseService;
   protected UserService userService;
-  protected BankDetailsService bankDetailsService;
+  protected SaleOrderBankDetailsService saleOrderBankDetailsService;
   protected SaleConfigService saleConfigService;
   protected CompanyService companyService;
   protected SaleOrderUserService saleOrderUserService;
@@ -36,14 +53,14 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
   public SaleOrderInitValueServiceImpl(
       AppBaseService appBaseService,
       UserService userService,
-      BankDetailsService bankDetailsService,
+      SaleOrderBankDetailsService saleOrderBankDetailsService,
       SaleConfigService saleConfigService,
       CompanyService companyService,
       SaleOrderUserService saleOrderUserService,
       SaleOrderProductPrintingService saleOrderProductPrintingService) {
     this.appBaseService = appBaseService;
     this.userService = userService;
-    this.bankDetailsService = bankDetailsService;
+    this.saleOrderBankDetailsService = saleOrderBankDetailsService;
     this.saleConfigService = saleConfigService;
     this.companyService = companyService;
     this.saleOrderUserService = saleOrderUserService;
@@ -55,7 +72,7 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
     Map<String, Object> initValues = new HashMap<>();
     initValues.putAll(saleOrderDefaultValues(saleOrder));
     initValues.putAll(getInAti(saleOrder));
-    initValues.putAll(getBankDetails(saleOrder));
+    initValues.putAll(saleOrderBankDetailsService.getBankDetails(saleOrder));
     initValues.putAll(saleOrderProductPrintingService.getGroupProductsOnPrintings(saleOrder));
     return initValues;
   }
@@ -126,15 +143,6 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
       saleOrder.setInAti(inAti);
     }
     saleOrderMap.put("inAti", saleOrder.getInAti());
-    return saleOrderMap;
-  }
-
-  protected Map<String, Object> getBankDetails(SaleOrder saleOrder) throws AxelorException {
-    Map<String, Object> saleOrderMap = new HashMap<>();
-    saleOrder.setCompanyBankDetails(
-        bankDetailsService.getDefaultCompanyBankDetails(
-            saleOrder.getCompany(), null, saleOrder.getClientPartner(), null));
-    saleOrderMap.put("companyBankDetails", saleOrder.getCompanyBankDetails());
     return saleOrderMap;
   }
 }

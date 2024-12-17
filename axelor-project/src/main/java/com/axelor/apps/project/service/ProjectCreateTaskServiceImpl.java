@@ -18,9 +18,9 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -28,15 +28,19 @@ import java.util.Set;
 
 public class ProjectCreateTaskServiceImpl implements ProjectCreateTaskService {
 
-  ProjectTaskService projectTaskService;
+  protected ProjectTaskService projectTaskService;
+  protected TaskTemplateService taskTemplateService;
 
   @Inject
-  public ProjectCreateTaskServiceImpl(ProjectTaskService projectTaskService) {
+  public ProjectCreateTaskServiceImpl(
+      ProjectTaskService projectTaskService, TaskTemplateService taskTemplateService) {
     this.projectTaskService = projectTaskService;
+    this.taskTemplateService = taskTemplateService;
   }
 
   public ProjectTask createTask(
-      TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet) {
+      TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet)
+      throws AxelorException {
 
     if (!ObjectUtils.isEmpty(project.getProjectTaskList())) {
       for (ProjectTask projectTask : project.getProjectTaskList()) {
@@ -47,15 +51,10 @@ public class ProjectCreateTaskServiceImpl implements ProjectCreateTaskService {
     }
     ProjectTask task =
         projectTaskService.create(taskTemplate.getName(), project, taskTemplate.getAssignedTo());
-    task.setDescription(taskTemplate.getDescription());
-    ProjectTaskCategory projectTaskCategory = taskTemplate.getProjectTaskCategory();
-    if (projectTaskCategory != null) {
-      task.setProjectTaskCategory(projectTaskCategory);
-      project.addProjectTaskCategorySetItem(projectTaskCategory);
-    }
+
+    taskTemplateService.manageTemplateFields(task, taskTemplate, project);
 
     TaskTemplate parentTaskTemplate = taskTemplate.getParentTaskTemplate();
-
     if (parentTaskTemplate != null && taskTemplateSet.contains(parentTaskTemplate)) {
       task.setParentTask(this.createTask(parentTaskTemplate, project, taskTemplateSet));
       return task;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -75,6 +75,11 @@
     <integer name="accountCodeNbrCharSelect" title="Account code nbr. char"
       selection="account.account.chart.code.nbr.char.select"/>
 
+    <!-- Foreign exchange gains/losses -->
+    <many-to-one name="foreignExchangeGainsAccount"
+      ref="com.axelor.apps.account.db.Account" title="Gains account"/>
+    <many-to-one name="foreignExchangeLossesAccount"
+      ref="com.axelor.apps.account.db.Account" title="Losses account"/>
 
     <!-- Automatic account creation for partners -->
     <integer name="partnerAccountGenerationModeSelect"
@@ -209,8 +214,6 @@
 
     <!--Product -->
 
-    <many-to-one name="invoicingProduct" title="Product to partially invoice sale order"
-      ref="com.axelor.apps.base.db.Product"/>
     <many-to-one name="advancePaymentProduct" title="Advance payment product"
       ref="com.axelor.apps.base.db.Product"/>
 
@@ -234,10 +237,11 @@
       help="This configuration will allow you to set up the statement to be displayed according to the product category present in the invoice."
       default="true"/>
     <string name="invoiceClientBox" large="true" multiline="true"
-      title="Client box in invoice"/>
+      title="Client box in invoice" translatable="true"/>
     <string name="saleInvoiceLegalNote" large="true" multiline="true"
-      title="Legal note on sale invoices"/>
-    <string name="termsAndConditions" large="true" title="Terms and Conditions"/>
+      title="Legal note on sale invoices" translatable="true"/>
+    <string name="termsAndConditions" large="true" title="Terms and Conditions"
+      translatable="true"/>
     <many-to-one ref="com.axelor.meta.db.MetaFile" name="invoiceWatermark"
       title="Watermark"/>
     <one-to-many name="statementsForItemsCategoriesList"
@@ -481,7 +485,6 @@
       <field name="suppInvSequence" on="UPDATE"/>
       <field name="suppRefSequence" on="UPDATE"/>
 
-      <field name="invoicingProduct" on="UPDATE"/>
       <field name="advancePaymentProduct" on="UPDATE"/>
 
       <field name="displayDelAddrOnPrinting" on="UPDATE"/>

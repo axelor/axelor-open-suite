@@ -22,15 +22,18 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.rest.dto.GlobalTranslationsResponse;
 import com.axelor.apps.base.rest.dto.TranslationResponse;
-import com.axelor.db.Query;
+import com.axelor.apps.base.service.language.LanguageCheckerService;
+import com.axelor.apps.base.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaTranslation;
-import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ResponseConstructor;
+import com.axelor.utils.service.translation.TranslationBaseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
@@ -41,7 +44,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
 @Path("/aos/translation")
@@ -56,7 +58,7 @@ public class TranslationRestController {
   public Response setTranslationJSON(@PathParam("lng") String language, JSONObject translationJson)
       throws AxelorException {
     try {
-      LanguageChecker.check(language);
+      Beans.get(LanguageCheckerService.class).check(language);
       Map<String, String> translationMap =
           new ObjectMapper().readValue(translationJson.toString(), Map.class);
 
@@ -64,10 +66,12 @@ public class TranslationRestController {
           Beans.get(TranslationRestService.class).createNewTranslation(translationMap, language);
 
       if (addedTranslation == 0) {
-        return ResponseConstructor.build(Response.Status.OK, "Translations already up-to-date.");
+        return ResponseConstructor.build(
+            Response.Status.OK, I18n.get(ITranslation.TRANSLATIONS_UP_TO_DATE));
       }
       return ResponseConstructor.build(
-          Response.Status.CREATED, addedTranslation + " translation(s) successfully added.");
+          Response.Status.CREATED,
+          String.format(I18n.get(ITranslation.TRANSLATIONS_ADDED), addedTranslation));
 
     } catch (IOException e) {
       throw new AxelorException(
@@ -78,20 +82,18 @@ public class TranslationRestController {
   @Path("/{lng}")
   @GET
   @HttpExceptionHandler
-  public Response sendTranslationJSON(@PathParam("lng") String language)
-      throws AxelorException, JSONException {
-    LanguageChecker.check(language);
+  public Response sendTranslationJSON(@PathParam("lng") String language) throws AxelorException {
 
-    Query<MetaTranslation> query =
-        Beans.get(MetaTranslationRepository.class)
-            .all()
-            .filter("self.language = :language " + " AND self.key LIKE :key");
-    query.bind("language", language);
-    query.bind("key", "mobile_app_%");
+    String key = "mobile_app_%";
+
+    List<MetaTranslation> localizationTranslation =
+        Beans.get(TranslationBaseService.class).getLocalizationTranslations(language, key);
 
     return ResponseConstructor.build(
         Response.Status.OK,
         new GlobalTranslationsResponse(
-            query.fetchStream().map(TranslationResponse::build).collect(Collectors.toList())));
+            localizationTranslation.stream()
+                .map(TranslationResponse::build)
+                .collect(Collectors.toList())));
   }
 }

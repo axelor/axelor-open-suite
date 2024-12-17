@@ -86,6 +86,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   @Inject protected PurchaseOrderSequenceService purchaseOrderSequenceService;
 
+  @Inject protected PurchaseOrderLineTaxService purchaseOrderLineTaxService;
+
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
       throws AxelorException {
@@ -187,10 +189,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setInTaxTotal(purchaseOrder.getExTaxTotal().add(purchaseOrder.getTaxTotal()));
 
     logger.debug(
-        "Invoice's total: W.T.T. = {},  W.T. = {}, VAT = {}, A.T.I. = {}",
-        new Object[] {
-          purchaseOrder.getExTaxTotal(), purchaseOrder.getTaxTotal(), purchaseOrder.getInTaxTotal()
-        });
+        "Purchase order amounts: W.T. = {}, VAT = {}, A.T.I. = {}",
+        purchaseOrder.getExTaxTotal(),
+        purchaseOrder.getTaxTotal(),
+        purchaseOrder.getInTaxTotal());
   }
 
   /**
@@ -202,9 +204,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   public void initPurchaseOrderLineTax(PurchaseOrder purchaseOrder) {
 
     if (purchaseOrder.getPurchaseOrderLineTaxList() == null) {
-      purchaseOrder.setPurchaseOrderLineTaxList(new ArrayList<PurchaseOrderLineTax>());
+      purchaseOrder.setPurchaseOrderLineTaxList(new ArrayList<>());
     } else {
+      List<PurchaseOrderLineTax> purchaseOrderLineTaxList =
+          purchaseOrderLineTaxService.getUpdatedPurchaseOrderLineTax(purchaseOrder);
       purchaseOrder.getPurchaseOrderLineTaxList().clear();
+      purchaseOrder.getPurchaseOrderLineTaxList().addAll(purchaseOrderLineTaxList);
     }
   }
 
@@ -290,7 +295,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                   purchaseOrder.getCurrency(),
                   purchaseOrder.getCompany().getCurrency(),
                   lastPurchasePrice,
-                  currencyService.getDateToConvert(null));
+                  appPurchaseService.getTodayDate(purchaseOrder.getCompany()));
 
           productCompanyService.set(
               product, "lastPurchasePrice", lastPurchasePrice, purchaseOrder.getCompany());

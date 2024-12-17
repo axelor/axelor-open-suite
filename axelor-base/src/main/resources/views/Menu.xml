@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <menuitem id="abs-menu-mail" name="menu-mail"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnterpriseCommunication()"
-    hidden="false" order="-2500" title="Messaging" icon="fa-users" icon-background="#84429f"/>
+    hidden="false" order="-2500" title="Messaging" icon="chat-dots" icon-background="#84429f"/>
 
   <menuitem title="Mailing lists" name="menu-mail-mailing-list" parent="menu-mail"
     order="-75"/>
@@ -31,7 +31,7 @@
 
   <menuitem id="abs-menu-dms" name="menu-dms"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getDocument()"
-    hidden="false" order="-2200" title="Documents" icon="fa-archive" icon-background="#3f6bb9"/>
+    hidden="false" order="-2200" title="Documents" icon="card-list" icon-background="#3f6bb9"/>
 
   <menuitem id="abs-menu-dms-config" name="menu-dms-config" title="Configuration"
     parent="menu-dms" order="-70" icon="fa-cog"/>
@@ -95,7 +95,7 @@
   </action-view>
 
   <menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100"
-    icon="fa-wrench" icon-background="#2fa042"/>
+    icon="wrench-adjustable-circle" icon-background="#2fa042"/>
 
   <menuitem name="admin-root-general" parent="admin-root" order="200"
     if="__config__.app.isApp('base')" title="General data"/>
@@ -621,6 +621,7 @@
     <view type="form" name="user-form"/>
     <view-param name="search-filters" value="user-filters"/>
     <context name="_today" expr="eval: __config__.date"/>
+    <context name="_showRecord" expr="eval: userId" if="userId"/>
   </action-view>
 
   <menuitem name="admin-root-user-company" parent="admin-root-user" title="Companies"
@@ -1042,7 +1043,7 @@
     <view type="form" name="meta-permission-form"/>
   </action-view>
 
-  <menuitem name="admin-root" title="Application Config" order="-100" icon="fa-gear"
+  <menuitem name="admin-root" title="Application Config" order="-100" icon="sliders2"
     icon-background="#31b4a9"/>
 
   <menuitem id="admin-menu-admin-app-management" name="menu-admin-app-management"
@@ -1094,8 +1095,61 @@
     <view type="form" name="faker-api-field-form"/>
   </action-view>
 
+  <menuitem name="admin-root-connector" title="Connectors" parent="admin-root-maintenance"
+    order="1400"/>
+
+  <menuitem name="admin-root-connector-mapper" title="Connector mappers"
+    parent="admin-root-connector" order="100"/>
+
+  <menuitem name="admin-root-all-connector-mapper" title="All connector mappers"
+    action="action.admin.root.view.all.connector.mapper" parent="admin-root-connector-mapper"
+    order="100"/>
+
+  <action-view name="action.admin.root.view.all.connector.mapper"
+    title="All connector mappers" model="com.axelor.apps.base.db.ConnectorMapper">
+    <view type="grid" name="connector-mapper-grid"/>
+    <view type="form" name="connector-mapper-form"/>
+  </action-view>
+
+  <menuitem name="admin-root-company-connector-mapper" title="Connector mappers"
+    action="action.admin.root.view.company.connector.mapper" parent="admin-root-connector-mapper"
+    order="200"/>
+
+  <action-view name="action.admin.root.view.company.connector.mapper"
+    title="Connector mappers" model="com.axelor.apps.base.db.ConnectorMapper">
+    <view type="grid" name="connector-mapper-grid"/>
+    <view type="form" name="connector-mapper-form"/>
+    <domain>self.company = :_activeCompany</domain>
+    <context name="_activeCompany" expr="eval: __user__?.activeCompany"/>
+  </action-view>
+
+  <menuitem name="admin-root-connector-data" title="Data sharing"
+    parent="admin-root-connector" order="200"/>
+
+  <menuitem name="admin-root-data-sharing-referential" title="Data sharing referentials"
+    action="action.admin.root.view.data.sharing.referential" parent="admin-root-connector-data"
+    order="100"/>
+
+  <action-view name="action.admin.root.view.data.sharing.referential"
+    title="Data sharing referentials" model="com.axelor.apps.base.db.DataSharingReferential">
+    <view type="grid" name="data-sharing-referential-grid"/>
+    <view type="form" name="data-sharing-referential-form"/>
+  </action-view>
+
+  <menuitem name="admin-root-data-sharing-product-wizard"
+    title="Data sharing product assistant"
+    action="action.admin.root.view.data.sharing.product.wizard" parent="admin-root-connector-data"
+    order="200"/>
+
+  <action-view name="action.admin.root.view.data.sharing.product.wizard"
+    title="Data sharing product assistant" model="com.axelor.apps.base.db.DataSharingProductWizard">
+    <view type="grid" name="data-sharing-product-wizard-grid"/>
+    <view type="form" name="data-sharing-product-wizard-form"/>
+  </action-view>
+
   <menuitem name="studio-app-root" id="base-studio-app-root" title="App" order="-250"
-    icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('studio')"/>
+    icon="wrench-adjustable-circle-fill" icon-background="indigo"
+    if="__config__.app.isApp('studio')"/>
 
   <menuitem name="birt-print-conf" parent="admin-root" if="__config__.app.isApp('base')"
     title="BIRT printings" order="1000"/>

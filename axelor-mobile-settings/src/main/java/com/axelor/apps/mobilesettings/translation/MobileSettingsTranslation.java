@@ -24,4 +24,14 @@ public final class MobileSettingsTranslation {
 
   public static final String MOBILE_MENU_SCREEN_CREATION_SUCCESS = /*$$(*/
       "Mobile menus and screens have been created." /*)*/;
+  public static final String QUERY_RESPONSE_SETTINGS = /*$$(*/
+      "Response of the query for settings" /*)*/;
+  public static final String QUERY_RESPONSE_CHART = /*$$(*/
+      "Response of the query of the chart" /*)*/;
+  public static final String NO_ACCESS_TO_RECORD = /*$$(*/
+      "You do not have access to this record" /*)*/;
+  public static final String DMS_FILE_ADDED_TO_FAVORITES = /*$$(*/
+      "DMSFile added to favorites successfully" /*)*/;
+  public static final String DMS_FILE_REMOVED_FROM_FAVORITES = /*$$(*/
+      "DMSFile removed from favorites successfully" /*)*/;
 }

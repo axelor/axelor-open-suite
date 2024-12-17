@@ -25,14 +25,17 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectServiceImpl;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectServiceImpl;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
+import com.axelor.apps.project.service.TaskStatusToolService;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -47,24 +50,30 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       FrequencyService frequencyService,
       AppBaseService appBaseService,
       ProjectRepository projectRepository,
+      AppProjectService appProjectService,
+      TaskStatusToolService taskStatusToolService,
+      TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
-      AppBusinessProjectService appBusinessProjectService) {
+      ProjectTimeUnitService projectTimeUnitService) {
     super(
         projectTaskRepo,
         frequencyRepo,
         frequencyService,
         appBaseService,
         projectRepository,
+        appProjectService,
+        taskStatusToolService,
+        taskStatusProgressByCategoryRepository,
         priceListLineRepo,
         priceListService,
         partnerPriceListService,
         productCompanyService,
         timesheetLineRepository,
-        appBusinessProjectService);
+        projectTimeUnitService);
   }
 
   @Override
@@ -83,7 +92,6 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
     // Module 'business support' fields
     nextProjectTask.setAssignment(ProjectTaskRepository.ASSIGNMENT_PROVIDER);
     nextProjectTask.setIsPrivate(projectTask.getIsPrivate());
-    nextProjectTask.setTargetVersion(projectTask.getTargetVersion());
   }
 
   @Override
@@ -94,11 +102,5 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
     task.setInternalDescription(template.getInternalDescription());
 
     return task;
-  }
-
-  @Override
-  public void fillSubtask(ProjectTask projectTask) {
-    super.fillSubtask(projectTask);
-    projectTask.setTargetVersion(projectTask.getParentTask().getTargetVersion());
   }
 }

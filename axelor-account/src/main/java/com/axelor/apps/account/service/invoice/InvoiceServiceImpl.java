@@ -83,9 +83,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -172,7 +174,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  public Invoice compute(final Invoice invoice) throws AxelorException {
+  public Map<String, Object> compute(final Invoice invoice) throws AxelorException {
 
     log.debug("Invoice computation");
 
@@ -194,13 +196,37 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         };
 
     Invoice invoice1 = invoiceGenerator.generate();
+    Map<String, Object> invoiceMap = this.getComputeInvoiceMap(invoice1);
+
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+      invoiceMap.put("advancePaymentInvoiceSet", invoice1.getAdvancePaymentInvoiceSet());
     }
 
     invoice1.setInvoiceProductStatement(
         invoiceProductStatementService.getInvoiceProductStatement(invoice1));
-    return invoice1;
+    invoiceMap.put("invoiceProductStatement", invoice1.getInvoiceProductStatement());
+
+    return invoiceMap;
+  }
+
+  protected Map<String, Object> getComputeInvoiceMap(Invoice invoice) {
+    Map<String, Object> invoiceMap = new HashMap<>();
+
+    invoiceMap.put("invoiceLineList", invoice.getInvoiceLineList());
+    invoiceMap.put("invoiceLineTaxList", invoice.getInvoiceLineTaxList());
+    invoiceMap.put("invoiceTermList", invoice.getInvoiceTermList());
+    invoiceMap.put("exTaxTotal", invoice.getExTaxTotal());
+    invoiceMap.put("taxTotal", invoice.getTaxTotal());
+    invoiceMap.put("inTaxTotal", invoice.getInTaxTotal());
+    invoiceMap.put("companyExTaxTotal", invoice.getCompanyExTaxTotal());
+    invoiceMap.put("companyTaxTotal", invoice.getCompanyTaxTotal());
+    invoiceMap.put("companyInTaxTotal", invoice.getCompanyInTaxTotal());
+    invoiceMap.put("companyInTaxTotalRemaining", invoice.getCompanyInTaxTotalRemaining());
+    invoiceMap.put("amountRemaining", invoice.getAmountRemaining());
+    invoiceMap.put("hasPendingPayments", invoice.getHasPendingPayments());
+
+    return invoiceMap;
   }
 
   @Override
@@ -218,6 +244,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    */
   @Override
   public void validate(Invoice invoice) throws AxelorException {
+    if (invoice.getStatusSelect() == null
+        || invoice.getStatusSelect() != InvoiceRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_VALIDATE_WRONG_STATUS));
+    }
     validateProcess(invoice);
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
         && invoice.getInvoiceAutomaticMailOnValidate()) {
@@ -276,6 +308,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public void checkPreconditions(Invoice invoice) throws AxelorException {
+    if (invoice.getStatusSelect() == null
+        || invoice.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_VENTILATE_WRONG_STATUS));
+    }
+
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -345,11 +384,32 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void cancel(Invoice invoice) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(InvoiceRepository.STATUS_DRAFT);
+    authorizedStatus.add(InvoiceRepository.STATUS_VALIDATED);
+    if (invoice.getStatusSelect() == null
+        || !authorizedStatus.contains(invoice.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_CANCEL_WRONG_STATUS));
+    }
     log.debug("Canceling invoice {}", invoice.getInvoiceId());
 
     cancelFactory.getCanceller(invoice).process();
 
     invoiceRepo.save(invoice);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void backToDraft(Invoice invoice) throws AxelorException {
+    if (invoice.getStatusSelect() == null
+        || invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_DRAFT_WRONG_STATUS));
+    }
+    invoice.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
   }
 
   protected void sendMail(Invoice invoice, Template template) {

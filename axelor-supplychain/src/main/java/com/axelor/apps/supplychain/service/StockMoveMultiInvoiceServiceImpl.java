@@ -44,13 +44,13 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.AbstractMap.SimpleImmutableEntry;
@@ -446,6 +446,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     }
 
     invoice.setDeliveryAddressStr(deliveryAddressStr.toString());
+
+    fillInvoiceCommentsFromMultiOutStockMove(stockMoveList, invoice);
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
@@ -895,8 +897,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         internalRef.add(internalReference);
       }
     }
-    dummyInvoice.setExternalReference(StringHelper.cutTooLongString(externalRef.toString()));
-    dummyInvoice.setInternalReference(StringHelper.cutTooLongString(internalRef.toString()));
+    dummyInvoice.setExternalReference(externalRef.toString());
+    dummyInvoice.setInternalReference(internalRef.toString());
   }
 
   /**
@@ -929,8 +931,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         internalRef.add(internalReference);
       }
     }
-    dummyInvoice.setExternalReference(StringHelper.cutTooLongString(externalRef.toString()));
-    dummyInvoice.setInternalReference(StringHelper.cutTooLongString(internalRef.toString()));
+    dummyInvoice.setExternalReference(externalRef.toString());
+    dummyInvoice.setInternalReference(internalRef.toString());
   }
 
   /**
@@ -948,5 +950,30 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     invoiceLine.setCompanyInTaxTotal(invoiceLine.getCompanyInTaxTotal().negate());
     invoiceLine.setExTaxTotal(invoiceLine.getExTaxTotal().negate());
     invoiceLine.setCompanyExTaxTotal(invoiceLine.getCompanyExTaxTotal().negate());
+  }
+
+  protected void fillInvoiceCommentsFromMultiOutStockMove(
+      List<StockMove> stockMoveList, Invoice invoice) {
+    StringBuilder notes = new StringBuilder();
+    StringBuilder proformaComments = new StringBuilder();
+
+    for (StockMove stockMove : stockMoveList) {
+      Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
+
+      if (ObjectUtils.isEmpty(saleOrderSet)) {
+        continue;
+      }
+      String note = stockMoveInvoiceService.fillInvoiceNoteFromOutStockMove(saleOrderSet);
+      if (StringUtils.notEmpty(note)) {
+        notes.append(note);
+      }
+      String proformaComment =
+          stockMoveInvoiceService.fillInvoiceProformaCommentsFromOutStockMove(saleOrderSet);
+      if (StringUtils.notEmpty(proformaComment)) {
+        proformaComments.append(proformaComment);
+      }
+    }
+    invoice.setNote(notes.toString());
+    invoice.setProformaComments(proformaComments.toString());
   }
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="project-check-list-item-grid" title="Check list"
+    model="com.axelor.apps.project.db.ProjectCheckListItem" editable="true" edit-icon="false">
+    <hilite if="!completed" color="black"/>
+    <field name="title" showTitle="false" placeholder="Title" required="true" width="800%"/>
+    <field name="completed" showTitle="false"
+      onChange="action-check-list-item-method-change-completed"/>
+    <field name="project" hidden="true"/>
+    <field name="projectTask" hidden="true"/>
+    <field name="parentItem" hidden="true"/>
+    <field name="sequence" hidden="true"/>
+  </grid>
+
+  <form title="Check list item" name="project-check-list-item-form"
+    model="com.axelor.apps.project.db.ProjectCheckListItem" canAttach="true">
+    <panel name="mainPanel">
+      <field name="title" showTitle="false" placeholder="Title" required="true"/>
+      <field name="completed" showTitle="false"
+        onChange="action-check-list-item-method-change-completed"/>
+      <field name="project" hidden="true"/>
+      <field name="projectTask" hidden="true"/>
+      <field name="parentItem" hidden="true"/>
+      <field name="sequence" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-method name="action-check-list-item-method-change-completed">
+    <call class="com.axelor.apps.project.web.ProjectCheckListItemController"
+      method="changeCompleted"/>
+  </action-method>
+
+  <action-method name="action-check-list-item-method-reset-completed-fields">
+    <call class="com.axelor.apps.project.web.ProjectCheckListItemController"
+      method="resetCompletedFields"/>
+  </action-method>
+
+</object-views>

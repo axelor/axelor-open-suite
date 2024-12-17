@@ -37,7 +37,6 @@ import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
-import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -45,7 +44,9 @@ import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -67,6 +68,7 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -75,7 +77,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -84,6 +85,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -109,8 +111,7 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
 
     try {
-      invoice = Beans.get(InvoiceService.class).compute(invoice);
-      response.setValues(invoice);
+      response.setValues(Beans.get(InvoiceService.class).compute(invoice));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -303,6 +304,13 @@ public class InvoiceController {
     }
   }
 
+  public void backToDraft(ActionRequest request, ActionResponse response) throws AxelorException {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    Beans.get(InvoiceService.class).backToDraft(invoice);
+    response.setReload(true);
+  }
+
   /**
    * Function returning both the paymentMode and the paymentCondition
    *
@@ -377,10 +385,10 @@ public class InvoiceController {
 
       String viewTitle = AccountExceptionMessage.INVOICE_GENERATED_INVOICE_REFUND;
       if (InvoiceToolService.isRefund(refund)) {
-        if (refund.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT) {
-          viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND;
-        } else {
+        if (refund.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
           viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND_ADVANCE_PAYMENT;
+        } else {
+          viewTitle = AccountExceptionMessage.INVOICE_GENERATED_REFUND;
         }
       }
 
@@ -477,15 +485,7 @@ public class InvoiceController {
                     .getCode()
                 : null;
 
-        PrintingTemplate invoicePrintTemplate = null;
-        if (context.get("invoicePrintTemplate") != null) {
-          invoicePrintTemplate =
-              Mapper.toBean(
-                  PrintingTemplate.class,
-                  (Map<String, Object>) context.get("invoicePrintTemplate"));
-          invoicePrintTemplate =
-              Beans.get(PrintingTemplateRepository.class).find(invoicePrintTemplate.getId());
-        }
+        PrintingTemplate invoicePrintTemplate = getPrintingTemplate(context, invoice);
 
         fileLink =
             Beans.get(InvoicePrintService.class)
@@ -500,6 +500,17 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  protected PrintingTemplate getPrintingTemplate(Context context, Invoice invoice)
+      throws AxelorException {
+    if (context.get("invoicePrintTemplate") == null) {
+      return Beans.get(AccountConfigService.class).getInvoicePrintTemplate(invoice.getCompany());
+    }
+    PrintingTemplate invoicePrintTemplate =
+        Mapper.toBean(
+            PrintingTemplate.class, (Map<String, Object>) context.get("invoicePrintTemplate"));
+    return Beans.get(PrintingTemplateRepository.class).find(invoicePrintTemplate.getId());
   }
 
   public void regenerateAndShowInvoice(ActionRequest request, ActionResponse response) {
@@ -1033,8 +1044,7 @@ public class InvoiceController {
 
   public void showCustomerInvoiceLines(ActionRequest request, ActionResponse response) {
     try {
-      String idList =
-          StringHelper.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      String idList = getIdListString(request);
       response.setView(
           ActionView.define(I18n.get("Customer Invoice Line"))
               .model(InvoiceLine.class.getName())
@@ -1049,6 +1059,31 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  protected String getIdListString(ActionRequest request) {
+
+    String idListString =
+        Optional.ofNullable((List<Integer>) request.getContext().get("_ids"))
+            .map(idList -> idList.stream().map(String::valueOf).collect(Collectors.joining(",")))
+            .orElseGet(
+                () ->
+                    request
+                        .getCriteria()
+                        .createQuery(Invoice.class)
+                        .select("id")
+                        .fetch(0, 0)
+                        .stream()
+                        .map(m -> (Long) m.get("id"))
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(",")));
+
+    if (idListString.isBlank()) {
+      return "0";
+    }
+
+    return idListString;
   }
 
   public void checkInvoiceLinesAnalyticDistribution(
@@ -1097,8 +1132,7 @@ public class InvoiceController {
 
   public void showSupplierInvoiceLines(ActionRequest request, ActionResponse response) {
     try {
-      String idList =
-          StringHelper.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+      String idList = getIdListString(request);
       response.setView(
           ActionView.define(I18n.get("Supplier Invoice Line"))
               .model(InvoiceLine.class.getName())
@@ -1329,13 +1363,12 @@ public class InvoiceController {
   protected Map<String, Object> getParamsMap(ActionRequest request) {
     Context context = request.getContext();
     Map<String, Object> params = new HashMap<>();
-    Invoice invoice =
-        Beans.get(InvoiceRepository.class)
-            .find(Long.parseLong(context.get("_invoiceId").toString()));
+    Object invoiceId = Optional.ofNullable(context.get("_invoiceId")).orElse(context.get("id"));
+    Invoice invoice = Beans.get(InvoiceRepository.class).find(Long.parseLong(invoiceId.toString()));
     Integer reportType =
         context.get("reportType") != null
             ? Integer.parseInt(context.get("reportType").toString())
-            : null;
+            : InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE;
     params.put("reportType", reportType);
     params.put("invoice", invoice);
     return params;
@@ -1352,6 +1385,16 @@ public class InvoiceController {
       PrintingTemplate invoicePrintTemplate =
           Beans.get(AccountConfigService.class).getInvoicePrintTemplate(invoice.getCompany());
       response.setValue("$invoicePrintTemplate", invoicePrintTemplate);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void computeInvoiceAmounts(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    try {
+      response.setValues(InvoiceToolService.computeInvoiceAmounts(invoice));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -1382,5 +1425,22 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void generateLatePaymentInvoice(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    Invoice lateInvoice =
+        Beans.get(LatePaymentInterestInvoiceService.class)
+            .generateLatePaymentInterestInvoice(JPA.find(Invoice.class, invoice.getId()));
+
+    response.setView(
+        ActionView.define(I18n.get("Invoice"))
+            .model(Invoice.class.getName())
+            .add("form", "invoice-form")
+            .add("grid", "invoice-grid")
+            .context("_showRecord", lateInvoice.getId())
+            .map());
   }
 }
