@@ -1,0 +1,7 @@
+"import_id";"name";"transactional";"description";"body"
+6;"SaleOrderLine";false;<p>Generate a sale order line. Fields saleOrder, product and qty are required.</p>;"if(variables) {
+    generateSaleOrderLine(variables)
+}"
+7;"SaleOrderLine.saleOrder";false;;"return __repo__(SaleOrder).find(4)"
+8;"SaleOrderLine.product";false;;"return __repo__(Product).find(11)"
+9;"SaleOrderLine.qty";false;;"return new BigDecimal('1')"

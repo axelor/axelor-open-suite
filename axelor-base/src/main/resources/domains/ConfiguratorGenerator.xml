@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ConfiguratorGenerator">
+    <many-to-one name="metaModel" title="Meta model" ref="com.axelor.meta.db.MetaModel"
+      required="true" unique="true"/>
+    <one-to-many name="configuratorGeneratorLineList"
+      title="Configurator generator lines" ref="com.axelor.apps.base.db.ConfiguratorGeneratorLine"
+      mappedBy="configuratorGenerator"/>
+  </entity>
+
+</domain-models>

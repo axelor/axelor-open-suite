@@ -13,4 +13,23 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
+
+  <input file="studio_link_script.csv" separator=";" type="com.axelor.studio.db.LinkScript"
+    search="self.name = :name"/>
+
+  <input file="base_configurator_binding.csv" separator=";"
+    type="com.axelor.apps.base.db.ConfiguratorBinding"/>
+
+  <input file="base_configurator_generator.csv" separator=";"
+    type="com.axelor.apps.base.db.ConfiguratorGenerator"/>
+
+  <input file="base_configurator_generator_line.csv" separator=";"
+    type="com.axelor.apps.base.db.ConfiguratorGeneratorLine">
+    <bind to="metaField" column="metaField"
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+  </input>
+
+  <input file="studio_link_script_arc.csv" separator=";"
+    type="com.axelor.studio.db.LinkScriptArc"/>
+
 </csv-inputs>

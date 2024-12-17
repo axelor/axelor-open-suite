@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="configurator-generator-line-grid" title="Configurator generator line"
+    editable="true" model="com.axelor.apps.base.db.ConfiguratorGeneratorLine"
+    onNew="action-configurator-generator-line-attrs-set-meta-field-domain">
+    <field name="metaField"/>
+    <field name="linkScript" canNew="true" canEdit="true" canView="true"/>
+  </grid>
+
+  <form name="configurator-generator-line-form" title="Configurator generator line"
+    model="com.axelor.apps.base.db.ConfiguratorGeneratorLine" width="large"
+    onNew="action-configurator-generator-line-attrs-set-meta-field-domain">
+    <panel>
+      <field name="metaField"/>
+      <field name="linkScript" canNew="true" canEdit="true"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-configurator-generator-line-attrs-set-meta-field-domain">
+    <attribute for="metaField" name="domain"
+      expr="eval: &quot; self.metaModel = ${__parent__.metaModel.id} &quot;"
+      if="__parent__?._model == 'com.axelor.apps.base.db.ConfiguratorGenerator'"/>
+  </action-attrs>
+
+</object-views>
