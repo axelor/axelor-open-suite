@@ -40,8 +40,9 @@
         <panel name="townNameAndCityPanel" showTitle="false" hidden="true" colSpan="12">
           <field name="townName" colSpan="6" x-bind="{{townName|uppercase}}"/>
           <field name="city" colSpan="6" canNew="true" canEdit="false"
-            onChange="action-address-change-city" onSelect="action-address-attrs-update-domain-city"
-            form-view="city-form" grid-view="city-grid"/>
+            onChange="action-address-change-city, action-address-validate-change-city"
+            onSelect="action-address-attrs-update-domain-city" form-view="city-form"
+            grid-view="city-grid"/>
         </panel>
 
 
@@ -52,8 +53,9 @@
 
         <panel name="cityPanel" showTitle="false" hidden="true" colSpan="12">
           <field name="city" colSpan="12" canNew="true" canEdit="false"
-            onChange="action-address-change-city, action-address-validate-change-city" onSelect="action-address-attrs-update-domain-city"
-            form-view="city-form" grid-view="city-grid"/>
+            onChange="action-address-change-city, action-address-validate-change-city"
+            onSelect="action-address-attrs-update-domain-city" form-view="city-form"
+            grid-view="city-grid"/>
         </panel>
 
         <field name="zip" colSpan="6" onChange="action-address-method-autocomplete-address"/>
