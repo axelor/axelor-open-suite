@@ -48,6 +48,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
+import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -95,6 +96,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.ValidationException;
@@ -996,13 +998,27 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       }
     }
 
-    Optional<LocalDateTime> minDate =
-        manufOrderList.stream()
-            .filter(mo -> mo.getPlannedStartDateT() != null)
-            .map(ManufOrder::getPlannedStartDateT)
-            .min(LocalDateTime::compareTo);
+    ProductionConfigService productionConfigService = Beans.get(ProductionConfigService.class);
+    ProductionConfig productionConfig = productionConfigService.getProductionConfig(company);
+    int scheduling = productionConfig.getScheduling();
 
-    minDate.ifPresent(mergedManufOrder::setPlannedStartDateT);
+    if (scheduling == ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING) {
+      Optional<LocalDateTime> minStartDate =
+          manufOrderList.stream()
+              .map(ManufOrder::getPlannedStartDateT)
+              .filter(Objects::nonNull)
+              .min(LocalDateTime::compareTo);
+
+      minStartDate.ifPresent(mergedManufOrder::setPlannedStartDateT);
+    } else {
+      Optional<LocalDateTime> minEndDate =
+          manufOrderList.stream()
+              .map(ManufOrder::getPlannedEndDateT)
+              .filter(Objects::nonNull)
+              .min(LocalDateTime::compareTo);
+
+      minEndDate.ifPresent(mergedManufOrder::setPlannedEndDateT);
+    }
 
     /* Update the created manuf order */
     mergedManufOrder.setStatusSelect(ManufOrderRepository.STATUS_DRAFT);

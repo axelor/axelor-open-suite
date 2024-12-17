@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: merging manufacturing orders now correctly takes into account scheduling configuration."
+module: axelor-production
