@@ -24,4 +24,11 @@ import java.util.Map;
 public interface AddressAttrsService {
 
   Map<String, Map<String, Object>> getCountryAddressMetaFieldOnChangeAttrsMap(Address address);
+
+  Map<String, Map<String, Object>> getTownNameAndCityAttrsMap(
+      Map<String, Map<String, Object>> countryAddressMetaFieldOnChangeAttrsMap, Address address);
+
+  void updateAttrsMap(
+      Map<String, Map<String, Object>> townNameAndCityAttrtsMap,
+      Map<String, Map<String, Object>> countryAddressMetaFieldOnChangeAttrsMap);
 }
