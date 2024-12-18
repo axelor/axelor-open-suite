@@ -395,4 +395,10 @@ public final class SupplychainExceptionMessage {
 
   public static final String SALE_ORDER_EDIT_ERROR_TIMETABLE_INVOICED = /*$$(*/
       "At least one timetable is invoiced, you cannot edit the order anymore." /*)*/;
+
+  public static final String SALE_ORDER_NO_FREIGHT_CARRIER_PRICING_SELECTED = /*$$(*/
+      "Please select one freight carrier pricing line." /*)*/;
+
+  public static final String SALE_ORDER_MORE_THAN_ONE_FREIGHT_CARRIER_PRICING_SELECTED = /*$$(*/
+      "More than one freight carrier pricing line selected, please select only one line." /*)*/;
 }
