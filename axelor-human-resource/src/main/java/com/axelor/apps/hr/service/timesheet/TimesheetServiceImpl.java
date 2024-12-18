@@ -23,10 +23,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
-import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.EmployeeComputeDaysLeaveBonusService;
-import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -38,18 +36,15 @@ import java.time.LocalDate;
  * @author axelor
  */
 public class TimesheetServiceImpl implements TimesheetService {
-  protected TimesheetLineService timesheetLineService;
   protected EmployeeComputeDaysLeaveBonusService employeeComputeDaysLeaveService;
   protected PublicHolidayService publicHolidayService;
   protected AppBaseService appBaseService;
 
   @Inject
   public TimesheetServiceImpl(
-      TimesheetLineService timesheetLineService,
       EmployeeComputeDaysLeaveBonusService employeeComputeDaysLeaveService,
       PublicHolidayService publicHolidayService,
       AppBaseService appBaseService) {
-    this.timesheetLineService = timesheetLineService;
     this.employeeComputeDaysLeaveService = employeeComputeDaysLeaveService;
     this.publicHolidayService = publicHolidayService;
     this.appBaseService = appBaseService;
@@ -72,29 +67,6 @@ public class TimesheetServiceImpl implements TimesheetService {
         return I18n.get("Minutes");
       default:
         return I18n.get("Hours");
-    }
-  }
-
-  @Override
-  public void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException {
-    String timeLoggingPref;
-    if (timesheet.getEmployee() == null) {
-      timeLoggingPref = EmployeeRepository.TIME_PREFERENCE_HOURS;
-    } else {
-      Employee employee = timesheet.getEmployee();
-      timeLoggingPref =
-          !StringUtils.isEmpty(employee.getTimeLoggingPreferenceSelect())
-              ? employee.getTimeLoggingPreferenceSelect()
-              : appBaseService.getAppBase().getTimeLoggingPreferenceSelect();
-    }
-    timesheet.setTimeLoggingPreferenceSelect(timeLoggingPref);
-
-    if (timesheet.getTimesheetLineList() != null) {
-      for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
-        timesheetLine.setDuration(
-            timesheetLineService.computeHoursDuration(
-                timesheet, timesheetLine.getHoursDuration(), false));
-      }
     }
   }
 
