@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ApiConfiguration">
+    <string name="apiName" required="true" namecolumn="true"/>
+    <string name="tokenGeneratorUrl" title="Url for generating access token"/>
+    <string name="apiUrl" title="Api url"/>
+    <string name="apiKey" title="Consumer key" encrypted="true"/>
+    <string name="apiKeySecret" title="Consumer secrets" encrypted="true"/>
+    <many-to-one name="defaultCountry" title="Country default"
+      help="When retrieving an organization's address via the Sirene API, if no country is specified, then that country will be used."
+      ref="com.axelor.apps.base.db.Country"/>
+  </entity>
+</domain-models>
