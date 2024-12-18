@@ -59,10 +59,11 @@ ${(Address.addressL3 == null) ? '' : Address.addressL3}
 ${(Address.addressL4 == null) ? '' : Address.addressL4}
 ${(Address.addressL5 == null) ? '' : Address.addressL5}
 ${(Address.addressL6 == null) ? '' : Address.addressL6}
-${(Address.country == null) ? '' : Address.country.name}";"${(Address.department == null) ? '' : Address.department}";"${(Address.streetName == null) ? '' : Address.streetName}${(Address.buildingNumber == null) ? ', 0' : ', '+ Address.buildingNumber}";"${(Address.districtName == null) ? '' : Address.districtName}";"${(Address.townName == null) ? '' : Address.townName}${(Address.countrySubDivision == null) ? '' : '-'+ Address.countrySubDivision}";"${(Address.zip == null) ? '' : Address.zip}"
+${(Address.country == null) ? '' : Address.country.name}";"${(Address.department == null) ? '' : Address.department}";"${(Address.streetName == null) ? '' : Address.streetName}${(Address.buildingNumber == null) ? '' : ', '+ Address.buildingNumber}";"${(Address.districtName == null) ? '' : Address.districtName}";"${(Address.townName == null) ? '' : Address.townName}${(Address.countrySubDivision == null) ? '' : '-'+ Address.countrySubDivision}";"${(Address.zip == null) ? '' : Address.zip}"
 "ARE";"UNITED ARAB EMIRATES";"2";"${(Address.addressL2 == null) ? '' : Address.addressL2}
 ${(Address.addressL3 == null) ? '' : Address.addressL3}
 ${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.buildingNumber == null) ? '' : Address.buildingNumber}
 ${(Address.addressL5 == null) ? '' : Address.addressL5}
 ${(Address.addressL6 == null) ? '' : Address.addressL6}
 ${(Address.country == null) ? '' : Address.country.name}";"${(Address.buildingName == null) ? '' : Address.buildingName}";"${(Address.floor == null) ? '' : Address.floor}";"${(Address.streetName == null) ? '' : Address.streetName}";"${(Address.postBox == null) ? '' : Address.postBox}";"${(Address.city == null) ? '' : Address.city.name}"
@@ -87,6 +88,7 @@ ${(Address.country == null) ? '' : Address.country.name}";"${(Address.department
 "JPN";"JAPAN";"2";"${(Address.addressL2 == null) ? '' : Address.addressL2}
 ${(Address.addressL3 == null) ? '' : Address.addressL3}
 ${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.postBox == null) ? '' : Address.postBox}
 ${(Address.addressL5 == null) ? '' : Address.addressL5}
 ${(Address.addressL6 == null) ? '' : Address.addressL6}, ${(Address.country == null) ? '' : Address.country.name}";"${(Address.department == null) ? '' : Address.department}";"${(Address.buildingName == null) ? '' : Address.buildingName}";"${(Address.streetName == null) ? '' : Address.streetName}";"${(Address.townName == null) ? '' : Address.townName}${(Address.countrySubDivision == null) ? '' : ', '+Address.countrySubDivision}";"${(Address.zip == null) ? '' : Address.zip}"
 "KOR";"KOREA";"2";"${(Address.addressL2 == null) ? '' : Address.addressL2}
