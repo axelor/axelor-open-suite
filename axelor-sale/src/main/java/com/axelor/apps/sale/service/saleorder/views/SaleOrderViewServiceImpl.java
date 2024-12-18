@@ -51,17 +51,20 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
   protected AppBaseService appBaseService;
   protected SaleOrderRepository saleOrderRepository;
   protected AppSaleService appSaleService;
+  protected SaleOrderAttrsService saleOrderAttrsService;
 
   @Inject
   public SaleOrderViewServiceImpl(
       SaleConfigService saleConfigService,
       AppBaseService appBaseService,
       SaleOrderRepository saleOrderRepository,
-      AppSaleService appSaleService) {
+      AppSaleService appSaleService,
+      SaleOrderAttrsService saleOrderAttrsService) {
     this.saleConfigService = saleConfigService;
     this.appBaseService = appBaseService;
     this.saleOrderRepository = saleOrderRepository;
     this.appSaleService = appSaleService;
+    this.saleOrderAttrsService = saleOrderAttrsService;
   }
 
   @Override
@@ -85,6 +88,7 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     MapTools.addMap(attrs, hideContactPartner(saleOrder));
     MapTools.addMap(attrs, hideDiscount());
+    saleOrderAttrsService.setSaleOrderGlobalDiscountDummies(saleOrder, attrs);
     return attrs;
   }
 

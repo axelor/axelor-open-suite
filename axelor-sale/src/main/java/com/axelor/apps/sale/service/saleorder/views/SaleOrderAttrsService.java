@@ -28,4 +28,7 @@ public interface SaleOrderAttrsService {
   void setSaleOrderLineTaxScale(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
 
   void addIncotermRequired(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
+
+  void setSaleOrderGlobalDiscountDummies(
+      SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
 }
