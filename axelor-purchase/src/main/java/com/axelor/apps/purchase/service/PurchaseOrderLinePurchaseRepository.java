@@ -18,9 +18,9 @@
  */
 package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.inject.Beans;
@@ -35,21 +35,15 @@ public class PurchaseOrderLinePurchaseRepository extends PurchaseOrderLineReposi
         Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
     json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
 
-    if (context.get("_model") != null
-        && context.get("_model").toString().contains("PurchaseOrder")
-        && context.get("_parent") != null) {
-      Long id = (Long) json.get("id");
-      if (id != null) {
-        PurchaseOrderLine purchaseOrderLine = find(id);
-        PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-        Product product = purchaseOrderLine.getProduct();
+    Long id = (Long) json.get("id");
+    if (id != null) {
+      PurchaseOrderLine purchaseOrderLine = find(id);
+      try {
         json.put(
             "$hasWarning",
-            purchaseOrder != null
-                && product != null
-                && product.getDefaultSupplierPartner() != null
-                && purchaseOrder.getSupplierPartner() != null
-                && product.getDefaultSupplierPartner() != purchaseOrder.getSupplierPartner());
+            Beans.get(PurchaseOrderLineWarningService.class).checkLineIssue(purchaseOrderLine));
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
       }
     }
     return super.populate(json, context);

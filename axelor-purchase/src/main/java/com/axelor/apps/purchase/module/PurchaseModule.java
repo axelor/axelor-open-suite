@@ -37,6 +37,8 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLineTaxService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineTaxServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderLineWarningService;
+import com.axelor.apps.purchase.service.PurchaseOrderLineWarningServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingService;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingViewService;
@@ -90,5 +92,6 @@ public class PurchaseModule extends AxelorModule {
     bind(PurchaseOrderCreateService.class).to(PurchaseOrderCreateServiceImpl.class);
     bind(PurchaseOrderSequenceService.class).to(PurchaseOrderSequenceServiceImpl.class);
     bind(PurchaseOrderSplitService.class).to(PurchaseOrderSplitServiceImpl.class);
+    bind(PurchaseOrderLineWarningService.class).to(PurchaseOrderLineWarningServiceImpl.class);
   }
 }
