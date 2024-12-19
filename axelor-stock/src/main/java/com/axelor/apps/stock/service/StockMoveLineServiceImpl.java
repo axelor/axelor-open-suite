@@ -1842,6 +1842,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, false);
     this.updateStockMoveLinesOfSplit(newStockMoveLine, stockMoveLine);
     stockMoveLineRepository.save(newStockMoveLine);
+    stockMoveLineRepository.save(stockMoveLine);
   }
 
   protected void checkSplitConditions(StockMoveLine stockMoveLine) throws AxelorException {
