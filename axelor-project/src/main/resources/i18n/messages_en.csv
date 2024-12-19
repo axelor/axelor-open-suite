@@ -234,7 +234,7 @@
 "Please configure the completed task status in the project config panel.",,,
 "Please configure the completed task status of the project task category.",,,
 "Please configure the project %s with project task link type %s if you want to create this link.",,,
-"Please fill all dates and the number of days in a sprint.",,,
+"Please fill all dates and the number of days in a sprint with valid values.",,,
 "Please fill canceled project status in App Project configuration.",,,
 "Please fill completed task status in Project configuration.",,,
 "Please fill in task date.",,,

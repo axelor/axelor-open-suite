@@ -93,8 +93,8 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
 
   @Override
   public Set<Sprint> generateSprints(
-      Long projectId,
-      Long projectVersionId,
+      Project project,
+      ProjectVersion projectVersion,
       LocalDate fromDate,
       LocalDate toDate,
       Integer numberDays) {
@@ -107,20 +107,28 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
       return sprintSet;
     }
 
+    int defaultSequence = 1;
+    if (project != null) {
+      defaultSequence = project.getSprintList().size() + 1;
+    } else if (projectVersion != null) {
+      defaultSequence = projectVersion.getSprintList().size() + 1;
+    }
+
     int i = 0;
     while (!fromDate.isAfter(toDate)) {
-      i++;
+      project = project != null ? projectRepository.find(project.getId()) : null;
+      projectVersion =
+          projectVersion != null ? projectVersionRepository.find(projectVersion.getId()) : null;
 
-      Project project = projectId != null ? projectRepository.find(projectId) : null;
-      ProjectVersion projectVersion =
-          projectVersionId != null ? projectVersionRepository.find(projectVersionId) : null;
+      i++;
 
       LocalDate endDate = fromDate.plusDays(numberDays - 1);
       if (!toDate.isAfter(endDate)) {
         endDate = toDate;
       }
-      sprintSet.add(createSprint(project, projectVersion, fromDate, endDate, i));
+      sprintSet.add(createSprint(project, projectVersion, fromDate, endDate, defaultSequence));
       fromDate = endDate.plusDays(1);
+      defaultSequence++;
 
       if (i % AbstractBatch.FETCH_LIMIT == 0) {
         JPA.clear();

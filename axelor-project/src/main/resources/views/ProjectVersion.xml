@@ -23,7 +23,7 @@
         onSelect="action-version-attrs-project-domain" colSpan="12"
         onChange="action-project-version-method-show-sprints"/>
       <button name="generateSprintsBtn" title="Generate sprints"
-        onClick="save,action-sprint-generator-view-wizard-mass-generate"/>
+        onClick="save,action-sprint-generator-version-view-wizard-mass-generate"/>
       <field name="sprintList" grid-view="sprint-grid" form-view="sprint-form" colSpan="12"
         canSelect="false"/>
     </panel>

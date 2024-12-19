@@ -234,7 +234,7 @@
 "Please configure the completed task status in the project config panel.","Veuillez configurer la tâche terminée dans la config du projet",,
 "Please configure the completed task status of the project task category.","Veuillez configurer la tâche terminée sur la catégorie",,
 "Please configure the project %s with project task link type %s if you want to create this link.","Veuillez configurer le projet %s avec le type de lien %s si vous voulez créer ce lien",,
-"Please fill all dates and the number of days in a sprint.","Veuillez remplir les dates et le nombre de jours dans un sprint.",,
+"Please fill all dates and the number of days in a sprint with valid values.","Veuillez remplir les dates et le nombre de jours dans un sprint avec des données valides.",,
 "Please fill canceled project status in App Project configuration.","Veuillez remplir le statut du projet annulé dans la configuration du projet d'application.",,
 "Please fill completed task status in Project configuration.","Veuillez configurer le statut de tâche terminée dans la config du projet",,
 "Please fill in task date.","Veuillez remplir la date de la tâche.",,

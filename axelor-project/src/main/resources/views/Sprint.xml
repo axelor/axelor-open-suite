@@ -87,17 +87,24 @@
       expr="eval: __parent__?._model != 'com.axelor.apps.project.db.Project'"/>
   </action-attrs>
 
-  <action-view name="action-sprint-generator-view-wizard-mass-generate"
+  <action-view name="action-sprint-generator-project-view-wizard-mass-generate"
     title="Sprint generator" model="com.axelor.utils.db.Wizard">
     <view type="form" name="sprint-generator-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="forceEdit" value="true"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="project"
-      expr="eval: __this__?._model != 'com.axelor.apps.project.db.Project' ? __this__ : null"/>
-    <context name="targetVersion"
-      expr="eval: __this__?._model != 'com.axelor.apps.project.db.ProjectVersion' ? __this__ : null"/>
+    <context name="project" expr="eval: __this__"/>
+  </action-view>
+
+  <action-view name="action-sprint-generator-version-view-wizard-mass-generate"
+    title="Sprint generator" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="sprint-generator-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="targetVersion" expr="eval: __this__"/>
   </action-view>
 
 </object-views>

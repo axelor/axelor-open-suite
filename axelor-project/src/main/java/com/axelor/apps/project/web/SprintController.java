@@ -3,6 +3,8 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectVersionRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.roadmap.SprintGeneratorService;
 import com.axelor.i18n.I18n;
@@ -25,17 +27,24 @@ public class SprintController {
     Object toDateContext = request.getContext().get("toDate");
     Integer numberDaysContext = (Integer) request.getContext().get("numberDays");
 
-    Long projectId =
+    Project project =
         projectContext != null
-            ? Long.valueOf(((LinkedHashMap<String, Object>) projectContext).get("id").toString())
+            ? Beans.get(ProjectRepository.class)
+                .find(
+                    Long.valueOf(
+                        ((LinkedHashMap<String, Object>) projectContext).get("id").toString()))
             : null;
-    Long projectVersionId =
+    ProjectVersion projectVersion =
         projectVersionContext != null
-            ? Long.valueOf(
-                ((LinkedHashMap<String, Object>) projectVersionContext).get("id").toString())
+            ? Beans.get(ProjectVersionRepository.class)
+                .find(
+                    Long.valueOf(
+                        ((LinkedHashMap<String, Object>) projectVersionContext)
+                            .get("id")
+                            .toString()))
             : null;
 
-    if ((projectId == null && projectVersionId == null)
+    if ((project == null && projectVersion == null)
         || fromDateContext == null
         || toDateContext == null
         || LocalDate.parse(fromDateContext.toString())
@@ -50,7 +59,7 @@ public class SprintController {
 
     Set<Sprint> sprintSet =
         Beans.get(SprintGeneratorService.class)
-            .generateSprints(projectId, projectVersionId, fromDate, toDate, numberDaysContext);
+            .generateSprints(project, projectVersion, fromDate, toDate, numberDaysContext);
 
     if (CollectionUtils.isNotEmpty(sprintSet)) {
       response.setInfo(
