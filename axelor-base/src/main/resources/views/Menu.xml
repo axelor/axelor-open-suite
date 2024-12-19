@@ -468,7 +468,7 @@
 
 
   <menuitem name="referential-conf-api-configuration" parent="referential-conf"
-     title="API Configuration" action="referential.conf.api.configuration" order="1700"/>
+    title="API Configuration" action="referential.conf.api.configuration" order="1700"/>
 
   <action-view name="referential.conf.api.configuration" title="API Configuration"
     model="com.axelor.apps.base.db.ApiConfiguration">
