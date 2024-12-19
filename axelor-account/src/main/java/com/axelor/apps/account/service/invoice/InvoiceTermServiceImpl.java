@@ -523,19 +523,33 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return invoice;
     }
 
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      if (!invoiceTerm.getIsCustomized()) {
-        LocalDate dueDate =
-            PaymentConditionToolService.getDueDate(
-                invoiceTerm.getPaymentConditionLine(), invoiceDate);
-        invoiceTerm.setDueDate(dueDate);
+    boolean setLastInvoiceTerm =
+        PaymentConditionToolService.isFreePaymentCondition(invoice.getPaymentCondition())
+            && invoice.getDueDate() != null;
+    int count = 0;
 
-        if (appAccountService.getAppAccount().getManageFinancialDiscount()
-            && invoiceTerm.getApplyFinancialDiscount()
-            && invoiceTerm.getFinancialDiscount() != null) {
-          invoiceTerm.setFinancialDiscountDeadlineDate(
-              invoiceTermFinancialDiscountService.computeFinancialDiscountDeadlineDate(
-                  invoiceTerm));
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      count++;
+      if (!invoiceTerm.getIsCustomized()) {
+        if (!setLastInvoiceTerm || count == invoice.getInvoiceTermList().size()) {
+          LocalDate dueDate;
+          if (PaymentConditionToolService.allowToComputeDueDateFreePaymentCondition(
+              invoice.getPaymentCondition(), invoice.getDueDate())) {
+            dueDate = invoice.getDueDate();
+          } else {
+            dueDate =
+                PaymentConditionToolService.getDueDate(
+                    invoiceTerm.getPaymentConditionLine(), invoiceDate);
+          }
+          invoiceTerm.setDueDate(dueDate);
+
+          if (appAccountService.getAppAccount().getManageFinancialDiscount()
+              && invoiceTerm.getApplyFinancialDiscount()
+              && invoiceTerm.getFinancialDiscount() != null) {
+            invoiceTerm.setFinancialDiscountDeadlineDate(
+                invoiceTermFinancialDiscountService.computeFinancialDiscountDeadlineDate(
+                    invoiceTerm));
+          }
         }
       }
     }
