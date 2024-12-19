@@ -1111,7 +1111,7 @@
           readonlyIf="ventilatedByUser || ventilatedDateTime"/>
         <spacer/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"
-          onChange="action-invoice-method-estimated-payment-date,action-invoice-method-compute-invoice-terms-due-dates"/>
+          onChange="action-invoice-method-estimated-payment-date"/>
         <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="paymentDelay" readonly="true" colSpan="12"/>
@@ -1272,7 +1272,7 @@
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
         <field name="invoiceDate" onChange="action-invoice-group-invoice-date-on-change"/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"
-          onChange="action-invoice-method-estimated-payment-date,action-invoice-method-compute-invoice-terms-due-dates"/>
+          onChange="action-invoice-method-estimated-payment-date"/>
         <field name="paymentCondition.isFree" hidden="true"/>
       </panel>
     </panel-stack>
