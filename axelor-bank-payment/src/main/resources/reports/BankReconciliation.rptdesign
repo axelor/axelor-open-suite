@@ -519,14 +519,14 @@ bankDetails.full_name AS account,
 bankReconciliation.corrected_date_time as corrected_date_time,
 AuthUser.full_name as corrected_user_full_name,
 bankReconciliation.comments as comments
-FROM public.bankpayment_bank_reconciliation AS bankReconciliation
-LEFT JOIN public.base_company AS company ON company.id = bankReconciliation.company
-LEFT JOIN public.base_currency AS currency ON currency.id = bankReconciliation.currency
-LEFT JOIN public.account_journal AS journal ON journal.id = bankReconciliation.journal
-LEFT JOIN public.account_account AS account ON account.id = bankReconciliation.cash_account
-LEFT JOIN public.base_bank_details AS bankDetails ON bankDetails.id = bankReconciliation.bank_details
-LEFT JOIN public.meta_file AS metaFile ON (metaFile.id = company.logo)
-LEFT JOIN public.auth_user as AuthUser on (bankReconciliation.corrected_user = AuthUser.id)
+FROM bankpayment_bank_reconciliation AS bankReconciliation
+LEFT JOIN base_company AS company ON company.id = bankReconciliation.company
+LEFT JOIN base_currency AS currency ON currency.id = bankReconciliation.currency
+LEFT JOIN account_journal AS journal ON journal.id = bankReconciliation.journal
+LEFT JOIN account_account AS account ON account.id = bankReconciliation.cash_account
+LEFT JOIN base_bank_details AS bankDetails ON bankDetails.id = bankReconciliation.bank_details
+LEFT JOIN meta_file AS metaFile ON (metaFile.id = company.logo)
+LEFT JOIN auth_user as AuthUser on (bankReconciliation.corrected_user = AuthUser.id)
 WHERE bankReconciliation.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -869,10 +869,10 @@ bankReconciliationLine.debit AS debit ,
 bankReconciliationLine.credit AS credit ,
 (bankReconciliationLine.credit - bankReconciliationLine.debit) AS amount ,
 (SUM(bankStatementLine.credit) - SUM(bankStatementLine.debit)) AS account_balance
-FROM public.bankpayment_bank_reconciliation AS bankReconciliation
-LEFT JOIN public.bankpayment_bank_statement_line AS bankStatementLine ON bankStatementLine.bank_statement = bankReconciliation.bank_statement
-LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation
-LEFT JOIN public.bankpayment_bank_statement AS bankStatement ON bankReconciliation.bank_statement = bankStatement.id
+FROM bankpayment_bank_reconciliation AS bankReconciliation
+LEFT JOIN bankpayment_bank_statement_line AS bankStatementLine ON bankStatementLine.bank_statement = bankReconciliation.bank_statement
+LEFT JOIN bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation
+LEFT JOIN bankpayment_bank_statement AS bankStatement ON bankReconciliation.bank_statement = bankStatement.id
 WHERE bankReconciliation.id = ?
 GROUP BY bankStatement.name ,
 bankReconciliation.to_date ,
@@ -1135,13 +1135,13 @@ moveLine.debit AS debit ,
 moveLine.credit AS credit ,
 moveLine.currency_amount AS currency_amount,
 (moveLine.credit - moveLine.debit) AS amount
-FROM public.account_move_line AS moveLine
-LEFT JOIN public.account_move AS move ON moveLine.move=move.id
-LEFT JOIN public.bankpayment_bank_reconciliation AS bankReconciliation ON (bankReconciliation.journal IS null OR move.journal=bankReconciliation.journal) AND (bankReconciliation.cash_account IS null OR moveLine.account=bankReconciliation.cash_account) AND move.company=bankReconciliation.company
-LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation AND bankReconciliationLine.move_line=moveLine.id
-LEFT JOIN public.base_company AS company ON bankReconciliation.company = company.id
-LEFT JOIN public.account_account AS account ON moveLine.account = account.id
-LEFT JOIN public.account_account_type AS accountType ON account.account_type = accountType.id
+FROM account_move_line AS moveLine
+LEFT JOIN account_move AS move ON moveLine.move=move.id
+LEFT JOIN bankpayment_bank_reconciliation AS bankReconciliation ON (bankReconciliation.journal IS null OR move.journal=bankReconciliation.journal) AND (bankReconciliation.cash_account IS null OR moveLine.account=bankReconciliation.cash_account) AND move.company=bankReconciliation.company
+LEFT JOIN bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation AND bankReconciliationLine.move_line=moveLine.id
+LEFT JOIN base_company AS company ON bankReconciliation.company = company.id
+LEFT JOIN account_account AS account ON moveLine.account = account.id
+LEFT JOIN account_account_type AS accountType ON account.account_type = accountType.id
 WHERE bankReconciliation.id = ?
 AND accountType.technical_type_select = 'cash'
 AND (move.status_select = 2 OR move.status_select = 3)

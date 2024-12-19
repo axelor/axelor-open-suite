@@ -251,19 +251,19 @@ AccountingReport.global as "Global",
 Partner.full_name as "PartnerFullName", PaymentVoucher.paid_amount as "AmountPaid",
 Currency.number_of_decimals
 -- Récupération des informations de l'en-tête du reporting comptable passé en paramètre
-from public.account_accounting_report as AccountingReport 
-left outer join public.account_payment_voucher as PaymentVoucher on (AccountingReport.id = ?) 
-left outer join public.base_partner as Partner on (PaymentVoucher.partner  = Partner.id)
+from account_accounting_report as AccountingReport 
+left outer join account_payment_voucher as PaymentVoucher on (AccountingReport.id = ?) 
+left outer join base_partner as Partner on (PaymentVoucher.partner  = Partner.id)
 
-left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
+left outer join account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+left outer join base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 
-left outer join public.base_company as Company on (AccountingReport.company = Company.id)
-left outer join public.base_currency as Currency on (Currency.id = Company.currency) 
+left outer join base_company as Company on (AccountingReport.company = Company.id)
+left outer join base_currency as Currency on (Currency.id = Company.currency) 
 
 -- Récupération des éléments des saisies paiements
-left outer join public.account_payment_mode as PaymentMode on (PaymentVoucher.payment_mode = PaymentMode.id) 
+left outer join account_payment_mode as PaymentMode on (PaymentVoucher.payment_mode = PaymentMode.id) 
 
 where 
 
@@ -469,9 +469,9 @@ AccountingReport.publication_date_time as "ReportDateEdition", Period.name as "P
 AccountingReport.date_to as "DateTo", AccountingReport.date_from as "DateFrom",
 Currency.code as currency,
 AccountingReport.ref
-from public.account_accounting_report as AccountingReport
-inner join public.base_company as Company  on (AccountingReport.id = ? and AccountingReport.company = Company.id)
-left outer join public.base_period as Period on (AccountingReport.period = Period.id)
+from account_accounting_report as AccountingReport
+inner join base_company as Company  on (AccountingReport.id = ? and AccountingReport.company = Company.id)
+left outer join base_period as Period on (AccountingReport.period = Period.id)
 left outer join base_currency as Currency on AccountingReport.currency = Currency.id]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">

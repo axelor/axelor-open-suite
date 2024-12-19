@@ -408,8 +408,8 @@ ReportType.type_select as report_type,
 min_amount_excl as min_amount,
 AccountingReport.ref,
 CompanyCurrency.number_of_decimals
-from public.account_accounting_report as AccountingReport
-inner join public.base_company as Company on (AccountingReport.company = Company.id)
+from account_accounting_report as AccountingReport
+inner join base_company as Company on (AccountingReport.company = Company.id)
 left outer join account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join base_currency as Currency on AccountingReport.currency = Currency.id
