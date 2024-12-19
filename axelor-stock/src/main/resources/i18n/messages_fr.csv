@@ -1067,7 +1067,7 @@
 "Workshop default stock location","Atelier par défaut",,
 "Yes","Oui",,
 "You can only split line in draft or planned stock move.","Vous pouvez seulement scinder une ligne d'un mouvement de stock en brouillon ou planifié.",,
-"You can only split line in incoming stock move.","Vous pouvez seulement scinder une ligne d'un bon de réception.",,
+"You can only split line in incoming or outgoing stock move.",,,
 "You cannot choose external stock locations for both fields","Vous ne pouvez pas choisir des emplacements externes pour les deux champs à la fois.",,
 "You must configure a Stock module for the company %s","Veuillez configurer le module stock pour la société %s",,
 "You must configure a customer virtual stock location for the company %s","Veuillez configurer un Emplacement Virtuel Client pour la société %s",,

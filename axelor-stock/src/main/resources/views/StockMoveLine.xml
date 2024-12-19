@@ -89,7 +89,7 @@
       title="Split into fulfilled line and unfulfilled one"
       help="Split into fulfilled line and unfulfilled one" icon="fa-clone"
       onClick="save,action-stock-move-line-method-split-into-fulfilled-line-and-unfulfilled-one"
-      hideIf=" $get('stockMove.typeSelect') != 3 || $get('stockMove.statusSelect') &gt; 2 "/>
+      hideIf=" $get('stockMove.typeSelect') == 1 || $get('stockMove.statusSelect') &gt; 2 "/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
     <field name="$trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
