@@ -14,7 +14,8 @@
     <field name="zip"/>
   </grid>
 
-  <form name="city-form" title="City" model="com.axelor.apps.base.db.City" width="large">
+  <form name="city-form" title="City" model="com.axelor.apps.base.db.City" width="large"
+    onLoad="action-base-attrs-city-country-sub-division">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="artmin" colSpan="2"/>
@@ -22,9 +23,11 @@
       <field name="inseeCode"/>
     </panel>
     <panel name="localizationPanel" title="Localization">
-      <field name="country" form-view="country-form" grid-view="country-grid"/>
+      <field name="country" form-view="country-form" grid-view="country-grid"
+        onChange="action-base-attrs-city-country-sub-division"/>
       <field name="department" form-view="department-form" grid-view="department-grid"/>
       <field name="canton" form-view="canton-form" grid-view="canton-grid"/>
+      <field name="countrySubDivision" hidden="true"/>
     </panel>
     <panel name="demographyPanel" title="Demography">
       <field name="nbInhCommune"/>
@@ -41,6 +44,18 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="popup" value="reload"/>
   </action-view>
+
+
+  <action-attrs name="action-base-attrs-city-country-sub-division">
+    <attribute for="countrySubDivision" name="hidden"
+      expr=" call:com.axelor.apps.base.service.address.AddressTemplateLineViewServiceImpl.fieldNotInAddressTemplate('countrySubDivision', country)"/>
+    <attribute for="countrySubDivision" name="required"
+      expr="call: com.axelor.apps.base.service.address.AddressTemplateLineViewServiceImpl.fieldIsRequiredOnAddressTemplate('countrySubDivision', country)"/>
+    <attribute for="countrySubDivision" name="title"
+      expr=" eval: call: com.axelor.apps.base.service.address.AddressTemplateLineViewServiceImpl.getAddressTemplateLine('countrySubDivision', country?.addressTemplate?.addressTemplateLineList)?.title"/>
+  </action-attrs>
+
+
 
   <form name="wizard-import-city-form" title="Import city" model="com.axelor.utils.db.Wizard"
     onNew="action-wizard-import-city-record-preload">
