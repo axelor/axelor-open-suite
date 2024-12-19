@@ -58,7 +58,7 @@ public class InvoiceToolService {
     LocalDate invoiceDate =
         isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
     return ObjectUtils.isEmpty(invoice.getInvoiceTermList())
-            || PaymentConditionToolService.isFreePaymentCondition(invoice)
+            || PaymentConditionToolService.isFreePaymentCondition(invoice.getPaymentCondition())
         ? PaymentConditionToolService.getMaxDueDate(
             invoice.getPaymentCondition(), invoiceDate, invoice.getDueDate())
         : Beans.get(InvoiceTermService.class).getDueDate(invoice.getInvoiceTermList(), invoiceDate);

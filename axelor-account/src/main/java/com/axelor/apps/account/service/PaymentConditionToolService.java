@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
@@ -35,7 +34,7 @@ public class PaymentConditionToolService {
       return defaultDate;
     }
 
-    if (paymentCondition.getIsFree() && dueDate != null) {
+    if (allowToComputeDueDateFreePaymentCondition(paymentCondition, dueDate)) {
       return dueDate;
     }
 
@@ -110,7 +109,18 @@ public class PaymentConditionToolService {
     }
   }
 
-  public static boolean isFreePaymentCondition(Invoice invoice) {
-    return invoice.getPaymentCondition() != null && invoice.getPaymentCondition().getIsFree();
+  public static boolean isFreePaymentCondition(PaymentCondition paymentCondition) {
+    return paymentCondition != null && paymentCondition.getIsFree();
+  }
+
+  public static boolean allowToComputeDueDateFreePaymentCondition(
+      PaymentCondition paymentCondition, LocalDate dueDate) {
+    return isFreePaymentCondition(paymentCondition)
+        && dueDate != null
+        && isMonoPaymentCondition(paymentCondition);
+  }
+
+  public static boolean isMonoPaymentCondition(PaymentCondition paymentCondition) {
+    return paymentCondition.getPaymentConditionLineList().size() == 1;
   }
 }

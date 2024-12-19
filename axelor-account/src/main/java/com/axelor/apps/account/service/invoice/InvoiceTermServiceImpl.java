@@ -524,16 +524,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     boolean setLastInvoiceTerm =
-        PaymentConditionToolService.isFreePaymentCondition(invoice) && invoice.getDueDate() != null;
+        PaymentConditionToolService.isFreePaymentCondition(invoice.getPaymentCondition())
+            && invoice.getDueDate() != null;
     int count = 0;
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       count++;
       if (!invoiceTerm.getIsCustomized()) {
         if (!setLastInvoiceTerm || count == invoice.getInvoiceTermList().size()) {
-          LocalDate dueDate =
-              PaymentConditionToolService.getDueDate(
-                  invoiceTerm.getPaymentConditionLine(), invoiceDate);
+          LocalDate dueDate;
+          if (PaymentConditionToolService.allowToComputeDueDateFreePaymentCondition(
+              invoice.getPaymentCondition(), invoice.getDueDate())) {
+            dueDate = invoice.getDueDate();
+          } else {
+            dueDate =
+                PaymentConditionToolService.getDueDate(
+                    invoiceTerm.getPaymentConditionLine(), invoiceDate);
+          }
           invoiceTerm.setDueDate(dueDate);
 
           if (appAccountService.getAppAccount().getManageFinancialDiscount()
@@ -1721,10 +1728,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return;
     }
     if (InvoiceToolService.isPurchase(invoice)) {
-      if (PaymentConditionToolService.isFreePaymentCondition(invoice)
-          && invoice.getDueDate() != null) {
-        invoice = setDueDates(invoice, invoice.getDueDate());
-      } else if (invoice.getOriginDate() != null) {
+      if (invoice.getOriginDate() != null) {
         invoice = setDueDates(invoice, invoice.getOriginDate());
       } else {
         invoice = setDueDates(invoice, appBaseService.getTodayDate(invoice.getCompany()));
