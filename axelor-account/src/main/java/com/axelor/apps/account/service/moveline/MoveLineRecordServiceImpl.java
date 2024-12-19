@@ -140,7 +140,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     TaxEquiv taxEquiv = null;
     if (CollectionUtils.isNotEmpty(taxLineSet) && move.getFiscalPosition() != null) {
       taxEquiv =
-          fiscalPositionService.getTaxEquivFromTaxLines(
+          fiscalPositionService.getTaxEquivFromOrToTaxSet(
               move.getFiscalPosition(), taxLineBeforeReverseSet);
       if (taxEquiv != null) {
         moveLine.setTaxLineBeforeReverseSet(taxLineBeforeReverseSet);

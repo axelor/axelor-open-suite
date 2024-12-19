@@ -569,12 +569,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     } else {
       fromTaxSet = taxLineSet;
     }
-    taxEquiv = fiscalPositionService.getTaxEquivFromTaxLines(fiscalPosition, fromTaxSet);
+    taxEquiv = fiscalPositionService.getTaxEquivFromOrToTaxSet(fiscalPosition, fromTaxSet);
     if (taxEquiv != null) {
-      taxLineSet =
-          taxService.getTaxLineSet(
-              fiscalPositionService.getTaxSet(fiscalPosition, taxService.getTaxSet(fromTaxSet)),
-              moveLine.getDate());
+      taxLineSet = taxService.getTaxLineSet(taxEquiv.getToTaxSet(), moveLine.getDate());
     }
 
     valuesMap.put("taxLineBeforeReverseSet", fromTaxSet);
