@@ -69,7 +69,21 @@ public class LeaveRequestCreateController {
     BigDecimal totalDuration =
         leaveRequestCreateHelperDurationService.getTotalDuration(leaveReasonList);
 
-    leaveRequestCreateHelperDurationService.checkDuration(duration, totalDuration);
+    if (leaveRequestCreateHelperDurationService.durationIsExceeded(duration, totalDuration)) {
+      response.setAlert(I18n.get("You exceeded the available duration, Do you wish to proceed ?"));
+    }
+  }
+
+  public void computeTotalDuration(ActionRequest request, ActionResponse response) {
+    LeaveRequestCreateHelperDurationService leaveRequestCreateHelperDurationService =
+        Beans.get(LeaveRequestCreateHelperDurationService.class);
+    List<HashMap<String, Object>> leaveReasonList =
+        (List<HashMap<String, Object>>) request.getContext().get("leaveReasonList");
+
+    BigDecimal totalDuration =
+        leaveRequestCreateHelperDurationService.getTotalDuration(leaveReasonList);
+
+    response.setValue("$totalDuration", totalDuration);
   }
 
   public void computeDuration(ActionRequest request, ActionResponse response)
