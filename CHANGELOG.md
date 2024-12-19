@@ -1,3 +1,15 @@
+## [6.5.48] (2024-12-19)
+
+### Fixes
+#### Base
+
+* Product: fixed french translation for 'Product'.
+
+#### Account
+
+* Accounting report: fixed blank values in 'Summary of gross values and depreciation' report.
+* Move: fixed description when we generate invoice move.
+
 ## [6.5.47] (2024-11-28)
 
 ### Fixes
@@ -1601,6 +1613,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.48]: https://github.com/axelor/axelor-open-suite/compare/v6.5.47...v6.5.48
 [6.5.47]: https://github.com/axelor/axelor-open-suite/compare/v6.5.46...v6.5.47
 [6.5.46]: https://github.com/axelor/axelor-open-suite/compare/v6.5.45...v6.5.46
 [6.5.45]: https://github.com/axelor/axelor-open-suite/compare/v6.5.44...v6.5.45
