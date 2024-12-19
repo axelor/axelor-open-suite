@@ -8,14 +8,17 @@ import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectVersionRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,12 +44,8 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
   }
 
   @Override
-  public Map<String, Object> initDefaultValues(Long projectId, Long projectVersionId) {
+  public Map<String, Object> initDefaultValues(Project project, ProjectVersion projectVersion) {
     Map<String, Object> valuesMap = new HashMap<>();
-
-    Project project = projectId != null ? projectRepository.find(projectId) : null;
-    ProjectVersion projectVersion =
-        projectVersionId != null ? projectVersionRepository.find(projectVersionId) : null;
 
     addDatesFields(project, projectVersion, valuesMap);
     valuesMap.put("project", project);
@@ -70,16 +69,43 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
 
   protected LocalDate getFromDate(Project project, ProjectVersion projectVersion) {
     if (project != null) {
+      LocalDate toDate = getLastToDate(project.getSprintList());
+      if (toDate != null) {
+        return toDate;
+      }
+
       if (project.getFromDate() != null) {
         return project.getFromDate().toLocalDate();
       } else {
         return appBaseService.getTodayDate(project.getCompany());
       }
     } else if (projectVersion != null) {
+      LocalDate toDate = getLastToDate(projectVersion.getSprintList());
+      if (toDate != null) {
+        return toDate;
+      }
       return appBaseService.getTodayDate(null);
     }
 
     return null;
+  }
+
+  protected LocalDate getLastToDate(List<Sprint> sprintList) {
+    if (ObjectUtils.isEmpty(sprintList)) {
+      return null;
+    }
+
+    LocalDate toDate =
+        sprintList.stream()
+            .filter(sprint -> sprint.getToDate() != null)
+            .sorted(Comparator.comparing(Sprint::getToDate).reversed())
+            .map(Sprint::getToDate)
+            .findFirst()
+            .orElse(null);
+    if (toDate == null) {
+      return null;
+    }
+    return toDate.plusDays(1);
   }
 
   protected LocalDate getToDate(Project project, ProjectVersion projectVersion) {

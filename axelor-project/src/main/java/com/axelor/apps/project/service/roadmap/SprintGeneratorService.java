@@ -1,12 +1,14 @@
 package com.axelor.apps.project.service.roadmap;
 
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.Sprint;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
 
 public interface SprintGeneratorService {
-  Map<String, Object> initDefaultValues(Long projectId, Long projectVersionId);
+  Map<String, Object> initDefaultValues(Project project, ProjectVersion projectVersion);
 
   Set<Sprint> generateSprints(
       Long projectId,
