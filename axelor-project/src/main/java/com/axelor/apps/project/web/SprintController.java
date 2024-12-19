@@ -7,6 +7,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectVersionRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.roadmap.SprintGeneratorService;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -14,6 +15,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -72,33 +74,45 @@ public class SprintController {
     Object projectContext = request.getContext().get("project");
     Object targetVersionContext = request.getContext().get("targetVersion");
 
-    Long projectId =
-        projectContext != null
-            ? Long.valueOf(((LinkedHashMap<String, Object>) projectContext).get("id").toString())
-            : null;
-    Long projectVersionId =
-        targetVersionContext != null
-            ? Long.valueOf(
-                ((LinkedHashMap<String, Object>) targetVersionContext).get("id").toString())
-            : null;
+    Optional<Project> projectOpt =
+        Optional.ofNullable(projectContext)
+            .map(
+                context ->
+                    Beans.get(ProjectRepository.class)
+                        .find(
+                            Long.valueOf(
+                                ((LinkedHashMap<String, Object>) projectContext)
+                                    .get("id")
+                                    .toString())));
+    Optional<ProjectVersion> projectVersionOpt =
+        Optional.ofNullable(targetVersionContext)
+            .map(
+                context ->
+                    Beans.get(ProjectVersionRepository.class)
+                        .find(
+                            Long.valueOf(
+                                ((LinkedHashMap<String, Object>) targetVersionContext)
+                                    .get("id")
+                                    .toString())));
 
     response.setValues(
-        Beans.get(SprintGeneratorService.class).initDefaultValues(projectId, projectVersionId));
+        Beans.get(SprintGeneratorService.class)
+            .initDefaultValues(projectOpt.orElse(null), projectVersionOpt.orElse(null)));
   }
 
   public void initDefaultValues(ActionRequest request, ActionResponse response) {
-    Long projectId = null;
-    Long projectVersionId = null;
+    Project project = null;
+    ProjectVersion projectVersion = null;
     Context parentContext = request.getContext().getParent();
     if (parentContext != null) {
       if (Project.class.equals(parentContext.getContextClass())) {
-        projectId = parentContext.asType(Project.class).getId();
+        project = EntityHelper.getEntity(parentContext.asType(Project.class));
       } else if (ProjectVersion.class.equals(parentContext.getContextClass())) {
-        projectVersionId = parentContext.asType(ProjectVersion.class).getId();
+        projectVersion = EntityHelper.getEntity(parentContext.asType(ProjectVersion.class));
       }
     }
 
     response.setValues(
-        Beans.get(SprintGeneratorService.class).initDefaultValues(projectId, projectVersionId));
+        Beans.get(SprintGeneratorService.class).initDefaultValues(project, projectVersion));
   }
 }

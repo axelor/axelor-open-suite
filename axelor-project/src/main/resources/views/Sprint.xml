@@ -55,19 +55,19 @@
   </form>
 
   <action-group name="action-sprint-generator-group-onnew">
-    <action name="action-sprint-generator-method-init-default-wizard-values"/>
+    <action name="action-sprint-generator-method-init-default-values"/>
   </action-group>
 
   <action-group name="action-sprint-group-onnew">
-    <action name="action-sprint-generator-method-init-default-values"/>
+    <action name="action-sprint-method-init-default-values"/>
     <action name="action-sprint-attrs-manage-hide-project-version"/>
   </action-group>
 
-  <action-method name="action-sprint-generator-method-init-default-wizard-values">
+  <action-method name="action-sprint-generator-method-init-default-values">
     <call class="com.axelor.apps.project.web.SprintController" method="initDefaultWizardValues"/>
   </action-method>
 
-  <action-method name="action-sprint-generator-method-init-default-values">
+  <action-method name="action-sprint-method-init-default-values">
     <call class="com.axelor.apps.project.web.SprintController" method="initDefaultValues"/>
   </action-method>
 
