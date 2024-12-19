@@ -1,3 +1,52 @@
+## [7.2.28] (2024-12-19)
+
+### Fixes
+#### Base
+
+* Product: fixed french translation for 'Product'.
+* Partner: fixed so that customer can be converted to other partner types.
+* Partner link: made partners required to avoid errors.
+
+#### Account
+
+* Accounting batch: fixed 'Realize fixed asset lines' batch doesn't work when start date and end date are same.
+* Invoice: fixed payment voucher confirmation with auto reconcile config enabled.
+* Invoice: added server-side controls to prevent forbidden status changes, for example cancelling a ventilated invoice.
+* Accounting report: fixed blank values in 'Summary of gross values and depreciation' report.
+
+#### Budget
+
+* Invoice: fixed error when there is no product on the invoice line while budget computation.
+
+#### Human Resource
+
+* Expense API: fixed the error when an employee did not have a contract while creating an expense.
+
+#### Production
+
+* Manufacturing order: merging manufacturing orders now correctly takes into account scheduling configuration.
+
+#### Quality
+
+* Quality alert: fixed NPE when opening kanban view.
+
+#### Sale
+
+* Sale order: fixed concurrency error when adding a pack on a sale order.
+
+#### Supply Chain
+
+* Timetable: timetable are now correctly updated to not invoiced when a linked credit note has been ventilated.
+* Sale order: a sale order with invoiced timetables cannot be edited anymore.
+* Sale order invoicing: fixed the missing title 'To invoice' on the corresponding column when invoicing time table lines from a sale order.
+
+
+### Developer
+
+#### Account
+
+`action-invoice-record-draft` was replaced by `action-invoice-method-back-to-draft`.
+
 ## [7.2.27] (2024-11-28)
 
 ### Fixes
@@ -1365,6 +1414,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.28]: https://github.com/axelor/axelor-open-suite/compare/v7.2.27...v7.2.28
 [7.2.27]: https://github.com/axelor/axelor-open-suite/compare/v7.2.26...v7.2.27
 [7.2.26]: https://github.com/axelor/axelor-open-suite/compare/v7.2.25...v7.2.26
 [7.2.25]: https://github.com/axelor/axelor-open-suite/compare/v7.2.24...v7.2.25
