@@ -1,0 +1,3 @@
+---
+title: "Account: fixed hard coded db schema in native queries."
+module: axelor-account
