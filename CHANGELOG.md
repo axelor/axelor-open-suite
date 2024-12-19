@@ -1,3 +1,88 @@
+## [8.2.4] (2024-12-19)
+
+### Fixes
+#### Base
+
+* Updated Axelor Open Platform to 7.2.4.
+* Updated studio module to 3.3.8.
+* Product: fixed french translation for 'Product'.
+* Partner: fixed siren, nic and tax number computation for demo data.
+* Partner: fixed hidden panels when partner is not only prospect.
+* Partner: fixed so that customer can be converted to other partner types.
+* Partner link: made partners required to avoid errors.
+
+#### Account
+
+* Accounting batch: fixed 'Realize fixed asset lines' batch doesn't work when start date and end date are same.
+* Invoice: fixed payment voucher confirmation with auto reconcile config enabled.
+* Invoice: added server-side controls to prevent forbidden status changes, for example cancelling a ventilated invoice.
+* Accounting report: fixed blank values in 'Summary of gross values and depreciation' report.
+* Invoice: fixed display of company bank details when we create an invoice payment.
+* Accounting report: fixed 'Aged balance' report doesn't display the values of due amounts in the delay columns.
+* Invoice payment: fixed an issue where payment amount wrongly reset to 0 after changing payment date two times.
+* Invoice: fixed an issue with amount remaining being reinitialized from ventilated invoice.
+
+#### Budget
+
+* Invoice: fixed error when there is no product on the invoice line while budget computation.
+
+#### Business Project
+
+* Business project: fixed an error occurring when opening sale order line in financial data
+* Project/Project task: fixed planned and spent time when time units are not the same.
+
+#### Contract
+
+* Contract template: fixed recurring product display for supplier contract.
+* Contract: cut off dates are now correctly filled in invoice lines.
+
+#### CRM
+
+* Partner: fixed the display issue in event panel when images are attached in the event description.
+
+#### Human Resource
+
+* Lunch voucher: leave request with hour leave reason type are now ignored.
+* HR API: fill expense type select on creation
+* Expense API: fixed the error when an employee did not have a contract while creating an expense.
+
+#### Production
+
+* Manufacturing order: fixed no such field 'typeSelect' error when selecting bill of material and prod process when maintenance module is missing.
+* Purchase order: fixed wrong domain for the dashlet on outsourcing tab.
+* Manufacturing order: merging manufacturing orders now correctly takes into account scheduling configuration.
+
+#### Project
+
+* Project template: fixed duplicated invoicing tab when creating a project template as a business project.
+* Gantt view: fixed an issue where changing the progression did not change it on the project task.
+
+#### Quality
+
+* Quality alert: fixed NPE when opening kanban view.
+
+#### Sale
+
+* Sale order: fixed concurrency error when adding a pack on a sale order.
+
+#### Supply Chain
+
+* Supplychain: invoices generated from a stock move of a sale order are now correctly generated with the advance payment of the sale order.
+* Timetable: timetable are now correctly updated to not invoiced when a linked credit note has been ventilated.
+* Sale order: a sale order with invoiced timetables cannot be edited anymore.
+* Sale order invoicing: fixed the missing title 'To invoice' on the corresponding column when invoicing time table lines from a sale order.
+
+
+### Developer
+
+#### Account
+
+`action-invoice-record-draft` was replaced by `action-invoice-method-back-to-draft`
+
+#### Contract
+
+`AppAccountService` has been added to the constructor of `ContractInvoicingServiceImpl`.
+
 ## [8.2.3] (2024-11-28)
 
 ### Fixes
@@ -363,6 +448,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.4]: https://github.com/axelor/axelor-open-suite/compare/v8.2.3...v8.2.4
 [8.2.3]: https://github.com/axelor/axelor-open-suite/compare/v8.2.2...v8.2.3
 [8.2.2]: https://github.com/axelor/axelor-open-suite/compare/v8.2.1...v8.2.2
 [8.2.1]: https://github.com/axelor/axelor-open-suite/compare/v8.2.0...v8.2.1
