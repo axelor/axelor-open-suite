@@ -36,13 +36,17 @@ import java.util.Optional;
 public interface LogisticalFormService {
 
   /**
-   * Add detail lines from the stock move. If there were no lines, add a parcel line first.
+   * Add all or only concerned detail lines from the stock move. If there were no lines, add a
+   * parcel line first.
    *
    * @param logisticalForm
    * @param stockMove
+   * @param includeConcernedLinesOnly
    * @throws AxelorException
    */
-  void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) throws AxelorException;
+  void addDetailLines(
+      LogisticalForm logisticalForm, StockMove stockMove, boolean includeConcernedLinesOnly)
+      throws AxelorException;
 
   /**
    * Add parcel or pallet line.
