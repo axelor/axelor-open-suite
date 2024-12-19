@@ -841,7 +841,10 @@ public class PaymentVoucherConfirmService {
         currencyService.getCurrencyConversionRate(
             invoiceTerm.getCurrency(),
             invoiceTerm.getCompanyCurrency(),
-            invoiceTerm.getInvoice().getInvoiceDate());
+            Optional.of(invoiceTerm)
+                .map(InvoiceTerm::getInvoice)
+                .map(Invoice::getInvoiceDate)
+                .orElse(Optional.ofNullable(moveLineToPay).map(MoveLine::getDate).orElse(null)));
     BigDecimal companyAmountToPay =
         currencyScaleService.getCompanyScaledValue(
             payVoucherElementToPay.getPaymentVoucher(), currencyAmount.multiply(currencyRate));
