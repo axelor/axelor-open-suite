@@ -48,6 +48,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -316,7 +317,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     for (SaleOrderLine separatedLine : separatedSOLines) {
       copySaleOrder.addSaleOrderLineListItem(separatedLine);
       originalSOLines.stream()
-          .filter(soLine -> separatedLine.equals(soLine.getMainSaleOrderLine()))
+          .filter(
+              soLine ->
+                  !Strings.isNullOrEmpty(separatedLine.getManualId())
+                      && !Strings.isNullOrEmpty(soLine.getParentId())
+                      && separatedLine.getManualId().equals(soLine.getParentId()))
           .forEach(copySaleOrder::addSaleOrderLineListItem);
     }
   }

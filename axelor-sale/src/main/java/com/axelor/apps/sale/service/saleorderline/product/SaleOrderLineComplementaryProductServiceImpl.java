@@ -26,12 +26,12 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineComplementaryProductServiceImpl
@@ -39,13 +39,16 @@ public class SaleOrderLineComplementaryProductServiceImpl
 
   protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
   protected SaleOrderLineRepository saleOrderLineRepository;
+  protected SaleOrderComplementaryProductService saleOrderComplementaryProductService;
 
   @Inject
   public SaleOrderLineComplementaryProductServiceImpl(
       SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
-      SaleOrderLineRepository saleOrderLineRepository) {
+      SaleOrderLineRepository saleOrderLineRepository,
+      SaleOrderComplementaryProductService saleOrderComplementaryProductService) {
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
     this.saleOrderLineRepository = saleOrderLineRepository;
+    this.saleOrderComplementaryProductService = saleOrderComplementaryProductService;
   }
 
   @Override
@@ -54,13 +57,8 @@ public class SaleOrderLineComplementaryProductServiceImpl
       throws AxelorException {
 
     List<SaleOrderLine> newComplementarySOLines = new ArrayList<>();
-    if (saleOrderLine.getMainSaleOrderLine() != null) {
-      return newComplementarySOLines;
-    }
 
-    if (saleOrderLine.getComplementarySaleOrderLineList() == null) {
-      saleOrderLine.setComplementarySaleOrderLineList(new ArrayList<>());
-    }
+    saleOrderComplementaryProductService.setNewManualId(saleOrderLine);
 
     SaleOrderLine complementarySOLine =
         getOrCreateComplementryLine(
@@ -77,22 +75,23 @@ public class SaleOrderLineComplementaryProductServiceImpl
 
   protected SaleOrderLine getOrCreateComplementryLine(
       Product product, SaleOrderLine saleOrderLine, List<SaleOrderLine> newComplementarySOLines) {
-    SaleOrderLine complementarySOLine;
-    Optional<SaleOrderLine> complementarySOLineOpt =
-        saleOrderLine.getComplementarySaleOrderLineList().stream()
-            .filter(
-                line -> line.getMainSaleOrderLine() != null && line.getProduct().equals(product))
-            .findFirst();
-    if (complementarySOLineOpt.isPresent()) {
-      complementarySOLine = complementarySOLineOpt.get();
+    SaleOrderLine complementarySOLine =
+        saleOrderLineRepository
+            .all()
+            .filter("self.parentId = :parentId AND self.product = :product")
+            .bind("parentId", saleOrderLine.getManualId())
+            .bind("product", product)
+            .fetchOne();
+    if (complementarySOLine != null) {
+      return complementarySOLine;
     } else {
       complementarySOLine = new SaleOrderLine();
       complementarySOLine.setSequence(saleOrderLine.getSequence());
       complementarySOLine.setProduct(product);
-      complementarySOLine.setMainSaleOrderLine(saleOrderLine);
+      complementarySOLine.setParentId(saleOrderLine.getManualId());
       newComplementarySOLines.add(complementarySOLine);
+      return complementarySOLine;
     }
-    return complementarySOLine;
   }
 
   @Override
