@@ -58,5 +58,5 @@ public interface MoveLineTaxService {
 
   void checkEmptyTaxLines(List<MoveLine> moveLineList) throws AxelorException;
 
-  boolean isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect);
+  boolean isMoveLineTaxAccountRequired(MoveLine moveLine);
 }
