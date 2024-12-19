@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed concurrency error when adding a pack on a sale order."
-module: axelor-sale

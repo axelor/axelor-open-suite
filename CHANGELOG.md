@@ -1,3 +1,71 @@
+## [8.1.13] (2024-12-19)
+
+### Fixes
+#### Base
+
+* Updated Axelor Open Platform to 7.1.11.
+* Updated studio module to 3.1.10.
+* Product: fixed french translation for 'Product'.
+* Partner: fixed hidden panels when partner is not only prospect.
+* Partner: fixed so that customer can be converted to other partner types.
+* Partner link: made partners required to avoid errors.
+
+#### Account
+
+* Accounting batch: fixed 'Realize fixed asset lines' batch doesn't work when start date and end date are same.
+* Invoice: fixed payment voucher confirmation with auto reconcile config enabled.
+* Invoice: added server-side controls to prevent forbidden status changes, for example cancelling a ventilated invoice.
+* Accounting report: fixed blank values in 'Summary of gross values and depreciation' report.
+* Invoice: fixed display of company bank details when we create an invoice payment.
+* Accounting report: fixed 'Aged balance' report doesn't display the values of due amounts in the delay columns.
+* Invoice payment: fixed an issue where payment amount wrongly reset to 0 after changing payment date two times.
+* Invoice: fixed an issue with amount remaining being reinitialized from ventilated invoice.
+
+#### Budget
+
+* Invoice: fixed error when there is no product on the invoice line while budget computation.
+
+#### Contract
+
+* Contract template: fixed recurring product display for supplier contract.
+
+#### CRM
+
+* Partner: fixed the display issue in event panel when images are attached in the event description.
+
+#### Human Resource
+
+* Lunch voucher: leave request with hour leave reason type are now ignored.
+* HR API: fill expense type select on creation
+* Expense API: fixed the error when an employee did not have a contract while creating an expense.
+
+#### Production
+
+* Purchase order: fixed wrong domain for the dashlet on outsourcing tab.
+* Manufacturing order: merging manufacturing orders now correctly takes into account scheduling configuration.
+
+#### Quality
+
+* Quality alert: fixed NPE when opening kanban view.
+
+#### Sale
+
+* Sale order: fixed concurrency error when adding a pack on a sale order.
+
+#### Supply Chain
+
+* Supplychain: invoices generated from a stock move of a sale order are now correctly generated with the advance payment of the sale order.
+* Timetable: timetable are now correctly updated to not invoiced when a linked credit note has been ventilated.
+* Sale order: a sale order with invoiced timetables cannot be edited anymore.
+* Sale order invoicing: fixed the missing title 'To invoice' on the corresponding column when invoicing time table lines from a sale order.
+
+
+### Developer
+
+#### Account
+
+`action-invoice-record-draft` was replaced by `action-invoice-method-back-to-draft`
+
 ## [8.1.12] (2024-11-28)
 
 ### Fixes
@@ -930,6 +998,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.13]: https://github.com/axelor/axelor-open-suite/compare/v8.1.12...v8.1.13
 [8.1.12]: https://github.com/axelor/axelor-open-suite/compare/v8.1.11...v8.1.12
 [8.1.11]: https://github.com/axelor/axelor-open-suite/compare/v8.1.10...v8.1.11
 [8.1.10]: https://github.com/axelor/axelor-open-suite/compare/v8.1.9...v8.1.10
