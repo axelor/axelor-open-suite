@@ -24,6 +24,8 @@
       title="Parent Price List"/>
     <date name="applicationBeginDate" title="Application begin date"/>
     <date name="applicationEndDate" title="Application end date"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency"
+      title="PriceList.currency" required="true"/>
 
     <extra-code>
 				<![CDATA[

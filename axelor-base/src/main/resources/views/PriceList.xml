@@ -23,7 +23,7 @@
   </grid>
 
   <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
-    onNew="action-group-base-pricelist-onnew"
+    onNew="action-group-base-pricelist-onnew" onLoad="action-price-list-attrs-set-currency-readonly"
     onSave="action-price-list-method-check-anomaly,action-price-list-method-check-dates"
     width="large">
     <panel name="mainPanel">
@@ -34,6 +34,7 @@
       <field name="applicationEndDate" onChange="action-price-list-method-check-dates"/>
       <field name="nonNegotiable" showIf="typeSelect == 1"/>
       <field name="hideDiscount"/>
+      <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     </panel>
     <panel name="priceListLinePanel" title="Price list lines">
       <field name="generalDiscount"/>
@@ -58,6 +59,7 @@
     <action name="action-price-list-record-default"/>
     <action name="action-price-list-record-on-new"/>
     <action name="action-price-list-attrs-readonly-type-select-true"/>
+    <action name="action-price-list-attrs-set-currency-readonly"/>
   </action-group>
 
   <action-record name="action-price-list-record-default"
@@ -82,6 +84,7 @@
     model="com.axelor.apps.base.db.PriceList">
     <field name="typeSelect" expr="eval: _typeSelect" if="!__parent__"/>
     <field name="typeSelect" expr="eval: __parent__?.typeSelect" if="__parent__"/>
+    <field name="currency" expr="eval: __parent__?.currency" if="__parent__"/>
   </action-record>
 
   <action-attrs name="action-price-list-attrs-readonly-type-select">
@@ -108,6 +111,14 @@
     <domain>:priceList MEMBER OF self.priceListSet</domain>
     <context name="priceList" expr="eval: __self__"/>
   </action-view>
+
+  <action-attrs name="action-price-list-attrs-set-currency-readonly">
+    <attribute name="readonly" for="currency"
+      expr="eval: __repo__(PartnerPriceList).all().filter('? MEMBER OF self.priceListSet',id).count() > 0"
+      if="!__parent__ &amp;&amp; id"/>
+    <attribute name="readonly" for="currency" expr="eval: true"
+      if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.PartnerPriceList'"/>
+  </action-attrs>
 
 </object-views>
 

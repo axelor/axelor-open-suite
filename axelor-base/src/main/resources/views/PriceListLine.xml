@@ -45,6 +45,7 @@
       <field name="amountTypeSelect" colSpan="12" hideIf="typeSelect == 3"
         onChange="action-price-list-line-attrs-amount-percent-title-change"/>
       <field name="amount" colSpan="12" hideIf="amountTypeSelect == 3"/>
+      <field name="priceList.currency" showIf="id"/>
       <field name="minQty" colSpan="12"/>
     </panel>
   </form>

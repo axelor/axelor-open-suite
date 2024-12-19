@@ -13,14 +13,17 @@
 
   <form name="partner-price-list-form" title="Partner price lists"
     model="com.axelor.apps.base.db.PartnerPriceList"
-    onNew="action-record-partner-price-list-record-on-new" width="large">
+    onNew="action-record-partner-price-list-record-on-new"
+    onLoad="action-partner-price-list-attrs-set-currency-readonly" width="large">
     <panel name="mainPanel">
       <field name="label"/>
       <field name="typeSelect" readonly="true" colSpan="4"/>
       <field name="isExclusive"/>
+      <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
       <field name="priceListSet" grid-view="price-list-grid" form-view="price-list-form"
-        onChange="action-method-partner-price-list-check-dates"
-        onSelect="action-partner-price-list-method-compute-price-list-domain" colSpan="12"/>
+        onChange="action-method-partner-price-list-check-dates,action-partner-price-list-attrs-set-currency-readonly"
+        onSelect="action-partner-price-list-method-compute-price-list-domain" colSpan="12"
+        showIf="currency"/>
     </panel>
     <panel-dashlet name="partnersDashletPanel" title="Partners"
       action="action-partner-price-list-view-dashlet-partners" colSpan="12"/>
@@ -52,5 +55,10 @@
     <context name="partnerPriceListId" expr="eval: id"/>
     <context name="typeSelect" expr="eval: typeSelect"/>
   </action-view>
+
+  <action-attrs name="action-partner-price-list-attrs-set-currency-readonly">
+    <attribute name="readonly" for="currency"
+      expr="eval: (id &amp;&amp;__repo__(Partner).all().filter('self.salePartnerPriceList = ?1 OR self.purchasePartnerPriceList = ?1',id).count() > 0) || (priceListSet &amp;&amp; !priceListSet.isEmpty())"/>
+  </action-attrs>
 
 </object-views>
