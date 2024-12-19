@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 public interface SprintGeneratorService {
-  Map<String, Object> initDefaultValues(Long projectId, Long projectVersionId);
+  Map<String, Object> initDefaultValues(Project project, ProjectVersion projectVersion);
 
   Set<Sprint> generateSprints(
       Project project,
