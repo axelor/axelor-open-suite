@@ -201,6 +201,8 @@ import com.axelor.apps.base.service.advanced.imports.SearchCallService;
 import com.axelor.apps.base.service.advanced.imports.SearchCallServiceImpl;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportServiceImpl;
+import com.axelor.apps.base.service.apiconfiguration.ApiConfigurationService;
+import com.axelor.apps.base.service.apiconfiguration.ApiConfigurationServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
@@ -519,5 +521,6 @@ public class BaseModule extends AxelorModule {
     bind(ConnectorMapperFetchService.class).to(ConnectorMapperFetchServiceImpl.class);
     bind(ConnectorMapperReferenceService.class).to(ConnectorMapperReferenceServiceImpl.class);
     bind(ConnectorMapperManagementService.class).to(ConnectorMapperManagementServiceImpl.class);
+    bind(ApiConfigurationService.class).to(ApiConfigurationServiceImpl.class);
   }
 }
