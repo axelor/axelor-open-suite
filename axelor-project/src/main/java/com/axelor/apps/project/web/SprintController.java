@@ -1,5 +1,7 @@
 package com.axelor.apps.project.web;
 
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.roadmap.SprintGeneratorService;
@@ -7,6 +9,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Set;
@@ -56,7 +59,7 @@ public class SprintController {
     }
   }
 
-  public void initDefaultValues(ActionRequest request, ActionResponse response) {
+  public void initDefaultWizardValues(ActionRequest request, ActionResponse response) {
     Object projectContext = request.getContext().get("project");
     Object targetVersionContext = request.getContext().get("targetVersion");
 
@@ -69,6 +72,22 @@ public class SprintController {
             ? Long.valueOf(
                 ((LinkedHashMap<String, Object>) targetVersionContext).get("id").toString())
             : null;
+
+    response.setValues(
+        Beans.get(SprintGeneratorService.class).initDefaultValues(projectId, projectVersionId));
+  }
+
+  public void initDefaultValues(ActionRequest request, ActionResponse response) {
+    Long projectId = null;
+    Long projectVersionId = null;
+    Context parentContext = request.getContext().getParent();
+    if (parentContext != null) {
+      if (Project.class.equals(parentContext.getContextClass())) {
+        projectId = parentContext.asType(Project.class).getId();
+      } else if (ProjectVersion.class.equals(parentContext.getContextClass())) {
+        projectVersionId = parentContext.asType(ProjectVersion.class).getId();
+      }
+    }
 
     response.setValues(
         Beans.get(SprintGeneratorService.class).initDefaultValues(projectId, projectVersionId));

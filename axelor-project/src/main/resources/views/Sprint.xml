@@ -55,13 +55,17 @@
   </form>
 
   <action-group name="action-sprint-generator-group-onnew">
-    <action name="action-sprint-generator-method-init-default-values"/>
+    <action name="action-sprint-generator-method-init-default-wizard-values"/>
   </action-group>
 
   <action-group name="action-sprint-group-onnew">
-    <action name="action-sprint-record-init-version"/>
+    <action name="action-sprint-generator-method-init-default-values"/>
     <action name="action-sprint-attrs-manage-hide-project-version"/>
   </action-group>
+
+  <action-method name="action-sprint-generator-method-init-default-wizard-values">
+    <call class="com.axelor.apps.project.web.SprintController" method="initDefaultWizardValues"/>
+  </action-method>
 
   <action-method name="action-sprint-generator-method-init-default-values">
     <call class="com.axelor.apps.project.web.SprintController" method="initDefaultValues"/>
@@ -75,13 +79,6 @@
     <error message="Invalid date"
       if="fromDate &amp;&amp; toDate &amp;&amp; toDate &lt; fromDate"/>
   </action-validate>
-
-  <action-attrs name="action-sprint-attrs-init-version">
-    <attribute for="targetVersion" name="value"
-      expr="eval: __parent__?._model == 'com.axelor.apps.project.db.ProjectVersion' ? __parent__ : null"/>
-    <attribute for="project" name="value"
-      expr="eval: __parent__?._model == 'com.axelor.apps.project.db.Project' ? __parent__ : null"/>
-  </action-attrs>
 
   <action-attrs name="action-sprint-attrs-manage-hide-project-version">
     <attribute for="targetVersion" name="hidden"
