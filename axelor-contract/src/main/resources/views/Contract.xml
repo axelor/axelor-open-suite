@@ -282,7 +282,7 @@
           </field>
         </panel>
         <field name="consumptionLineList"
-          showIf="isConsumptionManagement &amp;&amp; targetTypeSelect &lt; 2" readonlyIf="!id"
+          showIf="isConsumptionManagement &amp;&amp; targetTypeSelect &lt;= 2" readonlyIf="!id"
           colSpan="12" form-view="consumption-line-form" grid-view="consumption-line-grid"/>
         <field name="additionalBenefitContractLineList" hidden="true"
           showIf="isAdditionaBenefitManagement &amp;&amp; targetTypeSelect &lt;= 2" readonlyIf="!id"
