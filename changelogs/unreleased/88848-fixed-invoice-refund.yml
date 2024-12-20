@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed a regression preventing invoices refund."
-module: axelor-account

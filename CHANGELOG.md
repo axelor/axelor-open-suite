@@ -1,3 +1,10 @@
+## [7.2.29] (2024-12-20)
+
+### Fixes
+#### Account
+
+* Invoice: fixed a regression preventing invoices refund.
+
 ## [7.2.28] (2024-12-19)
 
 ### Fixes
@@ -1414,6 +1421,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.29]: https://github.com/axelor/axelor-open-suite/compare/v7.2.28...v7.2.29
 [7.2.28]: https://github.com/axelor/axelor-open-suite/compare/v7.2.27...v7.2.28
 [7.2.27]: https://github.com/axelor/axelor-open-suite/compare/v7.2.26...v7.2.27
 [7.2.26]: https://github.com/axelor/axelor-open-suite/compare/v7.2.25...v7.2.26
