@@ -62,7 +62,8 @@ public interface ProjectPlanningTimeService {
 
   BigDecimal computePlannedTime(ProjectPlanningTime projectPlanningTime) throws AxelorException;
 
-  String computeDisplayTimeUnitDomain(ProjectPlanningTime projectPlanningTime);
+  String computeDisplayTimeUnitDomain(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException;
 
   List<Long> computeAvailableDisplayTimeUnitIds(Unit unit);
 

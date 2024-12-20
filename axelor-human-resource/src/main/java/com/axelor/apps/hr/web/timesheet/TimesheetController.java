@@ -42,7 +42,6 @@ import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetRemoveService;
-import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
@@ -577,25 +576,6 @@ public class TimesheetController {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       response.setAttrs(Beans.get(TimesheetAttrsService.class).getPeriodTotalsAttrsMap(timesheet));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
-   * Called from timesheet form, on user change. Call {@link
-   * TimesheetService#updateTimeLoggingPreference(Timesheet)} to update the timesheet, and update
-   * the dummy field $periodTotalConvert
-   *
-   * @param request
-   * @param response
-   */
-  public void updateTimeLoggingPreference(ActionRequest request, ActionResponse response) {
-    try {
-      Timesheet timesheet = request.getContext().asType(Timesheet.class);
-      Beans.get(TimesheetService.class).updateTimeLoggingPreference(timesheet);
-      response.setValue("timeLoggingPreferenceSelect", timesheet.getTimeLoggingPreferenceSelect());
-      response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -13,6 +13,9 @@
     <string name="connectorSelect" title="Connector" selection="connector.mapper.select"
       required="true"/>
     <string name="externalReference" title="External reference" required="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
+      title="Trading name"/>
 
   </entity>
 

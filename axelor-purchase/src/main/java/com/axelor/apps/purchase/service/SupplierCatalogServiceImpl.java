@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
@@ -314,5 +315,23 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
     } else {
       response.setAttr("qtyLimitNotRespectedLabel", "hidden", true);
     }
+  }
+
+  @Override
+  public Unit getUnit(Product product, Partner supplierPartner, Company company)
+      throws AxelorException {
+    SupplierCatalog supplierCatalog = getSupplierCatalog(product, supplierPartner, company);
+    Unit baseUnit =
+        product.getPurchasesUnit() == null ? product.getUnit() : product.getPurchasesUnit();
+    if (supplierCatalog == null) {
+      return baseUnit;
+    }
+
+    Unit supplierUnit = supplierCatalog.getUnit();
+    if (supplierUnit != null) {
+      return supplierUnit;
+    }
+
+    return baseUnit;
   }
 }

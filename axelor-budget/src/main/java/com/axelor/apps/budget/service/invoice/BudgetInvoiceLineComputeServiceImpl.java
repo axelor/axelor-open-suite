@@ -40,6 +40,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
 import com.google.inject.Inject;
 import java.util.Map;
 
@@ -64,10 +65,11 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServi
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
       CurrencyScaleService currencyScaleService,
-      BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService,
       ProductPriceService productPriceService,
-      FiscalPositionService fiscalPositionService) {
+      FiscalPositionService fiscalPositionService,
+      InvoiceLineSupplierCatalogService invoiceLineSupplierCatalogService,
+      BudgetToolsService budgetToolsService,
+      AppBudgetService appBudgetService) {
     super(
         currencyService,
         priceListService,
@@ -84,7 +86,8 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServi
         invoiceLineAttrsService,
         currencyScaleService,
         productPriceService,
-        fiscalPositionService);
+        fiscalPositionService,
+        invoiceLineSupplierCatalogService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
   }

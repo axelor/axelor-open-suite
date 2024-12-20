@@ -205,6 +205,14 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperFetchService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperFetchServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperManagementService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperManagementServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceServiceImpl;
 import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.dayplanning.DayPlanningServiceImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
@@ -507,5 +515,9 @@ public class BaseModule extends AxelorModule {
     bind(DataSharingProductWizardRepository.class)
         .to(DataSharingProductWizardManagementRepository.class);
     bind(LanguageCheckerService.class).to(LanguageCheckerServiceImpl.class);
+    bind(ConnectorMapperCreateService.class).to(ConnectorMapperCreateServiceImpl.class);
+    bind(ConnectorMapperFetchService.class).to(ConnectorMapperFetchServiceImpl.class);
+    bind(ConnectorMapperReferenceService.class).to(ConnectorMapperReferenceServiceImpl.class);
+    bind(ConnectorMapperManagementService.class).to(ConnectorMapperManagementServiceImpl.class);
   }
 }
