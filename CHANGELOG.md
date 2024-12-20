@@ -1,3 +1,10 @@
+## [8.0.22] (2024-12-20)
+
+### Fixes
+#### Account
+
+* Invoice: fixed a regression preventing invoices refund.
+
 ## [8.0.21] (2024-12-19)
 
 ### Fixes
@@ -1359,6 +1366,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.22]: https://github.com/axelor/axelor-open-suite/compare/v8.0.21...v8.0.22
 [8.0.21]: https://github.com/axelor/axelor-open-suite/compare/v8.0.20...v8.0.21
 [8.0.20]: https://github.com/axelor/axelor-open-suite/compare/v8.0.19...v8.0.20
 [8.0.19]: https://github.com/axelor/axelor-open-suite/compare/v8.0.18...v8.0.19
