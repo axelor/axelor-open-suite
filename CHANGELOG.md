@@ -1,3 +1,10 @@
+## [8.1.14] (2024-12-20)
+
+### Fixes
+#### Account
+
+* Invoice: fixed a regression preventing invoices refund.
+
 ## [8.1.13] (2024-12-19)
 
 ### Fixes
@@ -998,6 +1005,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.14]: https://github.com/axelor/axelor-open-suite/compare/v8.1.13...v8.1.14
 [8.1.13]: https://github.com/axelor/axelor-open-suite/compare/v8.1.12...v8.1.13
 [8.1.12]: https://github.com/axelor/axelor-open-suite/compare/v8.1.11...v8.1.12
 [8.1.11]: https://github.com/axelor/axelor-open-suite/compare/v8.1.10...v8.1.11
