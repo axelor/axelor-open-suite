@@ -619,9 +619,7 @@ public class TimesheetController {
       LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(timesheet.getCompany());
       response.setValue(
           "$generationDate",
-          LocalDateHelper.isBetween(timesheet.getFromDate(), timesheet.getToDate(), todayDate)
-              ? todayDate
-              : null);
+          LocalDateHelper.isBetween(fromDate, toDate, todayDate) ? todayDate : null);
 
       response.setAttr("projectPlanningTimePanel", "hidden", false);
     } else {
