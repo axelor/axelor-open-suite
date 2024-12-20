@@ -1,0 +1,3 @@
+---
+title: "Accounting report : fix the filter to display move lines with no function origin selected and hide when already reconciled in diff currency than move in 'Bank reconciliation statement' report."
+module: axelor-account
