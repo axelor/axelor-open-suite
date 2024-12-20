@@ -156,8 +156,10 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
                 .filter("self.invoice = :invoice")
                 .bind("invoice", originalInvoice)
                 .fetchOne();
-        timetable.setInvoiced(false);
-        timetable.setInvoice(null);
+        if (timetable != null) {
+          timetable.setInvoiced(false);
+          timetable.setInvoice(null);
+        }
       }
     }
   }
