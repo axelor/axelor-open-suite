@@ -1,3 +1,11 @@
+## [8.2.5] (2024-12-20)
+
+### Fixes
+#### Account
+
+* Invoice: fixed an issue preventing advance payment invoice refund.
+* Invoice: fixed a regression preventing invoices refund.
+
 ## [8.2.4] (2024-12-19)
 
 ### Fixes
@@ -448,6 +456,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.5]: https://github.com/axelor/axelor-open-suite/compare/v8.2.4...v8.2.5
 [8.2.4]: https://github.com/axelor/axelor-open-suite/compare/v8.2.3...v8.2.4
 [8.2.3]: https://github.com/axelor/axelor-open-suite/compare/v8.2.2...v8.2.3
 [8.2.2]: https://github.com/axelor/axelor-open-suite/compare/v8.2.1...v8.2.2
