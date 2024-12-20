@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
@@ -29,6 +30,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -40,8 +42,16 @@ public class TimesheetLineCreateProjectServiceImpl extends TimesheetLineCreateSe
       TimesheetLineService timesheetLineService,
       TimesheetLineRepository timesheetLineRepository,
       UserHrService userHrService,
-      TimesheetLineCheckService timesheetLineCheckService) {
-    super(timesheetLineService, timesheetLineRepository, userHrService, timesheetLineCheckService);
+      TimesheetLineCheckService timesheetLineCheckService,
+      AppBaseService appBaseService,
+      ProjectPlanningTimeRepository projectPlanningTimeRepository) {
+    super(
+        timesheetLineService,
+        timesheetLineRepository,
+        userHrService,
+        timesheetLineCheckService,
+        appBaseService,
+        projectPlanningTimeRepository);
   }
 
   @Override
