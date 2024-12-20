@@ -1,0 +1,3 @@
+---
+title: "Email account: fixed NPE that occurred when setting 'Default account' to false."
+module: axelor-base
