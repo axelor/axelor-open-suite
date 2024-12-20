@@ -607,8 +607,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
                 + "and self.employee = :employee "
                 + "and ((self.startDateTime <= :fromDate and self.endDateTime >= :toDate) or self.startDateTime between :fromDate and :toDate or (self.endDateTime between :fromDate and :toDate))")
         .bind("employee", employee)
-        .bind("fromDate", fromDate.atStartOfDay())
-        .bind("toDate", toDate.atTime(23, 59))
+        .bind("fromDate", Optional.ofNullable(fromDate).map(LocalDate::atStartOfDay).orElse(null))
+        .bind("toDate", Optional.ofNullable(toDate).map(date -> date.atTime(23, 59)).orElse(null))
         .fetch()
         .stream()
         .filter(
