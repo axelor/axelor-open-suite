@@ -153,7 +153,8 @@
 
 
   <selection name="message.related.to.select" id="stockRule.message.related.to.select">
-    <option value="com.axelor.apps.stock.db.StockRules">Stock Rules</option>
+    <option value="com.axelor.apps.stock.db.StockRules" data-grid="stock-rules-grid"
+      data-form="stock-rules-form">Stock Rules</option>
   </selection>
 
   <selection name="stock.mass.stock.move.status.select">

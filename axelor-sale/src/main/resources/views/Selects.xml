@@ -15,7 +15,8 @@
   </selection>
 
   <selection name="message.related.to.select" id="sale.message.related.to.select">
-    <option value="com.axelor.apps.sale.db.SaleOrder">Quote/Order</option>
+    <option value="com.axelor.apps.sale.db.SaleOrder" data-grid="sale-order-grid"
+      data-form="sale-order-form">Quote/Order</option>
   </selection>
 
   <selection name="crm.event.related.to.select" id="sale.crm.event.related.to.select">

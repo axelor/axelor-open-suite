@@ -410,9 +410,12 @@
   </selection>
 
   <selection name="message.related.to.select" id="account.message.related.to.select">
-    <option value="com.axelor.apps.account.db.DebtRecoveryHistory">Debt Recovery History</option>
-    <option value="com.axelor.apps.account.db.Invoice">Invoice</option>
-    <option value="com.axelor.apps.account.db.PaymentSession">Payment session</option>
+    <option value="com.axelor.apps.account.db.DebtRecoveryHistory"
+      data-grid="debt-recovery-history-grid" data-form="debt-recovery-history-form">Debt Recovery History</option>
+    <option value="com.axelor.apps.account.db.Invoice" data-grid="invoice-grid"
+      data-form="invoice-form">Invoice</option>
+    <option value="com.axelor.apps.account.db.PaymentSession"
+      data-grid="payment-session-grid" data-form="payment-session-form">Payment session</option>
   </selection>
 
   <selection name="sequence.generic.code.select" id="account.sequence.generic.code.select">
