@@ -19,18 +19,22 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.PurchaseRequestLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PurchaseRequestServiceImpl implements PurchaseRequestService {
@@ -40,6 +44,8 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected PurchaseOrderRepository purchaseOrderRepo;
   protected AppBaseService appBaseService;
+  protected PurchaseRequestRepository purchaseRequestRepository;
+  protected PurchaseRequestWorkflowService purchaseRequestWorkflowService;
 
   @Inject
   public PurchaseRequestServiceImpl(
@@ -47,12 +53,16 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
       PurchaseOrderCreateService purchaseOrderCreateService,
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderRepository purchaseOrderRepo,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      PurchaseRequestRepository purchaseRequestRepository,
+      PurchaseRequestWorkflowService purchaseRequestWorkflowService) {
     this.purchaseOrderService = purchaseOrderService;
     this.purchaseOrderCreateService = purchaseOrderCreateService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.appBaseService = appBaseService;
+    this.purchaseRequestRepository = purchaseRequestRepository;
+    this.purchaseRequestWorkflowService = purchaseRequestWorkflowService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -150,5 +160,27 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
                         || purchaseRequestLine.getUnit().equals(l.getUnit())))
         .findFirst()
         .orElse(null);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public PurchaseRequest createPurchaseRequest(Company company, Integer status, String description)
+      throws AxelorException {
+    PurchaseRequest purchaseRequest = new PurchaseRequest();
+    if (company == null) {
+      company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+    }
+    purchaseRequest.setCompany(company);
+    purchaseRequest.setDescription(description);
+    setStatus(purchaseRequest, status);
+    return purchaseRequestRepository.save(purchaseRequest);
+  }
+
+  protected void setStatus(PurchaseRequest purchaseRequest, Integer status) throws AxelorException {
+    if (status != null && status == PurchaseRequestRepository.STATUS_REQUESTED) {
+      purchaseRequestWorkflowService.requestPurchaseRequest(purchaseRequest);
+    } else {
+      purchaseRequest.setStatusSelect(PurchaseRequestRepository.STATUS_DRAFT);
+    }
   }
 }

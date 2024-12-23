@@ -18,17 +18,13 @@
  */
 package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseRequest;
-import java.util.List;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.purchase.db.PurchaseRequestLine;
+import java.math.BigDecimal;
 
-public interface PurchaseRequestService {
-  public List<PurchaseOrder> generatePo(
-      List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
-      throws AxelorException;
+public interface PurchaseRequestLineService {
 
-  public PurchaseRequest createPurchaseRequest(
-      Company fetchCompany, Integer status, String description) throws AxelorException;
+  public PurchaseRequestLine createPurchaseRequestLine(
+      Product product, String productTitle, Unit unit, BigDecimal quantity);
 }

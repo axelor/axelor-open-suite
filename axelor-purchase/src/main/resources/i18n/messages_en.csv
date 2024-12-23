@@ -363,6 +363,7 @@
 "Version Number",,,
 "WT",,,
 "Warning, a completed order can't be changed anymore, do you want to continue?","Warning, a completed order can't be changed anymore, do you want to continue?",,
+"You can create a purchase request only with the status 'Draft' or 'Requested'.",,,
 "You can not generate supplier requests if the order is not saved.",,,
 "You have to choose at least one purchase order",,,
 "You have to choose at least one purchase quotation",,,
