@@ -23,10 +23,12 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
@@ -43,13 +45,17 @@ public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServic
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderRepository purchaseOrderRepo,
       AppBaseService appBaseService,
+      PurchaseRequestRepository purchaseRequestRepository,
+      PurchaseRequestWorkflowService purchaseRequestWorkflowService,
       AppSupplychainService appSupplychainService) {
     super(
         purchaseOrderService,
         purchaseOrderCreateService,
         purchaseOrderLineService,
         purchaseOrderRepo,
-        appBaseService);
+        appBaseService,
+        purchaseRequestRepository,
+        purchaseRequestWorkflowService);
     this.appSupplychainService = appSupplychainService;
   }
 

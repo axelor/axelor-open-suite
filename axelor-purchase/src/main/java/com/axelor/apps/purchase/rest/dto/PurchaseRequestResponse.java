@@ -16,19 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service;
+package com.axelor.apps.purchase.rest.dto;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
-import java.util.List;
+import com.axelor.utils.api.ResponseStructure;
 
-public interface PurchaseRequestService {
-  public List<PurchaseOrder> generatePo(
-      List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
-      throws AxelorException;
+public class PurchaseRequestResponse extends ResponseStructure {
 
-  public PurchaseRequest createPurchaseRequest(
-      Company fetchCompany, Integer status, String description) throws AxelorException;
+  private final Long id;
+  private final Integer status;
+
+  public PurchaseRequestResponse(PurchaseRequest purchaseRequest) {
+    super(purchaseRequest.getVersion());
+    this.id = purchaseRequest.getId();
+    this.status = purchaseRequest.getStatusSelect();
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public Integer getStatus() {
+    return status;
+  }
 }
