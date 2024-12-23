@@ -535,6 +535,7 @@
 
   <action-group name="action-project-task-group-reset-datas">
     <action name="action-project-task-attrs-reset-version-and-sprint"/>
+    <action name="action-project-task-attrs-reset-parent-task"/>
   </action-group>
 
   <action-method name="action-project-task-method-set-link-type-domain">
@@ -728,6 +729,10 @@
   <action-attrs name="action-project-task-attrs-reset-version-and-sprint">
     <attribute for="targetVersion" name="value" expr="eval: null"/>
     <attribute for="activeSprint" name="value" expr="eval: null"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-reset-parent-task">
+    <attribute for="parentTask" name="value" expr="eval: null"/>
   </action-attrs>
 
   <!-- get timeUnit value from configuration -->
