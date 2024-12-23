@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 
@@ -38,6 +39,7 @@ public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkfl
           I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_REQUEST_WRONG_STATUS));
     }
     purchaseRequest.setStatusSelect(PurchaseRequestRepository.STATUS_REQUESTED);
+    purchaseRequest.setRequesterUser(AuthUtils.getUser());
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -50,6 +52,7 @@ public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkfl
           I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_ACCEPT_WRONG_STATUS));
     }
     purchaseRequest.setStatusSelect(PurchaseRequestRepository.STATUS_ACCEPTED);
+    purchaseRequest.setValidatorUser(AuthUtils.getUser());
   }
 
   @Transactional(rollbackOn = {Exception.class})
