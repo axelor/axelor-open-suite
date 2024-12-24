@@ -40,6 +40,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetDomainService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetRemoveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
@@ -671,5 +672,11 @@ public class TimesheetController {
       response.setValue("$generationDate", null);
       response.setNotify(I18n.get(HumanResourceExceptionMessage.INVALID_DATES));
     }
+  }
+
+  public void clearTimesheetLinesDuration(ActionRequest request, ActionResponse response) {
+    Timesheet timesheet = request.getContext().asType(Timesheet.class);
+    Beans.get(TimesheetLineUpdateService.class).clearTimesheetLinesDuration(timesheet);
+    response.setReload(true);
   }
 }
