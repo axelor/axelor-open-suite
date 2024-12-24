@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -28,6 +29,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TimesheetLineUpdateServiceImpl implements TimesheetLineUpdateService {
 
@@ -79,5 +82,18 @@ public class TimesheetLineUpdateServiceImpl implements TimesheetLineUpdateServic
       timesheetLine.setComments(comments);
     }
     timesheetLine.setToInvoice(toInvoice);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void clearTimesheetLinesDuration(Timesheet timesheet) {
+    List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+    if (CollectionUtils.isEmpty(timesheetLineList)) {
+      return;
+    }
+    for (TimesheetLine timesheetLine : timesheetLineList) {
+      timesheetLine.setHoursDuration(BigDecimal.ZERO);
+      timesheetLine.setDuration(BigDecimal.ZERO);
+    }
   }
 }
