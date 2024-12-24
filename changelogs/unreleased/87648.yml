@@ -1,0 +1,3 @@
+---
+title: "Payment voucher: fixed unexpected pop-up mentioning no record selected while there is at least one."
+module: axelor-account
