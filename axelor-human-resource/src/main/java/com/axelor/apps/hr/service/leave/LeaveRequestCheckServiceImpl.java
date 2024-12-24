@@ -33,7 +33,7 @@ public class LeaveRequestCheckServiceImpl implements LeaveRequestCheckService {
         || (toDateTime.isEqual(fromDateTime) && startOnSelect > endOnSelect)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(HumanResourceExceptionMessage.LEAVE_REQUEST_INVALID_DATES));
+          I18n.get(HumanResourceExceptionMessage.INVALID_DATES));
     }
 
     if (duration.signum() == 0) {

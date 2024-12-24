@@ -34,18 +34,22 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetAttrsService;
 import com.axelor.apps.hr.service.timesheet.TimesheetDomainService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetRemoveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -58,6 +62,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -65,7 +70,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -593,5 +600,76 @@ public class TimesheetController {
       Beans.get(TimesheetRemoveService.class).removeAfterToDateTimesheetLines(timesheet);
     }
     response.setValues(timesheet);
+  }
+
+  public void initProjectPlanningTime(ActionRequest request, ActionResponse response) {
+    Timesheet timesheet = request.getContext().asType(Timesheet.class);
+
+    Employee employee = timesheet.getEmployee();
+    LocalDate fromDate = timesheet.getFromDate();
+    LocalDate toDate = timesheet.getToDate();
+
+    List<ProjectPlanningTime> projectPlanningTimeList =
+        Beans.get(ProjectPlanningTimeService.class)
+            .getProjectPlanningTimeIdList(employee, fromDate, toDate);
+
+    if (!ObjectUtils.isEmpty(projectPlanningTimeList)
+        && TimesheetRepository.STATUS_DRAFT == timesheet.getStatusSelect()) {
+      response.setValue("$projectPlanningTimeList", projectPlanningTimeList);
+      LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(timesheet.getCompany());
+      response.setValue(
+          "$generationDate",
+          LocalDateHelper.isBetween(fromDate, toDate, todayDate) ? todayDate : null);
+
+      response.setAttr("projectPlanningTimePanel", "hidden", false);
+    } else {
+      response.setAttr("projectPlanningTimePanel", "hidden", true);
+    }
+  }
+
+  public void generateTimesheetLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Timesheet timesheet = request.getContext().asType(Timesheet.class);
+    Object generationDateObject = request.getContext().get("generationDate");
+
+    if (generationDateObject == null) {
+      response.setError(I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_GENERATED_DATE));
+      return;
+    }
+    LocalDate generationDate = LocalDate.parse(generationDateObject.toString());
+    if (!LocalDateHelper.isBetween(
+        timesheet.getFromDate(), timesheet.getToDate(), generationDate)) {
+      response.setError(I18n.get(HumanResourceExceptionMessage.DATE_NOT_IN_TIMESHEET_PERIOD));
+      return;
+    }
+
+    List<Map<String, Object>> projectPlanningTimeList =
+        ((List<Map<String, Object>>) request.getContext().get("projectPlanningTimeList"))
+            .stream()
+                .filter(
+                    it ->
+                        Objects.nonNull(it.get("duration"))
+                            && (new BigDecimal(String.valueOf(it.get("duration")))).signum() > 0)
+                .collect(Collectors.toList());
+    if (!ObjectUtils.isEmpty(projectPlanningTimeList)) {
+      Beans.get(TimesheetLineCreateService.class)
+          .createTimesheetLinesUsingContextMap(projectPlanningTimeList, generationDate, timesheet);
+      response.setValues(timesheet);
+    } else {
+      response.setError(I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_LINE_GENERATED));
+    }
+  }
+
+  public void validateGenerationDate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Timesheet timesheet = request.getContext().asType(Timesheet.class);
+    LocalDate generationDate =
+        LocalDate.parse(request.getContext().get("generationDate").toString());
+
+    if (!LocalDateHelper.isBetween(
+        timesheet.getFromDate(), timesheet.getToDate(), generationDate)) {
+      response.setValue("$generationDate", null);
+      response.setNotify(I18n.get(HumanResourceExceptionMessage.INVALID_DATES));
+    }
   }
 }
