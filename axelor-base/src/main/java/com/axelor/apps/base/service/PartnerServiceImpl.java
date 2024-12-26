@@ -735,4 +735,18 @@ public class PartnerServiceImpl implements PartnerService {
         .filter(p -> partnerCheckList.contains(p.getParentPartner()))
         .collect(Collectors.toList());
   }
+
+  @Override
+  public boolean checkIfRegistrationCodeExists(Partner partner) {
+    String registrationCode = partner.getRegistrationCode();
+    if (StringUtils.isEmpty(registrationCode)) {
+      return false;
+    }
+    return partnerRepo
+            .all()
+            .filter("self.registrationCode = :registrationCode")
+            .bind("registrationCode", registrationCode)
+            .count()
+        > 0;
+  }
 }

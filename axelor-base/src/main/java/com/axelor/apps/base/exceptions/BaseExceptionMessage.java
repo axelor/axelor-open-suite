@@ -704,4 +704,7 @@ public final class BaseExceptionMessage {
 
   public static final String APP_BASE_NO_UNIT_DAILY_WORK_HOURS = /*$$(*/
       "There is no configured daily work hours in the app base config" /*)*/;
+
+  public static final String PARTNER_REGISTRATION_CODE_ALREADY_EXISTS = /*$$(*/
+      "Registration code already exists." /*)*/;
 }

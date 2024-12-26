@@ -148,4 +148,6 @@ public interface PartnerService {
   String getPhoneNumberFieldName(String actionName);
 
   public List<Partner> getParentPartnerList(Partner partner);
+
+  boolean checkIfRegistrationCodeExists(Partner partner);
 }
