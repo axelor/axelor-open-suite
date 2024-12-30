@@ -32,11 +32,13 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
+import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -229,5 +231,22 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     saleOrderLinePackService.fillPriceFromPackLine(saleOrderLine, saleOrder);
     saleOrderLineMap.putAll(computeValues(saleOrder, saleOrderLine));
     return saleOrderLineMap;
+  }
+
+  @Override
+  public void computeLevels(List<SaleOrderLine> saleOrderLineList, String parentLevel) {
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return;
+    }
+    int count = 1;
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      String levelIndicator =
+          StringUtils.isBlank(parentLevel)
+              ? String.valueOf(count)
+              : String.format("%s.%s", parentLevel, count);
+      saleOrderLine.setLevelIndicator(levelIndicator);
+      count++;
+      computeLevels(saleOrderLine.getSubSaleOrderLineList(), levelIndicator);
+    }
   }
 }
