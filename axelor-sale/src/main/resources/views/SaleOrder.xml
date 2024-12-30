@@ -516,6 +516,10 @@
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
+        <panel name="subLinePanel" colSpan="12"
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI">
+          <field name="isDisplaySubLinesOnReport" widget="boolean-switch"/>
+        </panel>
       </panel>
       <panel name="taxPanel" title="Tax" readonlyIf="statusSelect != 1">
         <panel-related name="saleOrderLineTaxListPanel" colSpan="12"
