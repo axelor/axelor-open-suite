@@ -69,6 +69,7 @@ import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
+import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -373,6 +374,11 @@ public class ExpenseController {
     } finally {
       response.setReload(true);
     }
+  }
+
+  public void backToDraft(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    Beans.get(ExpenseWorkflowService.class).backToDraft(expense);
   }
 
   public void addPayment(ActionRequest request, ActionResponse response) {

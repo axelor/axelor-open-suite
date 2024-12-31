@@ -21,12 +21,9 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.message.db.Message;
-import java.io.IOException;
-import wslite.json.JSONException;
 
 public interface ExpenseCancellationService {
-  public void cancel(Expense expense) throws AxelorException;
+  void cancel(Expense expense) throws AxelorException;
 
-  public Message sendCancellationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+  Message sendCancellationEmail(Expense expense) throws AxelorException;
 }
