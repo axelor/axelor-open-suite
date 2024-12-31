@@ -304,7 +304,7 @@
         colSpan="6"/>
       <field name="tagSet" widget="TagSelect" x-color-field="color"
         grid-view="tag-simplified-grid" form-view="tag-form"
-        onSelect="action-lead-attrs-set-lead-tag-domain"/>
+        onSelect="action-lead-method-set-lead-tag-domain"/>
     </panel>
 
     <panel-mail name="mailPanel">
@@ -651,8 +651,7 @@
     <call class="com.axelor.apps.crm.web.LeadController" method="resetLead"/>
   </action-method>
 
-  <action-attrs name="action-lead-attrs-set-lead-tag-domain">
-    <attribute name="domain" for="tagSet"
-      expr="eval: &quot; (${__repo__(MetaModel).findByName('Lead')?.id} MEMBER OF self.concernedModelSet OR self.concernedModelSet IS EMPTY) AND (:company IS NULL OR :company MEMBER OF self.companySet OR self.companySet IS EMPTY) &quot;"/>
-  </action-attrs>
+  <action-method name="action-lead-method-set-lead-tag-domain">
+    <call class="com.axelor.apps.crm.web.LeadController" method="setLeadTagDomain"/>
+  </action-method>
 </object-views>

@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
@@ -31,6 +32,7 @@ import com.axelor.apps.crm.service.EmailDomainToolService;
 import com.axelor.apps.crm.service.LeadDuplicateService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.crm.translation.ITranslation;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -222,6 +224,21 @@ public class LeadController {
       Lead lead = request.getContext().asType(Lead.class);
       Beans.get(LeadService.class).resetLead(Beans.get(LeadRepository.class).find(lead.getId()));
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setLeadTagDomain(ActionRequest request, ActionResponse response) {
+    try {
+      response.setAttr(
+          "tagSet",
+          "domain",
+          Beans.get(TagService.class)
+              .getTagDomain(
+                  "Lead",
+                  AuthUtils.getUser().getActiveCompany(),
+                  AuthUtils.getUser().getTradingName()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
