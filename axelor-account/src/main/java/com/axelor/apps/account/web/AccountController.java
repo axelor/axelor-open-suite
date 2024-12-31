@@ -19,6 +19,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
@@ -351,16 +352,31 @@ public class AccountController {
 
   public void setAccountTagDomain(ActionRequest request, ActionResponse response) {
     try {
-      Account account = request.getContext().asType(Account.class);
+      Context context = request.getContext();
+      String fullNameModel = null;
+      String fieldName = null;
+      Account account;
+      AccountingReport accountingReport;
+      Company company = null;
 
-      if (account == null) {
-        return;
+      if (context != null && context.get("_model") != null) {
+        fullNameModel = context.get("_model").toString();
+      }
+
+      if (fullNameModel.contains("AccountingReport")) {
+        accountingReport = context.asType(AccountingReport.class);
+        company = accountingReport != null ? accountingReport.getCompany() : null;
+      } else if (fullNameModel.contains("Account")) {
+        account = context.asType(Account.class);
+        company = account != null ? account.getCompany() : null;
+      }
+
+      if (context.get("_source") != null) {
+        fieldName = request.getContext().get("_source").toString();
       }
 
       response.setAttr(
-          "tagSet",
-          "domain",
-          Beans.get(TagService.class).getTagDomain("Account", account.getCompany()));
+          fieldName, "domain", Beans.get(TagService.class).getTagDomain("Account", company));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
