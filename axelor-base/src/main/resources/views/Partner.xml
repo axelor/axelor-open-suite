@@ -343,7 +343,7 @@
         </panel>
         <field name="tagSet" widget="TagSelect" x-color-field="color"
           grid-view="tag-simplified-grid" form-view="tag-form"
-          onSelect="action-partner-attrs-set-partner-tag-domain"/>
+          onSelect="action-partner-method-set-partner-tag-domain"/>
       </panel>
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
@@ -1745,10 +1745,9 @@
       expr="eval: __repo__(Company).all().count() == 1"/>
   </action-attrs>
 
-  <action-attrs name="action-partner-attrs-set-partner-tag-domain">
-    <attribute name="domain" for="tagSet"
-      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} MEMBER OF self.concernedModelSet OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
-  </action-attrs>
+  <action-method name="action-partner-method-set-partner-tag-domain">
+    <call class="com.axelor.apps.base.web.PartnerController" method="setPartnerTagDomain"/>
+  </action-method>
 
   <action-view name="action-partner-view-related-projects" title="Projects"
     model="com.axelor.apps.project.db.Project">

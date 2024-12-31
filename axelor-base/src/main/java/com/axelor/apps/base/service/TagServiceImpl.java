@@ -96,7 +96,9 @@ public class TagServiceImpl implements TagService {
       String fullNameModel, Set<Company> companySet, TradingName tradingName) {
     String domain = this.getConcernedModelTagDomain(fullNameModel);
     List<TradingName> tradingNameList = new ArrayList<>();
-    tradingNameList.add(tradingName);
+    if (tradingName != null) {
+      tradingNameList.add(tradingName);
+    }
 
     domain = this.getCompanyTagDomain(domain, companySet, tradingNameList);
 

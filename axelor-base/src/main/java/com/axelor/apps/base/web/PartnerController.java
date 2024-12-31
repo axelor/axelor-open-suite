@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -475,6 +476,24 @@ public class PartnerController {
                   .map(Partner::getId)
                   .map(String::valueOf)
                   .collect(Collectors.joining(","))));
+    }
+  }
+
+  public void setPartnerTagDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+
+      if (partner == null) {
+        return;
+      }
+
+      response.setAttr(
+          "tagSet",
+          "domain",
+          Beans.get(TagService.class)
+              .getTagDomain("Partner", partner.getCompanySet(), partner.getTradingName()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
