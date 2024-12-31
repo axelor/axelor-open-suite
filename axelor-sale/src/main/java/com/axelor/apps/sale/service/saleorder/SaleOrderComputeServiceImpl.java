@@ -75,14 +75,12 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
-      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
-        if (appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
-          saleOrderLine.setPrice(
-              subSaleOrderLineComputeService.computeSumSubLineList(
-                  subSaleOrderLineList, saleOrder));
-        }
-        saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)
+          && appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
+        saleOrderLine.setPrice(
+            subSaleOrderLineComputeService.computeSumSubLineList(subSaleOrderLineList, saleOrder));
       }
+      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
     }
 
     return saleOrder;
