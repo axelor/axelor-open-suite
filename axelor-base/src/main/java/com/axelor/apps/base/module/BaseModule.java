@@ -46,6 +46,8 @@ import com.axelor.apps.base.db.repo.ImportConfigurationBaseRepository;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.db.repo.LanguageBaseRepository;
 import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.apps.base.db.repo.LocalizationBaseRepository;
+import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
@@ -507,5 +509,6 @@ public class BaseModule extends AxelorModule {
     bind(DataSharingProductWizardRepository.class)
         .to(DataSharingProductWizardManagementRepository.class);
     bind(LanguageCheckerService.class).to(LanguageCheckerServiceImpl.class);
+    bind(LocalizationRepository.class).to(LocalizationBaseRepository.class);
   }
 }
