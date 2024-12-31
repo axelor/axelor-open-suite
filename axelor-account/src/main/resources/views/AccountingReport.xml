@@ -187,7 +187,7 @@
             onSelect="action-accounting-report-attrs-set-partner-tag-domain"/>
           <field name="accountTagSet" widget="TagSelect" x-color-field="color"
             grid-view="tag-simplified-grid" form-view="tag-form"
-            onSelect="action-account-attrs-set-account-tag-domain"/>
+            onSelect="action-account-method-set-account-tag-domain"/>
         </panel>
       </panel>
       <panel name="printingInformationsPanel" title="Printing information" colSpan="12"

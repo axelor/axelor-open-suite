@@ -36,6 +36,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
@@ -346,5 +347,22 @@ public class AccountController {
     actionViewBuilder.context("moveTemplateIds", moveTemplateIdList);
 
     response.setView(actionViewBuilder.map());
+  }
+
+  public void setAccountTagDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+
+      if (account == null) {
+        return;
+      }
+
+      response.setAttr(
+          "tagSet",
+          "domain",
+          Beans.get(TagService.class).getTagDomain("Account", account.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
