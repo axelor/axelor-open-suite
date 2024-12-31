@@ -1,7 +1,9 @@
 package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.rest.dto.LeaveRequestCreatePostRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestRefusalPutRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestResponse;
 import com.axelor.apps.hr.service.leave.LeaveRequestCancelService;
@@ -19,7 +21,9 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -155,5 +159,27 @@ public class LeaveRequestRestController {
         Response.Status.OK,
         I18n.get(ITranslation.API_LEAVE_REQUEST_UPDATED),
         new LeaveRequestResponse(leaveRequest));
+  }
+
+  @Operation(
+      summary = "Create leave request",
+      tags = {"Leave request"})
+  @Path("/")
+  @POST
+  @HttpExceptionHandler
+  public Response createLeaveRequest(LeaveRequestCreatePostRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().createAccess(LeaveRequest.class).readAccess(LeaveReason.class).check();
+    LeaveRequestCreateRestService leaveRequestCreateRestService =
+        Beans.get(LeaveRequestCreateRestService.class);
+    List<Long> leaveRequestIds =
+        leaveRequestCreateRestService.createLeaveRequests(
+            requestBody.getFromDate(), requestBody.getStartOnSelect(), requestBody.getRequests());
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.API_LEAVE_REQUEST_CREATE_SUCCESS),
+        leaveRequestCreateRestService.createLeaveRequestResponse(leaveRequestIds));
   }
 }

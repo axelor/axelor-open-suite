@@ -636,6 +636,7 @@
 "Leave request filters","Filtres demandes de congés",,
 "Leave request successfully updated.","Demande de congés mise à jour avec succès.",,
 "Leave request successfully updated. An error occurred while sending the mail.","Demande de congés mise à jour avec succès. Une erreur s'est produite lors de l'envoi de mail.",,
+"Leave request(s) have been correctly created.","Les demandes de congé ont été correctement créées.",,
 "Leave requests",,,
 "Leave to justify","Absence à justifier",,
 "Leave type","Type de congé",,
