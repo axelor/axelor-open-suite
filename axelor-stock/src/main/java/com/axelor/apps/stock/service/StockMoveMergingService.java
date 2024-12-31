@@ -24,7 +24,7 @@ import java.util.List;
 
 public interface StockMoveMergingService {
 
-  public String canMerge(List<StockMove> stockMoveList);
+  public List<String> canMerge(List<StockMove> stockMoveList);
 
   public StockMove mergeStockMoves(List<StockMove> stockMoveList) throws AxelorException;
 
