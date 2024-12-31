@@ -97,7 +97,8 @@ public class ExpenseCancellationServiceImpl implements ExpenseCancellationServic
     if (periodStatusSelect == PeriodRepository.STATUS_CLOSED
         || periodStatusSelect == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get("Period is closed"));
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_CLOSED_PERIOD));
     }
   }
 
