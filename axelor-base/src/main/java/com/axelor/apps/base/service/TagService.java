@@ -29,7 +29,7 @@ public interface TagService {
 
   Map<String, Object> getOnNewValuesMap(Tag tag, String fullNameModel, String fieldModel);
 
-  String getTagDomain(String fullNameModel, Company company, TradingName tradingName);
+  String getTagDomain(String fullNameModel, Company company);
 
   String getTagDomain(String fullNameModel, Set<Company> companySet, TradingName tradingName);
 }

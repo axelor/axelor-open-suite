@@ -15,10 +15,7 @@ public class QualityAlertController {
           "tagSet",
           "domain",
           Beans.get(TagService.class)
-              .getTagDomain(
-                  "QualityAlert",
-                  AuthUtils.getUser().getActiveCompany(),
-                  AuthUtils.getUser().getTradingName()));
+              .getTagDomain("QualityAlert", AuthUtils.getUser().getActiveCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

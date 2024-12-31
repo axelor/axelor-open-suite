@@ -234,11 +234,7 @@ public class LeadController {
       response.setAttr(
           "tagSet",
           "domain",
-          Beans.get(TagService.class)
-              .getTagDomain(
-                  "Lead",
-                  AuthUtils.getUser().getActiveCompany(),
-                  AuthUtils.getUser().getTradingName()));
+          Beans.get(TagService.class).getTagDomain("Lead", AuthUtils.getUser().getActiveCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

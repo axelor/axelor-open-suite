@@ -28,8 +28,10 @@ import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -75,15 +77,16 @@ public class TagServiceImpl implements TagService {
   }
 
   @Override
-  public String getTagDomain(String fullNameModel, Company company, TradingName tradingName) {
+  public String getTagDomain(String fullNameModel, Company company) {
     String domain = this.getConcernedModelTagDomain(fullNameModel);
     Set<Company> companySet = new HashSet<>();
+    List<TradingName> tradingNameList = new ArrayList<>();
     if (company != null) {
       companySet.add(company);
+      tradingNameList = company.getTradingNameList();
     }
 
-    domain = this.getCompanyTagDomain(domain, companySet, tradingName);
-    // this.getTradingNameTagDomain(domain, tradingName);
+    domain = this.getCompanyTagDomain(domain, companySet, tradingNameList);
 
     return domain;
   }
@@ -92,8 +95,10 @@ public class TagServiceImpl implements TagService {
   public String getTagDomain(
       String fullNameModel, Set<Company> companySet, TradingName tradingName) {
     String domain = this.getConcernedModelTagDomain(fullNameModel);
-    domain = this.getCompanyTagDomain(domain, companySet, tradingName);
-    // this.getTradingNameTagDomain(domain, tradingName);
+    List<TradingName> tradingNameList = new ArrayList<>();
+    tradingNameList.add(tradingName);
+
+    domain = this.getCompanyTagDomain(domain, companySet, tradingNameList);
 
     return domain;
   }
@@ -105,28 +110,31 @@ public class TagServiceImpl implements TagService {
   }
 
   protected String getCompanyTagDomain(
-      String domain, Set<Company> companySet, TradingName tradingName) {
+      String domain, Set<Company> companySet, List<TradingName> tradingNameList) {
     if (ObjectUtils.notEmpty(companySet)) {
       domain = domain.concat(" AND (self.companySet IS EMPTY");
       for (Company company : companySet) {
         domain = domain.concat(String.format(" OR (%s member of self.companySet", company.getId()));
-        domain = this.getTradingNameTagDomain(domain, tradingName).concat(")");
+        domain = this.getTradingNameTagDomain(domain, tradingNameList).concat(")");
       }
       domain = domain.concat(")");
     } else {
-      domain = getTradingNameTagDomain(domain, tradingName);
+      domain = getTradingNameTagDomain(domain, tradingNameList);
     }
 
     return domain;
   }
 
-  protected String getTradingNameTagDomain(String domain, TradingName tradingName) {
-    if (appBaseService.getAppBase().getEnableTradingNamesManagement() && tradingName != null) {
-      domain =
-          domain.concat(
-              String.format(
-                  " AND (self.tradingNameSet IS EMPTY OR %s member of self.tradingNameSet)",
-                  tradingName.getId()));
+  protected String getTradingNameTagDomain(String domain, List<TradingName> tradingNameList) {
+    if (appBaseService.getAppBase().getEnableTradingNamesManagement()
+        && !tradingNameList.isEmpty()) {
+      domain = domain.concat(" AND (self.tradingNameSet IS EMPTY");
+      for (TradingName tradingName : tradingNameList) {
+        domain =
+            domain.concat(
+                String.format(" OR %s member of self.tradingNameSet", tradingName.getId()));
+      }
+      domain = domain.concat(")");
     }
     return domain;
   }
