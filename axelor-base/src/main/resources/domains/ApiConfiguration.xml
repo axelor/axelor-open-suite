@@ -6,7 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="ApiConfiguration">
-    <string name="apiName" required="true" namecolumn="true"/>
+    <string name="apiName" title="Api name" required="true" namecolumn="true"/>
     <string name="apiUrl" title="Api url"/>
     <string name="apiKey" title="Api key" encrypted="true"/>
   </entity>
