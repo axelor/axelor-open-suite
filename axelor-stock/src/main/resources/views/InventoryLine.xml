@@ -21,7 +21,7 @@
     <field name="description"/>
     <field name="rack" width="150"/>
     <field name="trackingNumber" canNew="true" width="150" domain="self.product = :product"
-      onChange="action-inventory-line-group-update-inventory-line"/>
+      onChange="action-inventory-line-method-update-inventory-line"/>
     <field name="gap"/>
     <field name="gapValue"/>
     <field name="realValue"/>
@@ -53,7 +53,7 @@
       <field name="description"/>
       <field name="rack"/>
       <field name="trackingNumber" canNew="true" domain="self.product = :product"
-        onChange="action-inventory-line-group-update-inventory-line"/>
+        onChange="action-inventory-line-method-update-inventory-line"/>
       <field name="price" hideIf="isPresentInStockLocation"/>
       <field name="isPresentInStockLocation" type="boolean" x-dirty="false" hidden="true"/>
       <field name="inventory" readonly="true"/>
@@ -72,24 +72,14 @@
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
 
-  <action-attrs name="action-inventory-line-attrs-reset-price">
-    <attribute for="price" name="value" expr="0"/>
-  </action-attrs>
-
   <action-method name="action-inventory-line-method-on-change-tracking-number">
     <call class="com.axelor.apps.stock.web.InventoryLineController"
       method="updateInventoryLine"/>
   </action-method>
 
-  <action-group name="action-inventory-line-group-update-inventory-line">
-    <action name="action-inventory-line-method-update-inventory-line"/>
-    <action name="action-inventory-line-method-compute"/>
-  </action-group>
-
   <action-group name="action-inventory-line-group-on-change-product-stock-location">
-    <action name="action-inventory-line-attrs-reset-price"/>
     <action name="action-inventory-line-method-check-presence-in-stock-location"/>
-    <action name="action-inventory-line-group-update-inventory-line"/>
+    <action name="action-inventory-line-method-update-inventory-line"/>
   </action-group>
 
   <action-method name="action-inventory-line-method-update-inventory-line">
