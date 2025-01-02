@@ -1782,7 +1782,6 @@
     <view-param name="forceEdit" value="true"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_xPartnerId" expr="eval: id"/>
   </action-view>
 
 </object-views>
