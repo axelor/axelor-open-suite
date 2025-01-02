@@ -49,6 +49,7 @@ public class BusinessRegistryImportJob implements Job {
   private Country DEFAULT_COUNTRY;
   private Currency DEFAULT_CURRENCY;
   private Language DEFAULT_LANGUAGE;
+  private Localization DEFAULT_LOCALIZATION ;
   private SequenceVersion sequenceVersion;
   private Long sequence;
 
@@ -58,6 +59,7 @@ public class BusinessRegistryImportJob implements Job {
   @Inject private CurrencyRepository currencyRepository;
   @Inject private CountryRepository countryRepository;
   @Inject private LanguageRepository languageRepository;
+  @Inject private LocalizationRepository localizationRepository;
   @Inject private SequenceRepository sequenceRepository;
   @Inject private SequenceVersionRepository sequenceVersionRepository;
 
@@ -129,6 +131,7 @@ public class BusinessRegistryImportJob implements Job {
     DEFAULT_COUNTRY = countryRepository.findByCode("EST");
     DEFAULT_CURRENCY = currencyRepository.findByCode("EUR");
     DEFAULT_LANGUAGE = languageRepository.findByCode("et");
+    DEFAULT_LOCALIZATION = localizationRepository.findByCode("et_EE");
 
     sequenceVersion =
         sequenceVersionRepository.findEndless(
@@ -236,6 +239,7 @@ public class BusinessRegistryImportJob implements Job {
     DEFAULT_COUNTRY = countryRepository.findByCode("EST");
     DEFAULT_CURRENCY = currencyRepository.findByCode("EUR");
     DEFAULT_LANGUAGE = languageRepository.findByCode("et");
+    DEFAULT_LOCALIZATION = localizationRepository.findByCode("et_EE");
     sequenceVersion =
         sequenceVersionRepository.findEndless(
             sequenceRepository.findByCodeSelect(PARTNER), LocalDate.now());
@@ -287,7 +291,7 @@ public class BusinessRegistryImportJob implements Job {
     partner.setIsCustomer(false);
     partner.setIsProspect(false);
     partner.setCurrency(DEFAULT_CURRENCY);
-    // partner.setLocalization(DEFAULT_LANGUAGE);
+    partner.setLocalization(DEFAULT_LOCALIZATION);
     partner.setPartnerTypeSelect(PARTNER_TYPE_COMPANY);
     partner.setPartnerSeq(format(SEQUENCE_FORMAT, sequence++));
 

@@ -110,7 +110,7 @@
       <field name="maritalName" colSpan="4"/>
       <field name="dependentChildren" colSpan="4"/>
       <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
-      <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
+      <field name="socialSecurityNumber" colSpan="4"/>
       <field name="$employeeStatus" hidden="true"/>
     </panel>
 
@@ -398,7 +398,7 @@
       <field name="maritalName" colSpan="4"/>
       <field name="dependentChildren" colSpan="4"/>
       <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
-      <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
+      <field name="socialSecurityNumber" colSpan="4"/>
       <field name="bankDetails" colSpan="4" form-view="bank-details-form"
         grid-view="bank-details-grid" if="__config__.app.getApp('base')?.getManageMultiBanks()"
         if-module="axelor-cash-management" widget="SuggestBox"
