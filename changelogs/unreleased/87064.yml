@@ -1,3 +1,0 @@
----
-title: "Supplychain: invoices generated from a stock move of a sale order are now correctly generated with the advance payment of the sale order."
-module: axelor-supplychain

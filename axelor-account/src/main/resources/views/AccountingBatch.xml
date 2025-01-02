@@ -130,27 +130,36 @@
       <panel name="yearOpeningOrClosureAccountsPagePanel" title="Close/open the accounts"
         hideIf="actionSelect != 21">
         <!-- TODO FILTER ON STATUS -->
-        <field name="closeYear" colSpan="3"/>
+        <field name="closeYear" colSpan="3"
+          onChange="action-accounting-batch-record-set-close-all-accounts,action-accounting-batch-method-set-closure-account-set"/>
         <field name="year.toDate" showIf="closeYear" hidden="true" colSpan="3"/>
-        <field name="openYear" colSpan="3"/>
+        <field name="openYear" colSpan="3"
+          onChange="action-accounting-batch-record-set-open-all-accounts,action-accounting-batch-method-set-opening-account-set"/>
         <field name="year.reportedBalanceDate" showIf="openYear" hidden="true" colSpan="3"/>
         <field name="year"
           domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)"
           canEdit="false" requiredIf="actionSelect == 21"
-          onChange="action-accounting-batch-close-open-method-check-daybook"/>
-        <field name="allocatePerPartner" colSpan="3"/>
+          onChange="action-accounting-batch-close-open-method-check-daybook"
+          showIf="closeYear || openYear"/>
+        <field name="allocatePerPartner" colSpan="3" showIf="closeYear || openYear"/>
         <field name="generatedMoveStatusSelect" colSpan="3" selection-in="[2,3,5]"
-          requiredIf="actionSelect == 21"/>
+          requiredIf="actionSelect == 21" showIf="closeYear || openYear"/>
         <label name="daybookRemainingLabel" hidden="true" css="label-danger" colSpan="12"/>
-        <field name="moveDescription" colSpan="12"/>
+        <field name="moveDescription" colSpan="12" showIf="closeYear || openYear"/>
+        <field name="$closeAllAccounts" title="Close all accounts (Balance c/f preparation) ?"
+          type="boolean" onChange="action-accounting-batch-method-set-closure-account-set"
+          showIf="closeYear &amp;&amp; year"/>
+        <field name="$openAllAccounts" title="Open all accounts (Balance c/f) ?"
+          type="boolean" onChange="action-accounting-batch-method-set-opening-account-set"
+          showIf="openYear &amp;&amp; year"/>
         <panel-related field="closureAccountSet" form-view="account-form"
           grid-view="account-grid" canNew="false" canEdit="false"
           domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'charge', 'income', 'asset')"
-          showIf="closeYear"/>
+          showIf="closeYear &amp;&amp; !$closeAllAccounts"/>
         <panel-related field="openingAccountSet" form-view="account-form"
           grid-view="account-grid" canNew="false" canEdit="false"
           domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'asset')"
-          showIf="openYear"/>
+          showIf="openYear &amp;&amp; !$openAllAccounts"/>
         <field name="generateResultMove" showIf="openYear"/>
         <field name="resultMoveDescription" showIf="generateResultMove"/>
         <field name="generateGeneralLedger" showIf="openYear"/>
@@ -333,6 +342,10 @@
     <action name="action-method-accounting-batch-generated-move-status-domain"
       if="[21,26].contains(actionSelect)"/>
     <action name="action-accounting-batch-close-open-method-check-daybook"
+      if="actionSelect == 21"/>
+    <action name="action-accounting-batch-method-set-close-all-accounts"
+      if="actionSelect == 21"/>
+    <action name="action-accounting-batch-method-set-open-all-accounts"
       if="actionSelect == 21"/>
   </action-group>
 
@@ -687,6 +700,36 @@
   <action-attrs name="action-accounting-batch-attrs-set-company-currency">
     <attribute for="currency" name="value" expr="eval: company?.currency"/>
   </action-attrs>
+
+  <action-record name="action-accounting-batch-record-set-close-all-accounts"
+    model="com.axelor.apps.account.db.AccountingBatch">
+    <field name="$closeAllAccounts" expr="eval: closeYear"/>
+  </action-record>
+
+  <action-record name="action-accounting-batch-record-set-open-all-accounts"
+    model="com.axelor.apps.account.db.AccountingBatch">
+    <field name="$openAllAccounts" expr="eval: openYear"/>
+  </action-record>
+
+  <action-method name="action-accounting-batch-method-set-close-all-accounts">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="setCloseAllAccounts"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-method-set-open-all-accounts">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="setOpenAllAccounts"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-method-set-closure-account-set">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="setClosureAccountSet"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-method-set-opening-account-set">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="setOpeningAccountSet"/>
+  </action-method>
 
   <search-filters name="accounting-batch-filters"
     model="com.axelor.apps.account.db.AccountingBatch" title="Accounting batch filters">

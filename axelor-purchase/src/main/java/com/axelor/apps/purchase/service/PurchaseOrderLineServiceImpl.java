@@ -243,7 +243,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       line.setProductCode(product.getCode());
     }
 
-    line.setUnit(getPurchaseUnit(line));
+    line.setUnit(supplierCatalogService.getUnit(product, supplierPartner, company));
 
     if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(product.getDescription());
@@ -552,15 +552,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       return priceListLine.getTypeSelect();
     }
     return 0;
-  }
-
-  @Override
-  public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine) {
-    Unit unit = purchaseOrderLine.getProduct().getPurchasesUnit();
-    if (unit == null) {
-      unit = purchaseOrderLine.getProduct().getUnit();
-    }
-    return unit;
   }
 
   @Override

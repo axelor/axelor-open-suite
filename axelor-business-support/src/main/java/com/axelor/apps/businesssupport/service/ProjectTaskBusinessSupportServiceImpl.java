@@ -27,13 +27,13 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectServiceImpl;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.google.inject.Inject;
@@ -58,7 +58,7 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
-      UnitConversionForProjectService unitConversionForProjectService) {
+      ProjectTimeUnitService projectTimeUnitService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -73,7 +73,7 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
         partnerPriceListService,
         productCompanyService,
         timesheetLineRepository,
-        unitConversionForProjectService);
+        projectTimeUnitService);
   }
 
   @Override

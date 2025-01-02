@@ -208,7 +208,7 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
     return exTaxTotal;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public void computeFreightCarrierMode(
       List<FreightCarrierMode> freightCarrierModeList, Long saleOrderId) throws AxelorException {
     SaleOrder saleOrder = saleOrderRepository.find(saleOrderId);

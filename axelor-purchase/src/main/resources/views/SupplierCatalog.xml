@@ -50,6 +50,7 @@
         onChange="action-supplier-catalog-attrs-set-price"/>
       <field name="price" hideIf="isTakingProductPurchasePrice"
         validIf="isTakingProductPurchasePrice || price > 0"/>
+      <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="isTakeProductMultipleQty"
         if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()"/>
       <field name="productMultipleQtyList"
@@ -82,6 +83,7 @@
         onChange="action-supplier-catalog-attrs-set-price"/>
       <field name="price" hideIf="isTakingProductPurchasePrice"
         validIf="isTakingProductPurchasePrice || price > 0"/>
+      <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="isTakeProductMultipleQty"
         if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()"/>
       <field name="productMultipleQtyList"

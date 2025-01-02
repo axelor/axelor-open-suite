@@ -288,7 +288,7 @@
           <field name="invoiceLineSet" readonly="true" showIf="invoiceLineSet"
             form-view="invoice-line-form" grid-view="invoice-line-grid" colSpan="12"/>
           <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
-            width="120" widget="Image"/>
+            width="120" widget="drawing"/>
         </panel>
       </panel>
 
@@ -431,8 +431,6 @@
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
         collapseIf="false" canCollapse="true">
         <panel-include view="incl-characteristics-panel-form"/>
-        <field name="targetVersion" domain=":project member of self.projectSet" colSpan="4"
-          form-view="project-version-form" grid-view="project-version-grid"/>
         <field name="invoicingProgress" readonly="true" colSpan="4"
           showIf="invoicingType == 4"/>
         <field name="description" colSpan="12" widget="html"/>

@@ -1,3 +1,0 @@
----
-title: "Gantt view: fixed an issue where changing the progression did not change it on the project task."
-module: axelor-project
