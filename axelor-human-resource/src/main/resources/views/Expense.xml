@@ -294,7 +294,6 @@
 
   <action-group name="action-expense-group-draft">
     <action name="action-expense-method-draft"/>
-    <action name="save"/>
     <action name="action-expense-attrs-hide-button-readonly-field"/>
   </action-group>
 

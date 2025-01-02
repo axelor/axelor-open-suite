@@ -378,7 +378,9 @@ public class ExpenseController {
 
   public void backToDraft(ActionRequest request, ActionResponse response) {
     Expense expense = request.getContext().asType(Expense.class);
+    expense = Beans.get(ExpenseRepository.class).find(expense.getId());
     Beans.get(ExpenseWorkflowService.class).backToDraft(expense);
+    response.setReload(true);
   }
 
   public void addPayment(ActionRequest request, ActionResponse response) {
