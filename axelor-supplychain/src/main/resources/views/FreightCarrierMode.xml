@@ -24,7 +24,7 @@
     title="Freight carrier mode" model="com.axelor.apps.stock.db.FreightCarrierMode"
     extension="true">
 
-    <extend target="//panel[@name='mainPanel']">
+    <extend target="//panel[@name='mainPanel']/field[@name='shipmentMode']">
       <insert position="after">
         <field name="freightCarrierPricing" form-view="pricing-form" grid-view="pricing-grid"
           colSpan="12"/>
@@ -36,7 +36,7 @@
     name="freight-carrier-mode-freight-carrier-form" title="Freight carrier mode"
     model="com.axelor.apps.stock.db.FreightCarrierMode" extension="true">
 
-    <extend target="//panel[@name='mainPanel']">
+    <extend target="//panel[@name='mainPanel']/field[@name='shipmentMode']">
       <insert position="after">
         <field name="freightCarrierPricing" form-view="pricing-form" grid-view="pricing-grid"
           colSpan="6"/>
