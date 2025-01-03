@@ -10,6 +10,13 @@
     <extend target="//field[@name='receiptState']">
 
       <insert position="after">
+        <field name="typeSelect" showTitle="false" colSpan="2" readonly="true">
+          <viewer><![CDATA[
+	          <>
+	             {typeSelect == 2 && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Subcontracted')}</Badge>}
+	          </>
+	        ]]></viewer>
+        </field>
         <field name="outsourcingOrderReceiptState" readonly="true" showTitle="false"
           colSpan="2">
           <viewer>
@@ -31,7 +38,7 @@
     </extend>
 
     <extend target="//field[@name='purchaseOrderSeq']">
-      <attribute name="colSpan" value="8"/>
+      <attribute name="colSpan" value="6"/>
     </extend>
 
   </form>
@@ -42,5 +49,33 @@
     <view type="form" name="manuf-order-form"/>
     <domain>:id member of self.purchaseOrderSet</domain>
   </action-view>
+
+  <action-group name="action-group-purchase-order-partner-onchange"
+    id="action-group-production-purchase-order-partner-onchange">
+    <action name="action-purchase-order-record-partner"/>
+    <action name="action-purchase-order-method-get-stock-location"
+      if="__config__.app.isApp('supplychain') &amp;&amp; (tradingName?.receiptDefaultStockLocation == null || stockLocation == null)"/>
+    <action name="action-purchase-order-method-get-from-stock-location"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-purchase-order-attrs-hide-contact-partner"/>
+    <action name="action-purchase-order-method-fill-company-bank-details"/>
+    <action name="action-purchase-order-method-fill-price-list"/>
+    <action name="action-purchase-order-attrs-interco"/>
+    <action name="action-purchase-order-record-interco"/>
+    <action name="action-purchase-order-record-set-group-product-on-printing"/>
+    <action name="action-purchase-order-method-empty-fiscal-position-if-not-compatible"/>
+    <action name="action-purchase-order-method-fiscal-position-on-change"/>
+    <action name="action-purchase-order-method-compute"/>
+    <action name="action-purchase-order-record-set-type-select"/>
+  </action-group>
+
+
+  <action-record name="action-purchase-order-record-set-type-select"
+    model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <field name="typeSelect" expr="eval: 1"
+      if="!supplierPartner || !supplierPartner.isSubcontractor"/>
+    <field name="typeSelect" expr="eval: 2"
+      if="supplierPartner &amp;&amp; supplierPartner.isSubcontractor"/>
+  </action-record>
 
 </object-views>

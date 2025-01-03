@@ -100,6 +100,36 @@
     <view-param name="search-filters" value="production-order-filters"/>
   </action-view>
 
+  <menuitem name="manufacturing-subcontracting-purchase-orders"
+    title="Subcontracting purchases" order="200"
+    action="manufacturing.subcontracting.purchase.orders" parent="sc-root-purchase-orders"/>
+
+  <action-view name="manufacturing.subcontracting.purchase.orders"
+    title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <view type="cards" name="purchase-order-cards"/>
+    <view type="grid" name="purchase-order-grid"/>
+    <view type="form" name="purchase-order-form"/>
+    <view-param name="search-filters" value="purchase-order-filters"/>
+    <domain>self.statusSelect IN (3) AND self.typeSelect = 2</domain>
+    <context name="_internalUser" expr="eval: __user__.id"/>
+    <context name="_status" expr="eval: 3"/>
+  </action-view>
+
+  <menuitem name="manufacturing-subcontracting-purchase-quotations"
+    title="Subcontracting quotations" order="200"
+    action="manufacturing.subcontracting.purchase.quotations" parent="sc-root-purchase-quotations"/>
+
+  <action-view name="manufacturing.subcontracting.purchase.quotations"
+    title="Subcontracting purchase quotations" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <view type="cards" name="purchase-order-cards"/>
+    <view type="grid" name="purchase-order-grid"/>
+    <view type="form" name="purchase-order-form"/>
+    <view-param name="search-filters" value="purchase-order-filters"/>
+    <domain>self.statusSelect &lt; 3 AND self.typeSelect = 2</domain>
+    <context name="_internalUser" expr="eval: __user__.id"/>
+    <context name="_status" expr="eval: 3"/>
+  </action-view>
+
   <menuitem name="manufacturing-root-manuf-order" parent="manufacturing-root"
     title="Manufacturing orders" action="manufacturing.root.manuf.order" order="500"/>
 

@@ -23,6 +23,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowServiceImpl;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -45,8 +46,13 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       AppSupplychainService appSupplychainService,
       PurchaseOrderStockService purchaseOrderStockService,
       AppAccountService appAccountService,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService) {
-    super(purchaseOrderService, purchaseOrderRepo, appPurchaseService);
+      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService) {
+    super(
+        purchaseOrderService,
+        purchaseOrderRepo,
+        appPurchaseService,
+        purchaseOrderTypeSelectService);
     this.appSupplychainService = appSupplychainService;
     this.purchaseOrderStockService = purchaseOrderStockService;
     this.appAccountService = appAccountService;

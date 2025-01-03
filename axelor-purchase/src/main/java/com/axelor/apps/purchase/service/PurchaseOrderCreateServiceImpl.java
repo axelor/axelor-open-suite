@@ -43,10 +43,14 @@ public class PurchaseOrderCreateServiceImpl implements PurchaseOrderCreateServic
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected PurchaseConfigService purchaseConfigService;
+  protected final PurchaseOrderTypeSelectService purchaseOrderTypeSelectService;
 
   @Inject
-  public PurchaseOrderCreateServiceImpl(PurchaseConfigService purchaseConfigService) {
+  public PurchaseOrderCreateServiceImpl(
+      PurchaseConfigService purchaseConfigService,
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService) {
     this.purchaseConfigService = purchaseConfigService;
+    this.purchaseOrderTypeSelectService = purchaseOrderTypeSelectService;
   }
 
   @Override
@@ -120,6 +124,7 @@ public class PurchaseOrderCreateServiceImpl implements PurchaseOrderCreateServic
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(supplierPartner);
+    purchaseOrderTypeSelectService.setTypeSelect(purchaseOrder);
     purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());
     purchaseOrder.setDisplayPriceOnQuotationRequest(
         purchaseConfigService.getPurchaseConfig(company).getDisplayPriceOnQuotationRequest());

@@ -193,4 +193,9 @@
     <option value="3">Budget item</option>
   </selection>
 
+  <selection name="purchase.purchase.order.type.select"
+    id="production.purchase.purchase.order.type.select">
+    <option value="2">Subcontracting</option>
+  </selection>
+
 </object-views>

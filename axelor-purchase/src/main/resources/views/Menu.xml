@@ -65,7 +65,11 @@
   <!-- Purchase request menus end -->
 
   <menuitem name="sc-root-purchase-quotations" title="Purchase quotations" order="500"
-    action="sc.root.purchase.quotations" parent="sc-root-purchase"/>
+    parent="sc-root-purchase"/>
+
+  <menuitem name="sc-root-standard-purchase-quotations" title="Purchase quotations"
+    order="100" action="sc.root.purchase.quotations" parent="sc-root-purchase-quotations"/>
+
 
   <action-view name="sc.root.purchase.quotations" title="Purchase quotations"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -73,13 +77,16 @@
     <view type="grid" name="purchase-order-quotation-grid"/>
     <view type="form" name="purchase-order-form"/>
     <view-param name="search-filters" value="purchase-order-filters"/>
-    <domain>self.statusSelect &lt; 3</domain>
+    <domain>self.statusSelect &lt; 3 AND self.typeSelect = 1</domain>
     <context name="_internalUser" expr="eval: __user__.id"/>
     <context name="_status" expr="eval: [1,2]"/>
   </action-view>
 
   <menuitem name="sc-root-purchase-orders" title="Purchase orders" order="600"
-    action="sc.root.purchase.orders" parent="sc-root-purchase"/>
+    parent="sc-root-purchase"/>
+
+  <menuitem name="sc-root-standard-purchase-orders" title="Purchase orders" order="100"
+    action="sc.root.purchase.orders" parent="sc-root-purchase-orders"/>
 
   <action-view name="sc.root.purchase.orders" title="Purchase orders"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -87,7 +94,7 @@
     <view type="grid" name="purchase-order-grid"/>
     <view type="form" name="purchase-order-form"/>
     <view-param name="search-filters" value="purchase-order-filters"/>
-    <domain>self.statusSelect IN (3)</domain>
+    <domain>self.statusSelect IN (3) AND self.typeSelect = 1</domain>
     <context name="_internalUser" expr="eval: __user__.id"/>
     <context name="_status" expr="eval: 3"/>
   </action-view>
