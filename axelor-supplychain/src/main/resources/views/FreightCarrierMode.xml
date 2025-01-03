@@ -8,6 +8,7 @@
     <field name="name"/>
     <field name="carrierPartner"/>
     <field name="freightCarrierPricing"/>
+    <field name="freightCarrierDelay"/>
   </grid>
 
   <form name="freight-carrier-pricing-form" model="com.axelor.apps.stock.db.FreightCarrierMode"
@@ -17,6 +18,7 @@
       <field name="name"/>
       <field name="carrierPartner" form-view="partner-form" grid-view="partner-grid"/>
       <field name="freightCarrierPricing" form-view="pricing-form" grid-view="pricing-grid"/>
+      <field name="freightCarrierDelay" form-view="pricing-form" grid-view="pricing-grid"/>
     </panel>
   </form>
 
@@ -27,6 +29,8 @@
     <extend target="//panel[@name='mainPanel']/field[@name='shipmentMode']">
       <insert position="after">
         <field name="freightCarrierPricing" form-view="pricing-form" grid-view="pricing-grid"
+          colSpan="12"/>
+        <field name="freightCarrierDelay" form-view="pricing-form" grid-view="pricing-grid"
           colSpan="12"/>
       </insert>
     </extend>
@@ -39,6 +43,8 @@
     <extend target="//panel[@name='mainPanel']/field[@name='shipmentMode']">
       <insert position="after">
         <field name="freightCarrierPricing" form-view="pricing-form" grid-view="pricing-grid"
+          colSpan="6"/>
+        <field name="freightCarrierDelay" form-view="pricing-form" grid-view="pricing-grid"
           colSpan="6"/>
       </insert>
     </extend>
