@@ -2,8 +2,13 @@ package com.axelor.apps.base.service.apiconfiguration;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ApiConfiguration;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,6 +22,22 @@ import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
 public class ApiConfigurationServiceImpl implements ApiConfigurationService {
+
+  protected final PartnerRepository partnerRepository;
+
+  @Inject
+  public ApiConfigurationServiceImpl(PartnerRepository partnerRepository) {
+    this.partnerRepository = partnerRepository;
+  }
+
+  @Transactional
+  @Override
+  public void setData(Partner partner, JSONObject resutlJson) throws JSONException {
+    partner.setRegistrationCode(resutlJson.get("siren").toString());
+    partner.setName(
+        resutlJson.getJSONObject("uniteLegale").get("denominationUniteLegale").toString());
+    partnerRepository.save(partner);
+  }
 
   @Override
   public String fetchData(ApiConfiguration apiConfiguration, String siretNumber)
