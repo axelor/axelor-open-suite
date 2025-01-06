@@ -48,7 +48,7 @@ public class YearServiceImpl implements YearService {
       String code,
       LocalDate fromDate,
       LocalDate toDate,
-      Integer periodDuration,
+      String periodDuration,
       int typeSelect) {
     Year year = new Year();
     year.setCompany(company);
@@ -71,7 +71,7 @@ public class YearServiceImpl implements YearService {
   @Override
   public List<Period> generatePeriods(Year year) throws AxelorException {
 
-    Integer duration = year.getPeriodDurationSelect();
+    String duration = year.getPeriodDurationSelect();
     LocalDate fromDate = year.getFromDate();
     LocalDate toDate = year.getToDate();
     LocalDate periodToDate = fromDate;
@@ -86,19 +86,19 @@ public class YearServiceImpl implements YearService {
       LocalDate toDate,
       Integer periodNumber,
       LocalDate fromDate,
-      Integer duration)
+      String duration)
       throws AxelorException {
     List<Period> periods = new ArrayList<>();
     int c = 0;
     int loopLimit = 1000;
     while (periodToDate.isBefore(toDate)) {
-      if (periodNumber != 1) fromDate = fromDate.plusMonths(duration);
+      if (periodNumber != 1) fromDate = getToDate(fromDate, duration);
       if (c >= loopLimit) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.PERIOD_3));
       }
       c += 1;
-      periodToDate = fromDate.plusMonths(duration).minusDays(1);
+      periodToDate = getToDate(fromDate, duration).minusDays(1);
       if (periodToDate.isAfter(toDate)) periodToDate = toDate;
       if (fromDate.isAfter(toDate)) continue;
       periods.add(createPeriod(year, periodToDate, periodNumber, fromDate));
@@ -136,5 +136,27 @@ public class YearServiceImpl implements YearService {
             date,
             type)
         .fetchOne();
+  }
+
+  @Override
+  public LocalDate getToDate(LocalDate fromDate, String duration) {
+    switch (duration) {
+      case YearRepository.DURATION_WEEK:
+        return fromDate.plusWeeks(1);
+      case YearRepository.DURATION_2WEEK:
+        return fromDate.plusWeeks(2);
+      case YearRepository.DURATION_MONTH:
+        return fromDate.plusMonths(1);
+      case YearRepository.DURATION_2MONTH:
+        return fromDate.plusMonths(2);
+      case YearRepository.DURATION_3MONTH:
+        return fromDate.plusMonths(3);
+      case YearRepository.DURATION_6MONTH:
+        return fromDate.plusMonths(6);
+      case YearRepository.DURATION_12MONTH:
+        return fromDate.plusMonths(12);
+      default:
+        return fromDate;
+    }
   }
 }
