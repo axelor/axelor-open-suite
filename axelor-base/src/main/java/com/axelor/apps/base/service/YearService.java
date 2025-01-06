@@ -37,7 +37,7 @@ public interface YearService {
       String code,
       LocalDate fromDate,
       LocalDate toDate,
-      Integer periodDuration,
+      String periodDuration,
       int typeSelect);
 
   List<Period> generatePeriods(Year year) throws AxelorException;
@@ -48,6 +48,8 @@ public interface YearService {
       LocalDate toDate,
       Integer periodNumber,
       LocalDate fromDate,
-      Integer duration)
+      String duration)
       throws AxelorException;
+
+  LocalDate getToDate(LocalDate date, String duration);
 }

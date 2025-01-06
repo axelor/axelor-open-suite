@@ -44,7 +44,7 @@ public class YearAccountServiceImpl implements YearAccountService {
       Company company,
       LocalDate fromDate,
       LocalDate toDate,
-      Integer periodDuration,
+      String periodDuration,
       LocalDate reportedBalancedDate)
       throws AxelorException {
     String name = I18n.get(ITranslation.FISCAL_YEAR_CODE) + " " + fromDate.getYear();
@@ -70,7 +70,7 @@ public class YearAccountServiceImpl implements YearAccountService {
       String code,
       LocalDate fromDate,
       LocalDate toDate,
-      Integer periodDuration,
+      String periodDuration,
       int typeSelect,
       LocalDate reportedBalanceDate) {
     Year year =
