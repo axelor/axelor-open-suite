@@ -42,6 +42,7 @@ import com.axelor.apps.hr.service.leave.LeaveRequestSendService;
 import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.apps.hr.service.leave.LeaveRequestValidateService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonDomainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -451,5 +452,14 @@ public class LeaveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void getLeaveReasonDomain(ActionRequest request, ActionResponse response) {
+    LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+    response.setAttr(
+        "leaveReason",
+        "domain",
+        Beans.get(LeaveReasonDomainService.class)
+            .getLeaveReasonDomain(leave.getLeaveReason(), leave.getEmployee()));
   }
 }
