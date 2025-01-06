@@ -9,6 +9,7 @@ import com.axelor.auth.db.User;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,15 +34,29 @@ public class LeaveReasonDomainServiceImpl implements LeaveReasonDomainService {
       return new HashSet<>(leaveReasonRepository.all().filter(filter.toString()).fetch());
     }
 
-    Optional.ofNullable(AuthUtils.getUser())
-        .map(User::getEmployee)
-        .ifPresent(userEmployee -> filter.append(" AND self.selectedByMgtOnly IS FALSE"));
+    Employee userEmployee =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getEmployee).orElse(null);
+
+    List<LeaveReason> leaveLineLeaveReasonList;
+
+    if (userEmployee != null && !userEmployee.getHrManager()) {
+      filter.append(" AND self.selectedByMgtOnly IS FALSE");
+      leaveLineLeaveReasonList =
+          employee.getLeaveLineList().stream()
+              .map(LeaveLine::getLeaveReason)
+              .filter(leaveReason -> !leaveReason.getSelectedByMgtOnly())
+              .collect(Collectors.toList());
+    } else {
+      leaveLineLeaveReasonList =
+          employee.getLeaveLineList().stream()
+              .map(LeaveLine::getLeaveReason)
+              .collect(Collectors.toList());
+    }
+
     Set<LeaveReason> leaveReasons =
         new HashSet<>(leaveReasonRepository.all().filter(filter.toString()).fetch());
-    leaveReasons.addAll(
-        employee.getLeaveLineList().stream()
-            .map(LeaveLine::getLeaveReason)
-            .collect(Collectors.toList()));
+
+    leaveReasons.addAll(leaveLineLeaveReasonList);
 
     return leaveReasons;
   }
