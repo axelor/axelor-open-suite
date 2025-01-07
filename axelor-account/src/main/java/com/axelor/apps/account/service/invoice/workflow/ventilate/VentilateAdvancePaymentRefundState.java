@@ -55,7 +55,8 @@ public class VentilateAdvancePaymentRefundState extends VentilateState {
       AccountingSituationService accountingSituationService,
       InvoiceJournalService invoiceJournalService,
       InvoicePfpValidateService invoicePfpValidateService,
-      InvoiceTermPfpToolService invoiceTermPfpToolService) {
+      InvoiceTermPfpToolService invoiceTermPfpToolService,
+      AdvancePaymentRefundService advancePaymentRefundService) {
     super(
         sequenceService,
         moveCreateFromInvoiceService,
@@ -70,6 +71,7 @@ public class VentilateAdvancePaymentRefundState extends VentilateState {
         invoiceJournalService,
         invoicePfpValidateService,
         invoiceTermPfpToolService);
+    this.advancePaymentRefundService = advancePaymentRefundService;
   }
 
   @Override

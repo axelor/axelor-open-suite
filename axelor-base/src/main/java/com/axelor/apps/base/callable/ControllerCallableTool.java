@@ -20,8 +20,6 @@ package com.axelor.apps.base.callable;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.db.tenants.TenantAware;
-import com.axelor.db.tenants.TenantResolver;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionResponse;
@@ -53,26 +51,8 @@ public class ControllerCallableTool<V> {
     V result = null;
     ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    String currentTenantId = TenantResolver.currentTenantIdentifier();
-
     // Start thread
-    Future<V> future =
-        executor.submit(
-            () -> {
-              TenantAware tenantAware =
-                  new TenantAware(
-                          () -> {
-                            try {
-                              callable.call();
-                            } catch (Exception e) {
-                              throw new RuntimeException(e);
-                            }
-                          })
-                      .tenantId(currentTenantId);
-              tenantAware.start();
-              tenantAware.join();
-              return null;
-            });
+    Future<V> future = executor.submit(callable);
 
     int processTimeout = Beans.get(AppBaseService.class).getProcessTimeout();
     // Wait processTimeout seconds
@@ -86,8 +66,6 @@ public class ControllerCallableTool<V> {
     } catch (InterruptedException e) {
       TraceBackService.trace(e);
       Thread.currentThread().interrupt();
-    } finally {
-      executor.shutdown();
     }
     return result;
   }

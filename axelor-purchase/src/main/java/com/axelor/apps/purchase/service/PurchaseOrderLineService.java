@@ -85,8 +85,6 @@ public interface PurchaseOrderLineService {
   public int getDiscountTypeSelect(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BigDecimal price);
 
-  public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine);
-
   public void checkMultipleQty(
       Company company,
       Partner supplierPartner,

@@ -121,6 +121,8 @@ import com.axelor.apps.account.service.analytic.TradingNameAnalyticService;
 import com.axelor.apps.account.service.analytic.TradingNameAnalyticServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
+import com.axelor.apps.account.service.batch.AccountingBatchViewService;
+import com.axelor.apps.account.service.batch.AccountingBatchViewServiceImpl;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportServiceImpl;
 import com.axelor.apps.account.service.custom.AccountingReportValueCustomRuleService;
@@ -965,5 +967,6 @@ public class AccountModule extends AxelorModule {
     bind(PaymentModeInterestRateService.class).to(PaymentModeInterestRateServiceImpl.class);
 
     bind(InvoiceTaxComputeService.class).to(InvoiceTaxComputeServiceImpl.class);
+    bind(AccountingBatchViewService.class).to(AccountingBatchViewServiceImpl.class);
   }
 }
