@@ -104,4 +104,7 @@ public interface ITranslation {
 
   String API_LEAVE_REQUEST_CREATE_SUCCESS = /*$$(*/
       "Leave request(s) have been correctly created." /*)*/;
+
+  String API_LEAVE_REQUEST_CREATE_SUCCESS_WITH_ERRORS = /*$$(*/
+      "Leave request(s) have been correctly created. Some requests were ignored as they were not correctly configured." /*)*/;
 }

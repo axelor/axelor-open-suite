@@ -1,36 +1,57 @@
 package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.rest.dto.LeaveRequestCreatePostRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestCreateResponse;
 import com.axelor.apps.hr.rest.dto.LeaveRequestReasonRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestResponse;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class LeaveRequestCreateRestServiceImpl implements LeaveRequestCreateRestService {
 
   protected final LeaveRequestCreateHelperService leaveRequestCreateHelperService;
   protected final LeaveRequestRepository leaveRequestRepository;
+  protected final LeaveReasonRepository leaveReasonRepository;
 
   @Inject
   public LeaveRequestCreateRestServiceImpl(
       LeaveRequestCreateHelperService leaveRequestCreateHelperService,
-      LeaveRequestRepository leaveRequestRepository) {
+      LeaveRequestRepository leaveRequestRepository,
+      LeaveReasonRepository leaveReasonRepository) {
     this.leaveRequestCreateHelperService = leaveRequestCreateHelperService;
     this.leaveRequestRepository = leaveRequestRepository;
+    this.leaveReasonRepository = leaveReasonRepository;
   }
 
   @Override
   public List<Long> createLeaveRequests(
       LocalDate fromDate, int startOnSelect, List<LeaveRequestReasonRequest> leaveRequestReasonList)
       throws AxelorException {
+
+    if (CollectionUtils.isEmpty(leaveRequestReasonList)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.API_LEAVE_REQUEST_NONE_CREATED));
+    }
+
     List<HashMap<String, Object>> leaveReasonRequestMap = new ArrayList<>();
     for (LeaveRequestReasonRequest leaveReason : leaveRequestReasonList) {
+      if (skipRequest(leaveReason)) {
+        continue;
+      }
+
       HashMap<String, Object> leaveReasonMap = new HashMap<>();
       leaveReasonMap.put("duration", leaveReason.getDuration());
       leaveReasonMap.put("comment", leaveReason.getComment());
@@ -46,6 +67,16 @@ public class LeaveRequestCreateRestServiceImpl implements LeaveRequestCreateRest
         fromDate, startOnSelect, leaveReasonRequestMap);
   }
 
+  protected boolean skipRequest(LeaveRequestReasonRequest leaveReason) {
+    return leaveReason.getDuration().compareTo(BigDecimal.ZERO) == 0
+        || leaveReasonRepository
+                .all()
+                .filter("self.id = :leaveReasonId")
+                .bind("leaveReasonId", leaveReason.getLeaveReasonId())
+                .count()
+            == 0;
+  }
+
   @Override
   public LeaveRequestCreateResponse createLeaveRequestResponse(List<Long> leaveRequestIdList) {
     List<LeaveRequestResponse> leaveRequestResponseList = new ArrayList<>();
@@ -54,5 +85,19 @@ public class LeaveRequestCreateRestServiceImpl implements LeaveRequestCreateRest
           new LeaveRequestResponse(leaveRequestRepository.find(leaveRequestId)));
     }
     return new LeaveRequestCreateResponse(leaveRequestResponseList);
+  }
+
+  @Override
+  public void checkLeaveRequestCreatePostRequest(
+      LeaveRequestCreatePostRequest leaveRequestCreatePostRequest) throws AxelorException {
+    int startOnSelect = leaveRequestCreatePostRequest.getStartOnSelect();
+    List<Integer> authorizedInt = new ArrayList<>();
+    authorizedInt.add(LeaveRequestRepository.SELECT_MORNING);
+    authorizedInt.add(LeaveRequestRepository.SELECT_AFTERNOON);
+    if (!authorizedInt.contains(startOnSelect)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.API_LEAVE_REQUEST_WRONG_START_ON_SELECT));
+    }
   }
 }

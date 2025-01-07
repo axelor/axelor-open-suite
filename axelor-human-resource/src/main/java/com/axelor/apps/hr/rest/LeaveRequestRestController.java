@@ -173,9 +173,17 @@ public class LeaveRequestRestController {
     new SecurityCheck().createAccess(LeaveRequest.class).readAccess(LeaveReason.class).check();
     LeaveRequestCreateRestService leaveRequestCreateRestService =
         Beans.get(LeaveRequestCreateRestService.class);
+    leaveRequestCreateRestService.checkLeaveRequestCreatePostRequest(requestBody);
     List<Long> leaveRequestIds =
         leaveRequestCreateRestService.createLeaveRequests(
             requestBody.getFromDate(), requestBody.getStartOnSelect(), requestBody.getRequests());
+
+    if (leaveRequestIds.size() != requestBody.getRequests().size()) {
+      return ResponseConstructor.build(
+          Response.Status.OK,
+          I18n.get(ITranslation.API_LEAVE_REQUEST_CREATE_SUCCESS_WITH_ERRORS),
+          leaveRequestCreateRestService.createLeaveRequestResponse(leaveRequestIds));
+    }
 
     return ResponseConstructor.build(
         Response.Status.OK,

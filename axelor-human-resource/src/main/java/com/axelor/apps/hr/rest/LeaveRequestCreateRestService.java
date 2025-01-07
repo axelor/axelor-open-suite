@@ -1,6 +1,7 @@
 package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.rest.dto.LeaveRequestCreatePostRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestCreateResponse;
 import com.axelor.apps.hr.rest.dto.LeaveRequestReasonRequest;
 import java.time.LocalDate;
@@ -13,4 +14,7 @@ public interface LeaveRequestCreateRestService {
       throws AxelorException;
 
   LeaveRequestCreateResponse createLeaveRequestResponse(List<Long> leaveRequestIdList);
+
+  void checkLeaveRequestCreatePostRequest(
+      LeaveRequestCreatePostRequest leaveRequestCreatePostRequest) throws AxelorException;
 }
