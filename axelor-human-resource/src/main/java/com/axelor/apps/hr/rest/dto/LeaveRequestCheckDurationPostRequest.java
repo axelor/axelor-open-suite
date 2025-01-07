@@ -4,7 +4,7 @@ import com.axelor.utils.api.RequestPostStructure;
 import java.time.LocalDate;
 import javax.validation.constraints.NotNull;
 
-public class LeaveRequestCheckDurationGetRequest extends RequestPostStructure {
+public class LeaveRequestCheckDurationPostRequest extends RequestPostStructure {
 
   @NotNull private LocalDate fromDate;
 

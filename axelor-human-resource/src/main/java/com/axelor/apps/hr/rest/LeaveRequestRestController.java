@@ -4,7 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveRequest;
-import com.axelor.apps.hr.rest.dto.LeaveRequestCheckDurationGetRequest;
+import com.axelor.apps.hr.rest.dto.LeaveRequestCheckDurationPostRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestDurationResponse;
 import com.axelor.apps.hr.rest.dto.LeaveRequestRefusalPutRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestResponse;
@@ -29,7 +29,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import java.math.BigDecimal;
 import java.util.Optional;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -171,9 +171,9 @@ public class LeaveRequestRestController {
       summary = "Compute leave request duration",
       tags = {"Leave request"})
   @Path("/compute-duration")
-  @GET
+  @POST
   @HttpExceptionHandler
-  public Response computeDuration(LeaveRequestCheckDurationGetRequest requestBody)
+  public Response computeDuration(LeaveRequestCheckDurationPostRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
 
